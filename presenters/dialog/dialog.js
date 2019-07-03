@@ -1,7 +1,6 @@
 import {render, TemplateResult} from 'lit-html';
 const Panel = require('../panel').default
-//const Modal = require('modal')
-const Popover = require('popover').default
+const Popover = require('../popover').default
 const makeBtn = require('./make-btn')
 
 const styles = require('./style.less')
