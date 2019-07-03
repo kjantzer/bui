@@ -83,7 +83,7 @@ Classes used to present views (ideally a custom element) to the user.
 - [Menu](./presenters/menu/README.md)
 - [Dialog](./presenters/dialog/README.md)
 
-# Router
+## Router
 
 A class for managing the URL and routing to views. Router is a singleton class
 
