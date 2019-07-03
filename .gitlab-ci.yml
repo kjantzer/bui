@@ -13,6 +13,7 @@ pages:
     script:
         - npm install
         - npm run build
+        - ./node_modules/.bin/docpress build
     artifacts:
         paths:
             - public

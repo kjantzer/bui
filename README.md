@@ -1,4 +1,4 @@
-<img src="./logo.png" style="margin: -10% auto; display: block;">
+<img src="./logo.png">
 
 Reusable web components for creating interfaces.
 

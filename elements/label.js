@@ -21,7 +21,7 @@ export default class Label extends LitElement {
         :host([outline]) {
             --bgd: #aaa;
             --color: #fff;
-            padding: .35em .4em .2em;
+            padding: 0.15em 0.3em 0.1em;
             border-radius: 3px;
             font-size: .8rem;
             text-transform: none;

@@ -10,6 +10,7 @@ html, body {
     font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     transition: 200ms opacity;
+    font-size: 17px;
 
     --blue: #2196F3;
 	--orange: #FF9800;
@@ -94,15 +95,24 @@ b-paper {
     margin-bottom: 1em;
 }
 
+main > b-paper {
+    display: block;
+    margin-bottom: 1em;
+    --padding: 2rem;
+}
+
 b-paper > h1 {
     // border-bottom: solid 2px;
     // margin-bottom: .5em;
     border-bottom: solid 2px;
-    margin: -1rem;
+    margin: -2rem;
     padding: 1rem;
-    margin-bottom: 1rem;
-    font-size: 2em;
+    margin-bottom: 2rem;
+    font-size: 1rem;
     border: none;
+    border-bottom: solid 1px rgba(0,0,0,.1);
+    text-align: center;
+    text-transform: uppercase;
 }
 
 b-icon-list {

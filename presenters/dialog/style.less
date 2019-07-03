@@ -14,9 +14,10 @@
 	
 	.d-title {
 		min-height: 0;
+		margin: 0;
 	}
 	
-	.d-icon > span {
+	.d-icon > b-icon {
 		
 		&:not(.inline) {
 			width: 100%;
@@ -30,11 +31,11 @@
 			margin-right: .5rem;
 		}
 		
-		&.red { color: var(--color-red); border-color: var(--color-red); }
-		&.orange { color: var(--color-orange); border-color: var(--color-orange); }
-		&.blue { color: var(--color-blue); border-color: var(--color-blue); }
-		&.green { color: var(--color-green); border-color: var(--color-green); }
-		&.brown { color: var(--color-brown); border-color: var(--color-brown); }
+		&.red { color: var(--red); border-color: var(--red); }
+		&.orange { color: var(--orange); border-color: var(--orange); }
+		&.blue { color: var(--blue); border-color: var(--blue); }
+		&.green { color: var(--green); border-color: var(--green); }
+		&.brown { color: var(--brown); border-color: var(--brown); }
 	}
 	
 	.d-title:not(:empty) {
@@ -138,7 +139,7 @@
 	max-height: 95vh;
 	max-width: 95vw;
 	
-	.d-icon [class^="icon"] {
+	.d-icon b-icon {
 		font-size: 2.4em;
 		width: auto;
 		border-radius: 50px;

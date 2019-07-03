@@ -24,8 +24,11 @@ export default class Dialog {
 		
 		opts.className += ' nopadding dialog'
 		opts.className.split(' ').forEach(className=>className&&this.el.classList.add(className));
+
+		let [iconName, iconClass] = (opts.icon||'').split(' ')
 		
-		let icon = opts.icon ? `<span class="icon-${opts.icon} animated speed-2 flipInY"></span>` : ''
+		// FIXME: animation needs added
+		let icon = opts.icon ? `<b-icon name="${iconName}" class="${iconClass||''} animated speed-2 flipInY"></b-icon>` : ''
 		let btns = opts.btns ? opts.btns.map(btn=>makeBtn(btn)).join("\n") : ''
 		
 		this.el.innerHTML = `<div class="d-icon">${icon}</div>

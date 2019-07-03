@@ -31,7 +31,8 @@ window.showMenu = async function(el){
         {label: 'More', menu: [
             {label: 'Submenu 1', val: 'more-1'},
             {label: 'Submenu 2', val: 'more-2'}
-        ], menuOpts: {popover: {align: 'right-start'}}}
+        ], menuOpts: {popover: {align: 'right-start'}}},
+        {text: 'Look at the console after selecting a value'}
     ]
 
     let selected = await new Menu(menu).popover(el)
@@ -121,7 +122,9 @@ customElements.define('a-list-view', class extends LitElement{
     static get styles(){return css`
         :host {
             display: block;
-            height: 300px;
+            height: 340px;
+            margin: -2em -2em 0 -2em;
+            border-bottom: solid 1px rgba(0,0,0,.1);
         }
 
         b-list {
@@ -146,7 +149,7 @@ customElements.define('a-list-view-row', class extends LitElement{
     static get styles(){return css`
         :host {
             display: block;
-            padding: .35em .5em;
+            padding: .5em 1em;
         }
     `}
 
@@ -155,6 +158,27 @@ customElements.define('a-list-view-row', class extends LitElement{
     `}
 
 })
+
+window.dialogs = {
+    async success(el){
+        Dialog.success().modal()
+    },
+
+    async confirm(el){
+        if( await Dialog.confirm().modal() )
+            console.log('confimed')
+    },
+
+     async confirmDelete(el){
+        if( await Dialog.confirmDelete().popover(el) )
+            console.log('confimed delete')
+    }
+}
+
+window.openView = el=>{
+    event.preventDefault()
+    router.goTo(el.getAttribute('href'))
+}
 
 
 router.start()

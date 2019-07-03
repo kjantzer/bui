@@ -1,0 +1,18 @@
+{
+  "docs": "docs",
+  "dist": "public/docs",
+  "css": [
+    "style.css"
+  ],
+  "markdown": {
+    "typographer": true,
+    "plugins": {
+      "decorate": {}
+    }
+  },
+  "ignore": [],
+  "plugins": {
+    "docpress-core": {},
+    "docpress-base": {}
+  }
+}
