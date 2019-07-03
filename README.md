@@ -1,8 +1,10 @@
-Blackstone UI
-===============
+<img src="./logo.png" style="margin: -10% auto; display: block;">
 
 Reusable web components for creating interfaces.
 
+***
+
+Example 
 ```html
 <b-tabs>
     <div title="Tab 1">
