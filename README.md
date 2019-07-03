@@ -1,7 +1,7 @@
 Blackstone UI
 ===============
 
-Reusable web components for creating interfaces. 
+Reusable web components for creating interfaces.
 
 ```html
 <b-tabs>
