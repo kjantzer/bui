@@ -1,0 +1,156 @@
+
+.popover {
+	z-index: 10000;
+	--arrow-w: 8px;
+	--bgd: #fff;
+	--arrowBgd: var(--bgd);
+	--border: rgba(0,0,0,.2);
+	// transition: margin 200ms, opacity 200ms;
+	// opacity: 0;
+	
+	&.dark {
+		--bgd: #2c3033;
+		--border: #111;
+		color: #fff;
+		
+		.subheading, sub {
+			color: rgba(255,255,255,.4)
+		}
+	}
+	
+	.__view {
+		box-sizing: border-box;
+		background: var(--bgd);
+		overflow: auto;
+		border: solid 1px var(--border);
+		box-shadow: rgba(0,0,0,.2) 0 2px 8px;
+		// min-width: 300px;
+		border-radius: 5px;
+	}
+
+	// only add padding to "divs" - allowing custom elements to define their own padding
+	div.__view:not(.nopadding) { padding: 1em; }
+	div.__view.padding-lite { padding: .25em; }
+	
+	&[x-out-of-boundaries] {
+		display: none;
+	}
+	
+	&[x-placement] {
+		opacity: 1;
+	}
+	
+	&[x-placement^="top"] {
+	    margin-bottom: 5px;
+	}
+	
+	.__arrow {
+		width: 0;
+		height: 0;
+		border-style: solid;
+		border-color: var(--border);
+		position: absolute;
+		z-index: 10000;
+		margin: calc(~"var(--arrow-w) / 2");
+	}
+	
+	.__arrow > .__arrow {
+		border-color: var(--arrowBgd);
+	}
+	
+	&[x-placement^="top"] .__arrow {
+	    border-width: var(--arrow-w) var(--arrow-w) 0 var(--arrow-w);
+	    border-left-color: transparent;
+	    border-right-color: transparent;
+	    border-bottom-color: transparent;
+	    bottom: calc(~"-1 * var(--arrow-w)");
+	    left: calc(~"50% - var(--arrow-w)");
+	    margin-top: 0;
+	    margin-bottom: 0;
+		
+		> .__arrow {
+			bottom: 1px;
+			margin: 0;
+		}
+	}
+
+	&[x-placement^="bottom"] {
+	    margin-top: var(--arrow-w);
+	}
+
+	&[x-placement^="bottom"] .__arrow {
+	    border-width: 0 var(--arrow-w) var(--arrow-w) var(--arrow-w);
+	    border-left-color: transparent;
+	    border-right-color: transparent;
+	    border-top-color: transparent;
+	    top: calc(~"-1 * var(--arrow-w)");
+	    left: calc(~"50% - var(--arrow-w)");
+	    margin-top: 0;
+	    margin-bottom: 0;
+		
+		> .__arrow {
+			top: 1px;
+			margin: 0;
+		}
+	}
+
+	&[x-placement^="right"] {
+	    margin-left: var(--arrow-w);
+	}
+	
+	&[x-placement^="right"] .__arrow {
+	    border-width: var(--arrow-w) var(--arrow-w) var(--arrow-w) 0;
+	    border-left-color: transparent;
+	    border-top-color: transparent;
+	    border-bottom-color: transparent;
+	    left: calc(~"-1 * var(--arrow-w)");
+	    top: calc(~"50% - var(--arrow-w)");
+	    margin-left: 0;
+	    margin-right: 0;
+		
+		> .__arrow {
+			left: 1px;
+			margin: 0;
+		}
+	}
+	&[x-placement^="left"] {
+	    margin-right: var(--arrow-w);
+	}
+	
+	&[x-placement^="left"] .__arrow {
+	    border-width: var(--arrow-w) 0 var(--arrow-w) var(--arrow-w);
+	    border-top-color: transparent;
+	    border-right-color: transparent;
+	    border-bottom-color: transparent;
+	    right: calc(~"-1 * var(--arrow-w)");
+	    top: calc(~"50% - var(--arrow-w)");
+	    margin-left: 0;
+	    margin-right: 0;
+		
+		> .__arrow {
+			right: 1px;
+			margin: 0;
+		}
+	}
+	
+}
+
+
+.popover.dark .popover-confirm {
+	
+	.text-btn {
+		color: #fff;
+		
+		&:hover {
+			background: #111;
+		}
+	}
+} 
+
+.popover-prompt {
+	model-editor {
+		font-size: 1.2rem;
+		padding: .5em;
+		--focusBgd: none;
+	}
+}

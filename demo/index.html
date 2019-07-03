@@ -1,0 +1,257 @@
+<html>
+<head>
+    <title>Blackstone UI</title>
+    <script src='./demo.js'></script>
+    <link rel="stylesheet" type="text/css" href="style.less">
+    <script>
+    window.addEventListener('DOMContentLoaded', _=>{
+        document.body.classList.add('loaded')
+    })
+    </script>
+</head>
+<body>
+
+    <header>
+
+        <b-paper class="ribbon">
+            <svg
+            xmlns:dc="http://purl.org/dc/elements/1.1/"
+            xmlns:cc="http://creativecommons.org/ns#"
+            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+            xmlns:svg="http://www.w3.org/2000/svg"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1080.4375 203.91251"
+            height="203.91251"
+            width="1080.4375"
+            xml:space="preserve"
+            version="1.1"
+            id="blackstone-logo-horz"><defs
+                id="defs6" /><g
+                transform="matrix(1.25,0,0,-1.25,0,203.9125)"
+                id="g10"><g
+                transform="scale(0.1,0.1)"
+                id="g12"><path
+                    id="path14"
+                    style="fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                    d="M 92.9961,1569.85 C 207.246,1669.79 673.594,1650.77 882.773,1491.73 1108.71,1319.96 1082.03,1014.21 792.754,885.328 508.035,758.484 133.387,674.617 50.1172,992.809 -43.293,1349.73 7.15625,1494.75 92.9961,1569.85" /><path
+                    id="path16"
+                    style="fill:#100f0d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+                    d="M 1096.22,425.41 C 1094.62,54.25 866.348,22.9883 590.43,6.76172 244.813,-13.5703 104.383,-1.41016 73.0469,235.531 44.0625,454.629 146.766,555.582 507.949,680.145 979.512,842.762 1097.42,702.789 1096.22,425.41" /></g></g></svg>
+        </b-paper>
+
+        <div class="logo">
+            <h1>Blackstone UI</h1>
+            <p>Reusable web components for creating app interfaces</p>
+        </div>
+
+    </header>
+
+    <main>
+
+        <b-paper>
+            <h1>Panels</h1>
+
+            <div>
+                <a href="/#/view-1">Default Panel view</a>
+            </div>
+            
+            <div>
+                <a href="/#/view-2">Custom toolbar style and button</a>
+            </div>
+
+            <div>
+                <a href="/#/view-2-small">Custom sizing and anchor</a>
+            </div>
+
+        </b-paper>
+
+        <b-paper>
+            <h1>Tabs</h1>
+
+            <b-tabs>
+                <div title="Tab 1">Tab 1 content</div>
+                <div title="Tab 2">Tab 2 content</div>
+            </b-tabs>
+
+        </b-paper>
+
+         <b-paper>
+            <h1>Menu</h1>
+
+            <b-btn outline onclick="showMenu(this)">Open Menu</b-btn>
+
+        </b-paper>
+
+        <b-paper>
+            <h1>List</h1>
+
+            <a-list-view></a-list-view>
+
+            <br><br>
+            <sub>NOTE: search requires FormControl</sub>
+
+        </b-paper>
+
+        <b-paper>
+            <h1>Paper</h1>
+            
+            <b-paper color="blue">
+                This is a "paper" block with color blue
+            </b-paper>
+
+            <b-paper color="red">
+                This is a "paper" block with color red
+            </b-paper>
+
+            <b-paper color="orange" border>
+                This is a "paper" block with color orange <b>and a border</b>
+            </b-paper>
+
+            <b-paper dense color="gray">
+                Dense padding
+            </b-paper>
+
+            <b-paper compact color="gray">
+                Compact padding (no padding) - useful when the child element wants to set it's own padding
+            </b-paper>
+
+            <b-paper empty>
+                A paper block in empty state
+            </b-paper>
+
+        </b-paper>
+
+        <b-paper>
+            <h1>Icons</h1>
+
+            <h2>
+                <b-icon name="cog"></b-icon>
+                <b-icon name="use"></b-icon>
+                <b-icon name="home"></b-icon>
+                <b-icon name="dot-3"></b-icon>
+            </h2>
+
+            <div>See list of all icons down below</div>
+
+        </b-paper>
+
+        <b-paper>
+            <h1>Buttons</h1>
+
+            <h4>Default</h4>
+            <div>
+                <b-btn>Default</b-btn>
+                <b-btn color="blue">Blue</b-btn>
+                <b-btn color="red">Red</b-btn>
+                <b-btn color="green">Green</b-btn>
+
+                <b-btn icon="user">Account</b-btn>
+                <b-btn icon="cog"></b-btn>
+            </div>
+
+            <h4>Outline</h4>
+            <div>
+                <b-btn outline>Default</b-btn>
+                <b-btn outline color="blue">Blue</b-btn>
+                <b-btn outline color="red">Red</b-btn>
+                <b-btn outline color="green">Green</b-btn>
+            </div>
+
+            <h4>Pill</h4>
+            <div>
+                <b-btn pill>Default</b-btn>
+                <b-btn pill color="blue">Blue</b-btn>
+                <b-btn pill color="red">Red</b-btn>
+                <b-btn pill color="green">Green</b-btn>
+            </div>
+
+            <h4>Text style</h4>
+            <div>
+                <b-btn text>Default</b-btn>
+                <b-btn text color="blue">Blue</b-btn>
+                <b-btn text color="red">Red</b-btn>
+                <b-btn text color="green">Green</b-btn>
+            </div>
+            
+        </b-paper>
+
+        <b-paper>
+            <h1>Label</h1>
+
+            <b-label>A label</b-label>
+            
+            <br><br>
+            
+            <b-label filled>Filled</b-label>&nbsp;
+            <b-label filled="black">Black</b-label>&nbsp;
+            <b-label filled="blue">Blue</b-label>&nbsp;
+            <b-label filled="red">Red</b-label>&nbsp;
+            <b-label filled="orange">Orange</b-label>&nbsp;
+            <b-label filled="green">Green</b-label>&nbsp;
+            
+            <br><br>
+            
+            <b-label outline>Outline</b-label>&nbsp;
+            <b-label outline="black">Black</b-label>&nbsp;
+            <b-label outline="blue">Blue</b-label>&nbsp;
+            <b-label outline="red">Red</b-label>&nbsp;
+            <b-label outline="orange">Orange</b-label>&nbsp;
+            <b-label outline="green">Green</b-label>&nbsp;
+            
+            <br><br>
+
+            <b-label badge>Badge</b-label>&nbsp;
+            <b-label badge="black">Black</b-label>&nbsp;
+            <b-label badge="blue">Blue</b-label>&nbsp;
+            <b-label badge="red">Red</b-label>&nbsp;
+            <b-label badge="orange">Orange</b-label>&nbsp;
+            <b-label badge="green">Green</b-label>&nbsp;
+
+        </b-paper>
+
+        <b-paper>
+            <h1>Spinners</h1>
+
+            Inline spinner <b-spinner></b-spinner>
+            <br><br>
+
+            <div style="position: relative; z-index: 0;">
+                <b-spinner-overlay show></b-spinner-overlay>
+                An overlay spinner. Sint ullamco sunt in officia sint. Ea ullamco ipsum anim fugiat anim officia eu sint. Laborum anim fugiat ipsum Lorem. Mollit et cupidatat incididunt pariatur mollit cillum ex ex.</div>
+        </b-paper>
+
+        <b-paper>
+            <h1>Empty state</h1>
+
+            <div style="height: 200px; position: relative">
+                <b-empty-state>No results</b-empty-state>
+            </div>
+        </b-paper>
+
+        <b-paper>
+            <h1>Uploader</h1>
+            <b-uploader></b-uploader>
+            <div>Drag and drop a file here to upload</div>
+            <script>
+                let uploader = document.querySelector('b-uploader')
+                uploader.addEventListener('change', async e=>{
+
+                    console.log('upload the file', uploader.files);
+
+                    if( await Dialog.confirm({title: 'Upload', msg: 'Upload selected file?'}).modal() )
+                        console.log('yes, upload');
+                        // uploader.upload({url:'url-to-upload-to'})
+                })
+            </script>
+        </b-paper>
+        
+
+        <b-paper>
+            <h1>All icons</h1>
+            <b-icon-list cols="4"></b-icon-list>
+        </b-paper>
+
+    </main>
+
+</body>
+</html>
