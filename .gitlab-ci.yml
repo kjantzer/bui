@@ -15,4 +15,4 @@ pages:
         - npm run build
     artifacts:
         paths:
-            - demo/dist
+            - public

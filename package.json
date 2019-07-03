@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start": "parcel demo/index.html --out-dir demo/dist",
-        "build": "parcel build demo/index.html --out-dir demo/dist --public-url ./"
+        "build": "parcel build demo/index.html --out-dir public --public-url ./"
     },
     "keywords": [],
     "author": "Kevin Jantzer, Blackstone Publishing",
