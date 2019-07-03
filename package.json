@@ -1,11 +1,12 @@
 {
     "name": "bui",
     "version": "0.1.0",
-    "description": "Blackstone UI - custom elements built using LitElement and lit-html.",
+    "description": "Blackstone UI - Reusable web components for creating app interfaces",
     "main": "index.js",
     "scripts": {
         "start": "parcel demo/index.html --out-dir demo/dist",
-        "build": "parcel build demo/index.html --out-dir public --public-url ./ --no-minify"
+        "build": "parcel build demo/index.html --out-dir public --public-url ./ --no-minify",
+        "build-docs": "./node_modules/.bin/docpress build"
     },
     "keywords": [],
     "author": "Kevin Jantzer, Blackstone Publishing",

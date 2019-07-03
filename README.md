@@ -29,7 +29,7 @@ Example
 
 ```
 
-# Overview
+## Overview
 
 Web components (or custom elements) allow us to encapsalate
 logic, designs, and features in html elements.
@@ -48,7 +48,7 @@ Or a much more complex element like a date picker
 
 >NOTE: custom elements must have a dash in their name which is why all the elements start with `b-`
 
-# Custom Elements
+## Custom Elements
 
 ### Check out the [list of elements here](./elements/README.md)
 
@@ -72,7 +72,7 @@ It's fast and is going to be replacing our use of `_.template`
 This is a base class for that makes it easier to make custom elements removing
 a lot of the boilerplate code usually needed.
 
-# Presenters
+## Presenters
 
 Classes used to present views (ideally a custom element) to the user. 
 
@@ -94,7 +94,7 @@ such as Panel. Panels leverage the router with a `.register()` method
 Panel.register('url-path', 'view-name', opts={})
 ```
 
-# Helpers
+## Helpers
 
 ### LitElement Extensions
 
@@ -119,7 +119,7 @@ class MyView extends Backbone.View {
 }
 ```
 
-# Demo
+## Demo
 
 Install the parcel bundler
 
@@ -132,3 +132,6 @@ Then cd to this directory and run:
 ```
 npm start
 ```
+
+## TODO
+- consider switching out `moment.js` for something lighter weight
