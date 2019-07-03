@@ -19,14 +19,12 @@ export class Router {
             requireState: false
         }, opts)
 
-        let {requireState} = opts
-
         this.states = new HistoryStates()
 
         // listen for state changes and change routes accordingly
         window.addEventListener('popstate', e=>{
             
-            if( requireState && !e.state ) return // probably a sheetview change, ignore
+            if( opts.requireState && !e.state ) return // probably a sheetview change, ignore
 
             let [newState, oldStates] = this.states.add()
             this._changeRoute(oldStates, newState)
