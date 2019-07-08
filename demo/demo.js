@@ -13,6 +13,7 @@ import '../elements/hr'
 import { LitElement, html, css } from 'lit-element';
 import router from '../router'
 import '../presenters/tabs'
+import '../presenters/form-control'
 import '../presenters/list'
 import Panel from '../presenters/panel'
 import Menu from '../presenters/menu'
@@ -123,7 +124,7 @@ customElements.define('a-list-view', class extends LitElement{
         :host {
             display: block;
             height: 340px;
-            margin: -2em -2em 0 -2em;
+            margin: -2em;
             border-bottom: solid 1px rgba(0,0,0,.1);
         }
 

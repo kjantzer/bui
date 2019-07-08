@@ -36,14 +36,54 @@
     <main>
 
         <b-paper>
+            <h1>Form Control</h1>
+
+            <form-control material="filled" label="Text Field">
+                <text-field></text-field>
+            </form-control>
+
+            <form-control material="filled" label="Date Field">
+                <text-field type="date"></text-field>
+            </form-control>
+
+            <form-control material="filled" label="Text Field (Multiline)">
+                <text-field multiline></text-field>
+            </form-control>
+
+            <form-control material="filled" label="Rich Text Field">
+                <rich-text-field></rich-text-field>
+            </form-control>
+
+            <form-control material="filled" label="Select Field">
+                <select-field>
+                    <option value="">No Value</option>
+                    <hr>
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                    <option value="3">Option 3</option>
+                    <optgroup>Group Title</optgroup>
+                    <option value="4">Option 4</option>
+                    <option value="5">Option 5</option>
+                </select-field>
+            </form-control>
+
+            <br>
+
+            <check-box label="Checkbox"></check-box> &nbsp;&nbsp;
+            <check-box type="switch" label="Switch"></check-box> &nbsp;&nbsp;
+
+            <radio-group>
+                <radio-btn label="One"></radio-btn>
+                <radio-btn label="Two"></radio-btn>
+            </radio-group>
+
+        </b-paper>
+
+        <b-paper>
             <h1>Panels</h1>
 
             <div>
                 <a href="/#/view-1" onclick="openView(this)">Default Panel view</a>
-            </div>
-            
-            <div>
-                <a href="/#/view-2" onclick="openView(this)">Custom toolbar style and button</a>
             </div>
 
             <div>
@@ -83,9 +123,6 @@
 
             <a-list-view></a-list-view>
 
-            <br><br>
-            <sub>NOTE: search requires FormControl</sub>
-
         </b-paper>
 
         <b-paper>
@@ -120,18 +157,24 @@
         <b-paper>
             <h1>Buttons</h1>
 
-            <h4>Default</h4>
+            <b-label>Default</b-label><br><br>
             <div>
                 <b-btn>Default</b-btn>
                 <b-btn color="blue">Blue</b-btn>
                 <b-btn color="red">Red</b-btn>
                 <b-btn color="green">Green</b-btn>
 
-                <b-btn icon="user">Account</b-btn>
+                <b-hr vert></b-hr>
+
+                <b-btn icon="user">With Icon</b-btn>
                 <b-btn icon="cog"></b-btn>
+
+                <b-hr vert></b-hr>
+
+                <b-btn spin>With Spinner</b-btn>
             </div>
 
-            <h4>Outline</h4>
+            <br><br><b-label>Outline</b-label><br><br>
             <div>
                 <b-btn outline>Default</b-btn>
                 <b-btn outline color="blue">Blue</b-btn>
@@ -139,7 +182,7 @@
                 <b-btn outline color="green">Green</b-btn>
             </div>
 
-            <h4>Pill</h4>
+            <br><br><b-label>Pill</b-label><br><br>
             <div>
                 <b-btn pill>Default</b-btn>
                 <b-btn pill color="blue">Blue</b-btn>
@@ -147,7 +190,7 @@
                 <b-btn pill color="green">Green</b-btn>
             </div>
 
-            <h4>Text style</h4>
+            <br><br><b-label>Text style</b-label><br><br>
             <div>
                 <b-btn text>Default</b-btn>
                 <b-btn text color="blue">Blue</b-btn>

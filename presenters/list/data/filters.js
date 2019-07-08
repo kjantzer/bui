@@ -18,8 +18,11 @@ const unsetValues = [undefined, null, '']
 const defaultSearch = model => {
     let data = {};
     ['id', 'title', 'name', 'label', 'file', 'dir'].forEach(key=>{
-        if( model.has(key) )
-            data[key] = model.get(key)
+        if( model.has !== undefined ){
+            if( model.has(key) )
+                data[key] = model.get(key)
+        }else if( model[key] !== undefined )
+            data[key] = model[key]
     })
     return data;
 };
