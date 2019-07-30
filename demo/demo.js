@@ -165,6 +165,18 @@ window.dialogs = {
         Dialog.success().modal()
     },
 
+    async warn(el){
+        Dialog.warn({title: 'Ooops', msg: 'That is not supported'}).modal()
+    },
+
+    async error(el){
+        Dialog.error({title: 'Error', msg: 'Something went wrong'}).modal()
+    },
+
+    async errorPopover(el){
+        Dialog.error({title: 'Error', msg: 'Something went wrong'}).popover(el)
+    },
+
     async confirm(el){
         if( await Dialog.confirm().modal() )
             console.log('confimed')

@@ -4,7 +4,7 @@
     <meta name="apple-mobile-web-app-title" content="Blackstone UI">
     <meta http-equiv="cleartype" content="on" />
     <meta name="MobileOptimized" content="width" />
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=0"/>
     <meta name="HandheldFriendly" content="true" />
     
     <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
@@ -118,6 +118,9 @@
             <h1>Dialog</h1>
 
             <b-btn outline onclick="dialogs.success(this)">Success Modal</b-btn> &nbsp;
+            <b-btn outline onclick="dialogs.error(this)">Error Modal</b-btn> &nbsp;
+            <b-btn outline onclick="dialogs.errorPopover(this)">Error Popover</b-btn> &nbsp;
+            <b-btn outline onclick="dialogs.warn(this)">Warn Modal</b-btn> &nbsp;
             <b-btn outline onclick="dialogs.confirm(this)">Confirm Modal</b-btn> &nbsp;
             <b-btn outline onclick="dialogs.confirmDelete(this)">Confirm Delete Popover</b-btn>
 
