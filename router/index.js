@@ -3,7 +3,7 @@ import HistoryStates from './history-states'
 
 const ROUTES = []
 const APP_TITLE = document.title
-const PATH_PREFIX = '/#/'
+const PATH_PREFIX = location.pathname+'#/'
 
 export class Router {
 
