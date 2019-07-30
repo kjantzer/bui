@@ -27,6 +27,7 @@ export default class DataSource {
     
     forEach(fn){ return this.data.forEach(fn) }
     map(fn){ return this.data.map(fn) }
+    flatMap(fn){ return this.data.flatMap(fn) }
     filter(fn){ return this.data.filter(fn) }
     reduce(fn, start=0){ return this.data.reduce(fn, start) }
 

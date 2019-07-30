@@ -27,6 +27,7 @@ export class BtnElement extends LitElement {
             --radius: 3px;
             --color: var(--black);
             --bgdColor: var(--color);
+            --hoverBgdColor: rgba(255,255,255,.1);
             --textColor: #fff;
             --borderColor: var(--color);
             --padding: .4em .6em;
@@ -42,8 +43,8 @@ export class BtnElement extends LitElement {
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
-            font-size: .9em;
-            line-height: 1em;
+            font-size: .9rem;
+            line-height: 1rem;
             font-weight: bold;
         }
 
@@ -77,7 +78,7 @@ export class BtnElement extends LitElement {
             height: 100%;
             left: 0;
             top: 0;
-            background: rgba(255,255,255,.1);
+            background: var(--hoverBgdColor);
             visibility: hidden;
             opacity: 0;
             /* mix-blend-mode: saturation; */
@@ -189,6 +190,11 @@ export class BtnElement extends LitElement {
             --borderColor: transparent;
         }
 
+        /* :host([text]) .hover,
+        :host([clear]) .hover {
+            display: none;
+        } */
+
         :host([text]) {
             font-size: 1em;
             font-weight: normal;
@@ -201,10 +207,10 @@ export class BtnElement extends LitElement {
             --bgdColor: rgba(0,0,0,.05);
         }
 
-        :host([xs]) { font-size: .6em; }
-        :host([sm]) { font-size: .8em; }
-        :host([lg]) { font-size: 1.2em; }
-        :host([xl]) { font-size: 1.4em; }
+        :host([xs]) { font-size: .6rem; }
+        :host([sm]) { font-size: .8rem; }
+        :host([lg]) { font-size: 1.2rem; }
+        :host([xl]) { font-size: 1.4rem; }
     `}
 
     render(){ return html`

@@ -171,7 +171,9 @@ class TextFieldElement extends HTMLElement {
 			}
 
 			this._val = val
-			this._editor.innerHTML = val
+
+			if( this._editor.innerHTML != val )
+				this._editor.innerHTML = val
 		}
 		
 		this._setClassNames()
@@ -290,6 +292,13 @@ class TextFieldElement extends HTMLElement {
 		let max = this.getAttribute('max')
 		if( max && this._editor.innerText.length >= max )
 			stop = true
+
+		let delay = this.getAttribute('change-delay')
+		clearTimeout(this._changeDelay)
+		if( delay !== null ){
+			delay = delay || 500
+			this._changeDelay = setTimeout(this._onBlur.bind(this), delay)
+		}
 
 		if( stop ){
 			e.preventDefault()

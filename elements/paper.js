@@ -108,6 +108,12 @@ export class PaperElement extends LitElement {
             --bgdAccent: #4527A0;
             color: #fff;
         }
+
+        :host([color="postit"]) {
+            --bgd: #FFF8E1;
+            --bgdAccent: #FFC107;
+            /* color: #fff; */
+        }
     `}
 
     render(){ return html`

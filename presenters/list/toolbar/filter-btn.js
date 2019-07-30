@@ -4,7 +4,11 @@ customElements.define('b-list-filter-btn', class extends LitElement{
 
     static get styles(){return css`
         :host {
-            display: inline-block
+            display: inline-block;
+        }
+
+        b-btn {
+            --color: var(--toolbarTextColor);
         }
 
         main {
@@ -14,16 +18,20 @@ customElements.define('b-list-filter-btn', class extends LitElement{
 
         b-label {
             grid-area: unset;
+            color: var(--toolbarTextColor);
+            opacity: .4;
         }
 
         b-icon {
             font-size: .8em;
             vertical-align: baseline;
-            color: rgba(0,0,0,.4);
+            color: var(--toolbarTextColor);
+            opacity: .4;
         }
 
         b-btn:not([active]) {
-            color: rgba(0,0,0,.4);
+            color: var(--toolbarTextColor);
+            opacity: .4;
         }
 
         b-btn[active] {

@@ -52,6 +52,10 @@ export class SpinnerOverlayElement extends LitElement {
             transition: 140ms opacity;
         }
 
+		:host([dark]) {
+			--spinnerBgd: rgba(0,0,0,.6);
+		}
+
 		main {
 			display: flex;
 			justify-content: center;

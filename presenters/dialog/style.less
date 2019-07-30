@@ -24,7 +24,6 @@
 			text-align: center;
 			font-size: 2em;
 			display: block;
-			margin-bottom: .25em
 		}
 		
 		&.inline {
@@ -182,7 +181,9 @@
 	grid-template-columns: auto 1fr;
 	
 	.d-icon:not(:empty) {
-		margin: 1.2em 0 auto 1em;
+		padding: .8em;
+		box-sizing: border-box;
+		background: rgba(0,0,0,.05)
 	}
 	
 	.d-title:empty ~ .d-msg:not(:empty) {

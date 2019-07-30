@@ -18,7 +18,7 @@ customElements.define('b-list', class extends LitElement {
 
     get coll(){ return this.__coll }
     set coll(coll){
-        let didChange = !!this.__coll
+        let didChange = !!this.__coll && this.__coll != coll
         this.__coll = coll
         this.dataSource.coll = coll
 
@@ -41,6 +41,7 @@ customElements.define('b-list', class extends LitElement {
         if( !this.__filters ){    
             this.__filters = new Filters()
             this.filters.key = this.key
+            this.filters.list = this
             this.dataSource.filters = this.filters
             this.filters.on('change', this.onFilterChange.bind(this))
         }
@@ -53,6 +54,7 @@ customElements.define('b-list', class extends LitElement {
         if( !this.__sorts ){
             this.__sorts = new Sorts()
             this.sorts.key = this.key
+            this.sorts.list = this
             this.dataSource.sorts = this.sorts
             this.sorts.on('change', this.onSortChange.bind(this))
         }
@@ -71,6 +73,8 @@ customElements.define('b-list', class extends LitElement {
             overflow: hidden;
             flex: 1;
             position: relative;
+            --searchBgd: #f5f5f5;
+            
         }
 
         b-spinner-overlay {
@@ -104,7 +108,7 @@ customElements.define('b-list', class extends LitElement {
             box-sizing: border-box;
         }
 
-        contract-draft-row {
+        contract-draft-row { /* FIXME: remove? */
             padding: 2em;
         }
 
@@ -125,11 +129,16 @@ customElements.define('b-list', class extends LitElement {
     `}
 
     get spinner(){
-        return this.__spinner = this.__spinner || this.shadowRoot.querySelector('b-spinner-overlay')
+        return this.__spinner = this.__spinner 
+                            || this.querySelector('[slot="spinner"]')
+                            || this.shadowRoot.querySelector('b-spinner-overlay')
     }
 
     render(){return html`
-        <b-spinner-overlay></b-spinner-overlay>
+        <slot name="spinner">
+            <b-spinner-overlay></b-spinner-overlay>
+        </slot>
+        
         <b-list-toolbar .filters=${this.filters} .sorts=${this.sorts} 
             @filter-term-changed=${this.onFilterTermChange}>
             <slot name="toolbar:before" slot="before"></slot>

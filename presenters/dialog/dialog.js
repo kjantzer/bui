@@ -156,6 +156,10 @@ export default class Dialog {
 	}
 	
 	modal(opts={}){
+
+		if( this.opts.icon )
+			this.el.classList.add('sideicon')
+			
 		return this.panel(opts) // might need to reactivate Modal below
 
 		// opts.view = this.el,

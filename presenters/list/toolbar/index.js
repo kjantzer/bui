@@ -38,6 +38,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
             align-items: center;
             overflow-y: auto;
             overflow: -moz-scrollbars-none;
+            flex: 1;
         }
 
         .filters::-webkit-scrollbar { width: 0 !important; height: 0 !important; }

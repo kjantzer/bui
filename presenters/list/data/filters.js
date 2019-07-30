@@ -264,7 +264,7 @@ export class Filter {
     get values(){
         // TODO: implement "context" for function?
         let values = this.attrs.values
-        values = typeof values == 'function' ? values() : values
+        values = typeof values == 'function' ? values.call(this.parent.list) : values
 
         values = values.map(v=>{
             if( typeof v == 'string' && !['divider'].includes(v) )
@@ -417,7 +417,7 @@ export class Filter {
             if( this.isDB ) return resolve(data)
 
             let val = this.value
-            data = data.filter(m=>this.filterBy(m, val, this.key))
+            data = data.filter(m=>this.filterBy.call(this.parent.list, m, val, this.key))
             resolve(data)
         })
     }
