@@ -155,8 +155,8 @@ The divider element must implement a static `shouldDisplay` method
 ```js
 class DividerElement extends HTMLElement {
 
-    static shouldDisplay(prevModel, model){
-        return prevModel != model
+    static shouldDisplay(prevModel, model, list){
+        return !prevModel || prevModel != model
     }
     
     constructor(prevModel, model, list){

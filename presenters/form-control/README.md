@@ -23,7 +23,7 @@ control.addEventListener('change', e=>{
 })
 ```
 
-## `<form-control></form-control>`
+## `<form-control>`
 
 Form controls provide a uniform and consistent style for controls (see below)
 
@@ -70,7 +70,7 @@ Some of the CSS styles can be tweaked using these CSS variables
 
 Every `form-control` should have one (and only one) control element.
 
-## `<text-field>value</text-field>`
+## `<text-field>`
 
 Creates an input-like control. Add `multiline` attribute to make it perform like a text area.
 
@@ -83,7 +83,17 @@ Creates an input-like control. Add `multiline` attribute to make it perform like
 - `type="date"`
 - `reset-invalid`
 
-## `<select-field></select-field>`
+## `<rich-text-field>`
+
+Similar to the text-field but with quill.js enabled for rich text editing
+
+> NOTE: quill.js doesn't like the shadowDOM  
+> NOTE: placeholder is not yet supported
+
+#### Attributes
+- `value`
+
+## `<select-field>`
 
 Creates a select field that uses `Menu` and `Popover` to display options.
 
@@ -123,7 +133,7 @@ html`<form-control material="filled" label="Select an option">
 </form-control>`
 ```
 
-## `<check-box></check-box>`
+## `<check-box>`
 
 #### Attributes
 
@@ -138,7 +148,7 @@ html`<form-control material="filled" label="Select an option">
 </form-control>
 ```
 
-## `<radio-btn></radio-btn>`
+## `<radio-btn>`
 
 Radio buttons should be nested inside of a `radio-group`
 
@@ -158,7 +168,7 @@ Radio buttons should be nested inside of a `radio-group`
 </form-control>
 ```
 
-## `<range-slider></range-slider>`
+## `<range-slider>`
 
 #### Attributes
 - `value`

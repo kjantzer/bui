@@ -54,6 +54,13 @@ Can be altered to display as filled, outlined, or as a badge.
 Use to show a message when a view is empty. **NOTE:** make sure the parent 
 element has `position:relative` (or absolute)
 
+#### Attributes
+- `xs` - xtra small
+- `sm` - small
+- `md` - medium
+- `lg` - large
+- `static` - removes absolute pos and 100% height
+
 ## `<b-spinner>`
 
 An animated circle spinner to represent progress
