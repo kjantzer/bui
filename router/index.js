@@ -3,14 +3,15 @@ import HistoryStates from './history-states'
 
 const ROUTES = []
 const APP_TITLE = document.title
-const PATH_PREFIX = location.pathname+'#/'
+const PATH_ROOT = location.pathname
+const PATH_PREFIX = '#/'
 
 export class Router {
 
     // normalize path (always begin with `/#/`)
     // TODO: allow for prefix to be set by developer
     static normalizePath(path){
-        return path ? PATH_PREFIX+path.replace(/^[#\/]+/, '') : path
+        return path ? PATH_ROOT+PATH_PREFIX+path.replace(/^[#\/]+/, '') : path
     }
 
     start(opts={}){
@@ -43,7 +44,7 @@ export class Router {
             path = Router.normalizePath(path)
 
         if( !path ){
-            path = '/' // empty string doesn't work
+            path = PATH_ROOT // empty string doesn't work
             data.title = data.title || APP_TITLE
         }
 
