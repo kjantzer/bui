@@ -21,6 +21,7 @@ class FormHandler extends HTMLElement {
 	set patchSave(val){ val ? this.setAttribute('patchsave', '') : this.removeAttribute('patchsave') }
 	
 	connectedCallback(){
+		// TODO: change to `controls`?
 		this.editors = Array.from(this.querySelectorAll('form-control[key], check-box[key], radio-group[key], text-field[key], select-field[key]'))
 		this.editorsByKey = {}
 
@@ -107,7 +108,7 @@ class FormHandler extends HTMLElement {
 	}
 
 	_updateEditors(){
-		if( this.editors  )
+		if( this.editors && (this.model || this.hasAttribute('store')) )
 		this.editors.forEach(el=>{
 			// set the value of each editor based on the value in the model
 			let key = el.getAttribute('key')

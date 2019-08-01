@@ -23,6 +23,12 @@ export default class EmptyState extends LitElement {
             left: 0;
         }
 
+        :host([static]) {
+            position: static;
+            height: auto;
+            min-height: 1em;
+        }
+
         :host([hidden]) {
             display: none;
         }

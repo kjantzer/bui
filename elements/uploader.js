@@ -121,7 +121,7 @@ export class UploaderElement extends LitElement {
     connectedCallback(){
         super.connectedCallback();
 
-        this.parent = this.parentElement
+        this.parent = this.parentElement || this.shadowRoot
         this.parent.addEventListener('dragenter', this.dragenter, true)
         this.addEventListener('dragleave', this.dragleave, true)
         this.addEventListener('dragover', this.dragover, true)

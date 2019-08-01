@@ -27,11 +27,11 @@ const defaultSearch = model => {
     return data;
 };
 
-const defaultFilterby = (model, filterVal, filterKey) => {
-    if( Array.isArray(filterVal) )
-        return filterVal.includes(model.get(filterKey))
+const defaultFilterby = (model, val, key) => {
+    if( Array.isArray(val) )
+        return val.includes(model.get(key))
     else
-        return filterVal == model.get(filterKey)
+        return val == model.get(key)
 };
 
 export default class Filters extends Map {
@@ -256,9 +256,6 @@ export class Filter {
     constructor(key, attrs){
         this.key = key
         this.attrs = attrs
-
-        if( !this.attrs.filterBy )
-            this.attrs.filterBy = defaultFilterby
     }
 
     get values(){
@@ -291,7 +288,10 @@ export class Filter {
     }
 
     get filterBy(){
-        return this.attrs.filterBy
+        if( !this.attrs.filterBy && this.isCustomView && this.customView.filterBy )
+            return this.customView.filterBy
+
+        return this.attrs.filterBy || defaultFilterby
     }
 
     // is a database filter

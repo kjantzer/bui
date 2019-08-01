@@ -292,7 +292,7 @@ class RichTextField extends HTMLElement {
         this.toolbar = this.querySelector('toolbar')
         
         this.quill = new Quill(this.main, {
-            placeholder: 'Placeholder?',
+            placeholder: 'Placeholder?', // hmmm, not working
             formats: ['bold', 'italic', 'list'],
             modules: {}
         });
