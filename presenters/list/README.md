@@ -104,24 +104,31 @@ class CustomFilterView extends HTMLElement {
 
     // REQUIRED
     get value(){
-        // return the value to be set as the filter
+        // value to be set as the filter
     }
 
     // REQUIRED
     get label(){
-        // return the label for the value
+        // label for the selected value
     }
-
 
     // OPTIONAL
     get defaultVal(){
-        return null // when the filters are cleared/reset, what value should be the default?
+        // when the filters are cleared/reset, what value should be the default?
+        return null
     }
 
+    // OPTIONAL
     set value(val){
         // the view will be opened in a popover and can close 
         // by using the magic 'close' function (added to view by the filter)
+        // closing will apply the filter
         this.close()
+    }
+
+    // OPTIONAL
+    filterBy(model, val, key){
+        // provide logic for how to apply the filter
     }
 }
 ```
