@@ -36,6 +36,16 @@ Display an svg icon
 <b-icon name="cog"></b-icon>
 ```
 
+## `<b-hr>`
+A line divider
+
+#### Attributes
+- `short` - makes the line short (not full width)
+- `vert` - changes to a vertical line
+
+## `<b-sub>`
+A subdued (or sub text) text element that is slightly smaller and lighter in color
+
 ## `<b-label>`
 
 Default is an uppercase, bold, and slightly subdued (gray) text block for labeling.

@@ -15,6 +15,7 @@ require('./elements/timer')
 require('./elements/empty-state')
 require('./elements/label')
 require('./elements/hr')
+require('./elements/sub')
 
 export const router = require('./router').default
 
