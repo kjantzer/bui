@@ -24,6 +24,17 @@ to take action on the model change.
 - `layout` - (top, bottom, left, right) where the menu should be placed
 - `key` - used to remember the last active view
 
+## Events
+An event will be triggered with the view becomes active/inactive if the view implements
+any of the following
+
+- `didBecomeActive`
+- `didBecomeInactive`
+
+>NOTE: `didBecomeActive` only fires after the view has been created and is switching
+> from an inactive state. Implement the `connectedCallback` if you need to do something
+> on first show
+
 ## Style Hooks
 - `--menuFontSize`
 - `--menuItemPadding`

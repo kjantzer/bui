@@ -39,6 +39,11 @@ export default class TabView {
         this.__active = isActive
         if( !this.__view ) return // view not created yet
         this.view.hidden = !isActive
+
+        if( isActive )
+            this.view.didBecomeActive&&this.view.didBecomeActive()
+        else
+            this.view.didBecomeInactive&&this.view.didBecomeInactive()
     }
 
     get view(){
