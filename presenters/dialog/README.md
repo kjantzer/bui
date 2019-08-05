@@ -9,7 +9,7 @@ Dialog
 
 ```js
 opts = {
-	icon:'',
+	icon:'', // name of icon or "spinner" to show a spinner
 	title:'',
 	msg:'',
 	view: null,
@@ -18,6 +18,14 @@ opts = {
 	className: ''
 }
 ```
+
+## Properties
+The following properties can be changed after the dialog has been created.
+
+- `title`
+- `msg`
+- `icon`
+- `btns`
 
 ## Presets
 

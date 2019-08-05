@@ -39,7 +39,7 @@ customElements.define('b-infinite-list', class extends HTMLElement {
 
         this._scrollDelta = delta
 
-        if( !down ) return
+        if( !down || delta == 0 ) return
         
         if( delta <= this.threshold )
             this.getContent()

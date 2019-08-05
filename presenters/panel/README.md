@@ -25,6 +25,7 @@ panel.open()
 - `onClose`
 - `onBackdropClick`
 - `onKeypress` - only fires if panel is on top
+- `controller` - specify a different panel controller (optional)
 
 ## Rendering a Custom Element
 

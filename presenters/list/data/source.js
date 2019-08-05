@@ -1,3 +1,4 @@
+import Emitter from 'component-emitter'
 
 export default class DataSource {
 
@@ -11,11 +12,14 @@ export default class DataSource {
     }
 
     reset(){
+        this._pageFetched = null
         this.lastFiltered = 0
-        this._rawData = []
-        this._filteredData = []
-        this.data = []
+        this._rawData = []      // unaltered data from server
+        this._filteredData = [] // raw data with after filters applied
+        this.data = []          // filtered data with "search term" applied
     }
+
+    get perPage(){ return this.opts.perPage }
 
     async length(){
 
@@ -31,11 +35,11 @@ export default class DataSource {
     filter(fn){ return this.data.filter(fn) }
     reduce(fn, start=0){ return this.data.reduce(fn, start) }
 
-    async _fetchFromServer(){
+    async _fetchFromServer(pageAt){
 
         // TODO: support fetching data with `fetch` and a url?
         if( this.coll && this.coll.fetchSync ){
-            let data = {}
+            let data = {pageAt: pageAt, perPage: this.perPage}
 
             if( this.filters )
                 data.filters = this.filters.value()
@@ -47,18 +51,25 @@ export default class DataSource {
     fetch(pageAt){
         return this._fetching = new Promise(async resolve=>{
 
-            if( pageAt == 0 && this._rawData.length == 0 ){
+            if( (pageAt == 0 && this._rawData.length == 0) 
+            || (this._pageFetched != pageAt && this._rawData.length == pageAt && this.opts.fetch == 'more' ) ){
+
+                this._pageFetched = pageAt
 
                 if( this.opts.fetch )
-                    await this._fetchFromServer()
-
+                    await this._fetchFromServer(pageAt)
+                
                 this.lastFiltered = 0
                 this._rawData = this.coll.models || this.coll
                 this._filteredData = this._rawData
                 this.data = this._rawData
 
                 await this.applyFilters()
+
             }
+
+            if( this._rawData.length > pageAt )
+                this.emit('change:count', this._rawData.length)
 
             if( this._filtering )
                 await this._filtering
@@ -102,3 +113,5 @@ export default class DataSource {
         }).finally(_=>delete this._sorting)
     }
 }
+
+Emitter(DataSource.prototype)

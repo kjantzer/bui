@@ -36,6 +36,10 @@
 		&.green { color: var(--green); border-color: var(--green); }
 		&.brown { color: var(--brown); border-color: var(--brown); }
 	}
+
+	.d-icon > b-spinner {
+		--size: 2em;
+	}
 	
 	.d-title:not(:empty) {
 		// background: rgba(0,0,0,.05);
@@ -103,76 +107,6 @@
 	}
 }
 
-
-.md-modal.dialog {
-	position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-	
-	.md-content {
-		padding-top: 0 !important;
-		border-radius: 4px !important;
-		background: #fff !important;
-		box-shadow: rgba(0,0,0,.2) 0 3px 10px !important;
-		font-size: 1.2em !important;
-		
-		>div .content {
-			padding-top: 0 !important;
-		}
-		
-		.content {
-			padding: 0;
-			margin: 0;
-		}
-	}
-}
-
-.md-modal.dialog ~ .md-overlay {
-	background: rgba(0,0,0,.5) !important;
-}
-
-.md-modal .dialog {
-	--padding: 30px;
-	max-height: 95vh;
-	max-width: 95vw;
-	
-	.d-icon b-icon {
-		font-size: 2.4em;
-		width: auto;
-		border-radius: 50px;
-		border: solid 4px;
-		margin-bottom: .35em;
-		padding: .2em;
-		margin: .35em auto .35em;
-		display: inline-block;
-	}
-	
-	.d-title:not(:empty) {
-		text-align: left;
-		padding: var(--padding) var(--padding) .5em;
-	}
-	
-	.d-icon:not(:empty) ~ .d-title {
-		padding-top: 0;
-	}
-	
-	.d-msg:not(:empty) {
-		padding-left: var(--padding);
-		padding-right: var(--padding);
-		padding-bottom: 1em;
-	}
-	
-	.d-icon:empty ~ .d-title:empty ~ .d-msg {
-		padding-top: 1.5em;
-	}
-	
-	.d-btns {
-		// justify-content: space-evenly;
-	}
-}
-
 .dialog.sideicon {
 	grid-template-areas: 
 	'icon title'
@@ -189,10 +123,6 @@
 	.d-title:empty ~ .d-msg:not(:empty) {
 		padding-top: 1.5em;
 	}
-}
-
-.popover .dialog {
-
 }
 
 // aka "notif"

@@ -3,6 +3,7 @@ const Panel = require('../panel').default
 const Popover = require('../popover').default
 const makeBtn = require('./make-btn')
 
+// FIXME: this module needs to be refactored using lit-element to better apply styles
 const styles = require('./style.less')
 
 const cancelBtns = ['dismiss', 'cancel', 'no']
@@ -30,8 +31,12 @@ export default class Dialog {
 		// FIXME: animation needs added
 		let icon = opts.icon ? `<b-icon name="${iconName}" class="${iconClass||''} animated speed-2 flipInY"></b-icon>` : ''
 		let btns = opts.btns ? opts.btns.map(btn=>makeBtn(btn)).join("\n") : ''
+
+		if( opts.icon === 'spinner' )
+			icon = `<b-spinner></b-spinner>`
 		
-		this.el.innerHTML = `<div class="d-icon">${icon}</div>
+		this.el.innerHTML = `<style>${styles}</style>
+							<div class="d-icon">${icon}</div>
 							<h2 class="d-title">${opts.title}</h2>
 							<div class="d-msg">${opts.msg}</div>
 							<div class="d-btns">${btns}</div>`;
@@ -59,6 +64,41 @@ export default class Dialog {
 		this.el.addEventListener('click', this.onClick.bind(this), true)
 		
 		this.promise = new Promise(resolve=>{ this._resolve = resolve })
+	}
+
+	set title(str){
+		this.opts.title = str
+		let el = this.el.querySelector('.d-title')
+		if( el )
+			el.innerHTML = str
+	}
+
+	set msg(str){
+		this.opts.msg = str
+		let el = this.el.querySelector('.d-msg')
+		if( el )
+			el.innerHTML = str
+	}
+
+	set btns(btns){
+		this.opts.btns = btns
+		btns = btns ? btns.map(btn=>makeBtn(btn)).join("\n") : ''
+		let el = this.el.querySelector('.d-btns')
+		if( el )
+			el.innerHTML = btns
+	}
+
+	set icon(icon){
+		this.opts.icon = icon
+		let [iconName, iconClass] = (icon||'').split(' ')
+		icon = this.opts.icon ? `<b-icon name="${iconName}" class="${iconClass||''} animated speed-2 flipInY"></b-icon>` : ''
+
+		if( this.opts.icon === 'spinner' )
+			icon = `<b-spinner></b-spinner>`
+		
+		let el = this.el.querySelector('.d-icon')
+		if( el )
+			el.innerHTML = icon
 	}
 	
 	onClick(e){
@@ -161,14 +201,6 @@ export default class Dialog {
 			this.el.classList.add('sideicon')
 			
 		return this.panel(opts) // might need to reactivate Modal below
-
-		// opts.view = this.el,
-		// opts.className = 'md-modal dialog '+(opts.className||'')
-		// opts.btns = false
-		// opts.onKeydown = this.onKeydown.bind(this)
-		
-		// this.presenter = new Modal(opts)
-		// return this.promise
 	}
 
 	panel(opts={}){
@@ -177,7 +209,7 @@ export default class Dialog {
 			type: 'modal',
 			animation: 'scale',
 			disableBackdropClick: true
-		})
+		}, opts)
 
 		opts.onKeydown = this.onKeydown.bind(this)
 

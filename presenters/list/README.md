@@ -28,10 +28,18 @@ Options passed along to the infinite-list
 
 ```js
 listOptions = {
-    fetch: true,
-    perPage: 10
+    fetch: true, // true,false, 'more'
+    perPage: 30
 }
 ```
+
+`fetch:true` - will only fetch initial data.  
+`fetch:'more'` - will attempt to fetch more data
+when all available data has been displayed
+
+`perPage` - how many rows to display at one time.
+Also determines how many "more" rows are requested
+via fetch:more
 
 ## Filters
 ```js
@@ -52,6 +60,7 @@ const filters = {
     type: {
         label: 'Type', // the key will be used if no label is set
         maxHeight: '60vh', // max height of dropdown menu
+        multi: false, // can more than one value be selected?
         db: false, // true will make the filterBy happen on server instead
         values: [
             {label: 'All', val: ''},
@@ -171,6 +180,13 @@ class DividerElement extends HTMLElement {
     }
 }
 ```
+
+## HTML Slots
+The default list view can be extended with html slots
+
+- `spinner` - if you want to use a different spinner
+- `toolbar:before`
+- `toolbar:after`
 
 ## Events
 

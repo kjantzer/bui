@@ -63,7 +63,13 @@ customElements.define('b-list', class extends LitElement {
     }
 
     get dataSource(){
-        return this.__dataSource = this.__dataSource || new DataSource(this.listOptions)
+        if( !this.__dataSource ){
+            this.__dataSource = new DataSource(this.listOptions)
+            this.__dataSource.on('change:count', count=>{
+                this.toolbar.count = count
+            })
+        }
+        return this.__dataSource
     }
 
     static get styles(){return css`
