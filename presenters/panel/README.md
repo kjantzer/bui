@@ -4,16 +4,14 @@ Panel Presenter
 Presents a view as an overlay panel. Panels can be full size, vary in width/height, and anchor to
 different areas on the screen.
 
-> *Replaces Groundwork.SheetView (and potentially Modal)*
-
-# Panel
+## Panel
 
 ```javascript
 let panel = new Panel(view, options)
 panel.open()
 ```
 
-## Properties / Options
+### Properties / Options
 
 - `title` (will be displayed in `b-panel-toolbar`)
 - `width` (string)
@@ -27,7 +25,7 @@ panel.open()
 - `onKeypress` - only fires if panel is on top
 - `controller` - specify a different panel controller (optional)
 
-## Rendering a Custom Element
+### Rendering a Custom Element
 
 **Immediate initialization**
 ```javascript
@@ -56,7 +54,7 @@ router.goTo('my-custom-element')
 // url will change to `/#/my-custom-element`
 ```
 
-## Rendering dynamic html
+### Rendering dynamic html
 
 Rendering panels this way probably shouldn't happen very often, but it is supported.
 
@@ -81,20 +79,23 @@ new Panel(function(){return html`
 `}, {type:'modal'}).open()
 ```
 
-# Toolbar
+## Toolbar
 
 A panel only presents the view given to it. If you would like a toolbar with a close button the view
-needs to render one.
+needs to render one. A panel toolbar element has been created for such a task.
 
-A panel toolbar element has been created for such task.
-
-### Basic toolbar with a close button.
 ```html
 <b-panel-toolbar></b-panel-toolbar>
 ```
->A title will be displayed if the panel has a `.title` property set
+>A close button will be rendered and a title will be displayed if the panel has a `title` property set
 
-### Toolbar utilizing slots
+### Slots
+
+- `left`
+- `right`
+- `middle` - next to title
+- `title` - in place of title
+
 ```html
 <b-panel-toolbar>
     <span slot="middle">I will appear after the title</span>
@@ -103,3 +104,9 @@ A panel toolbar element has been created for such task.
     </span>
 </b-panel-toolbar>
 ```
+
+### Attributes
+
+- `shadow`
+- `overlay`
+- `notitle`

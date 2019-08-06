@@ -209,6 +209,7 @@ You can also choose to save changes in local storage instead of model by using t
 - `autosave` - will save any control changes to the model
 - `patchsave` - use with `autosave`; changed values will be synced with `patch:true`
 - `store` - a key to save form data in local storage
+- `no-grid-area` - disable auto grid-area names
 
 ## `ModelHandler`
 

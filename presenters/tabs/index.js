@@ -170,6 +170,10 @@ customElements.define('b-tabs', class extends LitElement {
             flex: 1;
             align-self: flex-start;
         }
+
+        .content::slotted([hidden]) {
+            display: none;
+        }
         
         .content::slotted(b-tabs),
         .content::slotted(.no-padding) {
@@ -267,12 +271,24 @@ customElements.define('b-tabs', class extends LitElement {
     }
 
     menuClick(e){
+        let oldVal = this.active
         this.active = e.currentTarget.tabView
+
+        if( this.active != oldVal )
+        this.dispatchEvent(new CustomEvent('active-changed',{
+            detail: {id: this.active},
+            bubbles: true, 
+            composed: true
+        }))
     }
 
     onModelChange(){
         if( this.views )
             this.views.active.view.model = this.model
+    }
+
+    get active(){
+        return this.views && this.views.active && this.views.active.id
     }
 
     set active(val){

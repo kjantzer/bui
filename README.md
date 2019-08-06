@@ -1,4 +1,4 @@
-<img src="./logo.png">
+![logo](https://i.imgur.com/6QKG2AG.png)
 
 Reusable web components for creating interfaces.
 
@@ -12,11 +12,17 @@ Example
         <b-paper>
             <b-spinner-overlay></b-spinner-overlay>
             <header>
-                <h1><b-icon name="folder"></b-icon> Title</h1>
+                <h1>
+                    <b-icon name="folder"></b-icon> 
+                    Title
+                    <b-label>Active</b-label>
+                </h1>
                 <b-btn icon="upload-cloud" class="text-btn">Upload</b-btn>
             </header>
             <main>
                 Content here
+                <b-hr></b-hr>
+                More content
             </main>
         </b-paper>
 
@@ -50,22 +56,22 @@ Or a much more complex element like a date picker
 
 ## Custom Elements
 
-### Check out the [list of elements here](./elements/README.md)
+Check out the [list of elements here](./elements/README.md)
 
-## Developing custom elements
+## Creating custom elements
 
 [lit-html](https://lit-html.polymer-project.org) and [lit-element](https://lit-element.polymer-project.org)
 are being used to create and render custom elements. The beauty in these tools
 is that they are simply syntactic sugar for native web technologies
 
-### `lit-html`
+#### `lit-html`
 
 [read about it](https://lit-element.polymer-project.org/guide)
 
 This is a templating tool and can be used anywhere, including Backbone.Views.
 It's fast and is going to be replacing our use of `_.template`
 
-### `lit-element`
+#### `lit-element`
 
 [read about it](https://lit-html.polymer-project.org/guide)
 

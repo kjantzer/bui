@@ -1,10 +1,4 @@
 
-function makeID(str){
-    // I guess I dont really need to do any formatting
-    // str = str.toLowerCase()
-    // str = str.replace(/\s/g, '-')
-    return str
-}
 
 export default class TabView {
     constructor(view){
@@ -17,18 +11,27 @@ export default class TabView {
 
             if( this._viewClass && this._viewClass.title ){
                 this.__title = this._viewClass.title
-                this.__id = makeID(this.__title)
+                this.__id = this.__title
             }else{
                 this.__id = this._viewName
             }
+
+            if( this._viewClass.id )
+                this.__id = this._viewClass.id
 
         // HTML element
         }else{
             view.hidden = true
             this.__view = view
             this.__title = view.title
-            this.__id = makeID(this.__title)
-            this.__view.setAttribute('view-id', this.id)
+
+            if( view.hasAttribute('view-id') ){
+                this.__id = view.getAttribute('view-id')
+            }else{
+                this.__id = this.__title
+                this.__view.setAttribute('view-id', this.id)
+            }
+
             this.__view.tabView = this
             view.title = ''
         }

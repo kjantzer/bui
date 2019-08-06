@@ -4,14 +4,12 @@ class PanelToolbar extends LitElement {
 
     static get properties(){return {
         title: {type: String},
-        look: {type: String, reflect: true},
-        noshadow: {type: Boolean, reflect: true}
+        look: {type: String, reflect: true}
     }}
 
     constructor(){
         super()
         this.title = ''
-        this.noshadow = false
         this.look = ''
     }
 

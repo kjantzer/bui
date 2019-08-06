@@ -69,6 +69,10 @@ Any elements missing a title will be ignored.
 </b-tabs>
 ```
 
+#### Properties
+
+- `no-padding` add this class to a view for no padding
+
 ## Custom Menu Items
 If you need more control over how a menu item is displayed, you can specify
 your own with the proper slot. The slot name will be the view's `title`
