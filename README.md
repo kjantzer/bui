@@ -1,5 +1,8 @@
 ![logo](https://i.imgur.com/6QKG2AG.png)
 
+[![docs](https://img.shields.io/badge/-Demo-blue)](http://blackstone.gitlab.blackstone.inc/bui)
+[![docs](https://img.shields.io/badge/-Documentation-black)](http://blackstone.gitlab.blackstone.inc/bui/docs/)
+
 Reusable web components for creating interfaces.
 
 ***
