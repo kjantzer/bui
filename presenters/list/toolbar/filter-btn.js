@@ -19,7 +19,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
         b-label {
             grid-area: unset;
             color: var(--toolbarTextColor);
-            opacity: .4;
+            /* opacity: .4; */
         }
 
         b-icon {

@@ -73,4 +73,9 @@ export default class TabView {
     get title(){
         return this.__title || 'No Title'
     }
+
+    get path(){
+        if( !this.__view ) return ''
+        return this.view.path || this.id
+    }
 }

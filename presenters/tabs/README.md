@@ -16,6 +16,18 @@ lazy-loading of custom elements.
 </b-tabs>
 ```
 
+<!--
+<b-tabs>
+    <section title="View 1">view 1 content</section>
+    <section title="View 2">view 2 content</section>
+    <section title="View 3">view 3 content</section>
+    <b-tabs title="View 4" layout="left">
+        <section title="View 4 (A)"></section>
+        <section title="View 4 (b)"></section>
+    <b-tabs>
+</b-tabs>
+-->
+
 >NOTE: If you set `.model` on `b-tabs` it will be propagated down
 to the views. This will only happen when the sub view is active so it is safe
 to take action on the model change.
@@ -28,8 +40,11 @@ to take action on the model change.
 An event will be triggered with the view becomes active/inactive if the view implements
 any of the following
 
-- `didBecomeActive`
-- `didBecomeInactive`
+- `view.didBecomeActive`
+- `view.didBecomeInactive`
+
+- `active-changed` - the tabs element will also emit a DOM event
+    - The event detail will contain a reference to the tab view object: `event.detail.tabView`
 
 >NOTE: `didBecomeActive` only fires after the view has been created and is switching
 > from an inactive state. Implement the `connectedCallback` if you need to do something
@@ -49,6 +64,12 @@ order to improve performance. Custom elements need to define a static
 
 ```javascript
 static get title(){ return 'Menu Title' }
+
+// optional, title will be used if not set
+static get id(){ return 'menu-title' }
+
+// optional, id will be used if not set
+static get path(){ return 'menu-title/'+this.model.id }
 ```
 
 Then list the custom elements one per line

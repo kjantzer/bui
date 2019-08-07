@@ -74,6 +74,16 @@ Every `form-control` should have one (and only one) control element.
 
 Creates an input-like control. Add `multiline` attribute to make it perform like a text area.
 
+<!--
+<form-control label="Text Field" material>
+	<text-field></text-field>
+</form-control>
+
+<form-control label="Text Field" material>
+	<text-field type="date"></text-field>
+</form-control>
+-->
+
 #### Attributes
 
 - `required`
@@ -87,6 +97,12 @@ Creates an input-like control. Add `multiline` attribute to make it perform like
 
 Similar to the text-field but with quill.js enabled for rich text editing
 
+<!--
+<form-control label="Rich Text Field" material style="width: 100%">
+	<rich-text-field></rich-text-field>
+</form-control>
+-->
+
 > NOTE: quill.js doesn't like the shadowDOM  
 > NOTE: placeholder is not yet supported
 
@@ -96,6 +112,16 @@ Similar to the text-field but with quill.js enabled for rich text editing
 ## `<select-field>`
 
 Creates a select field that uses `Menu` and `Popover` to display options.
+
+<!--
+<form-control label="Select Field" material>
+	<select-field>
+		<option value="">–</option>
+		<option value="1">Value 1</option>
+		<option value="2">Value 2</option>
+	</select-field>
+</form-control>
+-->
 
 #### Attributes
 
@@ -148,9 +174,20 @@ html`<form-control material="filled" label="Select an option">
 </form-control>
 ```
 
+<!--
+<check-box label="Active"></check-box>
+-->
+
 ## `<radio-btn>`
 
 Radio buttons should be nested inside of a `radio-group`
+
+<!--
+<radio-group>
+	<radio-btn label="Male"></radio-btn>
+	<radio-btn label="Female"></radio-btn>
+</radio-group>
+-->
 
 #### Attributes
 

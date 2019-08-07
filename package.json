@@ -6,6 +6,7 @@
     "scripts": {
         "start": "parcel demo/index.html --out-dir demo/dist",
         "build": "parcel build demo/index.html --out-dir public --public-url ./ --no-minify",
+        "build-docs-script": "parcel build demo/docs.js --out-dir docs -o bui.js --no-minify",
         "build-docs": "./node_modules/.bin/docpress build"
     },
     "keywords": [],

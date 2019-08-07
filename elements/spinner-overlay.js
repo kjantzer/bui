@@ -54,6 +54,7 @@ export class SpinnerOverlayElement extends LitElement {
 
 		:host([dark]) {
 			--spinnerBgd: rgba(0,0,0,.6);
+			--spinnerColor: #fff;
 		}
 
 		main {

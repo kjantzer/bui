@@ -13,6 +13,7 @@ pages:
     script:
         - npm install
         - npm run build
+        - npm run build-docs-script
         - npm run build-docs
     artifacts:
         paths:

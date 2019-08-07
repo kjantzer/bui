@@ -12,7 +12,7 @@ export class TimerElement extends LitElement {
 		super()
         this.time = 0
 		this.ms = false
-		this.running = false
+		this.running = this.hasAttributes('running') ? true : false
 	}
 
 	get time(){ return this.__time }

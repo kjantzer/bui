@@ -34,7 +34,7 @@ export default class Menu {
 	constructor(menu=[], opts={}){
 		
 		this.el = document.createElement('div')
-		this.el.classList.add('menu')
+		this.el.classList.add('b-menu')
 		this.el.classList.add('nopadding')
 
 		if( opts.className )

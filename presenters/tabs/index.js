@@ -161,7 +161,6 @@ customElements.define('b-tabs', class extends LitElement {
         slot.content {
             display: flex;
             background: var(--contentBgd);
-            padding: var(--contentPadding);
             box-shadow: var(--contentShadow);
             overflow: auto;
         }
@@ -169,15 +168,18 @@ customElements.define('b-tabs', class extends LitElement {
         .content::slotted(*) {
             flex: 1;
             align-self: flex-start;
-        }
-
-        .content::slotted([hidden]) {
-            display: none;
+            padding: var(--contentPadding);
+            max-height: 100%;
         }
         
         .content::slotted(b-tabs),
         .content::slotted(.no-padding) {
-            margin: calc(-1 * var(--contentPadding));
+            /* margin: calc(-1 * var(--contentPadding)); */
+            padding: 0;
+        }
+
+        .content::slotted([hidden]) {
+            display: none;
         }
         
         /*
@@ -276,8 +278,8 @@ customElements.define('b-tabs', class extends LitElement {
 
         if( this.active != oldVal )
         this.dispatchEvent(new CustomEvent('active-changed',{
-            detail: {id: this.active},
-            bubbles: true, 
+            detail: {tabView: this.views.active},
+            bubbles: false, 
             composed: true
         }))
     }

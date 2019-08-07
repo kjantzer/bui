@@ -2,7 +2,11 @@
   "docs": "docs",
   "dist": "public/docs",
   "css": [
-    "style.css"
+    "style.css",
+    "bui.css"
+  ],
+  "scripts": [
+    "bui.js"
   ],
   "markdown": {
     "typographer": true,

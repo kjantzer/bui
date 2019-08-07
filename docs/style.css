@@ -523,3 +523,29 @@ ul.heading-list .hlink {
 	color: #2196F3;
 	font-weight: bold;
 }
+
+
+.demo-block {
+  --blue: #2196F3;
+  background: #ECEFF1;
+  border-radius: 4px;
+  padding: 1.4em;
+  position: relative;
+  margin-bottom: 1em;
+  border-left: solid 4px #2196F3;
+}
+
+.demo-block:before {
+  content: 'PREVIEW';
+  display: block;
+  font-size: .8em;
+  font-weight: bold;
+  opacity: .3;
+  position: absolute;
+  right: .5em;
+  top: .15em;
+}
+
+.demo-block form-control {
+  min-width: 140px;
+}
