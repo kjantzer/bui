@@ -38,7 +38,7 @@ A white box with rounded corners and a shadow.
 
 ## `<b-icon>`
 
-Display an svg icon
+Display an svg icon – [See a full list of icons](../docs/icons.md)
 
 <!--
 <b-icon name="user"></b-icon>

@@ -87,6 +87,7 @@ customElements.define('b-tabs', class extends LitElement {
             position: relative;
             display: grid;
             flex: 1;
+            min-height: 0;
 
             --menuFontSize: 1em;
             --contentPadding: 2em;
@@ -168,14 +169,14 @@ customElements.define('b-tabs', class extends LitElement {
         .content::slotted(*) {
             flex: 1;
             align-self: flex-start;
-            padding: var(--contentPadding);
             max-height: 100%;
         }
         
-        .content::slotted(b-tabs),
-        .content::slotted(.no-padding) {
-            /* margin: calc(-1 * var(--contentPadding)); */
-            padding: 0;
+        /* dont add padding to custom elements */
+        .content::slotted(.padded),
+        .content::slotted(div),
+        .content::slotted(section) {
+            padding: var(--contentPadding);
         }
 
         .content::slotted([hidden]) {

@@ -16221,6 +16221,7 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
             position: relative;
             display: grid;
             flex: 1;
+            min-height: 0;
 
             --menuFontSize: 1em;
             --contentPadding: 2em;
@@ -16302,14 +16303,14 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
         .content::slotted(*) {
             flex: 1;
             align-self: flex-start;
-            padding: var(--contentPadding);
             max-height: 100%;
         }
         
-        .content::slotted(b-tabs),
-        .content::slotted(.no-padding) {
-            /* margin: calc(-1 * var(--contentPadding)); */
-            padding: 0;
+        /* dont add padding to custom elements */
+        .content::slotted(.padded),
+        .content::slotted(div),
+        .content::slotted(section) {
+            padding: var(--contentPadding);
         }
 
         .content::slotted([hidden]) {
@@ -17635,6 +17636,7 @@ Dialog.prompt = function (opts = {}) {
     prefix: '',
     suffix: '',
     validate: '',
+    html: false,
     required: false,
     label: '',
     placeholder: '',
@@ -17650,7 +17652,7 @@ Dialog.prompt = function (opts = {}) {
     let control = dialog.$('form-control');
     if (!resp) return resp;
     if (control.isInvalid) throw Error('Invalid data');
-    resp = control.control.textValue || control.value;
+    resp = opts.html ? control.value : control.control.textValue || control.value;
     return resp;
   };
 
@@ -17670,6 +17672,7 @@ Dialog.prompt = function (opts = {}) {
   let control = `<text-field
 		validate="${opts.validate}"
 		placeholder="${opts.placeholder}"
+		${opts.html ? 'html' : ''}
 		${opts.multiline ? 'multiline' : ''}
 		${opts.required ? 'required' : ''}>${opts.val}</text-field>`;
   if (opts.options) control = `<select-field
@@ -18384,6 +18387,7 @@ class TextFieldElement extends HTMLElement {
   }
 
   get currentValue() {
+    if (this.hasAttribute('html')) return this._editor.innerHTML;
     return this._editor.innerText || this._editor.innerHTML;
   }
 
@@ -33955,7 +33959,12 @@ function convertComments() {
   comments.forEach(com => {
     let div = document.createElement('div');
     div.classList.add('demo-block');
-    div.innerHTML = com.textContent;
+    let str = com.textContent;
+    let strs = str.split("\n");
+    let type = strs.shift();
+    str = strs.join("\n");
+    div.innerHTML = str;
+    if (type) div.setAttribute('type', type);
     com.replaceWith(div);
   });
 }

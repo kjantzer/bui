@@ -1,5 +1,6 @@
 * [Blackstone UI](/README.md)
 * [Elements](/elements/README.md)
+* [Icons](./icons.md)
 * [Models](/models/README.md)
 * [Router](/router/README.md)
 

@@ -26,7 +26,16 @@ function convertComments(){
     comments.forEach(com=>{
         let div = document.createElement('div')
         div.classList.add('demo-block')
-        div.innerHTML = com.textContent;
+
+        let str = com.textContent
+        let strs = str.split("\n")
+        let type = strs.shift()
+        str = strs.join("\n")
+        div.innerHTML = str;
+
+        if( type )
+            div.setAttribute('type', type)
+
         com.replaceWith(div)
     })
 }

@@ -55,6 +55,7 @@ Dialog.prompt = function(opts={}){
 		prefix: '',
 		suffix: '',
 		validate: '',
+		html: false,
 		required: false,
 		label: '',
 		placeholder: '',
@@ -77,7 +78,7 @@ Dialog.prompt = function(opts={}){
 		if( control.isInvalid )
 			throw Error('Invalid data')
 		
-		resp = control.control.textValue || control.value
+		resp = opts.html ? control.value : (control.control.textValue || control.value)
 		
 		return resp
 	}
@@ -98,6 +99,7 @@ Dialog.prompt = function(opts={}){
 	let control = `<text-field
 		validate="${opts.validate}"
 		placeholder="${opts.placeholder}"
+		${opts.html?'html':''}
 		${opts.multiline?'multiline':''}
 		${opts.required?'required':''}>${opts.val}</text-field>`
 		

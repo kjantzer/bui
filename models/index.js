@@ -18,11 +18,17 @@ export class Collection {
     filter(fn){ return this.models.filter(fn) }
     reduce(fn, start=0){ return this.models.reduce(fn, start) }
 
-    async fetchSync(params){ return this.fetch(params) } // alias to match older Backbone change
+    async fetchSync(params={}){ return this.fetch(params) } // alias to match older Backbone change
 
-    async fetch(params){
+    async fetch(params={}){
 
-        let url = new URL(this.url)
+        let urlStr = this.url
+        let base = location.protocol+'//'+location.hostname
+
+        if( urlStr.match(/^http/) )
+            base = undefined
+
+        let url = new URL(this.url, base)
         let Model = this.model || Object
         
         if( params.data ){

@@ -186,6 +186,9 @@ class TextFieldElement extends HTMLElement {
 	}
 
 	get currentValue(){
+		if( this.hasAttribute('html') )
+			return this._editor.innerHTML
+			
 		return this._editor.innerText || this._editor.innerHTML
 	}
 	

@@ -525,7 +525,7 @@ ul.heading-list .hlink {
 }
 
 
-.demo-block {
+.demo-block:not([type="plain"]) {
   --blue: #2196F3;
   background: #ECEFF1;
   border-radius: 4px;
@@ -535,7 +535,7 @@ ul.heading-list .hlink {
   border-left: solid 4px #2196F3;
 }
 
-.demo-block:before {
+.demo-block:not([type="plain"]):before {
   content: 'PREVIEW';
   display: block;
   font-size: .8em;
@@ -548,4 +548,8 @@ ul.heading-list .hlink {
 
 .demo-block form-control {
   min-width: 140px;
+}
+
+b-icon-list {
+  padding: 0;
 }
