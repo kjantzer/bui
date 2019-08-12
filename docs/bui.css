@@ -268,51 +268,41 @@
 /*
 	Presenters
 */
-.md-modal .menu {
-  max-height: 95vh;
-  max-width: 95vw;
-  text-align: left;
-}
-.md-modal .menu h1,
-.md-modal .menu h2,
-.md-modal .menu h3,
-.md-modal .menu h4,
-.md-modal .menu h5 {
-  padding: 0;
-  margin: 0;
-}
-.menu.grid-2 .results {
+.b-menu.grid-2 .results {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
-.menu.grid-2 .results .menu-title,
-.menu.grid-2 .results .menu-text,
-.menu.grid-2 .results .menu-divider,
-.menu.grid-2 .results hr {
+.b-menu.grid-2 .results .menu-title,
+.b-menu.grid-2 .results .menu-text,
+.b-menu.grid-2 .results .menu-divider,
+.b-menu.grid-2 .results hr {
   grid-column-start: 1;
   grid-column-end: 3;
 }
-.menu.grid-3 .results {
+.b-menu.grid-3 .results {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 }
-.menu.grid-3 .results .menu-title,
-.menu.grid-3 .results .menu-text,
-.menu.grid-3 .results .menu-divider,
-.menu.grid-3 .results hr {
+.b-menu.grid-3 .results .menu-title,
+.b-menu.grid-3 .results .menu-text,
+.b-menu.grid-3 .results .menu-divider,
+.b-menu.grid-3 .results hr {
   grid-column-start: 1;
   grid-column-end: 4;
 }
-.menu.grid-4 .results {
+.b-menu.grid-4 .results {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
 }
-.menu.grid-4 .results .menu-title,
-.menu.grid-4 .results .menu-text,
-.menu.grid-4 .results .menu-divider,
-.menu.grid-4 .results hr {
+.b-menu.grid-4 .results .menu-title,
+.b-menu.grid-4 .results .menu-text,
+.b-menu.grid-4 .results .menu-divider,
+.b-menu.grid-4 .results hr {
   grid-column-start: 1;
   grid-column-end: 5;
+}
+.b-menu.grid-centered .results .menu-item {
+  justify-self: center;
 }
 
 .dialog {

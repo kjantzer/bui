@@ -29,7 +29,14 @@ const DefaultOpts = {
 	closeOnHide: true,
 	maxHeight: 'auto',
 	maxHeightThreshold: 400,
-    onClose: ()=>{},
-    onKeydown: e=>{}
+	onClose: ()=>{},
+	onKeydown: e=>{}
 }
 ```
+
+### Options
+
+`maxHeight` - (string) can be pixels, percent, or `vh`
+
+`overflowBoundry` - 'scrollParent', 'window', or an element  
+>Note: you may want to set `maxHeight` as well

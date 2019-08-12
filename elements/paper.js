@@ -28,6 +28,10 @@ export class PaperElement extends LitElement {
             --bgdAccent: #fff;
         }
 
+        :host([block]) {
+            display: block;
+        }
+
         :host([empty]) {
             background: none;
             box-shadow: none;

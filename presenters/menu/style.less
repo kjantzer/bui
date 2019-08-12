@@ -174,18 +174,7 @@
 	Presenters
 */
 
-.md-modal .menu {
-	max-height: 95vh;
-	max-width: 95vw;
-	text-align: left;
-	
-	h1, h2, h3, h4, h5 {
-		padding: 0;
-		margin: 0;
-	}
-}
-
-.menu.grid-2 .results {
+.b-menu.grid-2 .results {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 
@@ -198,7 +187,7 @@
 	}
 }
 
-.menu.grid-3 .results {
+.b-menu.grid-3 .results {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
 
@@ -211,7 +200,7 @@
 	}
 }
 
-.menu.grid-4 .results {
+.b-menu.grid-4 .results {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr;
 
@@ -221,5 +210,11 @@
 	hr {
 		grid-column-start: 1;
     	grid-column-end: 5;
+	}
+}
+
+.b-menu.grid-centered .results {
+	.menu-item {
+		justify-self: center;
 	}
 }

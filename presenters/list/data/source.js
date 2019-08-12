@@ -29,6 +29,10 @@ export default class DataSource {
         return this.data.length
     }
     
+    at(i){ return this.data[i] }
+    first(i){ return this.data[0] }
+    last(){ return this.data[this.data.length-1]}
+
     forEach(fn){ return this.data.forEach(fn) }
     map(fn){ return this.data.map(fn) }
     flatMap(fn){ return this.data.flatMap(fn) }

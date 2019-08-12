@@ -30,6 +30,9 @@ let selected = await new Menu([], {
 
 # Options
 
+## `className`
+Examples: `grid-2`, `grid-3`, `grid-4`
+
 ## `selected`
 Specify which row(s) is selected. Should match `val` in the menu items
 

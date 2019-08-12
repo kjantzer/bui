@@ -16,6 +16,7 @@ require('./elements/empty-state')
 require('./elements/label')
 require('./elements/hr')
 require('./elements/sub')
+require('./elements/carousel')
 
 export const router = require('./router').default
 

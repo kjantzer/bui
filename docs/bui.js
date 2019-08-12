@@ -4715,6 +4715,10 @@ class PaperElement extends _litElement.LitElement {
             --bgdAccent: #fff;
         }
 
+        :host([block]) {
+            display: block;
+        }
+
         :host([empty]) {
             background: none;
             box-shadow: none;
@@ -4814,6 +4818,124 @@ class PaperElement extends _litElement.LitElement {
 
 exports.PaperElement = PaperElement;
 customElements.define('b-paper', PaperElement);
+},{"lit-element":"+bhx"}],"inC5":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+/*
+    TODO:
+    - add sliding animation?
+*/
+customElements.define('b-carousel', class extends _litElement.LitElement {
+  static get properties() {
+    return {
+      views: {
+        type: Array
+      }
+    };
+  }
+
+  constructor() {
+    super();
+    this.views = [];
+    this.active = 0;
+  }
+
+  static get styles() {
+    return _litElement.css`
+        :host {
+            display: block;
+            position:relative;
+            --dotSize: 14px;
+            --dotPadding: 4px;
+            --dotMargin: 5px;
+            --dotExpand: scale(1.4);
+        }
+
+        [hidden] {
+            display: none;
+        }
+
+        nav {
+            display: flex;
+            margin: 1em 0;
+            justify-content: center;
+            align-items: center;
+        }
+
+        nav > div {
+            width: var(--dotSize);
+            height: var(--dotSize);
+            margin: var(--dotMargin);
+            padding: var(--dotPadding);
+            cursor: pointer;
+        }
+
+        nav > div > div {
+            height: 100%;
+            width: 100%;
+            border-radius: 20px;
+            background: #ccc;
+            transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+        }
+
+        nav > div:hover > div {
+            transform: var(--dotExpand);
+        }
+
+        nav > div[active] > div {
+            background: #2196F3;
+        }
+    `;
+  }
+
+  render() {
+    return _litElement.html`
+        <slot></slot>
+        <nav ?hidden=${this.views.length <= 1}>${this.views.map((v, i) => _litElement.html`
+            <div i=${i} ?active=${i == this.active} @click=${this.navTo}>
+                <div></div>
+            </div>
+        `)}</nav>
+    `;
+  }
+
+  get active() {
+    return this.__active;
+  }
+
+  set active(val) {
+    this.__active = val;
+    this.views.forEach(v => v.hidden = true);
+    if (!this.views[val]) return;
+    this.views[val].hidden = false;
+    this.update();
+  }
+
+  navTo(e) {
+    let i = e.currentTarget.getAttribute('i');
+    this.active = i;
+  }
+
+  firstUpdated() {
+    let slot = this.shadowRoot.querySelector('slot');
+    slot.addEventListener('slotchange', e => {
+      this.views = slot.assignedElements();
+      this.active = 0;
+    });
+  }
+
+});
+
+var _default = customElements.get('b-carousel');
+
+exports.default = _default;
 },{"lit-element":"+bhx"}],"a2/B":[function(require,module,exports) {
 var define;
 var global = arguments[3];
@@ -9632,6 +9754,7 @@ class Label extends _litElement.LitElement {
             font-weight: bold;
             font-size: 1rem;
             line-height: 1rem;
+            --dividerThickness: 1px;
         }
 
         :host([hidden]) {
@@ -9685,12 +9808,47 @@ class Label extends _litElement.LitElement {
         :host([outline="orange"]) { --bgd: var(--orange); }
         :host([outline="green"]) { --bgd: var(--green); }
         :host([outline="pink"]) { --bgd: var(--pink); }
+
+        b-hr {
+            display: none;
+            margin: 0;
+            width: auto;
+            height: var(--dividerThickness);
+        }
+
+        b-hr:first-child {
+            margin-right: 1em;
+        }
+
+        b-hr:last-child {
+            margin-left: 1em;
+        }
+
+        :host([divider]) {
+            display: grid;
+            align-items: center;
+            grid-template-columns: 0 auto 1fr;
+        }
+
+        :host([divider]) b-hr {
+            display: block;
+        }
+
+        :host([divider="center"]) {
+            grid-template-columns: 1fr auto 1fr;
+        }
+
+        :host([divider="right"]) {
+            grid-template-columns: 1fr auto 0;
+        }
     `;
   }
 
   render() {
     return _litElement.html`
+        <b-hr></b-hr>
         <slot></slot>
+        <b-hr></b-hr>
     `;
   }
 
@@ -12569,6 +12727,7 @@ class Popover {
         // hide: {enabled: !this.isNested},
         preventOverflow: {
           enabled: opts.preventDefault !== undefined ? opts.preventDefault : true,
+          // FIXME: confusing naming and not sure it works
           boundariesElement: opts.overflowBoundry || 'scrollParent',
           // priority: []
           priority: ['top', 'bottom'].includes(opts.align) ? ['left', 'right'] : ['top', 'bottom']
@@ -14199,7 +14358,7 @@ class Panel extends _litElement.LitElement {
             pointer-events: initial;
             display: flex;
             position: absolute;
-            overflow: hidden;
+            overflow: visible;
             top: 0;
             left: 0;
             right: 0;
@@ -14222,7 +14381,7 @@ class Panel extends _litElement.LitElement {
             min-height: 1em;
             max-width: 100%;
             max-height: 100%;
-            overflow: hidden;
+            overflow: visible;
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -16834,6 +16993,7 @@ slot[name="control"]::slotted(*) {
 	/* background: orange; */
 }
 
+:host([hidden]),
 [hidden] {
 	display: none !important;
 }
@@ -31715,6 +31875,18 @@ class DataSource {
     return this.data.length;
   }
 
+  at(i) {
+    return this.data[i];
+  }
+
+  first(i) {
+    return this.data[0];
+  }
+
+  last() {
+    return this.data[this.data.length - 1];
+  }
+
   forEach(fn) {
     return this.data.forEach(fn);
   }
@@ -33931,6 +34103,8 @@ require("../elements/uploader");
 
 require("../elements/paper");
 
+require("../elements/carousel");
+
 require("../elements/timer");
 
 require("../elements/empty-state");
@@ -33986,7 +34160,7 @@ history.replaceState = (f => function replaceState() {
 window.addEventListener('popstate', function () {
   convertComments();
 });
-},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/hr":"IOAQ","../elements/sub":"VANQ","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB"}],"RVcF":[function(require,module,exports) {
+},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/hr":"IOAQ","../elements/sub":"VANQ","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB"}],"RVcF":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {

@@ -373,7 +373,7 @@ export class Panel extends LitElement {
             pointer-events: initial;
             display: flex;
             position: absolute;
-            overflow: hidden;
+            overflow: visible;
             top: 0;
             left: 0;
             right: 0;
@@ -396,7 +396,7 @@ export class Panel extends LitElement {
             min-height: 1em;
             max-width: 100%;
             max-height: 100%;
-            overflow: hidden;
+            overflow: visible;
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -471,6 +471,19 @@ export class Panel extends LitElement {
 
         main > section {
             padding: 1em;
+        }
+
+        @media print {
+            :host {
+                background: none;
+                position: static;
+            }
+
+            :host > main {
+                width: 100% !important;
+                border-radius: 0;
+                box-shadow: none;
+            }
         }
 
         @keyframes bounce {

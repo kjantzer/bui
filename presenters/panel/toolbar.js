@@ -82,6 +82,12 @@ class PanelToolbar extends LitElement {
             text-align: right;
         }
 
+        @media print {
+            b-btn {
+                display: none; /* assume we dont want buttons to display on print */
+            }
+        }
+
     `}
 
     render(){return html`

@@ -80,6 +80,10 @@ Can be altered to display as filled, outlined, or as a badge.
 <b-label filled>Filled Label</b-label>&nbsp;&nbsp;
 <b-label outline>Outline Label</b-label>&nbsp;&nbsp;
 <b-label badge>Badge Label</b-label>
+<br><br>
+<b-label divider>Label Divider</b-label>
+<br>
+<b-label divider="center">Label Divider</b-label>
 -->
 
 #### Attributes
@@ -89,6 +93,10 @@ Can be altered to display as filled, outlined, or as a badge.
 - `filled`, `filled="color"`
 - `badge`, `badge="color"`
 - `outline`, `outline="color"`
+- `divider`, `divider="[center,right]"`
+
+#### Style hooks
+- `--dividerThickness`
 
 ## `<b-empty-state>`
 
@@ -202,6 +210,27 @@ uploader.chooseFile()
 - `--hoverBgd`
 - `--uploadingBgd`
 - `--progressBgd`
+
+## `<b-carousel>`
+A slider/carousel element that will show one of the nested elements at time.
+A set of dots will be shown to represent the number of slides available.
+
+<!--
+<b-carousel>
+    <b-paper block>Slide 1</b-paper>
+    <b-paper block>Slide 2</b-paper>
+    <b-paper block>Slide 3</b-paper>
+</b-carousel>
+-->
+
+Currently a very simple implementation with no animation or sliding.
+Maybe later we'll introduce animation and more features, like nav arrows
+
+##### Styles
+- `--dotSize`
+- `--dotPadding`
+- `--dotMargin`
+- `--dotExpand` - transform scale
 
 ## `<b-timer>`
 

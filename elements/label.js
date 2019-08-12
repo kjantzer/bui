@@ -10,6 +10,7 @@ export default class Label extends LitElement {
             font-weight: bold;
             font-size: 1rem;
             line-height: 1rem;
+            --dividerThickness: 1px;
         }
 
         :host([hidden]) {
@@ -63,10 +64,45 @@ export default class Label extends LitElement {
         :host([outline="orange"]) { --bgd: var(--orange); }
         :host([outline="green"]) { --bgd: var(--green); }
         :host([outline="pink"]) { --bgd: var(--pink); }
+
+        b-hr {
+            display: none;
+            margin: 0;
+            width: auto;
+            height: var(--dividerThickness);
+        }
+
+        b-hr:first-child {
+            margin-right: 1em;
+        }
+
+        b-hr:last-child {
+            margin-left: 1em;
+        }
+
+        :host([divider]) {
+            display: grid;
+            align-items: center;
+            grid-template-columns: 0 auto 1fr;
+        }
+
+        :host([divider]) b-hr {
+            display: block;
+        }
+
+        :host([divider="center"]) {
+            grid-template-columns: 1fr auto 1fr;
+        }
+
+        :host([divider="right"]) {
+            grid-template-columns: 1fr auto 0;
+        }
     `}
 
     render(){return html`
+        <b-hr></b-hr>
         <slot></slot>
+        <b-hr></b-hr>
     `}
 }
 

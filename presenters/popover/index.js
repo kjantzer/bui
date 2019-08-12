@@ -109,7 +109,7 @@ export default class Popover {
 				// flip: {enabled: !this.isNested},
 				// hide: {enabled: !this.isNested},
 				preventOverflow: {
-					enabled: opts.preventDefault !== undefined ? opts.preventDefault : true,
+					enabled: opts.preventDefault !== undefined ? opts.preventDefault : true, // FIXME: confusing naming and not sure it works
 					boundariesElement: opts.overflowBoundry || 'scrollParent',
 					// priority: []
 					priority: ['top', 'bottom'].includes(opts.align) ? ['left', 'right'] : ['top', 'bottom']

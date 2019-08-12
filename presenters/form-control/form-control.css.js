@@ -159,6 +159,7 @@ slot[name="control"]::slotted(*) {
 	/* background: orange; */
 }
 
+:host([hidden]),
 [hidden] {
 	display: none !important;
 }
