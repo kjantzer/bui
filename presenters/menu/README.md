@@ -4,8 +4,6 @@ Menu
 Creates a menu list that can be loaded in a popover or modal. Supports multiple 
 selections, keyboard navigation, search bar, and loadings results via ajax.
 
-![screenshot](./screenshot.png)
-
 # Examples
 
 ## Defined Menu

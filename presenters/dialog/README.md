@@ -3,6 +3,13 @@ Dialog
 
 > An extensible class for creating dialogs with built-in presets for warnings, errors, success, and prompts.
 
+<!--
+<b-btn onclick="Dialog.alert({title: 'Alert Title', msg: 'Message for the alert'}).modal()">Alert</b-btn>
+<b-btn onclick="Dialog.success({title: 'Alert Title', msg: 'Message for the alert'}).modal()">Success</b-btn>
+<b-btn onclick="Dialog.warn({title: 'Alert Title', msg: 'Message for the alert'}).modal()">Warning</b-btn>
+<b-btn onclick="Dialog.error({title: 'Alert Title', msg: 'Message for the alert'}).modal()">Error</b-btn>
+-->
+
 ## Options
 
 `new Dialog(opts)`

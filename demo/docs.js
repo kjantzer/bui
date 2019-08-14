@@ -14,6 +14,12 @@ import '../presenters/tabs'
 import '../presenters/form-control'
 import '../presenters/list'
 
+import Dialog from '../presenters/dialog'
+window.Dialog = Dialog
+
+import Menu from '../presenters/menu'
+window.Menu = Menu
+
 
 function convertComments(){
     var tw = document.createTreeWalker(document, NodeFilter.SHOW_COMMENT, null, null)

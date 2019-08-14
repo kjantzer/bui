@@ -524,6 +524,13 @@ ul.heading-list .hlink {
 	font-weight: bold;
 }
 
+body {
+  --green: #4CAF50;
+  --red: #f44336;
+  --blue: #2196F3;
+  --orange: #FF9800;
+}
+
 
 .demo-block:not([type="plain"]) {
   --blue: #2196F3;

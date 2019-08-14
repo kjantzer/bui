@@ -4892,6 +4892,16 @@ customElements.define('b-carousel', class extends _litElement.LitElement {
         nav > div[active] > div {
             background: #2196F3;
         }
+        
+        @media print {
+            nav {
+                display: none;
+            }
+
+            ::slotted(*) {
+                display: block !important
+            }
+        }
     `;
   }
 
@@ -13927,6 +13937,12 @@ class PanelToolbar extends _litElement.LitElement {
             text-align: right;
         }
 
+        @media print {
+            b-btn {
+                display: none; /* assume we dont want buttons to display on print */
+            }
+        }
+
     `;
   }
 
@@ -14456,6 +14472,23 @@ class Panel extends _litElement.LitElement {
 
         main > section {
             padding: 1em;
+        }
+
+        @media print {
+            :host {
+                background: none;
+                position: static;
+            }
+
+            :host(:not([ontop])) {
+                display: none !important;
+            }
+
+            :host > main {
+                width: 100% !important;
+                border-radius: 0;
+                box-shadow: none;
+            }
         }
 
         @keyframes bounce {
@@ -34121,6 +34154,15 @@ require("../presenters/form-control");
 
 require("../presenters/list");
 
+var _dialog = _interopRequireDefault(require("../presenters/dialog"));
+
+var _menu = _interopRequireDefault(require("../presenters/menu"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+window.Dialog = _dialog.default;
+window.Menu = _menu.default;
+
 function convertComments() {
   var tw = document.createTreeWalker(document, NodeFilter.SHOW_COMMENT, null, null);
   var comment;
@@ -34160,7 +34202,7 @@ history.replaceState = (f => function replaceState() {
 window.addEventListener('popstate', function () {
   convertComments();
 });
-},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/hr":"IOAQ","../elements/sub":"VANQ","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB"}],"RVcF":[function(require,module,exports) {
+},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/hr":"IOAQ","../elements/sub":"VANQ","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../presenters/dialog":"pos3","../presenters/menu":"0tCY"}],"RVcF":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {

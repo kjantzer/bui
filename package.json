@@ -7,6 +7,7 @@
         "start": "parcel demo/index.html --out-dir demo/dist",
         "build": "parcel build demo/index.html --out-dir public --public-url ./ --no-minify",
         "build-docs-script": "parcel build demo/docs.js --out-dir docs -o bui.js --no-minify",
+        "build-docs-script-watch": "parcel watch demo/docs.js --out-dir docs -o bui.js",
         "build-docs": "./node_modules/.bin/docpress build"
     },
     "keywords": [],
@@ -21,8 +22,8 @@
     "dependencies": {
         "component-emitter": "^1.3.0",
         "fuse.js": "^3.4.5",
-        "lit-element": "^2.1.0",
-        "lit-html": "^1.1.0",
+        "lit-element": "^2.2.1",
+        "lit-html": "^1.1.2",
         "lodash": "^4.17.11",
         "moment": "^2.24.0",
         "popper.js": "^1.14.7",

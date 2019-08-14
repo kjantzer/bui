@@ -479,6 +479,10 @@ export class Panel extends LitElement {
                 position: static;
             }
 
+            :host(:not([ontop])) {
+                display: none !important;
+            }
+
             :host > main {
                 width: 100% !important;
                 border-radius: 0;
