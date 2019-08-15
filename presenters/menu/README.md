@@ -4,10 +4,14 @@ Menu
 Creates a menu list that can be loaded in a popover or modal. Supports multiple 
 selections, keyboard navigation, search bar, and loadings results via ajax.
 
-# Examples
-
-## Defined Menu
 ```javascript
+new Menu(menu, options)
+```
+
+## Examples
+
+```javascript
+// staticly defined menu
 let selected = await new Menu([
     {divider: '<h2>A header or divider</h2>'},
     {label: 'Item 1', val: '1'},
@@ -18,42 +22,61 @@ let selected = await new Menu([
 ]).popover(element)
 ```
 
-## AJAX Search
-
 ```javascript
+// AJAX Search
 let selected = await new Menu([], {
     search: {url: '/my-search-url?term='}
 }).popover(element)
 ```
 
-# Options
+## Menu Items
 
-## `className`
-Examples: `grid-2`, `grid-3`, `grid-4`
+```js
+// standard item
+{
+    label: 'Label to display',
+    // optional
+    description: '', // will display below the label
+    val: 'value', // (required if using "selected" option)
+    icon: '', // name of an icon
+    dataTitle: '', // set custom value for quickly 
+    className: '',
+    extras: [] // array of custom elements to render after label
+}
 
-## `selected`
-Specify which row(s) is selected. Should match `val` in the menu items
+// title
+{title: 'Menu Title'}
 
-## `multiple`
-Will let multiple rows be selected. Pressing `esc` key will cancel the selection
+// divider
+{divider: 'A divider with label'}
+'divider' // a line divider with no label
 
-### `extras`
-A list of extra custom elements to be displayed on each row. Will render after the label.
-Each custom element will get `item` set as a property.
+// text
+{text: 'A block of text'}
 
-## `onSelect`
-Lets you hook into when rows are selected; this should be used to mirror selected
-results to the UI but final selected values should be retrieved from the 
-resolved promise
+// custom view
+{view: HTMLElement}
+```
 
-## `search`
+## Options
+
+```js
+{
+	selected: false, // value or array of values
+	multiple: false, // more than one value selectable?
+	search: 20, // true (always show) or number of results for it to show
+	minW: false,
+	width: null,
+	jumpNav: false, // true (always show) or number of results for it to show
+	typeDelay: 700, // how long until typed characters reset
+	hasMenuIcon: 'right-open',
+	onSelect: ()=>{}
+}
+```
+
+### Search
 Menu will detect keystrokes and auto scroll to matching rows. However, if you want better (fuzzy)
 searching that reduces the results, you can opt to show a search bar.
-
-```javascript
-search:true // always show
-search:20 // show if 20 or more results
-```
 
 Search can also be leveraged to query for results on the server.
 
@@ -76,40 +99,32 @@ search: {
 }
 ```
 
-## `jumpNav`
 
-You can opt to show an `alphabet-jump-nav`
-
-```javascript
-jumpNav: true // always show
-jumpNav: 40 // show if 40 or more results
-```
-
-# Presenters
+## Presenters
 
 After creating a menu, you need to render it some where.
 You can use the built-in presenters to accomplish this.
 
-### `menu.modal(opts)`
+`menu.modal(opts)`
 
-### `menu.popover(target, opts)`
+`menu.popover(target, opts)`
 
-### Promise based
+#### Promise based
 
 The presenters return a promise which lets you do this:
 
 ```js
 async showMenu(){
 
-    let clickedBtn = await menu.modal()
+    let selected = await new Menu(menuItems).modal()
 
-    if( clickedBtn ){
-        console.log(clickedBtn) // {label: 'Item 1', val: '1'}
+    if( selected ){
+        console.log(selected) // {label: 'Item 1', val: '1'}
     }
 }
 ```
 
-# Changelog
+## Changelog
 #### 2019-06-11
 - changed how "selected" values are saved
 - `multiple` will only take affect when clicking the checkbox, clicking the row will choose that row only

@@ -142,6 +142,12 @@ class CustomFilterView extends HTMLElement {
 }
 ```
 
+## Search
+Search options are specified as part of filters (see above).
+
+`row.model.searchMatches` - when the search bar is actively searching, row models will have 
+a `searchMatches` property they can check to see why they are being displayed
+
 ## Sorts
 ```js
 const sorts = {

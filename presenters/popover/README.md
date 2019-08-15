@@ -4,8 +4,6 @@ Popover
 Uses [popper.js](https://popper.js.org) to display views as a popover
 over a partiuclar target
 
-> NOTE: the idea is to have this replace Dropdown.js
-
 ## Rendering Views
 
 Popover should only be used as the presenter of views and not be
