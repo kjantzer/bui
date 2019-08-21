@@ -1,8 +1,12 @@
 * [Blackstone UI](/README.md)
+
 * [Elements](/elements/README.md)
-* [Icons](./icons.md)
-* [Models](/models/README.md)
-* [Router](/router/README.md)
+    * [Icons](./icons.md)
+
+* Extras
+    * [Util](/util/README.md)
+    * [Models](/models/README.md)
+    * [Router](/router/README.md)
 
 * Presenters
     * [Dialog](/presenters/dialog/README.md)

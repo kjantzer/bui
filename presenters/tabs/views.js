@@ -14,6 +14,8 @@ export default class TabViews extends Map {
         // view is already the active one
         // if( view && view == this.active )
         //     return 
+
+        if( !view.canDisplay ) return false
         
         this.forEach(v=>v.active=false)
 

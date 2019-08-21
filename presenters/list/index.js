@@ -91,6 +91,7 @@ customElements.define('b-list', class extends LitElement {
         b-list-toolbar {
             box-shadow: rgba(0,0,0,.2) 0 0 6px;
             padding: .25em .5em;
+            z-index: 10;
         }
 
         b-infinite-list {

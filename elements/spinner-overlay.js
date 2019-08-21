@@ -42,7 +42,7 @@ export class SpinnerOverlayElement extends LitElement {
             height: 100%;
             top: 0;
             left: 0;
-            z-index: 1000;
+            z-index: 1200;
             background: var(--spinnerBgd);
             color: var(--spinnerColor);
             display: flex;

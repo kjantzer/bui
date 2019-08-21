@@ -78,4 +78,9 @@ export default class TabView {
         if( !this.__view ) return ''
         return this.view.path || this.id
     }
+
+    get canDisplay(){
+        if( !this._viewClass || this._viewClass.canDisplay === undefined ) return true
+        return this._viewClass.canDisplay
+    }
 }

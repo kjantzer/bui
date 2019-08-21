@@ -253,11 +253,11 @@ customElements.define('b-tabs', class extends LitElement {
                 <b-icon name="menu"></b-icon>
                 ${this.views.active.title}
             </div>
-            ${this.views.map(m=>html`
+            ${this.views.map(m=>m.canDisplay?html`
                 <div class="tab-bar-item" ?active=${m.active} .tabView=${m} @click=${this.menuClick}>
                     <slot name="menu:${m.id}">${m.title}</slot>
                 </div>
-            `)}
+            `:'')}
             <slot name="menu:after"></slot>
         </header>
         <slot class="content"></slot>

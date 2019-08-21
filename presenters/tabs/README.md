@@ -70,6 +70,9 @@ static get id(){ return 'menu-title' }
 
 // optional, id will be used if not set
 static get path(){ return 'menu-title/'+this.model.id }
+
+// optional, stop display of view for any reason
+static get canDisplay(){ return true }
 ```
 
 Then list the custom elements one per line

@@ -92,10 +92,14 @@ Creates an input-like control. Add `multiline` attribute to make it perform like
 - `max="10"` - max length of chars
 - `type="date"`
 - `reset-invalid`
+- `placeholder`
 
 ## `<rich-text-field>`
 
-Similar to the text-field but with quill.js enabled for rich text editing
+Similar to the `text-field` but with [quill.js](https://quilljs.com) enabled for rich text editing.
+
+The field will also auto convert some special characters (such as 3 periods to an ellipsis) using
+`util/autoFormat`
 
 <!--
 <form-control label="Rich Text Field" material style="width: 100%">
@@ -103,11 +107,13 @@ Similar to the text-field but with quill.js enabled for rich text editing
 </form-control>
 -->
 
-> NOTE: quill.js doesn't like the shadowDOM  
-> NOTE: placeholder is not yet supported
-
 #### Attributes
 - `value`
+- `placeholder`
+
+> NOTE: current quill.js doesn't like the shadowDOM so we are using a forked version
+> that has changes made to work inside the shadowDOM; however, the changes
+> may still have some issues in certain browsers – see https://github.com/quilljs/quill/pull/2337
 
 ## `<select-field>`
 
@@ -248,14 +254,8 @@ You can also choose to save changes in local storage instead of model by using t
 - `store` - a key to save form data in local storage
 - `no-grid-area` - disable auto grid-area names
 
-## `ModelHandler`
-
-> [DEPRECATED] - use `<form-handler>`
-
-```js
-let ModelHandler = require('./handler')
-```
 
 # Notes
-
-https://github.com/insin/inputmask-core
+- TODO: fix rich-text-fild relying on `util/htmlCleaner`
+- TODO: range-slider has issues when nested in certain elements
+- IDEA: https://github.com/insin/inputmask-core

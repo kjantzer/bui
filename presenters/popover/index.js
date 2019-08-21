@@ -69,10 +69,15 @@ export default class Popover {
 		}
 		
 		if( typeof view == 'string' ){
-			let _view = document.createElement('div')
-			_view.classList.add('tooltip')
-			_view.innerHTML = view
-			view = _view
+
+			if( customElements.get(view) ){
+				view = document.createElement(view)
+			}else{
+				let _view = document.createElement('div')
+				_view.classList.add('tooltip')
+				_view.innerHTML = view
+				view = _view
+			}
 		}
 		
 		if( window.Backbone && view instanceof window.Backbone.View )

@@ -3,6 +3,7 @@ import {unsafeHTML} from 'lit-html/directives/unsafe-html'
 import Popover from '../popover'
 import Panel from '../panel'
 import Fuse from 'fuse.js'
+import '../form-control/controls/check-box'
 
 export const DefaultOpts = {
 	selected: false,
