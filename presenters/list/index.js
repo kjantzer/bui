@@ -234,6 +234,12 @@ customElements.define('b-list', class extends LitElement {
     }
 
     async onFilterTermChange(changes){
+
+        // TODO: probably need an opt in feature
+        if( this.listOptions && this.listOptions.fetch == 'more' ){
+            this.dataSource.reset()
+        }
+
         this.dataSource.applyFilters()
         this.list.reset()
         this.toolbar.count = await this.dataSource.length()

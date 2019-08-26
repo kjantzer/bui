@@ -1,5 +1,5 @@
 
-export default function(str=''){
+export default (str='') => {
     return str.replace(/\b'\b/g, "\u2019")                      // apostrophes
             .replace(/'(?=[^>]*<)\b/g, "\u2018")     			// Opening singles
             .replace(/\b([\.\?\!,]*)(?=[^>]*<)'/g, "$1\u2019")  // Closing singles

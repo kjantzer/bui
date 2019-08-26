@@ -120,7 +120,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
         <div class="after">
 
             ${!this.filters||!this.filters.showSearch?'':html`
-            <b-list-search-bar @keydown=${this.onKeyDown}></b-list-search-bar>
+            <b-list-search-bar @keydown=${this.onKeyDown} placeholder=${this.filters.searchOptions.placeholder}></b-list-search-bar>
             `}
 
             <slot name="after"></slot>
@@ -169,7 +169,10 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
     onKeyDown(e){
         let target = e.target
-        setTimeout(_=>{
+        let ts = this.filters.searchOptions.delay
+
+        clearTimeout(this._keydownTimeout)
+        this._keydownTimeout = setTimeout(_=>{
 
             let term = target.value
 
@@ -185,7 +188,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
                 }
             }))
 
-        },0)
+        }, ts)
     }
 
 })

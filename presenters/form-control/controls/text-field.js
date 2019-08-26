@@ -122,11 +122,14 @@ class TextFieldElement extends HTMLElement {
 	
 	disconnectedCallback(){}
 	
-	static get observedAttributes() { return ['disabled']; }
+	static get observedAttributes() { return ['disabled', 'placeholder']; }
 	attributeChangedCallback(name, oldValue, newValue){
 		
 		if( name === 'disabled' )
 			this._editor.contentEditable = !this.disabled
+
+		if( name === 'placeholder' )
+			this._editor.dataset.placeholder = newValue
 	}
 	
 	get type(){ return this.getAttribute('type') }

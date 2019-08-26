@@ -99,7 +99,7 @@ Creates an input-like control. Add `multiline` attribute to make it perform like
 Similar to the `text-field` but with [quill.js](https://quilljs.com) enabled for rich text editing.
 
 The field will also auto convert some special characters (such as 3 periods to an ellipsis) using
-`util/autoFormat`
+`util/normalizeText`
 
 <!--
 <form-control label="Rich Text Field" material style="width: 100%">

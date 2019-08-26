@@ -3946,7 +3946,59 @@ class IconList extends _litElement.LitElement {
 
 exports.IconList = IconList;
 customElements.define('b-icon-list', IconList);
-},{"lit-element":"+bhx","./icons.svg.html":"pxeq"}],"DABr":[function(require,module,exports) {
+},{"lit-element":"+bhx","./icons.svg.html":"pxeq"}],"EnCN":[function(require,module,exports) {
+/*
+	SVG and idea taken from https://ant.design/components/button/
+	
+	Examples: 
+	<circle-spinner/>
+	<circle-spinner style="--size:.8em; color: white"/>
+*/
+class SpinnerElement extends HTMLElement {
+  constructor() {
+    super();
+    let shadow = this.attachShadow({
+      mode: 'open'
+    });
+    let temp = document.createElement('template');
+    temp.innerHTML = `<style>
+			:host {
+				--size: .8em;
+				height: var(--size);
+			    width: var(--size);
+			    display: inline-block;
+			    vertical-align: middle;
+			}
+			
+			:host(.overlay) {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				z-index: 10000;
+			}
+			
+			@keyframes spin {
+				100% {
+				    transform: rotate(360deg);
+				}
+			}
+			
+			svg {
+				animation: spin 1s infinite linear;
+				transform-origin: center center;
+			}
+			</style>
+			<svg viewBox="0 0 1024 1024" class="spin" data-icon="loading" width="100%" height="100%" fill="currentColor" aria-hidden="true">
+				<path d="M988 548c-19.9 0-36-16.1-36-36 0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.3C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3.1 19.9-16 36-35.9 36z"></path>
+			</svg>`;
+    this.shadowRoot.appendChild(temp.content.cloneNode(true));
+  }
+
+}
+
+customElements.define('b-spinner', SpinnerElement);
+},{}],"DABr":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3955,6 +4007,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.BtnElement = void 0;
 
 var _litElement = require("lit-element");
+
+require("./spinner");
+
+require("./icon");
 
 class BtnElement extends _litElement.LitElement {
   static get properties() {
@@ -4211,59 +4267,7 @@ class BtnElement extends _litElement.LitElement {
 
 exports.BtnElement = BtnElement;
 customElements.define('b-btn', BtnElement);
-},{"lit-element":"+bhx"}],"EnCN":[function(require,module,exports) {
-/*
-	SVG and idea taken from https://ant.design/components/button/
-	
-	Examples: 
-	<circle-spinner/>
-	<circle-spinner style="--size:.8em; color: white"/>
-*/
-class SpinnerElement extends HTMLElement {
-  constructor() {
-    super();
-    let shadow = this.attachShadow({
-      mode: 'open'
-    });
-    let temp = document.createElement('template');
-    temp.innerHTML = `<style>
-			:host {
-				--size: .8em;
-				height: var(--size);
-			    width: var(--size);
-			    display: inline-block;
-			    vertical-align: middle;
-			}
-			
-			:host(.overlay) {
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				z-index: 10000;
-			}
-			
-			@keyframes spin {
-				100% {
-				    transform: rotate(360deg);
-				}
-			}
-			
-			svg {
-				animation: spin 1s infinite linear;
-				transform-origin: center center;
-			}
-			</style>
-			<svg viewBox="0 0 1024 1024" class="spin" data-icon="loading" width="100%" height="100%" fill="currentColor" aria-hidden="true">
-				<path d="M988 548c-19.9 0-36-16.1-36-36 0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.3C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3.1 19.9-16 36-35.9 36z"></path>
-			</svg>`;
-    this.shadowRoot.appendChild(temp.content.cloneNode(true));
-  }
-
-}
-
-customElements.define('b-spinner', SpinnerElement);
-},{}],"eyVY":[function(require,module,exports) {
+},{"lit-element":"+bhx","./spinner":"EnCN","./icon":"ncPe"}],"eyVY":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4321,7 +4325,7 @@ class SpinnerOverlayElement extends _litElement.LitElement {
             height: 100%;
             top: 0;
             left: 0;
-            z-index: 1000;
+            z-index: 1200;
             background: var(--spinnerBgd);
             color: var(--spinnerColor);
             display: flex;
@@ -12699,12 +12703,16 @@ class Popover {
     }
 
     if (typeof view == 'string') {
-      let _view = document.createElement('div');
+      if (customElements.get(view)) {
+        view = document.createElement(view);
+      } else {
+        let _view = document.createElement('div');
 
-      _view.classList.add('tooltip');
+        _view.classList.add('tooltip');
 
-      _view.innerHTML = view;
-      view = _view;
+        _view.innerHTML = view;
+        view = _view;
+      }
     }
 
     if (window.Backbone && view instanceof window.Backbone.View) view = view.el;
@@ -15197,7 +15205,216 @@ var define;
     };
   }]);
 });
-},{}],"0tCY":[function(require,module,exports) {
+},{}],"jNfL":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+const styles = _litElement.css`
+
+:host {
+	--size: 1.6em;
+	--color: #2196f3;
+	--colorDisabled: rgba(0, 0, 0, 0.26);
+	display: inline-block;
+	vertical-align: middle;
+	flex-grow: 0 !important;
+	display: inline-flex;
+	align-items: center;
+	cursor: pointer;
+	outline: none;
+}
+
+:host([checked]) svg.uncheck,
+:host(:not([checked])) svg.check {
+	display: none
+}
+
+main {
+	position: relative;
+}
+
+:host([placement="top"]) { flex-direction: column-reverse; }
+:host([placement="bottom"]) { flex-direction: column; }
+:host([placement="left"]) { flex-direction: row-reverse; }
+:host([placement="right"]) { flex-direction: row; }
+
+svg {
+	fill: currentColor;
+	width: var(--size);
+	height: var(--size);
+	display: inline-block;
+	transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+	user-select: none;
+	flex-shrink: 0;
+	padding: .25em;
+}
+
+.switch {
+	display: none
+}
+
+:host([type="switch"]) svg { display: none; }
+
+:host([type="switch"]) .switch {
+	display: inline-block;
+}
+
+:host([checked]) {
+	color: var(--color)
+}
+
+:host([disabled]) svg {
+	fill: var(--colorDisabled)
+}
+
+:host([disabled]) label {
+	color: var(--colorDisabled);
+}
+
+main label {
+	cursor: pointer;
+}
+
+.indeterminate {
+	display: none;
+}
+
+.switch {
+	position: relative;
+	align-items: center;
+	margin: .5em;
+}
+
+.switch:before, .switch:after {
+	content: "";
+	margin: 0;
+	outline: 0;
+	transition: all 0.3s ease;
+}
+
+.switch:before {
+	display: block;
+	width: 2em;
+	height: 1em;
+	background-color: #9E9E9E;
+	border-radius: 1em;
+}
+
+.switch:after {
+	position: absolute;
+	left: 0;
+	top: 50%;
+	transform: translate(0, -50%);
+	width: 1.3em;
+	height: 1.3em;
+	background-color: #FAFAFA;
+	border-radius: 50%;
+	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.14), 0 2px 2px 0 rgba(0, 0, 0, 0.098), 0 1px 5px 0 rgba(0, 0, 0, 0.084);
+}
+
+
+:host([checked]) .switch:before {
+	background-color: var(--color);
+	opacity: .5
+}
+
+:host([checked]) .switch:after {
+	background-color: var(--color);
+	transform: translate(80%, -50%);
+}
+`;
+
+class CheckBoxElement extends HTMLElement {
+  constructor() {
+    super();
+    let shadow = this.attachShadow({
+      mode: 'open'
+    });
+    let temp = document.createElement('template');
+    let label = this.getAttribute('label') || '<slot name="label"></slot>';
+    temp.innerHTML = `
+			<style>
+			${styles.cssText}
+			</style>
+			<main>
+				<svg class="uncheck" focusable="false" viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path></svg>
+				<svg class="check" focusable="false" viewBox="0 0 24 24"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
+				<div class="switch"></div>
+				<touch-ripple><touch-ripple>
+			</main>
+			<label>${label}</label>
+			`;
+    this.shadowRoot.appendChild(temp.content.cloneNode(true));
+    this.ripple = this.shadowRoot.querySelector('touch-ripple');
+    this.addEventListener('click', this._onClick.bind(this));
+    this.addEventListener('keydown', e => {
+      if (['Space', 'Enter'].includes(e.code)) this._onClick();
+    });
+    this.addEventListener('focus', e => {
+      if (e.relatedTarget && e.relatedTarget != this) this.ripple.enter();
+    });
+    this.addEventListener('blur', e => {
+      if (e.relatedTarget && e.relatedTarget != this) this.ripple.hide();
+    });
+  }
+
+  connectedCallback() {
+    if (!this.hasAttribute('tabindex')) this.setAttribute('tabindex', '0');
+  }
+
+  _onClick() {
+    if (this.disabled) return;
+    this.ripple.ripple();
+    this.checked = !this.checked;
+    var event = new CustomEvent('change', {
+      bubbles: true,
+      composed: true,
+      detail: {
+        value: this.checked
+      }
+    });
+    this.dispatchEvent(event); // this.blur()
+  }
+
+  set checked(val) {
+    if (val === '0' || val === '') val = false;
+    val ? this.setAttribute('checked', '') : this.removeAttribute('checked');
+  }
+
+  get checked() {
+    return this.hasAttribute('checked');
+  }
+
+  get value() {
+    return this.checked;
+  }
+
+  set value(val) {
+    this.checked = val;
+  }
+
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+
+  set disabled(val = true) {
+    val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
+  }
+
+}
+
+customElements.define('check-box', CheckBoxElement);
+
+var _default = customElements.get('check-box');
+
+exports.default = _default;
+},{"lit-element":"+bhx"}],"0tCY":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15214,6 +15431,8 @@ var _popover = _interopRequireDefault(require("../popover"));
 var _panel = _interopRequireDefault(require("../panel"));
 
 var _fuse = _interopRequireDefault(require("fuse.js"));
+
+require("../form-control/controls/check-box");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15654,7 +15873,7 @@ class Menu {
 }
 
 exports.default = Menu;
-},{"lit-html":"SP/d","lit-html/directives/unsafe-html":"/jTP","../popover":"Soyf","../panel":"cmZt","fuse.js":"Wp9p","./style.less":"r4vn"}],"7P61":[function(require,module,exports) {
+},{"lit-html":"SP/d","lit-html/directives/unsafe-html":"/jTP","../popover":"Soyf","../panel":"cmZt","fuse.js":"Wp9p","../form-control/controls/check-box":"jNfL","./style.less":"r4vn"}],"7P61":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15737,6 +15956,11 @@ class TabView {
     return this.view.path || this.id;
   }
 
+  get canDisplay() {
+    if (!this._viewClass || this._viewClass.canDisplay === undefined) return true;
+    return this._viewClass.canDisplay;
+  }
+
 }
 
 exports.default = TabView;
@@ -15760,6 +15984,7 @@ class TabViews extends Map {
     // if( view && view == this.active )
     //     return 
 
+    if (view && !view.canDisplay) return false;
     this.forEach(v => v.active = false);
 
     if (view) {
@@ -16581,11 +16806,11 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
                 <b-icon name="menu"></b-icon>
                 ${this.views.active.title}
             </div>
-            ${this.views.map(m => _litElement.html`
+            ${this.views.map(m => m.canDisplay ? _litElement.html`
                 <div class="tab-bar-item" ?active=${m.active} .tabView=${m} @click=${this.menuClick}>
                     <slot name="menu:${m.id}">${m.title}</slot>
                 </div>
-            `)}
+            ` : '')}
             <slot name="menu:after"></slot>
         </header>
         <slot class="content"></slot>
@@ -18514,11 +18739,12 @@ class TextFieldElement extends HTMLElement {
   disconnectedCallback() {}
 
   static get observedAttributes() {
-    return ['disabled'];
+    return ['disabled', 'placeholder'];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === 'disabled') this._editor.contentEditable = !this.disabled;
+    if (name === 'placeholder') this._editor.dataset.placeholder = newValue;
   }
 
   get type() {
@@ -18662,6 +18888,8 @@ class TextFieldElement extends HTMLElement {
 
     if (e.key == 'Enter' && !this.hasAttribute('multiline')) {
       stop = true;
+      this.dispatchEvent(new Event("change")); // Force change event for empty search/ re-search
+
       this.blur(); // will trigger a change if there is one
     }
 
@@ -18771,7 +18999,7 @@ module.exports = function isBuffer(arg) {
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],"Ecrx":[function(require,module,exports) {
+},{}],"wZ/S":[function(require,module,exports) {
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -19726,7 +19954,154 @@ function callbackify(original) {
 }
 
 exports.callbackify = callbackify;
-},{"./support/isBuffer":"BnMB","inherits":"Ecrx","process":"JFZi"}],"CQm3":[function(require,module,exports) {
+},{"./support/isBuffer":"BnMB","inherits":"wZ/S","process":"JFZi"}],"hNKD":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _default = (str = '') => {
+  return str.replace(/\b'\b/g, "\u2019") // apostrophes
+  .replace(/'(?=[^>]*<)\b/g, "\u2018") // Opening singles
+  .replace(/\b([\.\?\!,]*)(?=[^>]*<)'/g, "$1\u2019") // Closing singles
+  .replace(/"(?=[^>]*<)\b/g, "\u201c") // Opening doubles
+  .replace(/\b([\.\?\!,]*)(?=[^>]*<)"/g, "$1\u201d") // Closing doubles
+  .replace(/\.\.\./g, "\u2026") // ellipsis
+  .replace(/--/g, "\u2014"); // em-dashes
+};
+
+exports.default = _default;
+},{}],"d7Am":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+var _default = _litElement.css`
+
+rich-text-field {
+	z-index: 1000;
+    --font-size: 1em;
+    --line-height: 1.2em;
+    --font-family: initial;
+    --paragraphSpacing: .75em
+}
+
+rich-text-field textarea.view-source {
+    display: none;
+    width: 100%;
+    height: auto;
+    min-height: 1em;
+    background: #f6f8fa;
+    border: none;
+    box-shadow: none;
+    font-family: monospace;
+    font-size: var(--font-size);
+}
+
+rich-text-field[view-source] textarea.view-source {
+    display: block;
+}
+
+rich-text-field[view-source] main {
+    display: none;
+}
+
+rich-text-field[serif] main {
+    font-family: Garamond;
+    font-size: 1.1em;
+}
+
+rich-text-field main {
+    min-width: 1em;
+    line-height: 1.3em;
+    margin: -.15em 0; /* make up for the line height */
+}
+
+rich-text-field main ul {
+    list-style: disc;
+}
+
+rich-text-field main ul,
+rich-text-field main ol {
+    margin: .5em 0 .5em 1.5em;
+    padding: 0;
+}
+
+rich-text-field .ql-container {
+    outline: none;
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    font-family: var(--font-family);
+}
+
+rich-text-field .ql-container:not(.ql-disabled) {
+    cursor: text;
+}
+
+/* rich-text-field .ql-editor.ql-blank > *  {
+    display: none;
+} */
+
+rich-text-field .ql-editor.ql-blank:before {
+    content: attr(data-placeholder);
+    color: rgba(0,0,0,.3);
+    position: absolute;
+}
+
+rich-text-field .ql-editor > p {
+    margin: 0;
+}
+
+rich-text-field .ql-editor > p:not(:last-child) {
+    margin-bottom: var(--paragraphSpacing);
+}
+
+rich-text-field toolbar {
+    font-size: .8em;
+    position: absolute;
+    display: flex;
+    background: #fff;
+    box-shadow: rgba(0,0,0,.1) 0 1px 3px;
+    border-radius: 3px;
+    top: -1em;
+    right: 0;
+    transform: translate(.5em, -50%);
+    user-select: none;
+    visibility: hidden;
+    opacity: 0;
+}
+
+rich-text-field toolbar * {
+    outline: none;
+}
+
+rich-text-field toolbar b-btn.active {
+    --color: var(--blue);
+}
+
+rich-text-field .ql-clipboard {
+    display: none;
+}
+
+form-control.nolabel rich-text-field toolbar {
+	top: 0;
+}
+
+rich-text-field:focus-within toolbar {
+	opacity: 1;
+	visibility: visible;
+}
+`;
+
+exports.default = _default;
+},{"lit-element":"+bhx"}],"CQm3":[function(require,module,exports) {
 var define;
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -23768,7 +24143,8 @@ function toByteArray (b64) {
     ? validLen - 4
     : validLen
 
-  for (var i = 0; i < len; i += 4) {
+  var i
+  for (i = 0; i < len; i += 4) {
     tmp =
       (revLookup[b64.charCodeAt(i)] << 18) |
       (revLookup[b64.charCodeAt(i + 1)] << 12) |
@@ -29850,48 +30226,7 @@ Italic.blotName = 'italic';
 Italic.tagName = ['EM', 'I'];
 var _default = Italic;
 exports.default = _default;
-},{"./bold":"BIiT"}],"TExa":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _block = _interopRequireDefault(require("../blots/block"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class Header extends _block.default {
-  static formats(domNode) {
-    return this.tagName.indexOf(domNode.tagName) + 1;
-  }
-
-}
-
-Header.blotName = 'header';
-Header.tagName = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
-var _default = Header;
-exports.default = _default;
-},{"../blots/block":"ehqu"}],"WV1K":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _block = _interopRequireDefault(require("../blots/block"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class Blockquote extends _block.default {}
-
-Blockquote.blotName = 'blockquote';
-Blockquote.tagName = 'blockquote';
-var _default = Blockquote;
-exports.default = _default;
-},{"../blots/block":"ehqu"}],"ao6/":[function(require,module,exports) {
+},{"./bold":"BIiT"}],"ao6/":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30044,7 +30379,145 @@ List.scope = _parchment.default.Scope.BLOCK_BLOT;
 List.tagName = ['OL', 'UL'];
 List.defaultChild = 'list-item';
 List.allowedChildren = [ListItem];
-},{"parchment":"CQm3","../blots/block":"ehqu","../blots/container":"6tnf"}],"iYxJ":[function(require,module,exports) {
+},{"parchment":"CQm3","../blots/block":"ehqu","../blots/container":"6tnf"}],"IkMa":[function(require,module,exports) {
+"use strict";
+
+var _core = _interopRequireDefault(require("quill/core"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const BlockEmbed = _core.default.import('blots/block/embed'); // https://quilljs.com/guides/cloning-medium-with-parchment/#dividers
+
+
+class DividerBlot extends BlockEmbed {}
+
+DividerBlot.blotName = 'divider';
+DividerBlot.tagName = 'hr';
+
+_core.default.register(DividerBlot);
+},{"quill/core":"qOpY"}],"ZpO7":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.lineBreakMatcher = lineBreakMatcher;
+exports.keyboardLinebreak = void 0;
+
+var _core = _interopRequireDefault(require("quill/core"));
+
+var _break = _interopRequireDefault(require("quill/blots/break"));
+
+var _embed = _interopRequireDefault(require("quill/blots/embed"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// https://codepen.io/mackermedia/pen/gmNwZP
+const Delta = _core.default.import('delta');
+
+class SmartBreak extends _break.default {
+  length() {
+    return 1;
+  }
+
+  value() {
+    return '\n';
+  }
+
+  insertInto(parent, ref) {
+    _embed.default.prototype.insertInto.call(this, parent, ref);
+  }
+
+}
+
+SmartBreak.blotName = 'break';
+SmartBreak.tagName = 'BR';
+
+_core.default.register(SmartBreak, true);
+
+function lineBreakMatcher() {
+  var newDelta = new Delta();
+  newDelta.insert({
+    'break': ''
+  });
+  return newDelta;
+}
+
+const keyboardLinebreak = {
+  key: 13,
+  shiftKey: true,
+  handler: function (range) {
+    let currentLeaf = this.quill.getLeaf(range.index)[0];
+    let nextLeaf = this.quill.getLeaf(range.index + 1)[0];
+    this.quill.insertEmbed(range.index, 'break', true, 'user'); // Insert a second break if:
+    // At the end of the editor, OR next leaf has a different parent (<p>)
+
+    if (nextLeaf === null || currentLeaf.parent !== nextLeaf.parent) {
+      this.quill.insertEmbed(range.index, 'break', true, 'user');
+    } // Now that we've inserted a line break, move the cursor forward
+
+
+    this.quill.setSelection(range.index + 1, 'use'); // Quill.sources.SILENT
+  }
+};
+exports.keyboardLinebreak = keyboardLinebreak;
+},{"quill/core":"qOpY","quill/blots/break":"WpVR","quill/blots/embed":"UVAQ"}],"COD5":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "Quill", {
+  enumerable: true,
+  get: function () {
+    return _core.default;
+  }
+});
+Object.defineProperty(exports, "lineBreakMatcher", {
+  enumerable: true,
+  get: function () {
+    return _break.lineBreakMatcher;
+  }
+});
+Object.defineProperty(exports, "keyboardLinebreak", {
+  enumerable: true,
+  get: function () {
+    return _break.keyboardLinebreak;
+  }
+});
+
+var _core = _interopRequireDefault(require("quill/core"));
+
+var _toolbar = _interopRequireDefault(require("quill/modules/toolbar"));
+
+var _bold = _interopRequireDefault(require("quill/formats/bold"));
+
+var _italic = _interopRequireDefault(require("quill/formats/italic"));
+
+var _list = _interopRequireWildcard(require("quill/formats/list"));
+
+require("./divider");
+
+var _break = require("./break");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import Header from 'quill/formats/header';
+// import Blockquote from 'quill/formats/blockquote';
+// custom modules
+// import './clipboard'
+_core.default.register({
+  'modules/toolbar': _toolbar.default,
+  'formats/bold': _bold.default,
+  'formats/italic': _italic.default,
+  //   'formats/header': Header,
+  //   'formats/blockquote': Blockquote,
+  'formats/list': _list.default,
+  'formats/list-item': _list.ListItem
+});
+},{"quill/core":"qOpY","quill/modules/toolbar":"5/Uj","quill/formats/bold":"BIiT","quill/formats/italic":"4WGr","quill/formats/list":"ao6/","./divider":"IkMa","./break":"ZpO7"}],"k1zW":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30054,149 +30527,19 @@ exports.default = void 0;
 
 var _litHtml = require("lit-html");
 
-var _litElement = require("lit-element");
-
 var _unsafeHtml = require("lit-html/directives/unsafe-html.js");
 
 var _util = require("util");
 
-var _menu = _interopRequireDefault(require("../../menu"));
+var _normalizeText = _interopRequireDefault(require("../../../../util/normalizeText"));
 
-var _core = _interopRequireDefault(require("quill/core"));
+var _menu = _interopRequireDefault(require("../../../menu"));
 
-var _toolbar = _interopRequireDefault(require("quill/modules/toolbar"));
+var _style = _interopRequireDefault(require("./style"));
 
-var _clipboard = _interopRequireDefault(require("quill/modules/clipboard"));
-
-var _bold = _interopRequireDefault(require("quill/formats/bold"));
-
-var _italic = _interopRequireDefault(require("quill/formats/italic"));
-
-var _header = _interopRequireDefault(require("quill/formats/header"));
-
-var _blockquote = _interopRequireDefault(require("quill/formats/blockquote"));
-
-var _list = _interopRequireWildcard(require("quill/formats/list"));
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+var _quill = require("./quill");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const Delta = _core.default.import('delta'); // const BlockEmbed = Quill.import('blots/block/embed');
-// helpful: https://github.com/quilljs/quill/issues/1184#issuecomment-403657128
-
-
-class BUIClipboard extends _clipboard.default {
-  onPaste(e) {
-    e.preventDefault();
-    const dirtyHtml = e.clipboardData.getData('text/html');
-    this.insertHTML(dirtyHtml, true);
-  }
-
-  insertHTML(html, clean = true) {
-    const range = this.quill.getSelection();
-    html = _util.htmlCleaner.clean(html); // delete any contents the user has selected
-
-    const delta = new Delta().retain(range.index).delete(range.length);
-    this.quill.updateContents(delta, 'silent');
-    this.quill.setSelection(range.index, 0, 'silent'); // paste the cleaned html
-
-    this.dangerouslyPasteHTML(range.index, html, 'user');
-  }
-
-} // https://quilljs.com/guides/cloning-medium-with-parchment/#dividers
-// class DividerBlot extends BlockEmbed { }
-// DividerBlot.blotName = 'hr';
-// DividerBlot.tagName = 'hr';
-// Quill.register(DividerBlot);
-
-
-_core.default.register({
-  'modules/toolbar': _toolbar.default,
-  'modules/clipboard': BUIClipboard,
-  'formats/bold': _bold.default,
-  'formats/italic': _italic.default,
-  'formats/header': _header.default,
-  'formats/blockquote': _blockquote.default,
-  'formats/list': _list.default,
-  'formats/list-item': _list.ListItem //   'formats/hr': DividerBlot
-
-});
-
-const styles = _litElement.css`
-rich-text-field {
-	z-index: 1000;
-}
-
-rich-text-field[serif] main {
-    font-family: Garamond;
-    font-size: 1.1em;
-}
-
-rich-text-field main {
-    min-width: 1em;
-    line-height: 1.3em;
-    margin: -.15em 0; /* make up for the line height */
-}
-
-rich-text-field main ul {
-    list-style: disc;
-}
-
-rich-text-field main ul,
-rich-text-field main ol {
-    margin: .5em 0 .5em 1.5em;
-    padding: 0;
-}
-
-rich-text-field .ql-editor {
-    outline: none;
-}
-
-rich-text-field .ql-editor > p {
-    margin: 0;
-}
-
-rich-text-field .ql-editor > p:not(:last-child) {
-    margin-bottom: .75em;
-}
-
-rich-text-field toolbar {
-    font-size: .8em;
-    position: absolute;
-    display: flex;
-    background: #fff;
-    box-shadow: rgba(0,0,0,.1) 0 1px 3px;
-    border-radius: 3px;
-    top: -1em;
-    right: 0;
-    transform: translate(.5em, -50%);
-    user-select: none;
-    visibility: hidden;
-    opacity: 0;
-}
-
-rich-text-field toolbar * {
-    outline: none;
-}
-
-rich-text-field toolbar b-btn.active {
-    --color: var(--blue);
-}
-
-rich-text-field .ql-clipboard {
-    display: none;
-}
-
-form-control.nolabel rich-text-field toolbar {
-	top: 0;
-}
-
-rich-text-field:focus-within toolbar {
-	opacity: 1;
-	visibility: visible;
-}
-`;
 
 class RichTextField extends HTMLElement {
   connectedCallback() {
@@ -30207,8 +30550,7 @@ class RichTextField extends HTMLElement {
 
     let root = this.getRootNode();
 
-    if (root && root instanceof ShadowRoot) {
-      console.warn('<rich-text-field> does not work properly in the shadow dom');
+    if (root && root instanceof ShadowRoot) {// console.warn('<rich-text-field> does not work properly in the shadow dom')
     }
 
     this.setStateAttributes();
@@ -30221,26 +30563,38 @@ class RichTextField extends HTMLElement {
   set disabled(val) {
     this.__disabled = Boolean(val);
     if (this.quill) this.__disabled ? this.quill.disable() : this.quill.enable();
+  } // TODO: add an opt out feature?
+
+
+  normalizeText(str) {
+    return (0, _normalizeText.default)(str);
   }
 
   get value() {
-    return this.quill ? this.quill.root.innerHTML : this.__value;
+    return this.quill ? this.normalizeText(this.quill.root.innerHTML) : this.__value;
   }
 
   set value(html) {
-    html = html || '';
+    html = html || ''; // NOTE: okay to always do this here? its the same as in copy/paste above
+
+    html = _util.htmlCleaner.clean(html);
+    html = this.normalizeText(html);
     this.__value = html;
-    if (!this.quill) return;
-    this.quill.root.innerHTML = html;
-    this.setStateAttributes(); // NOTE: we hide the "contenteditable" so that the browser does not "focus"
+    if (!this.quill) return; // NOTE: we hide the "contenteditable" so that the browser does not "focus"
     // on the element (which can cause views to scroll to the last focused editor)
     // see https://github.com/quilljs/quill/issues/2156 and https://github.com/quilljs/quill/issues/2415
-    // this.quill.root.hidden = true
-    // this.quill.removeFormat(0, this.quill.getText().length, 'silent')
-    // this.selectAll()
-    // this.insertHTML(html)
-    // this.quill.root.hidden = false
-    // this.setStateAttributes()
+
+    this.quill.root.hidden = true;
+    this.__settingValue = true;
+    this.quill.root.innerHTML = '';
+    this.quill.clipboard.dangerouslyPasteHTML(0, html, 'silent'); // silent or something different?
+
+    this.__settingValue = false;
+    this.blur(); // this.quill.root.innerHTML = html
+
+    this.setStateAttributes();
+    this.quill.root.hidden = false;
+    this.setStateAttributes();
   }
 
   get dbValue() {
@@ -30249,32 +30603,48 @@ class RichTextField extends HTMLElement {
 
   html() {
     return _litHtml.html`
-        <style>${styles.cssText}</style>
-        <main>${this.__value ? (0, _unsafeHtml.unsafeHTML)(this.__value) : ''}</main>
+        <style>${_style.default.cssText}</style>
+        <textarea class="view-source"></textarea>
+        <main class="ql-editor">${this.__value ? (0, _unsafeHtml.unsafeHTML)(this.__value) : ''}</main>
         <toolbar>
             <b-btn tabindex=0 format="bold" text @click=${this.format} icon="bold"></b-btn>
             <b-btn tabindex=0 format="italic" text @click=${this.format} icon="italic"></b-btn>
             <b-btn tabindex=0 format="list" value="ordered" text @click=${this.format} icon="list-numbered"></b-btn>
             <b-btn tabindex=0 format="list" value="bullet" text @click=${this.format} icon="list2"></b-btn>
-            <!--<b-btn tabindex=0 @click=${this.insertDivider} text icon="minus"></b-btn>-->
+            <!-- <b-btn tabindex=0 @click=${this.insertDivider} text icon="minus"></b-btn> -->
             <b-btn tabindex=0 @click=${this.insertSpecial} text icon="quote-right"></b-btn>
+            <!-- <b-btn tabindex=0 @click=${this.toggleSource} text icon="code" title="Toggle source code"></b-btn> -->
         </toolbar>
     `;
-  } // hmmm...not working
+  }
 
+  toggleSource() {
+    let src = this.querySelector('textarea.view-source');
+    let main = this.querySelector('main');
+
+    if (this.hasAttribute('view-source')) {
+      this.removeAttribute('view-source');
+      src.style.height = 0; // this.value = src.value
+
+      src.value = '';
+    } else {
+      src.style.height = main.offsetHeight;
+      this.setAttribute('view-source', '');
+      src.value = this.value;
+    }
+  }
 
   async insertDivider(e) {
     // this.insertHTML('<hr>', false)
-    var range = this.quill.getSelection();
+    var range = this.quill.getSelection(true);
+    console.log(range);
 
     if (range) {
       // insert the <hr> where the cursor is
-      this.quill.insertEmbed(range.index, "hr", "null");
-    } // let range = this.quill.getSelection(true);
-    // this.quill.insertText(range.index, '\n', 'user');
-    // this.quill.insertEmbed(range.index + 1, 'hr', true, 'user');
-    // this.quill.setSelection(range.index + 2, Quill.sources.SILENT);
-
+      this.quill.insertText(range.index, '\n', _quill.Quill.sources.USER);
+      this.quill.insertEmbed(range.index + 1, 'divider', true, _quill.Quill.sources.USER);
+      this.quill.setSelection(range.index + 2, _quill.Quill.sources.SILENT); // focus after divider
+    }
   }
 
   async insertSpecial(e) {
@@ -30299,19 +30669,7 @@ class RichTextField extends HTMLElement {
     }, {
       label: '… Ellipsis',
       val: "…"
-    }]; // "ə": {title: "ə - banana, alone", callback: insertSpecialCharacter},
-    // "ər": {title: "ər - further, bird", callback: insertSpecialCharacter},
-    // "î": {title: "î - fear, pier", callback: insertSpecialCharacter},
-    // "ā": {title: "ā - cape, aorta", callback: insertSpecialCharacter},
-    // "ī": {title: "ī - site, ice", callback: insertSpecialCharacter},
-    // "ä": {title: "ä - cot, father", callback: insertSpecialCharacter},
-    // "â": {title: "â - dare, hair", callback: insertSpecialCharacter},
-    // "ü": {title: "ü - rule, boot", callback: insertSpecialCharacter},
-    // "ú": {title: "ú - wood, book", callback: insertSpecialCharacter},
-    // "ē": {title: "ē - beat, equal", callback: insertSpecialCharacter},
-    // "ō": {title: "ō - bone, over", callback: insertSpecialCharacter},
-    // "ό": {title: "ό - saw, gnaw", callback: insertSpecialCharacter},
-
+    }];
     let selected = await new _menu.default(menu).popover(e.target, {
       align: 'bottom-end'
     });
@@ -30364,28 +30722,55 @@ class RichTextField extends HTMLElement {
     this.render();
     this.main = this.querySelector('main');
     this.toolbar = this.querySelector('toolbar');
-    this.quill = new _core.default(this.main, {
-      placeholder: 'Placeholder?',
-      // hmmm, not working
-      formats: ['bold', 'italic', 'list'],
-      modules: {}
-    });
+    this.quill = new _quill.Quill(this.main, {
+      formats: ['bold', 'italic', 'list', 'break'],
+      // , 'divider'
+      placeholder: this.getAttribute('placeholder') || '',
+      modules: {
+        clipboard: {
+          matchers: [['BR', _quill.lineBreakMatcher]]
+        },
+        keyboard: {
+          bindings: {
+            linebreak: _quill.keyboardLinebreak
+          }
+        }
+      }
+    }); // https://codepen.io/mackermedia/pen/gmNwZP
+
+    var length = this.quill.getLength();
+    var text = this.quill.getText(length - 2, 2); // Remove extraneous new lines
+
+    if (text === '\n\n') {
+      this.quill.deleteText(this.quill.getLength() - 2, 2);
+    }
+
     if (this.disabled) this.disabled = this.disabled;
     this.quill.root.addEventListener('focus', this._onFocus.bind(this));
     this.quill.root.addEventListener('blur', this._onBlur.bind(this));
-    this.quill.on(_core.default.events.EDITOR_CHANGE, (type, range) => {
-      if (type === _core.default.events.SELECTION_CHANGE) {
+    this.quill.on(_quill.Quill.events.EDITOR_CHANGE, (type, range) => {
+      if (type === _quill.Quill.events.SELECTION_CHANGE) {
         this.updateToolbar(range);
       }
+
+      if (type === _quill.Quill.events.TEXT_CHANGE && !this.__settingValue) {
+        this.dispatchEvent(new Event('text-change'));
+      }
     }, this);
-    this.quill.on(_core.default.events.SCROLL_OPTIMIZE, () => {
+    this.quill.on(_quill.Quill.events.SCROLL_OPTIMIZE, () => {
       let [range] = this.quill.selection.getRange(); // quill.getSelection triggers update
 
       this.updateToolbar(range);
     }, this);
   }
 
+  get characterCount() {
+    return this.quill ? this.quill.root.innerText.length : 0;
+  }
+
   _onFocus() {
+    if (this.__settingValue) return;
+
     if (!this._blurDelay) {
       this._origVal = this.value;
     }
@@ -30395,6 +30780,8 @@ class RichTextField extends HTMLElement {
   }
 
   _onBlur() {
+    if (this.__settingValue) return;
+
     if (!this._blurDelay) {
       this._blurDelay = setTimeout(() => {
         this._onBlur();
@@ -30453,7 +30840,7 @@ customElements.define('rich-text-field', RichTextField);
 var _default = customElements.get('rich-text-field');
 
 exports.default = _default;
-},{"lit-html":"SP/d","lit-element":"+bhx","lit-html/directives/unsafe-html.js":"/jTP","util":"2L/r","../../menu":"0tCY","quill/core":"qOpY","quill/modules/toolbar":"5/Uj","quill/modules/clipboard":"tAeH","quill/formats/bold":"BIiT","quill/formats/italic":"4WGr","quill/formats/header":"TExa","quill/formats/blockquote":"WV1K","quill/formats/list":"ao6/"}],"h8fl":[function(require,module,exports) {
+},{"lit-html":"SP/d","lit-html/directives/unsafe-html.js":"/jTP","util":"2L/r","../../../../util/normalizeText":"hNKD","../../../menu":"0tCY","./style":"d7Am","./quill":"COD5"}],"h8fl":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30797,216 +31184,7 @@ customElements.define('select-field', SelectFieldElement);
 var _default = customElements.get('select-field');
 
 exports.default = _default;
-},{"lit-element":"+bhx","../../menu":"0tCY"}],"jNfL":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _litElement = require("lit-element");
-
-const styles = _litElement.css`
-
-:host {
-	--size: 1.6em;
-	--color: #2196f3;
-	--colorDisabled: rgba(0, 0, 0, 0.26);
-	display: inline-block;
-	vertical-align: middle;
-	flex-grow: 0 !important;
-	display: inline-flex;
-	align-items: center;
-	cursor: pointer;
-	outline: none;
-}
-
-:host([checked]) svg.uncheck,
-:host(:not([checked])) svg.check {
-	display: none
-}
-
-main {
-	position: relative;
-}
-
-:host([placement="top"]) { flex-direction: column-reverse; }
-:host([placement="bottom"]) { flex-direction: column; }
-:host([placement="left"]) { flex-direction: row-reverse; }
-:host([placement="right"]) { flex-direction: row; }
-
-svg {
-	fill: currentColor;
-	width: var(--size);
-	height: var(--size);
-	display: inline-block;
-	transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-	user-select: none;
-	flex-shrink: 0;
-	padding: .25em;
-}
-
-.switch {
-	display: none
-}
-
-:host([type="switch"]) svg { display: none; }
-
-:host([type="switch"]) .switch {
-	display: inline-block;
-}
-
-:host([checked]) {
-	color: var(--color)
-}
-
-:host([disabled]) svg {
-	fill: var(--colorDisabled)
-}
-
-:host([disabled]) label {
-	color: var(--colorDisabled);
-}
-
-main label {
-	cursor: pointer;
-}
-
-.indeterminate {
-	display: none;
-}
-
-.switch {
-	position: relative;
-	align-items: center;
-	margin: .5em;
-}
-
-.switch:before, .switch:after {
-	content: "";
-	margin: 0;
-	outline: 0;
-	transition: all 0.3s ease;
-}
-
-.switch:before {
-	display: block;
-	width: 2em;
-	height: 1em;
-	background-color: #9E9E9E;
-	border-radius: 1em;
-}
-
-.switch:after {
-	position: absolute;
-	left: 0;
-	top: 50%;
-	transform: translate(0, -50%);
-	width: 1.3em;
-	height: 1.3em;
-	background-color: #FAFAFA;
-	border-radius: 50%;
-	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.14), 0 2px 2px 0 rgba(0, 0, 0, 0.098), 0 1px 5px 0 rgba(0, 0, 0, 0.084);
-}
-
-
-:host([checked]) .switch:before {
-	background-color: var(--color);
-	opacity: .5
-}
-
-:host([checked]) .switch:after {
-	background-color: var(--color);
-	transform: translate(80%, -50%);
-}
-`;
-
-class CheckBoxElement extends HTMLElement {
-  constructor() {
-    super();
-    let shadow = this.attachShadow({
-      mode: 'open'
-    });
-    let temp = document.createElement('template');
-    let label = this.getAttribute('label') || '<slot name="label"></slot>';
-    temp.innerHTML = `
-			<style>
-			${styles.cssText}
-			</style>
-			<main>
-				<svg class="uncheck" focusable="false" viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path></svg>
-				<svg class="check" focusable="false" viewBox="0 0 24 24"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
-				<div class="switch"></div>
-				<touch-ripple><touch-ripple>
-			</main>
-			<label>${label}</label>
-			`;
-    this.shadowRoot.appendChild(temp.content.cloneNode(true));
-    this.ripple = this.shadowRoot.querySelector('touch-ripple');
-    this.addEventListener('click', this._onClick.bind(this));
-    this.addEventListener('keydown', e => {
-      if (['Space', 'Enter'].includes(e.code)) this._onClick();
-    });
-    this.addEventListener('focus', e => {
-      if (e.relatedTarget && e.relatedTarget != this) this.ripple.enter();
-    });
-    this.addEventListener('blur', e => {
-      if (e.relatedTarget && e.relatedTarget != this) this.ripple.hide();
-    });
-  }
-
-  connectedCallback() {
-    if (!this.hasAttribute('tabindex')) this.setAttribute('tabindex', '0');
-  }
-
-  _onClick() {
-    if (this.disabled) return;
-    this.ripple.ripple();
-    this.checked = !this.checked;
-    var event = new CustomEvent('change', {
-      bubbles: true,
-      composed: true,
-      detail: {
-        value: this.checked
-      }
-    });
-    this.dispatchEvent(event); // this.blur()
-  }
-
-  set checked(val) {
-    if (val === '0' || val === '') val = false;
-    val ? this.setAttribute('checked', '') : this.removeAttribute('checked');
-  }
-
-  get checked() {
-    return this.hasAttribute('checked');
-  }
-
-  get value() {
-    return this.checked;
-  }
-
-  set value(val) {
-    this.checked = val;
-  }
-
-  get disabled() {
-    return this.hasAttribute('disabled');
-  }
-
-  set disabled(val = true) {
-    val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
-  }
-
-}
-
-customElements.define('check-box', CheckBoxElement);
-
-var _default = customElements.get('check-box');
-
-exports.default = _default;
-},{"lit-element":"+bhx"}],"GLLF":[function(require,module,exports) {
+},{"lit-element":"+bhx","../../menu":"0tCY"}],"GLLF":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31691,7 +31869,7 @@ require("./controls/radio-group");
 require("./controls/touch-ripple");
 
 require("./controls/range-slider");
-},{"./form-handler":"ZQnj","./form-control":"swB1","./controls/text-field":"2ezN","./controls/rich-text-field":"iYxJ","./controls/select-field":"h8fl","./controls/check-box":"jNfL","./controls/radio-btn":"GLLF","./controls/radio-group":"mCnW","./controls/touch-ripple":"uH6r","./controls/range-slider":"ZCfn"}],"Wr69":[function(require,module,exports) {
+},{"./form-handler":"ZQnj","./form-control":"swB1","./controls/text-field":"2ezN","./controls/rich-text-field":"k1zW","./controls/select-field":"h8fl","./controls/check-box":"jNfL","./controls/radio-btn":"GLLF","./controls/radio-group":"mCnW","./controls/touch-ripple":"uH6r","./controls/range-slider":"ZCfn"}],"Wr69":[function(require,module,exports) {
 
 /**
  * Expose `Emitter`.
@@ -31944,9 +32122,14 @@ class DataSource {
     // TODO: support fetching data with `fetch` and a url?
     if (this.coll && this.coll.fetchSync) {
       let data = {
-        pageAt: pageAt,
-        perPage: this.perPage
+        term: this.filters.term || ''
       };
+
+      if (this.opts.fetch == 'more') {
+        data.pageAt = pageAt;
+        data.perPage = this.perPage;
+      }
+
       if (this.filters) data.filters = this.filters.value();
       await this.coll.fetchSync({
         data: data
@@ -32362,7 +32545,7 @@ function capitalize(string) {
 
 module.exports = capitalize;
 
-},{"./toString":"A8RV","./upperFirst":"SwE8"}],"cbUF":[function(require,module,exports) {
+},{"./toString":"A8RV","./upperFirst":"SwE8"}],"NUHt":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32693,7 +32876,7 @@ var _dialog = _interopRequireDefault(require("../../dialog"));
 
 var _popover = _interopRequireDefault(require("../../popover"));
 
-var _titleize = _interopRequireDefault(require("../util/titleize"));
+var _titleize = _interopRequireDefault(require("../../../util/titleize"));
 
 var _fuse = _interopRequireDefault(require("fuse.js"));
 
@@ -32848,7 +33031,9 @@ class Filters extends Map {
       minMatchCharLength: 3,
       threshold: 0.2,
       location: 0,
-      distance: 100
+      distance: 100,
+      placeholder: 'Search',
+      delay: 0
     }, this.__searchOptions || {});
   }
 
@@ -32871,7 +33056,7 @@ class Filters extends Map {
       }); // prefix all keys with `_fuseSearch.` so the data is searched properly
       // keys can be an array of strings or objects with name/weight
 
-      searchOptions.keys = keys.map(key => {
+      if (keys) searchOptions.keys = keys.map(key => {
         if (typeof key == 'string') return '_fuseSearch.' + key;
         let newKey = Object.assign({}, key);
         newKey.name = '_fuseSearch.' + newKey.name;
@@ -33075,7 +33260,7 @@ class Filter {
 exports.Filter = Filter;
 (0, _componentEmitter.default)(Filters.prototype);
 (0, _componentEmitter.default)(Filter.prototype);
-},{"../../menu":"0tCY","../../dialog":"pos3","../../popover":"Soyf","../util/titleize":"cbUF","fuse.js":"Wp9p","component-emitter":"Wr69","../toolbar/filter-view-date":"YNHW","../toolbar/filter-view-slider":"vufV"}],"4sAK":[function(require,module,exports) {
+},{"../../menu":"0tCY","../../dialog":"pos3","../../popover":"Soyf","../../../util/titleize":"NUHt","fuse.js":"Wp9p","component-emitter":"Wr69","../toolbar/filter-view-date":"YNHW","../toolbar/filter-view-slider":"vufV"}],"4sAK":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33087,7 +33272,7 @@ var _litElement = require("lit-element");
 
 var _menu = _interopRequireDefault(require("../../menu"));
 
-var _titleize = _interopRequireDefault(require("../util/titleize"));
+var _titleize = _interopRequireDefault(require("../../../util/titleize"));
 
 var _componentEmitter = _interopRequireDefault(require("component-emitter"));
 
@@ -33233,7 +33418,7 @@ class Sort {
   }
 
 }
-},{"lit-element":"+bhx","../../menu":"0tCY","../util/titleize":"cbUF","component-emitter":"Wr69"}],"FOqU":[function(require,module,exports) {
+},{"lit-element":"+bhx","../../menu":"0tCY","../../../util/titleize":"NUHt","component-emitter":"Wr69"}],"FOqU":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33460,6 +33645,19 @@ require("../../form-control/form-control");
 require("../../form-control/controls/text-field");
 
 customElements.define('b-list-search-bar', class extends _litElement.LitElement {
+  static get properties() {
+    return {
+      placeholder: {
+        type: String
+      }
+    };
+  }
+
+  constructor() {
+    super();
+    this.placeholder = 'Search';
+  }
+
   static get styles() {
     return _litElement.css`
         :host {
@@ -33504,7 +33702,7 @@ customElements.define('b-list-search-bar', class extends _litElement.LitElement 
   render() {
     return _litElement.html`
         <form-control>
-            <text-field placeholder="Search" bubble-keypress single-line></text-field>
+            <text-field placeholder="${this.placeholder}" bubble-keypress single-line></text-field>
             <b-icon @click=${this.focus} name="search" slot="prefix"></b-icon>
         </form-control>
     `;
@@ -33668,7 +33866,7 @@ customElements.define('b-list-toolbar', class extends _litElement.LitElement {
         <div class="after">
 
             ${!this.filters || !this.filters.showSearch ? '' : _litElement.html`
-            <b-list-search-bar @keydown=${this.onKeyDown}></b-list-search-bar>
+            <b-list-search-bar @keydown=${this.onKeyDown} placeholder=${this.filters.searchOptions.placeholder}></b-list-search-bar>
             `}
 
             <slot name="after"></slot>
@@ -33717,7 +33915,9 @@ customElements.define('b-list-toolbar', class extends _litElement.LitElement {
 
   onKeyDown(e) {
     let target = e.target;
-    setTimeout(_ => {
+    let ts = this.filters.searchOptions.delay;
+    clearTimeout(this._keydownTimeout);
+    this._keydownTimeout = setTimeout(_ => {
       let term = target.value;
       if (term == this.filters.term) return;
       this.filters.term = term;
@@ -33728,7 +33928,7 @@ customElements.define('b-list-toolbar', class extends _litElement.LitElement {
           term: term
         }
       }));
-    }, 0);
+    }, ts);
   }
 
 });
@@ -33952,6 +34152,7 @@ customElements.define('b-list', class extends _litElement.LitElement {
         b-list-toolbar {
             box-shadow: rgba(0,0,0,.2) 0 0 6px;
             padding: .25em .5em;
+            z-index: 10;
         }
 
         b-infinite-list {
@@ -34093,6 +34294,11 @@ customElements.define('b-list', class extends _litElement.LitElement {
   }
 
   async onFilterTermChange(changes) {
+    // TODO: probably need an opt in feature
+    if (this.listOptions && this.listOptions.fetch == 'more') {
+      this.dataSource.reset();
+    }
+
     this.dataSource.applyFilters();
     this.list.reset();
     this.toolbar.count = await this.dataSource.length();

@@ -43,7 +43,13 @@ export default class DataSource {
 
         // TODO: support fetching data with `fetch` and a url?
         if( this.coll && this.coll.fetchSync ){
-            let data = {pageAt: pageAt, perPage: this.perPage}
+
+            let data = {term:this.filters.term||''}
+
+            if( this.opts.fetch == 'more' ){
+                data.pageAt = pageAt
+                data.perPage = this.perPage
+            }
 
             if( this.filters )
                 data.filters = this.filters.value()

@@ -1,7 +1,7 @@
 import Quill from 'quill/core'
 import Clipboard from 'quill/modules/clipboard';
 import {htmlCleaner} from 'util'
-import autoFormat from '../../../../util/autoFormat'
+import normalizeText from '../../../../util/normalizeText'
 
 const Delta = Quill.import('delta')
 
@@ -17,7 +17,7 @@ class BUIClipboard extends Clipboard {
         const range = this.quill.getSelection()
         
         html = htmlCleaner.clean(html)
-        html = autoFormat(html)
+        html = normalizeText(html)
 
         // delete any contents the user has selected
         const delta = new Delta()

@@ -1,7 +1,7 @@
 import { render, html } from "lit-html";
 import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
 import {htmlCleaner} from 'util'
-import autoFormat from '../../../../util/autoFormat'
+import normalizeText from '../../../../util/normalizeText'
 import Menu from '../../../menu'
 import styles from './style'
 import {Quill, lineBreakMatcher, keyboardLinebreak} from './quill'
@@ -30,12 +30,12 @@ class RichTextField extends HTMLElement {
     }
 
     // TODO: add an opt out feature?
-    autoFormat(str){
-        return autoFormat(str)
+    normalizeText(str){
+        return normalizeText(str)
     }
 
     get value(){
-        return this.quill ? this.autoFormat(this.quill.root.innerHTML) : this.__value
+        return this.quill ? this.normalizeText(this.quill.root.innerHTML) : this.__value
     }
 
     set value(html){
@@ -43,7 +43,7 @@ class RichTextField extends HTMLElement {
 
         // NOTE: okay to always do this here? its the same as in copy/paste above
         html = htmlCleaner.clean(html)
-        html = this.autoFormat(html)
+        html = this.normalizeText(html)
 
         this.__value = html
         if( !this.quill ) return
@@ -72,6 +72,7 @@ class RichTextField extends HTMLElement {
 
     html(){ return html`
         <style>${styles.cssText}</style>
+        <textarea class="view-source"></textarea>
         <main class="ql-editor">${this.__value?unsafeHTML(this.__value):''}</main>
         <toolbar>
             <b-btn tabindex=0 format="bold" text @click=${this.format} icon="bold"></b-btn>
@@ -80,8 +81,25 @@ class RichTextField extends HTMLElement {
             <b-btn tabindex=0 format="list" value="bullet" text @click=${this.format} icon="list2"></b-btn>
             <!-- <b-btn tabindex=0 @click=${this.insertDivider} text icon="minus"></b-btn> -->
             <b-btn tabindex=0 @click=${this.insertSpecial} text icon="quote-right"></b-btn>
+            <!-- <b-btn tabindex=0 @click=${this.toggleSource} text icon="code" title="Toggle source code"></b-btn> -->
         </toolbar>
     `}
+
+    toggleSource(){
+        let src = this.querySelector('textarea.view-source')
+        let main = this.querySelector('main')
+
+        if( this.hasAttribute('view-source') ){
+            this.removeAttribute('view-source')
+            src.style.height = 0
+            // this.value = src.value
+            src.value = ''
+        }else{
+            src.style.height = main.offsetHeight
+            this.setAttribute('view-source', '')
+            src.value = this.value
+        }
+    }
 
     async insertDivider(e){
         // this.insertHTML('<hr>', false)

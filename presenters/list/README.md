@@ -53,8 +53,11 @@ const filters = {
                 title: m.get('title'),
                 tags: m.get('tags') // value can be an array of strings
             }
-        }
-        // optionally specify other fuse.js options
+        },
+        // optional
+        placeholder: 'Search',
+        delay: 500 // how long of delay in user typing to begin searching?
+        //...specify other fuse.js options
     },
 
     type: {

@@ -1,7 +1,7 @@
 import Menu from '../../menu'
 import Dialog from '../../dialog'
 import Popover from '../../popover'
-import titleize from '../util/titleize'
+import titleize from '../../../util/titleize'
 import Fuse from 'fuse.js'
 import Emitter from 'component-emitter'
 import FilterViewDate from '../toolbar/filter-view-date'
@@ -170,6 +170,8 @@ export default class Filters extends Map {
             threshold: 0.2,
             location: 0,
             distance: 100,
+            placeholder: 'Search',
+            delay: 0
         }, this.__searchOptions||{})
     }
 
@@ -202,6 +204,7 @@ export default class Filters extends Map {
 
             // prefix all keys with `_fuseSearch.` so the data is searched properly
             // keys can be an array of strings or objects with name/weight
+            if( keys )
             searchOptions.keys = keys.map(key=>{
                 if( typeof key == 'string' )
                     return '_fuseSearch.'+key

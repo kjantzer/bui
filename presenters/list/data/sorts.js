@@ -1,6 +1,6 @@
 import {html} from 'lit-element'
 import Menu from '../../menu'
-import titleize from '../util/titleize'
+import titleize from '../../../util/titleize'
 import Emitter from 'component-emitter'
 
 export default class Sorts extends Map {

@@ -4,6 +4,15 @@ import '../../form-control/controls/text-field'
 
 customElements.define('b-list-search-bar', class extends LitElement{
 
+    static get properties(){return {
+        placeholder: {type: String}
+    }}
+
+    constructor(){
+        super()
+        this.placeholder = 'Search'
+    }
+
     static get styles(){return css`
         :host {
             display: block
@@ -45,7 +54,7 @@ customElements.define('b-list-search-bar', class extends LitElement{
 
     render(){return html`
         <form-control>
-            <text-field placeholder="Search" bubble-keypress single-line></text-field>
+            <text-field placeholder="${this.placeholder}" bubble-keypress single-line></text-field>
             <b-icon @click=${this.focus} name="search" slot="prefix"></b-icon>
         </form-control>
     `}

@@ -10,6 +10,26 @@ rich-text-field {
     --paragraphSpacing: .75em
 }
 
+rich-text-field textarea.view-source {
+    display: none;
+    width: 100%;
+    height: auto;
+    min-height: 1em;
+    background: #f6f8fa;
+    border: none;
+    box-shadow: none;
+    font-family: monospace;
+    font-size: var(--font-size);
+}
+
+rich-text-field[view-source] textarea.view-source {
+    display: block;
+}
+
+rich-text-field[view-source] main {
+    display: none;
+}
+
 rich-text-field[serif] main {
     font-family: Garamond;
     font-size: 1.1em;

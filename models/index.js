@@ -52,6 +52,7 @@ export class Collection {
         let models = data.map(d=>{
             let m = new Model(d)
             m.coll = this
+            m.collection = this
             return m
         })
 
@@ -60,6 +61,7 @@ export class Collection {
         }else{
             this.models.forEach(m=>{
                 delete m.coll
+                delete m.collection
             })
             this.models = models
         }
