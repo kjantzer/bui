@@ -4,7 +4,7 @@
 [![docs](https://img.shields.io/badge/-Documentation-black)](http://kjantzer.github.io/bui/docs/)
 
 
-Reusable web components for creating interfaces.
+Web components for creating interfaces - built with [lit-html](https://lit-html.polymer-project.org/) and [lit-element](https://lit-element.polymer-project.org/) by [Blackstone Publishing](https://blackstonepublishing.com)
 
 ***
 

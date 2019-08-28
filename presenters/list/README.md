@@ -168,7 +168,11 @@ const sorts = {
 }
 ```
 
-## Divider
+## Other Views
+
+### Header
+
+### Divider
 A divider can be added to the list.
 
 ```html
@@ -190,7 +194,7 @@ class DividerElement extends HTMLElement {
 }
 ```
 
-## HTML Slots
+### Slots
 The default list view can be extended with html slots
 
 - `spinner` - if you want to use a different spinner
@@ -211,3 +215,7 @@ The list dispatches a DOM event when the content changes (this would happen when
 ```
 list.addEventListener('content-changed', e=>{})
 ```
+
+## Methods
+- `refresh` - clears the list and fetches new data
+- `reload` - reapplies the filters and reloads the table (new data NOT fetched)

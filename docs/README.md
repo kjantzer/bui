@@ -5,6 +5,7 @@
 
 * Extras
     * [Util](/util/README.md)
+    * [Helpers](/helpers/README.md)
     * [Models](/models/README.md)
     * [Router](/router/README.md)
 

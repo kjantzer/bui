@@ -95,6 +95,7 @@ needs to render one. A panel toolbar element has been created for such a task.
 - `right`
 - `middle` - next to title
 - `title` - in place of title
+- `close-btn` - use your own close button
 
 ```html
 <b-panel-toolbar>
