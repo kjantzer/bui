@@ -123,6 +123,8 @@ customElements.define('b-list-toolbar', class extends LitElement{
             <b-list-search-bar @keydown=${this.onKeyDown} placeholder=${this.filters.searchOptions.placeholder}></b-list-search-bar>
             `}
 
+            <slot name="refresh-btn"></slot>
+
             <slot name="after"></slot>
         </div>
     `}

@@ -66,16 +66,17 @@ customElements.define('b-infinite-list', class extends HTMLElement {
     }
 
     get rowElement(){return this.getAttribute('row') || 'div'}
+    get emptyElement(){return this.getAttribute('empty') || 'b-empty-state'}
 
     addContent(models){
         
         this.pageAt += models.length
 
         if( this.pageAt == 0 ){
-            let empty = document.createElement('b-empty-state')
+            this.emptyView = this.emptyView || document.createElement(this.emptyElement)
             let term = this.dataSource.filters&&this.dataSource.filters.term
-            empty.innerHTML = term ? `No results for “${term}”` : (this.getAttribute('placeholder') || 'No results')
-            this.appendChild(empty)
+            this.emptyView.value = term ? `No results for “${term}”` : (this.getAttribute('placeholder') || 'No results')
+            this.appendChild(this.emptyView)
             return 
         }
 

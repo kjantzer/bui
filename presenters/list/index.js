@@ -75,12 +75,15 @@ customElements.define('b-list', class extends LitElement {
     static get styles(){return css`
         :host {
             display: grid;
-            grid-template-rows: auto 1fr;
+            grid-template-rows: auto auto 1fr;
             overflow: hidden;
             flex: 1;
             position: relative;
             --searchBgd: #f5f5f5;
-            
+        }
+
+        [slot="header"] {
+            display: block;
         }
 
         b-spinner-overlay {
@@ -150,10 +153,15 @@ customElements.define('b-list', class extends LitElement {
             @filter-term-changed=${this.onFilterTermChange}>
             <slot name="toolbar:before" slot="before"></slot>
             <slot name="toolbar:after" slot="after"></slot>
+            <slot name="toolbar:refresh" slot="refresh-btn">
+                <b-btn text pill icon="arrows-ccw" @click=${this.refresh}></b-btn>
+            </slot>
             <!-- <b-label slot="after" class="queuing-label">Queuing filters, release to apply</b-label> -->
         </b-list-toolbar>
+        <slot name="header"></slot>
         <b-infinite-list
             row="${this.rowElement}"
+            empty="${this.emptyElement}"
             .divider=${this.divider}
             .dataSource=${this.dataSource}
         ></b-infinite-list>
@@ -164,6 +172,13 @@ customElements.define('b-list', class extends LitElement {
 
         window.addEventListener('keydown', this.onKeydown, true)
         window.addEventListener('keyup', this.onKeyup, true)
+
+        let host = this.getRootNode().host
+
+		if( host ){
+            this.host = host
+            host.list = host.list || this
+        }
     }
 
     disconnectedCallback(){
@@ -171,6 +186,9 @@ customElements.define('b-list', class extends LitElement {
 
         window.removeEventListener('keydown', this.onKeydown, true)
         window.removeEventListener('keyup', this.onKeyup, true)
+
+        if( this.host && this.host.list == this )
+            delete this.host
     }
 
     onKeydown(e){
@@ -194,6 +212,7 @@ customElements.define('b-list', class extends LitElement {
     }
 
     get rowElement(){ return this.getAttribute('row')}
+    get emptyElement(){ return this.getAttribute('empty')}
 
     get toolbar(){
         return this.shadowRoot.querySelector('b-list-toolbar')
@@ -231,6 +250,12 @@ customElements.define('b-list', class extends LitElement {
         this.list.reset()
         this.toolbar.count = await this.dataSource.length()
         this.spinner.show = false
+    }
+
+    async reload(){
+        this.dataSource.refilter()
+        this.list.reset()
+        this.toolbar.count = await this.dataSource.length()
     }
 
     async onFilterTermChange(changes){

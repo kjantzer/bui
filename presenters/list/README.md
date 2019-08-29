@@ -18,10 +18,16 @@ and filter the results.
 ></b-list>
 ```
 
+>*NOTE:* the list will link itself to the host view as `.list`
+>(so long as .list is not already set)
+
 #### Attributes
 - `key` - used to remember which filters are selected
 - `row` - the name of the custom element to use for each item
+- `divider` - optional divider (see below)
 - `.coll` - a Backbone.Collection to use for fetching data
+- `listOptions` - change defaults (see below)
+
 
 ## List Options
 Options passed along to the infinite-list
@@ -171,6 +177,13 @@ const sorts = {
 ## Other Views
 
 ### Header
+A list header can be rendered between the toolbar and the list items.
+
+```html
+<b-list>
+    <div slot="header"></div>
+</b-list>
+```
 
 ### Divider
 A divider can be added to the list.
@@ -200,6 +213,8 @@ The default list view can be extended with html slots
 - `spinner` - if you want to use a different spinner
 - `toolbar:before`
 - `toolbar:after`
+- `toolbar:refresh` - your own refresh button (or to remove default)
+- `header`
 
 ## Events
 

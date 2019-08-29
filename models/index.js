@@ -18,6 +18,10 @@ export class Collection {
     filter(fn){ return this.models.filter(fn) }
     reduce(fn, start=0){ return this.models.reduce(fn, start) }
 
+    add(...args){
+        this.models.push(...args)
+    }
+
     async fetchSync(params={}){ return this.fetch(params) } // alias to match older Backbone change
 
     async fetch(params={}){

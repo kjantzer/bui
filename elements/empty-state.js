@@ -5,9 +5,14 @@ import { LitElement, html, css } from "lit-element";
 
 export default class EmptyState extends LitElement {
 
+    static get properties(){return {
+        value: {type: String}
+    }}
+
     static get styles(){return css`
         :host {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             color: rgba(55,71,79,.2);
@@ -40,7 +45,7 @@ export default class EmptyState extends LitElement {
     `}
 
     render(){return html`
-        <slot></slot>
+        <slot>${this.value}</slot>
     `}
 }
 

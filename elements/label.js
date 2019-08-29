@@ -11,6 +11,7 @@ export default class Label extends LitElement {
             font-size: 1rem;
             line-height: 1rem;
             --dividerThickness: 1px;
+            vertical-align: middle;
         }
 
         :host([hidden]) {

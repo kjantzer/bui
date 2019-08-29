@@ -21,6 +21,11 @@ class FormHandler extends HTMLElement {
 	set patchSave(val){ val ? this.setAttribute('patchsave', '') : this.removeAttribute('patchsave') }
 	
 	connectedCallback(){
+
+		let host = this.getRootNode().host
+		if( !host.formHandler )
+			host.formHandler = this
+
 		// TODO: change to `controls`?
 		this.editors = Array.from(this.querySelectorAll('form-control[key], check-box[key], radio-group[key], text-field[key], select-field[key]'))
 		this.editorsByKey = {}

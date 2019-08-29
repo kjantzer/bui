@@ -380,8 +380,8 @@ export class Panel extends LitElement {
             bottom: 0;
             background: rgba(0,0,0,.4); /* overlay */
             opacity: 0;
-            transition: opacity ${unsafeCSS(Panel.animationTime)}ms ease-in-out,
-                        background-color ${unsafeCSS(Panel.animationTime)}ms ease-in-out;
+            transition: opacity ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1),
+                        background-color ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
             --radius: 5px;
         }
 
@@ -403,7 +403,7 @@ export class Panel extends LitElement {
             background: #fff;
             box-shadow: rgba(0,0,0,.2) 0 3px 10px;
             border-radius: var(--radius) var(--radius) 0 0px;
-            transition: 300ms ease-in-out;
+            transition: ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         :host([open]) {
@@ -463,6 +463,10 @@ export class Panel extends LitElement {
             width: 100%;
             /* display: grid;
             grid-template-rows: auto 1fr; */
+        }
+
+        main > slot::slotted(.dialog) {
+            font-size: 1.1em;
         }
 
         main {

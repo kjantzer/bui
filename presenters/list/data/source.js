@@ -19,6 +19,15 @@ export default class DataSource {
         this.data = []          // filtered data with "search term" applied
     }
 
+    async refilter(){
+        this.lastFiltered = 0
+        this._rawData = this.coll.models || this.coll
+        this._filteredData = this._rawData
+        this.data = this._rawData
+
+        await this.applyFilters()
+    }
+
     get perPage(){ return this.opts.perPage }
 
     async length(){
@@ -69,13 +78,7 @@ export default class DataSource {
                 if( this.opts.fetch )
                     await this._fetchFromServer(pageAt)
                 
-                this.lastFiltered = 0
-                this._rawData = this.coll.models || this.coll
-                this._filteredData = this._rawData
-                this.data = this._rawData
-
-                await this.applyFilters()
-
+                await this.refilter()
             }
 
             if( this._rawData.length > pageAt )

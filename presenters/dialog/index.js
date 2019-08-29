@@ -131,24 +131,3 @@ Dialog.prompt = function(opts={}){
 	
 	return dialog
 }
-
-
-
-
-window.dialogTest = async function(){
-	
-	let resp = await Dialog.prompt({
-		title: 'New Thing',
-		w: 400,
-		placeholder: 'Number of units',
-		validate: 'int',
-		required: true,
-		msg: 'To subscribe to this website, please enter your email address here. We will send updates occasionally.'
-	}).modal()
-	
-	console.log(resp);
-	
-}
-
-// TEMP
-// setTimeout(dialogTest,2000)

@@ -120,8 +120,8 @@ export class UploaderElement extends LitElement {
 
     connectedCallback(){
         super.connectedCallback();
-
-        this.parent = this.parentElement || this.shadowRoot
+        if( this.parent ) return
+        this.parent = this.parentElement || this.getRootNode().host
         this.parent.addEventListener('dragenter', this.dragenter, true)
         this.addEventListener('dragleave', this.dragleave, true)
         this.addEventListener('dragover', this.dragover, true)
@@ -134,6 +134,7 @@ export class UploaderElement extends LitElement {
         this.removeEventListener('dragleave', this.dragleave)
         this.removeEventListener('dragover', this.dragover)
         this.removeEventListener('drop', this.drop)
+        this.parent = null;
     }
 
     _acceptFile(file){
