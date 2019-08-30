@@ -211,6 +211,16 @@ uploader.chooseFile()
 - `--uploadingBgd`
 - `--progressBgd`
 
+## `<b-embed>`
+For embedding iframes and videos (like youtube) that responsively scale
+
+```html
+<b-embed url="https://www.youtube.com/watch?v=sK1ODp0nDbM"></b-embed>
+```
+<!--
+<b-embed url="https://www.youtube.com/watch?v=sK1ODp0nDbM"></b-embed>
+-->
+
 ## `<b-carousel>`
 A slider/carousel element that will show one of the nested elements at time.
 A set of dots will be shown to represent the number of slides available.

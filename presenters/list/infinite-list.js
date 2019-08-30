@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
+import '../../elements/empty-state'
 
 customElements.define('b-infinite-list', class extends HTMLElement {
 
@@ -74,6 +75,7 @@ customElements.define('b-infinite-list', class extends HTMLElement {
 
         if( this.pageAt == 0 ){
             this.emptyView = this.emptyView || document.createElement(this.emptyElement)
+            this.emptyView.dataSource = this.dataSource
             let term = this.dataSource.filters&&this.dataSource.filters.term
             this.emptyView.value = term ? `No results for “${term}”` : (this.getAttribute('placeholder') || 'No results')
             this.appendChild(this.emptyView)

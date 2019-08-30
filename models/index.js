@@ -33,7 +33,6 @@ export class Collection {
             base = undefined
 
         let url = new URL(this.url, base)
-        let Model = this.model || Object
         
         if( params.data ){
             let data = params.data
@@ -52,6 +51,13 @@ export class Collection {
             console.log('failed to fetch data');
             return
         }
+
+        this._parse(data, params)
+    }
+
+    _parse(data, params={}){
+        
+        let Model = this.model || Object
 
         let models = data.map(d=>{
             let m = new Model(d)

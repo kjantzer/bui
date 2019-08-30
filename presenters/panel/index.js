@@ -3,11 +3,13 @@ import router from '../../router'
 import {Route} from '../../router'
 import './controller'
 import './toolbar'
+import '../../elements/btn'
 
 let rootPanelController;
 
 export const PanelDefaults = {
     type: '',
+    closeBtn: false,
     title: '',
     width: '100%',
     height: '100%',
@@ -93,6 +95,14 @@ class RegisteredPanels {
 
 export const register = new RegisteredPanels()
 
+export const Modal = function(view, opts={}){
+    opts = Object.assign({
+        type: 'modal'
+    }, opts)
+
+    return new Panel(view, opts).open()
+}
+
 export class Panel extends LitElement {
 
     static get properties(){return {
@@ -129,6 +139,7 @@ export class Panel extends LitElement {
 
         this.animation = opts.animation
         this.type = opts.type
+        this.closeBtn = opts.closeBtn
         this.title = opts.title
         this.width = opts.width
         this.height = opts.height
@@ -220,6 +231,7 @@ export class Panel extends LitElement {
     render(){return html`
         <div class="backdrop"></div>
         <main style="width:${this.width}; height:${this.height}">
+            <b-btn icon="cancel-1" pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closeBtn}></b-btn>
             <slot></slot>
             ${this.html}
         </main>
@@ -459,6 +471,14 @@ export class Panel extends LitElement {
             bottom: 0;
         }
 
+        .modal-close-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 10000;
+            transform: translate(50%, -50%);
+        }
+
         main > slot::slotted(*) {
             width: 100%;
             /* display: grid;
@@ -467,6 +487,11 @@ export class Panel extends LitElement {
 
         main > slot::slotted(.dialog) {
             font-size: 1.1em;
+        }
+
+        main > slot::slotted(b-embed) {
+            border-radius: var(--radius);
+            overflow: hidden;
         }
 
         main {

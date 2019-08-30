@@ -23,7 +23,7 @@ class FormHandler extends HTMLElement {
 	connectedCallback(){
 
 		let host = this.getRootNode().host
-		if( !host.formHandler )
+		if( host && !host.formHandler )
 			host.formHandler = this
 
 		// TODO: change to `controls`?

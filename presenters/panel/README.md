@@ -18,6 +18,7 @@ panel.open()
 - `height` (string)
 - `anchor` (top, right, bottom, left, center)
 - `type` (modal)
+- `closeBtn` (bool) - will show a close button in the top right
 - `animation` (scale [only works on anchor=center])
 - `disableBackdropClick`
 - `onClose`
@@ -111,3 +112,15 @@ needs to render one. A panel toolbar element has been created for such a task.
 - `shadow`
 - `overlay`
 - `notitle`
+
+## Modal
+Although designed as a large panel view, panels can be leveraged to present
+modal (popup/alert) windows. This can be accomplished through the options
+parameter or through the convenient Modal function
+
+```js
+import {Modal} from 'bui/presenters/panel'
+
+Modal('my-view')
+Modal('my-view', {width: '400px', closeBtn: true})
+```

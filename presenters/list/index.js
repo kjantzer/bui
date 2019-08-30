@@ -4,6 +4,7 @@ import Filters from './data/filters'
 import Sorts from './data/sorts'
 import './toolbar'
 import './infinite-list'
+import '../../elements/spinner-overlay'
 
 
 customElements.define('b-list', class extends LitElement {
@@ -211,8 +212,8 @@ customElements.define('b-list', class extends LitElement {
         doQueue ? this.setAttribute('queuing', '') : this.removeAttribute('queuing')
     }
 
-    get rowElement(){ return this.getAttribute('row')}
-    get emptyElement(){ return this.getAttribute('empty')}
+    get rowElement(){ return this.getAttribute('row') || ''}
+    get emptyElement(){ return this.getAttribute('empty') || ''}
 
     get toolbar(){
         return this.shadowRoot.querySelector('b-list-toolbar')
