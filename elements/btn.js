@@ -50,6 +50,10 @@ export class BtnElement extends LitElement {
             font-weight: bold;
         }
 
+        :host([hidden]) {
+            display: none !important;
+        }
+
         main {
             border-radius: var(--radius);
             position: relative;
