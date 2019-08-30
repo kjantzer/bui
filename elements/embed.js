@@ -4,7 +4,7 @@ import { LitElement, html, css } from 'lit-element'
 customElements.define('b-embed', class Embed extends LitElement {
 
     static get properties(){return {
-        url: {type: String}
+        url: {type: String, reflect: true}
     }}
 
     static get styles(){return css`

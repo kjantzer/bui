@@ -306,7 +306,6 @@
 }
 
 .dialog {
-  font-size: .9em;
   display: grid;
   grid-template-areas: 'icon' 'title' 'msg' 'btns';
 }

@@ -760,11 +760,12 @@ var _template = require("./template.js");
 /**
  * @module lit-html
  */
-
+const commentMarker = ` ${_template.marker} `;
 /**
  * The return type of `html`, which holds a Template and the values from
  * interpolated expressions.
  */
+
 class TemplateResult {
   constructor(strings, values, type, processor) {
     this.strings = strings;
@@ -817,7 +818,7 @@ class TemplateResult {
         // attribute values like <div foo="<!--${'bar'}">. Cases like
         // <!-- foo=${'bar'}--> are handled correctly in the attribute branch
         // below.
-        html += s + (isCommentBinding ? _template.marker : _template.nodeMarker);
+        html += s + (isCommentBinding ? commentMarker : _template.nodeMarker);
       } else {
         // For attributes we use just a marker sentinel, and also append a
         // $lit$ suffix to the name to opt-out of attribute-specific parsing
@@ -1847,7 +1848,7 @@ var _template = require("./lib/template.js");
 // IMPORTANT: do not change the property name or the assignment expression.
 // This line will be used in regexes to search for lit-html usage.
 // TODO(justinfagnani): inject version number at build time
-(window['litHtmlVersions'] || (window['litHtmlVersions'] = [])).push('1.1.1');
+(window['litHtmlVersions'] || (window['litHtmlVersions'] = [])).push('1.1.2');
 /**
  * Interprets a template literal as an HTML template that can efficiently
  * render to and update a container.
@@ -4277,6 +4278,8 @@ exports.SpinnerOverlayElement = void 0;
 
 var _litElement = require("lit-element");
 
+require("./spinner");
+
 class SpinnerOverlayElement extends _litElement.LitElement {
   static get properties() {
     return {
@@ -4393,7 +4396,7 @@ class SpinnerOverlayElement extends _litElement.LitElement {
 
 exports.SpinnerOverlayElement = SpinnerOverlayElement;
 customElements.define('b-spinner-overlay', SpinnerOverlayElement);
-},{"lit-element":"+bhx"}],"aYTp":[function(require,module,exports) {
+},{"lit-element":"+bhx","./spinner":"EnCN"}],"aYTp":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4546,7 +4549,8 @@ class UploaderElement extends _litElement.LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this.parent = this.parentElement || this.shadowRoot;
+    if (this.parent) return;
+    this.parent = this.parentElement || this.getRootNode().host;
     this.parent.addEventListener('dragenter', this.dragenter, true);
     this.addEventListener('dragleave', this.dragleave, true);
     this.addEventListener('dragover', this.dragover, true);
@@ -4559,6 +4563,7 @@ class UploaderElement extends _litElement.LitElement {
     this.removeEventListener('dragleave', this.dragleave);
     this.removeEventListener('dragover', this.dragover);
     this.removeEventListener('drop', this.drop);
+    this.parent = null;
   }
 
   _acceptFile(file) {
@@ -9702,10 +9707,19 @@ var _litElement = require("lit-element");
     https://undraw.co/illustrations
 */
 class EmptyState extends _litElement.LitElement {
+  static get properties() {
+    return {
+      value: {
+        type: String
+      }
+    };
+  }
+
   static get styles() {
     return _litElement.css`
         :host {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             color: rgba(55,71,79,.2);
@@ -9740,7 +9754,7 @@ class EmptyState extends _litElement.LitElement {
 
   render() {
     return _litElement.html`
-        <slot></slot>
+        <slot>${this.value}</slot>
     `;
   }
 
@@ -9769,6 +9783,7 @@ class Label extends _litElement.LitElement {
             font-size: 1rem;
             line-height: 1rem;
             --dividerThickness: 1px;
+            vertical-align: middle;
         }
 
         :host([hidden]) {
@@ -9952,6 +9967,82 @@ customElements.define('b-sub', class extends _litElement.LitElement {
 });
 
 var _default = customElements.get('b-sub');
+
+exports.default = _default;
+},{"lit-element":"+bhx"}],"bpDM":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+// https://embedresponsively.com/ 
+customElements.define('b-embed', class Embed extends _litElement.LitElement {
+  static get properties() {
+    return {
+      url: {
+        type: String
+      }
+    };
+  }
+
+  static get styles() {
+    return _litElement.css`
+        :host {
+            display: block;
+            position:relative;
+        }
+
+        main {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    `;
+  }
+
+  render() {
+    return _litElement.html`
+        <main>
+            <iframe src='${this.formattedURL}' 
+                    frameborder='0' 
+                    allowfullscreen>
+            </iframe>
+        </main>
+    `;
+  }
+
+  get formattedURL() {
+    if (!this.url) return '';
+    let match = Embed.isYoutube(this.url);
+
+    if (match) {
+      return 'https://www.youtube.com/embed/' + match[1];
+    }
+
+    return this.url;
+  }
+
+  static isYoutube(url) {
+    return url.match(/(?:youtu\.be|youtube\.com)\/(?:watch\?v\=)?(?:embed\/)?(.+)/);
+  }
+
+});
+
+var _default = customElements.get('b-embed');
 
 exports.default = _default;
 },{"lit-element":"+bhx"}],"/jTP":[function(require,module,exports) {
@@ -13995,7 +14086,7 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.Panel = exports.register = exports.PanelDefaults = void 0;
+exports.default = exports.Panel = exports.Modal = exports.register = exports.PanelDefaults = void 0;
 
 var _litElement = require("lit-element");
 
@@ -14005,11 +14096,14 @@ require("./controller");
 
 require("./toolbar");
 
+require("../../elements/btn");
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 let rootPanelController;
 const PanelDefaults = {
   type: '',
+  closeBtn: false,
   title: '',
   width: '100%',
   height: '100%',
@@ -14086,6 +14180,15 @@ class RegisteredPanels {
 const register = new RegisteredPanels();
 exports.register = register;
 
+const Modal = function (view, opts = {}) {
+  opts = Object.assign({
+    type: 'modal'
+  }, opts);
+  return new Panel(view, opts).open();
+};
+
+exports.Modal = Modal;
+
 class Panel extends _litElement.LitElement {
   static get properties() {
     return {
@@ -14138,6 +14241,7 @@ class Panel extends _litElement.LitElement {
     opts = Object.assign(defaultOpts, opts);
     this.animation = opts.animation;
     this.type = opts.type;
+    this.closeBtn = opts.closeBtn;
     this.title = opts.title;
     this.width = opts.width;
     this.height = opts.height;
@@ -14221,6 +14325,7 @@ class Panel extends _litElement.LitElement {
     return _litElement.html`
         <div class="backdrop"></div>
         <main style="width:${this.width}; height:${this.height}">
+            <b-btn icon="cancel-1" pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closeBtn}></b-btn>
             <slot></slot>
             ${this.html}
         </main>
@@ -14389,8 +14494,8 @@ class Panel extends _litElement.LitElement {
             bottom: 0;
             background: rgba(0,0,0,.4); /* overlay */
             opacity: 0;
-            transition: opacity ${(0, _litElement.unsafeCSS)(Panel.animationTime)}ms ease-in-out,
-                        background-color ${(0, _litElement.unsafeCSS)(Panel.animationTime)}ms ease-in-out;
+            transition: opacity ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1),
+                        background-color ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
             --radius: 5px;
         }
 
@@ -14412,7 +14517,7 @@ class Panel extends _litElement.LitElement {
             background: #fff;
             box-shadow: rgba(0,0,0,.2) 0 3px 10px;
             border-radius: var(--radius) var(--radius) 0 0px;
-            transition: 300ms ease-in-out;
+            transition: ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         :host([open]) {
@@ -14468,10 +14573,27 @@ class Panel extends _litElement.LitElement {
             bottom: 0;
         }
 
+        .modal-close-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 10000;
+            transform: translate(50%, -50%);
+        }
+
         main > slot::slotted(*) {
             width: 100%;
             /* display: grid;
             grid-template-rows: auto 1fr; */
+        }
+
+        main > slot::slotted(.dialog) {
+            font-size: 1.1em;
+        }
+
+        main > slot::slotted(b-embed) {
+            border-radius: var(--radius);
+            overflow: hidden;
         }
 
         main {
@@ -14577,7 +14699,7 @@ customElements.define('b-panel', Panel);
 var _default = customElements.get('b-panel');
 
 exports.default = _default;
-},{"lit-element":"+bhx","../../router":"38Qe","./controller":"R9Fe","./toolbar":"ZNP1"}],"Wp9p":[function(require,module,exports) {
+},{"lit-element":"+bhx","../../router":"38Qe","./controller":"R9Fe","./toolbar":"ZNP1","../../elements/btn":"DABr"}],"Wp9p":[function(require,module,exports) {
 var define;
 /*!
  * Fuse.js v3.4.5 - Lightweight fuzzy-search (http://fusejs.io)
@@ -16901,7 +17023,9 @@ class FormHandler extends HTMLElement {
   }
 
   connectedCallback() {
-    // TODO: change to `controls`?
+    let host = this.getRootNode().host;
+    if (host && !host.formHandler) host.formHandler = this; // TODO: change to `controls`?
+
     this.editors = Array.from(this.querySelectorAll('form-control[key], check-box[key], radio-group[key], text-field[key], select-field[key]'));
     this.editorsByKey = {};
     this.editors.forEach(el => {
@@ -18113,19 +18237,6 @@ Dialog.prompt = function (opts = {}) {
   }, 500);
   return dialog;
 };
-
-window.dialogTest = async function () {
-  let resp = await Dialog.prompt({
-    title: 'New Thing',
-    w: 400,
-    placeholder: 'Number of units',
-    validate: 'int',
-    required: true,
-    msg: 'To subscribe to this website, please enter your email address here. We will send updates occasionally.'
-  }).modal();
-  console.log(resp);
-}; // TEMP
-// setTimeout(dialogTest,2000)
 },{"./dialog":"HbKK"}],"VxKk":[function(require,module,exports) {
 "use strict";
 
@@ -22657,136 +22768,675 @@ function merge_tuples (diffs, start, length) {
   return diffs;
 }
 
-},{}],"mbYX":[function(require,module,exports) {
-exports = module.exports = typeof Object.keys === 'function'
-  ? Object.keys : shim;
+},{}],"uTT0":[function(require,module,exports) {
+'use strict';
 
-exports.shim = shim;
-function shim (obj) {
-  var keys = [];
-  for (var key in obj) keys.push(key);
-  return keys;
+var toStr = Object.prototype.toString;
+
+module.exports = function isArguments(value) {
+  var str = toStr.call(value);
+  var isArgs = str === '[object Arguments]';
+
+  if (!isArgs) {
+    isArgs = str !== '[object Array]' && value !== null && typeof value === 'object' && typeof value.length === 'number' && value.length >= 0 && toStr.call(value.callee) === '[object Function]';
+  }
+
+  return isArgs;
+};
+},{}],"orz+":[function(require,module,exports) {
+'use strict';
+
+var keysShim;
+
+if (!Object.keys) {
+  // modified from https://github.com/es-shims/es5-shim
+  var has = Object.prototype.hasOwnProperty;
+  var toStr = Object.prototype.toString;
+
+  var isArgs = require('./isArguments'); // eslint-disable-line global-require
+
+
+  var isEnumerable = Object.prototype.propertyIsEnumerable;
+  var hasDontEnumBug = !isEnumerable.call({
+    toString: null
+  }, 'toString');
+  var hasProtoEnumBug = isEnumerable.call(function () {}, 'prototype');
+  var dontEnums = ['toString', 'toLocaleString', 'valueOf', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'constructor'];
+
+  var equalsConstructorPrototype = function (o) {
+    var ctor = o.constructor;
+    return ctor && ctor.prototype === o;
+  };
+
+  var excludedKeys = {
+    $applicationCache: true,
+    $console: true,
+    $external: true,
+    $frame: true,
+    $frameElement: true,
+    $frames: true,
+    $innerHeight: true,
+    $innerWidth: true,
+    $onmozfullscreenchange: true,
+    $onmozfullscreenerror: true,
+    $outerHeight: true,
+    $outerWidth: true,
+    $pageXOffset: true,
+    $pageYOffset: true,
+    $parent: true,
+    $scrollLeft: true,
+    $scrollTop: true,
+    $scrollX: true,
+    $scrollY: true,
+    $self: true,
+    $webkitIndexedDB: true,
+    $webkitStorageInfo: true,
+    $window: true
+  };
+
+  var hasAutomationEqualityBug = function () {
+    /* global window */
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
+    for (var k in window) {
+      try {
+        if (!excludedKeys['$' + k] && has.call(window, k) && window[k] !== null && typeof window[k] === 'object') {
+          try {
+            equalsConstructorPrototype(window[k]);
+          } catch (e) {
+            return true;
+          }
+        }
+      } catch (e) {
+        return true;
+      }
+    }
+
+    return false;
+  }();
+
+  var equalsConstructorPrototypeIfNotBuggy = function (o) {
+    /* global window */
+    if (typeof window === 'undefined' || !hasAutomationEqualityBug) {
+      return equalsConstructorPrototype(o);
+    }
+
+    try {
+      return equalsConstructorPrototype(o);
+    } catch (e) {
+      return false;
+    }
+  };
+
+  keysShim = function keys(object) {
+    var isObject = object !== null && typeof object === 'object';
+    var isFunction = toStr.call(object) === '[object Function]';
+    var isArguments = isArgs(object);
+    var isString = isObject && toStr.call(object) === '[object String]';
+    var theKeys = [];
+
+    if (!isObject && !isFunction && !isArguments) {
+      throw new TypeError('Object.keys called on a non-object');
+    }
+
+    var skipProto = hasProtoEnumBug && isFunction;
+
+    if (isString && object.length > 0 && !has.call(object, 0)) {
+      for (var i = 0; i < object.length; ++i) {
+        theKeys.push(String(i));
+      }
+    }
+
+    if (isArguments && object.length > 0) {
+      for (var j = 0; j < object.length; ++j) {
+        theKeys.push(String(j));
+      }
+    } else {
+      for (var name in object) {
+        if (!(skipProto && name === 'prototype') && has.call(object, name)) {
+          theKeys.push(String(name));
+        }
+      }
+    }
+
+    if (hasDontEnumBug) {
+      var skipConstructor = equalsConstructorPrototypeIfNotBuggy(object);
+
+      for (var k = 0; k < dontEnums.length; ++k) {
+        if (!(skipConstructor && dontEnums[k] === 'constructor') && has.call(object, dontEnums[k])) {
+          theKeys.push(dontEnums[k]);
+        }
+      }
+    }
+
+    return theKeys;
+  };
 }
 
-},{}],"OWwF":[function(require,module,exports) {
-var supportsArgumentsClass = (function(){
-  return Object.prototype.toString.call(arguments)
-})() == '[object Arguments]';
+module.exports = keysShim;
+},{"./isArguments":"uTT0"}],"ywQn":[function(require,module,exports) {
+'use strict';
 
-exports = module.exports = supportsArgumentsClass ? supported : unsupported;
+var slice = Array.prototype.slice;
 
-exports.supported = supported;
-function supported(object) {
-  return Object.prototype.toString.call(object) == '[object Arguments]';
-};
+var isArgs = require('./isArguments');
 
-exports.unsupported = unsupported;
-function unsupported(object){
-  return object &&
-    typeof object == 'object' &&
-    typeof object.length == 'number' &&
-    Object.prototype.hasOwnProperty.call(object, 'callee') &&
-    !Object.prototype.propertyIsEnumerable.call(object, 'callee') ||
-    false;
-};
+var origKeys = Object.keys;
+var keysShim = origKeys ? function keys(o) {
+  return origKeys(o);
+} : require('./implementation');
+var originalKeys = Object.keys;
 
-},{}],"koiw":[function(require,module,exports) {
-var pSlice = Array.prototype.slice;
-var objectKeys = require('./lib/keys.js');
-var isArguments = require('./lib/is_arguments.js');
+keysShim.shim = function shimObjectKeys() {
+  if (Object.keys) {
+    var keysWorksWithArguments = function () {
+      // Safari 5.0 bug
+      var args = Object.keys(arguments);
+      return args && args.length === arguments.length;
+    }(1, 2);
 
-var deepEqual = module.exports = function (actual, expected, opts) {
-  if (!opts) opts = {};
-  // 7.1. All identical values are equivalent, as determined by ===.
-  if (actual === expected) {
-    return true;
+    if (!keysWorksWithArguments) {
+      Object.keys = function keys(object) {
+        // eslint-disable-line func-name-matching
+        if (isArgs(object)) {
+          return originalKeys(slice.call(object));
+        }
 
-  } else if (actual instanceof Date && expected instanceof Date) {
-    return actual.getTime() === expected.getTime();
-
-  // 7.3. Other pairs that do not both pass typeof value == 'object',
-  // equivalence is determined by ==.
-  } else if (!actual || !expected || typeof actual != 'object' && typeof expected != 'object') {
-    return opts.strict ? actual === expected : actual == expected;
-
-  // 7.4. For all other Object pairs, including Array objects, equivalence is
-  // determined by having the same number of owned properties (as verified
-  // with Object.prototype.hasOwnProperty.call), the same set of keys
-  // (although not necessarily the same order), equivalent values for every
-  // corresponding key, and an identical 'prototype' property. Note: this
-  // accounts for both named and indexed properties on Arrays.
+        return originalKeys(object);
+      };
+    }
   } else {
-    return objEquiv(actual, expected, opts);
+    Object.keys = keysShim;
   }
+
+  return Object.keys || keysShim;
+};
+
+module.exports = keysShim;
+},{"./isArguments":"uTT0","./implementation":"orz+"}],"6ord":[function(require,module,exports) {
+'use strict';
+
+var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
+var toStr = Object.prototype.toString;
+
+var isStandardArguments = function isArguments(value) {
+  if (hasToStringTag && value && typeof value === 'object' && Symbol.toStringTag in value) {
+    return false;
+  }
+
+  return toStr.call(value) === '[object Arguments]';
+};
+
+var isLegacyArguments = function isArguments(value) {
+  if (isStandardArguments(value)) {
+    return true;
+  }
+
+  return value !== null && typeof value === 'object' && typeof value.length === 'number' && value.length >= 0 && toStr.call(value) !== '[object Array]' && toStr.call(value.callee) === '[object Function]';
+};
+
+var supportsStandardArguments = function () {
+  return isStandardArguments(arguments);
+}();
+
+isStandardArguments.isLegacyArguments = isLegacyArguments; // for tests
+
+module.exports = supportsStandardArguments ? isStandardArguments : isLegacyArguments;
+},{}],"2pTr":[function(require,module,exports) {
+"use strict";
+/* https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.is */
+
+var NumberIsNaN = function (value) {
+  return value !== value;
+};
+
+module.exports = function is(a, b) {
+  if (a === 0 && b === 0) {
+    return 1 / a === 1 / b;
+  } else if (a === b) {
+    return true;
+  } else if (NumberIsNaN(a) && NumberIsNaN(b)) {
+    return true;
+  }
+
+  return false;
+};
+},{}],"B6/o":[function(require,module,exports) {
+'use strict';
+
+/* eslint no-invalid-this: 1 */
+
+var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
+var slice = Array.prototype.slice;
+var toStr = Object.prototype.toString;
+var funcType = '[object Function]';
+
+module.exports = function bind(that) {
+    var target = this;
+    if (typeof target !== 'function' || toStr.call(target) !== funcType) {
+        throw new TypeError(ERROR_MESSAGE + target);
+    }
+    var args = slice.call(arguments, 1);
+
+    var bound;
+    var binder = function () {
+        if (this instanceof bound) {
+            var result = target.apply(
+                this,
+                args.concat(slice.call(arguments))
+            );
+            if (Object(result) === result) {
+                return result;
+            }
+            return this;
+        } else {
+            return target.apply(
+                that,
+                args.concat(slice.call(arguments))
+            );
+        }
+    };
+
+    var boundLength = Math.max(0, target.length - args.length);
+    var boundArgs = [];
+    for (var i = 0; i < boundLength; i++) {
+        boundArgs.push('$' + i);
+    }
+
+    bound = Function('binder', 'return function (' + boundArgs.join(',') + '){ return binder.apply(this,arguments); }')(binder);
+
+    if (target.prototype) {
+        var Empty = function Empty() {};
+        Empty.prototype = target.prototype;
+        bound.prototype = new Empty();
+        Empty.prototype = null;
+    }
+
+    return bound;
+};
+
+},{}],"58Ti":[function(require,module,exports) {
+'use strict';
+
+var implementation = require('./implementation');
+
+module.exports = Function.prototype.bind || implementation;
+
+},{"./implementation":"B6/o"}],"ar57":[function(require,module,exports) {
+'use strict';
+
+var bind = require('function-bind');
+
+module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
+},{"function-bind":"58Ti"}],"DhUb":[function(require,module,exports) {
+'use strict';
+
+var has = require('has');
+
+var regexExec = RegExp.prototype.exec;
+var gOPD = Object.getOwnPropertyDescriptor;
+
+var tryRegexExecCall = function tryRegexExec(value) {
+  try {
+    var lastIndex = value.lastIndex;
+    value.lastIndex = 0;
+    regexExec.call(value);
+    return true;
+  } catch (e) {
+    return false;
+  } finally {
+    value.lastIndex = lastIndex;
+  }
+};
+
+var toStr = Object.prototype.toString;
+var regexClass = '[object RegExp]';
+var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
+
+module.exports = function isRegex(value) {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  if (!hasToStringTag) {
+    return toStr.call(value) === regexClass;
+  }
+
+  var descriptor = gOPD(value, 'lastIndex');
+  var hasLastIndexDataProperty = descriptor && has(descriptor, 'value');
+
+  if (!hasLastIndexDataProperty) {
+    return false;
+  }
+
+  return tryRegexExecCall(value);
+};
+},{"has":"ar57"}],"VxKF":[function(require,module,exports) {
+'use strict';
+
+var keys = require('object-keys');
+
+var hasSymbols = typeof Symbol === 'function' && typeof Symbol('foo') === 'symbol';
+var toStr = Object.prototype.toString;
+var concat = Array.prototype.concat;
+var origDefineProperty = Object.defineProperty;
+
+var isFunction = function (fn) {
+  return typeof fn === 'function' && toStr.call(fn) === '[object Function]';
+};
+
+var arePropertyDescriptorsSupported = function () {
+  var obj = {};
+
+  try {
+    origDefineProperty(obj, 'x', {
+      enumerable: false,
+      value: obj
+    }); // eslint-disable-next-line no-unused-vars, no-restricted-syntax
+
+    for (var _ in obj) {
+      // jscs:ignore disallowUnusedVariables
+      return false;
+    }
+
+    return obj.x === obj;
+  } catch (e) {
+    /* this is IE 8. */
+    return false;
+  }
+};
+
+var supportsDescriptors = origDefineProperty && arePropertyDescriptorsSupported();
+
+var defineProperty = function (object, name, value, predicate) {
+  if (name in object && (!isFunction(predicate) || !predicate())) {
+    return;
+  }
+
+  if (supportsDescriptors) {
+    origDefineProperty(object, name, {
+      configurable: true,
+      enumerable: false,
+      value: value,
+      writable: true
+    });
+  } else {
+    object[name] = value;
+  }
+};
+
+var defineProperties = function (object, map) {
+  var predicates = arguments.length > 2 ? arguments[2] : {};
+  var props = keys(map);
+
+  if (hasSymbols) {
+    props = concat.call(props, Object.getOwnPropertySymbols(map));
+  }
+
+  for (var i = 0; i < props.length; i += 1) {
+    defineProperty(object, props[i], map[props[i]], predicates[props[i]]);
+  }
+};
+
+defineProperties.supportsDescriptors = !!supportsDescriptors;
+module.exports = defineProperties;
+},{"object-keys":"ywQn"}],"1Hmk":[function(require,module,exports) {
+'use strict';
+
+var toObject = Object;
+var TypeErr = TypeError;
+
+module.exports = function flags() {
+  if (this != null && this !== toObject(this)) {
+    throw new TypeErr('RegExp.prototype.flags getter called on non-object');
+  }
+
+  var result = '';
+
+  if (this.global) {
+    result += 'g';
+  }
+
+  if (this.ignoreCase) {
+    result += 'i';
+  }
+
+  if (this.multiline) {
+    result += 'm';
+  }
+
+  if (this.dotAll) {
+    result += 's';
+  }
+
+  if (this.unicode) {
+    result += 'u';
+  }
+
+  if (this.sticky) {
+    result += 'y';
+  }
+
+  return result;
+};
+},{}],"YWiL":[function(require,module,exports) {
+'use strict';
+
+var implementation = require('./implementation');
+
+var supportsDescriptors = require('define-properties').supportsDescriptors;
+
+var gOPD = Object.getOwnPropertyDescriptor;
+var TypeErr = TypeError;
+
+module.exports = function getPolyfill() {
+  if (!supportsDescriptors) {
+    throw new TypeErr('RegExp.prototype.flags requires a true ES5 environment that supports property descriptors');
+  }
+
+  if (/a/mig.flags === 'gim') {
+    var descriptor = gOPD(RegExp.prototype, 'flags');
+
+    if (descriptor && typeof descriptor.get === 'function' && typeof /a/.dotAll === 'boolean') {
+      return descriptor.get;
+    }
+  }
+
+  return implementation;
+};
+},{"./implementation":"1Hmk","define-properties":"VxKF"}],"Kszl":[function(require,module,exports) {
+'use strict';
+
+var supportsDescriptors = require('define-properties').supportsDescriptors;
+
+var getPolyfill = require('./polyfill');
+
+var gOPD = Object.getOwnPropertyDescriptor;
+var defineProperty = Object.defineProperty;
+var TypeErr = TypeError;
+var getProto = Object.getPrototypeOf;
+var regex = /a/;
+
+module.exports = function shimFlags() {
+  if (!supportsDescriptors || !getProto) {
+    throw new TypeErr('RegExp.prototype.flags requires a true ES5 environment that supports property descriptors');
+  }
+
+  var polyfill = getPolyfill();
+  var proto = getProto(regex);
+  var descriptor = gOPD(proto, 'flags');
+
+  if (!descriptor || descriptor.get !== polyfill) {
+    defineProperty(proto, 'flags', {
+      configurable: true,
+      enumerable: false,
+      get: polyfill
+    });
+  }
+
+  return polyfill;
+};
+},{"define-properties":"VxKF","./polyfill":"YWiL"}],"DbQ/":[function(require,module,exports) {
+
+'use strict';
+
+var define = require('define-properties');
+
+var implementation = require('./implementation');
+
+var getPolyfill = require('./polyfill');
+
+var shim = require('./shim');
+
+var flagsBound = Function.call.bind(implementation);
+define(flagsBound, {
+  getPolyfill: getPolyfill,
+  implementation: implementation,
+  shim: shim
+});
+module.exports = flagsBound;
+},{"define-properties":"VxKF","./implementation":"1Hmk","./polyfill":"YWiL","./shim":"Kszl"}],"NyUK":[function(require,module,exports) {
+'use strict';
+
+var getDay = Date.prototype.getDay;
+
+var tryDateObject = function tryDateObject(value) {
+  try {
+    getDay.call(value);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+var toStr = Object.prototype.toString;
+var dateClass = '[object Date]';
+var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
+
+module.exports = function isDateObject(value) {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  return hasToStringTag ? tryDateObject(value) : toStr.call(value) === dateClass;
+};
+},{}],"koiw":[function(require,module,exports) {
+var objectKeys = require('object-keys');
+var isArguments = require('is-arguments');
+var is = require('object-is');
+var isRegex = require('is-regex');
+var flags = require('regexp.prototype.flags');
+var isDate = require('is-date-object');
+
+var getTime = Date.prototype.getTime;
+
+function deepEqual(actual, expected, options) {
+  var opts = options || {};
+
+  // 7.1. All identical values are equivalent, as determined by ===.
+  if (opts.strict ? is(actual, expected) : actual === expected) {
+    return true;
+  }
+
+  // 7.3. Other pairs that do not both pass typeof value == 'object', equivalence is determined by ==.
+  if (!actual || !expected || (typeof actual !== 'object' && typeof expected !== 'object')) {
+    return opts.strict ? is(actual, expected) : actual == expected;
+  }
+
+  /*
+   * 7.4. For all other Object pairs, including Array objects, equivalence is
+   * determined by having the same number of owned properties (as verified
+   * with Object.prototype.hasOwnProperty.call), the same set of keys
+   * (although not necessarily the same order), equivalent values for every
+   * corresponding key, and an identical 'prototype' property. Note: this
+   * accounts for both named and indexed properties on Arrays.
+   */
+  // eslint-disable-next-line no-use-before-define
+  return objEquiv(actual, expected, opts);
 }
 
 function isUndefinedOrNull(value) {
   return value === null || value === undefined;
 }
 
-function isBuffer (x) {
-  if (!x || typeof x !== 'object' || typeof x.length !== 'number') return false;
+function isBuffer(x) {
+  if (!x || typeof x !== 'object' || typeof x.length !== 'number') {
+    return false;
+  }
   if (typeof x.copy !== 'function' || typeof x.slice !== 'function') {
     return false;
   }
-  if (x.length > 0 && typeof x[0] !== 'number') return false;
+  if (x.length > 0 && typeof x[0] !== 'number') {
+    return false;
+  }
   return true;
 }
 
 function objEquiv(a, b, opts) {
+  /* eslint max-statements: [2, 50] */
   var i, key;
-  if (isUndefinedOrNull(a) || isUndefinedOrNull(b))
-    return false;
+  if (typeof a !== typeof b) { return false; }
+  if (isUndefinedOrNull(a) || isUndefinedOrNull(b)) { return false; }
+
   // an identical 'prototype' property.
-  if (a.prototype !== b.prototype) return false;
-  //~~~I've managed to break Object.keys through screwy arguments passing.
-  //   Converting to array solves the problem.
-  if (isArguments(a)) {
-    if (!isArguments(b)) {
-      return false;
-    }
-    a = pSlice.call(a);
-    b = pSlice.call(b);
-    return deepEqual(a, b, opts);
+  if (a.prototype !== b.prototype) { return false; }
+
+  if (isArguments(a) !== isArguments(b)) { return false; }
+
+  var aIsRegex = isRegex(a);
+  var bIsRegex = isRegex(b);
+  if (aIsRegex !== bIsRegex) { return false; }
+  if (aIsRegex || bIsRegex) {
+    return a.source === b.source && flags(a) === flags(b);
   }
-  if (isBuffer(a)) {
-    if (!isBuffer(b)) {
-      return false;
-    }
-    if (a.length !== b.length) return false;
+
+  if (isDate(a) && isDate(b)) {
+    return getTime.call(a) === getTime.call(b);
+  }
+
+  var aIsBuffer = isBuffer(a);
+  var bIsBuffer = isBuffer(b);
+  if (aIsBuffer !== bIsBuffer) { return false; }
+  if (aIsBuffer || bIsBuffer) { // && would work too, because both are true or both false here
+    if (a.length !== b.length) { return false; }
     for (i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) return false;
+      if (a[i] !== b[i]) { return false; }
     }
     return true;
   }
+
+  if (typeof a !== typeof b) { return false; }
+
   try {
-    var ka = objectKeys(a),
-        kb = objectKeys(b);
-  } catch (e) {//happens when one is a string literal and the other isn't
+    var ka = objectKeys(a);
+    var kb = objectKeys(b);
+  } catch (e) { // happens when one is a string literal and the other isn't
     return false;
   }
-  // having the same number of owned properties (keys incorporates
-  // hasOwnProperty)
-  if (ka.length != kb.length)
-    return false;
-  //the same set of keys (although not necessarily the same order),
+  // having the same number of owned properties (keys incorporates hasOwnProperty)
+  if (ka.length !== kb.length) { return false; }
+
+  // the same set of keys (although not necessarily the same order),
   ka.sort();
   kb.sort();
-  //~~~cheap key test
+  // ~~~cheap key test
   for (i = ka.length - 1; i >= 0; i--) {
-    if (ka[i] != kb[i])
-      return false;
+    if (ka[i] != kb[i]) { return false; }
   }
-  //equivalent values for every corresponding key, and
-  //~~~possibly expensive deep test
+  // equivalent values for every corresponding key, and ~~~possibly expensive deep test
   for (i = ka.length - 1; i >= 0; i--) {
     key = ka[i];
-    if (!deepEqual(a[key], b[key], opts)) return false;
+    if (!deepEqual(a[key], b[key], opts)) { return false; }
   }
-  return typeof a === typeof b;
+
+  return true;
 }
 
-},{"./lib/keys.js":"mbYX","./lib/is_arguments.js":"OWwF"}],"dgPI":[function(require,module,exports) {
+module.exports = deepEqual;
+
+},{"object-keys":"ywQn","is-arguments":"6ord","object-is":"2pTr","is-regex":"DhUb","regexp.prototype.flags":"DbQ/","is-date-object":"NyUK"}],"dgPI":[function(require,module,exports) {
 'use strict';
 
 var hasOwn = Object.prototype.hasOwnProperty;
@@ -27049,6 +27699,396 @@ debug.level = namespace.level = function (newLevel) {
 
 var _default = namespace;
 exports.default = _default;
+},{}],"WV+H":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getRange = getRange;
+exports.internalGetShadowSelection = internalGetShadowSelection;
+exports.SHADOW_SELECTIONCHANGE = void 0;
+
+/**
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+// NOTE: copied from https://github.com/GoogleChromeLabs/shadow-selection-polyfill
+const SHADOW_SELECTIONCHANGE = '-shadow-selectionchange';
+exports.SHADOW_SELECTIONCHANGE = SHADOW_SELECTIONCHANGE;
+const hasShadow = 'attachShadow' in Element.prototype && 'getRootNode' in Element.prototype;
+const hasSelection = !!(hasShadow && document.createElement('div').attachShadow({
+  mode: 'open'
+}).getSelection);
+const hasShady = window.ShadyDOM && window.ShadyDOM.inUse;
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const useDocument = !hasShadow || hasShady || !hasSelection && !isSafari;
+const validNodeTypes = [Node.ELEMENT_NODE, Node.TEXT_NODE, Node.DOCUMENT_FRAGMENT_NODE];
+
+function isValidNode(node) {
+  return validNodeTypes.includes(node.nodeType);
+}
+
+function findNode(s, parentNode, isLeft) {
+  const nodes = parentNode.childNodes || parentNode.children;
+
+  if (!nodes) {
+    return parentNode; // found it, probably text
+  }
+
+  for (let i = 0; i < nodes.length; ++i) {
+    const j = isLeft ? i : nodes.length - 1 - i;
+    const childNode = nodes[j];
+
+    if (!isValidNode(childNode)) {
+      continue; // eslint-disable-line no-continue
+    }
+
+    if (s.containsNode(childNode, true)) {
+      if (s.containsNode(childNode, false)) {
+        return childNode;
+      }
+
+      return findNode(s, childNode, isLeft);
+    }
+  }
+
+  return parentNode;
+}
+/**
+ * @param {function(!Event)} fn to add to selectionchange internals
+ */
+
+
+const addInternalListener = (() => {
+  if (hasSelection || useDocument) {
+    // getSelection exists or document API can be used
+    document.addEventListener('selectionchange', () => {
+      document.dispatchEvent(new CustomEvent(SHADOW_SELECTIONCHANGE));
+    });
+    return () => {};
+  }
+
+  let withinInternals = false;
+  const handlers = [];
+  document.addEventListener('selectionchange', ev => {
+    if (withinInternals) {
+      return;
+    }
+
+    document.dispatchEvent(new CustomEvent(SHADOW_SELECTIONCHANGE));
+    withinInternals = true;
+    window.setTimeout(() => {
+      withinInternals = false;
+    }, 2); // FIXME: should be > 1 to prevent infinite Selection.update() loop
+
+    handlers.forEach(fn => fn(ev));
+  });
+  return fn => handlers.push(fn);
+})();
+
+let wasCaret = false;
+let resolveTask = null;
+addInternalListener(() => {
+  const s = window.getSelection();
+
+  if (s.type === 'Caret') {
+    wasCaret = true;
+  } else if (wasCaret && !resolveTask) {
+    resolveTask = Promise.resolve(true).then(() => {
+      wasCaret = false;
+      resolveTask = null;
+    });
+  }
+});
+/**
+ * @param {!Selection} s the window selection to use
+ * @param {!Node} node the node to walk from
+ * @param {boolean} walkForward should this walk in natural direction
+ * @return {boolean} whether the selection contains the following node (even partially)
+ */
+
+function containsNextElement(s, node, walkForward) {
+  const start = node;
+
+  while (node = walkFromNode(node, walkForward)) {
+    // eslint-disable-line no-cond-assign
+    // walking (left) can contain our own parent, which we don't want
+    if (!node.contains(start)) {
+      break;
+    }
+  }
+
+  if (!node) {
+    return false;
+  } // we look for Element as .containsNode says true for _every_ text node, and we only care about
+  // elements themselves
+
+
+  return node instanceof Element && s.containsNode(node, true);
+}
+/**
+ * @param {!Selection} s the window selection to use
+ * @param {!Node} leftNode the left node
+ * @param {!Node} rightNode the right node
+ * @return {boolean|undefined} whether this has natural direction
+ */
+
+
+function getSelectionDirection(s, leftNode, rightNode) {
+  if (s.type !== 'Range') {
+    return undefined; // no direction
+  }
+
+  const measure = () => s.toString().length;
+
+  const initialSize = measure();
+
+  if (initialSize === 1 && wasCaret && leftNode === rightNode) {
+    // nb. We need to reset a single selection as Safari _always_ tells us the cursor was dragged
+    // left to right (maybe RTL on those devices).
+    // To be fair, Chrome has the same bug.
+    s.extend(leftNode, 0);
+    s.collapseToEnd();
+    return undefined;
+  }
+
+  let updatedSize; // Try extending forward and seeing what happens.
+
+  s.modify('extend', 'forward', 'character');
+  updatedSize = measure();
+
+  if (updatedSize > initialSize || containsNextElement(s, rightNode, true)) {
+    s.modify('extend', 'backward', 'character');
+    return true;
+  } else if (updatedSize < initialSize || !s.containsNode(leftNode)) {
+    s.modify('extend', 'backward', 'character');
+    return false;
+  } // Maybe we were at the end of something. Extend backwards.
+  // TODO(samthor): We seem to be able to get away without the 'backwards' case.
+
+
+  s.modify('extend', 'backward', 'character');
+  updatedSize = measure();
+
+  if (updatedSize > initialSize || containsNextElement(s, leftNode, false)) {
+    s.modify('extend', 'forward', 'character');
+    return false;
+  } else if (updatedSize < initialSize || !s.containsNode(rightNode)) {
+    s.modify('extend', 'forward', 'character');
+    return true;
+  } // This is likely a select-all.
+
+
+  return undefined;
+}
+/**
+ * Returns the next valid node (element or text). This is needed as Safari doesn't support
+ * TreeWalker inside Shadow DOM. Don't escape shadow roots.
+ *
+ * @param {!Node} node to start from
+ * @param {boolean} walkForward should this walk in natural direction
+ * @return {Node} node found, if any
+ */
+
+
+function walkFromNode(node, walkForward) {
+  if (!walkForward) {
+    return node.previousSibling || node.parentNode || null;
+  }
+
+  while (node) {
+    if (node.nextSibling) {
+      return node.nextSibling;
+    }
+
+    node = node.parentNode;
+  }
+
+  return null;
+}
+/**
+ * @param {!Node} node to check for initial space
+ * @return {number} count of initial space
+ */
+
+
+function initialSpace(node) {
+  if (node.nodeType !== Node.TEXT_NODE) {
+    return 0;
+  }
+
+  return /^\s*/.exec(node.textContent)[0].length;
+}
+/**
+ * @param {!Node} node to check for trailing space
+ * @return {number} count of ignored trailing space
+ */
+
+
+function ignoredTrailingSpace(node) {
+  if (node.nodeType !== Node.TEXT_NODE) {
+    return 0;
+  }
+
+  const trailingSpaceCount = /\s*$/.exec(node.textContent)[0].length;
+
+  if (!trailingSpaceCount) {
+    return 0;
+  }
+
+  return trailingSpaceCount - 1; // always allow single last
+}
+
+const cachedRange = new Map();
+
+function getRange(root) {
+  if (hasSelection || useDocument) {
+    const s = (useDocument ? document : root).getSelection();
+    return s.rangeCount ? s.getRangeAt(0) : null;
+  }
+
+  const thisFrame = cachedRange.get(root);
+
+  if (thisFrame) {
+    return thisFrame;
+  }
+
+  const result = internalGetShadowSelection(root);
+  cachedRange.set(root, result.range);
+  window.setTimeout(() => {
+    cachedRange.delete(root);
+  }, 0);
+  return result.range;
+}
+
+const fakeSelectionNode = document.createTextNode('');
+
+function internalGetShadowSelection(root) {
+  const range = document.createRange();
+  const s = window.getSelection();
+
+  if (!s.containsNode(root.host, true)) {
+    return {
+      range: null,
+      mode: 'none'
+    };
+  } // TODO: inserting fake nodes isn't ideal, but containsNode doesn't work on nearby adjacent
+  // text nodes (in fact it returns true for all text nodes on the page?!).
+  // insert a fake 'before' node to see if it's selected
+
+
+  root.insertBefore(fakeSelectionNode, root.childNodes[0]);
+  const includesBeforeRoot = s.containsNode(fakeSelectionNode);
+  fakeSelectionNode.remove();
+
+  if (includesBeforeRoot) {
+    return {
+      range: null,
+      mode: 'outside-before'
+    };
+  } // insert a fake 'after' node to see if it's selected
+
+
+  root.appendChild(fakeSelectionNode);
+  const includesAfterRoot = s.containsNode(fakeSelectionNode);
+  fakeSelectionNode.remove();
+
+  if (includesAfterRoot) {
+    return {
+      range: null,
+      mode: 'outside-after'
+    };
+  }
+
+  const measure = () => s.toString().length;
+
+  if (!(s.type === 'Caret' || s.type === 'Range')) {
+    throw new TypeError('unexpected type: ' + s.type);
+  }
+
+  const leftNode = findNode(s, root, true);
+  let rightNode;
+  let isNaturalDirection;
+
+  if (s.type === 'Range') {
+    rightNode = findNode(s, root, false); // get right node here _before_ getSelectionDirection
+
+    isNaturalDirection = getSelectionDirection(s, leftNode, rightNode); // isNaturalDirection means "going right"
+  }
+
+  if (s.type === 'Caret') {
+    // we might transition to being a caret, so don't check initial value
+    s.extend(leftNode, 0);
+    const at = measure();
+    s.collapseToEnd();
+    range.setStart(leftNode, at);
+    range.setEnd(leftNode, at);
+    return {
+      range,
+      mode: 'caret'
+    };
+  } else if (isNaturalDirection === undefined) {
+    if (s.type !== 'Range') {
+      throw new TypeError('unexpected type: ' + s.type);
+    } // This occurs when we can't move because we can't extend left or right to measure the
+    // direction we're moving in. Good news though: we don't need to _change_ the selection
+    // to measure it, so just return immediately.
+
+
+    range.setStart(leftNode, 0);
+    range.setEnd(rightNode, rightNode.length);
+    return {
+      range,
+      mode: 'all'
+    };
+  }
+
+  const size = measure();
+  let offsetLeft, offsetRight; // only one newline/space char is cared about
+
+  const validRightLength = rightNode.length - ignoredTrailingSpace(rightNode);
+
+  if (isNaturalDirection) {
+    // walk in the opposite direction first
+    s.extend(leftNode, 0);
+    offsetLeft = measure() + initialSpace(leftNode); // measure doesn't include initial space
+    // then in our actual direction
+
+    s.extend(rightNode, validRightLength);
+    offsetRight = validRightLength - (measure() - size); // then revert to the original position
+
+    s.extend(rightNode, offsetRight);
+  } else {
+    // walk in the opposite direction first
+    s.extend(rightNode, validRightLength);
+    offsetRight = validRightLength - measure(); // then in our actual direction
+
+    s.extend(leftNode, 0);
+    offsetLeft = measure() - size + initialSpace(leftNode); // doesn't include initial space
+    // then revert to the original position
+
+    s.extend(leftNode, offsetLeft);
+  }
+
+  range.setStart(leftNode, offsetLeft);
+  range.setEnd(rightNode, offsetRight);
+  return {
+    mode: isNaturalDirection ? 'right' : 'left',
+    range
+  };
+}
 },{}],"GJzd":[function(require,module,exports) {
 "use strict";
 
@@ -27061,17 +28101,18 @@ var _eventemitter = _interopRequireDefault(require("eventemitter3"));
 
 var _logger = _interopRequireDefault(require("./logger"));
 
+var _shadowSelectionPolyfill = require("./shadow-selection-polyfill");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 let debug = (0, _logger.default)('quill:events');
-const EVENTS = ['selectionchange', 'mousedown', 'mouseup', 'click'];
+const EVENTS = [_shadowSelectionPolyfill.SHADOW_SELECTIONCHANGE, 'mousedown', 'mouseup', 'click'];
+const EMITTERS = [];
+const supportsRootNode = 'getRootNode' in document;
 EVENTS.forEach(function (eventName) {
   document.addEventListener(eventName, (...args) => {
-    [].slice.call(document.querySelectorAll('.ql-container')).forEach(node => {
-      // TODO use WeakMap
-      if (node.__quill && node.__quill.emitter) {
-        node.__quill.emitter.handleDOM(...args);
-      }
+    EMITTERS.forEach(em => {
+      em.handleDOM(...args);
     });
   });
 });
@@ -27080,6 +28121,7 @@ class Emitter extends _eventemitter.default {
   constructor() {
     super();
     this.listeners = {};
+    EMITTERS.push(this);
     this.on('error', debug.error);
   }
 
@@ -27089,11 +28131,31 @@ class Emitter extends _eventemitter.default {
   }
 
   handleDOM(event, ...args) {
+    const target = event.composedPath ? event.composedPath()[0] : event.target;
+
+    const containsNode = (node, target) => {
+      if (!supportsRootNode || target.getRootNode() === document) {
+        return node.contains(target);
+      }
+
+      while (!node.contains(target)) {
+        const root = target.getRootNode();
+
+        if (!root || !root.host) {
+          return false;
+        }
+
+        target = root.host;
+      }
+
+      return true;
+    };
+
     (this.listeners[event.type] || []).forEach(function ({
       node,
       handler
     }) {
-      if (event.target === node || node.contains(event.target)) {
+      if (target === node || containsNode(node, target)) {
         handler(event, ...args);
       }
     });
@@ -27127,7 +28189,7 @@ Emitter.sources = {
 };
 var _default = Emitter;
 exports.default = _default;
-},{"eventemitter3":"2JJl","./logger":"X7fV"}],"+ntk":[function(require,module,exports) {
+},{"eventemitter3":"2JJl","./logger":"X7fV","./shadow-selection-polyfill":"WV+H"}],"+ntk":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27164,6 +28226,8 @@ var _emitter = _interopRequireDefault(require("./emitter"));
 
 var _logger = _interopRequireDefault(require("./logger"));
 
+var _shadowSelectionPolyfill = require("./shadow-selection-polyfill");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 let debug = (0, _logger.default)('quill:selection');
@@ -27185,12 +28249,13 @@ class Selection {
     this.composing = false;
     this.mouseDown = false;
     this.root = this.scroll.domNode;
+    this.rootDocument = this.root.getRootNode ? this.root.getRootNode() : document;
     this.cursor = _parchment.default.create('cursor', this); // savedRange is last non-null range
 
     this.lastRange = this.savedRange = new Range(0, 0);
     this.handleComposition();
     this.handleDragging();
-    this.emitter.listenDOM('selectionchange', document, () => {
+    this.emitter.listenDOM(_shadowSelectionPolyfill.SHADOW_SELECTIONCHANGE, document, () => {
       if (!this.mouseDown) {
         setTimeout(this.update.bind(this, _emitter.default.sources.USER), 1);
       }
@@ -27336,9 +28401,7 @@ class Selection {
   }
 
   getNativeRange() {
-    let selection = document.getSelection();
-    if (selection == null || selection.rangeCount <= 0) return null;
-    let nativeRange = selection.getRangeAt(0);
+    let nativeRange = (0, _shadowSelectionPolyfill.getRange)(this.rootDocument);
     if (nativeRange == null) return null;
     let range = this.normalizeNative(nativeRange);
     debug.info('getNativeRange', range);
@@ -27353,7 +28416,7 @@ class Selection {
   }
 
   hasFocus() {
-    return document.activeElement === this.root;
+    return this.rootDocument.activeElement === this.root;
   }
 
   normalizedToRange(range) {
@@ -27469,7 +28532,7 @@ class Selection {
       return;
     }
 
-    let selection = document.getSelection();
+    let selection = typeof this.rootDocument.getSelection === 'function' ? this.rootDocument.getSelection() : document.getSelection();
     if (selection == null) return;
 
     if (startNode != null) {
@@ -27561,7 +28624,7 @@ function contains(parent, descendant) {
 
   return parent.contains(descendant);
 }
-},{"parchment":"CQm3","clone":"nTXV","deep-equal":"koiw","./emitter":"GJzd","./logger":"X7fV"}],"ks5f":[function(require,module,exports) {
+},{"parchment":"CQm3","clone":"nTXV","deep-equal":"koiw","./emitter":"GJzd","./logger":"X7fV","./shadow-selection-polyfill":"WV+H"}],"ks5f":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29892,6 +30955,7 @@ var _module = _interopRequireDefault(require("../core/module"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+const supportsRootNode = 'getRootNode' in document;
 let debug = (0, _logger.default)('quill:toolbar');
 
 class Toolbar extends _module.default {
@@ -29904,7 +30968,8 @@ class Toolbar extends _module.default {
       quill.container.parentNode.insertBefore(container, quill.container);
       this.container = container;
     } else if (typeof this.options.container === 'string') {
-      this.container = document.querySelector(this.options.container);
+      const rootDocument = supportsRootNode ? quill.container.getRootNode() : document;
+      this.container = rootDocument.querySelector(this.options.container);
     } else {
       this.container = this.options.container;
     }
@@ -32077,6 +33142,14 @@ class DataSource {
     this.data = []; // filtered data with "search term" applied
   }
 
+  async refilter() {
+    this.lastFiltered = 0;
+    this._rawData = this.coll.models || this.coll;
+    this._filteredData = this._rawData;
+    this.data = this._rawData;
+    await this.applyFilters();
+  }
+
   get perPage() {
     return this.opts.perPage;
   }
@@ -32142,11 +33215,7 @@ class DataSource {
       if (pageAt == 0 && this._rawData.length == 0 || this._pageFetched != pageAt && this._rawData.length == pageAt && this.opts.fetch == 'more') {
         this._pageFetched = pageAt;
         if (this.opts.fetch) await this._fetchFromServer(pageAt);
-        this.lastFiltered = 0;
-        this._rawData = this.coll.models || this.coll;
-        this._filteredData = this._rawData;
-        this.data = this._rawData;
-        await this.applyFilters();
+        await this.refilter();
       }
 
       if (this._rawData.length > pageAt) this.emit('change:count', this._rawData.length);
@@ -33869,6 +34938,8 @@ customElements.define('b-list-toolbar', class extends _litElement.LitElement {
             <b-list-search-bar @keydown=${this.onKeyDown} placeholder=${this.filters.searchOptions.placeholder}></b-list-search-bar>
             `}
 
+            <slot name="refresh-btn"></slot>
+
             <slot name="after"></slot>
         </div>
     `;
@@ -33946,6 +35017,8 @@ exports.default = void 0;
 
 var _litElement = require("lit-element");
 
+require("../../elements/empty-state");
+
 customElements.define('b-infinite-list', class extends HTMLElement {
   static get styles() {
     return _litElement.css`
@@ -34008,14 +35081,19 @@ customElements.define('b-infinite-list', class extends HTMLElement {
     return this.getAttribute('row') || 'div';
   }
 
+  get emptyElement() {
+    return this.getAttribute('empty') || 'b-empty-state';
+  }
+
   addContent(models) {
     this.pageAt += models.length;
 
     if (this.pageAt == 0) {
-      let empty = document.createElement('b-empty-state');
+      this.emptyView = this.emptyView || document.createElement(this.emptyElement);
+      this.emptyView.dataSource = this.dataSource;
       let term = this.dataSource.filters && this.dataSource.filters.term;
-      empty.innerHTML = term ? `No results for “${term}”` : this.getAttribute('placeholder') || 'No results';
-      this.appendChild(empty);
+      this.emptyView.value = term ? `No results for “${term}”` : this.getAttribute('placeholder') || 'No results';
+      this.appendChild(this.emptyView);
       return;
     }
 
@@ -34038,7 +35116,7 @@ customElements.define('b-infinite-list', class extends HTMLElement {
 var _default = customElements.get('b-infinite-list');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"tkaB":[function(require,module,exports) {
+},{"lit-element":"+bhx","../../elements/empty-state":"+2dU"}],"tkaB":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34057,6 +35135,8 @@ var _sorts = _interopRequireDefault(require("./data/sorts"));
 require("./toolbar");
 
 require("./infinite-list");
+
+require("../../elements/spinner-overlay");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34136,12 +35216,15 @@ customElements.define('b-list', class extends _litElement.LitElement {
     return _litElement.css`
         :host {
             display: grid;
-            grid-template-rows: auto 1fr;
+            grid-template-rows: auto auto 1fr;
             overflow: hidden;
             flex: 1;
             position: relative;
             --searchBgd: #f5f5f5;
-            
+        }
+
+        [slot="header"] {
+            display: block;
         }
 
         b-spinner-overlay {
@@ -34211,10 +35294,15 @@ customElements.define('b-list', class extends _litElement.LitElement {
             @filter-term-changed=${this.onFilterTermChange}>
             <slot name="toolbar:before" slot="before"></slot>
             <slot name="toolbar:after" slot="after"></slot>
+            <slot name="toolbar:refresh" slot="refresh-btn">
+                <b-btn text pill icon="arrows-ccw" @click=${this.refresh}></b-btn>
+            </slot>
             <!-- <b-label slot="after" class="queuing-label">Queuing filters, release to apply</b-label> -->
         </b-list-toolbar>
+        <slot name="header"></slot>
         <b-infinite-list
             row="${this.rowElement}"
+            empty="${this.emptyElement}"
             .divider=${this.divider}
             .dataSource=${this.dataSource}
         ></b-infinite-list>
@@ -34225,12 +35313,19 @@ customElements.define('b-list', class extends _litElement.LitElement {
     super.connectedCallback();
     window.addEventListener('keydown', this.onKeydown, true);
     window.addEventListener('keyup', this.onKeyup, true);
+    let host = this.getRootNode().host;
+
+    if (host) {
+      this.host = host;
+      host.list = host.list || this;
+    }
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     window.removeEventListener('keydown', this.onKeydown, true);
     window.removeEventListener('keyup', this.onKeyup, true);
+    if (this.host && this.host.list == this) delete this.host;
   }
 
   onKeydown(e) {
@@ -34254,7 +35349,11 @@ customElements.define('b-list', class extends _litElement.LitElement {
   }
 
   get rowElement() {
-    return this.getAttribute('row');
+    return this.getAttribute('row') || '';
+  }
+
+  get emptyElement() {
+    return this.getAttribute('empty') || '';
   }
 
   get toolbar() {
@@ -34293,6 +35392,12 @@ customElements.define('b-list', class extends _litElement.LitElement {
     this.spinner.show = false;
   }
 
+  async reload() {
+    this.dataSource.refilter();
+    this.list.reset();
+    this.toolbar.count = await this.dataSource.length();
+  }
+
   async onFilterTermChange(changes) {
     // TODO: probably need an opt in feature
     if (this.listOptions && this.listOptions.fetch == 'more') {
@@ -34327,7 +35432,7 @@ customElements.define('b-list', class extends _litElement.LitElement {
 var _default = customElements.get('b-list');
 
 exports.default = _default;
-},{"lit-element":"+bhx","./data/source":"zXhY","./data/filters":"HGW8","./data/sorts":"4sAK","./toolbar":"iwaU","./infinite-list":"2zwr"}],"gE6T":[function(require,module,exports) {
+},{"lit-element":"+bhx","./data/source":"zXhY","./data/filters":"HGW8","./data/sorts":"4sAK","./toolbar":"iwaU","./infinite-list":"2zwr","../../elements/spinner-overlay":"eyVY"}],"gE6T":[function(require,module,exports) {
 "use strict";
 
 require("../elements/icon");
@@ -34353,6 +35458,8 @@ require("../elements/label");
 require("../elements/hr");
 
 require("../elements/sub");
+
+require("../elements/embed");
 
 require("../presenters/tabs");
 
@@ -34408,7 +35515,7 @@ history.replaceState = (f => function replaceState() {
 window.addEventListener('popstate', function () {
   convertComments();
 });
-},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/hr":"IOAQ","../elements/sub":"VANQ","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../presenters/dialog":"pos3","../presenters/menu":"0tCY"}],"RVcF":[function(require,module,exports) {
+},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/hr":"IOAQ","../elements/sub":"VANQ","../elements/embed":"bpDM","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../presenters/dialog":"pos3","../presenters/menu":"0tCY"}],"RVcF":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -34530,6 +35637,6 @@ module.exports = function loadHTMLBundle(bundle) {
   });
 };
 },{}],0:[function(require,module,exports) {
-var b=require("m0oQ");b.register("html",require("uu9t"));b.load([["icons.svg.f5352611.html","pxeq"]]).then(function(){require("gE6T");});
+var b=require("m0oQ");b.register("html",require("uu9t"));b.load([["icons.svg.c6868b42.html","pxeq"]]).then(function(){require("gE6T");});
 },{}]},{},[0], null)
 //# sourceMappingURL=/bui.js.map
