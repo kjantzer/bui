@@ -1,0 +1,6 @@
+/docs
+/demo
+/public
+/.cache
+.gitlab-ci.yml
+.docpress.json

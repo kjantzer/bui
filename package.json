@@ -1,8 +1,13 @@
 {
-    "name": "bui",
-    "version": "0.1.0",
-    "description": "Blackstone UI - Reusable web components for creating app interfaces",
+    "name": "blackstone-ui",
+    "version": "1.0.2",
+    "description": "Web components for creating app interfaces",
     "main": "index.js",
+    "homepage": "https://kjantzer.github.io/bui/",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/kjantzer/bui"
+    },
     "scripts": {
         "start": "parcel demo/index.html --out-dir demo/dist",
         "build": "parcel build demo/index.html --out-dir public --public-url ./ --no-minify",
@@ -13,7 +18,7 @@
         "publish-pages": "cd ./public && git add -A && git commit -m 'publish docs' && git push Github HEAD:gh-pages",
         "build-and-publish-pages": "npm run build-pages && npm run publish-pages"
     },
-    "keywords": [],
+    "keywords": ["custom elements", "web components", "ui framework", "ui components", "lit-element"],
     "author": "Kevin Jantzer, Blackstone Publishing",
     "license": "MIT",
     "alias": {
