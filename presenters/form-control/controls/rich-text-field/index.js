@@ -1,7 +1,6 @@
 import { render, html } from "lit-html";
 import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
-import {htmlCleaner} from 'util'
-import normalizeText from '../../../../util/normalizeText'
+import {normalizeText, htmlCleaner} from '../../../../util'
 import Menu from '../../../menu'
 import styles from './style'
 import {Quill, lineBreakMatcher, keyboardLinebreak} from './quill'

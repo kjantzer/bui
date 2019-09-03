@@ -1,7 +1,6 @@
 import Quill from 'quill/core'
 import Clipboard from 'quill/modules/clipboard';
-import {htmlCleaner} from 'util'
-import normalizeText from '../../../../util/normalizeText'
+import {normalizeText, htmlCleaner} from '../../../../util'
 
 const Delta = Quill.import('delta')
 

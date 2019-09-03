@@ -27,7 +27,7 @@ Dialog.alert = function(opts={}){
 
 Dialog.error = function(opts={}){
 	return new Dialog(Object.assign({
-		icon: 'cancel red',
+		icon: 'alert red',
 		btns: ['dismiss']
   	}, opts))
 }
@@ -41,7 +41,7 @@ Dialog.warn = function(opts={}){
 
 Dialog.success = function(opts={}){
 	return new Dialog(Object.assign({
-		icon: 'ok green',
+		icon: 'ok-circled green',
 		title: 'Success',
 		btns: ['dismiss']
   	}, opts))

@@ -12,7 +12,7 @@ export class TimerElement extends LitElement {
 		super()
         this.time = 0
 		this.ms = false
-		this.running = this.hasAttributes('running') ? true : false
+		this.running = this.hasAttribute('running') ? true : false
 	}
 
 	get time(){ return this.__time }
@@ -83,6 +83,9 @@ export class TimerElement extends LitElement {
 			this.setAttribute('running', '')
 		}
 	}
+
+	start(){ this.running = true }
+	stop(){ this.running = false }
 
 	_progress(){
 		let ts = new Date().getTime()

@@ -4075,6 +4075,10 @@ class BtnElement extends _litElement.LitElement {
             font-weight: bold;
         }
 
+        :host([hidden]) {
+            display: none !important;
+        }
+
         main {
             border-radius: var(--radius);
             position: relative;
@@ -9591,7 +9595,7 @@ class TimerElement extends _litElement.LitElement {
     super();
     this.time = 0;
     this.ms = false;
-    this.running = this.hasAttributes('running') ? true : false;
+    this.running = this.hasAttribute('running') ? true : false;
   }
 
   get time() {
@@ -9658,6 +9662,14 @@ class TimerElement extends _litElement.LitElement {
       this._progressInterval = setInterval(this._progress.bind(this), 100);
       this.setAttribute('running', '');
     }
+  }
+
+  start() {
+    this.running = true;
+  }
+
+  stop() {
+    this.running = false;
   }
 
   _progress() {
@@ -9984,7 +9996,8 @@ customElements.define('b-embed', class Embed extends _litElement.LitElement {
   static get properties() {
     return {
       url: {
-        type: String
+        type: String,
+        reflect: true
       }
     };
   }
@@ -14325,7 +14338,7 @@ class Panel extends _litElement.LitElement {
     return _litElement.html`
         <div class="backdrop"></div>
         <main style="width:${this.width}; height:${this.height}">
-            <b-btn icon="cancel-1" pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closeBtn}></b-btn>
+            <b-btn icon="cancel-1" pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closeBtn !== true}></b-btn>
             <slot></slot>
             ${this.html}
         </main>
@@ -17950,7 +17963,7 @@ class Dialog {
     let btns = opts.btns ? opts.btns.map(btn => makeBtn(btn)).join("\n") : '';
     if (opts.icon === 'spinner') icon = `<b-spinner></b-spinner>`;
     this.el.innerHTML = `<style>${styles}</style>
-							<div class="d-icon">${icon}</div>
+							<div class="d-icon ${iconClass}">${icon}</div>
 							<h2 class="d-title">${opts.title}</h2>
 							<div class="d-msg">${opts.msg}</div>
 							<div class="d-btns">${btns}</div>`;
@@ -18151,7 +18164,7 @@ Dialog.alert = function (opts = {}) {
 
 Dialog.error = function (opts = {}) {
   return new Dialog(Object.assign({
-    icon: 'cancel red',
+    icon: 'alert red',
     btns: ['dismiss']
   }, opts));
 };
@@ -18165,7 +18178,7 @@ Dialog.warn = function (opts = {}) {
 
 Dialog.success = function (opts = {}) {
   return new Dialog(Object.assign({
-    icon: 'ok green',
+    icon: 'ok-circled green',
     title: 'Success',
     btns: ['dismiss']
   }, opts));
@@ -19103,969 +19116,135 @@ customElements.define('text-field', TextFieldElement);
 var _default = customElements.get('text-field');
 
 exports.default = _default;
-},{"lit-element":"+bhx","moment":"a2/B","../../dialog":"pos3","./date-picker":"VxKk"}],"BnMB":[function(require,module,exports) {
-module.exports = function isBuffer(arg) {
-  return arg && typeof arg === 'object'
-    && typeof arg.copy === 'function'
-    && typeof arg.fill === 'function'
-    && typeof arg.readUInt8 === 'function';
-}
-},{}],"wZ/S":[function(require,module,exports) {
-if (typeof Object.create === 'function') {
-  // implementation from standard node.js 'util' module
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    ctor.prototype = Object.create(superCtor.prototype, {
-      constructor: {
-        value: ctor,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-  };
-} else {
-  // old school shim for old browsers
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    var TempCtor = function () {}
-    TempCtor.prototype = superCtor.prototype
-    ctor.prototype = new TempCtor()
-    ctor.prototype.constructor = ctor
-  }
+},{"lit-element":"+bhx","moment":"a2/B","../../dialog":"pos3","./date-picker":"VxKk"}],"E0RO":[function(require,module,exports) {
+/*
+    HTML Cleaner
+
+    Takes a string of html and removes non-standard
+    html, removes inline styles and classes, and removes
+    any new lines. The end result is a much cleaner
+    underlying html structure.
+
+    ```
+    import {htmlCleaner} from 'util/html-cleander'
+    let html = htmlCleaner.clean(strOfHtml)
+    ```
+
+    You can override the parser if you need (for example, in node.js)
+    
+    ```
+    htmlCleaner.parser = function(str){ return [document, body] }
+    ```
+*/
+function parser(str) {
+  if (typeof DOMParser === 'undefined') throw Error('DOMParser does not exist');
+  var dom = new DOMParser().parseFromString(str, "text/html");
+  return [document, dom.body];
 }
 
-},{}],"JFZi":[function(require,module,exports) {
+function clean(str) {
+  var [document, body] = this.parser(str);
+  var el = document.createElement('div');
+  var p = null;
+  let childNodes = Array.from(body.childNodes); // if there is only one child node and its a paragraph, lets loop 
+  // through its child nodes (we'll recreate the <p> tag down below)
+  // we do this because I've seen copy that has fake paragraphs 
+  // using br tags inside a paragraph: <p>para 1<br><br>para 2</p>
 
-// shim for using process in browser
-var process = module.exports = {}; // cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
+  if (childNodes.length == 1 && childNodes[0].tagName == 'P') childNodes = Array.from(childNodes[0].childNodes);
+  childNodes.forEach(node => {
+    // top level <br> tags terminate the current <p>
+    if (node.nodeName == 'BR') return p = null; // if we have a top level <p>, lets keep it
 
-var cachedSetTimeout;
-var cachedClearTimeout;
+    if (node.nodeName == 'P') {
+      p = node; // clean all its children
 
-function defaultSetTimout() {
-  throw new Error('setTimeout has not been defined');
-}
+      cleanNode(null, p); // if NOT empty after cleaning, keep it
 
-function defaultClearTimeout() {
-  throw new Error('clearTimeout has not been defined');
-}
-
-(function () {
-  try {
-    if (typeof setTimeout === 'function') {
-      cachedSetTimeout = setTimeout;
+      if (p.innerText !== '') el.appendChild(p);
+      return; // all other tags
     } else {
-      cachedSetTimeout = defaultSetTimout;
-    }
-  } catch (e) {
-    cachedSetTimeout = defaultSetTimout;
-  }
-
-  try {
-    if (typeof clearTimeout === 'function') {
-      cachedClearTimeout = clearTimeout;
-    } else {
-      cachedClearTimeout = defaultClearTimeout;
-    }
-  } catch (e) {
-    cachedClearTimeout = defaultClearTimeout;
-  }
-})();
-
-function runTimeout(fun) {
-  if (cachedSetTimeout === setTimeout) {
-    //normal enviroments in sane situations
-    return setTimeout(fun, 0);
-  } // if setTimeout wasn't available but was latter defined
+      // create a top level <p> if we dont have one
+      if (!p) {
+        p = document.createElement('p');
+        el.appendChild(p);
+      } // cleaning will append to `p`
 
 
-  if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-    cachedSetTimeout = setTimeout;
-    return setTimeout(fun, 0);
-  }
-
-  try {
-    // when when somebody has screwed with setTimeout but no I.E. maddness
-    return cachedSetTimeout(fun, 0);
-  } catch (e) {
-    try {
-      // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-      return cachedSetTimeout.call(null, fun, 0);
-    } catch (e) {
-      // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-      return cachedSetTimeout.call(this, fun, 0);
-    }
-  }
-}
-
-function runClearTimeout(marker) {
-  if (cachedClearTimeout === clearTimeout) {
-    //normal enviroments in sane situations
-    return clearTimeout(marker);
-  } // if clearTimeout wasn't available but was latter defined
-
-
-  if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-    cachedClearTimeout = clearTimeout;
-    return clearTimeout(marker);
-  }
-
-  try {
-    // when when somebody has screwed with setTimeout but no I.E. maddness
-    return cachedClearTimeout(marker);
-  } catch (e) {
-    try {
-      // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-      return cachedClearTimeout.call(null, marker);
-    } catch (e) {
-      // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-      // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-      return cachedClearTimeout.call(this, marker);
-    }
-  }
-}
-
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-  if (!draining || !currentQueue) {
-    return;
-  }
-
-  draining = false;
-
-  if (currentQueue.length) {
-    queue = currentQueue.concat(queue);
-  } else {
-    queueIndex = -1;
-  }
-
-  if (queue.length) {
-    drainQueue();
-  }
-}
-
-function drainQueue() {
-  if (draining) {
-    return;
-  }
-
-  var timeout = runTimeout(cleanUpNextTick);
-  draining = true;
-  var len = queue.length;
-
-  while (len) {
-    currentQueue = queue;
-    queue = [];
-
-    while (++queueIndex < len) {
-      if (currentQueue) {
-        currentQueue[queueIndex].run();
-      }
-    }
-
-    queueIndex = -1;
-    len = queue.length;
-  }
-
-  currentQueue = null;
-  draining = false;
-  runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-  var args = new Array(arguments.length - 1);
-
-  if (arguments.length > 1) {
-    for (var i = 1; i < arguments.length; i++) {
-      args[i - 1] = arguments[i];
-    }
-  }
-
-  queue.push(new Item(fun, args));
-
-  if (queue.length === 1 && !draining) {
-    runTimeout(drainQueue);
-  }
-}; // v8 likes predictible objects
-
-
-function Item(fun, array) {
-  this.fun = fun;
-  this.array = array;
-}
-
-Item.prototype.run = function () {
-  this.fun.apply(null, this.array);
-};
-
-process.title = 'browser';
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) {
-  return [];
-};
-
-process.binding = function (name) {
-  throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () {
-  return '/';
-};
-
-process.chdir = function (dir) {
-  throw new Error('process.chdir is not supported');
-};
-
-process.umask = function () {
-  return 0;
-};
-},{}],"2L/r":[function(require,module,exports) {
-var process = require("process");
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-var getOwnPropertyDescriptors = Object.getOwnPropertyDescriptors || function getOwnPropertyDescriptors(obj) {
-  var keys = Object.keys(obj);
-  var descriptors = {};
-
-  for (var i = 0; i < keys.length; i++) {
-    descriptors[keys[i]] = Object.getOwnPropertyDescriptor(obj, keys[i]);
-  }
-
-  return descriptors;
-};
-
-var formatRegExp = /%[sdj%]/g;
-
-exports.format = function (f) {
-  if (!isString(f)) {
-    var objects = [];
-
-    for (var i = 0; i < arguments.length; i++) {
-      objects.push(inspect(arguments[i]));
-    }
-
-    return objects.join(' ');
-  }
-
-  var i = 1;
-  var args = arguments;
-  var len = args.length;
-  var str = String(f).replace(formatRegExp, function (x) {
-    if (x === '%%') return '%';
-    if (i >= len) return x;
-
-    switch (x) {
-      case '%s':
-        return String(args[i++]);
-
-      case '%d':
-        return Number(args[i++]);
-
-      case '%j':
-        try {
-          return JSON.stringify(args[i++]);
-        } catch (_) {
-          return '[Circular]';
-        }
-
-      default:
-        return x;
+      cleanNode(p, node);
     }
   });
+  let html = el.innerHTML; // remove line breaks as they dont provide anything and can cause problems in csv exports
 
-  for (var x = args[i]; i < len; x = args[++i]) {
-    if (isNull(x) || !isObject(x)) {
-      str += ' ' + x;
+  html = html.replace(/[\n\r]/g, ' ');
+  return html;
+}
+
+function cleanNode(parent, node) {
+  // remove all attributes known to be a problem
+  if (node.removeAttribute) {
+    let isItalic = node.style.fontStyle == 'italic';
+    let isBold = node.style.fontWeight == 'bold';
+    node.removeAttribute('id');
+    node.removeAttribute('class');
+    node.removeAttribute('style'); // reapply certain styles // TODO: add option for whether we do this?
+
+    if (isItalic && !['I', 'EM'].includes(node.nodeName)) node.style.fontStyle = 'italic';
+    if (isBold && !['B', 'STRONG'].includes(node.nodeName)) node.style.fontWeight = 'bold';
+  } // if the node is a comment or a known weird tag (word docs have things like <o:p>) remove it
+
+
+  if (node.nodeName == '#comment' || node.nodeName.match(/:/)) return node.remove(); // if text node, do some cleaning
+  else if (node.nodeName == "#text") {
+      // if the text node is just spaces, remove them
+      node.textContent = node.textContent.replace(/^\s+$/g, ''); // swap multiple spaces in a row for just one space
+
+      node.textContent = node.textContent.replace(/\s{2,}/g, ''); // optionally clean more data for platforms that need it
+      // TEST
+      // simplifyTextNode(node)
+    } // clean all child nodes of this node
+
+  let childNodes = Array.from(node.childNodes);
+  childNodes.forEach(n => cleanNode(node, n)); // remove any empty nodes (but keep <br> which are always empty)
+
+  if (node.nodeName != 'BR' && node.innerText == '') return node.remove(); // if( parent && parent.tagName == 'P' ){
+
+  if (parent) {
+    // keep spans that have styles since they will be bold/italics
+    if (node.nodeName == 'SPAN' && node.hasAttribute('style')) {
+      parent.appendChild(node); // keep tags we want
+      // TODO: make list of tags an option?
+    } else if (['#text', 'p', 'br', 'b', 'strong', 'em', 'i', 'ul', 'ol', 'li'].includes(node.nodeName.toLowerCase())) {
+      // if( parent.tagName == 'P' )
+      parent.appendChild(node); // remove tags we dont want, but keep their contents
+      // example: <font>we want to keep this text and any <b>good</b> tags</font>
     } else {
-      str += ' ' + inspect(x);
+      node.remove();
+      childNodes = Array.from(node.childNodes);
+      childNodes.forEach(child => {
+        parent.appendChild(child);
+      });
     }
   }
 
-  return str;
-}; // Mark that a method should not be used.
-// Returns a modified function which warns once by default.
-// If --no-deprecation is set, then it is a no-op.
+  return node;
+}
 
+function simplifyTextNode(node) {
+  // replace fancy quotes with simple ones
+  node.textContent = node.textContent.replace(/[“”]/g, '"');
+  node.textContent = node.textContent.replace(/[‘’]/g, "'"); // replace mdash and ndash with regular dashes
 
-exports.deprecate = function (fn, msg) {
-  if (typeof process !== 'undefined' && process.noDeprecation === true) {
-    return fn;
-  } // Allow for deprecating things in the process of starting up.
+  node.textContent = node.textContent.replace(/[–—]/g, "-"); // replace ellipsis
 
+  node.textContent = node.textContent.replace(/…/g, "...");
+}
 
-  if (typeof process === 'undefined') {
-    return function () {
-      return exports.deprecate(fn, msg).apply(this, arguments);
-    };
-  }
-
-  var warned = false;
-
-  function deprecated() {
-    if (!warned) {
-      if (process.throwDeprecation) {
-        throw new Error(msg);
-      } else if (process.traceDeprecation) {
-        console.trace(msg);
-      } else {
-        console.error(msg);
-      }
-
-      warned = true;
-    }
-
-    return fn.apply(this, arguments);
-  }
-
-  return deprecated;
+module.exports = {
+  clean: clean,
+  parser: parser
 };
-
-var debugs = {};
-var debugEnviron;
-
-exports.debuglog = function (set) {
-  if (isUndefined(debugEnviron)) debugEnviron = undefined || '';
-  set = set.toUpperCase();
-
-  if (!debugs[set]) {
-    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
-      var pid = process.pid;
-
-      debugs[set] = function () {
-        var msg = exports.format.apply(exports, arguments);
-        console.error('%s %d: %s', set, pid, msg);
-      };
-    } else {
-      debugs[set] = function () {};
-    }
-  }
-
-  return debugs[set];
-};
-/**
- * Echos the value of a value. Trys to print the value out
- * in the best way possible given the different types.
- *
- * @param {Object} obj The object to print out.
- * @param {Object} opts Optional options object that alters the output.
- */
-
-/* legacy: obj, showHidden, depth, colors*/
-
-
-function inspect(obj, opts) {
-  // default options
-  var ctx = {
-    seen: [],
-    stylize: stylizeNoColor
-  }; // legacy...
-
-  if (arguments.length >= 3) ctx.depth = arguments[2];
-  if (arguments.length >= 4) ctx.colors = arguments[3];
-
-  if (isBoolean(opts)) {
-    // legacy...
-    ctx.showHidden = opts;
-  } else if (opts) {
-    // got an "options" object
-    exports._extend(ctx, opts);
-  } // set default options
-
-
-  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
-  if (isUndefined(ctx.depth)) ctx.depth = 2;
-  if (isUndefined(ctx.colors)) ctx.colors = false;
-  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
-  if (ctx.colors) ctx.stylize = stylizeWithColor;
-  return formatValue(ctx, obj, ctx.depth);
-}
-
-exports.inspect = inspect; // http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
-
-inspect.colors = {
-  'bold': [1, 22],
-  'italic': [3, 23],
-  'underline': [4, 24],
-  'inverse': [7, 27],
-  'white': [37, 39],
-  'grey': [90, 39],
-  'black': [30, 39],
-  'blue': [34, 39],
-  'cyan': [36, 39],
-  'green': [32, 39],
-  'magenta': [35, 39],
-  'red': [31, 39],
-  'yellow': [33, 39]
-}; // Don't use 'blue' not visible on cmd.exe
-
-inspect.styles = {
-  'special': 'cyan',
-  'number': 'yellow',
-  'boolean': 'yellow',
-  'undefined': 'grey',
-  'null': 'bold',
-  'string': 'green',
-  'date': 'magenta',
-  // "name": intentionally not styling
-  'regexp': 'red'
-};
-
-function stylizeWithColor(str, styleType) {
-  var style = inspect.styles[styleType];
-
-  if (style) {
-    return '\u001b[' + inspect.colors[style][0] + 'm' + str + '\u001b[' + inspect.colors[style][1] + 'm';
-  } else {
-    return str;
-  }
-}
-
-function stylizeNoColor(str, styleType) {
-  return str;
-}
-
-function arrayToHash(array) {
-  var hash = {};
-  array.forEach(function (val, idx) {
-    hash[val] = true;
-  });
-  return hash;
-}
-
-function formatValue(ctx, value, recurseTimes) {
-  // Provide a hook for user-specified inspect functions.
-  // Check that value is an object with an inspect function on it
-  if (ctx.customInspect && value && isFunction(value.inspect) && // Filter out the util module, it's inspect function is special
-  value.inspect !== exports.inspect && // Also filter out any prototype objects using the circular check.
-  !(value.constructor && value.constructor.prototype === value)) {
-    var ret = value.inspect(recurseTimes, ctx);
-
-    if (!isString(ret)) {
-      ret = formatValue(ctx, ret, recurseTimes);
-    }
-
-    return ret;
-  } // Primitive types cannot have properties
-
-
-  var primitive = formatPrimitive(ctx, value);
-
-  if (primitive) {
-    return primitive;
-  } // Look up the keys of the object.
-
-
-  var keys = Object.keys(value);
-  var visibleKeys = arrayToHash(keys);
-
-  if (ctx.showHidden) {
-    keys = Object.getOwnPropertyNames(value);
-  } // IE doesn't make error fields non-enumerable
-  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
-
-
-  if (isError(value) && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
-    return formatError(value);
-  } // Some type of object without properties can be shortcutted.
-
-
-  if (keys.length === 0) {
-    if (isFunction(value)) {
-      var name = value.name ? ': ' + value.name : '';
-      return ctx.stylize('[Function' + name + ']', 'special');
-    }
-
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    }
-
-    if (isDate(value)) {
-      return ctx.stylize(Date.prototype.toString.call(value), 'date');
-    }
-
-    if (isError(value)) {
-      return formatError(value);
-    }
-  }
-
-  var base = '',
-      array = false,
-      braces = ['{', '}']; // Make Array say that they are Array
-
-  if (isArray(value)) {
-    array = true;
-    braces = ['[', ']'];
-  } // Make functions say that they are functions
-
-
-  if (isFunction(value)) {
-    var n = value.name ? ': ' + value.name : '';
-    base = ' [Function' + n + ']';
-  } // Make RegExps say that they are RegExps
-
-
-  if (isRegExp(value)) {
-    base = ' ' + RegExp.prototype.toString.call(value);
-  } // Make dates with properties first say the date
-
-
-  if (isDate(value)) {
-    base = ' ' + Date.prototype.toUTCString.call(value);
-  } // Make error with message first say the error
-
-
-  if (isError(value)) {
-    base = ' ' + formatError(value);
-  }
-
-  if (keys.length === 0 && (!array || value.length == 0)) {
-    return braces[0] + base + braces[1];
-  }
-
-  if (recurseTimes < 0) {
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    } else {
-      return ctx.stylize('[Object]', 'special');
-    }
-  }
-
-  ctx.seen.push(value);
-  var output;
-
-  if (array) {
-    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
-  } else {
-    output = keys.map(function (key) {
-      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
-    });
-  }
-
-  ctx.seen.pop();
-  return reduceToSingleString(output, base, braces);
-}
-
-function formatPrimitive(ctx, value) {
-  if (isUndefined(value)) return ctx.stylize('undefined', 'undefined');
-
-  if (isString(value)) {
-    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '').replace(/'/g, "\\'").replace(/\\"/g, '"') + '\'';
-    return ctx.stylize(simple, 'string');
-  }
-
-  if (isNumber(value)) return ctx.stylize('' + value, 'number');
-  if (isBoolean(value)) return ctx.stylize('' + value, 'boolean'); // For some reason typeof null is "object", so special case here.
-
-  if (isNull(value)) return ctx.stylize('null', 'null');
-}
-
-function formatError(value) {
-  return '[' + Error.prototype.toString.call(value) + ']';
-}
-
-function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
-  var output = [];
-
-  for (var i = 0, l = value.length; i < l; ++i) {
-    if (hasOwnProperty(value, String(i))) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys, String(i), true));
-    } else {
-      output.push('');
-    }
-  }
-
-  keys.forEach(function (key) {
-    if (!key.match(/^\d+$/)) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys, key, true));
-    }
-  });
-  return output;
-}
-
-function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
-  var name, str, desc;
-  desc = Object.getOwnPropertyDescriptor(value, key) || {
-    value: value[key]
-  };
-
-  if (desc.get) {
-    if (desc.set) {
-      str = ctx.stylize('[Getter/Setter]', 'special');
-    } else {
-      str = ctx.stylize('[Getter]', 'special');
-    }
-  } else {
-    if (desc.set) {
-      str = ctx.stylize('[Setter]', 'special');
-    }
-  }
-
-  if (!hasOwnProperty(visibleKeys, key)) {
-    name = '[' + key + ']';
-  }
-
-  if (!str) {
-    if (ctx.seen.indexOf(desc.value) < 0) {
-      if (isNull(recurseTimes)) {
-        str = formatValue(ctx, desc.value, null);
-      } else {
-        str = formatValue(ctx, desc.value, recurseTimes - 1);
-      }
-
-      if (str.indexOf('\n') > -1) {
-        if (array) {
-          str = str.split('\n').map(function (line) {
-            return '  ' + line;
-          }).join('\n').substr(2);
-        } else {
-          str = '\n' + str.split('\n').map(function (line) {
-            return '   ' + line;
-          }).join('\n');
-        }
-      }
-    } else {
-      str = ctx.stylize('[Circular]', 'special');
-    }
-  }
-
-  if (isUndefined(name)) {
-    if (array && key.match(/^\d+$/)) {
-      return str;
-    }
-
-    name = JSON.stringify('' + key);
-
-    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
-      name = name.substr(1, name.length - 2);
-      name = ctx.stylize(name, 'name');
-    } else {
-      name = name.replace(/'/g, "\\'").replace(/\\"/g, '"').replace(/(^"|"$)/g, "'");
-      name = ctx.stylize(name, 'string');
-    }
-  }
-
-  return name + ': ' + str;
-}
-
-function reduceToSingleString(output, base, braces) {
-  var numLinesEst = 0;
-  var length = output.reduce(function (prev, cur) {
-    numLinesEst++;
-    if (cur.indexOf('\n') >= 0) numLinesEst++;
-    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
-  }, 0);
-
-  if (length > 60) {
-    return braces[0] + (base === '' ? '' : base + '\n ') + ' ' + output.join(',\n  ') + ' ' + braces[1];
-  }
-
-  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
-} // NOTE: These type checking functions intentionally don't use `instanceof`
-// because it is fragile and can be easily faked with `Object.create()`.
-
-
-function isArray(ar) {
-  return Array.isArray(ar);
-}
-
-exports.isArray = isArray;
-
-function isBoolean(arg) {
-  return typeof arg === 'boolean';
-}
-
-exports.isBoolean = isBoolean;
-
-function isNull(arg) {
-  return arg === null;
-}
-
-exports.isNull = isNull;
-
-function isNullOrUndefined(arg) {
-  return arg == null;
-}
-
-exports.isNullOrUndefined = isNullOrUndefined;
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-
-exports.isNumber = isNumber;
-
-function isString(arg) {
-  return typeof arg === 'string';
-}
-
-exports.isString = isString;
-
-function isSymbol(arg) {
-  return typeof arg === 'symbol';
-}
-
-exports.isSymbol = isSymbol;
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-
-exports.isUndefined = isUndefined;
-
-function isRegExp(re) {
-  return isObject(re) && objectToString(re) === '[object RegExp]';
-}
-
-exports.isRegExp = isRegExp;
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-
-exports.isObject = isObject;
-
-function isDate(d) {
-  return isObject(d) && objectToString(d) === '[object Date]';
-}
-
-exports.isDate = isDate;
-
-function isError(e) {
-  return isObject(e) && (objectToString(e) === '[object Error]' || e instanceof Error);
-}
-
-exports.isError = isError;
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-
-exports.isFunction = isFunction;
-
-function isPrimitive(arg) {
-  return arg === null || typeof arg === 'boolean' || typeof arg === 'number' || typeof arg === 'string' || typeof arg === 'symbol' || // ES6 symbol
-  typeof arg === 'undefined';
-}
-
-exports.isPrimitive = isPrimitive;
-exports.isBuffer = require('./support/isBuffer');
-
-function objectToString(o) {
-  return Object.prototype.toString.call(o);
-}
-
-function pad(n) {
-  return n < 10 ? '0' + n.toString(10) : n.toString(10);
-}
-
-var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; // 26 Feb 16:19:34
-
-function timestamp() {
-  var d = new Date();
-  var time = [pad(d.getHours()), pad(d.getMinutes()), pad(d.getSeconds())].join(':');
-  return [d.getDate(), months[d.getMonth()], time].join(' ');
-} // log is just a thin wrapper to console.log that prepends a timestamp
-
-
-exports.log = function () {
-  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
-};
-/**
- * Inherit the prototype methods from one constructor into another.
- *
- * The Function.prototype.inherits from lang.js rewritten as a standalone
- * function (not on Function.prototype). NOTE: If this file is to be loaded
- * during bootstrapping this function needs to be rewritten using some native
- * functions as prototype setup using normal JavaScript does not work as
- * expected during bootstrapping (see mirror.js in r114903).
- *
- * @param {function} ctor Constructor function which needs to inherit the
- *     prototype.
- * @param {function} superCtor Constructor function to inherit prototype from.
- */
-
-
-exports.inherits = require('inherits');
-
-exports._extend = function (origin, add) {
-  // Don't do anything if add isn't an object
-  if (!add || !isObject(add)) return origin;
-  var keys = Object.keys(add);
-  var i = keys.length;
-
-  while (i--) {
-    origin[keys[i]] = add[keys[i]];
-  }
-
-  return origin;
-};
-
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-var kCustomPromisifiedSymbol = typeof Symbol !== 'undefined' ? Symbol('util.promisify.custom') : undefined;
-
-exports.promisify = function promisify(original) {
-  if (typeof original !== 'function') throw new TypeError('The "original" argument must be of type Function');
-
-  if (kCustomPromisifiedSymbol && original[kCustomPromisifiedSymbol]) {
-    var fn = original[kCustomPromisifiedSymbol];
-
-    if (typeof fn !== 'function') {
-      throw new TypeError('The "util.promisify.custom" argument must be of type Function');
-    }
-
-    Object.defineProperty(fn, kCustomPromisifiedSymbol, {
-      value: fn,
-      enumerable: false,
-      writable: false,
-      configurable: true
-    });
-    return fn;
-  }
-
-  function fn() {
-    var promiseResolve, promiseReject;
-    var promise = new Promise(function (resolve, reject) {
-      promiseResolve = resolve;
-      promiseReject = reject;
-    });
-    var args = [];
-
-    for (var i = 0; i < arguments.length; i++) {
-      args.push(arguments[i]);
-    }
-
-    args.push(function (err, value) {
-      if (err) {
-        promiseReject(err);
-      } else {
-        promiseResolve(value);
-      }
-    });
-
-    try {
-      original.apply(this, args);
-    } catch (err) {
-      promiseReject(err);
-    }
-
-    return promise;
-  }
-
-  Object.setPrototypeOf(fn, Object.getPrototypeOf(original));
-  if (kCustomPromisifiedSymbol) Object.defineProperty(fn, kCustomPromisifiedSymbol, {
-    value: fn,
-    enumerable: false,
-    writable: false,
-    configurable: true
-  });
-  return Object.defineProperties(fn, getOwnPropertyDescriptors(original));
-};
-
-exports.promisify.custom = kCustomPromisifiedSymbol;
-
-function callbackifyOnRejected(reason, cb) {
-  // `!reason` guard inspired by bluebird (Ref: https://goo.gl/t5IS6M).
-  // Because `null` is a special error value in callbacks which means "no error
-  // occurred", we error-wrap so the callback consumer can distinguish between
-  // "the promise rejected with null" or "the promise fulfilled with undefined".
-  if (!reason) {
-    var newReason = new Error('Promise was rejected with a falsy value');
-    newReason.reason = reason;
-    reason = newReason;
-  }
-
-  return cb(reason);
-}
-
-function callbackify(original) {
-  if (typeof original !== 'function') {
-    throw new TypeError('The "original" argument must be of type Function');
-  } // We DO NOT return the promise as it gives the user a false sense that
-  // the promise is actually somehow related to the callback's execution
-  // and that the callback throwing will reject the promise.
-
-
-  function callbackified() {
-    var args = [];
-
-    for (var i = 0; i < arguments.length; i++) {
-      args.push(arguments[i]);
-    }
-
-    var maybeCb = args.pop();
-
-    if (typeof maybeCb !== 'function') {
-      throw new TypeError('The last argument must be of type Function');
-    }
-
-    var self = this;
-
-    var cb = function () {
-      return maybeCb.apply(self, arguments);
-    }; // In true node style we process the callback on `nextTick` with all the
-    // implications (stack, `uncaughtException`, `async_hooks`)
-
-
-    original.apply(this, args).then(function (ret) {
-      process.nextTick(cb, null, ret);
-    }, function (rej) {
-      process.nextTick(callbackifyOnRejected, rej, cb);
-    });
-  }
-
-  Object.setPrototypeOf(callbackified, Object.getPrototypeOf(original));
-  Object.defineProperties(callbackified, getOwnPropertyDescriptors(original));
-  return callbackified;
-}
-
-exports.callbackify = callbackify;
-},{"./support/isBuffer":"BnMB","inherits":"wZ/S","process":"JFZi"}],"hNKD":[function(require,module,exports) {
+},{}],"hNKD":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20084,7 +19263,679 @@ var _default = (str = '') => {
 };
 
 exports.default = _default;
-},{}],"d7Am":[function(require,module,exports) {
+},{}],"E8jA":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+// ref: http://stackoverflow.com/a/1293163/2343
+// This will parse a delimited string into an array of
+// arrays. The default delimiter is the comma, but this
+// can be overriden in the second argument.
+var _default = (strData, strDelimiter = ',') => {
+  // Create a regular expression to parse the CSV values.
+  var objPattern = new RegExp( // Delimiters.
+  "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" + // Quoted fields.
+  "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" + // Standard fields.
+  "([^\"\\" + strDelimiter + "\\r\\n]*))", "gi"); // Create an array to hold our data. Give the array
+  // a default empty first row.
+
+  var arrData = [[]]; // Create an array to hold our individual pattern
+  // matching groups.
+
+  var arrMatches = null;
+  strData = strData.trim(); // Keep looping over the regular expression matches
+  // until we can no longer find a match.
+
+  while (arrMatches = objPattern.exec(strData)) {
+    // Get the delimiter that was found.
+    var strMatchedDelimiter = arrMatches[1]; // Check to see if the given delimiter has a length
+    // (is not the start of string) and if it matches
+    // field delimiter. If id does not, then we know
+    // that this delimiter is a row delimiter.
+
+    if (strMatchedDelimiter.length && strMatchedDelimiter !== strDelimiter) {
+      // Since we have reached a new row of data,
+      // add an empty row to our data array.
+      arrData.push([]);
+    }
+
+    var strMatchedValue; // Now that we have our delimiter out of the way,
+    // let's check to see which kind of value we
+    // captured (quoted or unquoted).
+
+    if (arrMatches[2]) {
+      // We found a quoted value. When we capture
+      // this value, unescape any double quotes.
+      strMatchedValue = arrMatches[2].replace(new RegExp("\"\"", "g"), "\"");
+    } else {
+      // We found a non-quoted value.
+      strMatchedValue = arrMatches[3];
+    } // Now that we have our value string, let's add
+    // it to the data array.
+
+
+    arrData[arrData.length - 1].push(strMatchedValue);
+  } // Return the parsed data.
+
+
+  return arrData;
+};
+
+exports.default = _default;
+},{}],"Zwl6":[function(require,module,exports) {
+/*
+	Plural - create singular or plural sentence based on number given (all numbers but 1 return plural sentence)
+
+	New Plural (tagged template)
+	plural`There {are|is} ${num} item[s]`
+	
+	Placeholders:
+	{plural|singular} => evaluates based on the following number
+	[plural|singular] => evaulates based on the preceding number
+	[plural]
+
+	Old Plural:
+	var str = "Do you want to delete this? There {are|is} [num] book{s} attached."
+
+	var num = 2 // or 0, 3, 4, ...
+		"Do you want to delete this? There are 2 books attached."
+
+	var num = 1
+		"Do you want to delete this? There is 1 book attached."
+*/
+module.exports = function (strings, ...keys) {
+  if (typeof strings == 'string') return oldPlural(strings, keys[0]);
+  let str = '';
+  strings.forEach((s, i) => {
+    let valAfter = keys[i] || '';
+
+    if (valAfter && typeof valAfter == 'number') {
+      let indx = valAfter == 1 ? 1 : 0;
+      s = s.replace(/\{(.[^}]*)}/g, function (wholematch, firstmatch) {
+        var values = firstmatch.split('|');
+        return values[indx] || '';
+      });
+    }
+
+    let valBefore = keys[i - 1] || '';
+
+    if (valBefore && typeof valBefore == 'number') {
+      let indx = valBefore == 1 ? 1 : 0;
+      s = s.replace(/\[(.[^\]]*)\]/g, function (wholematch, firstmatch) {
+        var values = firstmatch.split('|');
+        return values[indx] || '';
+      });
+    }
+
+    str += valBefore + s;
+  });
+  return str;
+};
+
+function oldPlural(str, num) {
+  if (num instanceof Array) num = num.length;
+  if (num instanceof Object) num = Object.keys(num).length;
+  var indx = num == 1 ? 1 : 0;
+
+  if (!_.isNumber(num)) {
+    if (!_.numberFormat) return console.warn('underscore.string not installed');
+    num = _.numberFormat(parseFloat(num), num % 1 > 0 ? 1 : 0);
+  }
+
+  str = str.replace(/\[num\]/, num);
+  str = str.replace(/{(.[^}]*)}/g, function (wholematch, firstmatch) {
+    var values = firstmatch.split('|');
+    return values[indx] || '';
+  });
+  return str;
+}
+},{}],"MqKw":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _default = file => {
+  return new Promise(resolve => {
+    var reader = new FileReader();
+
+    reader.onload = e => {
+      var text = reader.result;
+      resolve(text);
+    };
+
+    reader.readAsText(file);
+  });
+};
+
+exports.default = _default;
+},{}],"BblM":[function(require,module,exports) {
+/**
+ * A specialized version of `_.map` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the new mapped array.
+ */
+function arrayMap(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      result = Array(length);
+
+  while (++index < length) {
+    result[index] = iteratee(array[index], index, array);
+  }
+  return result;
+}
+
+module.exports = arrayMap;
+
+},{}],"p/0c":[function(require,module,exports) {
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+module.exports = isArray;
+
+},{}],"3w4y":[function(require,module,exports) {
+var Symbol = require('./_Symbol'),
+    arrayMap = require('./_arrayMap'),
+    isArray = require('./isArray'),
+    isSymbol = require('./isSymbol');
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolToString = symbolProto ? symbolProto.toString : undefined;
+
+/**
+ * The base implementation of `_.toString` which doesn't convert nullish
+ * values to empty strings.
+ *
+ * @private
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ */
+function baseToString(value) {
+  // Exit early for strings to avoid a performance hit in some environments.
+  if (typeof value == 'string') {
+    return value;
+  }
+  if (isArray(value)) {
+    // Recursively convert values (susceptible to call stack limits).
+    return arrayMap(value, baseToString) + '';
+  }
+  if (isSymbol(value)) {
+    return symbolToString ? symbolToString.call(value) : '';
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+module.exports = baseToString;
+
+},{"./_Symbol":"wppe","./_arrayMap":"BblM","./isArray":"p/0c","./isSymbol":"bgO7"}],"A8RV":[function(require,module,exports) {
+var baseToString = require('./_baseToString');
+
+/**
+ * Converts `value` to a string. An empty string is returned for `null`
+ * and `undefined` values. The sign of `-0` is preserved.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ * @example
+ *
+ * _.toString(null);
+ * // => ''
+ *
+ * _.toString(-0);
+ * // => '-0'
+ *
+ * _.toString([1, 2, 3]);
+ * // => '1,2,3'
+ */
+function toString(value) {
+  return value == null ? '' : baseToString(value);
+}
+
+module.exports = toString;
+
+},{"./_baseToString":"3w4y"}],"Chbn":[function(require,module,exports) {
+/**
+ * The base implementation of `_.slice` without an iteratee call guard.
+ *
+ * @private
+ * @param {Array} array The array to slice.
+ * @param {number} [start=0] The start position.
+ * @param {number} [end=array.length] The end position.
+ * @returns {Array} Returns the slice of `array`.
+ */
+function baseSlice(array, start, end) {
+  var index = -1,
+      length = array.length;
+
+  if (start < 0) {
+    start = -start > length ? 0 : (length + start);
+  }
+  end = end > length ? length : end;
+  if (end < 0) {
+    end += length;
+  }
+  length = start > end ? 0 : ((end - start) >>> 0);
+  start >>>= 0;
+
+  var result = Array(length);
+  while (++index < length) {
+    result[index] = array[index + start];
+  }
+  return result;
+}
+
+module.exports = baseSlice;
+
+},{}],"5Kr2":[function(require,module,exports) {
+var baseSlice = require('./_baseSlice');
+
+/**
+ * Casts `array` to a slice if it's needed.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {number} start The start position.
+ * @param {number} [end=array.length] The end position.
+ * @returns {Array} Returns the cast slice.
+ */
+function castSlice(array, start, end) {
+  var length = array.length;
+  end = end === undefined ? length : end;
+  return (!start && end >= length) ? array : baseSlice(array, start, end);
+}
+
+module.exports = castSlice;
+
+},{"./_baseSlice":"Chbn"}],"oxMD":[function(require,module,exports) {
+/** Used to compose unicode character classes. */
+var rsAstralRange = '\\ud800-\\udfff',
+    rsComboMarksRange = '\\u0300-\\u036f',
+    reComboHalfMarksRange = '\\ufe20-\\ufe2f',
+    rsComboSymbolsRange = '\\u20d0-\\u20ff',
+    rsComboRange = rsComboMarksRange + reComboHalfMarksRange + rsComboSymbolsRange,
+    rsVarRange = '\\ufe0e\\ufe0f';
+
+/** Used to compose unicode capture groups. */
+var rsZWJ = '\\u200d';
+
+/** Used to detect strings with [zero-width joiners or code points from the astral planes](http://eev.ee/blog/2015/09/12/dark-corners-of-unicode/). */
+var reHasUnicode = RegExp('[' + rsZWJ + rsAstralRange  + rsComboRange + rsVarRange + ']');
+
+/**
+ * Checks if `string` contains Unicode symbols.
+ *
+ * @private
+ * @param {string} string The string to inspect.
+ * @returns {boolean} Returns `true` if a symbol is found, else `false`.
+ */
+function hasUnicode(string) {
+  return reHasUnicode.test(string);
+}
+
+module.exports = hasUnicode;
+
+},{}],"ACee":[function(require,module,exports) {
+/**
+ * Converts an ASCII `string` to an array.
+ *
+ * @private
+ * @param {string} string The string to convert.
+ * @returns {Array} Returns the converted array.
+ */
+function asciiToArray(string) {
+  return string.split('');
+}
+
+module.exports = asciiToArray;
+
+},{}],"NN+K":[function(require,module,exports) {
+/** Used to compose unicode character classes. */
+var rsAstralRange = '\\ud800-\\udfff',
+    rsComboMarksRange = '\\u0300-\\u036f',
+    reComboHalfMarksRange = '\\ufe20-\\ufe2f',
+    rsComboSymbolsRange = '\\u20d0-\\u20ff',
+    rsComboRange = rsComboMarksRange + reComboHalfMarksRange + rsComboSymbolsRange,
+    rsVarRange = '\\ufe0e\\ufe0f';
+
+/** Used to compose unicode capture groups. */
+var rsAstral = '[' + rsAstralRange + ']',
+    rsCombo = '[' + rsComboRange + ']',
+    rsFitz = '\\ud83c[\\udffb-\\udfff]',
+    rsModifier = '(?:' + rsCombo + '|' + rsFitz + ')',
+    rsNonAstral = '[^' + rsAstralRange + ']',
+    rsRegional = '(?:\\ud83c[\\udde6-\\uddff]){2}',
+    rsSurrPair = '[\\ud800-\\udbff][\\udc00-\\udfff]',
+    rsZWJ = '\\u200d';
+
+/** Used to compose unicode regexes. */
+var reOptMod = rsModifier + '?',
+    rsOptVar = '[' + rsVarRange + ']?',
+    rsOptJoin = '(?:' + rsZWJ + '(?:' + [rsNonAstral, rsRegional, rsSurrPair].join('|') + ')' + rsOptVar + reOptMod + ')*',
+    rsSeq = rsOptVar + reOptMod + rsOptJoin,
+    rsSymbol = '(?:' + [rsNonAstral + rsCombo + '?', rsCombo, rsRegional, rsSurrPair, rsAstral].join('|') + ')';
+
+/** Used to match [string symbols](https://mathiasbynens.be/notes/javascript-unicode). */
+var reUnicode = RegExp(rsFitz + '(?=' + rsFitz + ')|' + rsSymbol + rsSeq, 'g');
+
+/**
+ * Converts a Unicode `string` to an array.
+ *
+ * @private
+ * @param {string} string The string to convert.
+ * @returns {Array} Returns the converted array.
+ */
+function unicodeToArray(string) {
+  return string.match(reUnicode) || [];
+}
+
+module.exports = unicodeToArray;
+
+},{}],"smkV":[function(require,module,exports) {
+var asciiToArray = require('./_asciiToArray'),
+    hasUnicode = require('./_hasUnicode'),
+    unicodeToArray = require('./_unicodeToArray');
+
+/**
+ * Converts `string` to an array.
+ *
+ * @private
+ * @param {string} string The string to convert.
+ * @returns {Array} Returns the converted array.
+ */
+function stringToArray(string) {
+  return hasUnicode(string)
+    ? unicodeToArray(string)
+    : asciiToArray(string);
+}
+
+module.exports = stringToArray;
+
+},{"./_asciiToArray":"ACee","./_hasUnicode":"oxMD","./_unicodeToArray":"NN+K"}],"prUu":[function(require,module,exports) {
+var castSlice = require('./_castSlice'),
+    hasUnicode = require('./_hasUnicode'),
+    stringToArray = require('./_stringToArray'),
+    toString = require('./toString');
+
+/**
+ * Creates a function like `_.lowerFirst`.
+ *
+ * @private
+ * @param {string} methodName The name of the `String` case method to use.
+ * @returns {Function} Returns the new case function.
+ */
+function createCaseFirst(methodName) {
+  return function(string) {
+    string = toString(string);
+
+    var strSymbols = hasUnicode(string)
+      ? stringToArray(string)
+      : undefined;
+
+    var chr = strSymbols
+      ? strSymbols[0]
+      : string.charAt(0);
+
+    var trailing = strSymbols
+      ? castSlice(strSymbols, 1).join('')
+      : string.slice(1);
+
+    return chr[methodName]() + trailing;
+  };
+}
+
+module.exports = createCaseFirst;
+
+},{"./_castSlice":"5Kr2","./_hasUnicode":"oxMD","./_stringToArray":"smkV","./toString":"A8RV"}],"SwE8":[function(require,module,exports) {
+var createCaseFirst = require('./_createCaseFirst');
+
+/**
+ * Converts the first character of `string` to upper case.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category String
+ * @param {string} [string=''] The string to convert.
+ * @returns {string} Returns the converted string.
+ * @example
+ *
+ * _.upperFirst('fred');
+ * // => 'Fred'
+ *
+ * _.upperFirst('FRED');
+ * // => 'FRED'
+ */
+var upperFirst = createCaseFirst('toUpperCase');
+
+module.exports = upperFirst;
+
+},{"./_createCaseFirst":"prUu"}],"NEda":[function(require,module,exports) {
+var toString = require('./toString'),
+    upperFirst = require('./upperFirst');
+
+/**
+ * Converts the first character of `string` to upper case and the remaining
+ * to lower case.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category String
+ * @param {string} [string=''] The string to capitalize.
+ * @returns {string} Returns the capitalized string.
+ * @example
+ *
+ * _.capitalize('FRED');
+ * // => 'Fred'
+ */
+function capitalize(string) {
+  return upperFirst(toString(string).toLowerCase());
+}
+
+module.exports = capitalize;
+
+},{"./toString":"A8RV","./upperFirst":"SwE8"}],"NUHt":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _capitalize = _interopRequireDefault(require("lodash/capitalize"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _default = str => {
+  return str.replace(/[\-_]/g, ' ').split(' ').map(word => (0, _capitalize.default)(word)).join(' ');
+};
+
+exports.default = _default;
+},{"lodash/capitalize":"NEda"}],"9TuE":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _default = (rawData, opts) => {
+  opts = Object.assign({
+    delimiter: ',',
+    newline: "\n",
+    title: '',
+    description: '',
+    header: true
+  }, opts);
+  if (!rawData || rawData.length == 0) return console.log('No data to export');
+  var header = Object.keys(rawData[0]);
+  var rows = rawData.map(d => Object.values(d));
+  var data = opts.header === false ? rows : [header].concat(rows);
+  if (opts.title || opts.description) data.unshift([]);
+  if (opts.description) data.unshift([opts.description]);
+  if (opts.title) data.unshift([opts.title]); // clean data
+
+  data = data.map(row => {
+    return row.map(val => {
+      // encapsulate in "" if the value contains a delimiter or new line
+      // TODO: this needs to be dynamic to match the opts
+      if (typeof val === 'string' && val.match(/,|\n|"/)) {
+        val = '"' + val.replace(/"/gi, '""') + '"';
+      }
+
+      return val;
+    });
+  });
+  let csvContent = "\ufeff"; // utf-8 bom
+
+  data.forEach(function (infoArray, index) {
+    let dataString = infoArray.join(opts.delimiter);
+    csvContent += index < data.length ? dataString + opts.newline : dataString;
+  }); // let downloadName = 'download'
+  // let blob = new Blob([csvContent], {type:'text/csv'});
+  // let csvUrl = window.URL.createObjectURL(blob);
+  // let ext = opts.delimiter == ',' ? 'csv' : 'txt'
+  // let link = document.createElement("a");
+  // link.setAttribute("href", csvUrl);
+  // link.setAttribute("download", downloadName+"."+ext);
+  // link.click();
+
+  return csvContent;
+};
+
+exports.default = _default;
+},{}],"DKKB":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _default = (ts = 0) => {
+  return new Promise(resolve => {
+    setTimeout(_ => {
+      resolve();
+    }, ts);
+  });
+};
+
+exports.default = _default;
+},{}],"+xBz":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "htmlCleaner", {
+  enumerable: true,
+  get: function () {
+    return _htmlCleaner.default;
+  }
+});
+Object.defineProperty(exports, "normalizeText", {
+  enumerable: true,
+  get: function () {
+    return _normalizeText.default;
+  }
+});
+Object.defineProperty(exports, "csvToArray", {
+  enumerable: true,
+  get: function () {
+    return _csvToArray.default;
+  }
+});
+Object.defineProperty(exports, "plural", {
+  enumerable: true,
+  get: function () {
+    return _plural.default;
+  }
+});
+Object.defineProperty(exports, "readFile", {
+  enumerable: true,
+  get: function () {
+    return _readFile.default;
+  }
+});
+Object.defineProperty(exports, "titleize", {
+  enumerable: true,
+  get: function () {
+    return _titleize.default;
+  }
+});
+Object.defineProperty(exports, "toCSV", {
+  enumerable: true,
+  get: function () {
+    return _toCSV.default;
+  }
+});
+Object.defineProperty(exports, "wait", {
+  enumerable: true,
+  get: function () {
+    return _wait.default;
+  }
+});
+
+var _htmlCleaner = _interopRequireDefault(require("./htmlCleaner"));
+
+var _normalizeText = _interopRequireDefault(require("./normalizeText"));
+
+var _csvToArray = _interopRequireDefault(require("./csvToArray"));
+
+var _plural = _interopRequireDefault(require("./plural"));
+
+var _readFile = _interopRequireDefault(require("./readFile"));
+
+var _titleize = _interopRequireDefault(require("./titleize"));
+
+var _toCSV = _interopRequireDefault(require("./toCSV"));
+
+var _wait = _interopRequireDefault(require("./wait"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+},{"./htmlCleaner":"E0RO","./normalizeText":"hNKD","./csvToArray":"E8jA","./plural":"Zwl6","./readFile":"MqKw","./titleize":"NUHt","./toCSV":"9TuE","./wait":"DKKB"}],"d7Am":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31594,9 +31445,7 @@ var _litHtml = require("lit-html");
 
 var _unsafeHtml = require("lit-html/directives/unsafe-html.js");
 
-var _util = require("util");
-
-var _normalizeText = _interopRequireDefault(require("../../../../util/normalizeText"));
+var _util = require("../../../../util");
 
 var _menu = _interopRequireDefault(require("../../../menu"));
 
@@ -31632,7 +31481,7 @@ class RichTextField extends HTMLElement {
 
 
   normalizeText(str) {
-    return (0, _normalizeText.default)(str);
+    return (0, _util.normalizeText)(str);
   }
 
   get value() {
@@ -31905,7 +31754,7 @@ customElements.define('rich-text-field', RichTextField);
 var _default = customElements.get('rich-text-field');
 
 exports.default = _default;
-},{"lit-html":"SP/d","lit-html/directives/unsafe-html.js":"/jTP","util":"2L/r","../../../../util/normalizeText":"hNKD","../../../menu":"0tCY","./style":"d7Am","./quill":"COD5"}],"h8fl":[function(require,module,exports) {
+},{"lit-html":"SP/d","lit-html/directives/unsafe-html.js":"/jTP","../../../../util":"+xBz","../../../menu":"0tCY","./style":"d7Am","./quill":"COD5"}],"h8fl":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33253,385 +33102,7 @@ class DataSource {
 
 exports.default = DataSource;
 (0, _componentEmitter.default)(DataSource.prototype);
-},{"component-emitter":"Wr69"}],"BblM":[function(require,module,exports) {
-/**
- * A specialized version of `_.map` for arrays without support for iteratee
- * shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the new mapped array.
- */
-function arrayMap(array, iteratee) {
-  var index = -1,
-      length = array == null ? 0 : array.length,
-      result = Array(length);
-
-  while (++index < length) {
-    result[index] = iteratee(array[index], index, array);
-  }
-  return result;
-}
-
-module.exports = arrayMap;
-
-},{}],"p/0c":[function(require,module,exports) {
-/**
- * Checks if `value` is classified as an `Array` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an array, else `false`.
- * @example
- *
- * _.isArray([1, 2, 3]);
- * // => true
- *
- * _.isArray(document.body.children);
- * // => false
- *
- * _.isArray('abc');
- * // => false
- *
- * _.isArray(_.noop);
- * // => false
- */
-var isArray = Array.isArray;
-
-module.exports = isArray;
-
-},{}],"3w4y":[function(require,module,exports) {
-var Symbol = require('./_Symbol'),
-    arrayMap = require('./_arrayMap'),
-    isArray = require('./isArray'),
-    isSymbol = require('./isSymbol');
-
-/** Used as references for various `Number` constants. */
-var INFINITY = 1 / 0;
-
-/** Used to convert symbols to primitives and strings. */
-var symbolProto = Symbol ? Symbol.prototype : undefined,
-    symbolToString = symbolProto ? symbolProto.toString : undefined;
-
-/**
- * The base implementation of `_.toString` which doesn't convert nullish
- * values to empty strings.
- *
- * @private
- * @param {*} value The value to process.
- * @returns {string} Returns the string.
- */
-function baseToString(value) {
-  // Exit early for strings to avoid a performance hit in some environments.
-  if (typeof value == 'string') {
-    return value;
-  }
-  if (isArray(value)) {
-    // Recursively convert values (susceptible to call stack limits).
-    return arrayMap(value, baseToString) + '';
-  }
-  if (isSymbol(value)) {
-    return symbolToString ? symbolToString.call(value) : '';
-  }
-  var result = (value + '');
-  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
-}
-
-module.exports = baseToString;
-
-},{"./_Symbol":"wppe","./_arrayMap":"BblM","./isArray":"p/0c","./isSymbol":"bgO7"}],"A8RV":[function(require,module,exports) {
-var baseToString = require('./_baseToString');
-
-/**
- * Converts `value` to a string. An empty string is returned for `null`
- * and `undefined` values. The sign of `-0` is preserved.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to convert.
- * @returns {string} Returns the converted string.
- * @example
- *
- * _.toString(null);
- * // => ''
- *
- * _.toString(-0);
- * // => '-0'
- *
- * _.toString([1, 2, 3]);
- * // => '1,2,3'
- */
-function toString(value) {
-  return value == null ? '' : baseToString(value);
-}
-
-module.exports = toString;
-
-},{"./_baseToString":"3w4y"}],"Chbn":[function(require,module,exports) {
-/**
- * The base implementation of `_.slice` without an iteratee call guard.
- *
- * @private
- * @param {Array} array The array to slice.
- * @param {number} [start=0] The start position.
- * @param {number} [end=array.length] The end position.
- * @returns {Array} Returns the slice of `array`.
- */
-function baseSlice(array, start, end) {
-  var index = -1,
-      length = array.length;
-
-  if (start < 0) {
-    start = -start > length ? 0 : (length + start);
-  }
-  end = end > length ? length : end;
-  if (end < 0) {
-    end += length;
-  }
-  length = start > end ? 0 : ((end - start) >>> 0);
-  start >>>= 0;
-
-  var result = Array(length);
-  while (++index < length) {
-    result[index] = array[index + start];
-  }
-  return result;
-}
-
-module.exports = baseSlice;
-
-},{}],"5Kr2":[function(require,module,exports) {
-var baseSlice = require('./_baseSlice');
-
-/**
- * Casts `array` to a slice if it's needed.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {number} start The start position.
- * @param {number} [end=array.length] The end position.
- * @returns {Array} Returns the cast slice.
- */
-function castSlice(array, start, end) {
-  var length = array.length;
-  end = end === undefined ? length : end;
-  return (!start && end >= length) ? array : baseSlice(array, start, end);
-}
-
-module.exports = castSlice;
-
-},{"./_baseSlice":"Chbn"}],"oxMD":[function(require,module,exports) {
-/** Used to compose unicode character classes. */
-var rsAstralRange = '\\ud800-\\udfff',
-    rsComboMarksRange = '\\u0300-\\u036f',
-    reComboHalfMarksRange = '\\ufe20-\\ufe2f',
-    rsComboSymbolsRange = '\\u20d0-\\u20ff',
-    rsComboRange = rsComboMarksRange + reComboHalfMarksRange + rsComboSymbolsRange,
-    rsVarRange = '\\ufe0e\\ufe0f';
-
-/** Used to compose unicode capture groups. */
-var rsZWJ = '\\u200d';
-
-/** Used to detect strings with [zero-width joiners or code points from the astral planes](http://eev.ee/blog/2015/09/12/dark-corners-of-unicode/). */
-var reHasUnicode = RegExp('[' + rsZWJ + rsAstralRange  + rsComboRange + rsVarRange + ']');
-
-/**
- * Checks if `string` contains Unicode symbols.
- *
- * @private
- * @param {string} string The string to inspect.
- * @returns {boolean} Returns `true` if a symbol is found, else `false`.
- */
-function hasUnicode(string) {
-  return reHasUnicode.test(string);
-}
-
-module.exports = hasUnicode;
-
-},{}],"ACee":[function(require,module,exports) {
-/**
- * Converts an ASCII `string` to an array.
- *
- * @private
- * @param {string} string The string to convert.
- * @returns {Array} Returns the converted array.
- */
-function asciiToArray(string) {
-  return string.split('');
-}
-
-module.exports = asciiToArray;
-
-},{}],"NN+K":[function(require,module,exports) {
-/** Used to compose unicode character classes. */
-var rsAstralRange = '\\ud800-\\udfff',
-    rsComboMarksRange = '\\u0300-\\u036f',
-    reComboHalfMarksRange = '\\ufe20-\\ufe2f',
-    rsComboSymbolsRange = '\\u20d0-\\u20ff',
-    rsComboRange = rsComboMarksRange + reComboHalfMarksRange + rsComboSymbolsRange,
-    rsVarRange = '\\ufe0e\\ufe0f';
-
-/** Used to compose unicode capture groups. */
-var rsAstral = '[' + rsAstralRange + ']',
-    rsCombo = '[' + rsComboRange + ']',
-    rsFitz = '\\ud83c[\\udffb-\\udfff]',
-    rsModifier = '(?:' + rsCombo + '|' + rsFitz + ')',
-    rsNonAstral = '[^' + rsAstralRange + ']',
-    rsRegional = '(?:\\ud83c[\\udde6-\\uddff]){2}',
-    rsSurrPair = '[\\ud800-\\udbff][\\udc00-\\udfff]',
-    rsZWJ = '\\u200d';
-
-/** Used to compose unicode regexes. */
-var reOptMod = rsModifier + '?',
-    rsOptVar = '[' + rsVarRange + ']?',
-    rsOptJoin = '(?:' + rsZWJ + '(?:' + [rsNonAstral, rsRegional, rsSurrPair].join('|') + ')' + rsOptVar + reOptMod + ')*',
-    rsSeq = rsOptVar + reOptMod + rsOptJoin,
-    rsSymbol = '(?:' + [rsNonAstral + rsCombo + '?', rsCombo, rsRegional, rsSurrPair, rsAstral].join('|') + ')';
-
-/** Used to match [string symbols](https://mathiasbynens.be/notes/javascript-unicode). */
-var reUnicode = RegExp(rsFitz + '(?=' + rsFitz + ')|' + rsSymbol + rsSeq, 'g');
-
-/**
- * Converts a Unicode `string` to an array.
- *
- * @private
- * @param {string} string The string to convert.
- * @returns {Array} Returns the converted array.
- */
-function unicodeToArray(string) {
-  return string.match(reUnicode) || [];
-}
-
-module.exports = unicodeToArray;
-
-},{}],"smkV":[function(require,module,exports) {
-var asciiToArray = require('./_asciiToArray'),
-    hasUnicode = require('./_hasUnicode'),
-    unicodeToArray = require('./_unicodeToArray');
-
-/**
- * Converts `string` to an array.
- *
- * @private
- * @param {string} string The string to convert.
- * @returns {Array} Returns the converted array.
- */
-function stringToArray(string) {
-  return hasUnicode(string)
-    ? unicodeToArray(string)
-    : asciiToArray(string);
-}
-
-module.exports = stringToArray;
-
-},{"./_asciiToArray":"ACee","./_hasUnicode":"oxMD","./_unicodeToArray":"NN+K"}],"prUu":[function(require,module,exports) {
-var castSlice = require('./_castSlice'),
-    hasUnicode = require('./_hasUnicode'),
-    stringToArray = require('./_stringToArray'),
-    toString = require('./toString');
-
-/**
- * Creates a function like `_.lowerFirst`.
- *
- * @private
- * @param {string} methodName The name of the `String` case method to use.
- * @returns {Function} Returns the new case function.
- */
-function createCaseFirst(methodName) {
-  return function(string) {
-    string = toString(string);
-
-    var strSymbols = hasUnicode(string)
-      ? stringToArray(string)
-      : undefined;
-
-    var chr = strSymbols
-      ? strSymbols[0]
-      : string.charAt(0);
-
-    var trailing = strSymbols
-      ? castSlice(strSymbols, 1).join('')
-      : string.slice(1);
-
-    return chr[methodName]() + trailing;
-  };
-}
-
-module.exports = createCaseFirst;
-
-},{"./_castSlice":"5Kr2","./_hasUnicode":"oxMD","./_stringToArray":"smkV","./toString":"A8RV"}],"SwE8":[function(require,module,exports) {
-var createCaseFirst = require('./_createCaseFirst');
-
-/**
- * Converts the first character of `string` to upper case.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category String
- * @param {string} [string=''] The string to convert.
- * @returns {string} Returns the converted string.
- * @example
- *
- * _.upperFirst('fred');
- * // => 'Fred'
- *
- * _.upperFirst('FRED');
- * // => 'FRED'
- */
-var upperFirst = createCaseFirst('toUpperCase');
-
-module.exports = upperFirst;
-
-},{"./_createCaseFirst":"prUu"}],"NEda":[function(require,module,exports) {
-var toString = require('./toString'),
-    upperFirst = require('./upperFirst');
-
-/**
- * Converts the first character of `string` to upper case and the remaining
- * to lower case.
- *
- * @static
- * @memberOf _
- * @since 3.0.0
- * @category String
- * @param {string} [string=''] The string to capitalize.
- * @returns {string} Returns the capitalized string.
- * @example
- *
- * _.capitalize('FRED');
- * // => 'Fred'
- */
-function capitalize(string) {
-  return upperFirst(toString(string).toLowerCase());
-}
-
-module.exports = capitalize;
-
-},{"./toString":"A8RV","./upperFirst":"SwE8"}],"NUHt":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _capitalize = _interopRequireDefault(require("lodash/capitalize"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _default = str => {
-  return str.replace(/[\-_]/g, ' ').split(' ').map(word => (0, _capitalize.default)(word)).join(' ');
-};
-
-exports.default = _default;
-},{"lodash/capitalize":"NEda"}],"YNHW":[function(require,module,exports) {
+},{"component-emitter":"Wr69"}],"YNHW":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

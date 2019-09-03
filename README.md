@@ -8,7 +8,7 @@
 
 <div align="center">
 
-[![demo](https://img.shields.io/badge/npm-v1.0.1-blue)](https://www.npmjs.com/package/blackstone-ui)
+[![demo](https://img.shields.io/badge/npm-v1.0.2-blue)](https://www.npmjs.com/package/blackstone-ui)
 [![demo](https://img.shields.io/badge/-Demo-blue)](http://kjantzer.github.io/bui/)
 [![docs](https://img.shields.io/badge/-Documentation-black)](http://kjantzer.github.io/bui/docs/)
 
