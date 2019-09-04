@@ -62,6 +62,10 @@ rich-text-field .ql-container:not(.ql-disabled) {
     cursor: text;
 }
 
+rich-text-field .ql-editor {
+    outline: none;
+}
+
 /* rich-text-field .ql-editor.ql-blank > *  {
     display: none;
 } */
