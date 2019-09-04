@@ -8,6 +8,7 @@ import '../elements/timer'
 import '../elements/empty-state'
 import '../elements/label'
 import '../elements/hr'
+import '../elements/sub'
 
 
 import { LitElement, html, css } from 'lit-element';
@@ -21,7 +22,7 @@ import Dialog from '../presenters/dialog'
 
 window.Dialog = Dialog
 
-window.showMenu = async function(el){
+window.showMenu = async function(el, renderTo=false){
 
     let menu = [
         {divider: 'Group Title'},
@@ -36,14 +37,22 @@ window.showMenu = async function(el){
         {text: 'Look at the console after selecting a value'}
     ]
 
-    let selected = await new Menu(menu).popover(el)
+    menu = new Menu(menu)
 
-    console.log(selected)
+    if( renderTo ){
+        el.appendChild(menu.el)
+        menu.render()
+    }else{
+        let selected = await menu.popover(el)
+    }
+
 }
+
+showMenu(document.querySelector('#render-menu'), true)
 
 Panel.register('view-1', ()=>html`
     <b-panel-toolbar shadow>
-        <b-btn href="/#/view-2" slot="right">View 2</b-btn>
+        <b-btn slot="right">Right Side</b-btn>
         <span slot="left">
             <b-hr vert></b-hr>
             Left Content
@@ -52,7 +61,7 @@ Panel.register('view-1', ()=>html`
     </b-panel-toolbar>
     <main style="flex:1">
         <b-tabs layout="left">
-            <div title="View 1">View 1 content</div>
+            <div title="View 1">Try using your browser's back button</div>
             <div title="View 2">View 2 content</div>
         </b-tabs>
     </main>
@@ -124,7 +133,7 @@ customElements.define('a-list-view', class extends LitElement{
         :host {
             display: block;
             height: 340px;
-            margin: -2em;
+            /* margin: -2em; */
             border-bottom: solid 1px rgba(0,0,0,.1);
         }
 
@@ -160,6 +169,24 @@ customElements.define('a-list-view-row', class extends LitElement{
 
 })
 
+customElements.define('tab-divider', class extends LitElement{
+
+    static get styles(){return css`
+        :host {
+            display: block;
+            color: inherit;
+            margin: 1em 0 0 0;
+            padding: 1em 1.2em .5em;
+            border-top: solid 1px rgba(0,0,0,.1);
+        }
+    `}
+
+    render(){return html`
+        <b-label><slot></slot></b-label>
+    `}
+
+})
+
 window.dialogs = {
     async success(el){
         Dialog.success().modal()
@@ -187,6 +214,11 @@ window.dialogs = {
             console.log('confimed delete')
     }
 }
+
+
+document.querySelector('#dialog-success').appendChild(Dialog.success().el)
+document.querySelector('#dialog-warn').appendChild(Dialog.warn({title: 'Ooops', msg: 'That is not supported'}).el)
+document.querySelector('#dialog-error').appendChild(Dialog.error({title: 'Error', msg: 'Something went wrong'}).el)
 
 window.openView = el=>{
     event.preventDefault()

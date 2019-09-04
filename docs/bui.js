@@ -15746,6 +15746,11 @@ class Menu {
     if (this.presenter && this.presenter._updatePosition) this.presenter._updatePosition();
   }
 
+  appendTo(el) {
+    el.appendElement(this.el);
+    this.render();
+  }
+
   render() {
     let showJumpNav = this.opts.jumpNav === true || typeof this.opts.jumpNav == 'number' && this.displayMenu.length >= this.opts.jumpNav;
     this._active = null;
@@ -15770,6 +15775,7 @@ class Menu {
 			</div>
 
 		`, this.el);
+    return this;
   }
 
   renderItem(m, i) {
@@ -16016,6 +16022,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _litHtml = require("lit-html");
+
 class TabView {
   constructor(view) {
     // custom element - we lazy load these
@@ -16047,6 +16055,14 @@ class TabView {
       this.__view.tabView = this;
       view.title = '';
     }
+  }
+
+  render(onClick) {
+    return this.canDisplay ? _litHtml.html`
+            <div class="tab-bar-item" ?active=${this.active} .tabView=${this} @click=${onClick}>
+                <slot name="menu:${this.id}">${this.title}</slot>
+            </div>
+        ` : '';
   }
 
   get active() {
@@ -16099,7 +16115,7 @@ class TabView {
 }
 
 exports.default = TabView;
-},{}],"jVU8":[function(require,module,exports) {
+},{"lit-html":"SP/d"}],"jVU8":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16941,11 +16957,7 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
                 <b-icon name="menu"></b-icon>
                 ${this.views.active.title}
             </div>
-            ${this.views.map(m => m.canDisplay ? _litElement.html`
-                <div class="tab-bar-item" ?active=${m.active} .tabView=${m} @click=${this.menuClick}>
-                    <slot name="menu:${m.id}">${m.title}</slot>
-                </div>
-            ` : '')}
+            ${this.views.map(v => v.render(this.menuClick))}
             <slot name="menu:after"></slot>
         </header>
         <slot class="content"></slot>
@@ -17956,6 +17968,7 @@ class Dialog {
     }, opts);
     this.el = document.createElement('div');
     opts.className += ' nopadding dialog';
+    if (this.opts.icon) opts.className += ' sideicon';
     opts.className.split(' ').forEach(className => className && this.el.classList.add(className));
     let [iconName, iconClass] = (opts.icon || '').split(' '); // FIXME: animation needs added
 
@@ -17963,7 +17976,7 @@ class Dialog {
     let btns = opts.btns ? opts.btns.map(btn => makeBtn(btn)).join("\n") : '';
     if (opts.icon === 'spinner') icon = `<b-spinner></b-spinner>`;
     this.el.innerHTML = `<style>${styles}</style>
-							<div class="d-icon ${iconClass}">${icon}</div>
+							<div class="d-icon">${icon}</div>
 							<h2 class="d-title">${opts.title}</h2>
 							<div class="d-msg">${opts.msg}</div>
 							<div class="d-btns">${btns}</div>`;
@@ -18090,14 +18103,16 @@ class Dialog {
       this.resolve(false);
     };
 
-    opts.onKeydown = this.onKeydown.bind(this);
-    if (this.opts.icon) this.el.classList.add('sideicon');
+    opts.onKeydown = this.onKeydown.bind(this); // if( this.opts.icon )
+    // 	this.el.classList.add('sideicon')
+
     this.presenter = new Popover(target, this.el, opts);
     return this.promise;
   }
 
   modal(opts = {}) {
-    if (this.opts.icon) this.el.classList.add('sideicon');
+    // if( this.opts.icon )
+    // 	this.el.classList.add('sideicon')
     return this.panel(opts); // might need to reactivate Modal below
   }
 
@@ -18126,8 +18141,8 @@ class Dialog {
       onAutoClose: () => {
         this.resolve(false);
       }
-    }, opts);
-    this.el.classList.add('sideicon');
+    }, opts); // this.el.classList.add('sideicon')
+
     this.presenter = app.msgs.add(this.el, opts);
     return this.promise;
   }
@@ -20005,6 +20020,10 @@ rich-text-field .ql-container {
 
 rich-text-field .ql-container:not(.ql-disabled) {
     cursor: text;
+}
+
+rich-text-field .ql-editor {
+    outline: none;
 }
 
 /* rich-text-field .ql-editor.ql-blank > *  {

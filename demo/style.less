@@ -39,8 +39,8 @@ a:hover {
 }
 
 header {
-    padding: 4em 0 7em;
-    margin-bottom: -4em;
+    padding: 4em 1em 7em;
+    margin-bottom: -5em;
     background: linear-gradient(-10deg,#40464b,#2c3033);
     color: #fff;
 }
@@ -76,6 +76,14 @@ header .ribbon {
 
     p {
         font-size: 1.4em;
+        text-align: center;
+    }
+}
+
+@media (max-width:999px) {
+    header .ribbon { display: none; }
+    .logo h1 {
+        font-size: 3em;
     }
 }
 
@@ -85,7 +93,7 @@ main {
 }
 
 body > main > b-paper {
-    margin-bottom: 2.4em;
+    margin-bottom: 0;
     box-shadow: rgba(0,0,0,.2) 0 3px 6px;
     border: none;
 }
@@ -103,7 +111,40 @@ b-paper {
 main > b-paper {
     display: block;
     margin-bottom: 1em;
+}
+
+main > b-paper:not([compact]) {
     --padding: 2rem;
+}
+
+b-tabs > b-tabs {
+    min-height: 500px;
+}
+
+b-tabs section {
+    min-height: 100%;
+    box-sizing: border-box;
+
+    > h1 {
+        margin-bottom: 1em;
+        font-size: 2.5em;
+    }
+}
+
+.cols-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2em;
+}
+
+@media (max-width:749px) {
+    .cols-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+form-handler {
+    display: grid;
 }
 
 b-paper > h1 {

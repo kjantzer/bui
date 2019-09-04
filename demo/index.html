@@ -32,260 +32,320 @@
 
         <div class="logo">
             <h1>Blackstone UI</h1>
-            <p>Reusable web components for creating app interfaces</p>
-            <b-btn color="blue" lg onclick="location='./docs'">Documentation</b-btn>
+            <p><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">Web components</a> for creating app interfaces – built using <a href="https://lit-html.polymer-project.org">lit-html</a> and <a href="https://lit-element.polymer-project.org">lit-element</a></p>
         </div>
 
     </header>
 
     <main>
 
-        <b-paper>
-            <h1>Form Control</h1>
 
-            <form-control material="filled" label="Text Field">
-                <text-field></text-field>
-            </form-control>
+        <b-paper compact><b-tabs key="main">
 
-            <form-control material="filled" label="Date Field">
-                <text-field type="date"></text-field>
-            </form-control>
+            <span slot="menu:after" style="margin: 0 .5em 0 auto; display: flex; align-items: center;" >
+                <b-btn color="black" onclick="location='https://www.npmjs.com/package/blackstone-ui'">Install</b-btn>
+                &nbsp;&nbsp;
+                <b-btn color="blue" onclick="location='./docs'">Documentation</b-btn>
+            </span>
 
-            <form-control material="filled" label="Text Field (Multiline)">
-                <text-field multiline></text-field>
-            </form-control>
+            <b-tabs title="Presenters" key="presenters" layout="left" >
 
-            <form-control material="filled" label="Rich Text Field">
-                <rich-text-field></rich-text-field>
-            </form-control>
+                <section title="Form control">
+                    <h1>Form Control</h1>
 
-            <form-control material="filled" label="Select Field">
-                <select-field>
-                    <option value="">No Value</option>
-                    <hr>
-                    <option value="1">Option 1</option>
-                    <option value="2">Option 2</option>
-                    <option value="3">Option 3</option>
-                    <optgroup>Group Title</optgroup>
-                    <option value="4">Option 4</option>
-                    <option value="5">Option 5</option>
-                </select-field>
-            </form-control>
+                    <form-handler>
 
-            <br>
+                        <form-control material="filled" label="Text Field">
+                            <text-field></text-field>
+                        </form-control>
 
-            <check-box label="Checkbox"></check-box> &nbsp;&nbsp;
-            <check-box type="switch" label="Switch"></check-box> &nbsp;&nbsp;
+                        <form-control material="filled" label="Date Field">
+                            <text-field type="date"></text-field>
+                        </form-control>
 
-            <radio-group>
-                <radio-btn label="One"></radio-btn>
-                <radio-btn label="Two"></radio-btn>
-            </radio-group>
+                        <form-control material="filled" label="Text Field (Multiline)">
+                            <text-field multiline></text-field>
+                        </form-control>
 
-        </b-paper>
+                        <form-control material="filled" label="Rich Text Field">
+                            <rich-text-field></rich-text-field>
+                        </form-control>
 
-        <b-paper>
-            <h1>Panels</h1>
+                        <form-control material="filled" label="Select Field">
+                            <select-field>
+                                <option value="">No Value</option>
+                                <hr>
+                                <option value="1">Option 1</option>
+                                <option value="2">Option 2</option>
+                                <option value="3">Option 3</option>
+                                <optgroup>Group Title</optgroup>
+                                <option value="4">Option 4</option>
+                                <option value="5">Option 5</option>
+                            </select-field>
+                        </form-control>
 
-            <div>
-                <a href="/#/view-1" onclick="openView(this)">Default Panel view</a>
-            </div>
+                    </form-handler>
 
-            <div>
-                <a href="/#/view-2-small" onclick="openView(this)">Custom sizing and anchor</a>
-            </div>
+                    <br>
 
-        </b-paper>
+                    <check-box label="Checkbox"></check-box> &nbsp;&nbsp;
+                    <check-box type="switch" label="Switch"></check-box> &nbsp;&nbsp;
 
-        <b-paper>
-            <h1>Tabs</h1>
+                    <radio-group>
+                        <radio-btn label="One"></radio-btn>
+                        <radio-btn label="Two"></radio-btn>
+                    </radio-group>
+                </section>
 
-            <b-tabs style="margin: -2em;">
-                <div title="Tab 1">Tab 1 content</div>
-                <div title="Tab 2">Tab 2 content</div>
+                <section title="Dialog">
+                    <h1>Dialog</h1>
+
+                    <div class="cols-2">
+                        <div>
+                            <b-paper id="dialog-success" compact></b-paper>
+                            <b-paper id="dialog-warn" compact></b-paper>
+                            <b-paper id="dialog-error" compact></b-paper>
+                        </div>
+                        <div>
+                            <b-label divider>Modals</b-label><br>
+                            <b-btn outline onclick="dialogs.success(this)">Success Modal</b-btn><br><br>
+                            <b-btn outline onclick="dialogs.error(this)">Error Modal</b-btn><br><br>
+                            <b-btn outline onclick="dialogs.warn(this)">Warn Modal</b-btn><br><br>
+                            <b-btn outline onclick="dialogs.confirm(this)">Confirm Modal</b-btn><br><br>
+
+                            <br><b-label divider>Popover</b-label><br>
+                            <b-btn outline onclick="dialogs.errorPopover(this)">Error Popover</b-btn><br><br>
+                            <b-btn outline onclick="dialogs.confirmDelete(this)">Confirm Delete Popover</b-btn>
+                        </div>
+                    </div>
+
+                </section>
+
+                <section title="Menu">
+                    <h1>Menu</h1>
+                    
+                    <div class="cols-2">
+
+                        <b-paper compact id="render-menu"></b-paper>
+
+                        <div>
+                            <b-btn outline onclick="showMenu(this)">Open Menu</b-btn>
+                        </div>
+                    </div>
+
+                </section>
+
+                <section title="Panel">
+                    <h1>Panels</h1>
+
+                    <div>
+                        <a href="/#/view-1" onclick="openView(this)">Default Panel view</a>
+                    </div>
+
+                    <div>
+                        <a href="/#/view-2-small" onclick="openView(this)">Custom sizing and anchor</a>
+                    </div>
+
+                </section>
+
+                <section title="Tabs">
+                    <h1>Tabs</h1>
+
+                    <b-paper compact><b-tabs>
+                        <div title="Tab 1">Tab 1 content</div>
+                        <div title="Tab 2">Tab 2 content</div>
+                    </b-tabs></b-paper>
+
+                </section>
+
+                <section title="List">
+                    <h1>List</h1>
+
+                    <b-paper compact>
+                        <a-list-view></a-list-view>
+                    </b-paper>
+                </section>
+
             </b-tabs>
 
-        </b-paper>
 
-         <b-paper>
-            <h1>Menu</h1>
 
-            <b-btn outline onclick="showMenu(this)">Open Menu</b-btn>
+            <b-tabs title="Elements" key="elements" layout="left">
 
-        </b-paper>
+                <section title="Paper">
+                    <h1>Paper</h1>
+                
+                    <b-paper color="blue">
+                        This is a "paper" block with color blue
+                    </b-paper>
 
-        <b-paper>
-            <h1>Dialog</h1>
+                    <b-paper color="red">
+                        This is a "paper" block with color red
+                    </b-paper>
 
-            <b-btn outline onclick="dialogs.success(this)">Success Modal</b-btn> &nbsp;
-            <b-btn outline onclick="dialogs.error(this)">Error Modal</b-btn> &nbsp;
-            <b-btn outline onclick="dialogs.errorPopover(this)">Error Popover</b-btn> &nbsp;
-            <b-btn outline onclick="dialogs.warn(this)">Warn Modal</b-btn> &nbsp;
-            <b-btn outline onclick="dialogs.confirm(this)">Confirm Modal</b-btn> &nbsp;
-            <b-btn outline onclick="dialogs.confirmDelete(this)">Confirm Delete Popover</b-btn>
+                    <b-paper color="orange" border>
+                        This is a "paper" block with color orange <b>and a border</b>
+                    </b-paper>
 
-        </b-paper>
+                    <b-paper dense color="gray">
+                        Dense padding
+                    </b-paper>
 
-        <b-paper>
-            <h1>List</h1>
+                    <b-paper compact color="gray">
+                        Compact padding (no padding) - useful when the child element wants to set it's own padding
+                    </b-paper>
 
-            <a-list-view></a-list-view>
+                    <b-paper empty>
+                        A paper block in empty state
+                    </b-paper>
 
-        </b-paper>
+                </section>
 
-        <b-paper>
-            <h1>Paper</h1>
-            
-            <b-paper color="blue">
-                This is a "paper" block with color blue
-            </b-paper>
 
-            <b-paper color="red">
-                This is a "paper" block with color red
-            </b-paper>
+                <section title="Buttons">
+                    <h1>Buttons</h1>
 
-            <b-paper color="orange" border>
-                This is a "paper" block with color orange <b>and a border</b>
-            </b-paper>
+                    <b-label divider>Default</b-label><br>
+                    <div>
+                        <b-btn>Default</b-btn>
+                        <b-btn color="blue">Blue</b-btn>
+                        <b-btn color="red">Red</b-btn>
+                        <b-btn color="green">Green</b-btn>
 
-            <b-paper dense color="gray">
-                Dense padding
-            </b-paper>
+                        <b-hr vert></b-hr>
 
-            <b-paper compact color="gray">
-                Compact padding (no padding) - useful when the child element wants to set it's own padding
-            </b-paper>
+                        <b-btn icon="user">With Icon</b-btn>
+                        <b-btn icon="cog"></b-btn>
 
-            <b-paper empty>
-                A paper block in empty state
-            </b-paper>
+                        <b-hr vert></b-hr>
 
-        </b-paper>
+                        <b-btn spin>With Spinner</b-btn>
+                    </div>
 
-        <b-paper>
-            <h1>Buttons</h1>
+                    <br><br><b-label divider>Outline</b-label><br>
+                    <div>
+                        <b-btn outline>Default</b-btn>
+                        <b-btn outline color="blue">Blue</b-btn>
+                        <b-btn outline color="red">Red</b-btn>
+                        <b-btn outline color="green">Green</b-btn>
+                    </div>
 
-            <b-label>Default</b-label><br><br>
-            <div>
-                <b-btn>Default</b-btn>
-                <b-btn color="blue">Blue</b-btn>
-                <b-btn color="red">Red</b-btn>
-                <b-btn color="green">Green</b-btn>
+                    <br><br><b-label divider>Pill</b-label><br>
+                    <div>
+                        <b-btn pill>Default</b-btn>
+                        <b-btn pill color="blue">Blue</b-btn>
+                        <b-btn pill color="red">Red</b-btn>
+                        <b-btn pill color="green">Green</b-btn>
+                    </div>
 
-                <b-hr vert></b-hr>
+                    <br><br><b-label divider>Text style</b-label><br>
+                    <div>
+                        <b-btn text>Default</b-btn>
+                        <b-btn text color="blue">Blue</b-btn>
+                        <b-btn text color="red">Red</b-btn>
+                        <b-btn text color="green">Green</b-btn>
+                    </div>
 
-                <b-btn icon="user">With Icon</b-btn>
-                <b-btn icon="cog"></b-btn>
+                    <br><br><br>
+                    <div><b-icon name="info-circled"></b-icon> See list of all icons down below</div>
+                </section>
 
-                <b-hr vert></b-hr>
 
-                <b-btn spin>With Spinner</b-btn>
-            </div>
+                <section title="Label">
 
-            <br><br><b-label>Outline</b-label><br><br>
-            <div>
-                <b-btn outline>Default</b-btn>
-                <b-btn outline color="blue">Blue</b-btn>
-                <b-btn outline color="red">Red</b-btn>
-                <b-btn outline color="green">Green</b-btn>
-            </div>
+                    <h1>Label</h1>
 
-            <br><br><b-label>Pill</b-label><br><br>
-            <div>
-                <b-btn pill>Default</b-btn>
-                <b-btn pill color="blue">Blue</b-btn>
-                <b-btn pill color="red">Red</b-btn>
-                <b-btn pill color="green">Green</b-btn>
-            </div>
+                    <b-label>A label</b-label><br><br>
+                    <b-label divider>A label with divider</b-label><br>
+                    <b-label divider="center">A label with divider</b-label>
 
-            <br><br><b-label>Text style</b-label><br><br>
-            <div>
-                <b-btn text>Default</b-btn>
-                <b-btn text color="blue">Blue</b-btn>
-                <b-btn text color="red">Red</b-btn>
-                <b-btn text color="green">Green</b-btn>
-            </div>
+                    
+                    <br><br>
+                    
+                    <b-label filled>Filled</b-label>&nbsp;
+                    <b-label filled="black">Black</b-label>&nbsp;
+                    <b-label filled="blue">Blue</b-label>&nbsp;
+                    <b-label filled="red">Red</b-label>&nbsp;
+                    <b-label filled="orange">Orange</b-label>&nbsp;
+                    <b-label filled="green">Green</b-label>&nbsp;
+                    
+                    <br><br>
+                    
+                    <b-label outline>Outline</b-label>&nbsp;
+                    <b-label outline="black">Black</b-label>&nbsp;
+                    <b-label outline="blue">Blue</b-label>&nbsp;
+                    <b-label outline="red">Red</b-label>&nbsp;
+                    <b-label outline="orange">Orange</b-label>&nbsp;
+                    <b-label outline="green">Green</b-label>&nbsp;
+                    
+                    <br><br>
 
-            <br><br>
-            <div><b-icon name="info-circled"></b-icon> See list of all icons down below</div>
-            
-        </b-paper>
+                    <b-label badge>Badge</b-label>&nbsp;
+                    <b-label badge="black">Black</b-label>&nbsp;
+                    <b-label badge="blue">Blue</b-label>&nbsp;
+                    <b-label badge="red">Red</b-label>&nbsp;
+                    <b-label badge="orange">Orange</b-label>&nbsp;
+                    <b-label badge="green">Green</b-label>&nbsp;
 
-        <b-paper>
-            <h1>Label</h1>
+                </section>
 
-            <b-label>A label</b-label>
-            
-            <br><br>
-            
-            <b-label filled>Filled</b-label>&nbsp;
-            <b-label filled="black">Black</b-label>&nbsp;
-            <b-label filled="blue">Blue</b-label>&nbsp;
-            <b-label filled="red">Red</b-label>&nbsp;
-            <b-label filled="orange">Orange</b-label>&nbsp;
-            <b-label filled="green">Green</b-label>&nbsp;
-            
-            <br><br>
-            
-            <b-label outline>Outline</b-label>&nbsp;
-            <b-label outline="black">Black</b-label>&nbsp;
-            <b-label outline="blue">Blue</b-label>&nbsp;
-            <b-label outline="red">Red</b-label>&nbsp;
-            <b-label outline="orange">Orange</b-label>&nbsp;
-            <b-label outline="green">Green</b-label>&nbsp;
-            
-            <br><br>
+                <section title="Spinner">
 
-            <b-label badge>Badge</b-label>&nbsp;
-            <b-label badge="black">Black</b-label>&nbsp;
-            <b-label badge="blue">Blue</b-label>&nbsp;
-            <b-label badge="red">Red</b-label>&nbsp;
-            <b-label badge="orange">Orange</b-label>&nbsp;
-            <b-label badge="green">Green</b-label>&nbsp;
+                    <h1>Spinners</h1>
 
-        </b-paper>
+                    Inline spinner <b-spinner></b-spinner>
+                    
+                    <br><br>
 
-        <b-paper>
-            <h1>Spinners</h1>
+                    <div style="position: relative; z-index: 0;">
+                        <b-spinner-overlay show></b-spinner-overlay>
+                        An overlay spinner. Sint ullamco sunt in officia sint. Ea ullamco ipsum anim fugiat anim officia eu sint. Laborum anim fugiat ipsum Lorem. Mollit et cupidatat incididunt pariatur mollit cillum ex ex.</div>
 
-            Inline spinner <b-spinner></b-spinner>
-            <br><br>
+                </section>
 
-            <div style="position: relative; z-index: 0;">
-                <b-spinner-overlay show></b-spinner-overlay>
-                An overlay spinner. Sint ullamco sunt in officia sint. Ea ullamco ipsum anim fugiat anim officia eu sint. Laborum anim fugiat ipsum Lorem. Mollit et cupidatat incididunt pariatur mollit cillum ex ex.</div>
-        </b-paper>
+                <section title="Empty State">
+                    <h1>Empty state</h1>
 
-        <b-paper>
-            <h1>Empty state</h1>
+                    <div style="height: 200px; position: relative">
+                        <b-empty-state>No results</b-empty-state>
+                    </div>
 
-            <div style="height: 200px; position: relative">
-                <b-empty-state>No results</b-empty-state>
-            </div>
-        </b-paper>
+                </section>
 
-        <b-paper>
-            <h1>Uploader</h1>
-            <b-uploader></b-uploader>
-            <div>Drag and drop a file here to upload</div>
-            <script>
-                let uploader = document.querySelector('b-uploader')
-                uploader.addEventListener('change', async e=>{
+                <section title="Uploader" style="position: relative;">
+                    <h1>Uploader</h1>
+                    <b-uploader></b-uploader>
+                    
+                    <div>Drag and drop a file here to upload</div>
+                    
+                    <script>
+                        let uploader = document.querySelector('b-uploader')
+                        uploader.addEventListener('change', async e=>{
 
-                    console.log('upload the file', uploader.files);
+                            console.log('upload the file', uploader.files);
 
-                    if( await Dialog.confirm({title: 'Upload', msg: 'Upload selected file?'}).modal() )
-                        console.log('yes, upload');
-                        // uploader.upload({url:'url-to-upload-to'})
-                })
-            </script>
-        </b-paper>
+                            if( await Dialog.confirm({title: 'Upload', msg: 'Upload selected file?'}).modal() )
+                                console.log('yes, upload');
+                                // uploader.upload({url:'url-to-upload-to'})
+                        })
+                    </script>
+                </section>
+
+                <section title="Icons">
+                    <h1>Icons</h1>
+                    <b-icon-list cols="3"></b-icon-list>
+                </section>
+
+            </b-tabs>
+
+        </b-tabs></b-paper>
+
+        <br><br>
+        <div>
+            <b-sub>Built by Blackstone Publishing</b-sub>
+        </div>
+        <br><br>
         
-
-        <b-paper>
-            <h1>Icons</h1>
-            <b-icon-list cols="4"></b-icon-list>
-        </b-paper>
 
     </main>
 
