@@ -7,6 +7,7 @@ import '../elements/paper'
 import '../elements/timer'
 import '../elements/empty-state'
 import '../elements/label'
+import '../elements/avatar'
 import '../elements/hr'
 import '../elements/sub'
 

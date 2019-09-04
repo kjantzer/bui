@@ -9981,7 +9981,183 @@ customElements.define('b-sub', class extends _litElement.LitElement {
 var _default = customElements.get('b-sub');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"bpDM":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"Da++":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = exports.BgdColors = void 0;
+const InvalidImages = [];
+const BgdColors = ['#2196F3', '#f44336', '#673AB7', '#00BCD4', '#009688', '#4CAF50', '#FFC107', '#FF5722', '#795548', '#607D8B'];
+exports.BgdColors = BgdColors;
+
+class AvatarElement extends HTMLElement {
+  static get observedAttributes() {
+    return ['initials', 'bgd', 'color', 'size', 'url', 'gravatar'];
+  }
+
+  constructor() {
+    super();
+    let shadow = this.attachShadow({
+      mode: 'open'
+    });
+    let temp = document.createElement('template');
+    temp.innerHTML = `<style>
+			:host {
+				--radius: 50%;
+				--size: 1em;
+				--bgd: ${this.bgd};
+				--bgdDefault: transparent;
+				--color: ${this.color};
+				height: var(--size);
+			    width: var(--size);
+			    display: inline-block;
+			    vertical-align: middle;
+			}
+			svg {
+				border-radius: var(--radius);
+			}
+			
+			svg rect {
+				fill: var(--bgd);
+			}
+			
+			svg text {
+				fill: var(--color);
+			}
+			
+			:host([nobgd]) svg.imgloaded rect {
+				fill: transparent;
+			}
+			
+			svg.imgloaded text {
+				visibility: hidden;
+			}
+			
+			:host([imgicon]) svg image {
+				width: 70%;
+				height: 70%;
+				x: 15%;
+				y: 15%;
+			}
+			
+			svg.imgloading rect {
+				fill: #eee;
+			}
+
+			svg.imgloaded rect {
+				fill: var(--bgdDefault);
+			}
+			</style>
+			
+		<svg class="imgloading" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="100%" height="100%" rx="0" ry="0"></rect>
+            <text x="50%" y="50%" font-size="65" dominant-baseline="central" text-anchor="middle">${this.initials}</text>
+			<image xlink:href="" x="0" y="0" width="100%" height="100%" onload="this.parentElement.classList.add('imgloaded')">
+        </svg>`;
+    this.shadowRoot.appendChild(temp.content.cloneNode(true));
+    this.img = this.shadowRoot.querySelector('image');
+    this.img.addEventListener('error', e => {
+      this.img.style.display = 'none';
+      this.img.parentElement.classList.remove('imgloading');
+      let src = this.img.getAttribute('xlink:href');
+      if (src) InvalidImages.push(src);
+    });
+  }
+
+  connectedCallback() {
+    // NOTE: https://stackoverflow.com/a/43837330/484780
+    // this.style.display = 'inline-block'
+    // this.style.verticalAlign = 'middle'
+    // this.style.lineHeight = '0'
+    if (this.hasAttribute('gravatar')) this.gravatar = this.getAttr('gravatar');
+  }
+
+  attributeChangedCallback(name, oldVal, newVal) {
+    this[name] = newVal;
+  }
+
+  getAttr(name, defaultVal) {
+    return this.hasAttribute(name) ? this.getAttribute(name) || defaultVal : defaultVal;
+  }
+
+  get initials() {
+    return this.getAttr('initials', '-');
+  }
+
+  set initials(str) {
+    this.shadowRoot.querySelector('text').innerHTML = str || '-';
+    this.bgd = this.bgd; // update bgd to match initial change (wont change if user specified the bgd attr)
+  }
+
+  get bgd() {
+    let color = this.getAttr('bgd');
+
+    if (!color) {
+      let char = this.getAttr('initials', 'a').toLowerCase().charCodeAt(0) - 97;
+      color = BgdColors[char % BgdColors.length];
+    }
+
+    return color;
+  }
+
+  set bgd(color) {
+    // if( this.style.getPropertyValue('--bgd') ) return
+    this.style.setProperty('--bgd', color); // this.shadowRoot.querySelector('rect').setAttribute('fill', color||this.bgd)
+  }
+
+  get color() {
+    return this.getAttr('color', '#fff');
+  }
+
+  set color(color) {
+    this.style.setProperty('--color', color); // this.shadowRoot.querySelector('text').setAttribute('fill', color||this.color)
+  }
+
+  get size() {
+    return this.getAttr('size', 24);
+  }
+
+  set size(size) {
+    this.style.width = size + 'px';
+    this.style.height = size + 'px'; // reload the gravatar to get the correct size
+
+    this.gravatar = this.getAttr('gravatar');
+  }
+
+  set url(url) {
+    this.img.parentElement.classList.remove('imgloaded');
+    this.img.style.display = ''; // dont try to load an image we already know fails
+
+    if (!url || InvalidImages.includes(url)) {
+      this.img.style.display = 'none';
+      this.img.setAttribute('xlink:href', '');
+      return;
+    }
+
+    if (url) {
+      this.img.parentElement.classList.add('imgloading');
+      this.img.setAttribute('xlink:href', url);
+    }
+  }
+
+  set gravatar(guid) {
+    // wait until el is connected so we can determine the height of the avatar
+    if (!this.isConnected) return;
+    let size = this.offsetHeight * 2;
+    if (size < 80) size = 80;
+    this.url = guid ? `//gravatar.com/avatar/${guid}?d=404&s=${size}` : '';
+  }
+
+}
+
+customElements.define('b-avatar', AvatarElement);
+
+var _default = customElements.get('b-avatar');
+
+exports.default = _default;
+},{}],"bpDM":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18103,16 +18279,12 @@ class Dialog {
       this.resolve(false);
     };
 
-    opts.onKeydown = this.onKeydown.bind(this); // if( this.opts.icon )
-    // 	this.el.classList.add('sideicon')
-
+    opts.onKeydown = this.onKeydown.bind(this);
     this.presenter = new Popover(target, this.el, opts);
     return this.promise;
   }
 
   modal(opts = {}) {
-    // if( this.opts.icon )
-    // 	this.el.classList.add('sideicon')
     return this.panel(opts); // might need to reactivate Modal below
   }
 
@@ -18141,8 +18313,7 @@ class Dialog {
       onAutoClose: () => {
         this.resolve(false);
       }
-    }, opts); // this.el.classList.add('sideicon')
-
+    }, opts);
     this.presenter = app.msgs.add(this.el, opts);
     return this.promise;
   }
@@ -34949,6 +35120,8 @@ require("../elements/hr");
 
 require("../elements/sub");
 
+require("../elements/avatar");
+
 require("../elements/embed");
 
 require("../presenters/tabs");
@@ -35005,7 +35178,7 @@ history.replaceState = (f => function replaceState() {
 window.addEventListener('popstate', function () {
   convertComments();
 });
-},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/hr":"IOAQ","../elements/sub":"VANQ","../elements/embed":"bpDM","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../presenters/dialog":"pos3","../presenters/menu":"0tCY"}],"RVcF":[function(require,module,exports) {
+},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/hr":"IOAQ","../elements/sub":"VANQ","../elements/avatar":"Da++","../elements/embed":"bpDM","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../presenters/dialog":"pos3","../presenters/menu":"0tCY"}],"RVcF":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
