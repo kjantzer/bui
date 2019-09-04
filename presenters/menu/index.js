@@ -226,6 +226,11 @@ export default class Menu {
 			this.presenter._updatePosition()
 	}
 
+	appendTo(el){
+		el.appendElement(this.el)
+		this.render()
+	}
+
 	render(){
 
 		let showJumpNav = this.opts.jumpNav === true
@@ -255,6 +260,8 @@ export default class Menu {
 			</div>
 
 		`, this.el)
+
+		return this
 	}
 	
 	renderItem(m, i){

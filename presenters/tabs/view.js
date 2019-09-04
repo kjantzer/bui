@@ -1,6 +1,7 @@
-
+import {html} from 'lit-html'
 
 export default class TabView {
+
     constructor(view){
         
         // custom element - we lazy load these
@@ -35,6 +36,14 @@ export default class TabView {
             this.__view.tabView = this
             view.title = ''
         }
+    }
+
+    render(onClick){
+        return this.canDisplay?html`
+            <div class="tab-bar-item" ?active=${this.active} .tabView=${this} @click=${onClick}>
+                <slot name="menu:${this.id}">${this.title}</slot>
+            </div>
+        `:''
     }
 
     get active(){ return this.__active }

@@ -24,6 +24,10 @@ export default class Dialog {
 		this.el = document.createElement('div')
 		
 		opts.className += ' nopadding dialog'
+
+		if( this.opts.icon )
+			opts.className += ' sideicon'
+
 		opts.className.split(' ').forEach(className=>className&&this.el.classList.add(className));
 
 		let [iconName, iconClass] = (opts.icon||'').split(' ')
@@ -188,18 +192,11 @@ export default class Dialog {
 		
 		opts.onKeydown = this.onKeydown.bind(this)
 		
-		if( this.opts.icon )
-			this.el.classList.add('sideicon')
-		
 		this.presenter = new Popover(target, this.el, opts)
 		return this.promise
 	}
 	
 	modal(opts={}){
-
-		if( this.opts.icon )
-			this.el.classList.add('sideicon')
-			
 		return this.panel(opts) // might need to reactivate Modal below
 	}
 
@@ -229,8 +226,6 @@ export default class Dialog {
 			clickRemoves: !this.opts.btns,
 			onAutoClose: ()=>{ this.resolve(false) }
 		}, opts)
-		
-		this.el.classList.add('sideicon')
 		
 		this.presenter = app.msgs.add(this.el, opts)
 		return this.promise
