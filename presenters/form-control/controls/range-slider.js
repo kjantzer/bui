@@ -32,10 +32,12 @@ customElements.define('range-slider', class extends LitElement{
             --size: 2px;
             --thumbSize: 14px;
             --color: var(--blue);
+            --thumbColor: var(--color);
             --bgd: rgba(0,0,0,.4);
             --padding: 10px;
 
             display: inline-block;
+            vertical-align: middle;
             position:relative;
             width: 140px;
             height: var(--size);
@@ -68,8 +70,8 @@ customElements.define('range-slider', class extends LitElement{
             position: absolute;
             left: 0;
             top: calc(var(--padding) + (var(--size) / 2));
-            background: var(--color);
-            border-radius: var(--padding);
+            background: var(--thumbColor);
+            border-radius: var(--thumbSize);
         }
 
         thumb:before {
@@ -79,7 +81,7 @@ customElements.define('range-slider', class extends LitElement{
             width: 250%;
             left: -75%;
             top: -75%;
-            background: var(--color);
+            background: var(--thumbColor);
             opacity: .2;
             border-radius: 30px;
             z-index: -1;
@@ -305,7 +307,8 @@ customElements.define('range-slider', class extends LitElement{
             parent = parent.offsetParent
         }
 
-        let mouseX = offset.x < e.pageX ? (e.offsetX + e.srcElement.offsetLeft) : e.pagex
+        // let mouseX = offset.x < e.pageX ? (e.offsetX + e.srcElement.offsetLeft) : e.pagex
+        let mouseX = e.screenX - window.screenX
         let x = mouseX - offset.x
         let percent = x / this.clientWidth * 100;
 
