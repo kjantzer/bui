@@ -1,6 +1,7 @@
 
 const InvalidImages = []
 export const BgdColors = ['#2196F3', '#f44336', '#673AB7', '#00BCD4', '#009688', '#4CAF50', '#FFC107', '#FF5722', '#795548', '#607D8B']
+export const DefaultBgd = '#aaa';
 
 class AvatarElement extends HTMLElement {
 	
@@ -26,6 +27,11 @@ class AvatarElement extends HTMLElement {
 			    display: inline-block;
 			    vertical-align: middle;
 			}
+
+			:host([shadow]) svg {
+				box-shadow: rgba(0,0,0,.1) 0 1px 3px;
+			}
+
 			svg {
 				border-radius: var(--radius);
 			}
@@ -110,8 +116,20 @@ class AvatarElement extends HTMLElement {
 	get bgd(){
 		let color = this.getAttr('bgd')
 		if( !color ){
-			let char = this.getAttr('initials', 'a').toLowerCase().charCodeAt(0) - 97
-			color = BgdColors[ char % BgdColors.length ]
+			
+			let initials = this.getAttr('initials', '').toLowerCase()
+			
+			if( !initials ){
+				color = DefaultBgd
+			}else{
+				let num = 0
+
+				for( let char of initials ){
+					num += char.charCodeAt(0) - 97
+				}
+
+				color = BgdColors[ num % BgdColors.length ]
+			}
 		}
 		return color
 	}
@@ -163,7 +181,7 @@ class AvatarElement extends HTMLElement {
 	
 	set gravatar(guid){
 		// wait until el is connected so we can determine the height of the avatar
-		if( !this.isConnected ) return
+		if( !this.isConnected || !guid ) return
 		let size = this.offsetHeight * 2
 		if( size < 80 ) size = 80
 		this.url = guid ? `//gravatar.com/avatar/${guid}?d=404&s=${size}` : ''

@@ -233,6 +233,7 @@ customElements.define('b-list', class extends LitElement {
             divider = new divider(prevModel, model, this)
             divider.list = this
             divider.model = model
+            divider.prevModel = prevModel
             return divider
         }
 

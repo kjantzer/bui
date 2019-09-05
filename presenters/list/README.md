@@ -200,12 +200,11 @@ class DividerElement extends HTMLElement {
     static shouldDisplay(prevModel, model, list){
         return !prevModel || prevModel != model
     }
-    
-    constructor(prevModel, model, list){
-        super()
-    }
+
 }
 ```
+
+> Note: `.list`, `.model`, and `.prevModel` properties are accessible via the render method
 
 ### Slots
 The default list view can be extended with html slots

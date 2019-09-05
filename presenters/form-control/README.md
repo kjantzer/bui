@@ -213,6 +213,12 @@ Radio buttons should be nested inside of a `radio-group`
 
 ## `<range-slider>`
 
+*Only tested in Chrome*
+
+<!--
+<range-slider></range-slider>
+-->
+
 #### Attributes
 - `value`
 - `range` - true/false

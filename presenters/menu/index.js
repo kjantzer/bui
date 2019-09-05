@@ -117,7 +117,7 @@ export default class Menu {
 		this.__selected = this.menu.filter(m=>{
 
 			// select/deselect each value
-			if( m.val != undefined && keys.includes(m.val) )
+			if( m.val !== undefined && keys.includes(m.val) )
 				m.selected = true
 			else{
 				delete m.selected

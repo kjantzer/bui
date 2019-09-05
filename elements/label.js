@@ -45,8 +45,21 @@ export default class Label extends LitElement {
 
         :host([badge]) {
             border-radius: 30px;
-            padding-left: .6em;
-            padding-right: .6em;
+            /* padding-left: .6em;
+            padding-right: .6em; */
+            padding-right: .45em;
+            padding-left: .45em;
+            min-width: .3em;
+            text-align: center;
+            min-height: 1em;
+        }
+
+        :host([dot]) {
+            height: 6px;
+            width: 6px;
+            min-width: 0;
+            min-height: 0;
+            padding: 0;
         }
 
         :host([filled="black"]), :host([badge="black"]) { --bgd: #333; }
