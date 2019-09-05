@@ -2,6 +2,7 @@
 
 * [Elements](/elements/README.md)
     * [Icons](./icons.md)
+    * [Colors](./colors.md)
 
 * Extras
     * [Util](/util/README.md)

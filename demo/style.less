@@ -29,10 +29,48 @@ body:not(.loaded) {
     opacity: 0;
 }
 
+
+b-util-info {
+    padding: 2em;
+}
+
+[docs] {
+    // padding-top: 2em;
+    // margin-top: 2em;
+    // border-top: solid 1px rgba(0,0,0,.1);
+
+    h1:first-child,
+    h1:first-child + h1 {
+        display: none;
+    }
+}
+
+code {
+  background: rgba(27,31,35,0.05);
+  letter-spacing: -.05em;
+  margin: 0 .05em;
+  color: #222;
+}
+
+pre {
+    padding: 16px !important;
+    overflow: auto;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f6f8fa !important;
+    border-radius: 3px;
+    box-shadow: none !important;
+}
+
+pre code {
+    background: none;
+}
+
 a {
     color: var(--blue);
     text-decoration: none;
 }
+
 
 a:hover {
     text-decoration: underline;

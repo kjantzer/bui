@@ -35128,7 +35128,110 @@ customElements.define('b-list', class extends _litElement.LitElement {
 var _default = customElements.get('b-list');
 
 exports.default = _default;
-},{"lit-element":"+bhx","./data/source":"zXhY","./data/filters":"HGW8","./data/sorts":"4sAK","./toolbar":"iwaU","./infinite-list":"2zwr","../../elements/spinner-overlay":"eyVY"}],"gE6T":[function(require,module,exports) {
+},{"lit-element":"+bhx","./data/source":"zXhY","./data/filters":"HGW8","./data/sorts":"4sAK","./toolbar":"iwaU","./infinite-list":"2zwr","../../elements/spinner-overlay":"eyVY"}],"TMO9":[function(require,module,exports) {
+"use strict";
+
+var _litElement = require("lit-element");
+
+customElements.define('b-list-of-colors', class extends _litElement.LitElement {
+  static get styles() {
+    return _litElement.css`
+        :host {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 1em;
+        }
+
+        [group="default"] {
+            grid-column: 1/5;
+        }
+
+        [group="default"] .colors {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 1em;
+        }
+
+        .color {
+            border: 1px solid rgba(0,0,0,.12);
+            padding: .5em;
+            /* display: flex;
+            justify-content: space-between;
+            align-items: center; */
+        }
+
+        [num="900"] + [num] {
+            margin-top: .5em;
+        }
+    `;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.colors = [];
+
+    for (let sheet of document.styleSheets) {
+      if ((sheet.href || '').match(/https/)) continue;
+
+      for (let rule of sheet.cssRules) {
+        if (rule.cssText.match(/:root { --color/)) {
+          let matches = rule.cssText.match(/--.[^:)]+: (.[^;]+);/g);
+          let colors = {};
+          matches.map(v => {
+            let [str, name, num, color] = v.match(/--(.[^\d(A\d)]+)(?:-(.+))?: (.[^;]+);/);
+            let key = name + (num ? '-' + num : '');
+            console.log(name, num);
+
+            if (num) {
+              colors[name] = colors[name] || {
+                name: name,
+                colors: []
+              };
+              colors[name].colors.push({
+                key,
+                name,
+                num,
+                color
+              });
+            } else {
+              colors['default'] = colors['default'] || {
+                name: 'default',
+                colors: []
+              };
+              colors['default'].colors.push({
+                key,
+                name,
+                num,
+                color
+              });
+            }
+          });
+          this.colors = Object.values(colors);
+        }
+      }
+    }
+  }
+
+  render() {
+    return _litElement.html`
+        ${this.colors.map(g => _litElement.html`
+            <div group="${g.name}">
+                <h3>${g.name}</h3>
+                <div class="colors">
+                ${g.colors.map(c => _litElement.html`
+                    <div num=${c.num} key="${c.key}" class="color" style="background-color: var(--${c.key});">
+                        <div>${c.key}</div>
+                        <!-- <b-sub>${c.num ? c.color : ''}</b-sub> -->
+                    </div>
+                `)}
+                </div>
+            </div>
+        `)}
+    `;
+  }
+
+});
+},{"lit-element":"+bhx"}],"gE6T":[function(require,module,exports) {
 "use strict";
 
 require("../elements/icon");
@@ -35164,6 +35267,10 @@ require("../presenters/tabs");
 require("../presenters/form-control");
 
 require("../presenters/list");
+
+require("../helpers/colors-list");
+
+require("../helpers/colors.less");
 
 var _dialog = _interopRequireDefault(require("../presenters/dialog"));
 
@@ -35213,7 +35320,7 @@ history.replaceState = (f => function replaceState() {
 window.addEventListener('popstate', function () {
   convertComments();
 });
-},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/hr":"IOAQ","../elements/sub":"VANQ","../elements/avatar":"Da++","../elements/embed":"bpDM","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../presenters/dialog":"pos3","../presenters/menu":"0tCY"}],"RVcF":[function(require,module,exports) {
+},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/hr":"IOAQ","../elements/sub":"VANQ","../elements/avatar":"Da++","../elements/embed":"bpDM","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../helpers/colors-list":"TMO9","../helpers/colors.less":"r4vn","../presenters/dialog":"pos3","../presenters/menu":"0tCY"}],"RVcF":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {

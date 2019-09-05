@@ -15,6 +15,8 @@ import '../elements/embed'
 import '../presenters/tabs'
 import '../presenters/form-control'
 import '../presenters/list'
+import '../helpers/colors-list'
+import '../helpers/colors.less';
 
 import Dialog from '../presenters/dialog'
 window.Dialog = Dialog

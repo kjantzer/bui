@@ -2,5 +2,6 @@
 /demo
 /public
 /.cache
+node_modules_
 .gitlab-ci.yml
 .docpress.json

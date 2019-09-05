@@ -53,6 +53,7 @@
 
             <h2 slot="menu:Presenters"><b-icon name="window"></b-icon>Presenters</h2>
             <h2 slot="menu:Elements"><b-icon name="code"></b-icon>Elements</h2>
+            <h2 slot="menu:Helpers"><b-icon name="file-code"></b-icon>Helpers</h2>
 
             <b-tabs title="Presenters" key="presenters" layout="left" >
 
@@ -150,6 +151,11 @@
                     </div>
 
 
+                    <!-- <br><br>
+                    <b-hr></b-hr>
+                    <h1>Docs</h1>
+                    <div id="form-control-docs" docs></div> -->
+                    
                 </section>
 
                 <section title="Dialog">
@@ -219,6 +225,13 @@
                     <b-paper compact>
                         <a-list-view></a-list-view>
                     </b-paper>
+
+
+
+                    <!-- <br><br>
+                    <b-hr></b-hr>
+                    <h1>Docs</h1>
+                    <div id="list-docs" docs></div> -->
                 </section>
 
             </b-tabs>
@@ -312,7 +325,8 @@
 
                     <b-label>A label</b-label><br><br>
                     <b-label divider>A label with divider</b-label><br>
-                    <b-label divider="center">A label with divider</b-label>
+                    <b-label divider="center">Centered divider</b-label><br>
+                    <b-label divider="right">Right divider</b-label>
 
                     
                     <br><br>
@@ -341,6 +355,12 @@
                     <b-label badge="red">Red</b-label>&nbsp;
                     <b-label badge="orange">Orange</b-label>&nbsp;
                     <b-label badge="green">Green</b-label>&nbsp;
+
+                    <br><br>
+
+                    <b-label badge="red" dot></b-label>&nbsp;
+                    <b-label badge="red">1</b-label>&nbsp;
+                    <b-label badge="red">24</b-label>&nbsp;
 
                 </section>
 
@@ -443,6 +463,19 @@
                     <h1>Icons</h1>
                     <b-icon-list cols="3"></b-icon-list>
                 </section>
+
+            </b-tabs>
+
+
+            <b-tabs title="Helpers" key="helpers" layout="left">
+                
+                <div title="Colors">
+                    <h1>Colors</h1>
+                    <p>The list of colors is pulled from <a href="https://material.io/design/color/">material.io</a></p>
+                    <b-list-of-colors></b-list-of-colors>
+                </div>
+
+                <b-util-info title="Util"></b-util-info>
 
             </b-tabs>
 

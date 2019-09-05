@@ -13,7 +13,6 @@ import '../elements/sub'
 import '../elements/embed'
 import '../elements/carousel'
 
-
 import { LitElement, html, css } from 'lit-element';
 import router from '../router'
 import '../presenters/tabs'
@@ -189,6 +188,25 @@ customElements.define('tab-divider', class extends LitElement{
     `}
 
 })
+
+
+import utilReadme from '../util/README.md'
+customElements.define('b-util-info', class extends HTMLElement{
+
+    connectedCallback(){
+        this.innerHTML = utilReadme
+    }
+
+})
+
+// import formControlDocs from '../presenters/form-control/README.md'
+// document.querySelector('#form-control-docs').innerHTML = formControlDocs
+
+// import listDocs from '../presenters/list/README.md'
+// document.querySelector('#list-docs').innerHTML = listDocs
+
+import '../helpers/colors.less'
+import '../helpers/colors-list'
 
 window.dialogs = {
     async success(el){
