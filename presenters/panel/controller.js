@@ -2,7 +2,22 @@ import {LitElement, html, css} from 'lit-element'
 import Menu from '../menu'
 import router from '../../router'
 
+const PanelControllers = {}
+
 class PanelController extends LitElement {
+
+    static for(name){
+
+        // create a root panel controller if there isn't one
+        if( name == 'root' && !PanelControllers[name] ){
+            let rootPanelController = document.createElement('b-panels')
+            rootPanelController.setAttribute('name', 'root')
+            document.body.appendChild(rootPanelController)
+            PanelControllers[name] = rootPanelController
+        }
+
+        return PanelControllers[name]
+    }
 
     static get styles(){return css`
         :host {
@@ -17,9 +32,27 @@ class PanelController extends LitElement {
         }
     `}
 
+    get name(){
+        return this.hasAttribute('name') ? this.getAttribute('name') : undefined
+    }
+
     constructor(){
         super()
         this.panels = new Map()
+
+        if( this.name ){
+            if( PanelControllers[this.name] )
+                console.warn('A panel-controller already exists with the name: ', this.name)
+            else
+                PanelControllers[this.name] = this
+        }
+    }
+
+    disconnectedCallback(){
+        super.disconnectedCallback()
+        
+        if( this.hasAttribute('name') && PanelControllers[this.name] == this )
+            delete PanelControllers[this.name]
     }
             
     render(){return html`        

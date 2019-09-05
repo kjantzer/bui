@@ -1,11 +1,10 @@
 import {LitElement, html, css, unsafeCSS} from 'lit-element'
+import Controller from './controller'
 import router from '../../router'
 import {Route} from '../../router'
 import './controller'
 import './toolbar'
 import '../../elements/btn'
-
-let rootPanelController;
 
 export const PanelDefaults = {
     type: '',
@@ -15,6 +14,7 @@ export const PanelDefaults = {
     height: '100%',
     anchor: 'right',
     animation: '',
+    closeOnEsc: false,
     controller: null, // root controller will be created and used
     disableBackdropClick: false
 }
@@ -97,8 +97,11 @@ export const register = new RegisteredPanels()
 
 export const Modal = function(view, opts={}){
     opts = Object.assign({
-        type: 'modal'
+        type: 'modal',
     }, opts)
+
+    if( opts.closeBtn && opts.closeOnEsc === undefined )
+        opts.closeOnEsc = true
 
     return new Panel(view, opts).open()
 }
@@ -161,6 +164,10 @@ export class Panel extends LitElement {
 
     onKeydown(e){
         if( !this.onTop ) return
+
+        if( this.opts.closeOnEsc && e.key == 'Escape' )
+            this.close()
+
         this.opts.onKeydown&&this.opts.onKeydown(e)
     }
 
@@ -313,20 +320,24 @@ export class Panel extends LitElement {
     }
 
     get panelController(){return this.__panelController}
-    set panelController(val){this.__panelController = val}
+    set controller(val){ this.panelController = val }
+    set panelController(val){
+        
+        if( typeof val === 'string' ){
+            let _val = val
+            val = Controller.for(val)
+            if( !val )
+                console.warn('Panel controller `'+_val+'` does not exist, root will be used')
+        }
+
+        this.__panelController = val
+    }
 
     open(){
 
         // if no controller set, use the root controller
         if( !this.panelController ){
-
-            // create the root controller if it doesn't exist yet
-            if( !rootPanelController ){
-                rootPanelController = document.createElement('b-panels')
-                document.body.appendChild(rootPanelController)
-            }
-
-            this.panelController = rootPanelController
+            this.panelController = Controller.for('root')
         }
 
         this._onKeydown = this._onKeydown || this.onKeydown.bind(this)
