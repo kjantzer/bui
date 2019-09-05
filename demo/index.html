@@ -43,7 +43,8 @@
     <main>
 
 
-        <b-paper compact><b-tabs key="main" style="padding-top: 1em">
+        <b-paper compact>
+            <b-tabs key="main" style="padding-top: 1em">
 
             <span slot="menu:after" style="margin: 0 .75em 0 auto; display: flex; align-items: center;" >
                 <b-btn pill color="black" onclick="location='https://www.npmjs.com/package/blackstone-ui'">Install</b-btn>
@@ -197,14 +198,28 @@
                 </section>
 
                 <section title="Panel">
+                    <b-panels name="inset"></b-panels>
+
                     <h1>Panels</h1>
 
                     <div>
                         <a href="/#/view-1" onclick="openView(this)">Default Panel view</a>
-                    </div>
+                    </div><br>
 
                     <div>
                         <a href="/#/view-2-small" onclick="openView(this)">Custom sizing and anchor</a>
+                    </div><br>
+
+                    <div>
+                        <a href="/#/view-3" onclick="openView(this)">Inside another view</a>
+                    </div><br>
+
+                    <div>
+                        <a href="/#/view-animate" onclick="openView(this)">Animate</a>
+                    </div><br>
+
+                    <div>
+                        <a href="javascript:openModalPanel()">Modal type panel</a>
                     </div>
 
                 </section>

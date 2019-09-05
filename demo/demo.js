@@ -18,7 +18,7 @@ import router from '../router'
 import '../presenters/tabs'
 import '../presenters/form-control'
 import '../presenters/list'
-import Panel from '../presenters/panel'
+import Panel, {Modal} from '../presenters/panel'
 import Menu from '../presenters/menu'
 import Dialog from '../presenters/dialog'
 
@@ -115,6 +115,50 @@ Panel.register('view-2-small', 'view-two', {
     height: '400px',
     anchor: 'center'
 })
+
+customElements.define('view-animate', class extends LitElement{
+
+    static get styles(){return css`
+        main {
+            padding: 1em;
+            overflow: auto;
+        }
+    `}
+
+    render(){return html`
+        <b-panel-toolbar look="white" noshadow></b-panel-toolbar>
+        <main>
+            <b-btn @click=${this.animate}>bounce</b-btn>
+            <b-btn @click=${this.animate}>shake</b-btn>
+        </main>
+    `}
+
+    animate(e){
+        let fn = e.target.innerText
+        this.panel[fn]()
+    }
+})
+
+Panel.register('view-animate', 'view-animate', {
+    title: 'View Animate',
+    width: '600px',
+    height: '400px',
+    anchor: 'center'
+})
+
+
+Panel.register('view-3', 'view-two', {
+    title: 'View 3',
+    controller: 'inset',
+    width: '400px',
+    anchor: 'right'
+})
+
+window.openModalPanel = ()=>{
+    Modal(()=>html`
+        <b-embed url="https://www.youtube.com/watch?v=sK1ODp0nDbM"></b-embed>
+    `, {closeBtn: true, width: '60vw'})
+}
 
 let listData = []
 let i = 0

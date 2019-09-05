@@ -47,6 +47,10 @@ function convertComments(){
         if( type )
             div.setAttribute('type', type)
 
+        let script = div.querySelector('script')
+        if( script )
+            eval(script.innerText)
+
         com.replaceWith(div)
     })
 }

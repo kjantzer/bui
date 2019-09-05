@@ -14018,7 +14018,21 @@ var _router = _interopRequireDefault(require("../../router"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+const PanelControllers = {};
+
 class PanelController extends _litElement.LitElement {
+  static for(name) {
+    // create a root panel controller if there isn't one
+    if (name == 'root' && !PanelControllers[name]) {
+      let rootPanelController = document.createElement('b-panels');
+      rootPanelController.setAttribute('name', 'root');
+      document.body.appendChild(rootPanelController);
+      PanelControllers[name] = rootPanelController;
+    }
+
+    return PanelControllers[name];
+  }
+
   static get styles() {
     return _litElement.css`
         :host {
@@ -14034,9 +14048,22 @@ class PanelController extends _litElement.LitElement {
     `;
   }
 
+  get name() {
+    return this.hasAttribute('name') ? this.getAttribute('name') : undefined;
+  }
+
   constructor() {
     super();
     this.panels = new Map();
+
+    if (this.name) {
+      if (PanelControllers[this.name]) console.warn('A panel-controller already exists with the name: ', this.name);else PanelControllers[this.name] = this;
+    }
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this.hasAttribute('name') && PanelControllers[this.name] == this) delete PanelControllers[this.name];
   }
 
   render() {
@@ -14310,9 +14337,9 @@ exports.default = exports.Panel = exports.Modal = exports.register = exports.Pan
 
 var _litElement = require("lit-element");
 
-var _router = _interopRequireWildcard(require("../../router"));
+var _controller = _interopRequireDefault(require("./controller"));
 
-require("./controller");
+var _router = _interopRequireWildcard(require("../../router"));
 
 require("./toolbar");
 
@@ -14320,7 +14347,8 @@ require("../../elements/btn");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
-let rootPanelController;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 const PanelDefaults = {
   type: '',
   closeBtn: false,
@@ -14329,6 +14357,7 @@ const PanelDefaults = {
   height: '100%',
   anchor: 'right',
   animation: '',
+  closeOnEsc: false,
   controller: null,
   // root controller will be created and used
   disableBackdropClick: false
@@ -14404,6 +14433,7 @@ const Modal = function (view, opts = {}) {
   opts = Object.assign({
     type: 'modal'
   }, opts);
+  if (opts.closeBtn && opts.closeOnEsc === undefined) opts.closeOnEsc = true;
   return new Panel(view, opts).open();
 };
 
@@ -14480,6 +14510,7 @@ class Panel extends _litElement.LitElement {
 
   onKeydown(e) {
     if (!this.onTop) return;
+    if (this.opts.closeOnEsc && e.key == 'Escape') this.close();
     this.opts.onKeydown && this.opts.onKeydown(e);
   }
 
@@ -14635,20 +14666,24 @@ class Panel extends _litElement.LitElement {
     return this.__panelController;
   }
 
+  set controller(val) {
+    this.panelController = val;
+  }
+
   set panelController(val) {
+    if (typeof val === 'string') {
+      let _val = val;
+      val = _controller.default.for(val);
+      if (!val) console.warn('Panel controller `' + _val + '` does not exist, root will be used');
+    }
+
     this.__panelController = val;
   }
 
   open() {
     // if no controller set, use the root controller
     if (!this.panelController) {
-      // create the root controller if it doesn't exist yet
-      if (!rootPanelController) {
-        rootPanelController = document.createElement('b-panels');
-        document.body.appendChild(rootPanelController);
-      }
-
-      this.panelController = rootPanelController;
+      this.panelController = _controller.default.for('root');
     }
 
     this._onKeydown = this._onKeydown || this.onKeydown.bind(this);
@@ -14919,7 +14954,7 @@ customElements.define('b-panel', Panel);
 var _default = customElements.get('b-panel');
 
 exports.default = _default;
-},{"lit-element":"+bhx","../../router":"38Qe","./controller":"R9Fe","./toolbar":"ZNP1","../../elements/btn":"DABr"}],"Wp9p":[function(require,module,exports) {
+},{"lit-element":"+bhx","./controller":"R9Fe","../../router":"38Qe","./toolbar":"ZNP1","../../elements/btn":"DABr"}],"Wp9p":[function(require,module,exports) {
 var define;
 /*!
  * Fuse.js v3.4.5 - Lightweight fuzzy-search (http://fusejs.io)
@@ -35180,7 +35215,6 @@ customElements.define('b-list-of-colors', class extends _litElement.LitElement {
           matches.map(v => {
             let [str, name, num, color] = v.match(/--(.[^\d(A\d)]+)(?:-(.+))?: (.[^;]+);/);
             let key = name + (num ? '-' + num : '');
-            console.log(name, num);
 
             if (num) {
               colors[name] = colors[name] || {
@@ -35299,6 +35333,8 @@ function convertComments() {
     str = strs.join("\n");
     div.innerHTML = str;
     if (type) div.setAttribute('type', type);
+    let script = div.querySelector('script');
+    if (script) eval(script.innerText);
     com.replaceWith(div);
   });
 }
