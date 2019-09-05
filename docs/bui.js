@@ -9829,8 +9829,21 @@ class Label extends _litElement.LitElement {
 
         :host([badge]) {
             border-radius: 30px;
-            padding-left: .6em;
-            padding-right: .6em;
+            /* padding-left: .6em;
+            padding-right: .6em; */
+            padding-right: .45em;
+            padding-left: .45em;
+            min-width: .3em;
+            text-align: center;
+            min-height: 1em;
+        }
+
+        :host([dot]) {
+            height: 6px;
+            width: 6px;
+            min-width: 0;
+            min-height: 0;
+            padding: 0;
         }
 
         :host([filled="black"]), :host([badge="black"]) { --bgd: #333; }
@@ -9987,10 +10000,12 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.BgdColors = void 0;
+exports.default = exports.DefaultBgd = exports.BgdColors = void 0;
 const InvalidImages = [];
 const BgdColors = ['#2196F3', '#f44336', '#673AB7', '#00BCD4', '#009688', '#4CAF50', '#FFC107', '#FF5722', '#795548', '#607D8B'];
 exports.BgdColors = BgdColors;
+const DefaultBgd = '#aaa';
+exports.DefaultBgd = DefaultBgd;
 
 class AvatarElement extends HTMLElement {
   static get observedAttributes() {
@@ -10015,6 +10030,11 @@ class AvatarElement extends HTMLElement {
 			    display: inline-block;
 			    vertical-align: middle;
 			}
+
+			:host([shadow]) svg {
+				box-shadow: rgba(0,0,0,.1) 0 1px 3px;
+			}
+
 			svg {
 				border-radius: var(--radius);
 			}
@@ -10095,8 +10115,19 @@ class AvatarElement extends HTMLElement {
     let color = this.getAttr('bgd');
 
     if (!color) {
-      let char = this.getAttr('initials', 'a').toLowerCase().charCodeAt(0) - 97;
-      color = BgdColors[char % BgdColors.length];
+      let initials = this.getAttr('initials', '').toLowerCase();
+
+      if (!initials) {
+        color = DefaultBgd;
+      } else {
+        let num = 0;
+
+        for (let char of initials) {
+          num += char.charCodeAt(0) - 97;
+        }
+
+        color = BgdColors[num % BgdColors.length];
+      }
     }
 
     return color;
@@ -10144,7 +10175,7 @@ class AvatarElement extends HTMLElement {
 
   set gravatar(guid) {
     // wait until el is connected so we can determine the height of the avatar
-    if (!this.isConnected) return;
+    if (!this.isConnected || !guid) return;
     let size = this.offsetHeight * 2;
     if (size < 80) size = 80;
     this.url = guid ? `//gravatar.com/avatar/${guid}?d=404&s=${size}` : '';
@@ -15836,7 +15867,7 @@ class Menu {
 
     this.__selected = this.menu.filter(m => {
       // select/deselect each value
-      if (m.val != undefined && keys.includes(m.val)) m.selected = true;else {
+      if (m.val !== undefined && keys.includes(m.val)) m.selected = true;else {
         delete m.selected;
       }
       return m.selected;
@@ -32668,10 +32699,12 @@ customElements.define('range-slider', class extends _litElement.LitElement {
             --size: 2px;
             --thumbSize: 14px;
             --color: var(--blue);
+            --thumbColor: var(--color);
             --bgd: rgba(0,0,0,.4);
             --padding: 10px;
 
             display: inline-block;
+            vertical-align: middle;
             position:relative;
             width: 140px;
             height: var(--size);
@@ -32704,8 +32737,8 @@ customElements.define('range-slider', class extends _litElement.LitElement {
             position: absolute;
             left: 0;
             top: calc(var(--padding) + (var(--size) / 2));
-            background: var(--color);
-            border-radius: var(--padding);
+            background: var(--thumbColor);
+            border-radius: var(--thumbSize);
         }
 
         thumb:before {
@@ -32715,7 +32748,7 @@ customElements.define('range-slider', class extends _litElement.LitElement {
             width: 250%;
             left: -75%;
             top: -75%;
-            background: var(--color);
+            background: var(--thumbColor);
             opacity: .2;
             border-radius: 30px;
             z-index: -1;
@@ -32937,9 +32970,10 @@ customElements.define('range-slider', class extends _litElement.LitElement {
       offset.x += parent.offsetLeft;
       offset.y += parent.offsetTop;
       parent = parent.offsetParent;
-    }
+    } // let mouseX = offset.x < e.pageX ? (e.offsetX + e.srcElement.offsetLeft) : e.pagex
 
-    let mouseX = offset.x < e.pageX ? e.offsetX + e.srcElement.offsetLeft : e.pagex;
+
+    let mouseX = e.screenX - window.screenX;
     let x = mouseX - offset.x;
     let percent = x / this.clientWidth * 100;
     let val = percent / 100 * this._len;
@@ -35033,6 +35067,7 @@ customElements.define('b-list', class extends _litElement.LitElement {
       divider = new divider(prevModel, model, this);
       divider.list = this;
       divider.model = model;
+      divider.prevModel = prevModel;
       return divider;
     }
 
