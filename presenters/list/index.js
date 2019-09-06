@@ -83,7 +83,7 @@ customElements.define('b-list', class extends LitElement {
             --searchBgd: #f5f5f5;
         }
 
-        [slot="header"] {
+        slot[name="header"] {
             display: block;
         }
 
