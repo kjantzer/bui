@@ -35206,9 +35206,13 @@ customElements.define('b-list-of-colors', class extends _litElement.LitElement {
     this.colors = [];
 
     for (let sheet of document.styleSheets) {
-      if ((sheet.href || '').match(/https/)) continue;
+      let rules = null;
 
-      for (let rule of sheet.cssRules) {
+      try {
+        rules = sheet.cssRules;
+      } catch (e) {}
+
+      if (rules) for (let rule of rules) {
         if (rule.cssText.match(/:root { --color/)) {
           let matches = rule.cssText.match(/--.[^:)]+: (.[^;]+);/g);
           let colors = {};
