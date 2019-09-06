@@ -53,7 +53,13 @@ Example
 Blackstone-UI is available as an [npm package](https://www.npmjs.com/package/blackstone-ui)
 
 ```
-npm install blackstone-ui
+npm install blackstone-ui --save
+```
+
+Or if you want the latest cutting-edge version
+
+```
+npm install https://github.com/kjantzer/bui.git --save
 ```
 
 ## Overview
