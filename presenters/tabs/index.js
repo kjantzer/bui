@@ -124,7 +124,6 @@ customElements.define('b-tabs', class extends LitElement {
         :host([layout="bottom"]) { grid-template-rows: 1fr auto; }
         :host([layout="left"]) { grid-template-columns: auto 1fr; }
         :host([layout="right"]) { grid-template-columns: 1fr auto; }
-        :host([layout="top"]) { grid-template-rows: auto 1fr; }
 
         :host([layout="left"]) .tab-bar,
         :host([layout="right"]) .tab-bar {
@@ -155,6 +154,37 @@ customElements.define('b-tabs', class extends LitElement {
         :host([layout="bottom"]) .tab-bar-item[active] { border-top-color: currentColor; }
         :host([layout="left"]) .tab-bar-item[active] { border-right-color: currentColor; }
         :host([layout="right"]) .tab-bar-item[active] { border-left-color: currentColor; }
+
+        @media (max-width: 550px) {
+
+            :host([layout="left"]),
+            :host([layout="right"]) {
+                grid-template-columns: none;
+                grid-template-rows: auto 1fr;
+            }
+
+            :host([layout="left"]) .tab-bar,
+            :host([layout="right"]) .tab-bar {
+                flex-direction: row;
+                overflow: auto;
+                border-bottom: solid 1px rgba(0,0,0,.1);
+            }
+
+            :host([layout="left"]) .tab-bar-item { border-right: none; }
+            :host([layout="right"]) .tab-bar-item { border-left: none; }
+
+            :host([layout="left"]) .tab-bar-item, 
+            :host([layout="right"]) .tab-bar-item {
+                border-bottom: solid 2px transparent;
+                flex-shrink: 0;
+            }
+
+            :host([layout="left"]) .tab-bar-item:hover, 
+            :host([layout="right"]) .tab-bar-item:hover { border-bottom-color: currentColor; }
+
+            :host([layout="left"]) .tab-bar-item[active], 
+            :host([layout="right"]) .tab-bar-item[active] { border-bottom-color: currentColor; }
+        }
 
         /*
             Slotted Content

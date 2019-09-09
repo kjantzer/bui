@@ -92,9 +92,11 @@ export class BtnElement extends LitElement {
             /* transition: 120ms; */
         }
 
-        :host(:hover) .hover {
-            opacity: 1;
-            visibility: visible;
+        @media (hover) {
+            :host(:hover) .hover {
+                opacity: 1;
+                visibility: visible;
+            }
         }
 
         /* b-icon,
@@ -163,6 +165,7 @@ export class BtnElement extends LitElement {
         :host([color^="brown"])  { --color: var(--brown); }
         :host([color^="pink"])   { --color: var(--pink); }
 
+        @media (hover){
         :host([color*="hover-black"]:hover)  { --color: var(--black); }
         :host([color*="hover-orange"]:hover) { --color: var(--orange); }
         :host([color*="hover-blue"]:hover)   { --color: var(--blue); }
@@ -174,15 +177,18 @@ export class BtnElement extends LitElement {
         :host([color*="hover-purple"]:hover) { --color: var(--purple); }
         :host([color*="hover-brown"]:hover)  { --color: var(--brown); }
         :host([color*="hover-pink"]:hover)   { --color: var(--pink); }
+        }
 
         :host([pill]) {
             --radius: 1em;
         }
 
+        /* @media (hover) { */
         :host([outline]:not(:hover)) {
             --bgdColor: transparent;
             --textColor: var(--color);
         }
+        /* } */
 
         /* :host([outline]:hover){
             --bgdColor: var(--color);
@@ -206,8 +212,12 @@ export class BtnElement extends LitElement {
             font-weight: normal;
         }
 
+        @media (hover){
         :host([text]:hover),
-        :host([clear]:hover),
+        :host([clear]:hover) {
+            --bgdColor: rgba(0,0,0,.05);
+        }}
+
         :host([text].popover-open),
         :host([clear].popover-open) {
             --bgdColor: rgba(0,0,0,.05);

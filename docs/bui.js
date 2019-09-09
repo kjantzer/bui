@@ -3930,6 +3930,12 @@ class IconList extends _litElement.LitElement {
 		small {
 			color: rgba(0,0,0,.5);
 		}
+
+		@media (max-width: 550px) {
+            :host {
+                column-count: 1 !important;
+            }
+        }
 	`;
   }
 
@@ -4117,9 +4123,11 @@ class BtnElement extends _litElement.LitElement {
             /* transition: 120ms; */
         }
 
-        :host(:hover) .hover {
-            opacity: 1;
-            visibility: visible;
+        @media (hover) {
+            :host(:hover) .hover {
+                opacity: 1;
+                visibility: visible;
+            }
         }
 
         /* b-icon,
@@ -4188,6 +4196,7 @@ class BtnElement extends _litElement.LitElement {
         :host([color^="brown"])  { --color: var(--brown); }
         :host([color^="pink"])   { --color: var(--pink); }
 
+        @media (hover){
         :host([color*="hover-black"]:hover)  { --color: var(--black); }
         :host([color*="hover-orange"]:hover) { --color: var(--orange); }
         :host([color*="hover-blue"]:hover)   { --color: var(--blue); }
@@ -4199,15 +4208,18 @@ class BtnElement extends _litElement.LitElement {
         :host([color*="hover-purple"]:hover) { --color: var(--purple); }
         :host([color*="hover-brown"]:hover)  { --color: var(--brown); }
         :host([color*="hover-pink"]:hover)   { --color: var(--pink); }
+        }
 
         :host([pill]) {
             --radius: 1em;
         }
 
+        /* @media (hover) { */
         :host([outline]:not(:hover)) {
             --bgdColor: transparent;
             --textColor: var(--color);
         }
+        /* } */
 
         /* :host([outline]:hover){
             --bgdColor: var(--color);
@@ -4231,8 +4243,12 @@ class BtnElement extends _litElement.LitElement {
             font-weight: normal;
         }
 
+        @media (hover){
         :host([text]:hover),
-        :host([clear]:hover),
+        :host([clear]:hover) {
+            --bgdColor: rgba(0,0,0,.05);
+        }}
+
         :host([text].popover-open),
         :host([clear].popover-open) {
             --bgdColor: rgba(0,0,0,.05);
@@ -15893,6 +15909,7 @@ class Menu {
   get displayMenu() {
     if (this.__filteredMenu) return this.__filteredMenu;
     if (this.searchIsOn && !this.searchShouldShowAll) return [];
+    if (this.searchIsOn && this.hideUnselected) return this.menu.filter(m => m.label === undefined || m.selected);
     return this.menu;
   }
 
@@ -15951,6 +15968,10 @@ class Menu {
 
   get searchShouldShowAll() {
     return this.opts.search && this.opts.search.showAll !== false;
+  }
+
+  get hideUnselected() {
+    return this.opts.search && this.opts.search.hideUnselected === true;
   }
 
   get searchParse() {
@@ -16079,18 +16100,18 @@ class Menu {
       if (data.menu) return this._itemMenu(target, data);
 
       if (this.opts.multiple) {
-        if (data.clearsAll || !didClickCheckbox) {
+        if (this.opts.multiple !== 'always' && (data.clearsAll || !didClickCheckbox)) {
           return this.resolve([data]);
         }
 
-        if (this.toggleSelected(data)) {
+        let isSelected = this.toggleSelected(data);
+        if (this.searchIsOn && this.hideUnselected) this.render();else if (isSelected) {
           target.classList.add('selected');
           target.querySelector('check-box').checked = true;
         } else {
           target.classList.remove('selected');
           target.querySelector('check-box').checked = false;
         }
-
         this.opts.onSelect && this.opts.onSelect(this.selected);
       } else {
         this.resolve(data);
@@ -17068,7 +17089,6 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
         :host([layout="bottom"]) { grid-template-rows: 1fr auto; }
         :host([layout="left"]) { grid-template-columns: auto 1fr; }
         :host([layout="right"]) { grid-template-columns: 1fr auto; }
-        :host([layout="top"]) { grid-template-rows: auto 1fr; }
 
         :host([layout="left"]) .tab-bar,
         :host([layout="right"]) .tab-bar {
@@ -17099,6 +17119,37 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
         :host([layout="bottom"]) .tab-bar-item[active] { border-top-color: currentColor; }
         :host([layout="left"]) .tab-bar-item[active] { border-right-color: currentColor; }
         :host([layout="right"]) .tab-bar-item[active] { border-left-color: currentColor; }
+
+        @media (max-width: 550px) {
+
+            :host([layout="left"]),
+            :host([layout="right"]) {
+                grid-template-columns: none;
+                grid-template-rows: auto 1fr;
+            }
+
+            :host([layout="left"]) .tab-bar,
+            :host([layout="right"]) .tab-bar {
+                flex-direction: row;
+                overflow: auto;
+                border-bottom: solid 1px rgba(0,0,0,.1);
+            }
+
+            :host([layout="left"]) .tab-bar-item { border-right: none; }
+            :host([layout="right"]) .tab-bar-item { border-left: none; }
+
+            :host([layout="left"]) .tab-bar-item, 
+            :host([layout="right"]) .tab-bar-item {
+                border-bottom: solid 2px transparent;
+                flex-shrink: 0;
+            }
+
+            :host([layout="left"]) .tab-bar-item:hover, 
+            :host([layout="right"]) .tab-bar-item:hover { border-bottom-color: currentColor; }
+
+            :host([layout="left"]) .tab-bar-item[active], 
+            :host([layout="right"]) .tab-bar-item[active] { border-bottom-color: currentColor; }
+        }
 
         /*
             Slotted Content
@@ -34953,7 +35004,7 @@ customElements.define('b-list', class extends _litElement.LitElement {
             --searchBgd: #f5f5f5;
         }
 
-        [slot="header"] {
+        slot[name="header"] {
             display: block;
         }
 
@@ -35173,7 +35224,8 @@ customElements.define('b-list-of-colors', class extends _litElement.LitElement {
     return _litElement.css`
         :host {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
+            --grids: 1fr 1fr 1fr 1fr;
+            grid-template-columns: var(--grids);
             gap: 1em;
         }
 
@@ -35183,7 +35235,7 @@ customElements.define('b-list-of-colors', class extends _litElement.LitElement {
 
         [group="default"] .colors {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-columns: var(--grids);
             gap: 1em;
         }
 
@@ -35197,6 +35249,16 @@ customElements.define('b-list-of-colors', class extends _litElement.LitElement {
 
         [num="900"] + [num] {
             margin-top: .5em;
+        }
+
+        @media (max-width: 550px) {
+            :host {
+                --grids: 1fr 1fr;
+            }
+
+            [group="default"] {
+                grid-column: 1/3
+            }
         }
     `;
   }

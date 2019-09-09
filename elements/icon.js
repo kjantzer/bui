@@ -163,6 +163,12 @@ export class IconList extends LitElement {
 		small {
 			color: rgba(0,0,0,.5);
 		}
+
+		@media (max-width: 550px) {
+            :host {
+                column-count: 1 !important;
+            }
+        }
 	`}
 
 	render(){return html`

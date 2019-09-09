@@ -5,7 +5,8 @@ customElements.define('b-list-of-colors', class extends LitElement{
     static get styles(){return css`
         :host {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
+            --grids: 1fr 1fr 1fr 1fr;
+            grid-template-columns: var(--grids);
             gap: 1em;
         }
 
@@ -15,7 +16,7 @@ customElements.define('b-list-of-colors', class extends LitElement{
 
         [group="default"] .colors {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-columns: var(--grids);
             gap: 1em;
         }
 
@@ -29,6 +30,16 @@ customElements.define('b-list-of-colors', class extends LitElement{
 
         [num="900"] + [num] {
             margin-top: .5em;
+        }
+
+        @media (max-width: 550px) {
+            :host {
+                --grids: 1fr 1fr;
+            }
+
+            [group="default"] {
+                grid-column: 1/3
+            }
         }
     `}
 

@@ -206,30 +206,42 @@
 .b-menu .menu-item b-icon.has-menu {
   opacity: 0;
 }
-.b-menu .menu-item:hover,
+@media (hover) {
+  .b-menu .menu-item:hover {
+    background: var(--hoverBgd);
+    color: var(--hoverTextColor);
+    cursor: pointer;
+  }
+  .b-menu .menu-item:hover b-icon.has-menu {
+    opacity: 1;
+  }
+  .b-menu .menu-item:hover > check-box {
+    --color: var(--checkboxColorHover) !important;
+  }
+}
 .b-menu .menu-item[active],
 .b-menu .menu-item.popover-open {
   background: var(--hoverBgd);
   color: var(--hoverTextColor);
   cursor: pointer;
 }
-.b-menu .menu-item:hover b-icon.has-menu,
 .b-menu .menu-item[active] b-icon.has-menu,
 .b-menu .menu-item.popover-open b-icon.has-menu {
   opacity: 1;
 }
-.b-menu .menu-item:hover > check-box,
 .b-menu .menu-item[active] > check-box,
 .b-menu .menu-item.popover-open > check-box {
   --color: var(--checkboxColorHover) !important;
 }
-.b-menu .menu-item.hover-red:hover {
-  background: var(--color-red);
-  color: #fff;
-}
-.b-menu .menu-item.hover-orange:hover {
-  background: var(--color-orange);
-  color: #fff;
+@media (hover) {
+  .b-menu .menu-item.hover-red:hover {
+    background: var(--color-red);
+    color: #fff;
+  }
+  .b-menu .menu-item.hover-orange:hover {
+    background: var(--color-orange);
+    color: #fff;
+  }
 }
 .b-menu .menu-item > check-box {
   --color: var(--checkboxColor) !important;
@@ -413,7 +425,6 @@
   padding: .8em;
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.05);
-  height: 100%;
   border-radius: 4px 0 0 4px;
 }
 .dialog.sideicon .d-title:empty ~ .d-msg:not(:empty) {

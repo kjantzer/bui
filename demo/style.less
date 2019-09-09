@@ -32,6 +32,13 @@ body:not(.loaded) {
 
 b-util-info {
     padding: 2em;
+    min-width: 0;
+}
+
+@media (max-width: 550px) {
+    b-util-info {
+        font-size: .8em;
+    }
 }
 
 [docs] {
@@ -154,6 +161,29 @@ h2[slot]{
     }
 }
 
+[slot="menu:after"] {
+    margin: 0 .75em 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 550px) {
+    h2[slot]{
+        font-size: 1em;
+    }
+
+    [slot="menu:after"] {
+        position: absolute;
+        top: -1em;
+        right: 0;
+    }
+
+    footer {
+        padding: 0 1em;
+        text-align: center;
+    }
+}
+
 main {
     max-width: 1000px;
     margin: 0 auto;
@@ -191,6 +221,7 @@ b-tabs > b-tabs {
 b-tabs section {
     position: relative;
     min-height: 100%;
+    min-width: 0;
     box-sizing: border-box;
 
     > h1 {
@@ -217,7 +248,8 @@ form-handler .cols-3 {
 }
 
 @media (max-width:749px) {
-    .cols-2 {
+    .cols-2,
+    .cols-3 {
         grid-template-columns: 1fr;
     }
 }

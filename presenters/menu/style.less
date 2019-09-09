@@ -99,7 +99,23 @@
 			opacity: 0;
 		}
 		
-		&:hover,
+		@media (hover){
+		&:hover {
+			background: var(--hoverBgd);
+			color: var(--hoverTextColor);
+			cursor: pointer;
+
+			b-icon.has-menu {
+				opacity: 1;
+			}
+
+			> check-box {
+				--color: var(--checkboxColorHover) !important;
+			}
+		}
+		}
+		
+		
 		&[active],
 		&.popover-open {
 			background: var(--hoverBgd);
@@ -115,9 +131,10 @@
 			}
 		}
 
+		@media (hover){
 		&.hover-red:hover{ background: var(--color-red); color: #fff; }
 		&.hover-orange:hover{ background: var(--color-orange); color: #fff; }
-		
+		}
 		// &[active] {
 		// 	background: red !important;
 		// }
