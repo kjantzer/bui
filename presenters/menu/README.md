@@ -74,6 +74,10 @@ let selected = await new Menu([], {
 }
 ```
 
+`multiple` - when `true` clicking an item's checkbox will toggle that item and clicking anywhere else on the row will select ONLY that item.
+
+Set to `multiple:'always'` to make the rows toggle no matter where they are clicked
+
 ### Search
 Menu will detect keystrokes and auto scroll to matching rows. However, if you want better (fuzzy)
 searching that reduces the results, you can opt to show a search bar.
@@ -86,7 +90,10 @@ search: {
     // a url is required, it can be a string or a function
     url: 'my-search?term=', // term will be appended to end
     url: term=>'my-search?term='+term, // custom function supported
+
     showAll: true, // should all results be displayed when nothing is searched
+    hideUnselected: false,
+    placeholder: 'Search',
 
     // a default parser will be used if none given
     // the parsed response should format to expected menu structure

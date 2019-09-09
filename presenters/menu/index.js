@@ -104,6 +104,9 @@ export default class Menu {
 		if( this.searchIsOn && !this.searchShouldShowAll )
 			return []
 
+		if( this.searchIsOn && this.hideUnselected )
+			return this.menu.filter(m=>m.label===undefined || m.selected)
+
 		return this.menu
 	}
 
@@ -168,6 +171,10 @@ export default class Menu {
 
 	get searchShouldShowAll(){
 		return this.opts.search&&this.opts.search.showAll!==false
+	}
+
+	get hideUnselected(){
+		return this.opts.search&&this.opts.search.hideUnselected===true
 	}
 
 	get searchParse(){
@@ -343,11 +350,15 @@ export default class Menu {
 
 			if( this.opts.multiple ){
 
-				if( data.clearsAll || !didClickCheckbox ){
+				if( this.opts.multiple !== 'always' && (data.clearsAll || !didClickCheckbox) ){
 					return this.resolve([data])
 				}
+
+				let isSelected = this.toggleSelected(data)
 				
-				if( this.toggleSelected(data) ){
+				if( this.searchIsOn && this.hideUnselected )
+					this.render()
+				else if( isSelected ){
 					target.classList.add('selected')
 					target.querySelector('check-box').checked = true
 				}else{
