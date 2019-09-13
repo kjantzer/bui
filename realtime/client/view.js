@@ -3,18 +3,11 @@ import Emitter from 'component-emitter'
 
 export default class View {
 
-    // set socketView(view){
-    //     this.__socketView = view
-    // }
-
-    // get socketView(){
-    //     return this.__socketView || SocketView
-    // }
-
     constructor(socket, name){
         this.name = name
         this.socket = socket
-        this.sockets = new Map()
+
+        this.clients = new Map()
     }
 
     open(data){
@@ -27,11 +20,14 @@ export default class View {
     }
     
     sync(clients=[]){
+
+        this.clients.clear()
+        
         clients.forEach(c=>{
-            this.sockets.set(c.id, new SocketView(c))
+            this.clients.set(c.id, new SocketView(c))
         })
 
-        this.emit('change', clients)
+        this.emit('change', clients) // NOTE: should this be `this.clients`?
     }
 }
 

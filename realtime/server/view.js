@@ -31,7 +31,6 @@ module.exports = class View {
 				data: data
 			})
 		})
-		console.log('sync views for:', this.name, this.length);
 
         this.io.emit('view:sync', {
             name: this.name,

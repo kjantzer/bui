@@ -1,4 +1,5 @@
 import View from './view'
+import Emitter from 'component-emitter'
 
 export default class Views extends Map {
 
@@ -7,7 +8,7 @@ export default class Views extends Map {
         this.socket = socket
 
         socket.on('connect', ()=>{ this.reopen() })
-        socket.on('view:sync', ()=>{ this.onViewSync() })
+        socket.on('view:sync', payload=>{ this.onViewSync(payload) })
     }
 
     onViewSync(payload){
@@ -16,6 +17,8 @@ export default class Views extends Map {
         if( !view ) return
 
         view.sync(data)
+
+        this.emit('change', name, data, view)
     }
 
     reopen(){
@@ -24,14 +27,19 @@ export default class Views extends Map {
         })
     }
 
-    open(viewName, data){
-        let view = this.get(viewName)
+    get(viewName, create=false){
+        let view = super.get(viewName)
 
-		if( !view ){
+		if( !view && create === true ){
 			view = new View(this.socket, viewName)
 			this.set(viewName, view)
 		}
 
+        return view
+    }
+
+    open(viewName, data){
+        let view = this.get(viewName, true)
         view.open(data)
         return view
     }
@@ -49,5 +57,9 @@ export default class Views extends Map {
 
         view.close()
         this.delete(viewName)
+
+        this.emit('change', viewName, [], null)
     }
 }
+
+Emitter(Views.prototype)
