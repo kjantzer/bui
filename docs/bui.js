@@ -4417,30 +4417,7 @@ class SpinnerOverlayElement extends _litElement.LitElement {
 
 exports.SpinnerOverlayElement = SpinnerOverlayElement;
 customElements.define('b-spinner-overlay', SpinnerOverlayElement);
-},{"lit-element":"+bhx","./spinner":"EnCN"}],"la8o":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-const device = {
-  get is_ios() {
-    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  },
-
-  get is_android() {
-    return /android/i.test(navigator.userAgent);
-  },
-
-  get is_mobile() {
-    return device.is_ios || device.is_android;
-  }
-
-};
-var _default = device;
-exports.default = _default;
-},{}],"aYTp":[function(require,module,exports) {
+},{"lit-element":"+bhx","./spinner":"EnCN"}],"aYTp":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4449,12 +4426,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.UploaderElement = void 0;
 
 var _litElement = require("lit-element");
-
-var _device = _interopRequireDefault(require("../util/device"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-window.device = _device.default;
 
 class UploaderElement extends _litElement.LitElement {
   static get properties() {
@@ -4728,7 +4699,7 @@ class UploaderElement extends _litElement.LitElement {
 
 exports.UploaderElement = UploaderElement;
 customElements.define('b-uploader', UploaderElement);
-},{"lit-element":"+bhx","../util/device":"la8o"}],"Yy3A":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"Yy3A":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16724,7 +16695,30 @@ customElements.define('check-box', CheckBoxElement);
 var _default = customElements.get('check-box');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"0tCY":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"la8o":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+const device = {
+  get is_ios() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  },
+
+  get is_android() {
+    return /android/i.test(navigator.userAgent);
+  },
+
+  get is_mobile() {
+    return device.is_ios || device.is_android;
+  }
+
+};
+var _default = device;
+exports.default = _default;
+},{}],"0tCY":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

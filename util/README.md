@@ -21,6 +21,12 @@ import 'util/promise.series' // import once
 Promise.series([task1, task2, task3], task=>{
     await task()
 })
+
+// return `false` at any time to cancel the series
+Promise.series([task1, task2, task3], (task,i)=>{
+    if( i > 0 ) return false // cancel the series
+    await task()
+})
 ```
 
 ## `device`
