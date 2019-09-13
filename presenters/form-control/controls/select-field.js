@@ -3,6 +3,7 @@
 */
 import {css} from 'lit-element'
 import Menu from '../../menu'
+import device from '../../../util/device';
 
 const styles = css`
 
