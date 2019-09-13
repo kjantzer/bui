@@ -83,6 +83,18 @@ Collection.prototype.createSync = function(attrs, opts={}){
     })
 }
 
+Model.prototype.destroySync = function(opts={}){
+    return new Promise((resolve, reject)=>{
+        opts.success = function(){
+            resolve(arguments)
+        }
+        opts.error = function(model, xhr, opts){
+            reject(xhrError(xhr, arguments))
+        }
+        this.destroy(opts)
+    })
+}
+
 Collection.prototype.getOrFetchSync = function(id, opts={}){
     return new Promise((resolve, reject)=>{
         opts.success = model=>{

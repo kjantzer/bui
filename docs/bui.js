@@ -4045,7 +4045,8 @@ class BtnElement extends _litElement.LitElement {
     return _litElement.css`
     
         :host{
-            --black: #333;
+            --red: var(--red-700);
+            /* --black: #333;
             --orange: #F57C00;
             --blue: #2196F3;
             --red: #d32f2f;
@@ -4055,7 +4056,7 @@ class BtnElement extends _litElement.LitElement {
             --teal: #009688;
             --purple: #7E57C2;
             --brown: #795548;
-            --pink: #E91E63;
+            --pink: #E91E63; */
 
             --radius: 3px;
             --color: var(--black);
@@ -4183,7 +4184,7 @@ class BtnElement extends _litElement.LitElement {
 			margin: 0 -.1em 0 .1em;
         }
 
-        :host([color^="primary"])  { --color: var(--primaryColor); }
+        :host([color^="primary"])  { --color: var(--color-primary); }
         :host([color^="black"])  { --color: var(--black); }
         :host([color^="orange"]) { --color: var(--orange); }
         :host([color^="blue"])   { --color: var(--blue); }
@@ -4416,7 +4417,30 @@ class SpinnerOverlayElement extends _litElement.LitElement {
 
 exports.SpinnerOverlayElement = SpinnerOverlayElement;
 customElements.define('b-spinner-overlay', SpinnerOverlayElement);
-},{"lit-element":"+bhx","./spinner":"EnCN"}],"aYTp":[function(require,module,exports) {
+},{"lit-element":"+bhx","./spinner":"EnCN"}],"la8o":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+const device = {
+  get is_ios() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  },
+
+  get is_android() {
+    return /android/i.test(navigator.userAgent);
+  },
+
+  get is_mobile() {
+    return device.is_ios || device.is_android;
+  }
+
+};
+var _default = device;
+exports.default = _default;
+},{}],"aYTp":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4425,6 +4449,12 @@ Object.defineProperty(exports, "__esModule", {
 exports.UploaderElement = void 0;
 
 var _litElement = require("lit-element");
+
+var _device = _interopRequireDefault(require("../util/device"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+window.device = _device.default;
 
 class UploaderElement extends _litElement.LitElement {
   static get properties() {
@@ -4698,7 +4728,7 @@ class UploaderElement extends _litElement.LitElement {
 
 exports.UploaderElement = UploaderElement;
 customElements.define('b-uploader', UploaderElement);
-},{"lit-element":"+bhx"}],"Yy3A":[function(require,module,exports) {
+},{"lit-element":"+bhx","../util/device":"la8o"}],"Yy3A":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4742,6 +4772,10 @@ class PaperElement extends _litElement.LitElement {
             position: relative;
             --bgd: #fff;
             --bgdAccent: #fff;
+        }
+
+        :host([overshadow]) {
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
         }
 
         :host([block]) {
@@ -9603,6 +9637,10 @@ class TimerElement extends _litElement.LitElement {
       },
       ms: {
         type: Boolean
+      },
+      short: {
+        type: Boolean,
+        reflect: true
       }
     };
   }
@@ -9611,6 +9649,7 @@ class TimerElement extends _litElement.LitElement {
     super();
     this.time = 0;
     this.ms = false;
+    this.short = false;
     this.running = this.hasAttribute('running') ? true : false;
   }
 
@@ -9643,6 +9682,16 @@ class TimerElement extends _litElement.LitElement {
 
 		.hours[value="0"] + span,
 		.hours[value="00"] + span {
+			display: none;
+		}
+
+		:host([short]) .hours[value="00"] ~ .minutes[value="0"],
+		:host([short]) .hours[value="00"] ~ .minutes[value="00"] {
+			display: none;
+		}
+
+		:host([short]) .hours[value="00"] ~ .minutes[value="0"] + span,
+		:host([short]) .hours[value="00"] ~ .minutes[value="00"] + span {
 			display: none;
 		}
 
@@ -9777,6 +9826,14 @@ class EmptyState extends _litElement.LitElement {
         :host([sm]) { font-size: 1em; }
         :host([md]) { font-size: 1.4em; }
         :host([lg]) { font-size: 3em; }
+
+        :host([must-be="first"]:not(:first-child)) {
+            display: none;
+        }
+
+        :host([must-be="last"]:not(:last-child)) {
+            display: none;
+        }
     `;
   }
 
@@ -9815,7 +9872,7 @@ class Label extends _litElement.LitElement {
         }
 
         :host([hidden]) {
-            display: none;
+            display: none !important;
         }
 
         :host([filled]),
@@ -10281,7 +10338,866 @@ customElements.define('b-embed', class Embed extends _litElement.LitElement {
 var _default = customElements.get('b-embed');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"/jTP":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"ZCfn":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+customElements.define('range-slider', class extends _litElement.LitElement {
+  static get properties() {
+    return {
+      min: {
+        type: Number
+      },
+      max: {
+        type: Number
+      },
+      step: {
+        type: Number
+      },
+      range: {
+        type: Boolean,
+        reflect: true
+      },
+      value: {
+        type: Object
+      },
+      label: {
+        type: String,
+        reflect: true
+      }
+    };
+  }
+
+  constructor() {
+    super();
+    this.mouseUp = this.mouseUp.bind(this);
+    this.mouseMove = this.mouseMove.bind(this);
+    this.label = 'auto';
+    this.range = false;
+    this.min = 0;
+    this.max = 100;
+    this.step = 1;
+    this.valMin = 0;
+    this.valMax = 0;
+    this.value = [0, 0];
+  }
+
+  static get styles() {
+    return _litElement.css`
+        :host {
+            --size: 2px;
+            --thumbSize: 14px;
+            --color: var(--blue);
+            --thumbColor: var(--color);
+            --bgd: rgba(0,0,0,.4);
+            --padding: 10px;
+
+            display: inline-block;
+            vertical-align: middle;
+            position:relative;
+            width: 140px;
+            height: var(--size);
+            margin: 0 auto;
+            padding: var(--padding) 0;
+            cursor: pointer;
+            font-size: .9em;
+            user-select: none;
+        }
+
+        rail, track {
+            display: block;
+            height: var(--size);
+            width: 100%;
+            background: var(--color);
+            border-radius: 6px;
+            position: absolute;
+            top: var(--padding);
+            left: 0;
+        }
+
+        rail {
+            background: var(--bgd);
+        }
+
+        thumb {
+            height: var(--thumbSize);
+            width: var(--thumbSize);
+            transform: translate(-50%, -50%);
+            position: absolute;
+            left: 0;
+            top: calc(var(--padding) + (var(--size) / 2));
+            background: var(--thumbColor);
+            border-radius: var(--thumbSize);
+        }
+
+        thumb:before {
+            content: '';
+            position: absolute;
+            height: 250%;
+            width: 250%;
+            left: -75%;
+            top: -75%;
+            background: var(--thumbColor);
+            opacity: .2;
+            border-radius: 30px;
+            z-index: -1;
+            transform: scale(.3);
+            transform-origin: center center;
+            opacity: 0;
+            transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        thumb:hover:before {
+            transform: scale(.9);
+            opacity: .2;
+        }
+
+        thumb[active]:before {
+            transform: scale(1);
+            opacity: .2;
+        }
+
+        thumb[active] {
+            background: var(--color);
+        }
+
+        thumb > div {
+            position: absolute;
+            font-size: .9em;
+            background: var(--color);
+            color: #fff;
+            height: 2.2em;
+            width: 2.2em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            bottom: 100%;
+            left: 50%;
+            position: absolute;
+            transform-origin: bottom left;
+            transform: translate(0%,-9px) rotate(-45deg) scale(0);
+            border-radius: 50% 50% 50% 0;
+            transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+            
+        }
+
+        thumb > div > span {
+            transform: rotate(45deg)
+        }
+
+        :host([label="show"]) thumb > div,
+        thumb:hover > div,
+        thumb[active] > div {
+            transform: translate(0%,-9px) rotate(-45deg) scale(1);
+        }
+
+        :host([label="none"]) thumb > div {
+            display: none !important;
+        }
+
+        :host(:not([range])) thumb[min] {
+            display: none;
+        }
+
+        .labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: .75em;
+        }
+    `;
+  }
+
+  _polishVal(val) {
+    val = parseFloat((Math.round(val / this.step) * this.step).toFixed(2));
+    if (val < this.min) val = this.min;
+    if (val > this.max) val = this.max;
+    return val;
+  }
+
+  set value(val) {
+    let oldVal = this.value;
+    let oldMin = this.valMin;
+    let oldMax = this.valMax;
+    if (typeof val == 'string') val = val.split(',').map(s => parseFloat(s)); // setting both min and max
+
+    if (Array.isArray(val)) {
+      if (typeof val[0] !== 'number' || typeof val[1] !== 'number') return;
+      val.sort();
+      if (this.range) this.valMin = this._polishVal(val[0]);
+      this.valMax = this._polishVal(val[1]);
+      this.requestUpdate('value', oldVal);
+      return;
+    }
+
+    if (typeof val !== 'number') return;
+    val = this._polishVal(val); // console.log(val);
+
+    let dmin = Math.abs(this.valMin - val);
+    let dmax = Math.abs(this.valMax - val);
+
+    if (this._active == 'max' && val == this.valMin) {
+      this.valMax = val;
+      if (this.range) this._active = 'min';
+    } else if (this._active == 'min' && val == this.valMax) {
+      this.valMin = val;
+      this._active = 'max';
+    } else if (!this.range || dmin == dmax && this.valMax > this.valMin && this._active == 'max' || dmax < dmin || val > this.valMax) {
+      this.valMax = val;
+      this._active = 'max';
+    } else {
+      this.valMin = val;
+      if (this.range) this._active = 'min';
+    } // this.setAttribute('value', this.value.join(','))
+
+
+    if (!this._mouseDown) this._active = null; // nothing changed
+
+    if (oldMin == this.valMin && oldMax == this.valMax) return;
+    this._didChange = true;
+    this.requestUpdate('value', oldVal);
+  }
+
+  get value() {
+    return this.range ? [this.valMin, this.valMax] : this.valMax;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('mousedown', this.mouseDown, true);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('mousedown', this.mouseDown, true);
+  }
+
+  get _len() {
+    return this.max - this.min;
+  }
+
+  get _minLeft() {
+    return this.valMin / this._len * 100;
+  }
+
+  get _maxLeft() {
+    return this.valMax / this._len * 100;
+  }
+
+  get _trackLength() {
+    return this._maxLeft - this._minLeft;
+  }
+
+  get atMin() {
+    return (this.range ? this.valMin : this.valMax) == this.min;
+  }
+
+  get atMax() {
+    return this.valMax == this.max;
+  }
+
+  reset() {
+    this.valMin = this.min;
+    this.valMax = this.min; // this.valMax = this.range ? this.max : this.min
+
+    this.value = [this.valMin, this.valMax];
+    this.update();
+  }
+
+  render() {
+    return _litElement.html`
+        <rail></rail>
+        <track style="left:${this._minLeft}%; width:${this._trackLength}%"></track>
+        <thumb min ?active=${this._active == 'min'} style="left:${this._minLeft}%">
+            <div><span>${this.valMin}</span></div>
+        </thumb>
+        <thumb max ?active=${this._active == 'max'} style="left:${this._maxLeft}%">
+            <div><span>${this.valMax}</span></div>
+        </thumb>
+        <div class="labels">
+            <!-- <b-label xs>0 hrs</b-label>
+            <b-label xs>30 hrs</b-label> -->
+        </div>
+    `;
+  }
+
+  mouseDown(e) {
+    if (e.which !== 1) return; // normal click
+
+    window.addEventListener('mouseup', this.mouseUp, true);
+    window.addEventListener('mousemove', this.mouseMove, true);
+    this._mouseDown = true;
+    this.mouseMove(e);
+  }
+
+  mouseUp() {
+    this._active = null;
+    this._mouseDown = false;
+    window.removeEventListener('mouseup', this.mouseUp, true);
+    window.removeEventListener('mousemove', this.mouseMove, true);
+    this.update();
+
+    if (this._didChange) {
+      this._didChange = false;
+      this.dispatchEvent(new CustomEvent('change', {
+        bubbles: true,
+        composed: true,
+        detail: {
+          value: this.value
+        }
+      }));
+    }
+  }
+
+  mouseMove(e) {
+    // already at the min/max, stop tracking mouse move until within range again
+    if (this._active == 'min' && e.pageX < this._lastMousePos && this.atMin) return;
+    if (this._active == 'max' && e.pageX > this._lastMousePos && this.atMax) return;
+    this._lastMousePos = e.pageX;
+    let offset = {
+      x: this.offsetLeft,
+      y: this.offsetTop
+    };
+    let parent = this.offsetParent;
+
+    while (parent) {
+      offset.x += parent.offsetLeft;
+      offset.y += parent.offsetTop;
+      parent = parent.offsetParent;
+    } // let mouseX = offset.x < e.pageX ? (e.offsetX + e.srcElement.offsetLeft) : e.pagex
+
+
+    let mouseX = e.screenX - window.screenX;
+    let x = mouseX - offset.x;
+    let percent = x / this.clientWidth * 100;
+    let val = percent / 100 * this._len;
+    this.value = val;
+    this.dispatchEvent(new CustomEvent('changing', {
+      bubbles: true,
+      composed: true,
+      detail: {
+        value: val
+      }
+    }));
+  }
+
+});
+
+var _default = customElements.get('range-slider');
+
+exports.default = _default;
+},{"lit-element":"+bhx"}],"2z4L":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+// TODO: support prefixing?
+var _default = (key, val) => {
+  let ls = window.localStorage;
+
+  if (val === undefined) {
+    let data = ls.getItem(key);
+    if (data === null || data === undefined) return undefined;
+    var val = '';
+
+    try {
+      val = JSON.parse(data);
+    } catch (e) {
+      val = data;
+    }
+
+    return val && isAmplify ? val.data : val;
+  }
+
+  if (val === null) {
+    return ls.removeItem(key);
+  }
+
+  val = JSON.stringify(val);
+  return ls.setItem(key, val);
+};
+
+exports.default = _default;
+},{}],"EIVk":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+require("./icon");
+
+require("../presenters/form-control/controls/range-slider");
+
+var _moment = _interopRequireDefault(require("moment"));
+
+var _store = _interopRequireDefault(require("../util/store"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import Menu from '../presenters/menu'
+// TODO: hook up settings menu
+const formatTime = sec => {
+  var dur = _moment.default.duration(sec * 1000);
+
+  var hours = dur.hours();
+  var min = hours > 0 ? String(dur.minutes()).padStart(2, '0') : dur.minutes();
+  return (hours ? hours + ':' : '') + min + ':' + String(dur.seconds()).padStart(2, '0');
+};
+
+let ACTIVE_PLAYER = null;
+customElements.define('b-audio', class extends _litElement.LitElement {
+  static get properties() {
+    return {
+      src: {
+        type: String,
+        reflect: true
+      },
+      autoplay: {
+        type: Boolean,
+        reflect: true
+      },
+      playing: {
+        type: Boolean,
+        reflect: true
+      } // currentTime: {type: Number},
+
+    };
+  }
+
+  constructor(src = '', {
+    autoplay = false
+  } = {}) {
+    super();
+    this.src = src;
+    this.autoplay = autoplay;
+    this.playing = false;
+  }
+
+  static get styles() {
+    return _litElement.css`
+        :host {
+            display: block;
+            position:relative;
+            /* padding: 1em; */
+            border: solid 1px rgba(0,0,0,.1);
+            background: #fff;
+            border-radius: var(--radius);
+            --radius: 4px;
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: 2em 45px 1fr 45px;
+            align-items: center;
+            justify-content: space-between;
+            gap: .25em;
+            padding-right: .5em;
+        }
+
+        .time {
+            font-weight: bold;
+        }
+
+        .time.elapsed {
+            text-align: right;
+        }
+
+        .btn-play {
+            cursor: pointer;
+            height: 1.5em;
+            width: 1.5em;
+            margin: .25em;
+            padding: .25em;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            border-radius: 20px;
+            /* margin-right: .5em; */
+            background: #eee;
+            /* color: #fff; */
+            /* border: solid 2px; */
+            transition: color .15s ease-in-out, border-color .15s ease-in-out;
+        }
+
+        :host([status="error"]) {
+            background: var(--red-50) !important;
+        }
+
+        :host([status="error"]) .btn-play {
+            color: var(--red);
+            background: var(--red-100);
+        }
+
+
+        .btn-play:hover {
+            color: var(--blue);
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            min-width: 100px;
+            height: 10px;
+            border-radius: 5px;
+            background: var(--black);
+            outline: none;
+            padding: 0;
+            margin: 0 .5em;
+            border: none;
+            box-shadow: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            border: none;
+            height: 100%;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            display: none;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: solid 2px #fff;
+            background: var(--black);
+            cursor: pointer;
+            box-shadow: none;
+            margin-top: -4px;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            background: var(--blue);
+        }
+
+        input[type=range]:active::-webkit-slider-thumb {
+            background: var(--blue);
+        }
+
+        input[type=range]:hover::-webkit-slider-thumb {
+            display: block;
+        }
+
+        .settings {
+            transform: rotate(90deg);
+        }
+    `;
+  }
+
+  render() {
+    return _litElement.html`
+        <main @mouseenter=${this.onHover} @mouseleave=${this.onHoverLeave}>
+            <audio
+                @loadedmetadata=${this.audioLoaded}
+                @timeupdate=${this.audioTimeChange}
+                @ended=${this.pause}
+                @error=${this.audioLoadError}
+            ></audio>
+            <span class="btn-play icon-play" @click=${this.playPause}>
+                <b-icon name=${this.playing ? 'pause' : 'play'}></b-icon>
+            </span>
+            <span class="elapsed time">00:00</span>
+            <input type="range" value="0" disabled
+                @input=${this.progressSliderChanging}
+                @change=${this.progressSliderChangingDone}
+                class="progress"/>
+            <span class="remaining time">00:00</span>
+            <!-- <b-btn clear icon="dot-3" class="settings" @click=${this.viewSettings}></b-btn> -->
+        </main>
+    `;
+  } // events: {
+  //     'mouseenter': 'onHover',
+  //     'mouseleave': 'onHoverLeave',
+  //     'mouseenter .progress': 'progressHover',
+  //     'mouseleave .progress': 'progressHoverLeave',
+  //     'input .progress': 'progressSliderChanging',
+  //     'change .progress': 'progressSliderChangingDone',
+  //     'click .btn-settings': 'viewSettings',
+  //     'click .btn-play': 'playPause'
+  // },
+
+
+  firstUpdated() {
+    this.audio = this.shadowRoot.querySelector('audio');
+    this.progress = this.shadowRoot.querySelector('.progress');
+    this.elapsed = this.shadowRoot.querySelector('.elapsed');
+    this.remaining = this.shadowRoot.querySelector('.remaining');
+    this.loadAudio(this.src);
+  }
+
+  get status() {
+    return this.getAttribute('status');
+  }
+
+  set status(val) {
+    this.setAttribute('status', val);
+  }
+
+  playPause() {
+    this.audio.paused ? this.play() : this.pause();
+  }
+
+  play(src) {
+    // if another audio player is playing, pause it
+    if (ACTIVE_PLAYER && ACTIVE_PLAYER != this) ACTIVE_PLAYER.pause(); // if audio src has not loaded yet or we have been given a new src, load it now
+
+    if (!this._loaded || src) {
+      this.loadAudio(src || this.src);
+      return;
+    }
+
+    if (this.status == 'error') return;
+    ACTIVE_PLAYER = this;
+    this.audio.play();
+    this.playing = true;
+  }
+
+  pause() {
+    ACTIVE_PLAYER = null;
+    this.clip = null; // clear any clips
+
+    this.audio.pause();
+    this.playing = false;
+  }
+
+  skipBack(val) {
+    this.skip(-val || -10);
+  }
+
+  skipForward(val) {
+    this.skip(val || 10);
+  }
+
+  skip(amt) {
+    var time = this.audio.currentTime + amt;
+    if (time < 0) time = 0;
+    if (time > this.audio.duration) time = this.audio.duration;
+    this.audio.currentTime = time;
+  }
+
+  loadAudio(src) {
+    this.status = 'loading';
+    this.audio.src = src;
+  } // Events ==================================================================
+
+
+  audioLoadError() {
+    this._loaded = true;
+    this.status = 'error';
+    this.progress.disabled = true;
+  }
+
+  audioLoaded() {
+    this.status = 'loaded';
+    this._loaded = true;
+    this.progress.disabled = false;
+    this.progress.max = this.audio.duration;
+    this.setProgress(); // clips were set before fully loaded, so set them again if needed
+
+    if (this.clip && this.clip.length == 2 && isNaN(this.clip[1])) this.playLastClip();else if (this.clip && this.clip.length > 2 && isNaN(this.clip[2])) this.playEndClips();else if (this.autoplay) this.play();
+  }
+  /*
+      Playing <audio> time has changed
+  */
+
+
+  audioTimeChange() {
+    // update the progress slider unless currently seeking
+    if (!this.seeking) this.progress.value = this.audio.currentTime;
+    this.setProgress(); // reached end of clip, stop
+
+    if (this.clip && this.audio.currentTime >= this.clip[1]) {
+      // more than one clip is given, remove the just finished clip and begin playing the next one
+      if (this.clip.length > 2) {
+        this.audio.pause();
+        setTimeout(function () {
+          // play next clip after 700ms pause
+          this.playClip(this.clip.splice(2));
+        }.bind(this), 700);
+      } else {
+        this.pause();
+      }
+    }
+  }
+  /*
+      Set Progress: uses current poisition to adjust background of proress slider on and updates elapsed/remaining times
+  */
+
+
+  setProgress() {
+    var percent = this.progress.value / this.audio.duration * 100;
+    var time = this.progress.value;
+    var color = '#2c3033'; // this.classList.contains('progress-hover') ? '#3498db' : '#2c3033';
+
+    this.progress.style.background = "linear-gradient(to right, " + color + " " + percent + "%, #bbb " + percent + "%)";
+    this.elapsed.innerHTML = formatTime(time);
+    this.remaining.innerHTML = this.audio.duration == Infinity ? '' : formatTime(this.audio.duration - time);
+  }
+
+  progressSliderChanging() {
+    this.seeking = true;
+    this.wasPlaying = this.wasPlaying || !this.audio.paused;
+    this.audio.pause();
+    this.setProgress();
+  }
+
+  progressSliderChangingDone() {
+    this.audio.currentTime = this.progress.value;
+    this.wasPlaying && this.play();
+    this.wasPlaying = null;
+    this.seeking = false;
+    this.progress.blur(); // so slider doesn't hijack the keyboard events
+  }
+
+  progressHover() {
+    this.classList.add('progress-hover');
+    this.setProgress();
+  }
+
+  progressHoverLeave() {
+    this.classList.remove('progress-hover');
+    this.setProgress();
+  } // Clips ====================================================================
+
+
+  setClipLength(item) {
+    (0, _store.default)('audioplayer:clip-length', item.val);
+  }
+
+  clipLength() {
+    return (0, _store.default)('audioplayer:clip-length') || 15;
+  }
+
+  playFirstClip() {
+    if (this.audio.duration < this.clipLength()) return; // TODO: improve
+
+    this.playClip([0, this.clipLength()]);
+  }
+
+  playLastClip() {
+    if (this.audio.duration < this.clipLength()) return;
+    this.playClip([this.audio.duration - this.clipLength(), this.audio.duration]);
+  }
+
+  playEndClips() {
+    if (this.audio.duration < this.clipLength()) return;
+    this.playClip([0, this.clipLength(), this.audio.duration - this.clipLength(), this.audio.duration]);
+  }
+
+  playClip(clip) {
+    this.clip = clip;
+    if (!isNaN(this.clip[0])) this.audio.currentTime = this.clip[0];
+    this.play();
+  } // Keyboard Shortcuts =======================================================
+
+
+  onKeyPress(e) {
+    if (this.status == 'error') return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    switch (e.which) {
+      case 32:
+        this.playPause();
+        break;
+      // space
+
+      case 27:
+        this.pause();
+        break;
+      // esc
+
+      case 70:
+        this.playFirstClip();
+        break;
+      // f
+
+      case 76:
+        this.playLastClip();
+        break;
+      // l
+
+      case 69:
+        this.playEndClips();
+        break;
+      // e
+
+      case 37:
+        // left
+        if (e.shiftKey) this.audio.currentTime = 0;else this.skipBack(_.metaKey() ? 30 : 10);
+        break;
+
+      case 39:
+        // right
+        if (e.shiftKey) this.audio.currentTime = this.audio.duration;else this.skipForward(_.metaKey() ? 30 : 10);
+        break;
+    }
+  }
+
+  onHover() {
+    this._onKeyPress = this._onKeyPress || this.onKeyPress.bind(this);
+    window.addEventListener('keydown', this._onKeyPress);
+  }
+
+  onHoverLeave() {
+    window.removeEventListener('keydown', this._onKeyPress);
+  } // Settings & Utilities =====================================================
+  // viewSettings(e){
+  //     var menu = [{
+  //         label: 'Tips',
+  //         icon: 'lightbulb',
+  //         dropdown: {
+  //             view: marked("While hovered over the player, you can control via keybard shortcuts:  \n\n`space` = play/pause  \n`f` = play **first** clip  \n`l` = play **last** clip  \n`e` = play **end** clips  \n  \n`←` = skip **back** 10  \n`ctrl+←` 30 sec  \n`→` = skip **forward** 10  \n`ctrl+→` 30 sec"),
+  //             align: 'leftBottom',
+  //             w: 180
+  //         }
+  //     },{
+  //         label: 'Clip Length',
+  //         icon: 'clock',
+  //         menu: {
+  //             view: [
+  //                 {label: '10 sec', val: 10},
+  //                 {label: '15 sec', val: 15},
+  //                 {label: '20 sec', val: 20},
+  //                 {label: '30 sec', val: 30},
+  //             ],
+  //             onClick: 'setClipLength',
+  //             selected: this.clipLength,
+  //             align: 'leftBottom',
+  //             w: 90
+  //         }
+  //     },'divider',{
+  //         label: 'Fullscreen',
+  //         icon: 'resize-full',
+  //         onClick: 'fullscreenToggle'
+  //     }]
+  //     $(e.currentTarget).dropdown(menu, {
+  //         w: 120,
+  //         align: 'bottomLeft',
+  //         trigger: 'none',
+  //         context: this
+  //     })
+  // }
+
+
+});
+
+var _default = customElements.get('b-audio');
+
+exports.default = _default;
+},{"lit-element":"+bhx","./icon":"ncPe","../presenters/form-control/controls/range-slider":"ZCfn","moment":"a2/B","../util/store":"2z4L"}],"/jTP":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14697,7 +15613,8 @@ class Panel extends _litElement.LitElement {
   }
 
   open() {
-    // if no controller set, use the root controller
+    if (this.route && this.route.state.props.controller) this.controller = this.route.state.props.controller; // if no controller set, use the root controller
+
     if (!this.panelController) {
       this.panelController = _controller.default.for('root');
     }
@@ -15827,6 +16744,8 @@ var _fuse = _interopRequireDefault(require("fuse.js"));
 
 require("../form-control/controls/check-box");
 
+var _device = _interopRequireDefault(require("../../util/device"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const DefaultOpts = {
@@ -16105,13 +17024,19 @@ class Menu {
         }
 
         let isSelected = this.toggleSelected(data);
-        if (this.searchIsOn && this.hideUnselected) this.render();else if (isSelected) {
+
+        if (this.searchIsOn && this.hideUnselected) {
+          this.render(); // update popover position
+
+          if (this.presenter && this.presenter._updatePosition) this.presenter._updatePosition();
+        } else if (isSelected) {
           target.classList.add('selected');
           target.querySelector('check-box').checked = true;
         } else {
           target.classList.remove('selected');
           target.querySelector('check-box').checked = false;
         }
+
         this.opts.onSelect && this.opts.onSelect(this.selected);
       } else {
         this.resolve(data);
@@ -16236,6 +17161,9 @@ class Menu {
 
 
   popover(target, opts = {}) {
+    if (opts.adjustForMobile && _device.default.is_mobile) return this.modal({
+      closeBtn: true
+    });
     this.render();
     let onClose = opts.onClose;
 
@@ -16277,7 +17205,7 @@ class Menu {
 }
 
 exports.default = Menu;
-},{"lit-html":"SP/d","lit-html/directives/unsafe-html":"/jTP","../popover":"Soyf","../panel":"cmZt","fuse.js":"Wp9p","../form-control/controls/check-box":"jNfL","./style.less":"r4vn"}],"7P61":[function(require,module,exports) {
+},{"lit-html":"SP/d","lit-html/directives/unsafe-html":"/jTP","../popover":"Soyf","../panel":"cmZt","fuse.js":"Wp9p","../form-control/controls/check-box":"jNfL","../../util/device":"la8o","./style.less":"r4vn"}],"7P61":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18237,6 +19165,10 @@ exports.default = void 0;
 
 var _litHtml = require("lit-html");
 
+var _device = _interopRequireDefault(require("../../util/device"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 const Panel = require('../panel').default;
 
 const Popover = require('../popover').default;
@@ -18265,9 +19197,10 @@ class Dialog {
     opts.className.split(' ').forEach(className => className && this.el.classList.add(className));
     let [iconName, iconClass] = (opts.icon || '').split(' '); // FIXME: animation needs added
 
-    let icon = opts.icon ? `<b-icon name="${iconName}" class="${iconClass || ''} animated speed-2 flipInY"></b-icon>` : '';
+    let icon = opts.icon ? `<b-icon name="${iconName}" class="${iconClass || ''}"></b-icon>` : '';
     let btns = opts.btns ? opts.btns.map(btn => makeBtn(btn)).join("\n") : '';
     if (opts.icon === 'spinner') icon = `<b-spinner></b-spinner>`;
+    if (customElements.get(opts.icon)) icon = `<${opts.icon}></${opts.icon}>`;
     this.el.innerHTML = `<style>${styles}</style>
 							<div class="d-icon">${icon}</div>
 							<h2 class="d-title">${opts.title}</h2>
@@ -18388,6 +19321,7 @@ class Dialog {
 
 
   popover(target, opts = {}) {
+    if (opts.adjustForMobile && _device.default.is_mobile) return this.modal();
     if (target.currentTarget) target = target.currentTarget;
     let onClose = opts.onClose;
 
@@ -18438,7 +19372,7 @@ class Dialog {
 }
 
 exports.default = Dialog;
-},{"lit-html":"SP/d","../panel":"cmZt","../popover":"Soyf","./make-btn":"TZ6L","./style.less":"r4vn"}],"pos3":[function(require,module,exports) {
+},{"lit-html":"SP/d","../../util/device":"la8o","../panel":"cmZt","../popover":"Soyf","./make-btn":"TZ6L","./style.less":"r4vn"}],"pos3":[function(require,module,exports) {
 const Dialog = require('./dialog').default;
 
 module.exports = Dialog;
@@ -19094,16 +20028,19 @@ main {
     margin: -0.3em -.5em -.5em 0;
     padding: .25em;
 	cursor: pointer;
+	position: relative;
+	z-index: 1000;
 }
 
 :host([type="date"]) .calendar {
 	display: inline-block;
 }
 
-.calendar:hover,
+/* .calendar:hover,
 .calendar.popover-open {
 	opacity: .7;
-}`;
+} */
+`;
 
 class TextFieldElement extends HTMLElement {
   constructor() {
@@ -19277,7 +20214,8 @@ class TextFieldElement extends HTMLElement {
     if (await picker.popover(this.$('.calendar'), {
       align: 'left',
       overflowBoundry: 'window',
-      maxHeight: false
+      maxHeight: false,
+      adjustForMobile: true
     })) {
       this._changeValue(picker.$('date-picker').value);
     }
@@ -32160,7 +33098,7 @@ class SelectFieldElement extends HTMLElement {
     let arrow = this.hasAttribute('no-arrow') ? '' : '<svg focusable="false" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"></path></svg>';
     temp.innerHTML = `<style>${styles.cssText}</style>
 			<main>
-				<input type="input"/>
+				<input type="input" readonly="true"/>
 				<div id="value" data-placeholder="${placeholder}"></div>
 				${arrow}
 			</main>
@@ -32171,7 +33109,9 @@ class SelectFieldElement extends HTMLElement {
     this._selected = [];
     let options = this.$('#options');
     this.options = [];
-    options.assignedElements && options.assignedElements().map(el => {
+    options.assignedNodes && options.assignedNodes().map(el => {
+      if (!el.tagName) return; // skip comments and empty text blocks
+
       if (el.tagName == 'HR') return this.options.push('divider');
       if (el.tagName == 'OPTGROUP') return this.options.push({
         'divider': el.innerHTML
@@ -32371,7 +33311,8 @@ class SelectFieldElement extends HTMLElement {
       align: this.getAttribute('menu-align') || 'bottom',
       maxHeight: this.getAttribute('menu-max-height') || 'auto',
       maxWidth: this.getAttribute('menu-max-width') || 'none',
-      overflowBoundry: this.getAttribute('menu-overflow') ? 'window' : null
+      overflowBoundry: this.getAttribute('menu-overflow') ? 'window' : null,
+      adjustForMobile: true
     };
     if (!menu || menu.length == 0) menu = [{
       'divider': 'No options available'
@@ -32381,9 +33322,7 @@ class SelectFieldElement extends HTMLElement {
     let val = await this.openMenu.popover(this.$('main'), popoverOpts);
     this.openMenu = null;
     this.focused = false;
-
-    this._input.focus(); // retain focus
-
+    if (!device.is_mobile) this._input.focus(); // retain focus
 
     if (val === false) return;
     val = this.multiple ? val : [val];
@@ -32727,348 +33666,6 @@ class TouchRippleElement extends HTMLElement {
 customElements.define('touch-ripple', TouchRippleElement);
 
 var _default = customElements.get('touch-ripple');
-
-exports.default = _default;
-},{"lit-element":"+bhx"}],"ZCfn":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _litElement = require("lit-element");
-
-customElements.define('range-slider', class extends _litElement.LitElement {
-  static get properties() {
-    return {
-      min: {
-        type: Number
-      },
-      max: {
-        type: Number
-      },
-      step: {
-        type: Number
-      },
-      range: {
-        type: Boolean,
-        reflect: true
-      },
-      value: {
-        type: Object
-      },
-      label: {
-        type: String,
-        reflect: true
-      }
-    };
-  }
-
-  constructor() {
-    super();
-    this.mouseUp = this.mouseUp.bind(this);
-    this.mouseMove = this.mouseMove.bind(this);
-    this.label = 'auto';
-    this.range = false;
-    this.min = 0;
-    this.max = 100;
-    this.step = 1;
-    this.valMin = 0;
-    this.valMax = 0;
-    this.value = [0, 0];
-  }
-
-  static get styles() {
-    return _litElement.css`
-        :host {
-            --size: 2px;
-            --thumbSize: 14px;
-            --color: var(--blue);
-            --thumbColor: var(--color);
-            --bgd: rgba(0,0,0,.4);
-            --padding: 10px;
-
-            display: inline-block;
-            vertical-align: middle;
-            position:relative;
-            width: 140px;
-            height: var(--size);
-            margin: 0 auto;
-            padding: var(--padding) 0;
-            cursor: pointer;
-            font-size: .9em;
-            user-select: none;
-        }
-
-        rail, track {
-            display: block;
-            height: var(--size);
-            width: 100%;
-            background: var(--color);
-            border-radius: 6px;
-            position: absolute;
-            top: var(--padding);
-            left: 0;
-        }
-
-        rail {
-            background: var(--bgd);
-        }
-
-        thumb {
-            height: var(--thumbSize);
-            width: var(--thumbSize);
-            transform: translate(-50%, -50%);
-            position: absolute;
-            left: 0;
-            top: calc(var(--padding) + (var(--size) / 2));
-            background: var(--thumbColor);
-            border-radius: var(--thumbSize);
-        }
-
-        thumb:before {
-            content: '';
-            position: absolute;
-            height: 250%;
-            width: 250%;
-            left: -75%;
-            top: -75%;
-            background: var(--thumbColor);
-            opacity: .2;
-            border-radius: 30px;
-            z-index: -1;
-            transform: scale(.3);
-            transform-origin: center center;
-            opacity: 0;
-            transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        thumb:hover:before {
-            transform: scale(.9);
-            opacity: .2;
-        }
-
-        thumb[active]:before {
-            transform: scale(1);
-            opacity: .2;
-        }
-
-        thumb[active] {
-            background: var(--color);
-        }
-
-        thumb > div {
-            position: absolute;
-            font-size: .9em;
-            background: var(--color);
-            color: #fff;
-            height: 2.2em;
-            width: 2.2em;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            bottom: 100%;
-            left: 50%;
-            position: absolute;
-            transform-origin: bottom left;
-            transform: translate(0%,-9px) rotate(-45deg) scale(0);
-            border-radius: 50% 50% 50% 0;
-            transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-            
-        }
-
-        thumb > div > span {
-            transform: rotate(45deg)
-        }
-
-        :host([label="show"]) thumb > div,
-        thumb:hover > div,
-        thumb[active] > div {
-            transform: translate(0%,-9px) rotate(-45deg) scale(1);
-        }
-
-        :host(:not([range])) thumb[min] {
-            display: none;
-        }
-
-        .labels {
-            display: flex;
-            justify-content: space-between;
-            margin-top: .75em;
-        }
-    `;
-  }
-
-  _polishVal(val) {
-    val = parseFloat((Math.round(val / this.step) * this.step).toFixed(2));
-    if (val < this.min) val = this.min;
-    if (val > this.max) val = this.max;
-    return val;
-  }
-
-  set value(val) {
-    let oldVal = this.value;
-    let oldMin = this.valMin;
-    let oldMax = this.valMax;
-    if (typeof val == 'string') val = val.split(',').map(s => parseFloat(s)); // setting both min and max
-
-    if (Array.isArray(val)) {
-      if (typeof val[0] !== 'number' || typeof val[1] !== 'number') return;
-      val.sort();
-      if (this.range) this.valMin = this._polishVal(val[0]);
-      this.valMax = this._polishVal(val[1]);
-      this.requestUpdate('value', oldVal);
-      return;
-    }
-
-    if (typeof val !== 'number') return;
-    val = this._polishVal(val); // console.log(val);
-
-    let dmin = Math.abs(this.valMin - val);
-    let dmax = Math.abs(this.valMax - val);
-
-    if (this._active == 'max' && val == this.valMin) {
-      this.valMax = val;
-      if (this.range) this._active = 'min';
-    } else if (this._active == 'min' && val == this.valMax) {
-      this.valMin = val;
-      this._active = 'max';
-    } else if (!this.range || dmin == dmax && this.valMax > this.valMin && this._active == 'max' || dmax < dmin || val > this.valMax) {
-      this.valMax = val;
-      this._active = 'max';
-    } else {
-      this.valMin = val;
-      if (this.range) this._active = 'min';
-    } // this.setAttribute('value', this.value.join(','))
-
-
-    if (!this._mouseDown) this._active = null; // nothing changed
-
-    if (oldMin == this.valMin && oldMax == this.valMax) return;
-    this._didChange = true;
-    this.requestUpdate('value', oldVal);
-  }
-
-  get value() {
-    return this.range ? [this.valMin, this.valMax] : this.valMax;
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    this.addEventListener('mousedown', this.mouseDown, true);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this.removeEventListener('mousedown', this.mouseDown, true);
-  }
-
-  get _len() {
-    return this.max - this.min;
-  }
-
-  get _minLeft() {
-    return this.valMin / this._len * 100;
-  }
-
-  get _maxLeft() {
-    return this.valMax / this._len * 100;
-  }
-
-  get _trackLength() {
-    return this._maxLeft - this._minLeft;
-  }
-
-  get atMin() {
-    return (this.range ? this.valMin : this.valMax) == this.min;
-  }
-
-  get atMax() {
-    return this.valMax == this.max;
-  }
-
-  reset() {
-    this.valMin = this.min;
-    this.valMax = this.min; // this.valMax = this.range ? this.max : this.min
-
-    this.value = [this.valMin, this.valMax];
-    this.update();
-  }
-
-  render() {
-    return _litElement.html`
-        <rail></rail>
-        <track style="left:${this._minLeft}%; width:${this._trackLength}%"></track>
-        <thumb min ?active=${this._active == 'min'} style="left:${this._minLeft}%">
-            <div><span>${this.valMin}</span></div>
-        </thumb>
-        <thumb max ?active=${this._active == 'max'} style="left:${this._maxLeft}%">
-            <div><span>${this.valMax}</span></div>
-        </thumb>
-        <div class="labels">
-            <!-- <b-label xs>0 hrs</b-label>
-            <b-label xs>30 hrs</b-label> -->
-        </div>
-    `;
-  }
-
-  mouseDown(e) {
-    if (e.which !== 1) return; // normal click
-
-    window.addEventListener('mouseup', this.mouseUp, true);
-    window.addEventListener('mousemove', this.mouseMove, true);
-    this._mouseDown = true;
-    this.mouseMove(e);
-  }
-
-  mouseUp() {
-    this._active = null;
-    this._mouseDown = false;
-    window.removeEventListener('mouseup', this.mouseUp, true);
-    window.removeEventListener('mousemove', this.mouseMove, true);
-    this.update();
-
-    if (this._didChange) {
-      this._didChange = false;
-      this.dispatchEvent(new CustomEvent('change', {
-        bubbles: true,
-        composed: true,
-        detail: {
-          value: this.value
-        }
-      }));
-    }
-  }
-
-  mouseMove(e) {
-    // already at the min/max, stop tracking mouse move until within range again
-    if (this._active == 'min' && e.pageX < this._lastMousePos && this.atMin) return;
-    if (this._active == 'max' && e.pageX > this._lastMousePos && this.atMax) return;
-    this._lastMousePos = e.pageX;
-    let offset = {
-      x: this.offsetLeft,
-      y: this.offsetTop
-    };
-    let parent = this.offsetParent;
-
-    while (parent) {
-      offset.x += parent.offsetLeft;
-      offset.y += parent.offsetTop;
-      parent = parent.offsetParent;
-    } // let mouseX = offset.x < e.pageX ? (e.offsetX + e.srcElement.offsetLeft) : e.pagex
-
-
-    let mouseX = e.screenX - window.screenX;
-    let x = mouseX - offset.x;
-    let percent = x / this.clientWidth * 100;
-    let val = percent / 100 * this._len;
-    this.value = val;
-  }
-
-});
-
-var _default = customElements.get('range-slider');
 
 exports.default = _default;
 },{"lit-element":"+bhx"}],"wbVn":[function(require,module,exports) {
@@ -34045,7 +34642,8 @@ class Filter {
       selected: this.value,
       multiple: this.isMulti
     }).popover(el, {
-      maxHeight: this.attrs.maxHeight || '60vh'
+      maxHeight: this.attrs.maxHeight || '60vh',
+      adjustForMobile: true
     });
     let oldVal = this.value;
     if (selected === false || selected.length == 0) return; // this.value = null
@@ -34123,6 +34721,8 @@ var _litElement = require("lit-element");
 var _menu = _interopRequireDefault(require("../../menu"));
 
 var _titleize = _interopRequireDefault(require("../../../util/titleize"));
+
+var _device = _interopRequireDefault(require("../../../util/device"));
 
 var _componentEmitter = _interopRequireDefault(require("component-emitter"));
 
@@ -34203,7 +34803,9 @@ class Sorts extends Map {
       className: 'b-list-sort-menu',
       multiple: true,
       selected: Object.keys(oldVal)
-    }).popover(el);
+    }).popover(el, {
+      adjustForMobile: true
+    });
     if (selected === false) return; // reformat selected values to what we need
 
     let val = {};
@@ -34268,7 +34870,7 @@ class Sort {
   }
 
 }
-},{"lit-element":"+bhx","../../menu":"0tCY","../../../util/titleize":"NUHt","component-emitter":"Wr69"}],"FOqU":[function(require,module,exports) {
+},{"lit-element":"+bhx","../../menu":"0tCY","../../../util/titleize":"NUHt","../../../util/device":"la8o","component-emitter":"Wr69"}],"FOqU":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35362,6 +35964,8 @@ require("../elements/avatar");
 
 require("../elements/embed");
 
+require("../elements/audio");
+
 require("../presenters/tabs");
 
 require("../presenters/form-control");
@@ -35422,7 +36026,7 @@ history.replaceState = (f => function replaceState() {
 window.addEventListener('popstate', function () {
   convertComments();
 });
-},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/hr":"IOAQ","../elements/sub":"VANQ","../elements/avatar":"Da++","../elements/embed":"bpDM","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../helpers/colors-list":"TMO9","../helpers/colors.less":"r4vn","../presenters/dialog":"pos3","../presenters/menu":"0tCY"}],"RVcF":[function(require,module,exports) {
+},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/hr":"IOAQ","../elements/sub":"VANQ","../elements/avatar":"Da++","../elements/embed":"bpDM","../elements/audio":"EIVk","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../helpers/colors-list":"TMO9","../helpers/colors.less":"r4vn","../presenters/dialog":"pos3","../presenters/menu":"0tCY"}],"RVcF":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -35544,6 +36148,6 @@ module.exports = function loadHTMLBundle(bundle) {
   });
 };
 },{}],0:[function(require,module,exports) {
-var b=require("m0oQ");b.register("html",require("uu9t"));b.load([["icons.svg.c6868b42.html","pxeq"]]).then(function(){require("gE6T");});
+var b=require("m0oQ");b.register("html",require("uu9t"));b.load([["icons.svg.b0516ff5.html","pxeq"]]).then(function(){require("gE6T");});
 },{}]},{},[0], null)
 //# sourceMappingURL=/bui.js.map

@@ -135,6 +135,10 @@ customElements.define('range-slider', class extends LitElement{
             transform: translate(0%,-9px) rotate(-45deg) scale(1);
         }
 
+        :host([label="none"]) thumb > div {
+            display: none !important;
+        }
+
         :host(:not([range])) thumb[min] {
             display: none;
         }
@@ -315,6 +319,12 @@ customElements.define('range-slider', class extends LitElement{
         let val = (percent / 100) * this._len
 
         this.value = val
+
+        this.dispatchEvent(new CustomEvent('changing', {
+            bubbles: true,
+            composed: true,
+            detail: {value: val}
+        }))
     }
 
 })

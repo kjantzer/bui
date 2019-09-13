@@ -161,6 +161,7 @@ element has `position:relative` (or absolute)
 - `md` - medium
 - `lg` - large
 - `static` - removes absolute pos and 100% height
+- `must-be="first"` or "last" - will not display if not
 
 ## `<b-spinner>`
 
@@ -269,6 +270,30 @@ For embedding iframes and videos (like youtube) that responsively scale
 <b-embed url="https://www.youtube.com/watch?v=sK1ODp0nDbM"></b-embed>
 -->
 
+## `<b-audio>`
+Display an audio control bar for playing audio. Provides seeking keyboard 
+shortcuts when hovered over the element
+
+<!--
+<b-audio src="http://media.w3.org/2010/07/bunny/04-Death_Becomes_Fur.mp4"><b-audio>
+-->
+
+```html
+<b-audio src="http://media.w3.org/2010/07/bunny/04-Death_Becomes_Fur.mp4"><b-audio>
+```
+
+```js
+// or via JS
+import AudioPlayer from 'elements/audio'
+let player = new AudioPlayer('http://media.w3.org/2010/07/bunny/04-Death_Becomes_Fur.mp4', {autoplay: true})
+```
+
+#### Attributes
+- `src`
+- `autoplay`
+
+> TODO: provide better theming control
+
 ## `<b-carousel>`
 A slider/carousel element that will show one of the nested elements at time.
 A set of dots will be shown to represent the number of slides available.
@@ -296,9 +321,11 @@ Displays a runnning timer
 
 <!--
 <b-timer running></b-timer>
+<b-timer running short ms style="margin-left: 2em;"></b-timer>
 -->
 
 #### Attributes
 - `time` - current time in milliseconds
 - `ms` - whether to show milliseconds
+- `short` -  wont show minutes/hours unless greater than 0
 - `running` - should the timer be progressing

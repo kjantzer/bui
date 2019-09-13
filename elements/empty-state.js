@@ -42,6 +42,14 @@ export default class EmptyState extends LitElement {
         :host([sm]) { font-size: 1em; }
         :host([md]) { font-size: 1.4em; }
         :host([lg]) { font-size: 3em; }
+
+        :host([must-be="first"]:not(:first-child)) {
+            display: none;
+        }
+
+        :host([must-be="last"]:not(:last-child)) {
+            display: none;
+        }
     `}
 
     render(){return html`

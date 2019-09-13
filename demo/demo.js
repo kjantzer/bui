@@ -11,6 +11,7 @@ import '../elements/avatar'
 import '../elements/hr'
 import '../elements/sub'
 import '../elements/embed'
+import '../elements/audio'
 import '../elements/carousel'
 
 import { LitElement, html, css } from 'lit-element';

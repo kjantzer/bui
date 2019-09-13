@@ -15,7 +15,7 @@ export default class Label extends LitElement {
         }
 
         :host([hidden]) {
-            display: none;
+            display: none !important;
         }
 
         :host([filled]),

@@ -14,7 +14,8 @@ export class BtnElement extends LitElement {
     static get styles(){ return css`
     
         :host{
-            --black: #333;
+            --red: var(--red-700);
+            /* --black: #333;
             --orange: #F57C00;
             --blue: #2196F3;
             --red: #d32f2f;
@@ -24,7 +25,7 @@ export class BtnElement extends LitElement {
             --teal: #009688;
             --purple: #7E57C2;
             --brown: #795548;
-            --pink: #E91E63;
+            --pink: #E91E63; */
 
             --radius: 3px;
             --color: var(--black);
@@ -152,7 +153,7 @@ export class BtnElement extends LitElement {
 			margin: 0 -.1em 0 .1em;
         }
 
-        :host([color^="primary"])  { --color: var(--primaryColor); }
+        :host([color^="primary"])  { --color: var(--color-primary); }
         :host([color^="black"])  { --color: var(--black); }
         :host([color^="orange"]) { --color: var(--orange); }
         :host([color^="blue"])   { --color: var(--blue); }

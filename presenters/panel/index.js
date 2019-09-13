@@ -334,6 +334,9 @@ export class Panel extends LitElement {
     }
 
     open(){
+        
+        if( this.route && this.route.state.props.controller )
+            this.controller = this.route.state.props.controller
 
         // if no controller set, use the root controller
         if( !this.panelController ){

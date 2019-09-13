@@ -1,6 +1,7 @@
 import {html} from 'lit-element'
 import Menu from '../../menu'
 import titleize from '../../../util/titleize'
+import device from '../../../util/device'
 import Emitter from 'component-emitter'
 
 export default class Sorts extends Map {
@@ -91,7 +92,7 @@ export default class Sorts extends Map {
             className: 'b-list-sort-menu',
             multiple: true,
 			selected: Object.keys(oldVal)
-        }).popover(el)
+        }).popover(el, {adjustForMobile:true})
 
         if( selected === false ) return
 

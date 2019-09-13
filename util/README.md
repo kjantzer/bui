@@ -13,6 +13,51 @@ Converts underscores and dashes to spaces and then capitlizes each word
 let str = normalizeText('my_string') // My String
 ```
 
+## `Promise.series`
+Perform a set of promise tasks in series (waiting to complete until moving on to the next)
+```js
+import 'util/promise.series' // import once
+
+Promise.series([task1, task2, task3], task=>{
+    await task()
+})
+```
+
+## `device`
+Some simple device detection
+```js
+import device from 'util/device'
+
+device.is_ios
+device.is_android
+device.is_mobile
+```
+
+## `store`
+Simplified method for using [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage); automatically encodes and decodes JSON.
+```js
+store(key, val)
+
+// set
+store('my-setting', {some:'setting', another:'setting'})
+
+// get
+let mySetting = store('my-setting')
+
+// clear
+store('my-setting', null)
+```
+
+## `sum`
+Wrapper around `Array.reduce` for summing the values in an array.
+Will automatically be added to the prototype of Array
+```js
+import 'util/sum' // only needs to be done once
+
+[1,2].sum() // = 3
+[{val:1}, {val: 2}].sum(o=>o.val) // = 3
+```
+
 ## `wait`
 Promise based setTimeout
 ```js

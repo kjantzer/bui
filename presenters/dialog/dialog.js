@@ -1,4 +1,5 @@
 import {render, TemplateResult} from 'lit-html';
+import device from '../../util/device';
 const Panel = require('../panel').default
 const Popover = require('../popover').default
 const makeBtn = require('./make-btn')
@@ -33,11 +34,13 @@ export default class Dialog {
 		let [iconName, iconClass] = (opts.icon||'').split(' ')
 		
 		// FIXME: animation needs added
-		let icon = opts.icon ? `<b-icon name="${iconName}" class="${iconClass||''} animated speed-2 flipInY"></b-icon>` : ''
+		let icon = opts.icon ? `<b-icon name="${iconName}" class="${iconClass||''}"></b-icon>` : ''
 		let btns = opts.btns ? opts.btns.map(btn=>makeBtn(btn)).join("\n") : ''
 
 		if( opts.icon === 'spinner' )
 			icon = `<b-spinner></b-spinner>`
+		if( customElements.get(opts.icon) )
+			icon = `<${opts.icon}></${opts.icon}>`
 		
 		this.el.innerHTML = `<style>${styles}</style>
 							<div class="d-icon">${icon}</div>
@@ -180,6 +183,9 @@ export default class Dialog {
 		Presenters
 	*/
 	popover(target, opts={}){
+
+		if( opts.adjustForMobile && device.is_mobile )
+			return this.modal()
 		
 		if( target.currentTarget )
 			target = target.currentTarget

@@ -5,13 +5,15 @@ export class TimerElement extends LitElement {
 
     static get properties() { return {
         time: {type: Number},
-		ms: {type: Boolean}
+		ms: {type: Boolean},
+		short: {type: Boolean, reflect: true}
     }}
 
     constructor(){
 		super()
         this.time = 0
 		this.ms = false
+		this.short = false
 		this.running = this.hasAttribute('running') ? true : false
 	}
 
@@ -50,6 +52,16 @@ export class TimerElement extends LitElement {
 
 		.hours[value="0"] + span,
 		.hours[value="00"] + span {
+			display: none;
+		}
+
+		:host([short]) .hours[value="00"] ~ .minutes[value="0"],
+		:host([short]) .hours[value="00"] ~ .minutes[value="00"] {
+			display: none;
+		}
+
+		:host([short]) .hours[value="00"] ~ .minutes[value="0"] + span,
+		:host([short]) .hours[value="00"] ~ .minutes[value="00"] + span {
 			display: none;
 		}
 

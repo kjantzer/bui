@@ -31,6 +31,9 @@ LitElement.prototype.__listenerModelFor = function(key){
     else if( this.model )
         m = this.model.get(key)
 
+    if( !m && this[key] )
+        m = this[key]
+
     // only backbone models and collections supported
     if( !m || (!(m instanceof Model) && !(m instanceof Collection)) )
         return null

@@ -4,12 +4,6 @@
     * [Icons](./icons.md)
     * [Colors](./colors.md)
 
-* Extras
-    * [Util](/util/README.md)
-    * [Helpers](/helpers/README.md)
-    * [Models](/models/README.md)
-    * [Router](/router/README.md)
-
 * Presenters
     * [Dialog](/presenters/dialog/README.md)
     * [Form Control](/presenters/form-control/README.md)
@@ -18,3 +12,10 @@
     * [Panel](/presenters/panel/README.md)
     * [Popover](/presenters/popover/README.md)
     * [Tabs](/presenters/tabs/README.md)
+
+* Extras
+    * [Util](/util/README.md)
+    * [Helpers](/helpers/README.md)
+    * [Models](/models/README.md)
+    * [Router](/router/README.md)
+    * [Realtime](/realtime/README.md)

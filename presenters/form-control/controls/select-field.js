@@ -88,7 +88,7 @@ class SelectFieldElement extends HTMLElement {
 
         temp.innerHTML = `<style>${styles.cssText}</style>
 			<main>
-				<input type="input"/>
+				<input type="input" readonly="true"/>
 				<div id="value" data-placeholder="${placeholder}"></div>
 				${arrow}
 			</main>
@@ -103,7 +103,9 @@ class SelectFieldElement extends HTMLElement {
 		let options = this.$('#options')
 		this.options = []
 		
-		options.assignedElements&&options.assignedElements().map(el=>{
+		options.assignedNodes&&options.assignedNodes().map(el=>{
+
+			if( !el.tagName ) return // skip comments and empty text blocks
 			
 			if( el.tagName == 'HR' )
 				return this.options.push('divider')
@@ -319,7 +321,8 @@ class SelectFieldElement extends HTMLElement {
 			align: this.getAttribute('menu-align') || 'bottom',
 			maxHeight: this.getAttribute('menu-max-height') || 'auto',
 			maxWidth: this.getAttribute('menu-max-width') || 'none',
-			overflowBoundry: this.getAttribute('menu-overflow') ? 'window' : null
+			overflowBoundry: this.getAttribute('menu-overflow') ? 'window' : null,
+			adjustForMobile: true
 		}
 		
 		if( !menu || menu.length == 0 )
@@ -334,7 +337,8 @@ class SelectFieldElement extends HTMLElement {
 		this.openMenu = null
 		this.focused = false
 		
-		this._input.focus() // retain focus
+		if( !device.is_mobile )
+			this._input.focus() // retain focus
 		
 		if( val === false ) return
 		

@@ -4,6 +4,7 @@ import Popover from '../popover'
 import Panel from '../panel'
 import Fuse from 'fuse.js'
 import '../form-control/controls/check-box'
+import device from '../../util/device';
 
 export const DefaultOpts = {
 	selected: false,
@@ -356,9 +357,12 @@ export default class Menu {
 
 				let isSelected = this.toggleSelected(data)
 				
-				if( this.searchIsOn && this.hideUnselected )
+				if( this.searchIsOn && this.hideUnselected ){
 					this.render()
-				else if( isSelected ){
+					// update popover position
+					if( this.presenter && this.presenter._updatePosition )
+						this.presenter._updatePosition()
+				}else if( isSelected ){
 					target.classList.add('selected')
 					target.querySelector('check-box').checked = true
 				}else{
@@ -536,6 +540,9 @@ export default class Menu {
 	Presenters
 */
 	popover(target, opts={}){
+
+		if( opts.adjustForMobile && device.is_mobile )
+			return this.modal({closeBtn: true})
 		
 		this.render()
 		

@@ -54,16 +54,19 @@ main {
     margin: -0.3em -.5em -.5em 0;
     padding: .25em;
 	cursor: pointer;
+	position: relative;
+	z-index: 1000;
 }
 
 :host([type="date"]) .calendar {
 	display: inline-block;
 }
 
-.calendar:hover,
+/* .calendar:hover,
 .calendar.popover-open {
 	opacity: .7;
-}`
+} */
+`
 
 class TextFieldElement extends HTMLElement {
 	
@@ -248,7 +251,12 @@ class TextFieldElement extends HTMLElement {
 		this._datePicker.value = this.value
 		let picker = new Dialog({view: this._datePicker, btns: ['cancel', 'ok']})
 
-		if( await picker.popover(this.$('.calendar'), {align: 'left', overflowBoundry: 'window', maxHeight: false}) ){
+		if( await picker.popover(this.$('.calendar'), {
+			align: 'left', 
+			overflowBoundry: 'window',
+			maxHeight: false, 
+			adjustForMobile: true})
+		){
 			this._changeValue(picker.$('date-picker').value)
 		}
 	}

@@ -358,7 +358,8 @@ export class Filter {
             selected: this.value,
             multiple: this.isMulti
         }).popover(el, {
-            maxHeight: this.attrs.maxHeight || '60vh'
+            maxHeight: this.attrs.maxHeight || '60vh',
+            adjustForMobile: true
         })
 
         let oldVal = this.value

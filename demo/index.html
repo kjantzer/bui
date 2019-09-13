@@ -426,9 +426,11 @@
 
                 <section title="Uploader" style="position: relative;">
                     <h1>Uploader</h1>
-                    <b-uploader></b-uploader>
+                    <b-uploader multiple></b-uploader>
                     
-                    <div>Drag and drop a file here to upload</div>
+                    <div>Drag and drop a file here to upload<br><br></div>
+
+                    <b-btn onclick="this.previousElementSibling.previousElementSibling.chooseFile()">Or select a file</b-btn>
                     
                     <script>
                         let uploader = document.querySelector('b-uploader')
@@ -436,11 +438,26 @@
 
                             console.log('upload the file', uploader.files);
 
-                            if( await Dialog.confirm({title: 'Upload', msg: 'Upload selected file?'}).modal() )
+                            if( await Dialog.confirm({title: 'Upload?', msg: uploader.files.map(f=>f.name).join('<br>')}).modal() )
                                 console.log('yes, upload');
                                 // uploader.upload({url:'url-to-upload-to'})
                         })
                     </script>
+                </section>
+
+                <section title="Media">
+                    <h1>Media</h1>
+
+                    <h2>Audio</h2>
+                    <b-audio src="http://media.w3.org/2010/07/bunny/04-Death_Becomes_Fur.mp4"></b-audio>
+
+                    <br>
+                    <b-hr short></b-hr>
+                    <br>
+
+                    <h2>Embed</h2>
+                    <b-embed url="https://www.youtube.com/watch?v=sK1ODp0nDbM"></b-embed>
+
                 </section>
 
 
@@ -460,9 +477,6 @@
 
                     <br><h3>Timer</h3>
                     <b-timer running></b-timer>
-
-                    <br><br><h3>Embed</h3>
-                    <b-embed url="https://www.youtube.com/watch?v=sK1ODp0nDbM"></b-embed>
 
                     <br><h3>Carousel</h3>
                     <b-carousel>

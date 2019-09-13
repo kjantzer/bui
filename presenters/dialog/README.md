@@ -16,7 +16,7 @@ Dialog
 
 ```js
 opts = {
-	icon:'', // name of icon or "spinner" to show a spinner
+	icon:'', // name of icon, custom element, or "spinner" to show a spinner
 	title:'',
 	msg:'',
 	view: null,
