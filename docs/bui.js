@@ -33005,6 +33005,8 @@ var _litElement = require("lit-element");
 
 var _menu = _interopRequireDefault(require("../../menu"));
 
+var _device = _interopRequireDefault(require("../../../util/device"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /*
@@ -33316,7 +33318,7 @@ class SelectFieldElement extends HTMLElement {
     let val = await this.openMenu.popover(this.$('main'), popoverOpts);
     this.openMenu = null;
     this.focused = false;
-    if (!device.is_mobile) this._input.focus(); // retain focus
+    if (!_device.default.is_mobile) this._input.focus(); // retain focus
 
     if (val === false) return;
     val = this.multiple ? val : [val];
@@ -33338,7 +33340,7 @@ customElements.define('select-field', SelectFieldElement);
 var _default = customElements.get('select-field');
 
 exports.default = _default;
-},{"lit-element":"+bhx","../../menu":"0tCY"}],"GLLF":[function(require,module,exports) {
+},{"lit-element":"+bhx","../../menu":"0tCY","../../../util/device":"la8o"}],"GLLF":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

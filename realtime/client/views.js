@@ -60,6 +60,14 @@ export default class Views extends Map {
 
         this.emit('change', viewName, [], null)
     }
+
+    info(viewNamePattern){
+        return new Promise(resolve=>{
+            this.socket.emit('view:info', viewNamePattern, data=>{
+                resolve(data)
+            })
+        })
+    }
 }
 
 Emitter(Views.prototype)

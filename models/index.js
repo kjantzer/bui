@@ -10,11 +10,34 @@ export class Collection {
         this.models = []
     }
 
+    get model(){
+        return Object
+    }
+
     get length(){ return this.models.length }
+
+    first(){ return this.at(0) }
+    last(){ return this.at(this.length-1) }
+    at(i){ return this.models[i] }
+
+    get(id, key="id"){
+        return this.find(m=>{
+            if( key == 'id' )
+                return m.id == id
+            else
+                return (m.get?m.get(key):m[key]) == id
+        })
+    }
+
+    getOrCreate(id){
+        let m = this.get(id)
+        return m || new (this.model)({id: id})
+    }
 
     forEach(fn){ return this.models.forEach(fn) }
     map(fn){ return this.models.map(fn) }
     flatMap(fn){ return this.models.flatMap(fn) }
+    find(fn){ return this.models.find(fn) }
     filter(fn){ return this.models.filter(fn) }
     reduce(fn, start=0){ return this.models.reduce(fn, start) }
 
@@ -22,12 +45,15 @@ export class Collection {
         this.models.push(...args)
     }
 
-    async fetchSync(params={}){ return this.fetch(params) } // alias to match older Backbone change
+    async fetchSync(params={}){ return this.fetch(params) } // TEMP alias to match older Backbone change
 
     async fetch(params={}){
 
         let urlStr = this.url
         let base = location.protocol+'//'+location.hostname
+
+        if( !urlStr )
+            return console.error('Cannot fetch; `url` missing')
 
         if( urlStr.match(/^http/) )
             base = undefined
@@ -57,7 +83,7 @@ export class Collection {
 
     _parse(data, params={}){
         
-        let Model = this.model || Object
+        let Model = this.model
 
         let models = data.map(d=>{
             let m = new Model(d)

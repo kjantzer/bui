@@ -1,7 +1,7 @@
 import {LitElement, html, css, unsafeCSS} from 'lit-element'
 import Controller from './controller'
 import router from '../../router'
-import {Route} from '../../router'
+import Route from '../../router/route'
 import './controller'
 import './toolbar'
 import '../../elements/btn'
@@ -41,7 +41,7 @@ class RegisteredPanels {
         this.set(path, {view, opts})
 
         if( opts.route !== false )
-        this.get(path).route = new Route(path, (oldState, newState, dir)=>{
+        this.get(path).route = router.add(path, (oldState, newState, dir)=>{
             if( this._initiate(path) )
                 this.get(path).panel._routeChange(oldState, newState, dir)
         })
@@ -182,7 +182,7 @@ export class Panel extends LitElement {
             return console.warn('Panel routes can only be set once')
         }
 
-        this.__route = route instanceof Route ? route : new Route(route, this._routeChange.bind(this))
+        this.__route = route instanceof Route ? route : router.add(route, this._routeChange.bind(this))
     }
 
     _routeChange(oldState, newState, dir){

@@ -77,6 +77,12 @@ router.goTo('my-custom-element')
 // url will change to `/#/my-custom-element`
 ```
 
+#### Events
+`onOpen(state)`  
+If the custom element implements `onOpen`, the panel will call it with the
+route `state` object
+
+
 ### Animation
 There are some built in animations
 

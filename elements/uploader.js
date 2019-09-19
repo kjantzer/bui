@@ -241,18 +241,24 @@ export class UploaderElement extends LitElement {
             this._numUploading++
             this.requestUpdate()
 
-            let uploadResp = await fetch(url, {
-                method: method,
-                body: _formData
-            })
-            .then(resp=>resp.json())
-            .then(resp=>{
-                this._numUploaded++
-                this.requestUpdate()
-                return resp
-            })
+            try{
+                let uploadResp = await fetch(url, {
+                    method: method,
+                    body: _formData
+                })
+                .then(resp=>resp.json())
+                .then(resp=>{
+                    this._numUploaded++
+                    this.requestUpdate()
+                    return resp
+                })
 
-            resp.push(uploadResp)
+                resp.push(uploadResp)
+
+            }catch(e){
+                console.log(e);
+                // TODO: make error apparent to user
+            }
         }
 
         this._numUploading = 0

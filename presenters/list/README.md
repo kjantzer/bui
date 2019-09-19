@@ -174,6 +174,14 @@ const sorts = {
 }
 ```
 
+#### Sort Defaults
+```js
+const sorts = {
+    defaults: ['title'],
+    title(m){ return m.get('title') }
+}
+```
+
 ## Other Views
 
 ### Header

@@ -1,18 +1,10 @@
-import UrlPattern from 'url-pattern' // https://github.com/snd/url-pattern 
+import Route from './route'
 import HistoryStates from './history-states'
+import config, {normalizePath} from './config'
 
 const ROUTES = []
-const APP_TITLE = document.title
-const PATH_ROOT = location.pathname
-const PATH_PREFIX = '#/'
 
 export class Router {
-
-    // normalize path (always begin with `/#/`)
-    // TODO: allow for prefix to be set by developer
-    static normalizePath(path){
-        return path ? PATH_ROOT+PATH_PREFIX+path.replace(/^[#\/]+/, '') : path
-    }
 
     start(opts={}){
 
@@ -41,11 +33,11 @@ export class Router {
         if( path instanceof Route )
             path = path.state ? path.state.path : path.rootPath
         else
-            path = Router.normalizePath(path)
+            path = normalizePath(path)
 
         if( !path ){
-            path = PATH_ROOT // empty string doesn't work
-            data.title = data.title || APP_TITLE
+            path = config.PATH_ROOT // empty string doesn't work
+            data.title = data.title || config.APP_TITLE
         }
 
         history.pushState(data, null, path)
@@ -71,8 +63,10 @@ export class Router {
         })
     }
 
-    add(path, enter, exit){
-        new Route(path, enter, exit)
+    add(path, onChange){
+        let route = new Route(path, onChange)
+        ROUTES.push(route)
+        return route
     }
 
     get routes(){
@@ -83,66 +77,6 @@ export class Router {
         return ROUTES.map(route=>route.rootPath)
     }
 
-}
-
-export class Route {
-    
-    constructor(path, onChange){
-        
-        path = Router.normalizePath(path)
-        this.path = path
-        this.patt = new UrlPattern(path)
-
-        this.change = onChange
-
-        ROUTES.push(this)
-    }
-
-    get params(){
-        return this.state ? this.state.params : {}
-    }
-
-    get rootPath(){
-        return this.patt.ast[0].value
-    }
-
-    get isCurrent(){
-        return this.state&&this.state.isCurrent
-    }
-
-    update(props){
-        this.state&&this.state.update(props)
-    }
-
-    matches(state){
-
-        // array of states, get the last matched state in the list
-        if( Array.isArray(state) ){
-            let matchedState = null
-            for(let i in state){
-                if( this.matches(state[i]) )
-                    matchedState = state[i]
-            }
-            return matchedState
-        }
-
-        let params = state ? this.patt.match(state.path?state.path:state) : false
-        if( params ){
-            this.state = state
-            state.params = params
-            return state
-        }
-        return null
-    }
-
-    _change(oldState, newState, dir){
-
-        oldState = this.matches(oldState)
-        newState = this.matches(newState)
-
-        if( oldState || newState )
-            this.change(oldState, newState, dir)
-    }
 }
 
 // singleton

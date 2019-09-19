@@ -22,6 +22,13 @@ module.exports = class View {
 	}
 
 	sync(){
+        this.io.emit('view:sync', {
+            name: this.name,
+            data: this.clientData
+        })
+	}
+
+	get clientData(){
 		let syncData = []
 		this.clients.forEach((data, socket)=>{
 			syncData.push({
@@ -31,10 +38,6 @@ module.exports = class View {
 				data: data
 			})
 		})
-
-        this.io.emit('view:sync', {
-            name: this.name,
-            data: syncData
-        })
+		return syncData
 	}
 }

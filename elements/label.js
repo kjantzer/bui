@@ -2,6 +2,12 @@ import { LitElement, html, css } from "lit-element";
 
 export default class Label extends LitElement {
 
+    static get properties(){return {
+        'filled': {type: String, reflect: true},
+        'badge': {type: String, reflect: true},
+        'outline': {type: String, reflect: true}
+    }}
+
     static get styles(){return css`
         :host {
             display: inline-block;

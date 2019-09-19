@@ -31,4 +31,8 @@ view.on('change', clients=>{
 socketViews.close(view)
 // or
 socketViews.close('view-name')
+
+// get info about open views (exact match or regex)
+let info = await socketViews.info('view-name') // {view info}
+let info = await socketViews.info('^view-') // [{view info}]
 ```

@@ -10,6 +10,28 @@ class Views extends Map {
 			this.get(viewName).add(socket, data)
 		});
 
+		socket.on('view:info', (viewNamePattern, cb)=>{
+
+			let resp = []
+			let patt = new RegExp(viewNamePattern)
+
+			this.forEach((view, name)=>{
+				
+				if( name.match(patt) ){
+					resp.push({
+						name: name,
+						data: view.clientData
+					})
+				}
+
+			})
+
+			if( resp.length == 1 && resp[0].name === viewNamePattern )
+				resp = resp[0]
+
+			cb(resp)
+		});
+
 		socket.on('view:close', viewName=>{
 			this.get(viewName).remove(socket)
 		});

@@ -36,7 +36,31 @@ export default class Sorts extends Map {
             this.emit('change', val)
     }
 
+    get unset(){
+        return Object.keys(this.value).length == 0 
+    }
+
     use(sorts){
+
+        if( sorts.defaults ){
+            let defaultVals = {}
+
+            sorts.defaults.map(key=>{
+
+                if( !sorts[key] ) return
+
+                defaultVals[key] = {
+                    desc: sorts[key].desc || false
+                }
+            })
+
+            if( this.unset ){
+                this.__value = defaultVals
+                localStorage.setItem(this._storeKey, JSON.stringify(defaultVals))
+            }
+
+            delete sorts.defaults
+        }
 
         if( sorts == this.__lastSorts )
             return
