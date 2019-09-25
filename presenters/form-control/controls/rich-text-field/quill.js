@@ -7,7 +7,7 @@ import Italic from 'quill/formats/italic';
 import List, { ListItem } from 'quill/formats/list';
 
 // custom modules
-// import './clipboard'
+import './clipboard'
 import './divider'
 import {lineBreakMatcher, keyboardLinebreak} from './break'
 

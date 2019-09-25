@@ -109,10 +109,10 @@ function cleanNode(parent, node){
     else if( node.nodeName == "#text" ){
 
         // if the text node is just spaces, remove them
-        node.textContent = node.textContent.replace(/^\s+$/g, '')
+        // node.textContent = node.textContent.replace(/^\s+$/g, '')
 
         // swap multiple spaces in a row for just one space
-        node.textContent = node.textContent.replace(/\s{2,}/g, '')
+        node.textContent = node.textContent.replace(/\s{2,}/g, ' ')
 
         // optionally clean more data for platforms that need it
         // TEST

@@ -31,6 +31,7 @@ class BUIClipboard extends Clipboard {
     }
 }
 
+Quill.debug('error')
 Quill.register({
     'modules/clipboard': BUIClipboard
 })
