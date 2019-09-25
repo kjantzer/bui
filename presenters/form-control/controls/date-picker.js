@@ -80,6 +80,10 @@ nav > svg:hover {
     opacity: 1;
 }
 
+svg > * {
+	pointer-events: none;
+}
+
 section header,
 section .days {
     display: grid;
