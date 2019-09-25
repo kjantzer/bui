@@ -181,7 +181,7 @@ slot[name="help"] {
 	--focusBgd: transparent;
 	padding-top: .25em;
 	--padY: .6em;
-	--borderColor: currentColor;
+	--borderColor: rgba(0,0,0,.2);
 }
 
 :host([material]) main {

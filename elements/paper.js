@@ -28,6 +28,10 @@ export class PaperElement extends LitElement {
             --bgdAccent: #fff;
         }
 
+        :host([hidden]) {
+            display: none;
+        }
+
         :host([overshadow]) {
             box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
         }

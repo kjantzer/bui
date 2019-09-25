@@ -132,8 +132,9 @@ Creates a select field that uses `Menu` and `Popover` to display options.
 #### Attributes
 
 - `multiple`
-- `chip` - show selected values as "chips"
+- `placeholder`
 - `show-empty` - by default, the selected empty value will NOT be shown
+- `chip` - show selected values as "chips"
 - `menu-max-height`
 - `menu-align`
 
@@ -259,6 +260,24 @@ You can also choose to save changes in local storage instead of model by using t
 - `patchsave` - use with `autosave`; changed values will be synced with `patch:true`
 - `store` - a key to save form data in local storage
 - `no-grid-area` - disable auto grid-area names
+
+## Extras
+
+### `<date-picker>`
+Renders a date picker view
+
+```js
+let picker = document.createElement('date-picker')
+picker.addEventListener('change', e=>{
+	console.log(picker.value)
+})
+```
+
+#### Attributes
+- `value`
+- `format` - [moment.js](https://momentjs.com/docs/#/displaying/format/) format (default `MM/DD/YYYY`)
+- `year-start` - defaults to 1900
+- `year-end` - defaults to 2099
 
 
 # Notes

@@ -303,9 +303,13 @@ class TextFieldElement extends HTMLElement {
 			this.value = this.value // reset the value
 			this.blur()
 		}
+
+		let okKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Backspace', 'Delete', 'Tab']
+		let metaKey = (e.metaKey || e.ctrlKey)
+		let okPress = okKeys.includes(e.key) || metaKey
 			
 		let max = this.getAttribute('max')
-		if( max && this._editor.innerText.length >= max )
+		if( max && this._editor.innerText.length >= max && !okPress )
 			stop = true
 
 		let delay = this.getAttribute('change-delay')

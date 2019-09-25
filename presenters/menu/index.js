@@ -351,7 +351,7 @@ export default class Menu {
 
 			if( this.opts.multiple ){
 
-				if( this.opts.multiple !== 'always' && (data.clearsAll || !didClickCheckbox) ){
+				if( data.clearsAll || (this.opts.multiple !== 'always' && !didClickCheckbox) ){
 					return this.resolve([data])
 				}
 

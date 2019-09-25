@@ -1,26 +1,33 @@
 import { LitElement, html, css } from 'lit-element'
 import '../../elements/empty-state'
 
-customElements.define('b-infinite-list', class extends HTMLElement {
+customElements.define('b-infinite-list', class extends LitElement {
 
-    static get styles(){return css`
-        :host {
-            display: block
-        }
-    `}
+    createRenderRoot(){ return this }
+
+    // static get styles(){return css`
+    //     :host {
+    //         display: block
+    //     }
+    // `}
     
     constructor(){
         super()
         this.pageAt = 0
         this.threshold = 400
     }
+
+    firstUpdated(){
+        this.getContent()
+    }
     
     connectedCallback(){
+        super.connectedCallback()
         this.addEventListener('scroll', this.onScroll, true)
-        this.getContent()
     }
 
     disconnectedCallback(){
+        super.disconnectedCallback()
         this.removeEventListener('scroll', this.onScroll, true)
     }
 
