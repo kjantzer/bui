@@ -253,7 +253,7 @@ uploader.chooseFile()
 
 #### Events
 - `change` - when files are selected (via selection or drop)
-- `upload` - when all selected files finish uploading
+- `upload-done` - when all selected files finish uploading
 
 #### Styles
 - `--hoverBgd`

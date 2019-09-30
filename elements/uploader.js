@@ -266,7 +266,7 @@ export class UploaderElement extends LitElement {
         this.files = []
         this.uploading = false
 
-        this.dispatchEvent(new CustomEvent('upload', {
+        this.dispatchEvent(new CustomEvent('upload-done', {
             bubbles: true,
             composed: true,
             detail: resp
