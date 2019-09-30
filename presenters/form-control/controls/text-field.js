@@ -2,6 +2,7 @@ import {css} from 'lit-element'
 import moment from 'moment'
 import Dialog from '../../dialog'
 import './date-picker'
+import setValueAttrs from '../util/setValueAttrs'
 
 const styles = css`
 :host {
@@ -22,11 +23,11 @@ main {
 	display: flex;
 }
 
-:host(:not([multiline])) .editor {
+:host([input]) .editor {
 	display: none;
 }
 
-:host([multiline]) .input {
+:host(:not([input])) .input {
 	display: none;
 }
 
@@ -42,10 +43,6 @@ main {
 	border: none;
 	background: transparent;
 	/* background: yellow; */
-}
-
-input.input:-webkit-autofill {
-	background-color: red !important;
 }
 
 .editor {
@@ -97,6 +94,23 @@ input.input:-webkit-autofill {
 .input::-webkit-inner-spin-button { 
     display: none;
 }
+
+input:-webkit-autofill {
+	font-size: inherit;
+	font-family: inherit;
+	background: red;
+}
+
+/* remove autofill blue/yellow background */
+input:-webkit-autofill {
+    -webkit-box-shadow:0 0 0 50px var(--bgd) inset;
+    /* -webkit-text-fill-color: #333; */
+}
+
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 50px var(--bgd) inset;
+    /* -webkit-text-fill-color: #333; */
+} 
 `
 
 class TextFieldElement extends HTMLElement {
@@ -115,9 +129,8 @@ class TextFieldElement extends HTMLElement {
 				<div class="editor" contenteditable="true" data-placeholder="${placeholder}"></div>
 				
 				<input class="input" placeholder="${placeholder}" 
-						type="${this.type}" 
-						name="${this.name}"
-						format="${this.format}"
+						type="${this.input||'text'}" 
+						name="${this.name||this.input}"
 						autocomplete="${this.autocomplete}">
 						
 				<b-icon name="calendar-3" class="calendar"></b-icon>
@@ -125,6 +138,9 @@ class TextFieldElement extends HTMLElement {
 			<slot id="value"></slot>`
 			
         this.shadowRoot.appendChild(temp.content.cloneNode(true));
+
+		if( this.hasAttribute('multiline') || this.hasAttribute('html') )
+			this.removeAttribute('input')
 		
 		let value = this.$('#value')
 		this._val = value.assignedNodes().map(el=>el.textContent.trim()).join(' ')
@@ -178,6 +194,7 @@ class TextFieldElement extends HTMLElement {
 			this._editor.dataset.placeholder = newValue
 	}
 	
+	get input(){ return this.getAttribute('input') }
 	get type(){ return this.getAttribute('type') }
 	get name(){ return this.getAttribute('name') }
 	get autocomplete(){ return this.getAttribute('autocomplete') }
@@ -244,10 +261,10 @@ class TextFieldElement extends HTMLElement {
 		if( this.hasAttribute('html') )
 			return this._editor.innerHTML
 		
-		if( this.isMultiline )
-			return this._editor.innerText || this._editor.innerHTML
-		else
+		if( this.input )
 			return this._input.value
+		else
+			return this._editor.innerText || this._editor.innerHTML
 	}
 	
 	set isInvalid(invalid){
@@ -268,21 +285,7 @@ class TextFieldElement extends HTMLElement {
 	}
 	
 	_setClassNames(){
-		
-		if( !this._val || this._val === '0' )
-			this.setAttribute('falsy', true)
-		else
-			this.removeAttribute('falsy')
-			
-			if( !this._val )
-			this.setAttribute('no-value', true)
-		else
-			this.removeAttribute('no-value')
-			
-		if( !this._val && !this.getAttribute('placeholder') )
-			this.setAttribute('empty', true)
-		else
-			this.removeAttribute('empty')
+		setValueAttrs(this, this._val)
 	}
 	
 	_onClick(e){
@@ -314,10 +317,6 @@ class TextFieldElement extends HTMLElement {
 		}
 	}
 	
-	get isMultiline(){
-		return this.hasAttribute('multiline')
-	}
-	
 	_onPaste(e){
 		e.preventDefault();
 		let val = e.clipboardData.getData('text')
@@ -325,7 +324,7 @@ class TextFieldElement extends HTMLElement {
 	}
 	
 	get editorEl(){
-		return this.isMultiline ? this._editor : this._input
+		return this.input ? this._input : this._editor
 	}
 	
 	select(range='all'){
@@ -370,7 +369,7 @@ class TextFieldElement extends HTMLElement {
 		let okPress = okKeys.includes(e.key) || metaKey
 			
 		let max = this.getAttribute('max')
-		let len = this.isMultiline ? this._editor.innerText.length : this._input.value.length
+		let len = this.input ? this._input.value.length : this._editor.innerText.length
 		if( max && len >= max && !okPress )
 			stop = true
 
@@ -393,10 +392,10 @@ class TextFieldElement extends HTMLElement {
 	// }
 	
 	focus(){
-		if( this.isMultiline )
-			this.select()
-		else
+		if( this.input )
 			this._input.focus()
+		else
+			this.select()
 	}
 	
 	validate(val){

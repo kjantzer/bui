@@ -93,6 +93,20 @@ Creates an input-like control. Add `multiline` attribute to make it perform like
 - `type="date"`
 - `reset-invalid`
 - `placeholder`
+- `input`
+- `name` - useful for autofill (must use `input`)
+- `autocomplete` (must use `input`)
+
+#### Input type
+`text-field` defaults to using `contenteditable` which allows the field to grow and shrink
+as the user types. However, doing so removes support for autofill and input types such
+as `password`. For this purpose the `input` attribute can be applied.
+
+```html
+<text-field input="password"></text-field>
+<text-field input="email"></text-field>
+<text-field input="tel" name="phone"></text-field>
+```
 
 ## `<rich-text-field>`
 

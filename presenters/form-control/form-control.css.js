@@ -171,6 +171,31 @@ slot[name="help"] {
 	display: block;
 }
 
+/* some default styles for native input controls */ 
+::slotted(input) {
+	font-family: inherit;
+	font-size: inherit;
+	border: none;
+	background: none;
+	padding: 0;
+}
+
+/* remove autofill blue/yellow background */
+::slotted(input:-webkit-autofill) {
+    -webkit-box-shadow:0 0 0 50px var(--bgd) inset;
+}
+
+::slotted(input:-webkit-autofill:focus) {
+    -webkit-box-shadow: 0 0 0 50px var(--bgd) inset;
+}
+
+:host(:not([material])) {
+	margin-top: 1em;
+}
+
+:host(:not([material])) .label {
+	top: -1em;
+}
 
 
 /*
@@ -294,7 +319,7 @@ slot[name="help"] {
 	Material Outline
 */
 :host([material="outline"]) {
-	margin: 0 .5em .5em 0;
+	/* margin: 0 .5em .5em 0; */
 }
 
 :host([material="outline"]) main:before {
@@ -372,7 +397,7 @@ slot[name="help"] {
 	--padY: .75em;
 	--padX: .75em;
 	--placeholderColor: rgba(0,0,0,.3);
-	margin: 0 .5em .5em 0;
+	margin: 0 0 .5em 0;
 }
 
 :host([material="filled"]) main {
@@ -401,6 +426,12 @@ slot[name="help"] {
 :host([material="filled"]) .label {
 	padding: var(--padY) var(--padX);
 	border-radius: 3px;
+}
+
+:host([material="filled"]) slot[name="control"]::slotted(input) {
+	padding: 0;
+    margin: var(--padY) var(--padX);
+    border-radius: 0;
 }
 
 :host([material="filled"]) .label {

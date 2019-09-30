@@ -3,7 +3,7 @@
 */
 
 import styles from './form-control.css.js'
-
+import setValueAttrs from './util/setValueAttrs'
 
 class FormControlElement extends HTMLElement {
 	
@@ -51,25 +51,40 @@ class FormControlElement extends HTMLElement {
 		this._val = value.assignedNodes().map(el=>el.textContent.trim()).join(' ')
 		this._val = this._val.replace(/^\n|\n$/g, '').trim()
 		
-		this.control = this.querySelector('.control, text-field, rich-text-field, select-field, check-box, radio-group')
+		this.control = this.querySelector('[slot="control"], .control, text-field, rich-text-field, select-field, check-box, radio-group')
 		
 		if( this.control ){
 			
 			this.control.slot = 'control'
-			
-			this.mutationObserver = new MutationObserver(mutations=>{
-				mutations.forEach(m=>{
-					
-					// mirror these attributes from the control onto the form-control
-					if( ['invalid', 'empty', 'no-value', 'falsy', 'focused'].includes(m.attributeName) ){
-						if( this.control.hasAttribute(m.attributeName) )
-							this.setAttribute(m.attributeName, true)
-						else
-							this.removeAttribute(m.attributeName)
-					}
+
+			// if native input, we need to do things a little differently
+			if( this.control.tagName == 'INPUT' ){
+				
+				setValueAttrs(this, this.control.value)
+
+				this.control.addEventListener('input', e=>{
+					setValueAttrs(this, e.target.value)
 				})
-			});
-			this.mutationObserver.observe(this.control, { attributes: true, childList: false, subtree: false });
+
+				this.control.addEventListener('blur', e=>{
+					setValueAttrs(this, e.target.value)
+				})
+
+			}else{
+				this.mutationObserver = new MutationObserver(mutations=>{
+					mutations.forEach(m=>{
+						
+						// mirror these attributes from the control onto the form-control
+						if( ['invalid', 'empty', 'no-value', 'falsy', 'focused'].includes(m.attributeName) ){
+							if( this.control.hasAttribute(m.attributeName) )
+								this.setAttribute(m.attributeName, true)
+							else
+								this.removeAttribute(m.attributeName)
+						}
+					})
+				});
+				this.mutationObserver.observe(this.control, { attributes: true, childList: false, subtree: false });
+			}
 		}
 		
 		this.addEventListener('click', this._onClick.bind(this), true)
