@@ -22,6 +22,32 @@ main {
 	display: flex;
 }
 
+:host(:not([multiline])) .editor {
+	display: none;
+}
+
+:host([multiline]) .input {
+	display: none;
+}
+
+.input {
+	outline: none;
+	width: 100%;
+	display: inline-block;
+	min-height: 1em;
+	font-size: inherit;
+	font-family: inherit;
+	line-height: 1.2em;
+	margin: -.1em 0;
+	border: none;
+	background: transparent;
+	/* background: yellow; */
+}
+
+input.input:-webkit-autofill {
+	background-color: red !important;
+}
+
 .editor {
 	outline: none;
 	width: 100%;
@@ -66,6 +92,11 @@ main {
 .calendar.popover-open {
 	opacity: .7;
 } */
+
+.input::-webkit-calendar-picker-indicator,
+.input::-webkit-inner-spin-button { 
+    display: none;
+}
 `
 
 class TextFieldElement extends HTMLElement {
@@ -80,7 +111,15 @@ class TextFieldElement extends HTMLElement {
 		
         temp.innerHTML = `<style>${styles.cssText}</style>
 			<main>
+				
 				<div class="editor" contenteditable="true" data-placeholder="${placeholder}"></div>
+				
+				<input class="input" placeholder="${placeholder}" 
+						type="${this.type}" 
+						name="${this.name}"
+						format="${this.format}"
+						autocomplete="${this.autocomplete}">
+						
 				<b-icon name="calendar-3" class="calendar"></b-icon>
 			</main>
 			<slot id="value"></slot>`
@@ -92,11 +131,12 @@ class TextFieldElement extends HTMLElement {
 		this._val = this._val.replace(/^\n|\n$/g, '').trim()
 		
 		this._editor = this.$('.editor')
+		this._input = this.$('.input')
 
 		if( this.type == 'date' ){
 			this._datePicker = document.createElement('date-picker')
 			this._datePicker.value = this.value
-			this._datePicker.format = this.getAttribute('format') || 'MM/DD/YYYY'
+			this._datePicker.format = this.format
 
 			if( !this._datePicker.isValid ){
 				let date = moment(this._val)
@@ -105,12 +145,15 @@ class TextFieldElement extends HTMLElement {
 		}
 		
 		this._editor.innerHTML = this._val
+		this._input.value = this._val
 		this.innerText = ''
 		
 		this._editor.addEventListener('paste', this._onPaste.bind(this), true)
 		this._editor.addEventListener('keydown', this._onKeypress.bind(this), true)
-		this._editor.addEventListener('focus', this._onFocus.bind(this))
+		this._input.addEventListener('keydown', this._onKeypress.bind(this), true)
+		// this._editor.addEventListener('focus', this._onFocus.bind(this))
 		this._editor.addEventListener('blur', this._onBlur.bind(this))
+		this._input.addEventListener('blur', this._onBlur.bind(this))
 
 		this.shadowRoot.addEventListener('click', this._onClick.bind(this))
 		this.addEventListener('click', this._onClick.bind(this))
@@ -136,6 +179,9 @@ class TextFieldElement extends HTMLElement {
 	}
 	
 	get type(){ return this.getAttribute('type') }
+	get name(){ return this.getAttribute('name') }
+	get autocomplete(){ return this.getAttribute('autocomplete') }
+	get format(){ return this.getAttribute('format') || 'MM/DD/YYYY' }
 
 	get disabled(){ return this.hasAttribute('disabled') }
 	set disabled(val=true){val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled')}
@@ -180,6 +226,9 @@ class TextFieldElement extends HTMLElement {
 
 			if( this._editor.innerHTML != val )
 				this._editor.innerHTML = val
+				
+			if( this._input.value != val )
+				this._input.value = val
 		}
 		
 		this._setClassNames()
@@ -194,8 +243,11 @@ class TextFieldElement extends HTMLElement {
 	get currentValue(){
 		if( this.hasAttribute('html') )
 			return this._editor.innerHTML
-			
-		return this._editor.innerText || this._editor.innerHTML
+		
+		if( this.isMultiline )
+			return this._editor.innerText || this._editor.innerHTML
+		else
+			return this._input.value
 	}
 	
 	set isInvalid(invalid){
@@ -212,6 +264,7 @@ class TextFieldElement extends HTMLElement {
 	
 	get isFocused(){
 		return this.shadowRoot.activeElement == this._editor
+			|| this.shadowRoot.activeElement == this._input
 	}
 	
 	_setClassNames(){
@@ -261,15 +314,23 @@ class TextFieldElement extends HTMLElement {
 		}
 	}
 	
+	get isMultiline(){
+		return this.hasAttribute('multiline')
+	}
+	
 	_onPaste(e){
 		e.preventDefault();
 		let val = e.clipboardData.getData('text')
 		document.execCommand('inserttext', false, val);
 	}
 	
+	get editorEl(){
+		return this.isMultiline ? this._editor : this._input
+	}
+	
 	select(range='all'){
 
-		let el = this._editor,
+		let el = this.editorEl,
 		    s = window.getSelection(),
 		    r = document.createRange();
 		
@@ -309,7 +370,8 @@ class TextFieldElement extends HTMLElement {
 		let okPress = okKeys.includes(e.key) || metaKey
 			
 		let max = this.getAttribute('max')
-		if( max && this._editor.innerText.length >= max && !okPress )
+		let len = this.isMultiline ? this._editor.innerText.length : this._input.value.length
+		if( max && len >= max && !okPress )
 			stop = true
 
 		let delay = this.getAttribute('change-delay')
@@ -326,12 +388,15 @@ class TextFieldElement extends HTMLElement {
 		}
 	}
 	
-	_onFocus(){
-		
-	}
+	// _onFocus(){
+	// 
+	// }
 	
 	focus(){
-		this.select()
+		if( this.isMultiline )
+			this.select()
+		else
+			this._input.focus()
 	}
 	
 	validate(val){
