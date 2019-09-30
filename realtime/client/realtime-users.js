@@ -23,7 +23,7 @@ customElements.define('b-realtime-users', class extends LitElement{
         }
 
         if( !render )
-            render = html`<b-avatar initials="?"></b-avatar>`
+            render = html`<b-avatar class="avatar" initials="?"></b-avatar>`
 
         return render
     }
@@ -54,15 +54,13 @@ customElements.define('b-realtime-users', class extends LitElement{
             margin: 0 0 0 .25em;
         }
 
-        b-avatar,
-        b-user-avatar {
+        .avatar {
             border-radius: var(--theSize);
             --size: var(--theSize);
             /* box-shadow: rgba(0,0,0,.2) 0 0 2px */
         }
 
-        b-avatar:not(:first-child),
-        b-user-avatar:not(:first-child) {
+        .avatar:not(:first-child) {
             margin-left: calc(var(--size) / -1.7);
         }
     `}
@@ -122,7 +120,7 @@ customElements.define('b-realtime-users', class extends LitElement{
             
             ${this.users.map((m,i)=>!this.showUser(i)?'':this.renderUser(m))}
             ${this.users.length>this.max?html`
-                <b-avatar initials="+${this.users.length-this.max+1}" color="#555" bgd="#ddd"></b-avatar>
+                <b-avatar class="avatar" initials="+${this.users.length-this.max+1}" color="#555" bgd="#ddd"></b-avatar>
             `:''}
 
         </main>

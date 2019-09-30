@@ -12,6 +12,8 @@ export const DefaultOpts = {
 	closeOnHide: true,
 	maxHeight: 'auto',
 	maxHeightThreshold: 400,
+	flip: true,
+	overflowBoundry: 'scrollParent',
 	onClose: ()=>{},
 	onKeydown: e=>{}
 }
@@ -111,7 +113,7 @@ export default class Popover {
 			onCreate: this._onPositionCreate.bind(this),
 			onUpdate: this._onPositionUpdate.bind(this),
 			modifiers: {
-				// flip: {enabled: !this.isNested},
+				flip: {enabled: opts.flip},
 				// hide: {enabled: !this.isNested},
 				preventOverflow: {
 					enabled: opts.preventDefault !== undefined ? opts.preventDefault : true, // FIXME: confusing naming and not sure it works

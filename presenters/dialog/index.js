@@ -3,6 +3,15 @@ const Dialog = require('./dialog').default;
 
 module.exports = Dialog
 
+Dialog.waiting = function(opts={}){
+	return new Dialog(Object.assign({
+		icon: 'spinner',
+		title: 'Processing...',
+		msg: '',
+		btns: false
+  	}, opts))
+}
+
 Dialog.confirm = function(opts={}){
 	return new Dialog(Object.assign({
 		// icon: 'trash text-red',
@@ -21,6 +30,7 @@ Dialog.confirmDelete = function(opts={}){
 
 Dialog.alert = function(opts={}){
 	return new Dialog(Object.assign({
+		icon: 'info-circled',
 		btns: ['dismiss']
   	}, opts))
 }

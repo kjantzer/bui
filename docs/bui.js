@@ -4672,15 +4672,20 @@ class UploaderElement extends _litElement.LitElement {
 
       this._numUploading++;
       this.requestUpdate();
-      let uploadResp = await fetch(url, {
-        method: method,
-        body: _formData
-      }).then(resp => resp.json()).then(resp => {
-        this._numUploaded++;
-        this.requestUpdate();
-        return resp;
-      });
-      resp.push(uploadResp);
+
+      try {
+        let uploadResp = await fetch(url, {
+          method: method,
+          body: _formData
+        }).then(resp => resp.json()).then(resp => {
+          this._numUploaded++;
+          this.requestUpdate();
+          return resp;
+        });
+        resp.push(uploadResp);
+      } catch (e) {
+        console.log(e); // TODO: make error apparent to user
+      }
     }
 
     this._numUploading = 0;
@@ -4743,6 +4748,10 @@ class PaperElement extends _litElement.LitElement {
             position: relative;
             --bgd: #fff;
             --bgdAccent: #fff;
+        }
+
+        :host([hidden]) {
+            display: none;
         }
 
         :host([overshadow]) {
@@ -9829,6 +9838,23 @@ exports.default = void 0;
 var _litElement = require("lit-element");
 
 class Label extends _litElement.LitElement {
+  static get properties() {
+    return {
+      'filled': {
+        type: String,
+        reflect: true
+      },
+      'badge': {
+        type: String,
+        reflect: true
+      },
+      'outline': {
+        type: String,
+        reflect: true
+      }
+    };
+  }
+
   static get styles() {
     return _litElement.css`
         :host {
@@ -14616,7 +14642,101 @@ var slice = [].slice;
   UrlPattern.stringify = stringify;
   return UrlPattern;
 });
-},{}],"phBv":[function(require,module,exports) {
+},{}],"TSI8":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = exports.normalizePath = void 0;
+const APP_TITLE = document.title;
+const PATH_ROOT = location.pathname;
+const PATH_PREFIX = '#/'; // normalize path (always begin with `/#/`)
+// TODO: allow for prefix to be set by developer
+
+const normalizePath = path => {
+  return path ? PATH_ROOT + PATH_PREFIX + path.replace(/^[#\/]+/, '') : path;
+};
+
+exports.normalizePath = normalizePath;
+var _default = {
+  APP_TITLE,
+  PATH_ROOT,
+  PATH_PREFIX
+};
+exports.default = _default;
+},{}],"WZSr":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _urlPattern = _interopRequireDefault(require("url-pattern"));
+
+var _config = require("./config");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// https://github.com/snd/url-pattern 
+class Route {
+  constructor(path, onChange) {
+    path = (0, _config.normalizePath)(path);
+    this.path = path;
+    this.patt = new _urlPattern.default(path);
+    this.onChange = onChange;
+  }
+
+  get params() {
+    return this.state ? this.state.params : {};
+  }
+
+  get rootPath() {
+    return this.patt.ast[0].value;
+  }
+
+  get isCurrent() {
+    return this.state && this.state.isCurrent;
+  }
+
+  update(props) {
+    this.state && this.state.update(props);
+  }
+
+  matches(state) {
+    // array of states, get the last matched state in the list
+    if (Array.isArray(state)) {
+      let matchedState = null;
+
+      for (let i in state) {
+        if (this.matches(state[i])) matchedState = state[i];
+      }
+
+      return matchedState;
+    }
+
+    let params = state ? this.patt.match(state.path ? state.path : state) : false;
+
+    if (params) {
+      this.state = state;
+      state.params = params;
+      return state;
+    }
+
+    return null;
+  }
+
+  _change(oldState, newState, dir) {
+    oldState = this.matches(oldState);
+    newState = this.matches(newState);
+    if (oldState || newState) this.onChange(oldState, newState, dir);
+  }
+
+}
+
+exports.default = Route;
+},{"url-pattern":"AZEX","./config":"TSI8"}],"phBv":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14760,27 +14880,21 @@ exports.default = HistoryStates;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.Route = exports.Router = void 0;
+exports.default = exports.Router = void 0;
 
-var _urlPattern = _interopRequireDefault(require("url-pattern"));
+var _route = _interopRequireDefault(require("./route"));
 
 var _historyStates = _interopRequireDefault(require("./history-states"));
 
+var _config = _interopRequireWildcard(require("./config"));
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// https://github.com/snd/url-pattern 
 const ROUTES = [];
-const APP_TITLE = document.title;
-const PATH_ROOT = location.pathname;
-const PATH_PREFIX = '#/';
 
 class Router {
-  // normalize path (always begin with `/#/`)
-  // TODO: allow for prefix to be set by developer
-  static normalizePath(path) {
-    return path ? PATH_ROOT + PATH_PREFIX + path.replace(/^[#\/]+/, '') : path;
-  }
-
   start(opts = {}) {
     opts = Object.assign({
       requireState: false
@@ -14800,12 +14914,12 @@ class Router {
 
 
   push(path, data = {}) {
-    if (path instanceof Route) path = path.state ? path.state.path : path.rootPath;else path = Router.normalizePath(path);
+    if (path instanceof _route.default) path = path.state ? path.state.path : path.rootPath;else path = (0, _config.normalizePath)(path);
 
     if (!path) {
-      path = PATH_ROOT; // empty string doesn't work
+      path = _config.default.PATH_ROOT; // empty string doesn't work
 
-      data.title = data.title || APP_TITLE;
+      data.title = data.title || _config.default.APP_TITLE;
     }
 
     history.pushState(data, null, path);
@@ -14827,8 +14941,10 @@ class Router {
     });
   }
 
-  add(path, enter, exit) {
-    new Route(path, enter, exit);
+  add(path, onChange) {
+    let route = new _route.default(path, onChange);
+    ROUTES.push(route);
+    return route;
   }
 
   get routes() {
@@ -14839,73 +14955,15 @@ class Router {
     return ROUTES.map(route => route.rootPath);
   }
 
-}
-
-exports.Router = Router;
-
-class Route {
-  constructor(path, onChange) {
-    path = Router.normalizePath(path);
-    this.path = path;
-    this.patt = new _urlPattern.default(path);
-    this.change = onChange;
-    ROUTES.push(this);
-  }
-
-  get params() {
-    return this.state ? this.state.params : {};
-  }
-
-  get rootPath() {
-    return this.patt.ast[0].value;
-  }
-
-  get isCurrent() {
-    return this.state && this.state.isCurrent;
-  }
-
-  update(props) {
-    this.state && this.state.update(props);
-  }
-
-  matches(state) {
-    // array of states, get the last matched state in the list
-    if (Array.isArray(state)) {
-      let matchedState = null;
-
-      for (let i in state) {
-        if (this.matches(state[i])) matchedState = state[i];
-      }
-
-      return matchedState;
-    }
-
-    let params = state ? this.patt.match(state.path ? state.path : state) : false;
-
-    if (params) {
-      this.state = state;
-      state.params = params;
-      return state;
-    }
-
-    return null;
-  }
-
-  _change(oldState, newState, dir) {
-    oldState = this.matches(oldState);
-    newState = this.matches(newState);
-    if (oldState || newState) this.change(oldState, newState, dir);
-  }
-
 } // singleton
 
 
-exports.Route = Route;
+exports.Router = Router;
 
 var _default = new Router();
 
 exports.default = _default;
-},{"url-pattern":"AZEX","./history-states":"OLbi"}],"R9Fe":[function(require,module,exports) {
+},{"./route":"WZSr","./history-states":"OLbi","./config":"TSI8"}],"R9Fe":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15242,13 +15300,13 @@ var _litElement = require("lit-element");
 
 var _controller = _interopRequireDefault(require("./controller"));
 
-var _router = _interopRequireWildcard(require("../../router"));
+var _router = _interopRequireDefault(require("../../router"));
+
+var _route = _interopRequireDefault(require("../../router/route"));
 
 require("./toolbar");
 
 require("../../elements/btn");
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15289,7 +15347,7 @@ class RegisteredPanels {
       view,
       opts
     });
-    if (opts.route !== false) this.get(path).route = new _router.Route(path, (oldState, newState, dir) => {
+    if (opts.route !== false) this.get(path).route = _router.default.add(path, (oldState, newState, dir) => {
       if (this._initiate(path)) this.get(path).panel._routeChange(oldState, newState, dir);
     });
   }
@@ -15430,7 +15488,7 @@ class Panel extends _litElement.LitElement {
       return console.warn('Panel routes can only be set once');
     }
 
-    this.__route = route instanceof _router.Route ? route : new _router.Route(route, this._routeChange.bind(this));
+    this.__route = route instanceof _route.default ? route : _router.default.add(route, this._routeChange.bind(this));
   }
 
   _routeChange(oldState, newState, dir) {
@@ -15858,7 +15916,7 @@ customElements.define('b-panel', Panel);
 var _default = customElements.get('b-panel');
 
 exports.default = _default;
-},{"lit-element":"+bhx","./controller":"R9Fe","../../router":"38Qe","./toolbar":"ZNP1","../../elements/btn":"DABr"}],"Wp9p":[function(require,module,exports) {
+},{"lit-element":"+bhx","./controller":"R9Fe","../../router":"38Qe","../../router/route":"WZSr","./toolbar":"ZNP1","../../elements/btn":"DABr"}],"Wp9p":[function(require,module,exports) {
 var define;
 /*!
  * Fuse.js v3.4.5 - Lightweight fuzzy-search (http://fusejs.io)
@@ -17013,7 +17071,7 @@ class Menu {
       if (data.menu) return this._itemMenu(target, data);
 
       if (this.opts.multiple) {
-        if (this.opts.multiple !== 'always' && (data.clearsAll || !didClickCheckbox)) {
+        if (data.clearsAll || this.opts.multiple !== 'always' && !didClickCheckbox) {
           return this.resolve([data]);
         }
 
@@ -18637,7 +18695,7 @@ slot[name="help"] {
 	--focusBgd: transparent;
 	padding-top: .25em;
 	--padY: .6em;
-	--borderColor: currentColor;
+	--borderColor: rgba(0,0,0,.2);
 }
 
 :host([material]) main {
@@ -19574,6 +19632,10 @@ nav > svg:hover {
     opacity: 1;
 }
 
+svg > * {
+	pointer-events: none;
+}
+
 section header,
 section .days {
     display: grid;
@@ -20258,8 +20320,11 @@ class TextFieldElement extends HTMLElement {
       this.blur();
     }
 
+    let okKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Backspace', 'Delete', 'Tab'];
+    let metaKey = e.metaKey || e.ctrlKey;
+    let okPress = okKeys.includes(e.key) || metaKey;
     let max = this.getAttribute('max');
-    if (max && this._editor.innerText.length >= max) stop = true;
+    if (max && this._editor.innerText.length >= max && !okPress) stop = true;
     let delay = this.getAttribute('change-delay');
     clearTimeout(this._changeDelay);
 
@@ -20432,9 +20497,9 @@ function cleanNode(parent, node) {
   if (node.nodeName == '#comment' || node.nodeName.match(/:/)) return node.remove(); // if text node, do some cleaning
   else if (node.nodeName == "#text") {
       // if the text node is just spaces, remove them
-      node.textContent = node.textContent.replace(/^\s+$/g, ''); // swap multiple spaces in a row for just one space
-
-      node.textContent = node.textContent.replace(/\s{2,}/g, ''); // optionally clean more data for platforms that need it
+      // node.textContent = node.textContent.replace(/^\s+$/g, '')
+      // swap multiple spaces in a row for just one space
+      node.textContent = node.textContent.replace(/\s{2,}/g, ' '); // optionally clean more data for platforms that need it
       // TEST
       // simplifyTextNode(node)
     } // clean all child nodes of this node
@@ -32534,7 +32599,47 @@ List.scope = _parchment.default.Scope.BLOCK_BLOT;
 List.tagName = ['OL', 'UL'];
 List.defaultChild = 'list-item';
 List.allowedChildren = [ListItem];
-},{"parchment":"CQm3","../blots/block":"ehqu","../blots/container":"6tnf"}],"IkMa":[function(require,module,exports) {
+},{"parchment":"CQm3","../blots/block":"ehqu","../blots/container":"6tnf"}],"t5Za":[function(require,module,exports) {
+"use strict";
+
+var _core = _interopRequireDefault(require("quill/core"));
+
+var _clipboard = _interopRequireDefault(require("quill/modules/clipboard"));
+
+var _util = require("../../../../util");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const Delta = _core.default.import('delta'); // helpful: https://github.com/quilljs/quill/issues/1184#issuecomment-403657128
+
+
+class BUIClipboard extends _clipboard.default {
+  onPaste(e) {
+    e.preventDefault();
+    const dirtyHtml = e.clipboardData.getData('text/html');
+    this.insertHTML(dirtyHtml, true);
+  }
+
+  insertHTML(html, clean = true) {
+    const range = this.quill.getSelection();
+    html = _util.htmlCleaner.clean(html);
+    html = (0, _util.normalizeText)(html); // delete any contents the user has selected
+
+    const delta = new Delta().retain(range.index).delete(range.length);
+    this.quill.updateContents(delta, 'silent');
+    this.quill.setSelection(range.index, 0, 'silent'); // paste the cleaned html
+
+    this.dangerouslyPasteHTML(range.index, html, 'user');
+  }
+
+}
+
+_core.default.debug('error');
+
+_core.default.register({
+  'modules/clipboard': BUIClipboard
+});
+},{"quill/core":"qOpY","quill/modules/clipboard":"tAeH","../../../../util":"+xBz"}],"IkMa":[function(require,module,exports) {
 "use strict";
 
 var _core = _interopRequireDefault(require("quill/core"));
@@ -32651,6 +32756,8 @@ var _italic = _interopRequireDefault(require("quill/formats/italic"));
 
 var _list = _interopRequireWildcard(require("quill/formats/list"));
 
+require("./clipboard");
+
 require("./divider");
 
 var _break = require("./break");
@@ -32662,7 +32769,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import Header from 'quill/formats/header';
 // import Blockquote from 'quill/formats/blockquote';
 // custom modules
-// import './clipboard'
 _core.default.register({
   'modules/toolbar': _toolbar.default,
   'formats/bold': _bold.default,
@@ -32672,7 +32778,7 @@ _core.default.register({
   'formats/list': _list.default,
   'formats/list-item': _list.ListItem
 });
-},{"quill/core":"qOpY","quill/modules/toolbar":"5/Uj","quill/formats/bold":"BIiT","quill/formats/italic":"4WGr","quill/formats/list":"ao6/","./divider":"IkMa","./break":"ZpO7"}],"k1zW":[function(require,module,exports) {
+},{"quill/core":"qOpY","quill/modules/toolbar":"5/Uj","quill/formats/bold":"BIiT","quill/formats/italic":"4WGr","quill/formats/list":"ao6/","./clipboard":"t5Za","./divider":"IkMa","./break":"ZpO7"}],"k1zW":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34750,7 +34856,28 @@ class Sorts extends Map {
     if (didChange) this.emit('change', val);
   }
 
+  get unset() {
+    return Object.keys(this.value).length == 0;
+  }
+
   use(sorts) {
+    if (sorts.defaults) {
+      let defaultVals = {};
+      sorts.defaults.map(key => {
+        if (!sorts[key]) return;
+        defaultVals[key] = {
+          desc: sorts[key].desc || false
+        };
+      });
+
+      if (this.unset) {
+        this.__value = defaultVals;
+        localStorage.setItem(this._storeKey, JSON.stringify(defaultVals));
+      }
+
+      delete sorts.defaults;
+    }
+
     if (sorts == this.__lastSorts) return;
     this.__lastSorts = sorts;
     this.clear();
@@ -35398,14 +35525,15 @@ var _litElement = require("lit-element");
 
 require("../../elements/empty-state");
 
-customElements.define('b-infinite-list', class extends HTMLElement {
-  static get styles() {
-    return _litElement.css`
-        :host {
-            display: block
-        }
-    `;
-  }
+customElements.define('b-infinite-list', class extends _litElement.LitElement {
+  createRenderRoot() {
+    return this;
+  } // static get styles(){return css`
+  //     :host {
+  //         display: block
+  //     }
+  // `}
+
 
   constructor() {
     super();
@@ -35413,12 +35541,17 @@ customElements.define('b-infinite-list', class extends HTMLElement {
     this.threshold = 400;
   }
 
-  connectedCallback() {
-    this.addEventListener('scroll', this.onScroll, true);
+  firstUpdated() {
     this.getContent();
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('scroll', this.onScroll, true);
+  }
+
   disconnectedCallback() {
+    super.disconnectedCallback();
     this.removeEventListener('scroll', this.onScroll, true);
   }
 
@@ -35600,6 +35733,7 @@ customElements.define('b-list', class extends _litElement.LitElement {
             flex: 1;
             position: relative;
             --searchBgd: #f5f5f5;
+            --toolbarShadow: rgba(0,0,0,.2) 0 0 6px;
         }
 
         slot[name="header"] {
@@ -35612,7 +35746,7 @@ customElements.define('b-list', class extends _litElement.LitElement {
         }
 
         b-list-toolbar {
-            box-shadow: rgba(0,0,0,.2) 0 0 6px;
+            box-shadow: var(--toolbarShadow);
             padding: .25em .5em;
             z-index: 10;
         }

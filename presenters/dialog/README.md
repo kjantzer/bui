@@ -36,11 +36,13 @@ The following properties can be changed after the dialog has been created.
 
 ## Presets
 
-- `Dialog.confirm()`
-- `Dialog.confirmDelete()`
+- `Dialog.waiting()`
+- `Dialog.alert()`
 - `Dialog.warn()`
 - `Dialog.error()`
 - `Dialog.success()`
+- `Dialog.confirm()`
+- `Dialog.confirmDelete()`
 - `Dialog.prompt()`
 
 ## Presenters
