@@ -3,7 +3,7 @@
 */
 
 import styles from './form-control.css.js'
-import setValueAttrs from './util/setValueAttrs'
+import nativeInputHelper from './util/nativeInputHelper'
 
 class FormControlElement extends HTMLElement {
 	
@@ -58,34 +58,23 @@ class FormControlElement extends HTMLElement {
 			
 			this.control.slot = 'control'
 
-			// if native input, we need to do things a little differently
-			if( this.control.tagName == 'INPUT' ){
-				
-				setValueAttrs(this, this.control.value)
-
-				this.control.addEventListener('input', e=>{
-					setValueAttrs(this, e.target.value)
+			this.mutationObserver = new MutationObserver(mutations=>{
+				mutations.forEach(m=>{
+					
+					// mirror these attributes from the control onto the form-control
+					if( ['invalid', 'empty', 'no-value', 'falsy', 'focused'].includes(m.attributeName) ){
+						if( this.control.hasAttribute(m.attributeName) )
+							this.setAttribute(m.attributeName, true)
+						else
+							this.removeAttribute(m.attributeName)
+					}
 				})
+			});
+			this.mutationObserver.observe(this.control, { attributes: true, childList: false, subtree: false });
 
-				this.control.addEventListener('blur', e=>{
-					setValueAttrs(this, e.target.value)
-				})
-
-			}else{
-				this.mutationObserver = new MutationObserver(mutations=>{
-					mutations.forEach(m=>{
-						
-						// mirror these attributes from the control onto the form-control
-						if( ['invalid', 'empty', 'no-value', 'falsy', 'focused'].includes(m.attributeName) ){
-							if( this.control.hasAttribute(m.attributeName) )
-								this.setAttribute(m.attributeName, true)
-							else
-								this.removeAttribute(m.attributeName)
-						}
-					})
-				});
-				this.mutationObserver.observe(this.control, { attributes: true, childList: false, subtree: false });
-			}
+			// if native input, we need to add a helper to set expected values for mutation observer above
+			if( this.control.tagName == 'INPUT' )
+				nativeInputHelper(this.control)
 		}
 		
 		this.addEventListener('click', this._onClick.bind(this), true)

@@ -7,7 +7,7 @@ Form Control
 
 ```html
 <form-control id="email" material="outline" label="Email">
-	<text-field validate="email">test@example.com</text-field>
+	<text-field pattern="email">test@example.com</text-field>
 	<div slot="prefix" class="icon-mail">&nbsp;</div>
 	<div slot="help">Please provide your email</div>
 </form-control>
@@ -40,10 +40,11 @@ Form controls provide a uniform and consistent style for controls (see below)
 Slots provide a way to customize the display of the form control
 
 - `label`
+- `main` - same position as control but without any bindings
 - `prefix`
 - `suffix`
-- `before`
 - `help`
+- `before` - (considering deprecation for these two)
 - `after`
 
 ```html
@@ -64,6 +65,15 @@ Some of the CSS styles can be tweaked using these CSS variables
 --bgd
 --borderColor
 --invalidColor
+```
+
+#### Native Inputs
+`form-control` supports native inputs as a control but you must mark it as the control slot
+
+```html
+<form-control>
+	<input type="text" slot="control">
+</form-control>
 ```
 
 # Controls
@@ -88,7 +98,7 @@ Creates an input-like control. Add `multiline` attribute to make it perform like
 
 - `required`
 - `multiline`
-- `validate="int"` - regexp or preset
+- `pattern="int"` - regexp or preset
 - `max="10"` - max length of chars
 - `type="date"`
 - `reset-invalid`

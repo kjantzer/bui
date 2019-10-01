@@ -21,7 +21,6 @@ slot[name="after"]{
 	position: relative;
 	display: inline-block;
 	vertical-align: top;
-	--formControlTheme: #2196F3;
 	--placeholderColor: rgba(0,0,0,.3);
 	--selectionBgd: #FFECB3;
 	--focusBgd: #FFF8E1;
@@ -183,6 +182,11 @@ slot[name="help"] {
 	padding: 0;
 }
 
+/* doesn't appear to work */
+::slotted(input::placeholder) {
+	color: var(--placeholderColor);
+}
+
 /* remove autofill blue/yellow background */
 ::slotted(input:-webkit-autofill) {
     -webkit-box-shadow:0 0 0 50px var(--bgd) inset;
@@ -192,7 +196,7 @@ slot[name="help"] {
     -webkit-box-shadow: 0 0 0 50px var(--bgd) inset;
 }
 
-:host(:not([material])) {
+:host([label]:not([material])) {
 	margin-top: 1em;
 }
 

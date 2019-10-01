@@ -63,13 +63,23 @@
 
                     <form-handler>
 
-                        <form-control material="filled" label="Text Field">
-                            <text-field></text-field>
-                        </form-control>
+                        <div class="cols-3">
+                            <form-control material="filled" label="Name">
+                                <input slot="control" type="text" autocomplete="name">
+                            </form-control>
+
+                            <form-control material="filled" label="Email">
+                                <input slot="control" type="email">
+                            </form-control>
+
+                            <form-control material="filled" label="Phone">
+                                <input slot="control" type="tel">
+                            </form-control>
+                        </div>
 
                         <div class="cols-3">
                             <form-control material="filled" label="Validate and prefix" prefix="$">
-                                <text-field validate="decimal"></text-field>
+                                <text-field validate="decimal" max="2"></text-field>
                             </form-control>
 
                             <form-control material="filled" label="Validate and suffix" suffix=" units">

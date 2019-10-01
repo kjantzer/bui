@@ -3,6 +3,8 @@ import moment from 'moment'
 import Dialog from '../../dialog'
 import './date-picker'
 import setValueAttrs from '../util/setValueAttrs'
+import validatePattern from '../util/validatePattern'
+import stopMaxLength from '../util/stopMaxLength'
 
 const styles = css`
 :host {
@@ -167,7 +169,6 @@ class TextFieldElement extends HTMLElement {
 		this._editor.addEventListener('paste', this._onPaste.bind(this), true)
 		this._editor.addEventListener('keydown', this._onKeypress.bind(this), true)
 		this._input.addEventListener('keydown', this._onKeypress.bind(this), true)
-		// this._editor.addEventListener('focus', this._onFocus.bind(this))
 		this._editor.addEventListener('blur', this._onBlur.bind(this))
 		this._input.addEventListener('blur', this._onBlur.bind(this))
 
@@ -364,14 +365,8 @@ class TextFieldElement extends HTMLElement {
 			this.blur()
 		}
 
-		let okKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Backspace', 'Delete', 'Tab']
-		let metaKey = (e.metaKey || e.ctrlKey)
-		let okPress = okKeys.includes(e.key) || metaKey
-			
-		let max = this.getAttribute('max')
-		let len = this.input ? this._input.value.length : this._editor.innerText.length
-		if( max && len >= max && !okPress )
-			stop = true
+		let val = this.input ? this._input.value : this._editor.innerText
+		stop = stopMaxLength(e, this, val)
 
 		let delay = this.getAttribute('change-delay')
 		clearTimeout(this._changeDelay)
@@ -387,10 +382,6 @@ class TextFieldElement extends HTMLElement {
 		}
 	}
 	
-	// _onFocus(){
-	// 
-	// }
-	
 	focus(){
 		if( this.input )
 			this._input.focus()
@@ -398,31 +389,11 @@ class TextFieldElement extends HTMLElement {
 			this.select()
 	}
 	
-	validate(val){
-		
-		let required = this.hasAttribute('required')
-		let validate = this.getAttribute('validate')
-		
-		if( !validate ) return required ? !!val : true
-		
-		switch(validate){
-			case 'int':
-				validate = '^\\d+$'; break;
-			case 'float':
-			case 'decimal':
-				validate = '^\\d+(\\.\\d*)?$|^\\.\\d+$'; break;
-			case 'email':
-				validate = '^\\S+@\\S+\\.\\S+$'; break;
-		}
-		
-		return !required && !val ? true : (new RegExp(validate)).test(val)
-	}
-	
 	_onBlur(){
 		
 		let val = this.currentValue
 		
-		if( !this.validate(val) ){
+		if( !validatePattern(this, val) ){
 			
 			if( this.hasAttribute('reset-invalid') ){
 				this.value = this.value
