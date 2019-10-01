@@ -308,7 +308,7 @@ class SelectFieldElement extends HTMLElement {
 		let menuOpts = {
 			minW: this.offsetWidth,
 			selected: this._selected,
-			multiple: this.multiple,
+			multiple: this.multiple ? 'always' : false,
 			jumpNav: this.hasAttribute('jump-nav'),
 			
 			// only called when in multiple mode
