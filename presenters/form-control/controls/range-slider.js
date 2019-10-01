@@ -31,7 +31,7 @@ customElements.define('range-slider', class extends LitElement{
         :host {
             --size: 2px;
             --thumbSize: 14px;
-            --color: var(--blue);
+            --color: var(--formControlTheme);
             --thumbColor: var(--color);
             --bgd: rgba(0,0,0,.4);
             --padding: 10px;

@@ -21,15 +21,17 @@ slot[name="after"]{
 	position: relative;
 	display: inline-block;
 	vertical-align: top;
+	--formControlTheme: #2196F3;
 	--placeholderColor: rgba(0,0,0,.3);
 	--selectionBgd: #FFECB3;
 	--focusBgd: #FFF8E1;
-	--focusColor: #2196F3;
+	--focusColor: var(--formControlTheme);
 	--bgd: #fff;
 	--borderColor: rgba(0,0,0,.3);
 	--invalidColor: #ff1744;
 	--unsavedColor: transparent; /*#FFC107;*/
 	--disabledColor: rgba(0,0,0,.3);
+	--labelFontFamily: inherit;
 	--labelFontSize: inherit;
 }
 
@@ -67,6 +69,7 @@ slot[name="after"]{
 	box-sizing: border-box;
 	width: 100%;
 	white-space: nowrap;
+	font-family: var(--labelFontFamily);
 	font-size: var(--labelFontSize);
 }
 
