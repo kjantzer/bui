@@ -29,6 +29,7 @@ class FormControlElement extends HTMLElement {
 			<slot name="before"></slot>
 			<main>
 				<slot name="control"></slot>
+				<slot name="main"></slot>
 				<div class="prefix">${prefix}</div>
 				<div class="label">${label}</div>
 				<div class="suffix">${suffix}</div>
