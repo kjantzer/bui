@@ -12,6 +12,10 @@ customElements.define('b-hr', class extends LitElement{
             width: 100%;
             background: var(--bgd);
             vertical-align: middle;
+            
+            /* full width */
+            grid-column: 1/-1;
+            grid-column-end: -1;
         }
 
         :host([short]) {
