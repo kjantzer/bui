@@ -4692,7 +4692,7 @@ class UploaderElement extends _litElement.LitElement {
     this._numUploaded = 0;
     this.files = [];
     this.uploading = false;
-    this.dispatchEvent(new CustomEvent('upload', {
+    this.dispatchEvent(new CustomEvent('upload-done', {
       bubbles: true,
       composed: true,
       detail: resp
@@ -9935,6 +9935,7 @@ class Label extends _litElement.LitElement {
 
         b-hr {
             display: none;
+            grid-column: initial; /* remove default 100% width */
             margin: 0;
             width: auto;
             height: var(--dividerThickness);
@@ -10002,6 +10003,10 @@ customElements.define('b-hr', class extends _litElement.LitElement {
             width: 100%;
             background: var(--bgd);
             vertical-align: middle;
+            
+            /* full width */
+            grid-column: 1/-1;
+            grid-column-end: -1;
         }
 
         :host([short]) {
@@ -10390,7 +10395,7 @@ customElements.define('range-slider', class extends _litElement.LitElement {
         :host {
             --size: 2px;
             --thumbSize: 14px;
-            --color: var(--blue);
+            --color: var(--formControlTheme);
             --thumbColor: var(--color);
             --bgd: rgba(0,0,0,.4);
             --padding: 10px;
@@ -13891,6 +13896,8 @@ const DefaultOpts = {
   closeOnHide: true,
   maxHeight: 'auto',
   maxHeightThreshold: 400,
+  flip: true,
+  overflowBoundry: 'scrollParent',
   onClose: () => {},
   onKeydown: e => {}
 };
@@ -13981,7 +13988,9 @@ class Popover {
       onCreate: this._onPositionCreate.bind(this),
       onUpdate: this._onPositionUpdate.bind(this),
       modifiers: {
-        // flip: {enabled: !this.isNested},
+        flip: {
+          enabled: opts.flip
+        },
         // hide: {enabled: !this.isNested},
         preventOverflow: {
           enabled: opts.preventDefault !== undefined ? opts.preventDefault : true,
@@ -16558,7 +16567,7 @@ const styles = _litElement.css`
 
 :host {
 	--size: 1.6em;
-	--color: #2196f3;
+	--color: var(--formControlTheme);
 	--colorDisabled: rgba(0, 0, 0, 0.26);
 	display: inline-block;
 	vertical-align: middle;
@@ -18538,12 +18547,13 @@ slot[name="after"]{
 	--placeholderColor: rgba(0,0,0,.3);
 	--selectionBgd: #FFECB3;
 	--focusBgd: #FFF8E1;
-	--focusColor: #2196F3;
+	--focusColor: var(--formControlTheme);
 	--bgd: #fff;
 	--borderColor: rgba(0,0,0,.3);
 	--invalidColor: #ff1744;
 	--unsavedColor: transparent; /*#FFC107;*/
 	--disabledColor: rgba(0,0,0,.3);
+	--labelFontFamily: inherit;
 	--labelFontSize: inherit;
 }
 
@@ -18581,6 +18591,7 @@ slot[name="after"]{
 	box-sizing: border-box;
 	width: 100%;
 	white-space: nowrap;
+	font-family: var(--labelFontFamily);
 	font-size: var(--labelFontSize);
 }
 
@@ -18685,6 +18696,36 @@ slot[name="help"] {
 	display: block;
 }
 
+/* some default styles for native input controls */ 
+::slotted(input) {
+	font-family: inherit;
+	font-size: inherit;
+	border: none;
+	background: none;
+	padding: 0;
+}
+
+/* doesn't appear to work */
+::slotted(input::placeholder) {
+	color: var(--placeholderColor);
+}
+
+/* remove autofill blue/yellow background */
+::slotted(input:-webkit-autofill) {
+    -webkit-box-shadow:0 0 0 50px var(--bgd) inset;
+}
+
+::slotted(input:-webkit-autofill:focus) {
+    -webkit-box-shadow: 0 0 0 50px var(--bgd) inset;
+}
+
+:host([label]:not([material])) {
+	margin-top: 1em;
+}
+
+:host(:not([material])) .label {
+	top: -1em;
+}
 
 
 /*
@@ -18808,7 +18849,7 @@ slot[name="help"] {
 	Material Outline
 */
 :host([material="outline"]) {
-	margin: 0 .5em .5em 0;
+	/* margin: 0 .5em .5em 0; */
 }
 
 :host([material="outline"]) main:before {
@@ -18886,7 +18927,7 @@ slot[name="help"] {
 	--padY: .75em;
 	--padX: .75em;
 	--placeholderColor: rgba(0,0,0,.3);
-	margin: 0 .5em .5em 0;
+	margin: 0 0 .5em 0;
 }
 
 :host([material="filled"]) main {
@@ -18915,6 +18956,12 @@ slot[name="help"] {
 :host([material="filled"]) .label {
 	padding: var(--padY) var(--padX);
 	border-radius: 3px;
+}
+
+:host([material="filled"]) slot[name="control"]::slotted(input) {
+	padding: 0;
+    margin: var(--padY) var(--padX);
+    border-radius: 0;
 }
 
 :host([material="filled"]) .label {
@@ -18962,7 +19009,146 @@ slot[name="help"] {
 `;
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"swB1":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"299p":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _default = (el, val) => {
+  if (!val || val === '0') el.setAttribute('falsy', '');else el.removeAttribute('falsy');
+  if (!val) el.setAttribute('no-value', '');else el.removeAttribute('no-value');
+  if (!val && !el.getAttribute('placeholder')) el.setAttribute('empty', '');else el.removeAttribute('empty');
+};
+
+exports.default = _default;
+},{}],"8hx3":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _default = (el, val) => {
+  let required = el.hasAttribute('required'); // `validate` is deprecated, use `pattern`
+
+  let pattern = el.getAttribute('pattern') || el.getAttribute('validate');
+  if (!pattern) return required ? !!val : true;
+
+  switch (pattern) {
+    case 'int':
+      pattern = '^\\d+$';
+      break;
+
+    case 'float':
+    case 'decimal':
+      pattern = '^\\d+(\\.\\d*)?$|^\\.\\d+$';
+      break;
+
+    case 'email':
+      pattern = '^\\S+@\\S+\\.\\S+$';
+      break;
+  }
+
+  return !required && !val ? true : new RegExp(pattern).test(val);
+};
+
+exports.default = _default;
+},{}],"h6i7":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _default = (e, el, val) => {
+  let okKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Backspace', 'Delete', 'Tab'];
+  let metaKey = e.metaKey || e.ctrlKey;
+  let okPress = okKeys.includes(e.key) || metaKey;
+  let max = el.getAttribute('maxlength') || el.getAttribute('max');
+  if (max && val.length >= max && !okPress) return true;
+  return false;
+};
+
+exports.default = _default;
+},{}],"wYzd":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = _default;
+
+var _setValueAttrs = _interopRequireDefault(require("./setValueAttrs"));
+
+var _validatePattern = _interopRequireDefault(require("./validatePattern"));
+
+var _stopMaxLength = _interopRequireDefault(require("./stopMaxLength"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _default(input) {
+  (0, _setValueAttrs.default)(input);
+  input.addEventListener('input', onInput);
+  input.addEventListener('focus', onFocus);
+  input.addEventListener('blur', onBlur);
+  input.addEventListener('keydown', onKeyDown); // let hasPattern = input.hasAttribute('pattern')
+  // let hasAutocomplete = input.hasAttribute('autoComplete')
+
+  if (input.type == 'email') {
+    if (!input.pattern) input.pattern = 'email';
+    if (!input.autocomplete) input.autocomplete = 'email';
+  }
+
+  if (input.type == 'tel') {
+    if (!input.autocomplete) input.autocomplete = 'phone';
+  }
+}
+
+const testPattern = input => {
+  if ((0, _validatePattern.default)(input, input.value)) {
+    delete input.isInvalid;
+    input.removeAttribute('invalid');
+  } else if (input.hasAttribute('reset-invalid')) {
+    input.value = input._originalVal || '';
+    delete input.isInvalid;
+    input.removeAttribute('invalid');
+  } else {
+    input.isInvalid = true;
+    input.setAttribute('invalid', '');
+  }
+};
+
+const onFocus = e => {
+  e.target._originalVal = e.target.value;
+};
+
+const onBlur = e => {
+  testPattern(e.target);
+  (0, _setValueAttrs.default)(e.target, e.target.value);
+  delete e.target._originalVal;
+};
+
+const onInput = e => {
+  (0, _setValueAttrs.default)(e.target, e.target.value);
+};
+
+const onKeyDown = e => {
+  if (e.target.hasAttribute('invalid')) e.target.removeAttribute('invalid');
+
+  if (e.key == 'Escape') {
+    e.target.value = e.target._originalVal || '';
+    e.target.blur();
+  } // maxlength doesn't work on iOS, so let's implement our own
+
+
+  if ((0, _stopMaxLength.default)(e, e.target, e.target.value)) e.preventDefault();
+};
+},{"./setValueAttrs":"299p","./validatePattern":"8hx3","./stopMaxLength":"h6i7"}],"swB1":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18971,6 +19157,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _formControlCss = _interopRequireDefault(require("./form-control.css.js"));
+
+var _nativeInputHelper = _interopRequireDefault(require("./util/nativeInputHelper"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18998,6 +19186,7 @@ class FormControlElement extends HTMLElement {
 			<slot name="before"></slot>
 			<main>
 				<slot name="control"></slot>
+				<slot name="main"></slot>
 				<div class="prefix">${prefix}</div>
 				<div class="label">${label}</div>
 				<div class="suffix">${suffix}</div>
@@ -19017,7 +19206,7 @@ class FormControlElement extends HTMLElement {
     let value = this.$('#value');
     this._val = value.assignedNodes().map(el => el.textContent.trim()).join(' ');
     this._val = this._val.replace(/^\n|\n$/g, '').trim();
-    this.control = this.querySelector('.control, text-field, rich-text-field, select-field, check-box, radio-group');
+    this.control = this.querySelector('[slot="control"], .control, text-field, rich-text-field, select-field, check-box, radio-group');
 
     if (this.control) {
       this.control.slot = 'control';
@@ -19033,7 +19222,9 @@ class FormControlElement extends HTMLElement {
         attributes: true,
         childList: false,
         subtree: false
-      });
+      }); // if native input, we need to add a helper to set expected values for mutation observer above
+
+      if (this.control.tagName == 'INPUT') (0, _nativeInputHelper.default)(this.control);
     }
 
     this.addEventListener('click', this._onClick.bind(this), true);
@@ -19162,7 +19353,7 @@ customElements.define('form-control', FormControlElement);
 var _default = customElements.get('form-control');
 
 exports.default = _default;
-},{"./form-control.css.js":"Sclr"}],"TZ6L":[function(require,module,exports) {
+},{"./form-control.css.js":"Sclr","./util/nativeInputHelper":"wYzd"}],"TZ6L":[function(require,module,exports) {
 const btnPresets = {
   'dismiss': {
     label: 'Dismiss'
@@ -19429,6 +19620,15 @@ const Dialog = require('./dialog').default;
 
 module.exports = Dialog;
 
+Dialog.waiting = function (opts = {}) {
+  return new Dialog(Object.assign({
+    icon: 'spinner',
+    title: 'Processing...',
+    msg: '',
+    btns: false
+  }, opts));
+};
+
 Dialog.confirm = function (opts = {}) {
   return new Dialog(Object.assign({
     // icon: 'trash text-red',
@@ -19447,6 +19647,7 @@ Dialog.confirmDelete = function (opts = {}) {
 
 Dialog.alert = function (opts = {}) {
   return new Dialog(Object.assign({
+    icon: 'info-circled',
     btns: ['dismiss']
   }, opts));
 };
@@ -20031,6 +20232,12 @@ var _dialog = _interopRequireDefault(require("../../dialog"));
 
 require("./date-picker");
 
+var _setValueAttrs = _interopRequireDefault(require("../util/setValueAttrs"));
+
+var _validatePattern = _interopRequireDefault(require("../util/validatePattern"));
+
+var _stopMaxLength = _interopRequireDefault(require("../util/stopMaxLength"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const styles = _litElement.css`
@@ -20050,6 +20257,28 @@ const styles = _litElement.css`
 
 main {
 	display: flex;
+}
+
+:host([input]) .editor {
+	display: none;
+}
+
+:host(:not([input])) .input {
+	display: none;
+}
+
+.input {
+	outline: none;
+	width: 100%;
+	display: inline-block;
+	min-height: 1em;
+	font-size: inherit;
+	font-family: inherit;
+	line-height: 1.2em;
+	margin: -.1em 0;
+	border: none;
+	background: transparent;
+	/* background: yellow; */
 }
 
 .editor {
@@ -20096,6 +20325,28 @@ main {
 .calendar.popover-open {
 	opacity: .7;
 } */
+
+.input::-webkit-calendar-picker-indicator,
+.input::-webkit-inner-spin-button { 
+    display: none;
+}
+
+input:-webkit-autofill {
+	font-size: inherit;
+	font-family: inherit;
+	background: red;
+}
+
+/* remove autofill blue/yellow background */
+input:-webkit-autofill {
+    -webkit-box-shadow:0 0 0 50px var(--bgd) inset;
+    /* -webkit-text-fill-color: #333; */
+}
+
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 50px var(--bgd) inset;
+    /* -webkit-text-fill-color: #333; */
+} 
 `;
 
 class TextFieldElement extends HTMLElement {
@@ -20108,20 +20359,29 @@ class TextFieldElement extends HTMLElement {
     let placeholder = this.getAttribute('placeholder') || '';
     temp.innerHTML = `<style>${styles.cssText}</style>
 			<main>
+				
 				<div class="editor" contenteditable="true" data-placeholder="${placeholder}"></div>
+				
+				<input class="input" placeholder="${placeholder}" 
+						type="${this.input || 'text'}" 
+						name="${this.name || this.input}"
+						autocomplete="${this.autocomplete}">
+						
 				<b-icon name="calendar-3" class="calendar"></b-icon>
 			</main>
 			<slot id="value"></slot>`;
     this.shadowRoot.appendChild(temp.content.cloneNode(true));
+    if (this.hasAttribute('multiline') || this.hasAttribute('html')) this.removeAttribute('input');
     let value = this.$('#value');
     this._val = value.assignedNodes().map(el => el.textContent.trim()).join(' ');
     this._val = this._val.replace(/^\n|\n$/g, '').trim();
     this._editor = this.$('.editor');
+    this._input = this.$('.input');
 
     if (this.type == 'date') {
       this._datePicker = document.createElement('date-picker');
       this._datePicker.value = this.value;
-      this._datePicker.format = this.getAttribute('format') || 'MM/DD/YYYY';
+      this._datePicker.format = this.format;
 
       if (!this._datePicker.isValid) {
         let date = (0, _moment.default)(this._val);
@@ -20130,15 +20390,18 @@ class TextFieldElement extends HTMLElement {
     }
 
     this._editor.innerHTML = this._val;
+    this._input.value = this._val;
     this.innerText = '';
 
     this._editor.addEventListener('paste', this._onPaste.bind(this), true);
 
     this._editor.addEventListener('keydown', this._onKeypress.bind(this), true);
 
-    this._editor.addEventListener('focus', this._onFocus.bind(this));
+    this._input.addEventListener('keydown', this._onKeypress.bind(this), true);
 
     this._editor.addEventListener('blur', this._onBlur.bind(this));
+
+    this._input.addEventListener('blur', this._onBlur.bind(this));
 
     this.shadowRoot.addEventListener('click', this._onClick.bind(this));
     this.addEventListener('click', this._onClick.bind(this));
@@ -20167,8 +20430,24 @@ class TextFieldElement extends HTMLElement {
     if (name === 'placeholder') this._editor.dataset.placeholder = newValue;
   }
 
+  get input() {
+    return this.getAttribute('input');
+  }
+
   get type() {
     return this.getAttribute('type');
+  }
+
+  get name() {
+    return this.getAttribute('name');
+  }
+
+  get autocomplete() {
+    return this.getAttribute('autocomplete');
+  }
+
+  get format() {
+    return this.getAttribute('format') || 'MM/DD/YYYY';
   }
 
   get disabled() {
@@ -20215,6 +20494,7 @@ class TextFieldElement extends HTMLElement {
 
       this._val = val;
       if (this._editor.innerHTML != val) this._editor.innerHTML = val;
+      if (this._input.value != val) this._input.value = val;
     }
 
     this._setClassNames();
@@ -20227,7 +20507,7 @@ class TextFieldElement extends HTMLElement {
 
   get currentValue() {
     if (this.hasAttribute('html')) return this._editor.innerHTML;
-    return this._editor.innerText || this._editor.innerHTML;
+    if (this.input) return this._input.value;else return this._editor.innerText || this._editor.innerHTML;
   }
 
   set isInvalid(invalid) {
@@ -20240,13 +20520,11 @@ class TextFieldElement extends HTMLElement {
   }
 
   get isFocused() {
-    return this.shadowRoot.activeElement == this._editor;
+    return this.shadowRoot.activeElement == this._editor || this.shadowRoot.activeElement == this._input;
   }
 
   _setClassNames() {
-    if (!this._val || this._val === '0') this.setAttribute('falsy', true);else this.removeAttribute('falsy');
-    if (!this._val) this.setAttribute('no-value', true);else this.removeAttribute('no-value');
-    if (!this._val && !this.getAttribute('placeholder')) this.setAttribute('empty', true);else this.removeAttribute('empty');
+    (0, _setValueAttrs.default)(this, this._val);
   }
 
   _onClick(e) {
@@ -20283,8 +20561,12 @@ class TextFieldElement extends HTMLElement {
     document.execCommand('inserttext', false, val);
   }
 
+  get editorEl() {
+    return this.input ? this._input : this._editor;
+  }
+
   select(range = 'all') {
-    let el = this._editor,
+    let el = this.editorEl,
         s = window.getSelection(),
         r = document.createRange();
 
@@ -20320,11 +20602,8 @@ class TextFieldElement extends HTMLElement {
       this.blur();
     }
 
-    let okKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Backspace', 'Delete', 'Tab'];
-    let metaKey = e.metaKey || e.ctrlKey;
-    let okPress = okKeys.includes(e.key) || metaKey;
-    let max = this.getAttribute('max');
-    if (max && this._editor.innerText.length >= max && !okPress) stop = true;
+    let val = this.input ? this._input.value : this._editor.innerText;
+    stop = (0, _stopMaxLength.default)(e, this, val);
     let delay = this.getAttribute('change-delay');
     clearTimeout(this._changeDelay);
 
@@ -20340,39 +20619,14 @@ class TextFieldElement extends HTMLElement {
     }
   }
 
-  _onFocus() {}
-
   focus() {
-    this.select();
-  }
-
-  validate(val) {
-    let required = this.hasAttribute('required');
-    let validate = this.getAttribute('validate');
-    if (!validate) return required ? !!val : true;
-
-    switch (validate) {
-      case 'int':
-        validate = '^\\d+$';
-        break;
-
-      case 'float':
-      case 'decimal':
-        validate = '^\\d+(\\.\\d*)?$|^\\.\\d+$';
-        break;
-
-      case 'email':
-        validate = '^\\S+@\\S+\\.\\S+$';
-        break;
-    }
-
-    return !required && !val ? true : new RegExp(validate).test(val);
+    if (this.input) this._input.focus();else this.select();
   }
 
   _onBlur() {
     let val = this.currentValue;
 
-    if (!this.validate(val)) {
+    if (!(0, _validatePattern.default)(this, val)) {
       if (this.hasAttribute('reset-invalid')) {
         this.value = this.value;
       } else {
@@ -20416,7 +20670,7 @@ customElements.define('text-field', TextFieldElement);
 var _default = customElements.get('text-field');
 
 exports.default = _default;
-},{"lit-element":"+bhx","moment":"a2/B","../../dialog":"pos3","./date-picker":"VxKk"}],"E0RO":[function(require,module,exports) {
+},{"lit-element":"+bhx","moment":"a2/B","../../dialog":"pos3","./date-picker":"VxKk","../util/setValueAttrs":"299p","../util/validatePattern":"8hx3","../util/stopMaxLength":"h6i7"}],"E0RO":[function(require,module,exports) {
 /*
     HTML Cleaner
 
@@ -33401,7 +33655,7 @@ class SelectFieldElement extends HTMLElement {
     let menuOpts = {
       minW: this.offsetWidth,
       selected: this._selected,
-      multiple: this.multiple,
+      multiple: this.multiple ? 'always' : false,
       jumpNav: this.hasAttribute('jump-nav'),
       // only called when in multiple mode
       onSelect: selected => {
@@ -33460,7 +33714,7 @@ const styles = _litElement.css`
 
 :host {
 	--size: 1.6em;
-	--color: #2196f3;
+	--color: var(--formControlTheme);
 	--colorDisabled: rgba(0, 0, 0, 0.26);
 	display: inline-block;
 	vertical-align: middle;
@@ -33587,6 +33841,7 @@ class RadioGroupElement extends HTMLElement {
     // temp.innerHTML = `<style>${styles}</style>`
     // this.shadowRoot.appendChild(temp.content.cloneNode(true));
 
+    this.style.outline = 'none';
     this.addEventListener('change', this._onChange.bind(this), true);
     this.addEventListener('keydown', e => {
       if (['ArrowLeft', 'ArrowUp'].includes(e.code)) {
