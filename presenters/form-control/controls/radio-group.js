@@ -8,6 +8,8 @@ class RadioGroupElement extends HTMLElement {
 		// let temp = document.createElement('template')
 		// temp.innerHTML = `<style>${styles}</style>`
 		// this.shadowRoot.appendChild(temp.content.cloneNode(true));
+
+		this.style.outline = 'none'
 		
 		this.addEventListener('change', this._onChange.bind(this), true)
 		
