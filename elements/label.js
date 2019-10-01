@@ -87,6 +87,7 @@ export default class Label extends LitElement {
 
         b-hr {
             display: none;
+            grid-column: initial; /* remove default 100% width */
             margin: 0;
             width: auto;
             height: var(--dividerThickness);
