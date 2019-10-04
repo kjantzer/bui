@@ -85,6 +85,10 @@ export default class Label extends LitElement {
         :host([outline="green"]) { --bgd: var(--green); }
         :host([outline="pink"]) { --bgd: var(--pink); }
 
+        slot {
+            display: flex;
+        }
+
         b-hr {
             display: none;
             grid-column: initial; /* remove default 100% width */

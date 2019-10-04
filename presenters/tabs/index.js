@@ -40,7 +40,7 @@ customElements.define('b-tabs', class extends LitElement {
                     views.push(..._views)
                     node.textContent = ''
                 
-                }else if( node.slot ){
+                }else if( node.slot || node.nodeName == '#comment' ){
                     // ignore views that have a slot name
 
                 }else if( node.title ){

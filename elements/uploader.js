@@ -158,6 +158,7 @@ export class UploaderElement extends LitElement {
     _drop(e){
         e.preventDefault()
         this.dragging = false
+        // let files = new Files(e.dataTransfer)
         this._selectFiles(e.dataTransfer.files)
     }
 
@@ -278,3 +279,66 @@ export class UploaderElement extends LitElement {
 }
     
 customElements.define('b-uploader', UploaderElement)
+
+// WIP for uploading directories
+class Files {
+
+    constructor(dataTransfer){
+        this.getFiles(dataTransfer)
+    }
+
+    async getFiles(dataTransfer){
+        if( dataTransfer.items[0].webkitGetAsEntry ){
+
+            Array.from(dataTransfer.items).forEach(async item=>{
+
+                item = item.webkitGetAsEntry()
+
+                if( item.isFile ){
+                    console.log('file', item);
+                }else{
+                    console.log('dir', item);
+
+                    let items = await Files.getDirItems(item)
+                    console.log(items);
+                }
+            })
+
+
+        }
+    }
+
+    static async getDirItems(item){
+
+        let entries = await dirEntries(item)
+        
+        let items = await Promise.all(entries.map(async entry=>{
+            if( entry.isFile )
+                return await entryFile(entry)
+            else
+                return await Files.getDirItems(entry)
+        }))
+
+        return {
+            name: item.name,
+            items: items
+        }
+    }
+}
+
+
+const entryFile = entry=>{
+    return new Promise(resolve=>{
+        entry.file(file=>{
+            resolve(file)
+        })
+    })
+}
+
+const dirEntries = dir=>{
+    return new Promise(resolve=>{
+        dir.createReader().readEntries(entries=>{
+            resolve(entries)
+        });
+    })
+}

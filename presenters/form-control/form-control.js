@@ -149,6 +149,9 @@ class FormControlElement extends HTMLElement {
 	set value(val){
 		if( this.control )
 			this.control.value = val
+		
+		if( this.control && this.control.tagName == 'INPUT' )
+			this.control.dispatchEvent(new CustomEvent('change:value'))
 	}
 
 	get dbValue(){

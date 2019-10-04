@@ -6,6 +6,7 @@ export default function(input){
 
     setValueAttrs(input)
 
+    input.addEventListener('change:value', onChange)
     input.addEventListener('input', onInput)
     input.addEventListener('focus', onFocus)
     input.addEventListener('blur', onBlur)
@@ -40,6 +41,10 @@ const testPattern = input => {
         input.isInvalid = true
         input.setAttribute('invalid', '')
     }
+}
+
+const onChange = e =>{
+    setValueAttrs(e.target, e.target.value)
 }
 
 const onFocus = e =>{

@@ -222,7 +222,8 @@ export default class Dialog {
 			this.resolve(false)
 		}
 
-		this.presenter = new Panel(this.el, opts).open()
+		this.presenter = new Panel(this.el, opts)
+		this.presenter.open()
 		return this.promise
 	}
 	

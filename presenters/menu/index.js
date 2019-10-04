@@ -20,6 +20,7 @@ export const DefaultOpts = {
 
 const SearchDefaults = {
 	placeholder: 'Search',
+	icon: 'search',
 	parse: (row)=>{
 		return {
 			label: row.label || row.name || row.title || 'Unknown',
@@ -185,6 +186,10 @@ export default class Menu {
 		return parse
 	}
 
+	get searchIcon(){
+		return (this.opts.search&&this.opts.search.icon) || SearchDefaults.icon
+	}
+
 	get searchPlaceholder(){
 		return (this.opts.search&&this.opts.search.placeholder) || SearchDefaults.placeholder
 	}
@@ -250,7 +255,7 @@ export default class Menu {
 
 			${this.searchIsOn?html`
 				<div class="menu-search-bar">
-					<b-icon name="search"></b-icon>
+					<b-icon name="${this.searchIcon}"></b-icon>
 					<b-spinner hidden></b-spinner>
 					<input type="text" placeholder="${this.searchPlaceholder}">
 				</div>
@@ -592,7 +597,8 @@ export default class Menu {
 				this.resolve(false)
 		}
 		
-		this.presenter = new Panel(this.el, opts).open()
+		this.presenter = new Panel(this.el, opts)
+		this.presenter.open()
 
 		this.scrollToSelected()
 		

@@ -32,6 +32,8 @@ slot[name="after"]{
 	--disabledColor: rgba(0,0,0,.3);
 	--labelFontFamily: inherit;
 	--labelFontSize: inherit;
+	--padY: 0;
+	--padX: 0;
 }
 
 :host main {
@@ -179,7 +181,7 @@ slot[name="help"] {
 	font-size: inherit;
 	border: none;
 	background: none;
-	padding: 0;
+	padding: var(--padX) var(--padY);
 }
 
 /* doesn't appear to work */
@@ -327,6 +329,8 @@ slot[name="help"] {
 */
 :host([material="outline"]) {
 	/* margin: 0 .5em .5em 0; */
+	--padY: .75em;
+	--padX: .75em;
 }
 
 :host([material="outline"]) main:before {
@@ -343,7 +347,7 @@ slot[name="help"] {
 /* :host([material="outline"]) .control, */
 :host([material="outline"]) slot[name="control"]::slotted(*),
 :host([material="outline"]) .label {
-	padding: .75em;
+	padding: var(--padX) var(--padY);
 	border-radius: 3px;
 }
 
@@ -357,15 +361,15 @@ slot[name="help"] {
 }
 
 :host([material="outline"]) .prefix {
-	padding: .75em;
+	padding: var(--padX) var(--padY);
     padding-right: 0;
-    margin-right: -.75em;
+    margin-right: calc(var(--padX) * -1);
 }
 
 :host([material="outline"]) .suffix {
-	padding: .75em;
+	padding: var(--padX) var(--padY);
     padding-left: 0;
-    margin-left: -.75em;
+    margin-left: calc(var(--padX) * -1);
 }
 
 :host([material="outline"]) .control:not([empty]) ~ .label,
@@ -374,7 +378,7 @@ slot[name="help"] {
 :host([material="outline"][focused]) .label {
 	background: var(--bgd);
 	padding: 0 .35em;
-	margin-left: .75em;
+	margin-left: var(--padX);
 	transform: translateY(-50%);
 }
 
@@ -392,7 +396,7 @@ slot[name="help"] {
 } */
 
 :host([material="outline"]) slot[name="help"] {
-	margin: .5em .75em 0
+	margin: .5em var(--padX) 0
 }
 
 /*

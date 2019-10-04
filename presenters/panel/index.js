@@ -333,7 +333,7 @@ export class Panel extends LitElement {
         this.__panelController = val
     }
 
-    open(){
+    async open(){
         
         if( this.route && this.route.state.props.controller )
             this.controller = this.route.state.props.controller
@@ -341,6 +341,11 @@ export class Panel extends LitElement {
         // if no controller set, use the root controller
         if( !this.panelController ){
             this.panelController = Controller.for('root')
+        }
+
+        if( this.view && this.view.willOpen ){
+            if( await this.view.willOpen(this.route.state) === false )
+                return false;
         }
 
         this._onKeydown = this._onKeydown || this.onKeydown.bind(this)
@@ -364,6 +369,7 @@ export class Panel extends LitElement {
     set title(str){
         this.__title = str
         this.route&&this.route.update({title: str})
+        if(this.toolbar) this.toolbar.title = str
     }
     get title(){ return this.__title }
 

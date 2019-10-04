@@ -113,8 +113,16 @@ export default class Popover {
 			onCreate: this._onPositionCreate.bind(this),
 			onUpdate: this._onPositionUpdate.bind(this),
 			modifiers: {
-				flip: {enabled: opts.flip},
-				// hide: {enabled: !this.isNested},
+				inner: {
+					enabled: opts.inner || false
+				},
+				offset: {
+					enabled: opts.offset?true:false,
+					offset: opts.offset
+				},
+				flip: {
+					enabled: opts.flip
+				},
 				preventOverflow: {
 					enabled: opts.preventDefault !== undefined ? opts.preventDefault : true, // FIXME: confusing naming and not sure it works
 					boundariesElement: opts.overflowBoundry || 'scrollParent',
@@ -207,9 +215,20 @@ export default class Popover {
 	}
 	
 	_onPositionCreate(data){
+		
+		let arrowH = data.arrowElement.offsetHeight
+		let top = data.offsets.reference.top
+		let bottom = data.offsets.reference.bottom
+
 		data.instance.modifiers.forEach(m=>{
 			if( m.name == 'preventOverflow' && m.boundaries ){
-				this.maxHeight = m.boundaries.height
+
+				let h = (m.boundaries.height || window.innerHeight) - bottom - (arrowH*2)
+
+				if( bottom > m.boundaries.height/2 )
+					h = top - (arrowH*2)	
+
+				this.maxHeight = h
 				this.view.style.maxWidth = this.opts.maxWidth||''
 			}
 		})
@@ -228,7 +247,7 @@ export default class Popover {
 	set maxHeight(val){
 		if( this.opts.maxHeight != 'auto' )
 			this.view.style.maxHeight = this.opts.maxHeight
-		else if( this.opts.maxHeight !== false && this.view.offsetHeight > this.opts.maxHeightThreshold )
+		else if( this.opts.maxHeight !== false /*&& this.view.offsetHeight > this.opts.maxHeightThreshold*/ )
 			this.view.style.maxHeight = val
 	}
 	
