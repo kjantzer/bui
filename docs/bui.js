@@ -4604,7 +4604,7 @@ class UploaderElement extends _litElement.LitElement {
 
   _drop(e) {
     e.preventDefault();
-    this.dragging = false;
+    this.dragging = false; // let files = new Files(e.dataTransfer)
 
     this._selectFiles(e.dataTransfer.files);
   }
@@ -4703,7 +4703,57 @@ class UploaderElement extends _litElement.LitElement {
 }
 
 exports.UploaderElement = UploaderElement;
-customElements.define('b-uploader', UploaderElement);
+customElements.define('b-uploader', UploaderElement); // WIP for uploading directories
+
+class Files {
+  constructor(dataTransfer) {
+    this.getFiles(dataTransfer);
+  }
+
+  async getFiles(dataTransfer) {
+    if (dataTransfer.items[0].webkitGetAsEntry) {
+      Array.from(dataTransfer.items).forEach(async item => {
+        item = item.webkitGetAsEntry();
+
+        if (item.isFile) {
+          console.log('file', item);
+        } else {
+          console.log('dir', item);
+          let items = await Files.getDirItems(item);
+          console.log(items);
+        }
+      });
+    }
+  }
+
+  static async getDirItems(item) {
+    let entries = await dirEntries(item);
+    let items = await Promise.all(entries.map(async entry => {
+      if (entry.isFile) return await entryFile(entry);else return await Files.getDirItems(entry);
+    }));
+    return {
+      name: item.name,
+      items: items
+    };
+  }
+
+}
+
+const entryFile = entry => {
+  return new Promise(resolve => {
+    entry.file(file => {
+      resolve(file);
+    });
+  });
+};
+
+const dirEntries = dir => {
+  return new Promise(resolve => {
+    dir.createReader().readEntries(entries => {
+      resolve(entries);
+    });
+  });
+};
 },{"lit-element":"+bhx"}],"Yy3A":[function(require,module,exports) {
 "use strict";
 
@@ -4738,7 +4788,7 @@ class PaperElement extends _litElement.LitElement {
     return _litElement.css`
         :host {
             box-sizing: border-box;
-            display: inline-block;
+            display: block;
             background: var(--bgd);
             box-shadow: rgba(0,0,0,.1) 0 1px 5px;
             border: solid 1px transparent;
@@ -4758,8 +4808,8 @@ class PaperElement extends _litElement.LitElement {
             box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
         }
 
-        :host([block]) {
-            display: block;
+        :host([inline]) {
+            display: inline-block;
         }
 
         :host([empty]) {
@@ -9933,6 +9983,11 @@ class Label extends _litElement.LitElement {
         :host([outline="green"]) { --bgd: var(--green); }
         :host([outline="pink"]) { --bgd: var(--pink); }
 
+        /* causes unwanted wrap on chrome */
+        /* slot {
+            display: flex;
+        } */
+
         b-hr {
             display: none;
             grid-column: initial; /* remove default 100% width */
@@ -9981,6 +10036,131 @@ class Label extends _litElement.LitElement {
 
 exports.default = Label;
 customElements.define('b-label', Label);
+},{"lit-element":"+bhx"}],"jV4C":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+customElements.define('b-ribbon', class extends _litElement.LitElement {
+  static get properties() {
+    return {
+      pos: {
+        type: String,
+        reflect: true
+      },
+      value: {
+        type: String,
+        reflect: true
+      },
+      shadow: {
+        type: Boolean,
+        reflect: true
+      }
+    };
+  }
+
+  constructor() {
+    super();
+    this.pos = 'left';
+    this.value = '';
+    this.shadow = true;
+  }
+
+  static get styles() {
+    return _litElement.css`
+        :host {
+            --width: 4em;
+            --height: 1em;
+            --padding: .25em;
+            --color: var(--blue);
+            --shadow: none;
+            --offset: -2px;
+
+            line-height: 1em;
+            overflow: hidden;
+            position: absolute;
+            left: var(--offset);
+            top: var(--offset);
+            padding: 0 calc(var(--width) / 2) calc(var(--width) / 2) 0;
+            pointer-events: none;
+        }
+
+        :host([hidden]){ display: none; }
+        
+        :host([shadow]) {
+            --shadow: rgba(0,0,0,.5) 0 10px 5px -10px;
+        }
+
+        :host([pos="right"]) {
+            left: auto;
+            right: var(--offset);
+            padding: 0 0 calc(var(--width) / 2) calc(var(--width) / 2);
+        }
+
+        .wrap {
+            /* background: yellow; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: var(--width);
+            height: var(--width);
+        }
+
+        .inner {
+            width: var(--width);
+            max-height: var(--height);
+            overflow: hidden;
+        }
+
+        .ribbon {
+            pointer-events:all;
+            transform-origin: center center;
+            position: relative;
+            padding: var(--padding) calc(var(--width) / 1.5);
+            width: var(--width);
+            height: var(--height);
+            background: var(--color);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transform: rotateZ(-45deg);
+            backface-visibility: hidden;
+            z-index: 10;
+            font-weight: bold;
+        }
+
+        :host([pos="right"]) .ribbon {
+            transform: rotateZ(45deg);
+        }
+
+    `;
+  }
+
+  render() {
+    return _litElement.html`
+        <div class="wrap">
+            <div class="ribbon">
+                <div class="inner">
+                    <slot>${this.value}</slot>
+                </div>
+            </div>
+        </div>
+    `;
+  }
+
+});
+
+var _default = customElements.get('b-ribbon');
+
+exports.default = _default;
 },{"lit-element":"+bhx"}],"IOAQ":[function(require,module,exports) {
 "use strict";
 
@@ -10002,11 +10182,9 @@ customElements.define('b-hr', class extends _litElement.LitElement {
             height: 1px;
             width: 100%;
             background: var(--bgd);
-            vertical-align: middle;
             
             /* full width */
             grid-column: 1/-1;
-            grid-column-end: -1;
         }
 
         :host([short]) {
@@ -10016,6 +10194,7 @@ customElements.define('b-hr', class extends _litElement.LitElement {
 
         :host([vert]) {
             display: inline-block;
+            vertical-align: middle;
             min-height: 1em;
             height: auto;
             width: 1px;
@@ -13988,10 +14167,16 @@ class Popover {
       onCreate: this._onPositionCreate.bind(this),
       onUpdate: this._onPositionUpdate.bind(this),
       modifiers: {
+        inner: {
+          enabled: opts.inner || false
+        },
+        offset: {
+          enabled: opts.offset ? true : false,
+          offset: opts.offset
+        },
         flip: {
           enabled: opts.flip
         },
-        // hide: {enabled: !this.isNested},
         preventOverflow: {
           enabled: opts.preventDefault !== undefined ? opts.preventDefault : true,
           // FIXME: confusing naming and not sure it works
@@ -14079,9 +14264,14 @@ class Popover {
   }
 
   _onPositionCreate(data) {
+    let arrowH = data.arrowElement.offsetHeight;
+    let top = data.offsets.reference.top;
+    let bottom = data.offsets.reference.bottom;
     data.instance.modifiers.forEach(m => {
       if (m.name == 'preventOverflow' && m.boundaries) {
-        this.maxHeight = m.boundaries.height;
+        let h = (m.boundaries.height || window.innerHeight) - bottom - arrowH * 2;
+        if (bottom > m.boundaries.height / 2) h = top - arrowH * 2;
+        this.maxHeight = h;
         this.view.style.maxWidth = this.opts.maxWidth || '';
       }
     });
@@ -14096,7 +14286,9 @@ class Popover {
   }
 
   set maxHeight(val) {
-    if (this.opts.maxHeight != 'auto') this.view.style.maxHeight = this.opts.maxHeight;else if (this.opts.maxHeight !== false && this.view.offsetHeight > this.opts.maxHeightThreshold) this.view.style.maxHeight = val;
+    if (this.opts.maxHeight != 'auto') this.view.style.maxHeight = this.opts.maxHeight;else if (this.opts.maxHeight !== false
+    /*&& this.view.offsetHeight > this.opts.maxHeightThreshold*/
+    ) this.view.style.maxHeight = val;
   }
 
 }
@@ -15650,11 +15842,15 @@ class Panel extends _litElement.LitElement {
     this.__panelController = val;
   }
 
-  open() {
+  async open() {
     if (this.route && this.route.state.props.controller) this.controller = this.route.state.props.controller; // if no controller set, use the root controller
 
     if (!this.panelController) {
       this.panelController = _controller.default.for('root');
+    }
+
+    if (this.view && this.view.willOpen) {
+      if ((await this.view.willOpen(this.route.state)) === false) return false;
     }
 
     this._onKeydown = this._onKeydown || this.onKeydown.bind(this);
@@ -15676,6 +15872,7 @@ class Panel extends _litElement.LitElement {
     this.route && this.route.update({
       title: str
     });
+    if (this.toolbar) this.toolbar.title = str;
   }
 
   get title() {
@@ -16826,6 +17023,7 @@ const DefaultOpts = {
 exports.DefaultOpts = DefaultOpts;
 const SearchDefaults = {
   placeholder: 'Search',
+  icon: 'search',
   parse: row => {
     return {
       label: row.label || row.name || row.title || 'Unknown',
@@ -16960,6 +17158,10 @@ class Menu {
     return parse;
   }
 
+  get searchIcon() {
+    return this.opts.search && this.opts.search.icon || SearchDefaults.icon;
+  }
+
   get searchPlaceholder() {
     return this.opts.search && this.opts.search.placeholder || SearchDefaults.placeholder;
   }
@@ -17001,7 +17203,7 @@ class Menu {
 
 			${this.searchIsOn ? _litHtml.html`
 				<div class="menu-search-bar">
-					<b-icon name="search"></b-icon>
+					<b-icon name="${this.searchIcon}"></b-icon>
 					<b-spinner hidden></b-spinner>
 					<input type="text" placeholder="${this.searchPlaceholder}">
 				</div>
@@ -17257,7 +17459,8 @@ class Menu {
       if (this.opts.multiple) this.resolve(this.selected);else this.resolve(false);
     };
 
-    this.presenter = new _panel.default(this.el, opts).open();
+    this.presenter = new _panel.default(this.el, opts);
+    this.presenter.open();
     this.scrollToSelected();
     if (this.searchIsOn) this.focusSearch();
     return this.promise;
@@ -17995,7 +18198,7 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
 
           views.push(..._views);
           node.textContent = '';
-        } else if (node.slot) {// ignore views that have a slot name
+        } else if (node.slot || node.nodeName == '#comment') {// ignore views that have a slot name
         } else if (node.title) {
           views.push(node);
         } else {
@@ -18555,6 +18758,8 @@ slot[name="after"]{
 	--disabledColor: rgba(0,0,0,.3);
 	--labelFontFamily: inherit;
 	--labelFontSize: inherit;
+	--padY: 0;
+	--padX: 0;
 }
 
 :host main {
@@ -18702,7 +18907,7 @@ slot[name="help"] {
 	font-size: inherit;
 	border: none;
 	background: none;
-	padding: 0;
+	padding: var(--padX) var(--padY);
 }
 
 /* doesn't appear to work */
@@ -18850,6 +19055,8 @@ slot[name="help"] {
 */
 :host([material="outline"]) {
 	/* margin: 0 .5em .5em 0; */
+	--padY: .75em;
+	--padX: .75em;
 }
 
 :host([material="outline"]) main:before {
@@ -18866,7 +19073,7 @@ slot[name="help"] {
 /* :host([material="outline"]) .control, */
 :host([material="outline"]) slot[name="control"]::slotted(*),
 :host([material="outline"]) .label {
-	padding: .75em;
+	padding: var(--padX) var(--padY);
 	border-radius: 3px;
 }
 
@@ -18880,15 +19087,15 @@ slot[name="help"] {
 }
 
 :host([material="outline"]) .prefix {
-	padding: .75em;
+	padding: var(--padX) var(--padY);
     padding-right: 0;
-    margin-right: -.75em;
+    margin-right: calc(var(--padX) * -1);
 }
 
 :host([material="outline"]) .suffix {
-	padding: .75em;
+	padding: var(--padX) var(--padY);
     padding-left: 0;
-    margin-left: -.75em;
+    margin-left: calc(var(--padX) * -1);
 }
 
 :host([material="outline"]) .control:not([empty]) ~ .label,
@@ -18897,7 +19104,7 @@ slot[name="help"] {
 :host([material="outline"][focused]) .label {
 	background: var(--bgd);
 	padding: 0 .35em;
-	margin-left: .75em;
+	margin-left: var(--padX);
 	transform: translateY(-50%);
 }
 
@@ -18915,7 +19122,7 @@ slot[name="help"] {
 } */
 
 :host([material="outline"]) slot[name="help"] {
-	margin: .5em .75em 0
+	margin: .5em var(--padX) 0
 }
 
 /*
@@ -19093,6 +19300,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _default(input) {
   (0, _setValueAttrs.default)(input);
+  input.addEventListener('change:value', onChange);
   input.addEventListener('input', onInput);
   input.addEventListener('focus', onFocus);
   input.addEventListener('blur', onBlur);
@@ -19121,6 +19329,10 @@ const testPattern = input => {
     input.isInvalid = true;
     input.setAttribute('invalid', '');
   }
+};
+
+const onChange = e => {
+  (0, _setValueAttrs.default)(e.target, e.target.value);
 };
 
 const onFocus = e => {
@@ -19296,6 +19508,7 @@ class FormControlElement extends HTMLElement {
 
   set value(val) {
     if (this.control) this.control.value = val;
+    if (this.control && this.control.tagName == 'INPUT') this.control.dispatchEvent(new CustomEvent('change:value'));
   }
 
   get dbValue() {
@@ -19369,11 +19582,11 @@ const btnPresets = {
   },
   'ok': {
     label: 'Okay',
-    color: 'blue'
+    color: 'primary'
   },
   'save': {
     label: 'Save',
-    color: 'green'
+    color: 'primary'
   },
   'delete': {
     label: 'Delete',
@@ -19596,7 +19809,8 @@ class Dialog {
       this.resolve(false);
     };
 
-    this.presenter = new Panel(this.el, opts).open();
+    this.presenter = new Panel(this.el, opts);
+    this.presenter.open();
     return this.promise;
   }
 
@@ -36341,6 +36555,8 @@ require("../elements/empty-state");
 
 require("../elements/label");
 
+require("../elements/ribbon");
+
 require("../elements/hr");
 
 require("../elements/sub");
@@ -36411,7 +36627,7 @@ history.replaceState = (f => function replaceState() {
 window.addEventListener('popstate', function () {
   convertComments();
 });
-},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/hr":"IOAQ","../elements/sub":"VANQ","../elements/avatar":"Da++","../elements/embed":"bpDM","../elements/audio":"EIVk","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../helpers/colors-list":"TMO9","../helpers/colors.less":"r4vn","../presenters/dialog":"pos3","../presenters/menu":"0tCY"}],"RVcF":[function(require,module,exports) {
+},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/ribbon":"jV4C","../elements/hr":"IOAQ","../elements/sub":"VANQ","../elements/avatar":"Da++","../elements/embed":"bpDM","../elements/audio":"EIVk","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../helpers/colors-list":"TMO9","../helpers/colors.less":"r4vn","../presenters/dialog":"pos3","../presenters/menu":"0tCY"}],"RVcF":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -36533,6 +36749,6 @@ module.exports = function loadHTMLBundle(bundle) {
   });
 };
 },{}],0:[function(require,module,exports) {
-var b=require("m0oQ");b.register("html",require("uu9t"));b.load([["icons.svg.b0516ff5.html","pxeq"]]).then(function(){require("gE6T");});
+var b=require("m0oQ");b.register("html",require("uu9t"));b.load([["icons.svg.b9327995.html","pxeq"]]).then(function(){require("gE6T");});
 },{}]},{},[0], null)
 //# sourceMappingURL=/bui.js.map
