@@ -16,7 +16,7 @@ export class PaperElement extends LitElement {
     static get styles(){ return css`
         :host {
             box-sizing: border-box;
-            display: inline-block;
+            display: block;
             background: var(--bgd);
             box-shadow: rgba(0,0,0,.1) 0 1px 5px;
             border: solid 1px transparent;
@@ -36,8 +36,8 @@ export class PaperElement extends LitElement {
             box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
         }
 
-        :host([block]) {
-            display: block;
+        :host([inline]) {
+            display: inline-block;
         }
 
         :host([empty]) {

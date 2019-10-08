@@ -85,9 +85,10 @@ export default class Label extends LitElement {
         :host([outline="green"]) { --bgd: var(--green); }
         :host([outline="pink"]) { --bgd: var(--pink); }
 
-        slot {
+        /* causes unwanted wrap on chrome */
+        /* slot {
             display: flex;
-        }
+        } */
 
         b-hr {
             display: none;

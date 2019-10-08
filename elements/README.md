@@ -111,6 +111,33 @@ Can be altered to display as filled, outlined, or as a badge.
 #### Style hooks
 - `--dividerThickness`
 
+## `<b-ribbon>`
+```html
+<b-ribbon>Ribbon</b-ribbon>
+<b-ribbon pos="right">Ribbon</b-ribbon>
+```
+
+**Note:** make sure the correct parent element has a relative type position
+<!--
+<b-paper style="height: 7em">
+    <b-ribbon>Ribbon</b-ribbon>
+    <b-ribbon pos="right" style="--color:var(--pink);--height:2em;">Right <b-sub>second line</b-sub></b-ribbon>
+</b-paper>
+-->
+
+#### Attributes
+- `pos` - left/right
+- `shadow` - true/false
+- `value` - can be used in place of inner html slot
+
+#### Style Hooks
+- `--width` 
+- `--height` ex: set to `2em` for 2 lines
+- `--padding` top/bottom padding
+- `--color` background color
+- `--shadow` customize shadow attribute
+- `--offset` defaults to slight offset to give depth
+
 ## `<b-avatar>`
 Create scalable avatars with initials or image with from a url or gravatar GUID
 
