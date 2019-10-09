@@ -1,4 +1,5 @@
 import {css} from 'lit-element'
+import './touch-ripple'
 
 const styles = css`
 
@@ -22,6 +23,7 @@ const styles = css`
 
 main {
 	position: relative;
+	display: inherit;
 }
 
 :host([placement="top"]) { flex-direction: column-reverse; }
