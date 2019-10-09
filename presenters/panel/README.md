@@ -20,6 +20,7 @@ panel.open()
 - `type` (modal)
 - `closeBtn` (bool) - will show a close button in the top right
 - `animation` (scale [only works on anchor=center])
+- `quickJump` (bool) - show quick jump menu when right click on close btn
 - `disableBackdropClick` - by default clicking backdrop will close panel
 - `closeOnEsc` - default is false
 - `controller` - specify a different panel controller (see below)

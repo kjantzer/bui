@@ -14,6 +14,7 @@ export const PanelDefaults = {
     height: '100%',
     anchor: 'right',
     animation: '',
+    quickJump: true,
     closeOnEsc: false,
     controller: null, // root controller will be created and used
     disableBackdropClick: false

@@ -112,6 +112,10 @@ class PanelToolbar extends LitElement {
     }
 
     quickJump(e){
+
+        if( !this.panel || this.panel.opts.quickJump !== true )
+            return
+
         e.preventDefault();
         this.panel&&this.panel.panelController&&this.panel.panelController.quickJump(e.target)
     }
