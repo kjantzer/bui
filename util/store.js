@@ -1,11 +1,9 @@
-
 // TODO: support prefixing?
-export default (key, val)=>{
-	
-	let ls = window.localStorage
+
+const store = (store, key, val)=>{
 	
 	if( val === undefined ){
-		let data = ls.getItem(key)
+		let data = store.getItem(key)
 		
 		if( data === null || data === undefined )
 			return undefined
@@ -14,14 +12,24 @@ export default (key, val)=>{
 		try { val = JSON.parse(data) }
 		catch(e) { val = data }
 		
-		return val && isAmplify ? val.data : val;
+		return val
 	}
 		
 	if( val === null ){
-		return ls.removeItem(key)
+		return store.removeItem(key)
 	}
 		
 	val = JSON.stringify(val)
 	
-	return ls.setItem(key, val)
+	return store.setItem(key, val)
 }
+
+export const localStore = (key, val)=>{
+	return store(window.localStorage, key, val)
+}
+
+export const sessionStore = (key, val)=>{
+	return store(window.sessionStorage, key, val)
+}
+
+export default localStore
