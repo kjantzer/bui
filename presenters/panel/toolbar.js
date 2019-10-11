@@ -25,6 +25,7 @@ class PanelToolbar extends LitElement {
             align-items: center;
             border-radius: 4px 4px 0 0;
             min-height: 40px;
+            grid-column: 1/-1; /* full width */
         }
 
         :host([overlay]) {
