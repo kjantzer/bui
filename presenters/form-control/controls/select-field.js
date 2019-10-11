@@ -226,8 +226,8 @@ class SelectFieldElement extends HTMLElement {
 		
 		this._oldSelected = this._selected.slice(0)
 		
-		if( !val ) val = []
-		else if( !Array.isArray(val) ) val = [val]
+		if( val === undefined || val === null ) val = []
+		else if( !Array.isArray(val) ) val = [String(val)]
 		
 		let selected = this.options.filter(m=>{
 			return val.includes(m.val) || (val.length == 0 && !m.val)
