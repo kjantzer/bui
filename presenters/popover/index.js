@@ -23,13 +23,14 @@ let WatchingClicks = false
 let WatchingKeyboard = false
 
 const WatchClicks = function(e){
-	
+		
 	let found = false
 	let close = []
-	
+	let target = e.path ? e.path.find(el=>el.popover) : e.target
+
 	// the clicked target already has a popover and has the "toggle" setting, so close the current popover
-	if( e.target.popover && e.target.popover.view != e.target && e.target.popover.opts.clickToggles ){
-		e.target.popover._close()
+	if( target && target.popover && target.popover.view != target && target.popover.opts.clickToggles ){
+		target.popover._close()
 		e.preventDefault()
 		e.stopPropagation()
 		return false
@@ -37,7 +38,7 @@ const WatchClicks = function(e){
 	
 	// close all popovers not part (nested) within the clicked target
 	OpenPopovers.slice(0).reverse().forEach(dd=>{
-		if( !found && !dd.contains(e.target) ){
+		if( !found && !dd.contains(target) ){
 			close.push(dd)
 			
 		// as soon as one of the popovers is nested, all others that follow will be nested, no reason to continue testing
