@@ -28,6 +28,16 @@ class PanelToolbar extends LitElement {
             grid-column: 1/-1; /* full width */
         }
 
+        @media (max-width: 699px) {
+            .middle {
+                display: none;
+            }
+
+            :host {
+                grid-template-columns: auto auto;
+            }
+        }
+
         :host([overlay]) {
             background: none;
             box-shadow: none;
