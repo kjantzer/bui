@@ -2,21 +2,21 @@
 /*
 	NOTE: this concept is still in it's early stages
 */
+import {Model} from 'backbone'
+import _ from 'underscore'
 
-Backbone.Model.prototype.isEdited = function(){
+Model.prototype.isEdited = function(){
 	return this._editedAttrs&&Object.keys(this._editedAttrs).length>0
 }
 
-Backbone.Model.prototype.editedAttrs = function(){
+Model.prototype.editedAttrs = function(){
 	return Object.assign({}, this._editedAttrs||{})
 }
 
-Backbone.Model.prototype.saveEdited = function(opts={}){
+Model.prototype.saveEdited = function(opts={}){
 	let attrs = Object.assign({}, this._editedAttrs)
-	this._editedAttrs = {}
-	this._origAttrs = null
 
-	return new Promise(resolve=>{
+	return new Promise(async resolve=>{
 		
 		opts.success = ()=>{
 			this.trigger('edited', false, {})
@@ -25,18 +25,26 @@ Backbone.Model.prototype.saveEdited = function(opts={}){
 		
 		opts.error = resolve
 		
-		// if fails to save, likely due to lack of URL specified, so fallback to using set
 		try{
-			this.save(attrs, opts)
-		}catch(err){
-			this.set(attrs, opts)
-			opts.success()
+			await this.saveSync(attrs, opts)
+			
+			this._editedAttrs = {}
+			this._origAttrs = null
+
+		}catch(err){			
+			// if fails to save, likely due to lack of URL specified, so fallback to using set
+			// FIXME: this is weird design, but I think I used it this way once
+			// might need to put a version of it back
+			// this.set(attrs, opts)
+			// opts.success()
+
+			resolve()
 		}
 		
 	})
 }
 
-Backbone.Model.prototype.resetEdited = function(opts={}){
+Model.prototype.resetEdited = function(opts={}){
 	let orig = this._origAttrs
 	this._editedAttrs = {}
 	this._origAttrs = null
@@ -44,7 +52,7 @@ Backbone.Model.prototype.resetEdited = function(opts={}){
 	this.trigger('edited', this.isEdited(), {})
 }
 
-Backbone.Model.prototype.editAttr = function(key, val, opts={}){
+Model.prototype.editAttr = function(key, val, opts={}){
 	let attrs;
 	if (_.isObject(key)) {
 		attrs = key;

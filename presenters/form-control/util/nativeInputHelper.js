@@ -4,7 +4,9 @@ import stopMaxLength from './stopMaxLength'
 
 export default function(input){
 
-    setValueAttrs(input, input.value)
+    setTimeout(()=>{
+        setValueAttrs(input, input.value)
+    })
 
     input.addEventListener('change:value', onChange)
     input.addEventListener('input', onInput)

@@ -107,8 +107,15 @@ Collection.prototype.getOrFetchSync = function(id, opts={}){
 
 
 const xhrError = function(xhr, resp){
-    
+
     let err = new Error()
+
+    if( !xhr ){
+        let [model, _xhr, opts] = resp
+        err.name = opts.errorThrown && opts.errorThrown.error ? opts.errorThrown.error : opts.errorThrown
+        return err
+    }
+    
     err.name = xhr.statusText
     err.details = xhr.responseJSON
     err.response = resp
