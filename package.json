@@ -5,8 +5,8 @@
     "main": "index.js",
     "homepage": "https://kjantzer.github.io/bui/",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/kjantzer/bui"
+        "type": "git",
+        "url": "https://github.com/kjantzer/bui"
     },
     "scripts": {
         "start": "parcel demo/index.html --out-dir demo/dist",
@@ -18,7 +18,13 @@
         "publish-pages": "cd ./public && git add -A && git commit -m 'publish docs' && git push Github HEAD:gh-pages",
         "build-and-publish-pages": "npm run build-pages && npm run publish-pages"
     },
-    "keywords": ["custom elements", "web components", "ui framework", "ui components", "lit-element"],
+    "keywords": [
+        "custom elements",
+        "web components",
+        "ui framework",
+        "ui components",
+        "lit-element"
+    ],
     "author": "Kevin Jantzer, Blackstone Publishing",
     "license": "MIT",
     "alias": {
