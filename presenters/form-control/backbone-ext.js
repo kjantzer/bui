@@ -18,18 +18,14 @@ Model.prototype.saveEdited = function(opts={}){
 
 	return new Promise(async resolve=>{
 		
-		opts.success = ()=>{
-			this.trigger('edited', false, {})
-			resolve()
-		}
-		
-		opts.error = resolve
-		
 		try{
 			await this.saveSync(attrs, opts)
 			
 			this._editedAttrs = {}
 			this._origAttrs = null
+
+			this.trigger('edited', false, {})
+			resolve()
 
 		}catch(err){			
 			// if fails to save, likely due to lack of URL specified, so fallback to using set
