@@ -142,6 +142,7 @@ export default class Popover {
 	}
 	
 	contains(target){
+		if( !target ) return false
 		if( this.el.contains(target) )
 			return true
 		
