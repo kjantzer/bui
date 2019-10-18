@@ -155,6 +155,11 @@ export class UploaderElement extends LitElement {
         this.shadowRoot.querySelector('.choose').click()
     }
 
+    // alias
+    selectFile(){
+        this.chooseFile()
+    }
+
     _drop(e){
         e.preventDefault()
         this.dragging = false
