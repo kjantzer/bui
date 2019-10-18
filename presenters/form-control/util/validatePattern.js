@@ -4,6 +4,9 @@ export default (el, val) => {
 
     // `validate` is deprecated, use `pattern`
     let pattern = el.getAttribute('pattern') || el.getAttribute('validate')
+
+    if( !pattern && el.validate )
+        return el.validate(val, el) !== false
     
     if( !pattern ) return required ? !!val : true
     

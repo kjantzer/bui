@@ -187,6 +187,11 @@ class FormHandler extends HTMLElement {
 		let changes = {}
 		changes[key] = val
 		
+		if( this.validateChange && this.validateChange(m, changes, key, val) === false ){
+			el.value = changes[key] || el.value
+			return
+		}
+
 		// optionally make other changes based on this change
 		// TODO: think of a way to implement this again for the custom element?
 		// if( this.opts.onEditorChange && this.opts.onEditorChange(m, changes, key, val) === false )
