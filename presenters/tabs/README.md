@@ -116,3 +116,44 @@ The tabbar/menu provides slots for rendering content before and after the menu i
 <div slot="menu:before">before menu items</div>
 <div slot="menu:after">after menu items</div>
 ```
+
+## Custom Tab Bar
+You can choose to implement your own tab bar menu by specificying the custom element in
+a `tab-bar` attribute. The custom tab bar will have inherit styles to support the 
+different layouts
+
+```html
+<b-tabs tab-bar="my-custom-tab-bar">
+```
+
+The tab bar will have the following references set:
+
+```js
+this.views // class containing the views
+this.onMenuClick // the function to call when a menu item is clicked
+```
+
+#### Example
+```js
+customElements.define('my-custom-tab-bar', class extends LitElement{
+
+    static get styles(){return css`
+        [active] {
+            color: var(--blue);
+        }
+    `}
+
+    render(){return html`
+        ${this.views.map(v=>html`
+            ${v.canDisplay?html`
+                <div ?active=${v.active} .tabView=${v} @click=${this.onMenuClick}>
+                    ${v.title}
+                </div>
+            `:''}
+        `)}
+    `}
+
+})
+```
+
+Clicked menu items **must** have `.tabView=${view}` set to work

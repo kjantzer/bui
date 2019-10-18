@@ -89,6 +89,7 @@ customElements.define('b-tabs', class extends LitElement {
             flex: 1;
             min-height: 0;
 
+            --menuBgd: none;
             --menuFontSize: 1em;
             --contentPadding: 2em;
             --menuItemPadding: .75em 1em;
@@ -104,6 +105,7 @@ customElements.define('b-tabs', class extends LitElement {
             font-size: var(--menuFontSize);
             min-width: 0;
             overflow: hidden;
+            background: var(--menuBgd);
         }
 
         .tab-bar-item {
@@ -119,6 +121,16 @@ customElements.define('b-tabs', class extends LitElement {
 
         :host(:not([singlemenu])) .single-menu {display: none;}
         :host([singlemenu]) .tab-bar-item:not(.single-menu) {display: none;}
+
+        :host([sticky]) {
+            --menuBgd: #fff;
+        }
+        
+        :host([sticky]) header {
+            position: sticky;
+            top: 0px;
+            z-index: 1000;
+        }
 
         :host([layout="top"]) { grid-template-rows: auto 1fr; }
         :host([layout="bottom"]) { grid-template-rows: 1fr auto; }
@@ -276,16 +288,43 @@ customElements.define('b-tabs', class extends LitElement {
         }
     `}
 
+    renderTabBar(){
+
+        if( this.getAttribute('tab-bar') ){
+
+            if( !this.__customTabBar ){
+                
+                let TabBar = customElements.get(this.getAttribute('tab-bar'))
+                if( !TabBar ) return console.error(`Tabs: ${this.getAttribute('tab-bar')} does not exist`)
+
+                this.__customTabBar = new TabBar()
+                this.__customTabBar.host = this
+                this.__customTabBar.views = this.views
+                this.__customTabBar.onMenuClick = this.menuClick.bind(this)
+                this.__customTabBar.classList.add('tab-bar')
+            }else{
+                this.__customTabBar.update()
+            }
+
+            return this.__customTabBar
+
+        }else{
+
+            return html`
+            <header class="tab-bar">
+                <slot name="menu:before"></slot>
+                <div class="tab-bar-item single-menu" active @click=${this.popoverMenu}>
+                    <b-icon name="menu"></b-icon>
+                    ${this.views.active.title}
+                </div>
+                ${this.views.map(v=>v.render(this.menuClick))}
+                <slot name="menu:after"></slot>
+            </header>`
+        }
+    }
+
     render(){return html`
-        <header class="tab-bar">
-            <slot name="menu:before"></slot>
-            <div class="tab-bar-item single-menu" active @click=${this.popoverMenu}>
-                <b-icon name="menu"></b-icon>
-                ${this.views.active.title}
-            </div>
-            ${this.views.map(v=>v.render(this.menuClick))}
-            <slot name="menu:after"></slot>
-        </header>
+        ${this.renderTabBar()}
         <slot class="content"></slot>
     `}
 
@@ -301,6 +340,11 @@ customElements.define('b-tabs', class extends LitElement {
 
     menuClick(e){
         let oldVal = this.active
+
+        if( !e.currentTarget.tabView ){
+            return console.error(`Tabs: tab menu items must have .tabView set`)
+        }
+
         this.active = e.currentTarget.tabView
 
         if( this.active != oldVal )
