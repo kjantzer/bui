@@ -378,9 +378,9 @@ export class Panel extends LitElement {
         return this.route ? this.route.state.params : {}
     }
 
-    close(){
+    async close(){
 
-        if( this.opts.onClose && this.opts.onClose() === false )
+        if( this.opts.onClose && await this.opts.onClose() === false )
             return
 
         this.route&&this.route.update({didExit: true})
