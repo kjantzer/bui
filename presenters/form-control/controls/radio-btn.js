@@ -6,6 +6,8 @@ const styles = css`
 	--size: 1.6em;
 	--color: var(--formControlTheme);
 	--colorDisabled: rgba(0, 0, 0, 0.26);
+	--labelSize: 1em;
+	--labelColor: currentColor;
 	display: inline-block;
 	vertical-align: middle;
 }
@@ -51,6 +53,11 @@ svg.active {
 
 :host([disabled]) label {
 	color: var(--colorDisabled);
+}
+
+label {
+	font-size: var(--labelSize);
+	color: var(--labelColor);
 }
 
 main label {

@@ -46,6 +46,7 @@ class RadioGroupElement extends HTMLElement {
 		if( e.target == this ) return
 		
 		this.value = e.target.value
+		this.setAttribute('value', this.value)
 		e.stopPropagation()
 		
 		var event = new CustomEvent('change', {
