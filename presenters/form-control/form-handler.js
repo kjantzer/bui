@@ -1,4 +1,4 @@
-// const store = require('util/store')
+import store from '../../util/store'
 
 class FormHandler extends HTMLElement {
 	
