@@ -49,6 +49,7 @@ export class BtnElement extends LitElement {
             font-size: .9rem;
             line-height: 1rem;
             font-weight: bold;
+            font-family: var(--bui-btn-font);
         }
 
         :host([hidden]) {
