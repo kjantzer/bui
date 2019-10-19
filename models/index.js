@@ -58,7 +58,7 @@ export class Collection {
         if( urlStr.match(/^http/) )
             base = undefined
 
-        let url = new URL(this.url, base)
+        let url = base ? new URL(this.url, base) : new URL(this.url)
         
         if( params.data ){
             let data = params.data
