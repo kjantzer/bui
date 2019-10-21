@@ -39,7 +39,11 @@ class PanelController extends LitElement {
     constructor(){
         super()
         this.panels = new Map()
+    }
 
+    connectedCallback(){
+        super.connectedCallback()
+        
         if( this.name ){
             if( PanelControllers[this.name] )
                 console.warn('A panel-controller already exists with the name: ', this.name)
