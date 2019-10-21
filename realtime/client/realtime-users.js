@@ -54,12 +54,14 @@ customElements.define('b-realtime-users', class extends LitElement{
             margin: 0 0 0 .25em;
         }
 
+        b-avatar,
         .avatar {
             border-radius: var(--theSize);
             --size: var(--theSize);
             /* box-shadow: rgba(0,0,0,.2) 0 0 2px */
         }
 
+        b-avatar:not(:first-child),
         .avatar:not(:first-child) {
             margin-left: calc(var(--size) / -1.7);
         }

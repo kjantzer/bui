@@ -8,20 +8,30 @@ Provides an easy way to keep track of views that are opened by clients
 
 ```js
 // server
-import Views from 'server/views'
-const io = io();
+const IO = require('socket.io')
+const Views = require('server/views')
+const io = IO();
 
 io.on('connection', socket=>{
     Views.connect(socket)
 });
+
+// Dont forget to:
+// io.attach(server)
 ```
 
 ```js
 // client
+import io from 'socket.io-client'
 import Views from 'client/views'
-const socket = io();
+
+const socket = io('/', {
+    transports: ['websocket'], // https://caniuse.com/#feat=websockets
+});
+
 const socketViews = new Views(socket)
 
+// open a view and watch for changes
 let view = socketViews.open('view-name')
 view.on('change', clients=>{
     console.log(clients.length)
