@@ -46,6 +46,7 @@ export class SpinnerOverlayElement extends LitElement {
             z-index: 1200;
             background: var(--spinnerBgd);
             color: var(--spinnerColor);
+			border-radius: var(--radius);
             display: flex;
             justify-content: center;
             align-items: center;
