@@ -12,12 +12,18 @@ export default (data, filename = null, {
     type = ''
 }={})=>{
 
-    if( !(data instanceof Blob) ){
+    let url
+
+    if( data instanceof URL ){
+        url = data
+
+    } else if( !(data instanceof Blob) ){
 
         if( !type )
             type = 'text/plain'
         
         data = new Blob([data], {type})
+        url = window.URL.createObjectURL(data);
     }
 
     if( !filename ){
@@ -26,7 +32,7 @@ export default (data, filename = null, {
     }
 
     var a = window.document.createElement('a');
-    a.href = window.URL.createObjectURL(data);
+    a.href = url
     a.download = filename;
 
     document.body.appendChild(a);
