@@ -63,6 +63,14 @@ Display an svg icon – [See a full list of icons](../docs/icons.md)
 <b-icon name="cog"></b-icon>
 ```
 
+## `<b-file-icon>`
+*In development*
+
+```html
+<b-file-icon ext="pdf"></b-file-icon>
+<b-file-icon ext="doc" style="--size:4em"></b-file-icon>
+```
+
 ## `<b-hr>`
 A line divider
 
