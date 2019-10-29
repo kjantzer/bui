@@ -41,8 +41,8 @@ export default class Dialog {
 			icon = `<b-spinner></b-spinner>`
 		if( customElements.get(opts.icon) )
 			icon = `<${opts.icon}></${opts.icon}>`
-		
-		this.el.innerHTML = `<style>${styles}</style>
+
+		this.el.innerHTML = `${typeof styles === 'string'?`<style>${styles}</style>`:''}
 							<div class="d-icon">${icon}</div>
 							<h2 class="d-title">${opts.title}</h2>
 							<div class="d-msg">${opts.msg}</div>
@@ -199,6 +199,12 @@ export default class Dialog {
 		opts.onKeydown = this.onKeydown.bind(this)
 		
 		this.presenter = new Popover(target, this.el, opts)
+
+		// layout timing issue on Safari (mac and iOS)... this will fix it for now
+		setTimeout(()=>{
+			this.presenter._updatePosition()
+		})
+
 		return this.promise
 	}
 	
