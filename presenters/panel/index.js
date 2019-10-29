@@ -382,6 +382,9 @@ export class Panel extends LitElement {
 
         if( this.opts.onClose && await this.opts.onClose() === false )
             return
+        
+        if( this.view && this.view.onClose && this.view.onClose() === false )
+            return
 
         this.route&&this.route.update({didExit: true})
         this._close()
