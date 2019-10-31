@@ -33,6 +33,8 @@ export class BtnElement extends LitElement {
             --hoverBgdColor: rgba(255,255,255,.1);
             --textColor: #fff;
             --borderColor: var(--color);
+            --borderStyle: solid;
+            --borderWidth: 1px;
             --padding: .4em .6em;
 
             display: inline-block;
@@ -64,8 +66,13 @@ export class BtnElement extends LitElement {
             padding: var(--padding);
             /*padding-bottom: .3em;*/ /* remove descender line to make it look more centered*/
             text-overflow: ellipsis;
-            border: solid 1px var(--borderColor);
+            border: var(--borderStyle) var(--borderWidth) var(--borderColor);
             /* transition: 120ms; */
+        }
+
+        main > span {
+            display: inline-flex;
+            justify-content: center;
         }
 
         slot {
@@ -125,9 +132,39 @@ export class BtnElement extends LitElement {
             display: none;
         }
 
-        main > b-icon {
+        main b-icon {
             margin-right: .35em;
             margin-left: -.15em;
+        }
+
+        :host([stacked]) {
+            --padding: .3em .5em .1em .5em;
+        }
+
+        :host([stacked]) main {
+            display: inline-grid;
+        }
+
+        :host([stacked]) b-icon {
+            font-size: 1.2em;
+            margin: 0;
+        }
+
+        :host([stacked]) slot {
+            font-size: .6em;
+        }
+
+        :host([stacked]) slot::slotted(*) {
+            opacity: .5;
+        }
+
+        :host([stacked]) b-spinner {
+            font-size: 1.2em;
+            margin-right: 0;
+            margin-left: -1em;
+        }
+        :host([stacked][spin]) b-spinner {
+            margin-left: 0;
         }
 
         :host([block]) {
@@ -144,7 +181,7 @@ export class BtnElement extends LitElement {
             --padding: .4em .5em;
         }
 
-        :host(:empty) main > b-icon {
+        :host(:empty) main b-icon {
             margin-left: 0;
             margin-right: 0;
         }
@@ -234,8 +271,10 @@ export class BtnElement extends LitElement {
     render(){ return html`
         <div class="hover"></div>
         <main>
-            <b-spinner></b-spinner>
-            ${this.icon?html`<b-icon name="${this.icon}"></b-icon>`:''}
+            <span>
+                <b-spinner></b-spinner>
+                ${this.icon?html`<b-icon name="${this.icon}"></b-icon>`:''}
+            </span>
             <slot></slot>
         </main>
     `}
