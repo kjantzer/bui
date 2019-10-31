@@ -105,3 +105,50 @@ Read a [file](https://developer.mozilla.org/en-US/docs/Web/API/File) to text (as
 let text = await readFile(file)
 ```
 
+## `AJAX`
+A wrapper around [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) to simplify and provide async/await. 
+
+> `fetch` is a good solution most of the time, but does not provide progress.
+
+```js
+let formData = new FormData()
+
+formData.set('file', FileObject)
+
+let resp = new AJAX(method, url)
+.on('progress', e=>{
+    let progress = Math.round(e.loaded / e.total * 100)
+    console.log(progress)
+})
+.send(formData)
+
+console.log(resp)
+```
+
+The `.on` method provides a chainable version of `target.addEventListener`
+
+```js
+new AJAX(method, url)
+.on('loadstart', handler)
+.on('progress', handler)
+.send()
+```
+
+## Background Resume
+
+```js
+import 'bui/util/background-resume'
+
+window.addEventListener('background-resume', e=>{ /*do something*/ })
+```
+
+iOS devices (untested on Android) stop processing JS
+when backgrounded for a few seconds (10-20 in my testing)
+
+When the browser is reopended, safari resumes with the JS "state"
+intact but since time was essentially frozen, no updates (long poll)
+would have been made or received (websocket).
+
+It may be important to trigger a refresh of data when resuming 
+from the background; this script enables such a function.
+
