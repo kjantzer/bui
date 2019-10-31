@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import AJAX from '../util/ajax';
 
 export class UploaderElement extends LitElement {
 
@@ -92,6 +93,7 @@ export class UploaderElement extends LitElement {
         this.files = []
         this._numUploading = 0
         this._numUploaded = 0
+        this._fileProgress = 0
         this.dragging = false;
         this.uploading = false;
 
@@ -101,7 +103,9 @@ export class UploaderElement extends LitElement {
 	}
 
     get progress(){
-        return this.files.length > 0 ? (this._numUploaded / this.files.length * 100) : 0
+        let progress = this.files.length > 0 ? this._numUploaded * 100 : 0
+        progress += this._fileProgress
+        return progress > 0 ? (progress / (this.files.length * 100) * 100) : 0
     }
 
     get autoUpload(){ return this.hasAttribute('auto-upload') }
@@ -231,6 +235,7 @@ export class UploaderElement extends LitElement {
 
         this._numUploading = 0
         this._numUploaded = 0
+        this._fileProgress = 0
         this.uploading = true
 
         let resp = []
@@ -248,16 +253,18 @@ export class UploaderElement extends LitElement {
             this.requestUpdate()
 
             try{
-                let uploadResp = await fetch(url, {
-                    method: method,
-                    body: _formData
-                })
-                .then(resp=>resp.json())
-                .then(resp=>{
-                    this._numUploaded++
+
+                let req = new AJAX(method, url)
+                
+                req.on('progress', e=>{
+                    this._fileProgress = Math.round(e.loaded / e.total * 100)
                     this.requestUpdate()
-                    return resp
                 })
+
+                let uploadResp = await req.send(_formData)
+
+                this._numUploaded++
+                this.requestUpdate()
 
                 resp.push(uploadResp)
 
@@ -269,6 +276,7 @@ export class UploaderElement extends LitElement {
 
         this._numUploading = 0
         this._numUploaded = 0
+        this._fileProgress = 0
         this.files = []
         this.uploading = false
 
