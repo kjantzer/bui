@@ -1,0 +1,43 @@
+/*
+    Backbone imports jQuery and Webpack complains if it can't import
+    jQuery. Here we are faking out the jQuery import (see alias in
+    webpack.config.js) and then only implementing the absolute 
+    minimum that Backbone requires
+*/
+module.exports = {
+
+    // Backbone.ajax calls $.ajax – create our own ajax
+    ajax(opts) {
+
+        // GET cannot use body, so convert to query string
+        if( opts.data && opts.type == 'GET' ){
+
+            let query = opts.data
+            opts.data = null
+
+            if( typeof query == 'object' )
+                query = new URLSearchParams(query).toString()
+            
+            opts.url += '?'+query
+        }
+
+        let headers = Object.assign({
+            'Content-Type': 'application/json'
+        }, opts.headers||{})
+
+        fetch(opts.url, {
+            method: opts.type,
+            headers: headers,
+            body: opts.data
+        }).then(r=>r.json())
+        .then(resp=>{
+            if( resp.error )
+                opts.error(null, resp.err, resp)
+            else
+                opts.success(resp)
+        }, err=>{
+            opts.error(null, err.message, err)
+        })
+    }
+
+}
