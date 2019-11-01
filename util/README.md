@@ -115,14 +115,15 @@ let formData = new FormData()
 
 formData.set('file', FileObject)
 
-let resp = new AJAX(method, url)
+new AJAX(method, url)
 .on('progress', e=>{
     let progress = Math.round(e.loaded / e.total * 100)
     console.log(progress)
 })
 .send(formData)
-
-console.log(resp)
+.then(resp=>{
+    console.log(resp)
+})
 ```
 
 The `.on` method provides a chainable version of `target.addEventListener`
