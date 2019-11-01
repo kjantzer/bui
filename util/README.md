@@ -13,6 +13,13 @@ Converts underscores and dashes to spaces and then capitlizes each word
 let str = normalizeText('my_string') // My String
 ```
 
+## `sortString`
+Moves the leading article to the end
+```js
+sortString('The Book Title') // Book Title, The
+sortString('"A Book Title"') // Book Title, A
+```
+
 ## `Promise.series`
 Perform a set of promise tasks in series (waiting to complete until moving on to the next)
 ```js
