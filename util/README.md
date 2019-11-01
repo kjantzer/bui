@@ -14,10 +14,13 @@ let str = normalizeText('my_string') // My String
 ```
 
 ## `sortString`
-Moves the leading article to the end
+Moves the leading article to the end (also strips leading and trailing quotes)
 ```js
 sortString('The Book Title') // Book Title, The
 sortString('"A Book Title"') // Book Title, A
+
+// disable quote strip
+sortString('"A Book Title"', false) // "A Book Title"
 ```
 
 ## `Promise.series`
