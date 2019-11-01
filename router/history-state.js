@@ -5,9 +5,22 @@ export default class HistoryState {
 
     constructor(parent, props){
         this.parent = parent
+
+        let [hash, query] = location.hash.split('?')
+
+        if( query ){
+            query = new URLSearchParams(query)
+            let queryData = {}
+            query.forEach((v, k)=>{
+                queryData[k] = v
+            })
+            query = queryData
+        }
+
         this.props = Object.assign({
             path: location.pathname,
-            hash: location.hash,
+            hash: hash,
+            query: query,
             title: APP_TITLE
         }, props)
     }
