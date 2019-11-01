@@ -52,6 +52,7 @@ module.exports = function(strings, ...keys){
 	return str
 }
 
+// DEPRECATED
 function oldPlural(str, num){
 	
 	if( num instanceof Array )
@@ -61,10 +62,14 @@ function oldPlural(str, num){
 	
 	var indx = num == 1 ? 1 : 0;
 
-	if( !_.isNumber(num) ){
+	if( typeof num != 'number' ){
+		if( globalThis._ === undefined )
+			return console.warn('underscore not installed')
+
 		if( !_.numberFormat )
 			return console.warn('underscore.string not installed')
 		
+		num = parseFloat(num)
 		num = _.numberFormat(parseFloat(num), ((num % 1)>0?1:0) )
 	}
 
