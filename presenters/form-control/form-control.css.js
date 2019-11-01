@@ -40,6 +40,7 @@ slot[name="after"]{
 	grid-area: main;
 	width: 100%;
 	position: relative;
+	z-index: 10;
 	display: flex;
 	line-height: 1em;
 	caret-color: #E91E63;

@@ -5,6 +5,7 @@ import './date-picker'
 import setValueAttrs from '../util/setValueAttrs'
 import validatePattern from '../util/validatePattern'
 import stopMaxLength from '../util/stopMaxLength'
+import {normalizeText, htmlCleaner} from '../../../util'
 
 const styles = css`
 :host {
@@ -57,6 +58,9 @@ main {
 	margin: -.1em 0;
 }
 
+.editor p:first-child{ margin-top: 0;}
+.editor p:last-child{ margin-bottom: 0;}
+
 /* :host([single-line]) .editor {
 	white-space: nowrap;
 	overflow-x: auto;
@@ -67,9 +71,10 @@ main {
 	width: 0 !important;
 } */
 
-.editor:empty:before {
+:host([empty]) .editor:before {
 	content: attr(data-placeholder);
 	color: var(--placeholderColor);
+	position: absolute;
 }
 
 .calendar {
@@ -162,13 +167,22 @@ class TextFieldElement extends HTMLElement {
 			}
 		}
 		
-		this._editor.innerHTML = this._val
-		this._input.value = this._val
+		if( this._val ){
+			this._editor.innerHTML = htmlCleaner.clean(this._val)
+			this._input.value = this._val
+		}
+
+		if( !this._val && this.hasAttribute('multiline') ){
+			this._val = '<p><br></p>'
+			this._editor.innerHTML = this._val
+		}
+		
 		this.innerText = ''
 		
 		this._editor.addEventListener('paste', this._onPaste.bind(this), true)
-		this._editor.addEventListener('keydown', this._onKeypress.bind(this), true)
-		this._input.addEventListener('keydown', this._onKeypress.bind(this), true)
+		this._editor.addEventListener('keydown', this._onKeydown.bind(this), true)
+		this._input.addEventListener('keydown', this._onKeydown.bind(this), true)
+		this._editor.addEventListener('keyup', this._onKeypress.bind(this), true)
 		this._editor.addEventListener('blur', this._onBlur.bind(this))
 		this._input.addEventListener('blur', this._onBlur.bind(this))
 
@@ -240,10 +254,18 @@ class TextFieldElement extends HTMLElement {
 
 			}
 
+
 			this._val = val
 
-			if( this._editor.innerHTML != val )
+			if( this._editor.innerHTML != val ){
+				
+				if( this.hasAttribute('multiline') )
+					val = val || '<p><br></p>'
+				else
+					val = val || ''
+
 				this._editor.innerHTML = val
+			}
 				
 			if( this._input.value != val )
 				this._input.value = val
@@ -264,6 +286,8 @@ class TextFieldElement extends HTMLElement {
 		
 		if( this.input )
 			return this._input.value
+		else if( this._editor.innerHTML === '<p><br></p>' || this._editor.innerHTML === '<br>' )
+			return ''
 		else
 			return this._editor.innerText || this._editor.innerHTML
 	}
@@ -287,6 +311,10 @@ class TextFieldElement extends HTMLElement {
 	
 	_setClassNames(){
 		setValueAttrs(this, this._val)
+		if( this._val && this._val !== '<p><br></p>' )
+			this.removeAttribute('empty')
+		else
+			this.setAttribute('empty', '')
 	}
 	
 	_onClick(e){
@@ -320,8 +348,16 @@ class TextFieldElement extends HTMLElement {
 	
 	_onPaste(e){
 		e.preventDefault();
-		let val = e.clipboardData.getData('text')
-		document.execCommand('inserttext', false, val);
+
+		if( this.hasAttribute('html') ){
+			let val = e.clipboardData.getData('text/html')
+			val = htmlCleaner.clean(val)
+			document.execCommand('insertHTML', false, val);
+
+		}else{
+			let val = e.clipboardData.getData('text')
+			document.execCommand('insertText', false, val);
+		}
 	}
 	
 	get editorEl(){
@@ -348,11 +384,27 @@ class TextFieldElement extends HTMLElement {
 		s.addRange(r);
 		return s
 	}
-	
+
 	_onKeypress(e){
+		if( !this.input && this._editor.innerText.trim() == '' )
+			this.setAttribute('empty', '')
+		else
+			this.removeAttribute('empty')
+	}
+	
+	_onKeydown(e){
 		let stop = false
 		
 		this.isInvalid = false
+
+		if( e.key.length == 1)
+			this.removeAttribute('empty')
+
+		if( e.key == 'Backspace' && this.hasAttribute('multiline') && this._editor.innerText.trim() == '' ){
+			e.preventDefault()
+			e.stopPropagation()
+			return false
+		}
 		
 		if( e.key == 'Enter' && !this.hasAttribute('multiline')){
 			stop = true
