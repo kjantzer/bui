@@ -68,6 +68,10 @@ export class IconElement extends HTMLElement {
 			height: var(--size);
 		}
 
+		:host([hidden]) {
+			display: none !important;
+		}
+
 		:host([square]) {
 			width: var(--size);
 		}
