@@ -16,6 +16,7 @@ export default (data, filename = null, {
 
     if( data instanceof URL ){
         url = data
+        url.searchParams.set('downloadReq', true)
 
     } else if( !(data instanceof Blob) ){
 
