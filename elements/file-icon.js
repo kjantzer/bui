@@ -80,10 +80,11 @@ customElements.define('b-file-icon', class extends LitElement{
     render(){return html`
         <main>
             <div class="dogear"></div>
-            <slot>
+            <slot name="label">
                 <label>${this.ext}</label>
             </slot>
         </main>
+        <slot></slot>
     `}
 
 })
