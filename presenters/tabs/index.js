@@ -223,7 +223,7 @@ customElements.define('b-tabs', class extends LitElement {
         }
 
         .content::slotted([hidden]) {
-            display: none;
+            display: none !important;
         }
         
         /*
