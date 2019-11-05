@@ -26,6 +26,13 @@ class FormHandler extends HTMLElement {
 		if( host && !host.formHandler )
 			host.formHandler = this
 
+		// allow for nested custom elements to render first
+		setTimeout(()=>{
+			this.bindControls()
+		},0)
+	}
+
+	bindControls(){
 		// TODO: change to `controls`?
 		this.editors = Array.from(this.querySelectorAll('form-control[key], check-box[key], radio-group[key], text-field[key], select-field[key]'))
 		this.editorsByKey = {}
