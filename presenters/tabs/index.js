@@ -300,6 +300,7 @@ customElements.define('b-tabs', class extends LitElement {
 
                 this.__customTabBar = new TabBar()
                 this.__customTabBar.host = this
+                this.__customTabBar.model = this.model
                 this.__customTabBar.views = this.views
                 this.__customTabBar.onMenuClick = this.menuClick.bind(this)
                 this.__customTabBar.classList.add('tab-bar')
