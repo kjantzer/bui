@@ -295,6 +295,24 @@ uploader.chooseFile()
 - `--uploadingBgd`
 - `--progressBgd`
 
+## `<b-code>`
+```html
+<b-code>inline code</b-code>
+<b-code block>
+{
+    code: 'block'
+}
+</b-code>
+```
+<!--
+<b-code>inline code</b-code>
+<b-code block>
+{
+    code: 'block'
+}
+</b-code>
+-->
+
 ## `<b-embed>`
 For embedding iframes and videos (like youtube) that responsively scale
 
