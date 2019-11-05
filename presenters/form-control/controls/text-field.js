@@ -10,7 +10,7 @@ import {normalizeText, htmlCleaner} from '../../../util'
 const styles = css`
 :host {
 	display: inline-block;
-	contain: content;
+	contain: layout;
 	min-width: .25em;
 }
 
@@ -350,12 +350,12 @@ class TextFieldElement extends HTMLElement {
 		e.preventDefault();
 
 		if( this.hasAttribute('html') ){
-			let val = e.clipboardData.getData('text/html')
+			let val = e.clipboardData.getData(e.clipboardData.types[0]||'text/html')
 			val = htmlCleaner.clean(val)
 			document.execCommand('insertHTML', false, val);
 
 		}else{
-			let val = e.clipboardData.getData('text')
+			let val = e.clipboardData.getData(e.clipboardData.types[0]||'text/plain')
 			document.execCommand('insertText', false, val);
 		}
 	}
