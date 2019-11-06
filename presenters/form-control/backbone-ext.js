@@ -16,7 +16,7 @@ Model.prototype.editedAttrs = function(){
 Model.prototype.saveEdited = function(opts={}){
 	let attrs = Object.assign({}, this._editedAttrs)
 
-	return new Promise(async resolve=>{
+	return new Promise(async (resolve, reject)=>{
 		
 		try{
 			await this.saveSync(attrs, opts)
@@ -33,8 +33,9 @@ Model.prototype.saveEdited = function(opts={}){
 			// might need to put a version of it back
 			// this.set(attrs, opts)
 			// opts.success()
+			// resolve()
 
-			resolve()
+			reject(err)
 		}
 		
 	})
