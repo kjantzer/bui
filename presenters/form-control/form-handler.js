@@ -180,7 +180,7 @@ class FormHandler extends HTMLElement {
 		}
 	}
 	
-	onEditorChange(e){
+	async onEditorChange(e){
 
 		if( !e.detail ) return
 
@@ -194,7 +194,7 @@ class FormHandler extends HTMLElement {
 		let changes = {}
 		changes[key] = val
 		
-		if( this.validateChange && this.validateChange(m, changes, key, val) === false ){
+		if( this.validateChange && await this.validateChange(m, changes, key, val) === false ){
 			el.value = changes[key] || el.value
 			return
 		}
