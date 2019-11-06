@@ -5,6 +5,7 @@ const btnPresets = {
 	'no': {label: 'No'},
 	'done': {label: 'Done'},
 	'ok': {label: 'Okay', color: 'primary'},
+	'yes': {label: 'Yes', color: 'primary'},
 	'save': {label: 'Save', color: 'primary'},
 	'create': {label: 'Create', color: 'primary'},
 	'delete': {label: 'Delete', color: 'red'}
