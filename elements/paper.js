@@ -79,6 +79,11 @@ export class PaperElement extends LitElement {
             justify-content: space-between;
         }
 
+        ::slotted(b-icon:first-of-type) {
+            color: var(--bgdAccent);
+            margin-right: .15em;
+        }
+
         :host([color="gray"]) {
             --bgd: #EEEEEE;
             --bgdAccent: #BDBDBD;
@@ -123,8 +128,12 @@ export class PaperElement extends LitElement {
 
         :host([color="postit"]) {
             --bgd: #FFF8E1;
-            --bgdAccent: #FFC107;
-            /* color: #fff; */
+            --bgdAccent: var(--orange);
+        }
+
+        :host([color="info"]) {
+            --bgd: var(--blue-50);
+            --bgdAccent: var(--blue);
         }
     `}
 
