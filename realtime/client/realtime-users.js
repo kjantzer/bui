@@ -71,6 +71,9 @@ customElements.define('b-realtime-users', class extends LitElement{
 
     set key(key){
         let oldKey = this.key
+
+        this.closeRealtime()
+
         this.__key = key
 
         if( this.isConnected )
@@ -81,7 +84,11 @@ customElements.define('b-realtime-users', class extends LitElement{
 
     connectedCallback(){
         super.connectedCallback()
-        this.openRealtime()
+
+        // allow for the key first to change
+        this._openRealtimeDelay = setTimeout(()=>{
+            this.openRealtime()
+        },300)
     }
 
     disconnectedCallback(){
@@ -104,6 +111,7 @@ customElements.define('b-realtime-users', class extends LitElement{
     }
 
     closeRealtime(){
+        clearTimeout(this._openRealtimeDelay)
         this.users = []
         if( !this.model ) return
         realtime.views.close(this.key)
