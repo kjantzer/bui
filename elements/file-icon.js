@@ -15,9 +15,10 @@ customElements.define('b-file-icon', class extends LitElement{
 
     static get styles(){return css`
         :host {
-            display: block;
+            display: inline-block;
             position:relative;
             --color: #fff;
+            --bgd: #aaa;
             --size: 2em;
             --radius: 0px;
 

@@ -395,47 +395,6 @@ customElements.define('b-audio', class extends LitElement {
     onHoverLeave(){
         window.removeEventListener('keydown', this._onKeyPress)
     }
-    
-// Settings & Utilities =====================================================
-
-    // viewSettings(e){
-
-    //     var menu = [{
-    //         label: 'Tips',
-    //         icon: 'lightbulb',
-    //         dropdown: {
-    //             view: marked("While hovered over the player, you can control via keybard shortcuts:  \n\n`space` = play/pause  \n`f` = play **first** clip  \n`l` = play **last** clip  \n`e` = play **end** clips  \n  \n`←` = skip **back** 10  \n`ctrl+←` 30 sec  \n`→` = skip **forward** 10  \n`ctrl+→` 30 sec"),
-    //             align: 'leftBottom',
-    //             w: 180
-    //         }
-    //     },{
-    //         label: 'Clip Length',
-    //         icon: 'clock',
-    //         menu: {
-    //             view: [
-    //                 {label: '10 sec', val: 10},
-    //                 {label: '15 sec', val: 15},
-    //                 {label: '20 sec', val: 20},
-    //                 {label: '30 sec', val: 30},
-    //             ],
-    //             onClick: 'setClipLength',
-    //             selected: this.clipLength,
-    //             align: 'leftBottom',
-    //             w: 90
-    //         }
-    //     },'divider',{
-    //         label: 'Fullscreen',
-    //         icon: 'resize-full',
-    //         onClick: 'fullscreenToggle'
-    //     }]
-
-    //     $(e.currentTarget).dropdown(menu, {
-    //         w: 120,
-    //         align: 'bottomLeft',
-    //         trigger: 'none',
-    //         context: this
-    //     })
-    // }
 
 })
 

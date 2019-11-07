@@ -49,6 +49,21 @@ A white box with rounded corners and a shadow.
 #### Properties
 - `spin` - set to `true` to show a spinner
 
+## `<b-btn-group>`
+Visually groups buttons together
+```html
+<b-btn-group>
+    <b-btn>Send</b-btn>
+    <b-btn icon="down-open"></b-btn>
+</b-btn-group>
+```
+<!--
+<b-btn-group>
+    <b-btn>Send</b-btn>
+    <b-btn icon="down-open"></b-btn>
+</b-btn-group>
+-->
+
 ## `<b-icon>`
 
 Display an svg icon – [See a full list of icons](../docs/icons.md)
@@ -70,6 +85,10 @@ Display an svg icon – [See a full list of icons](../docs/icons.md)
 <b-file-icon ext="pdf"></b-file-icon>
 <b-file-icon ext="doc" style="--size:4em"></b-file-icon>
 ```
+<!--
+<b-file-icon ext="pdf"></b-file-icon>
+<b-file-icon ext="doc" style="--size:4em"></b-file-icon>
+-->
 
 ## `<b-hr>`
 A line divider

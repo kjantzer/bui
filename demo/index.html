@@ -269,28 +269,52 @@
                     <h1>Paper</h1>
                 
                     <b-paper color="blue">
-                        This is a "paper" block with color blue
+                        Blue olor
                     </b-paper>
 
                     <b-paper color="red">
-                        This is a "paper" block with color red
+                        Red color
                     </b-paper>
 
-                    <b-paper color="orange" border>
-                        This is a "paper" block with color orange <b>and a border</b>
+                    <b-paper color="green">
+                        Green color
                     </b-paper>
 
-                    <b-paper dense color="gray">
+                    <b-paper color="gray">
+                        Gray color
+                    </b-paper>
+
+                    <b-paper overshadow>
+                        Default white with overshadow
+                    </b-paper>
+
+                    <br>
+                    <h2>Color Variations</h2>
+
+                    <b-paper color="info" outline>
+                        <b-icon name="info-circled"></b-icon> "info" color, outline style, with icon
+                    </b-paper>
+
+                    <b-paper color="postit" outline>
+                        <b-icon name="flag"></b-icon> "postit" color, outline style, with icon
+                    </b-paper>
+
+                    <br>
+                    <h2>Other Variations</h2>
+
+                    <b-paper empty>
+                        Empty state style
+                    </b-paper>
+
+                    <b-paper dense outline>
                         Dense padding
                     </b-paper>
 
-                    <b-paper compact color="gray">
+                    <b-paper compact outline>
                         Compact padding (no padding) - useful when the child element wants to set it's own padding
                     </b-paper>
 
-                    <b-paper empty>
-                        A paper block in empty state
-                    </b-paper>
+                    
 
                 </section>
 
@@ -351,6 +375,21 @@
                         <b-btn text stacked icon="download"><span>Download</span></b-btn>
                         <b-btn text stacked icon="upload-cloud"><span>Upload</span></b-btn>
                     </div>
+
+                    <br><br>
+                    <h1>Button Group</h1>
+
+                    <b-btn-group>
+                        <b-btn color="blue">Send</b-btn>
+                        <b-btn color="blue" icon="down-open"></b-btn>
+                    </b-btn-group>
+
+                    <b-btn-group>
+                        <b-btn pill color="green">Open</b-btn>
+                        <b-btn pill color="green" icon="plus-circled"></b-btn>
+                    </b-btn-group>
+
+
                 </section>
 
 
@@ -500,21 +539,30 @@
                 <section title="Misc">
                     <h1>Misc</h1>
                     
-                    <h3>Sub(dued) text</h3>
+                    <h2>Sub(dued) text</h2>
                     <b-sub>Smaller subdued text</b-sub>
 
                     <p>Normal text <b-sub>with smaller</b-sub></p>
 
-                    <br><h3>Line/divider/hr</h3>
+                    <br><h2>Line/divider/hr</h2>
 
                     <b-hr></b-hr>
                     Vertical <b-hr vert></b-hr> Divider 
                     <b-hr short></b-hr>
 
-                    <br><h3>Timer</h3>
+                    <br><h2>Code</h2>
+                    This is <b-code>inline code</b-code>
+
+                    <br><br>
+                    <b-code block>
+                        This is a code block
+                    </b-code>
+
+                    <br><h2>Timer</h2>
                     <b-timer running></b-timer>
 
-                    <br><h3>Carousel</h3>
+                    <br><h2>Carousel</h2>
+                    (This is a very basic implementation)<br><br>
                     <b-carousel>
                         <div><b-paper color="gray" block>Slide 1</b-paper></div>
                         <div><b-paper color="gray" block>Slide 2</b-paper></div>
@@ -527,6 +575,13 @@
                 <section title="Icons">
                     <h1>Icons</h1>
                     <b-icon-list cols="3"></b-icon-list>
+
+
+                    <br><br>
+                    <h1>File Icon</h1>
+                    <b-file-icon ext="jpg" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="pdf" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="doc" style="--size:4em"></b-file-icon>
                 </section>
 
             </b-tabs>
