@@ -347,6 +347,15 @@ customElements.define('b-tabs', class extends LitElement {
             return console.error(`Tabs: tab menu items must have .tabView set`)
         }
 
+        this.dispatchEvent(new CustomEvent('menu-clicked',{
+            detail: {
+                tabView: e.currentTarget.tabView,
+                oldTabView: this.views.get(oldVal)
+            },
+            bubbles: false, 
+            composed: true
+        }))
+
         this.active = e.currentTarget.tabView
 
         if( this.active != oldVal )

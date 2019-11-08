@@ -43,6 +43,7 @@ any of the following
 - `view.didBecomeActive`
 - `view.didBecomeInactive`
 
+- `menu-clicked` - anytime a menu item is clicked (even if already active)
 - `active-changed` - the tabs element will also emit a DOM event
     - The event detail will contain a reference to the tab view object: `event.detail.tabView`
 
