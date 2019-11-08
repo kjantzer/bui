@@ -39,7 +39,9 @@ export default class Dialog {
 
 		if( opts.icon === 'spinner' )
 			icon = `<b-spinner></b-spinner>`
-		if( customElements.get(opts.icon) )
+		else if( opts.icon && opts.icon[0] == '<' )
+			icon = opts.icon
+		else if( customElements.get(opts.icon) )
 			icon = `<${opts.icon}></${opts.icon}>`
 
 		this.el.innerHTML = `${typeof styles === 'string'?`<style>${styles}</style>`:''}
