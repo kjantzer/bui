@@ -110,6 +110,15 @@ A subdued (or sub text) text element that is slightly smaller and lighter in col
 <b-sub>Subdued text</b-sub>
 -->
 
+## `<b-ts>`
+Simple element for displaying timestamps. Should be given a moment date object. `moment.fromNow()` will be rendered and updated every 1 minute.
+```html
+<b-ts .date=${moment()}></b-ts>
+```
+<!--
+Element created <b-ts .date=${moment()}></b-ts>
+-->
+
 ## `<b-label>`
 
 Default is an uppercase, bold, and slightly subdued (gray) text block for labeling.

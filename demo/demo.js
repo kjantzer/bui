@@ -12,6 +12,7 @@ import '../elements/ribbon'
 import '../elements/avatar'
 import '../elements/hr'
 import '../elements/sub'
+import '../elements/ts'
 import '../elements/code'
 import '../elements/file-icon'
 import '../elements/embed'
@@ -26,7 +27,9 @@ import '../presenters/list'
 import Panel, {Modal} from '../presenters/panel'
 import Menu from '../presenters/menu'
 import Dialog from '../presenters/dialog'
+import moment from 'moment'
 
+window.moment = moment // for <b-ts> demo
 window.Dialog = Dialog
 
 window.showMenu = async function(el, renderTo=false){
