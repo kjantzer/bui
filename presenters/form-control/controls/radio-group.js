@@ -1,5 +1,7 @@
 
 class RadioGroupElement extends HTMLElement {
+
+	get key(){ return this.getAttribute('key')}
 	
 	constructor() {
 		super()

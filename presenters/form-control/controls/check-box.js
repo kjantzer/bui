@@ -118,6 +118,8 @@ main label {
 `
 
 class CheckBoxElement extends HTMLElement {
+
+	get key(){ return this.getAttribute('key')}
 	
 	constructor() {
 		super()
