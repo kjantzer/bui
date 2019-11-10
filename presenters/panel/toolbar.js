@@ -28,7 +28,7 @@ class PanelToolbar extends LitElement {
             grid-column: 1/-1; /* full width */
         }
 
-        @media (max-width: 699px) {
+        /* @media (max-width: 699px) {
             .middle {
                 display: none;
             }
@@ -36,7 +36,7 @@ class PanelToolbar extends LitElement {
             :host {
                 grid-template-columns: auto auto;
             }
-        }
+        } */
 
         :host([overlay]) {
             background: none;
