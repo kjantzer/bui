@@ -350,12 +350,12 @@ class TextFieldElement extends HTMLElement {
 		e.preventDefault();
 
 		if( this.hasAttribute('html') ){
-			let val = e.clipboardData.getData(e.clipboardData.types[0]||'text/html')
+			let val = e.clipboardData.getData(e.clipboardData.types[e.clipboardData.types.length-1]||'text/html')
 			val = htmlCleaner.clean(val)
 			document.execCommand('insertHTML', false, val);
 
 		}else{
-			let val = e.clipboardData.getData(e.clipboardData.types[0]||'text/plain')
+			let val = e.clipboardData.getData(e.clipboardData.types[e.clipboardData.types.length-1]||'text/plain')
 			document.execCommand('insertText', false, val);
 		}
 	}
