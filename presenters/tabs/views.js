@@ -15,7 +15,18 @@ export default class TabViews extends Map {
         // if( view && view == this.active )
         //     return 
 
-        if( view && !view.canDisplay ) return false
+        if( view && !view.canDisplay ){
+
+            // find the first view we can display
+            let fallbackView
+            this.forEach(v=>{
+                if( !fallbackView && v.canDisplay )
+                    fallbackView = v
+            })
+
+            this.active = fallbackView
+            return false
+        }
         
         this.forEach(v=>v.active=false)
 
