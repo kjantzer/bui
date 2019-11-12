@@ -1,16 +1,27 @@
 
+const UA = navigator.userAgent
+
 const device = {
 
-    get is_ios(){
-        return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
+    get is_ios(){ return device.isiOS}, // DEPRECATED
+    get is_android(){ return device.isAndroid }, // DEPRECATED
+    get is_mobile(){ return device.isMobile }, // DEPRECATED
+
+    get isiOS(){
+        return /iPad|iPhone|iPod/.test(UA) && !window.MSStream
     },
 
-    get is_android(){
-        return /android/i.test(navigator.userAgent)
+    get isAndroid(){
+        return /android/i.test(UA)
+    },
+    
+    get isMobile(){
+        return device.isiOS || device.isAndroid
     },
 
-    get is_mobile(){
-        return device.is_ios || device.is_android
+    // https://developer.chrome.com/multidevice/user-agent
+    get isiOSChrome(){
+        return /CriOS/.test(UA)
     }
 }
 
