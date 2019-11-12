@@ -294,7 +294,13 @@ export default class Menu {
 		// capture menu item index for use in resolve (if so desired)
 		m.index = i
 
-		let icon = m.icon ? html`<b-icon name="${m.icon}"></b-icon>` : ''
+		let icon = ''
+		
+		if( m.icon && typeof m.icon == 'string' )
+			icon = html`<b-icon name="${m.icon}"></b-icon>`
+		else if( m.icon ) 
+			icon = html`<span class="icon">${m.icon}</span>`
+
 		let checkbox = (this.opts.multiple && !m.clearsAll) || m.selected ? html`<check-box ?checked=${m.selected}></check-box>` : ''
 		let menuIcon = m.menu && this.opts.hasMenuIcon ? html`<b-icon class="has-menu" name="${this.opts.hasMenuIcon}"></b-icon>` :''
 
@@ -423,6 +429,9 @@ export default class Menu {
 		if( e.code == 'Enter' ){
 			if( activeItem )
 				activeItem.click()
+			
+			e.preventDefault()
+			e.stopPropagation()
 			return
 		}
 		
@@ -440,6 +449,7 @@ export default class Menu {
 		this.setActiveItem(items[this._active])
 		
 		e.preventDefault()
+		e.stopPropagation()
 	}
 
 	setActiveItem(el){
