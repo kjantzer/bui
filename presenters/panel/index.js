@@ -419,6 +419,8 @@ export class Panel extends LitElement {
             transition: opacity ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1),
                         background-color ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
             --radius: 5px;
+            --radius-top: var(--radius);
+            --radius-bottom: 0;
         }
 
         :host([type="modal"]) {
@@ -438,7 +440,7 @@ export class Panel extends LitElement {
             height: 100%;
             background: #fff;
             box-shadow: rgba(0,0,0,.2) 0 3px 10px;
-            border-radius: var(--radius) var(--radius) 0 0px;
+            border-radius: var(--radius-top) var(--radius-top) var(--radius-bottom) var(--radius-bottom);
             transition: ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
