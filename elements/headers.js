@@ -11,6 +11,13 @@ customElements.define('b-h1', class extends LitElement {
             text-overflow: ellipsis;
             max-width: 100%;
             overflow: hidden;
+
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -khtml-user-select: none; /* Konqueror HTML */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; 
         }
 
         @media (max-width:699px){
@@ -38,6 +45,13 @@ customElements.define('b-h2', class extends LitElement {
             text-overflow: ellipsis;
             max-width: 100%;
             overflow: hidden;
+
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -khtml-user-select: none; /* Konqueror HTML */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; 
         }
 
         @media (max-width:699px){
