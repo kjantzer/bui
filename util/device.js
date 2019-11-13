@@ -22,7 +22,15 @@ const device = {
     // https://developer.chrome.com/multidevice/user-agent
     get isiOSChrome(){
         return /CriOS/.test(UA)
-    }
+    },
+
+    get isInstalled(){
+        return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches
+    },
+
+    // alias
+    get isStandalone(){ return device.isInstalled }
+    
 }
 
 export default device
