@@ -1,6 +1,6 @@
 
 // https://decembersoft.com/posts/promises-in-serial-with-array-reduce/
-export default globalThis.Promise.series = (array, fn)=>{
+module.exports = (global||globalThis).Promise.series = (array, fn)=>{
     let i = 0;
     return array.reduce( async (previousPromise, next) => {
         
