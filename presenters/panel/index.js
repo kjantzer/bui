@@ -291,17 +291,15 @@ export class Panel extends LitElement {
 
     firstUpdated(){
         this._linkToolbar()
-
-        this.shadowRoot.addEventListener('click', (e)=>{
-
-            if( !e.target.classList.contains('backdrop') ) return
-
+        
+        this.shadowRoot.querySelector('.backdrop').addEventListener('click', e=>{
+            
             if( this.opts.onBackdropClick && this.opts.onBackdropClick() === false )
                 return
 
             if( this.opts.disableBackdropClick !== true )
                 this.close()
-        }, true)
+        })
     }
 
     _linkToolbar(){
