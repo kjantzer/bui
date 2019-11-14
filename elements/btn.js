@@ -165,6 +165,15 @@ export class BtnElement extends LitElement {
             opacity: .5;
         }
 
+        :host([stacked]) slot[name="icon"] {
+            font-size: 1em;
+            display: contents;
+        }
+
+        :host([stacked]) slot[name="icon"]::slotted(*) {
+            opacity: 1;
+        }
+
         :host([stacked]) b-spinner {
             font-size: 1.2em;
             margin-right: 0;
@@ -281,7 +290,9 @@ export class BtnElement extends LitElement {
         <main>
             <span>
                 <b-spinner></b-spinner>
-                ${this.icon?html`<b-icon name="${this.icon}"></b-icon>`:''}
+                <slot name="icon">
+                    ${this.icon?html`<b-icon name="${this.icon}"></b-icon>`:''}
+                </slot>
             </span>
             <slot></slot>
         </main>
