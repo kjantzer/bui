@@ -176,9 +176,9 @@ class FormControlElement extends HTMLElement {
 	set label(str){
 		this.$('.label').innerHTML = str
 		if( str ){
-			this.classList.remove('nolabel')
+			this.setAttribute('nolabel', '')
 		}else{
-			this.classList.add('nolabel')
+			this.removeAttribute('nolabel')
 		}
 	}
 	
@@ -187,7 +187,7 @@ class FormControlElement extends HTMLElement {
 		let labelNodes = this.$('.label').childNodes
 		
 		if( labelNodes.length == 0 || (labelNodes[0].tagName == 'SLOT' && labelNodes[0].assignedNodes().length == 0) )
-			this.classList.add('nolabel')
+			this.setAttribute('nolabel', '')
 	}
 	
 	_onClick(e){

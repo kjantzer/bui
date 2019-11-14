@@ -75,6 +75,10 @@ slot[name="after"]{
 	font-size: var(--labelFontSize);
 }
 
+:host([nolabel]) .label {
+	display: none !important;
+}
+
 .prefix {
 	order: 10;
 }
@@ -336,7 +340,9 @@ slot[name="help"] {
 	--padX: .75em;
 }
 
-:host([material="outline"]) {
+:host([material="outline"]),
+:host([material="outline"]) main,
+:host([material="outline"]) main:before {
 	border-radius: var(--fc-border-radius, 4px);
 }
 	
