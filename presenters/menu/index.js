@@ -12,6 +12,7 @@ export const DefaultOpts = {
 	search: 20, // true (always show) or number of results for it to show
 	minW: false,
 	width: null,
+	autoSelectFirst: false,
 	jumpNav: false, // true (always show) or number of results for it to show
 	typeDelay: 700, // how long until typed characters reset
 	hasMenuIcon: 'right-open',
@@ -249,7 +250,7 @@ export default class Menu {
 		let showJumpNav = this.opts.jumpNav === true
 						|| (typeof this.opts.jumpNav == 'number' && this.displayMenu.length >= this.opts.jumpNav)
 
-		this._active = null
+		this._active = this.opts.autoSelectFirst ? 0 : null
 
 		render(html`
 
@@ -329,6 +330,7 @@ export default class Menu {
 		return html`
 			<div class="menu-item ${m.className}" val=${m.val} index=${i}
 				data-title=${dataTitle}
+				?active=${this._active==i}
 				?icon-only=${!m.label && !m.description} ?selected=${m.selected}>
 				${checkbox}
 				${icon}
@@ -450,6 +452,28 @@ export default class Menu {
 		
 		e.preventDefault()
 		e.stopPropagation()
+	}
+
+	set active(index){
+
+		if( index == null )
+			index = 0;
+		
+		if( index < 0 )
+			index = this.displayMenu.length - 1
+			
+		if( index >= this.displayMenu.length )
+			index = 0
+		
+		this._active = index
+		console.log(index);
+		
+
+		let items = this.el.querySelectorAll('.menu-item')
+		
+		if( items.length == 0 ) return
+
+		this.setActiveItem(items[this._active])
 	}
 
 	setActiveItem(el){
@@ -591,8 +615,11 @@ export default class Menu {
 		
 		this.render()
 		
-		opts.type = 'modal'
-		opts.animation = 'scale'
+		opts = Object.assign({
+			type: 'modal',
+			animation: 'scale'			
+		}, opts)
+
 		opts.onKeydown = this.onKeydown.bind(this)
 		
 		let onClose = opts.onClose

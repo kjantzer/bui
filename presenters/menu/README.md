@@ -67,6 +67,7 @@ let selected = await new Menu([], {
 	search: 20, // true (always show) or number of results for it to show
 	minW: false,
 	width: null,
+    autoSelectFirst: false,
 	jumpNav: false, // true (always show) or number of results for it to show
 	typeDelay: 700, // how long until typed characters reset
 	hasMenuIcon: 'right-open',
