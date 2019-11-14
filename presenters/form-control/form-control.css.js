@@ -24,7 +24,7 @@ slot[name="after"]{
 	--placeholderColor: rgba(0,0,0,.3);
 	--selectionBgd: #FFECB3;
 	--focusBgd: #FFF8E1;
-	--focusColor: var(--formControlTheme);
+	--focusColor: var(--fc-theme);
 	--bgd: #fff;
 	--borderColor: rgba(0,0,0,.3);
 	--invalidColor: #ff1744;
@@ -222,6 +222,7 @@ slot[name="help"] {
 :host([material]) main {
 	border-bottom: solid 1px var(--borderColor);
 	padding-top: var(--padY);
+	border-radius: var(--fc-border-radius, 0px);
 }
 
 :host([material]:not(:focus-within):not([focused]):hover) main {
@@ -237,6 +238,7 @@ slot[name="help"] {
 	box-sizing: border-box;
 	top: -1px;
 	left: -1px;
+	border-radius: var(--fc-border-radius, 0px);
 }
 
 :host([material]) slot[name="control"]::slotted(*) {
@@ -285,8 +287,8 @@ slot[name="help"] {
 	z-index: 11;
 }
 
-:host([material]) .prefix,
-:host([material]) .suffix {
+:host([material]:not([show*="prefix"])) .prefix,
+:host([material]:not([show*="suffix"])) .suffix {
 	opacity: 0;
 	transition: 120ms;
 }
@@ -334,14 +336,13 @@ slot[name="help"] {
 	--padX: .75em;
 }
 
-:host([material="outline"]) main:before {
-	border-radius: 4px;
+:host([material="outline"]) {
+	border-radius: var(--fc-border-radius, 4px);
 }
 	
 :host([material="outline"]) main {
 	border: solid 1px var(--borderColor);
 	padding-top: 0;
-	border-radius: 4px;
 	background: var(--bgd);
 }
 
@@ -349,7 +350,7 @@ slot[name="help"] {
 :host([material="outline"]) slot[name="control"]::slotted(*),
 :host([material="outline"]) .label {
 	padding: var(--padX) var(--padY);
-	border-radius: 3px;
+	border-radius: var(--fc-border-radius, 3px);
 }
 
 :host([material="outline"]) slot[name="control"]::slotted(radio-group) {
@@ -415,7 +416,7 @@ slot[name="help"] {
 :host([material="filled"]) main {
 	border: solid 1px var(--bgd);
 	padding-top: 1em;
-	border-radius: 4px;
+	border-radius: var(--fc-border-radius, 4px);
 	background: var(--bgd);
 }
 
@@ -430,7 +431,7 @@ slot[name="help"] {
 }
 
 :host([material="filled"]) main:before {
-	border-radius: 4px;
+	border-radius: var(--fc-border-radius, 4px);
 }
 
 :host([material="filled"]) .control,

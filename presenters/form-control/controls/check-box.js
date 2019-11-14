@@ -5,7 +5,7 @@ const styles = css`
 
 :host {
 	--size: 1.6em;
-	--color: var(--formControlTheme);
+	--color: var(--fc-theme);
 	--colorDisabled: rgba(0, 0, 0, 0.26);
 	display: inline-block;
 	vertical-align: middle;

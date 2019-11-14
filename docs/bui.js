@@ -10574,7 +10574,7 @@ customElements.define('range-slider', class extends _litElement.LitElement {
         :host {
             --size: 2px;
             --thumbSize: 14px;
-            --color: var(--formControlTheme);
+            --color: var(--fc-theme);
             --thumbColor: var(--color);
             --bgd: rgba(0,0,0,.4);
             --padding: 10px;
@@ -16764,7 +16764,7 @@ const styles = _litElement.css`
 
 :host {
 	--size: 1.6em;
-	--color: var(--formControlTheme);
+	--color: var(--fc-theme);
 	--colorDisabled: rgba(0, 0, 0, 0.26);
 	display: inline-block;
 	vertical-align: middle;
@@ -18750,7 +18750,7 @@ slot[name="after"]{
 	--placeholderColor: rgba(0,0,0,.3);
 	--selectionBgd: #FFECB3;
 	--focusBgd: #FFF8E1;
-	--focusColor: var(--formControlTheme);
+	--focusColor: var(--fc-theme);
 	--bgd: #fff;
 	--borderColor: rgba(0,0,0,.3);
 	--invalidColor: #ff1744;
@@ -33928,7 +33928,7 @@ const styles = _litElement.css`
 
 :host {
 	--size: 1.6em;
-	--color: var(--formControlTheme);
+	--color: var(--fc-theme);
 	--colorDisabled: rgba(0, 0, 0, 0.26);
 	display: inline-block;
 	vertical-align: middle;
