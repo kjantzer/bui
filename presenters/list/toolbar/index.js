@@ -37,15 +37,23 @@ customElements.define('b-list-toolbar', class extends LitElement{
             color: var(--toolbarTextColor);
         }
 
-        .filters {
+        .scroller {
             display: flex;
-            align-items: center;
             overflow-y: auto;
+            align-items: center;
             overflow: -moz-scrollbars-none;
             flex: 1;
         }
 
-        .filters::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
+        .scroller::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
+
+        .filters {
+            display: flex;
+            align-items: center;
+            /* overflow-y: auto; */
+            overflow: -moz-scrollbars-none;
+            flex: 1;
+        }
 
         b-list-sort-btn + .filters {
             border-left: solid 2px rgba(0,0,0,.1);
@@ -97,29 +105,33 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
         <div class="count">${this.count}</div>
 
-        ${!this.sorts?'':html`
-            <b-list-sort-btn .sorts=${this.sorts}></b-list-sort-btn>
-        `}
-        
-        ${!this.filters?'':html`
-        <div class="filters">
+        <div class="scroller">
 
-            <!-- <div class="controls">
-                <b-icon name="layers" text></b-icon>
-                <b-icon name="erase" text></b-icon>
-            </div> -->
+            ${!this.sorts?'':html`
+                <b-list-sort-btn .sorts=${this.sorts}></b-list-sort-btn>
+            `}
+            
+            ${!this.filters?'':html`
+            <div class="filters">
 
-            <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" text
-                @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
-            
-            ${this.filters.map(filter=>html`
-                <b-list-filter-btn ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
-            `)}
-            
-            <b-btn color="hover-red" title="Clear filters" icon="erase" text @click=${this.resetFilters}></b-btn>
-            
+                <!-- <div class="controls">
+                    <b-icon name="layers" text></b-icon>
+                    <b-icon name="erase" text></b-icon>
+                </div> -->
+
+                <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" text
+                    @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
+                
+                ${this.filters.map(filter=>html`
+                    <b-list-filter-btn ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
+                `)}
+                
+                <b-btn color="hover-red" title="Clear filters" icon="erase" text @click=${this.resetFilters}></b-btn>
+                
+            </div>
+            `}
+
         </div>
-        `}
         
         <div class="after">
 

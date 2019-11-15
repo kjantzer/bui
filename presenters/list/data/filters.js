@@ -349,7 +349,8 @@ export class Filter {
             // return v.val==val
             return Array.isArray(val) ? val.includes(v.val) : v.val==val
         })
-        return matchedVal ? matchedVal.map(f=>f.label).join(', ') : val
+
+        return matchedVal ? matchedVal.map(f=>f.toolbarLabel||f.label).join(', ') : val
     }
 
     async showMenu(el){

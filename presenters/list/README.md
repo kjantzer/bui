@@ -89,8 +89,17 @@ const filters = {
         maxHeight: '60vh', // max height of dropdown menu
         multi: false, // can more than one value be selected?
         db: false, // true will make the filterBy happen on server instead
+
+        // values are passed to `Menu`, check docs for available options
         values: [
-            {label: 'All', val: ''},
+            {   // required
+                label: 'All',
+                val: '',
+                // optional
+                toolbarLabel: 'all', // label will be used if this is unset
+                description: '',
+                icon: ''
+            },
             'divider',
             {label: 'Type 1', val: '1'},
             {label: 'Type 2', val: '2'}
