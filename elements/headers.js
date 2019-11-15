@@ -4,12 +4,17 @@ customElements.define('b-h1', class extends LitElement {
 
     static get styles(){return css`
 
+        :host {
+            min-width: 0;
+        }
+
         h1 {
             margin: 0;
             text-decoration: inherit;
             font-size: var(--bui-h1-size, 2em);
             text-overflow: ellipsis;
             max-width: 100%;
+            min-width: 0;
             overflow: hidden;
 
             -webkit-touch-callout: none; /* iOS Safari */
@@ -37,6 +42,10 @@ customElements.define('b-h1', class extends LitElement {
 customElements.define('b-h2', class extends LitElement {
 
     static get styles(){return css`
+
+        :host {
+            min-width: 0;
+        }
 
         h2 {
             margin: 0;
