@@ -69,8 +69,12 @@ export class BtnElement extends LitElement {
             border-radius: var(--radius);
             position: relative;
             display: inline-flex;
+            justify-content: center;
             align-items: center;
             padding: var(--padding);
+            height: 100%;
+            width: 100%;
+            box-sizing: border-box;
             /*padding-bottom: .3em;*/ /* remove descender line to make it look more centered*/
             text-overflow: ellipsis;
             border: var(--borderStyle) var(--borderWidth) var(--borderColor);
