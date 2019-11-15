@@ -2,6 +2,7 @@
 	Popover
 */
 import Popper from 'popper.js'
+import device from '../../util/device'
 
 const styles = require('./style.less')
 
@@ -63,7 +64,7 @@ export default class Popover {
 		
 		if( !WatchingClicks ){
 			WatchingClicks = true
-			window.addEventListener('click', WatchClicks, true)
+			window.addEventListener(device.isMobile?'touchend':'click', WatchClicks, true)
 		}
 		
 		if( !WatchingKeyboard ){
@@ -199,7 +200,7 @@ export default class Popover {
 		// no more popovers, remove event listners
 		if( OpenPopovers.length == 0 ){
 			WatchingClicks = false
-			window.removeEventListener('click', WatchClicks, true)
+			window.removeEventListener(device.isMobile?'touchend':'click', WatchClicks, true)
 			
 			WatchingKeyboard = false
 			window.removeEventListener('keydown', WatchKeyboard, true)
