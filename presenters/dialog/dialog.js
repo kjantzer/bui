@@ -1,8 +1,8 @@
 import {render, TemplateResult} from 'lit-html';
 import device from '../../util/device';
-const Panel = require('../panel').default
-const Popover = require('../popover').default
-const makeBtn = require('./make-btn')
+import Panel from '../panel'
+import Popover from '../popover'
+import makeBtn from './make-btn'
 
 // FIXME: this module needs to be refactored using lit-element to better apply styles
 const styles = require('./style.less')
