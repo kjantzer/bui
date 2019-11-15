@@ -29,9 +29,25 @@ export class Collection {
         })
     }
 
-    getOrCreate(id){
+    _createModel(attrs){
+        let Model = this.model
+        let m = new Model(attrs)
+        m.coll = this
+        m.collection = this
+        return m
+    }
+
+    getOrCreate(attrs){
+        let id = this.model.prototype.idAttribute
+
+        if( typeof attrs != 'object' ){
+            id = attrs
+            attrs = {}
+            attrs[this.model.prototype.idAttribute] = id
+        }
+        
         let m = this.get(id)
-        return m || new (this.model)({id: id})
+        return m || this._createModel(attrs)
     }
 
     forEach(fn){ return this.models.forEach(fn) }
@@ -50,7 +66,7 @@ export class Collection {
     async fetch(params={}){
 
         let urlStr = this.url
-        let base = location.protocol+'//'+location.hostname
+        let base = location.protocol+'//'+location.hostname+(location.port?':'+location.port:'')
 
         if( !urlStr )
             return console.error('Cannot fetch; `url` missing')
@@ -65,6 +81,9 @@ export class Collection {
 
             if( data.filters )
                 data.filters = JSON.stringify(params.data.filters)
+            
+            if( data.sorts )
+                data.sorts = JSON.stringify(params.data.sorts)
 
             url.search = new URLSearchParams(data)
         }
@@ -86,10 +105,7 @@ export class Collection {
         let Model = this.model
 
         let models = data.map(d=>{
-            let m = new Model(d)
-            m.coll = this
-            m.collection = this
-            return m
+            return this._createModel(d)
         })
 
         if( params.data && params.data.pageAt > 0 ){
