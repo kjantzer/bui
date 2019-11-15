@@ -1,6 +1,7 @@
 import {html, render} from 'lit-html'
 import {unsafeHTML} from 'lit-html/directives/unsafe-html'
 import Popover from '../popover'
+import Dialog from '../dialog'
 import Panel from '../panel'
 import Fuse from 'fuse.js'
 import '../form-control/controls/check-box'
@@ -580,8 +581,8 @@ export default class Menu {
 */
 	popover(target, opts={}){
 
-		if( opts.adjustForMobile && device.is_mobile )
-			return this.modal({closeBtn: true})
+		if( opts.adjustForMobile && device.isMobile )
+			return this.modal({btns: ['cancel','done']})
 		
 		this.render()
 		
@@ -634,8 +635,23 @@ export default class Menu {
 				this.resolve(false)
 		}
 		
-		this.presenter = new Panel(this.el, opts)
-		this.presenter.open()
+
+		if( opts.btns ){
+			let dialog = new Dialog({view: this.el, btns: opts.btns||false})
+			this.presenter = new Panel(dialog.el, opts)
+			this.presenter.open()
+
+			// if dialog btn clicked, take action
+			dialog.promise.then(btn=>{
+				if( btn )
+					this.presenter.close()
+				else
+					this.resolve(false)
+			})
+		}else{
+			this.presenter = new Panel(this.el, opts)
+			this.presenter.open()
+		}
 
 		this.scrollToSelected()
 		
