@@ -63,6 +63,9 @@ export default class DataSource {
             if( this.filters )
                 data.filters = this.filters.value()
 
+            if( this.sorts )
+                data.sorts = this.sorts.value
+
             await this.coll.fetchSync({data:data})
         }
     }

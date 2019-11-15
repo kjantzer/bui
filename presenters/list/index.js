@@ -99,6 +99,10 @@ customElements.define('b-list', class extends LitElement {
             z-index: 10;
         }
 
+        b-list-toolbar b-btn {
+            color: var(--toolbarTextColor);
+        }
+
         b-infinite-list {
             display: block;
             flex: 1;
@@ -147,6 +151,9 @@ customElements.define('b-list', class extends LitElement {
     }
 
     render(){return html`
+
+        <style>${this.customStyles||''}</style>
+        
         <slot name="spinner">
             <b-spinner-overlay></b-spinner-overlay>
         </slot>
@@ -286,10 +293,18 @@ customElements.define('b-list', class extends LitElement {
         this.spinner.show = false
     }
 
-    onSortChange(){
-        // console.log('resort');
-        this.dataSource.sort()
+    async onSortChange(){
+
+        if( this.sorts.sortOnDB === true ){
+            this.spinner.show = true
+            this.dataSource.reset()
+        }else{
+            this.dataSource.sort()
+        }
+        
         this.list.reset()
+        this.toolbar.count = await this.dataSource.length()
+        this.spinner.show = false
     }
 
 })

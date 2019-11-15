@@ -11,6 +11,7 @@ and filter the results.
     row="row-element-name"
     divider="row-divider-element"
     .listOptions=${listOptions}
+    .customStyles=${css``}
     .coll=${this.coll}
     .filters=${filters}
     .sorts=${sorts}
@@ -46,6 +47,23 @@ when all available data has been displayed
 `perPage` - how many rows to display at one time.
 Also determines how many "more" rows are requested
 via fetch:more
+
+## Custom Styles
+The list view uses shadow dom to render the content. If you need to apply 
+custom styles (ex: to make results display as a grid) you can provide
+a `.customStyles` prop
+
+```html
+let styles = css`
+    :host b-infinite-list {
+        display: grid;
+        grid-template-columns: repeat( auto-fit, minmax(140px, 1fr) );
+        grid-template-rows: 140px;
+        gap: 1em;
+    }
+`
+<b-list .customStyles=${styles}></b-list>
+```
 
 ## Filters
 ```js
@@ -100,6 +118,14 @@ const filters = {
 }
 ```
 
+### Search
+Search options are specified as part of filters (see above).
+
+**Tips**  
+- You can hide the search bar by adding: `search:false`. Search is on by default and will use defautl settings
+- `row.model.searchMatches` - when the search bar is actively searching, row models will have 
+a `searchMatches` property they can check to see why they are being displayed
+
 ### Custom Filter View
 A view can be specified instead of values – `view` can be a preset
 or the name of a custom element
@@ -151,12 +177,6 @@ class CustomFilterView extends HTMLElement {
 }
 ```
 
-## Search
-Search options are specified as part of filters (see above).
-
-`row.model.searchMatches` - when the search bar is actively searching, row models will have 
-a `searchMatches` property they can check to see why they are being displayed
-
 ## Sorts
 ```js
 const sorts = {
@@ -174,11 +194,24 @@ const sorts = {
 }
 ```
 
-#### Sort Defaults
+### Sort Defaults
 ```js
 const sorts = {
     defaults: ['title'],
     title(m){ return m.get('title') }
+}
+```
+
+### Sorting on the database
+If you want the sorting to happen on the database/server instead of
+in the browser, add `db:true`. Changes to sort will trigger refetch
+and no sorting will happen in JS
+
+```js
+const sorts = {
+    defaults: ['title'],
+    db: true,
+    title:{}
 }
 ```
 

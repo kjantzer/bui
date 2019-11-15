@@ -42,6 +42,11 @@ export default class Sorts extends Map {
 
     use(sorts){
 
+        if( sorts.db ){
+            this.sortOnDB = true
+            delete sorts.db
+        }
+
         if( sorts.defaults ){
             let defaultVals = {}
 

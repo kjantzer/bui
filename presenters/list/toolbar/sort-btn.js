@@ -7,12 +7,17 @@ customElements.define('b-list-sort-btn', class extends LitElement{
             display: block
         }
 
+        b-btn {
+            --color: var(--toolbarTextColor);
+        }
+
         main {
             display: inline-grid;
             line-height: 1.2em;
         }
 
         b-label {
+            color: var(--toolbarTextColor);
             grid-area: unset !important;
         }
 
@@ -23,7 +28,7 @@ customElements.define('b-list-sort-btn', class extends LitElement{
         b-icon {
             font-size: .8em;
             vertical-align: baseline;
-            color: rgba(0,0,0,.4);
+            color: var(--toolbarTextColor);
         }
 
         /* b-icon:hover {

@@ -158,6 +158,9 @@ export default class Filters extends Map {
     }
 
     set searchOptions(opts){
+        if( opts === false )
+            this.__searchOptions = {data:false} // turns search off
+
         if( typeof opts == 'object' )
             this.__searchOptions = opts
     }

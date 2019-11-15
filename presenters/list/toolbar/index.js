@@ -33,6 +33,10 @@ customElements.define('b-list-toolbar', class extends LitElement{
             flex-shrink: 0;
         }
 
+        b-btn {
+            color: var(--toolbarTextColor);
+        }
+
         .filters {
             display: flex;
             align-items: center;
