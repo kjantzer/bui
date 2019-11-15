@@ -12,6 +12,7 @@ export default class TabView {
 
             if( this._viewClass && this._viewClass.title ){
                 this.__title = this._viewClass.title
+                this.__icon = this._viewClass.icon
                 this.__id = this.__title
             }else{
                 this.__id = this._viewName
@@ -25,6 +26,7 @@ export default class TabView {
             view.hidden = true
             this.__view = view
             this.__title = view.title
+            this.__icon = view.icon
 
             if( view.hasAttribute('view-id') ){
                 this.__id = view.getAttribute('view-id')
@@ -82,6 +84,8 @@ export default class TabView {
     get title(){
         return this.__title || 'No Title'
     }
+
+    get icon(){ return this.__icon }
 
     get path(){
         if( !this.__view ) return ''
