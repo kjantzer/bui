@@ -49,6 +49,7 @@ main {
 }
 
 .editor {
+	position: relative;
 	outline: none;
 	width: 100%;
 	display: inline-block;
@@ -75,6 +76,14 @@ main {
 	content: attr(data-placeholder);
 	color: var(--placeholderColor);
 	position: absolute;
+}
+
+/* keep placeholder on one line, clipping to ellipsis when overflowed */
+:host(:not([multiline])) .editor:before {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 .calendar {
