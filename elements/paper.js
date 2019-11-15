@@ -20,7 +20,8 @@ export class PaperElement extends LitElement {
             background: var(--bgd);
             box-shadow: rgba(0,0,0,.1) 0 1px 5px;
             border: solid 1px transparent;
-            border-radius: 3px;
+            --radius: var(--b-paper-radius, 3px);
+            border-radius: var(--radius);
             --padding: 1em;
             padding: var(--padding);
             position: relative;
