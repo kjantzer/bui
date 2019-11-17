@@ -26,7 +26,7 @@ export default class TabView {
             view.hidden = true
             this.__view = view
             this.__title = view.title
-            this.__icon = view.icon
+            this.__icon = view.getAttribute('icon')
 
             if( view.hasAttribute('view-id') ){
                 this.__id = view.getAttribute('view-id')
