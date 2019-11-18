@@ -61,7 +61,7 @@ class PanelController extends LitElement {
                 if( overflowScrollAt < -40 ){
                     topPanel&&topPanel.close()
                     setTimeout(()=>{
-                        topPanel.style.top = 0
+                        if( topPanel ) topPanel.style.top = 0
                         topPanel = null
                     },300)
                 }
