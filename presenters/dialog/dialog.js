@@ -66,8 +66,10 @@ export default class Dialog {
 					this.el.innerHTML = `${this.opts.view}<div class="d-btns">${btns}</div>`
 				}
 			}
-			else
+			else{
+				this.el.querySelector('.d-msg').classList.add('custom-view')
 				this.el.querySelector('.d-msg').appendChild(this.opts.view)
+			}
 		}
 		
 		this.el.addEventListener('click', this.onClick.bind(this), true)
