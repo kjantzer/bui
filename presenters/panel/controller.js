@@ -74,8 +74,6 @@ class PanelController extends LitElement {
                 if( this.panels.size > 0 && !topPanel )
                     topPanel = this.panelOnTop
                 
-                console.log(topPanel?topPanel.opts.disableOverscrollClose:'–');
-                
                 if( !topPanel || topPanel.opts.disableOverscrollClose === true ) return
 
                 overflowScrollAt = document.scrollingElement.scrollTop

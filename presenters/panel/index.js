@@ -133,9 +133,6 @@ export class Panel extends LitElement {
     constructor(view, opts={}){
         super()
 
-        console.log(PanelDefaults);
-        
-
         let defaultOpts = Object.assign({}, PanelDefaults)
 
         if( opts.type == 'modal' ){
