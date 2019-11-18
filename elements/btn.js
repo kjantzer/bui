@@ -154,6 +154,7 @@ export class BtnElement extends LitElement {
 
         :host([stacked]) main {
             display: inline-grid;
+            align-content: center;
         }
 
         :host([stacked]) b-icon {
