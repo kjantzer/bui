@@ -205,7 +205,7 @@ customElements.define('b-tabs', class extends LitElement {
             display: flex;
             background: var(--contentBgd);
             box-shadow: var(--contentShadow);
-            overflow: auto;
+            overflow: var(--overflow, auto);
         }
 
         .content::slotted(*) {
