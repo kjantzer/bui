@@ -2,6 +2,7 @@ import {LitElement, html, css, unsafeCSS} from 'lit-element'
 import Controller from './controller'
 import router from '../../router'
 import Route from '../../router/route'
+import device from '../../util/device'
 import './controller'
 import './toolbar'
 import '../../elements/btn'
@@ -188,7 +189,7 @@ export class Panel extends LitElement {
 
     _routeChange(oldState, newState, dir){
 
-        // console.log(this.title, dir);
+        // console.log(this.title, dir, oldState, newState);
 
         let detail = {
             oldState: oldState,
@@ -210,7 +211,7 @@ export class Panel extends LitElement {
 
             if( (oldState.isAfter && oldState.props.didEnter)
             || (oldState.isBefore && oldState.props.didExit) ){
-                this._close()
+                this._close(device.isiOS)
                 detail.closed = true
             }
 
@@ -393,10 +394,14 @@ export class Panel extends LitElement {
         return this
     }
 
-    _close(){
+    _close(immediate=false){
         window.removeEventListener('keydown', this._onKeydown, true)
         this.panelController.remove(this)
         this.removeAttribute('open')
+        
+        if( immediate )
+            this.remove()
+        else
         setTimeout(()=>{
             this.remove()
         }, Panel.animationTime)
