@@ -1,6 +1,7 @@
 import {LitElement, html, css} from 'lit-element'
 import Menu from '../menu'
 import router from '../../router'
+import device from '../../util/device'
 
 const PanelControllers = {}
 
@@ -49,6 +50,36 @@ class PanelController extends LitElement {
                 console.warn('A panel-controller already exists with the name: ', this.name)
             else
                 PanelControllers[this.name] = this
+        }
+
+        // TODO: support his in Android? make feature opt in?
+        if( this.name == 'root' && device.isiOS ){
+            let overflowScrollAt = 0
+            let topPanel = null
+
+            window.addEventListener('touchend', e=>{
+                if( overflowScrollAt < -40 ){
+                    topPanel&&topPanel.close()
+                    setTimeout(()=>{
+                        topPanel.style.top = 0
+                        topPanel = null
+                    },300)
+                }
+            })
+
+            window.addEventListener('scroll', e=>{
+
+                if( this.panels.size > 0 && !topPanel )
+                    topPanel = this.panelOnTop
+                
+                if( !topPanel ) return
+
+                overflowScrollAt = document.scrollingElement.scrollTop
+                
+                if( overflowScrollAt < 0 && topPanel ){
+                    topPanel.style.top = (Math.abs(overflowScrollAt) * 1) + 'px'
+                }
+            })
         }
     }
 
