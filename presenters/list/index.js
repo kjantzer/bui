@@ -108,6 +108,7 @@ customElements.define('b-list', class extends LitElement {
             flex: 1;
             overflow: auto;
             position: relative;
+            -webkit-overflow-scrolling: touch;
         }
 
         b-infinite-list > [selected] {

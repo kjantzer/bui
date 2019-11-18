@@ -581,7 +581,7 @@ export default class Menu {
 */
 	popover(target, opts={}){
 
-		if( opts.adjustForMobile && device.isMobile )
+		if( opts.adjustForMobile && device.isMobile && !device.isiPad )
 			return this.modal({btns: ['cancel','done']})
 		
 		this.render()

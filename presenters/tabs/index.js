@@ -179,6 +179,7 @@ customElements.define('b-tabs', class extends LitElement {
             :host([layout="right"]) .tab-bar {
                 flex-direction: row;
                 overflow: auto;
+                -webkit-overflow-scrolling: touch;
                 border-bottom: solid 1px rgba(0,0,0,.1);
             }
 
