@@ -18,7 +18,8 @@ export const PanelDefaults = {
     quickJump: true,
     closeOnEsc: false,
     controller: null, // root controller will be created and used
-    disableBackdropClick: false
+    disableBackdropClick: false,
+    disableOverscrollClose: false
 }
 
 class RegisteredPanels {
@@ -131,6 +132,9 @@ export class Panel extends LitElement {
     
     constructor(view, opts={}){
         super()
+
+        console.log(PanelDefaults);
+        
 
         let defaultOpts = Object.assign({}, PanelDefaults)
 

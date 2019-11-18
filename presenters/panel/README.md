@@ -22,6 +22,7 @@ panel.open()
 - `animation` (scale [only works on anchor=center])
 - `quickJump` (bool) - show quick jump menu when right click on close btn
 - `disableBackdropClick` - by default clicking backdrop will close panel
+- `disableOverscrollClose` - by default pulling down in overscroll (iOS) and letting go will hide the top panel
 - `closeOnEsc` - default is false
 - `controller` - specify a different panel controller (see below)
 - `onClose` - do something before closing; return `false` to stop closing
