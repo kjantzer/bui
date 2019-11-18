@@ -7,6 +7,10 @@ const device = {
     get is_android(){ return device.isAndroid }, // DEPRECATED
     get is_mobile(){ return device.isMobile }, // DEPRECATED
 
+    get isWindows(){ return /Win/.test(UA) },
+    get isMac(){ return /Mac/.test(UA) },
+    get isLinux(){ return /Linux/.test(UA) },
+
     get isiOS(){
         return /iPad|iPhone|iPod/.test(UA) && !window.MSStream
     },
