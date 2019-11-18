@@ -636,22 +636,22 @@ export default class Menu {
 		}
 		
 
-		if( opts.btns ){
-			let dialog = new Dialog({view: this.el, btns: opts.btns||false})
-			this.presenter = new Panel(dialog.el, opts)
-			this.presenter.open()
+		let dialog = new Dialog({
+			icon: opts.icon||'',
+			title: opts.title||'',
+			view: this.el,
+			btns: opts.btns||false
+		})
+		this.presenter = new Panel(dialog.el, opts)
+		this.presenter.open()
 
-			// if dialog btn clicked, take action
-			dialog.promise.then(btn=>{
-				if( btn )
-					this.presenter.close()
-				else
-					this.resolve(false)
-			})
-		}else{
-			this.presenter = new Panel(this.el, opts)
-			this.presenter.open()
-		}
+		// if dialog btn clicked, take action
+		dialog.promise.then(btn=>{
+			if( btn )
+				this.presenter.close()
+			else
+				this.resolve(false)
+		})
 
 		this.scrollToSelected()
 		
