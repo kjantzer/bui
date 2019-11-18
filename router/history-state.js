@@ -40,7 +40,7 @@ export default class HistoryState {
     }
 
     get isAfter(){
-        return history.state && history.state.num < this.num
+        return !history.state || history.state.num < this.num
     }
 
     get isForward(){
