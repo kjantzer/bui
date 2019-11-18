@@ -15,6 +15,10 @@ const device = {
         return /iPad|iPhone|iPod/.test(UA) && !window.MSStream
     },
 
+    get isiPad(){
+        return /iPad/.test(UA) && !window.MSStream
+    },
+
     get isAndroid(){
         return /android/i.test(UA)
     },
