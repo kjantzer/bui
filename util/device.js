@@ -17,7 +17,7 @@ const device = {
     },
 
     get isiPad(){
-        return /iPad/.test(UA) || (device.isMac && navigator.standalone !== undefined )
+        return /iPad/.test(UA) || (!device.isiOS && device.isMac && navigator.standalone !== undefined )
     },
 
     get isAndroid(){
