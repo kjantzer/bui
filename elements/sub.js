@@ -10,6 +10,10 @@ customElements.define('b-sub', class extends LitElement{
             font-size: .8em;
             font-weight: normal;
         }
+
+        :host([ondark]) {
+            color: rgba(255,255,255,.4);
+        }
     `}
 
     render(){return html`
