@@ -77,3 +77,41 @@ customElements.define('b-h2', class extends LitElement {
 
 })
 
+customElements.define('b-h3', class extends LitElement {
+
+    static get styles(){return css`
+
+        :host {
+            min-width: 0;
+        }
+
+        h3 {
+            margin: 0;
+            text-decoration: inherit;
+            font-size: var(--bui-h3-size, 1.2em);
+            text-overflow: ellipsis;
+            max-width: 100%;
+            overflow: hidden;
+
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -khtml-user-select: none; /* Konqueror HTML */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; 
+        }
+
+        @media (max-width:699px){
+            h3 {
+                font-size: var(--bui-h2-size-mobile, 1.3em);
+            }
+        }
+
+    `}
+
+    render(){return html`
+        <h3><slot></slot></h3>
+    `}
+
+})
+
