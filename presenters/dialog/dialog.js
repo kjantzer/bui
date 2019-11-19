@@ -189,7 +189,7 @@ export default class Dialog {
 	popover(target, opts={}){
 
 		if( opts.adjustForMobile && device.is_mobile )
-			return this.modal()
+			return this.modal((typeof opts.adjustForMobile == 'object' ? opts.adjustForMobile : {}))
 		
 		if( target.currentTarget )
 			target = target.currentTarget
