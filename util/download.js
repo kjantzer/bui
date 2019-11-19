@@ -1,3 +1,4 @@
+import device from './device'
 
 const fileTypes = {
     'text/plain': 'txt',
@@ -14,9 +15,15 @@ export default (data, filename = null, {
 
     let url
 
+    if( !filename ){
+        let ext = fileTypes[data.type] || ''
+        filename = new Date().getTime() + (ext ? '.'+ext : '')
+    }
+
     if( data instanceof URL ){
         url = data
         url.searchParams.set('downloadReq', true)
+        url.searchParams.set('filename', filename)
 
     } else if( !(data instanceof Blob) ){
 
@@ -27,14 +34,17 @@ export default (data, filename = null, {
         url = window.URL.createObjectURL(data);
     }
 
-    if( !filename ){
-        let ext = fileTypes[data.type] || ''
-        filename = new Date().getTime() + (ext ? '.'+ext : '')
-    }
-
     var a = window.document.createElement('a');
     a.href = url
-    a.download = filename;
+    a.target = '_blank'
+    a.download = filename
+
+    // if we dont do this, the current url is redirected and there is no way
+    // to get back to the standalone app without force close and repopen
+    if( device.isiOS && device.isStandalone ){
+        window.open(url)
+        return;
+    }
 
     document.body.appendChild(a);
     a.click();
