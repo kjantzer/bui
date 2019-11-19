@@ -12,11 +12,12 @@ const device = {
     get isLinux(){ return /Linux/.test(UA) },
 
     get isiOS(){
-        return /iPad|iPhone|iPod/.test(UA) && !window.MSStream
+        return /iPad|iPhone|iPod/.test(UA)
+        || (device.isMac && navigator.standalone !== undefined ) // iPadOS 13+
     },
 
     get isiPad(){
-        return /iPad/.test(UA) && !window.MSStream
+        return /iPad/.test(UA) || (device.isMac && navigator.standalone !== undefined )
     },
 
     get isAndroid(){
