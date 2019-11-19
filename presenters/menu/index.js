@@ -582,7 +582,9 @@ export default class Menu {
 	popover(target, opts={}){
 
 		if( opts.adjustForMobile && device.isMobile && !device.isiPad )
-			return this.modal({btns: ['cancel','done']})
+			return this.modal(Object.assign({
+				btns: ['cancel','done']
+			}, (typeof opts.adjustForMobile == 'object' ? opts.adjustForMobile : {})))
 		
 		this.render()
 		
