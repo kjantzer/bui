@@ -436,8 +436,8 @@ export class Panel extends LitElement {
             right: 0;
             min-width: 300px;
             min-height: 1em;
-            max-width: 100%;
-            max-height: 100%;
+            max-width: var(--max-width, 100%);
+            max-height: var(--max-height, 100%);
             overflow: visible;
             display: flex;
             flex-direction: column;
@@ -449,8 +449,8 @@ export class Panel extends LitElement {
         }
 
         :host([type="modal"]) > main {
-            max-height: 96%;
-            max-width: 96%;
+            max-height: var(--max-height, 96%);
+            max-width: var(--max-width, 96%);
         }
 
         :host([open]) {
