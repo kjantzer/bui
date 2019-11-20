@@ -3,6 +3,8 @@
     NOTE: sort of replicates Backbone functionality, but with less 
     overhead and modified for our needs...still thinking things through
 */
+// import Emitter from 'component-emitter'
+import {Events} from 'backbone'
 
 export class Collection {
 
@@ -47,7 +49,13 @@ export class Collection {
         }
         
         let m = this.get(id)
-        return m || this._createModel(attrs)
+
+        if( !m ){
+            m = this._createModel(attrs)
+            this.add(m)
+        }
+
+        return m
     }
 
     forEach(fn){ return this.models.forEach(fn) }
@@ -59,6 +67,7 @@ export class Collection {
 
     add(...args){
         this.models.push(...args)
+        this.trigger('add', args)
     }
 
     async fetchSync(params={}){ return this.fetch(params) } // TEMP alias to match older Backbone change
@@ -119,3 +128,6 @@ export class Collection {
         }
     }
 }
+
+Object.assign(Collection.prototype, Events)
+// Emitter(Collection.prototype)
