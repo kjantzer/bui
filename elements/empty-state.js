@@ -28,6 +28,10 @@ export default class EmptyState extends LitElement {
             left: 0;
         }
 
+        :host([ondark]) {
+            color: rgba(255,255,255,.1);
+        }
+
         :host([static]) {
             position: static;
             height: auto;
