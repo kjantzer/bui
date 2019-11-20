@@ -288,6 +288,18 @@ export class BtnElement extends LitElement {
         :host([sm]) { font-size: .8rem; }
         :host([lg]) { font-size: 1.2rem; }
         :host([xl]) { font-size: 1.4rem; }
+
+        /* floating action btn */
+        :host([fab]) {
+            position: absolute;
+            box-shadow: rgba(0,0,0,.4) 0 3px 10px;
+            bottom: 1rem;
+            right: 1rem;
+            font-size: 1.4em;
+            width: 2em;
+            height: 2em;
+            --radius: 2em;
+        }
     `}
 
     render(){ return html`
