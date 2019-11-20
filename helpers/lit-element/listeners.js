@@ -34,11 +34,16 @@ LitElement.prototype.__listenerModelFor = function(key){
     if( !m && this[key] )
         m = this[key]
 
-    // only backbone models and collections supported
-    if( !m || (!(m instanceof Model) && !(m instanceof Collection)) )
+    if( !m )
         return null
+    
+    if( m instanceof Model || m instanceof Collection )
+        return m
 
-    return m
+    if( m.trigger && m.on ) // Backbone.Events
+        return m
+
+    return null
 }
 
 LitElement.prototype.bindListeners = function(){
