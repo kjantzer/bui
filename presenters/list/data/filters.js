@@ -360,8 +360,9 @@ export class Filter {
 
         let selected = await new Menu(this.values, {
             selected: this.value,
-            multiple: this.isMulti
+            multiple: this.isMulti,
         }).popover(el, {
+            overflowBoundry: this.attrs.overflowBoundry || 'scrollParent',
             maxHeight: this.attrs.maxHeight || '60vh',
             adjustForMobile: true
         })
