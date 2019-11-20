@@ -41,6 +41,7 @@ export default class Menu {
 		this.el = document.createElement('div')
 		this.el.classList.add('b-menu')
 		this.el.classList.add('nopadding')
+		this.el.menu = this
 
 		if( opts.className )
 			opts.className.split(' ').forEach(cn=>{
@@ -235,10 +236,6 @@ export default class Menu {
 		this.searchSpinner.hidden = true
 
 		this.render()
-
-		// update popover position
-		if( this.presenter && this.presenter._updatePosition )
-			this.presenter._updatePosition()
 	}
 
 	appendTo(el){
@@ -275,6 +272,10 @@ export default class Menu {
 			</div>
 
 		`, this.el)
+
+		// update popover position
+		if( this.presenter && this.presenter._updatePosition )
+			this.presenter._updatePosition()
 
 		return this
 	}
@@ -467,7 +468,6 @@ export default class Menu {
 			index = 0
 		
 		this._active = index
-		console.log(index);
 		
 
 		let items = this.el.querySelectorAll('.menu-item')
@@ -482,6 +482,9 @@ export default class Menu {
 		let items = Array.from(this.el.querySelectorAll('.menu-item'))
 
 		items.forEach(el=>el.removeAttribute('active'))
+
+		if( typeof el === 'number' )
+			el = items[el]
 		
 		this._active = null
 		
@@ -535,7 +538,7 @@ export default class Menu {
 						this.__filteredMenu = this.__fuse.search(val)
 					
 					this.render()
-					this.setActiveItem()
+					this.setActiveItem(this.opts.autoSelectFirst?0:null)
 				}
 
 			}, 0)
