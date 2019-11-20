@@ -120,6 +120,10 @@ slot[name="control"]::slotted(*) {
 	z-index: 10;
 }
 
+:host(:not([disabled])) slot[name="control"]::slotted(*) {
+	-webkit-user-select: text;
+}
+
 /* .control[empty]:before {
 	content: attr(data-placeholder);
 	color: var(--placeholderColor);
