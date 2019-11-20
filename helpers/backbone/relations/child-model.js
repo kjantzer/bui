@@ -94,7 +94,11 @@ module.exports = function(Orig){ return {
 		if( subKey && CollInfo[subKey] )
 			CollInfo = CollInfo[subKey]
 
-		var CollGiven = CollInfo && CollInfo.prototype && CollInfo.prototype.toJSON && CollInfo.prototype.fetch;
+		var CollGiven = CollInfo 
+						&& (
+							(CollInfo.prototype && CollInfo.prototype.toJSON && CollInfo.prototype.fetch)
+							|| CollInfo.prototype.constructor /* class */
+						)
 		
 		// whoops, couldn't find a collection for the given key
 		if( CollInfo == undefined ){
