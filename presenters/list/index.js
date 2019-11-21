@@ -80,8 +80,6 @@ customElements.define('b-list', class extends LitElement {
             overflow: hidden;
             flex: 1;
             position: relative;
-            --searchBgd: #f5f5f5;
-            --toolbarShadow: rgba(0,0,0,.2) 0 0 6px;
         }
 
         slot[name="header"] {
@@ -94,7 +92,7 @@ customElements.define('b-list', class extends LitElement {
         }
 
         b-list-toolbar {
-            box-shadow: var(--toolbarShadow);
+            box-shadow: var(--list-toolbar-shadow, rgba(0,0,0,.2) 0 0 6px);
             padding: .25em .5em;
             z-index: 10;
         }

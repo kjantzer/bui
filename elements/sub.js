@@ -6,7 +6,7 @@ customElements.define('b-sub', class extends LitElement{
         :host {
             display: inline;
             position:relative;
-            color: rgba(0,0,0,.4);
+            color: var(--b-sub-color, rgba(0,0,0,.4));
             font-size: .8em;
             font-weight: normal;
         }
