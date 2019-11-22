@@ -39,20 +39,32 @@ export class Collection {
         return m
     }
 
-    getOrCreate(attrs){
+    getOrCreate(attrs, {add=true, update=true}={}){
+        
         let id = this.model.prototype.idAttribute
 
         if( typeof attrs != 'object' ){
             id = attrs
             attrs = {}
             attrs[this.model.prototype.idAttribute] = id
+        }else{
+            id = attrs[id]
         }
         
         let m = this.get(id)
 
         if( !m ){
             m = this._createModel(attrs)
-            this.add(m)
+            
+            if( add )
+                this.add(m)
+
+        // merge attrs with existin
+        }else if( update ){
+            if( m.set )
+                m.set(attrs)
+            else
+                Object.assign(m, attrs)
         }
 
         return m
@@ -114,15 +126,17 @@ export class Collection {
         let Model = this.model
 
         let models = data.map(d=>{
-            return this._createModel(d)
+            return this.getOrCreate(d, {add: false, update: true})
         })
 
         if( params.data && params.data.pageAt > 0 ){
             this.models.push(...models)
         }else{
             this.models.forEach(m=>{
-                delete m.coll
-                delete m.collection
+                if( !models.includes(m) ){
+                    delete m.coll
+                    delete m.collection
+                }
             })
             this.models = models
         }
