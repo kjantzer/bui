@@ -18,7 +18,8 @@ customElements.define('b-infinite-list', class extends LitElement {
     }
 
     firstUpdated(){
-        this.getContent()
+        // after first updating, reset and get content
+        this.reset()
     }
     
     connectedCallback(){
@@ -61,7 +62,9 @@ customElements.define('b-infinite-list', class extends LitElement {
 
         let pageAt = this.pageAt
 
-        this._fetching = await this.dataSource.fetch(pageAt).then(this.addContent.bind(this))
+        this._fetching = true
+        let models = await this.dataSource.fetch(pageAt)
+        this.addContent(models)
         this._fetching = null
 
         if( pageAt == 0 ){
