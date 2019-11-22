@@ -79,7 +79,7 @@ customElements.define('b-tabs', class extends LitElement {
             this.__views.set(v.id, v)
         })
 
-        this.active = this.views.active || this.views.first
+        this.active = this.getAttribute('active') || this.views.active || this.views.first
     }
 
     static get styles(){return css`

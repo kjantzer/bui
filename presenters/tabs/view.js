@@ -87,9 +87,13 @@ export default class TabView {
 
     get icon(){ return this.__icon }
 
+    // NOTE: rename to "route" ?
     get path(){
-        if( !this.__view ) return ''
-        return this.view.path || this.id
+        if( this._viewClass ){
+            return this._viewClass.path || this.id
+        }else if(this.__view) {
+            return this.__view.path || this.__view.getAttribute('path') || this.id
+        }
     }
 
     get canDisplay(){
