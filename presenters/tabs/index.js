@@ -368,6 +368,11 @@ customElements.define('b-tabs', class extends LitElement {
     }
 
     onModelChange(){
+
+        // once a model has been set on the tabs (even if setting to null)
+        // we will then begin propagating the model to the tab views
+        this._propagateModel = true
+
         if( this.views )
             this.views.active.view.model = this.model
     }
@@ -384,7 +389,8 @@ customElements.define('b-tabs', class extends LitElement {
 
         this.setAttribute('active', this.views.active.id)
 
-        view.model = this.model
+        if( this._propagateModel )
+            view.model = this.model
 
         if( view.parentElement != this)
             this.appendChild( view )
