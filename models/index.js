@@ -59,9 +59,9 @@ export class Collection {
             if( add )
                 this.add(m)
 
-        // merge attrs with existin
+        // merge attrs with existing
         }else if( update ){
-            if( m.set )
+            if( m.set ) // likely a backbone model
                 m.set(attrs)
             else
                 Object.assign(m, attrs)
