@@ -1,15 +1,18 @@
-const APP_TITLE = document.title
-const PATH_ROOT = location.pathname
-const PATH_PREFIX = '#/'
 
-// normalize path (always begin with `/#/`)
-// TODO: allow for prefix to be set by developer
+const config = {
+    APP_TITLE: document.title,
+    PATH_ROOT: location.pathname,
+    PATH_PREFIX: ''
+}
+
+export default config
+
+// normalize path (always begin with prefix and path root)
 export const normalizePath = path =>{
-    return path ? PATH_ROOT+PATH_PREFIX+path.replace(/^[#\/]+/, '') : path
+    return path ? config.PATH_ROOT+config.PATH_PREFIX+cleansePath(path) : path
 }
 
-export default {
-    APP_TITLE,
-    PATH_ROOT,
-    PATH_PREFIX
+export const cleansePath = path =>{
+    return path.replace(/^[#\/]+/, '')
 }
+

@@ -8,7 +8,10 @@ export default class HistoryStates {
 
         this._current = history.state && history.state.num || -1
 
-        this.add() // set initial state data
+        // set initial state data
+        this.add({
+            path: location.pathname+location.hash+location.search
+        })
     }
 
     get length(){ return this.states.length }
@@ -21,21 +24,21 @@ export default class HistoryStates {
         sessionStorage.setItem('history-states', JSON.stringify(this.states))
     }
 
-    get(num, create=false){
+    get(num, create=false, props={}){
         if( !this.states[num] && create ){
-            this.states[num] = new HistoryState(this, {num})
-            // this.save()
+            props.num = num
+            this.states[num] = new HistoryState(this, props)
         }
 
         return this.states[num]
     }
 
-    add(props={}){
-
+    add(props={}, push=false){
+        
         let oldNum = this._current
         let num = history.state && history.state.num
 
-        if( num == undefined ){
+        if( num == undefined || push ){
             num = ++this._current
             
             // remove trailing states as they are no longer valid
@@ -43,10 +46,15 @@ export default class HistoryStates {
                 state.parent = null
             })
         }
+        // else if( push )
+        //     num++
 
-        let state = this.get(num, true)
+        let state = this.get(num, true, props) // or create
         
-        state.update(props)
+        if( push )
+            state.push(props)
+        else
+            state.update(props)
 
         this._current = state.num
 

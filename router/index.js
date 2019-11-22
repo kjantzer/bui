@@ -6,9 +6,22 @@ const ROUTES = []
 
 export class Router {
 
+    // NOTE: this must be setup before anything uses router.add()
+    config(opts){
+        if( opts.root != undefined )
+            config.PATH_ROOT = opts.root
+
+        if( opts.prefix != undefined )
+            config.PATH_PREFIX = opts.prefix
+
+        if( opts.title != undefined )
+            config.APP_TITLE = opts.title
+    }
+
     start(opts={}){
 
         opts = Object.assign({
+            currentState: null,
             requireState: false
         }, opts)
 
@@ -20,37 +33,55 @@ export class Router {
             if( opts.requireState && !e.state ) return // probably a sheetview change, ignore
 
             let [newState, oldStates] = this.states.add()
+
+            window.dispatchEvent(new CustomEvent('router:popstate', {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    path: newState.path,
+                    state: newState,
+                    oldStates: oldStates
+                }
+            }))
+
             this._changeRoute(oldStates, newState)
         })
 
         // trigger initial route
         this._changeRoute([], this.states.current)
+
+        // update current state if no path
+        if( !this.states.current.path && opts.currentState ){
+            this.states.current.update(opts.currentState)
+        }
     }
 
     // pushes new path/state onto stack (does not trigger route change)
-    push(path, data={}){
+    push(path, props={}){
 
         if( path instanceof Route )
-            path = path.state ? path.state.path : path.rootPath
-        else
-            path = normalizePath(path)
+            path = path.state ? path.state.props.path : path.rootPath
 
-        if( !path ){
-            path = config.PATH_ROOT // empty string doesn't work
-            data.title = data.title || config.APP_TITLE
-        }
+        props.path = path
 
-        history.pushState(data, null, path)
+        let [newState, oldStates] = this.states.add(props, true)
+        
+        window.dispatchEvent(new CustomEvent('router:push', {
+            bubbles: true,
+            composed: true,
+            detail: {
+                path: newState.path,
+                state: newState,
+                oldStates: oldStates
+            }
+        }))
 
-        if( data.title )
-            document.title = data.title
-            
-        return this.states.add(data)
+        return [newState, oldStates]
     }
 
     // pushes new path/state and triggers route change
-    goTo(path, data){
-        let [newState, oldStates] = this.push(path, data)
+    goTo(path, props){
+        let [newState, oldStates] = this.push(path, props)
         this._changeRoute(oldStates, newState)
     }
 
@@ -58,9 +89,15 @@ export class Router {
 
         let dir = oldStates.length == 0 || oldStates[0].num < newState.num ? 'forward' : 'back'
 
+        let didMatch = false
         ROUTES.forEach(route=>{
-            route._change(oldStates, newState, dir)
+            if( route._change(oldStates, newState, dir) )
+                didMatch = true
         })
+
+        // if none of the routes matched, change current state path back to the root
+        if( !didMatch )
+            this.states.current.path = config.PATH_ROOT
     }
 
     add(path, onChange){

@@ -25,7 +25,7 @@ export default class Route {
     }
 
     update(props){
-        this.state&&this.state.update(props)
+        this.state&&this.state.isCurrent&&this.state.update(props)
     }
 
     matches(state){
@@ -54,7 +54,10 @@ export default class Route {
         oldState = this.matches(oldState)
         newState = this.matches(newState)
 
+        // TODO: change signature to pass newState first
         if( oldState || newState )
             this.onChange(oldState, newState, dir)
+
+        return !!newState
     }
 }

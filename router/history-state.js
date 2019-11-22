@@ -1,34 +1,38 @@
-
-const APP_TITLE = document.title
+import config, {normalizePath, cleansePath} from './config'
 
 export default class HistoryState {
 
     constructor(parent, props){
+
         this.parent = parent
 
-        let [hash, query] = location.hash.split('?')
+        if( !props.path )
+            props.path = ''
+
+        let [path, query] = props.path.split('?')
+
+        let queryData = {}
+        this.query = new URLSearchParams(query||props.query||'')
 
         if( query ){
-            query = new URLSearchParams(query)
-            let queryData = {}
-            query.forEach((v, k)=>{
+            this.query.forEach((v, k)=>{
                 queryData[k] = v
             })
-            query = queryData
         }
+        
+        // removing leading slash and #
+        props.path = cleansePath(path)
 
         this.props = Object.assign({
-            path: location.pathname,
-            hash: hash,
-            query: query,
-            title: APP_TITLE
+            query: queryData,
+            title: config.APP_TITLE
         }, props)
     }
 
     get num(){ return this.props.num }
 
     get isCurrent() {
-        return history.state && history.state.num == this.num
+        return !history.state || history.state.num == this.num
     }
 
     get isBefore(){
@@ -47,23 +51,55 @@ export default class HistoryState {
         return this.isAfter()
     }
 
-    get path(){
-        return this.props.path+this.props.hash
+    get title(){
+        return this.props.title
     }
 
-    update(props){
+    set title(title){
+        this.update({title:title})
+    }
+
+    set path(path){
+        path = cleansePath(path)
+        this.update({path:path})
+    }
+
+    get path(){
+        return normalizePath(this.props.path)
+    }
+
+    get normalizePath(){
+        let path = this.props.path ? this.path : config.PATH_ROOT+config.PATH_PREFIX
+        // return path
+        let query = this.query.toString()
+        return path+(query?'?'+query:'')
+    }
+
+    push(props={}){
         this.props = Object.assign(this.props, props)
-        
-        // if( this.isCurrent )
-        // FIXME: hmmm...this is causing problems (#1930)
-        // ...why did I do this in the first place? Do I actually need it?
-        // yes, I need it, add hacky path check for now
-        if( (!history.state || history.state.num == undefined) && this.path && this.path != '/' )
-            history.replaceState(this.props, null, this.path)
-            
+        history.pushState(this.props, null, this.normalizePath)
         this.parent.save()
 
         if( this.props.title && this.isCurrent )
+            document.title = this.props.title
+    }
+
+    update(props={}){
+        
+        if( !this.isCurrent ){
+            console.warn('HistoryState is not current and should not be updated', this.props)
+            return
+        }
+
+        // do not let num be updated, this is set when newly created
+        delete props.num
+        
+        this.props = Object.assign(this.props, props)
+        this.parent.save()
+
+        history.replaceState(this.props, null, this.normalizePath)
+            
+        if( this.props.title )
             document.title = this.props.title
     }
 
