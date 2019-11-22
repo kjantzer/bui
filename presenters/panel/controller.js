@@ -124,6 +124,15 @@ class PanelController extends LitElement {
         return onTop
     }
 
+    get panelOnTopWithRoute(){
+        let onTop = null
+        this.panels.forEach(panel=>{
+            if( panel.route )
+                onTop = panel
+        })
+        return onTop
+    }
+
     _updatePanels(updateRoutes=false){
         let i = 0
 

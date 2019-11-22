@@ -121,7 +121,10 @@ export class Panel extends LitElement {
     }}
 
     static register(path, view, opts){
-        register.add(path, view, opts)
+        // move register to end of call stack
+        setTimeout(()=>{
+            register.add(path, view, opts)
+        })
     }
 
     static open(path){
@@ -174,8 +177,14 @@ export class Panel extends LitElement {
         this.opts.onKeydown&&this.opts.onKeydown(e)
     }
 
-    get hash(){
-        return this.route&&this.route.state.props.hash
+    // DEPRECATED: hash changed to path
+    get hash(){ 
+        console.warn('Panel: `.hash` is deprecated; use `.path`');
+        this.path
+    }
+
+    get path(){
+        return this.route&&this.route.state.props.path
     }
 
     get route(){ return this.__route}
