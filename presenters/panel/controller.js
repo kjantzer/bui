@@ -169,6 +169,13 @@ class PanelController extends LitElement {
                 app.sv('sheets').setHash()
             else
                 router.push('')
+
+            this.dispatchEvent(new CustomEvent('panels-closed', {
+                bubbles: true,
+                composed: true,
+                detail: {controller: this}
+            }))
+        
         }else
         this.panels.forEach((panel)=>{
 

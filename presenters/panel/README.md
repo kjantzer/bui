@@ -112,7 +112,7 @@ other than the root of body, you can create one ahead of time
 </body>
 ```
 
-#### Multiple Controllers
+### Multiple Controllers
 
 Panels can also be opened inside of other panel controllers by first creating the controller
 with a different name and then specifying the controller in the panel opts
@@ -128,6 +128,16 @@ let panel = new Panel('custom-element', {
 ```
 
 >Note: if the controller cannot be found, the root controller will be used
+
+### Events
+When a controller has all of it's panels closed, it will dispatch a `panels-closed` event
+
+```js
+window.addEventListener('panels-closed', e=>{
+    if( e.target.name == 'root' )
+        console.log('all root panels closed')
+})
+```
 
 ## Toolbar
 
