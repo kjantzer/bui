@@ -5,10 +5,6 @@ customElements.define('b-h1', class extends LitElement {
     static get styles(){return css`
 
         :host {
-            min-width: 0;
-        }
-
-        h1 {
             margin: 0;
             text-decoration: inherit;
             font-size: var(--bui-h1-size, 2em);
@@ -26,7 +22,7 @@ customElements.define('b-h1', class extends LitElement {
         }
 
         @media (max-width:699px){
-            h1 {
+            :host{
                 font-size: var(--bui-h1-size-mobile, 1.6em);
             }
         }
@@ -34,7 +30,7 @@ customElements.define('b-h1', class extends LitElement {
     `}
 
     render(){return html`
-        <h1><slot></slot></h1>
+        <slot></slot>
     `}
 
 })
@@ -44,10 +40,6 @@ customElements.define('b-h2', class extends LitElement {
     static get styles(){return css`
 
         :host {
-            min-width: 0;
-        }
-
-        h2 {
             margin: 0;
             text-decoration: inherit;
             font-size: var(--bui-h2-size, 1.5em);
@@ -64,7 +56,7 @@ customElements.define('b-h2', class extends LitElement {
         }
 
         @media (max-width:699px){
-            h2 {
+            :host {
                 font-size: var(--bui-h2-size-mobile, 1.3em);
             }
         }
@@ -72,7 +64,7 @@ customElements.define('b-h2', class extends LitElement {
     `}
 
     render(){return html`
-        <h2><slot></slot></h2>
+        <slot></slot>
     `}
 
 })
@@ -82,10 +74,6 @@ customElements.define('b-h3', class extends LitElement {
     static get styles(){return css`
 
         :host {
-            min-width: 0;
-        }
-
-        h3 {
             margin: 0;
             text-decoration: inherit;
             font-size: var(--bui-h3-size, 1.2em);
@@ -102,7 +90,7 @@ customElements.define('b-h3', class extends LitElement {
         }
 
         @media (max-width:699px){
-            h3 {
+            :host {
                 font-size: var(--bui-h2-size-mobile, 1.3em);
             }
         }
@@ -110,7 +98,7 @@ customElements.define('b-h3', class extends LitElement {
     `}
 
     render(){return html`
-        <h3><slot></slot></h3>
+        <slot></slot>
     `}
 
 })
