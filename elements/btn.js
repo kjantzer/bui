@@ -299,6 +299,16 @@ export class BtnElement extends LitElement {
             width: 2em;
             height: 2em;
             --radius: 2em;
+            overflow: hidden;
+        }
+
+        :host([fab]) b-spinner {
+            margin-right: 0;
+            margin-left: -1em;
+        }
+
+        :host([fab][spin]) b-spinner {
+            margin-left: 0;
         }
     `}
 
