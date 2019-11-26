@@ -17,12 +17,14 @@ import '../elements/avatar'
 import '../elements/code'
 import '../elements/embed'
 import '../elements/audio'
-import '../elements/file-icon'
 import '../presenters/tabs'
 import '../presenters/form-control'
 import '../presenters/list'
 import '../helpers/colors-list'
 import '../helpers/colors.less';
+
+import defineFileIcon from '../elements/file-icon'
+defineFileIcon()
 
 import Dialog from '../presenters/dialog'
 window.Dialog = Dialog

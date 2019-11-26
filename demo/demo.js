@@ -14,10 +14,12 @@ import '../elements/hr'
 import '../elements/sub'
 import '../elements/ts'
 import '../elements/code'
-import '../elements/file-icon'
 import '../elements/embed'
 import '../elements/audio'
 import '../elements/carousel'
+
+import defineFileIcon from '../elements/file-icon'
+defineFileIcon()
 
 import { LitElement, html, css } from 'lit-element';
 import router from '../router'
