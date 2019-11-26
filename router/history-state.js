@@ -85,17 +85,14 @@ export default class HistoryState {
     }
 
     update(props={}){
-        
-        if( !this.isCurrent ){
-            console.warn('HistoryState is not current and should not be updated', this.props)
-            return
-        }
 
         // do not let num be updated, this is set when newly created
         delete props.num
         
         this.props = Object.assign(this.props, props)
         this.parent.save()
+
+        if( !this.isCurrent ) return
 
         history.replaceState(this.props, null, this.normalizePath)
             
