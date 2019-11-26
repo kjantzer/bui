@@ -79,7 +79,31 @@ Display an svg icon – [See a full list of icons](../docs/icons.md)
 ```
 
 ## `<b-file-icon>`
-*In development*
+File icon has some default file formats defined, but you will inevitably want to add your own.
+To support this, you must deliberately call the "define" function before using the custom element.
+
+```js
+import { css } from 'lit-element'
+import defineFileIcon, {fileIconColors} from 'bui/elements/file-icon'
+
+// list of predefined colors
+// override them in this object or in the define method
+console.log(fileIconColors)
+
+// use default colors
+defineFileIcon()
+
+// use defaults with your own colors
+defineFileIcon({
+    // must be defined with lit-element css
+    jpg: css`
+        :host([ext="jpg"]),
+        :host([ext="jpeg"]) {
+            --color: orange;
+        }
+    `
+})
+```
 
 ```html
 <b-file-icon ext="pdf"></b-file-icon>
@@ -87,8 +111,23 @@ Display an svg icon – [See a full list of icons](../docs/icons.md)
 ```
 <!--
 <b-file-icon ext="pdf"></b-file-icon>
-<b-file-icon ext="doc" style="--size:4em"></b-file-icon>
+<b-file-icon ext="docx"></b-file-icon>
+<b-file-icon ext="xlsx"></b-file-icon>
+<b-file-icon ext="psd"></b-file-icon>
+<b-file-icon ext="indd"></b-file-icon>
+<b-file-icon ext="ai"></b-file-icon>
+<b-file-icon ext="mp3"></b-file-icon>
+<b-file-icon ext="mp4"></b-file-icon>
+<b-file-icon ext="html"></b-file-icon>
+<b-file-icon ext="xml"></b-file-icon>
+<b-file-icon ext="zip"></b-file-icon>
 -->
+
+#### Style hooks
+`--b-file-icon-color-default` - when no `ext` color  
+`--b-file-icon-bgd-default`  - when no `ext` bgd    
+`--b-file-icon-size`  
+`--b-file-icon-radius`  
 
 ## `<b-hr>`
 A line divider
