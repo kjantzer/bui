@@ -12,7 +12,7 @@ export default class Label extends LitElement {
         :host {
             display: inline-block;
             text-transform: uppercase;
-            color: rgba(0,0,0,.33);
+            color: var(--b-label-color, rgba(0,0,0,.33));
             font-weight: bold;
             font-size: 1rem;
             line-height: 1rem;

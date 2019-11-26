@@ -4,7 +4,7 @@ customElements.define('b-hr', class extends LitElement{
 
     static get styles(){return css`
         :host {
-            --bgd: rgba(0,0,0,.1);
+            --bgd: var(--b-hr-bgd, rgba(0,0,0,.1));
 
             display: block;
             margin: 1em auto;

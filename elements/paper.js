@@ -18,7 +18,7 @@ export class PaperElement extends LitElement {
             box-sizing: border-box;
             display: block;
             background: var(--bgd);
-            box-shadow: rgba(0,0,0,.1) 0 1px 5px;
+            box-shadow: var(--b-paper-shadow, rgba(0,0,0,.1) 0 1px 5px);
             border: solid 1px transparent;
             --radius: var(--b-paper-radius, 3px);
             border-radius: var(--radius);
@@ -34,7 +34,7 @@ export class PaperElement extends LitElement {
         }
 
         :host([overshadow]) {
-            box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
+            box-shadow: var(--b-paper-overshadow, rgba(0, 0, 0, 0.1) 0px 0px 20px);
         }
 
         :host([inline]) {
