@@ -64,12 +64,12 @@ export default class Popover {
 		
 		if( !WatchingClicks ){
 			WatchingClicks = true
-			window.addEventListener(device.isMobile?'touchend':'click', WatchClicks, true)
+			window.addEventListener(device.isMobile?'touchend':'click', WatchClicks, !device.isMobile)
 		}
 		
 		if( !WatchingKeyboard ){
 			WatchingKeyboard = true
-			window.addEventListener('keydown', WatchKeyboard, true)
+			window.addEventListener('keydown', WatchKeyboard, !device.isMobile)
 		}
 		
 		if( typeof view == 'string' ){
