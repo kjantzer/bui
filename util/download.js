@@ -9,40 +9,72 @@ const fileTypes = {
     'image/gif': 'gif'
 }
 
-export default (data, filename = null, {
-    type = ''
+export const downloadContent = (content, filename, opts={})=>{
+
+    if( !(content instanceof Blob) ){
+
+        if( !opts.type )
+            opts.type = 'text/plain'
+        
+        content = new Blob([content], {type: opts.type})
+        url = window.URL.createObjectURL(content);
+    }
+
+    return download(content, filename, opts)
+}
+
+export const download = (url, filename = '', {
+    standaloneHTML = ''
 }={})=>{
 
-    let url
-
-    if( !filename ){
-        let ext = fileTypes[data.type] || ''
-        filename = new Date().getTime() + (ext ? '.'+ext : '')
+    if( typeof url == 'string' ){
+        try{
+            url = new URL(url)
+        }catch(err){
+            url = new URL(url, location.protocol+'//'+location.host)
+        }
     }
 
-    if( data instanceof URL ){
-        url = data
+    if( url instanceof URL ){
         url.searchParams.set('downloadReq', true)
         url.searchParams.set('filename', filename)
-
-    } else if( !(data instanceof Blob) ){
-
-        if( !type )
-            type = 'text/plain'
-        
-        data = new Blob([data], {type})
-        url = window.URL.createObjectURL(data);
     }
 
-    var a = window.document.createElement('a');
+    const a = window.document.createElement('a');
     a.href = url
+    a.style.display = 'none'
     a.target = '_blank'
-    a.download = filename
+    a.setAttribute('download', filename||'')
 
-    // if we dont do this, the current url is redirected and there is no way
-    // to get back to the standalone app without force close and repopen
+    /*
+        iOS 😞
+
+        iOS 13 Safari (normal) has a good download manager now
+        BUT, standalone does not use it and instead the current
+        page will redirect
+        
+        window.open() works, but I found an issue where a
+        white screen would display after the first window.open
+        
+        This solution seems to fix things and has the added benefit
+        of displaying a message to the user while the download is in progress
+    */
     if( device.isiOS && device.isStandalone ){
-        window.open(url)
+
+        let popup = window.open('', 'Downloading...')
+
+        var meta = document.createElement('meta');
+        meta.name = 'viewport'
+        meta.content = 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover, user-scalable=no'
+
+        popup.document.head.appendChild(meta)
+        popup.document.title = 'Downloading...'
+        popup.document.body.innerHTML = standaloneHTML
+
+        document.body.appendChild(a)
+        popup.document.body.appendChild(a);   
+        a.click()
+
         return;
     }
 
@@ -50,3 +82,5 @@ export default (data, filename = null, {
     a.click();
     document.body.removeChild(a);
 }
+
+export default download
