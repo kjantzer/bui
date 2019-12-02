@@ -21,11 +21,11 @@ slot[name="after"]{
 	position: relative;
 	display: inline-block;
 	vertical-align: top;
-	--placeholderColor: rgba(0,0,0,.3);
+	--placeholderColor: var(--fc-placeholder-color, rgba(0,0,0,.3));
 	--selectionBgd: #FFECB3;
 	--focusBgd: #FFF8E1;
 	--focusColor: var(--fc-theme);
-	--bgd: #fff;
+	 --bgd:var(--fc-bgd, #fff);
 	--borderColor: rgba(0,0,0,.3);
 	--invalidColor: #ff1744;
 	--unsavedColor: transparent; /*#FFC107;*/
@@ -180,7 +180,7 @@ slot[name="control"]::slotted(*) {
 slot[name="help"] {
 	margin: .5em 0 0;
 	font-size: .8em;
-	color: rgba(0,0,0,.6);
+	color: var(--fc-help-color, rgba(0,0,0,.6));
 	display: block;
 }
 
@@ -188,6 +188,7 @@ slot[name="help"] {
 ::slotted(input) {
 	font-family: inherit;
 	font-size: inherit;
+	color: inherit;
 	border: none;
 	background: none;
 	padding: var(--padX) var(--padY);
@@ -415,11 +416,11 @@ slot[name="help"] {
 	Filled
 */		
 :host([material="filled"]) {
-	--bgd: #eee;
+	--bgd: var(--fc-bgd, #eee);
 	--focusBgd: var(--bgd);
 	--padY: .75em;
 	--padX: .75em;
-	--placeholderColor: rgba(0,0,0,.3);
+	--placeholderColor: var(--fc-placeholder-color, rgba(0,0,0,.3));
 	margin: 0 0 .5em 0;
 }
 

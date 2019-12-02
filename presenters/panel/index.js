@@ -427,11 +427,11 @@ export class Panel extends LitElement {
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,.4); /* overlay */
+            background: var(--b-panel-overlay, rgba(0,0,0,.4)); /* overlay */
             opacity: 0;
             transition: opacity ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1),
                         background-color ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
-            --radius: 5px;
+            --radius: var(--b-panel-radius, 5px);
             --radius-top: var(--radius);
             --radius-bottom: 0;
         }
@@ -451,8 +451,8 @@ export class Panel extends LitElement {
             display: flex;
             flex-direction: column;
             height: 100%;
-            background: #fff;
-            box-shadow: rgba(0,0,0,.2) 0 3px 10px;
+            background: var(--b-panel-bgd, #fff);
+            box-shadow: var(--b-panel-shadow, rgba(0,0,0,.2) 0 3px 10px);
             border-radius: var(--radius-top) var(--radius-top) var(--radius-bottom) var(--radius-bottom);
             transition: ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
         }

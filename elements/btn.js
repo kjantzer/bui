@@ -28,10 +28,10 @@ export class BtnElement extends LitElement {
             --pink: #E91E63; */
 
             --radius: 3px;
-            --color: var(--black);
+            --color: var(--b-btn-bgd, var(--black)) ;
             --bgdColor: var(--color);
             --hoverBgdColor: rgba(255,255,255,.1);
-            --textColor: #fff;
+            --textColor: var(--b-btn-color, #fff);
             --borderColor: var(--color);
             --borderStyle: solid;
             --borderWidth: 1px;

@@ -94,8 +94,9 @@ customElements.define('b-tabs', class extends LitElement {
             --contentPadding: 2em;
             --menuItemPadding: .75em 1em;
             --menuItemRadius: 4px;
-            --inactiveColor: rgba(0,0,0,.4);
-            --activeColor: inherit;
+            --inactiveColor: var(--b-tabs-inactive-color, rgba(0,0,0,.4));
+            --activeColor:  var(--b-tabs-active-color, inherit);
+            --border-color: var(--b-tabs-border-color, rgba(0, 0, 0, 0.1));
             --contentBgd: none;
             --contentShadow: none;
         }
@@ -147,10 +148,10 @@ customElements.define('b-tabs', class extends LitElement {
             order: 2;
         }
 
-        :host([layout="top"]) .tab-bar { border-bottom: solid 1px rgba(0,0,0,.1); }
-        :host([layout="bottom"]) .tab-bar { border-top: solid 1px rgba(0,0,0,.1); }
-        :host([layout="left"]) .tab-bar { border-right: solid 1px rgba(0,0,0,.1); }
-        :host([layout="right"]) .tab-bar { border-left: solid 1px rgba(0,0,0,.1); }
+        :host([layout="top"]) .tab-bar { border-bottom: solid 1px var(--border-color); }
+        :host([layout="bottom"]) .tab-bar { border-top: solid 1px var(--border-color); }
+        :host([layout="left"]) .tab-bar { border-right: solid 1px var(--border-color); }
+        :host([layout="right"]) .tab-bar { border-left: solid 1px var(--border-color); }
 
         :host([layout="top"]) .tab-bar-item { border-bottom: solid 2px transparent; }
         :host([layout="bottom"]) .tab-bar-item { border-top: solid 2px transparent; }

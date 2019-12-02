@@ -25,8 +25,8 @@ export class PaperElement extends LitElement {
             --padding: 1em;
             padding: var(--padding);
             position: relative;
-            --bgd: #fff;
-            --bgdAccent: #fff;
+            --bgd: var(--b-paper-bgd, #fff);
+            --bgdAccent: var(--bgd);
         }
 
         :host([hidden]) {
@@ -128,13 +128,15 @@ export class PaperElement extends LitElement {
         }
 
         :host([color="postit"]) {
-            --bgd: #FFF8E1;
-            --bgdAccent: var(--orange);
+            color: var(--b-paper-postit-color, inherit);
+            --bgd: var(--b-paper-postit-bgd, #FFF8E1);
+            --bgdAccent: var(--b-paper-postit-bgd-accent, var(--orange));
         }
 
         :host([color="info"]) {
-            --bgd: var(--blue-50);
-            --bgdAccent: var(--blue);
+            color: var(--b-paper-info-color, inherit);
+            --bgd: var(--b-paper-info-bgd, var(--blue-50));
+            --bgdAccent: var(--b-paper-info-bgd-accent, var(--blue));
         }
     `}
 
