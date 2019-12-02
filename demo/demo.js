@@ -22,7 +22,13 @@ import defineFileIcon from '../elements/file-icon'
 defineFileIcon()
 
 import { LitElement, html, css } from 'lit-element';
+
 import router from '../router'
+router.config({
+    root: location.hostname == 'localhost' ? '/' : '/bui/',
+    prefix: '#/'
+})
+
 import '../presenters/tabs'
 import '../presenters/form-control'
 import '../presenters/list'
@@ -69,7 +75,7 @@ Panel.register('view-1', ()=>html`
             <b-hr vert></b-hr>
             Left Content
         </span>
-        <span slot="middle"> <b-label filled>Badge</b-label></span>
+        <span slot="middle"> <b-label badge="red" style="vertical-align: top;">Badge</b-label></span>
     </b-panel-toolbar>
     <main style="flex:1">
         <b-tabs layout="left">
@@ -306,4 +312,8 @@ window.openView = el=>{
 }
 
 
-router.start()
+window.addEventListener('load', e=>{
+    // setTimeout(()=>{
+        router.start()
+    // }, 0)
+})
