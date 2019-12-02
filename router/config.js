@@ -13,6 +13,6 @@ export const normalizePath = path =>{
 }
 
 export const cleansePath = path =>{
-    return path.replace(/^[#\/]+/, '')
+    return path.replace(new RegExp(`^(${config.PATH_ROOT})?(${config.PATH_PREFIX})?`), '')
 }
 
