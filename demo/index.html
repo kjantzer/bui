@@ -337,6 +337,12 @@
                         <b-hr vert></b-hr>
 
                         <b-btn spin>With Spinner</b-btn>
+
+                        <b-hr vert></b-hr>
+
+                        <b-btn clear>Clear Style</b-btn>
+                        <b-btn clear color="red">Clear Red</b-btn>
+
                     </div>
 
                     <br><br><b-label divider>Outline</b-label><br>
@@ -378,9 +384,9 @@
 
                     <br><br><b-label divider>Floating Action Button</b-label><br>
                     <div>
-                        <b-btn fab color="blue" icon="plus" style="position:static;"></b-btn>
-                        <b-btn fab icon="cog" style="position:static;"></b-btn>
-                        <b-btn fab color="gray" icon="download" style="position:static;"></b-btn>
+                        <b-btn fab color="blue" icon="plus" style="position:relative;right:0;bottom:0"></b-btn>&nbsp;&nbsp;
+                        <b-btn fab icon="cog" style="position:relative;right:0;bottom:0"></b-btn>&nbsp;&nbsp;
+                        <b-btn fab color="gray" icon="download" style="position:relative;right:0;bottom:0"></b-btn>
                     </div>
 
                     <br><br>
@@ -614,6 +620,8 @@
                 </div>
 
                 <b-util-info title="Util"></b-util-info>
+
+                <b-backbone-relations title="Relations"></b-backbone-relations>
 
             </b-tabs>
 

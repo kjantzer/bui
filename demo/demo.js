@@ -245,12 +245,17 @@ customElements.define('tab-divider', class extends LitElement{
 
 
 import utilReadme from '../util/README.md'
+import backboneRelationsReadme from '../helpers/backbone/relations/README.md'
 customElements.define('b-util-info', class extends HTMLElement{
-
     connectedCallback(){
         this.innerHTML = utilReadme
     }
+})
 
+customElements.define('b-backbone-relations', class extends HTMLElement{
+    connectedCallback(){
+        this.innerHTML = backboneRelationsReadme
+    }
 })
 
 // import formControlDocs from '../presenters/form-control/README.md'
@@ -259,7 +264,7 @@ customElements.define('b-util-info', class extends HTMLElement{
 // import listDocs from '../presenters/list/README.md'
 // document.querySelector('#list-docs').innerHTML = listDocs
 
-import '../helpers/colors.less'
+import '../helpers/colors/index.less'
 import '../helpers/colors-list'
 
 window.dialogs = {
