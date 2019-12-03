@@ -25,7 +25,7 @@ import { LitElement, html, css } from 'lit-element';
 
 import router from '../router'
 router.config({
-    root: location.hostname == 'localhost' ? '/' : '/bui/',
+    root: location.hostname.match('github') ? '/bui/' : '/',
     prefix: '#/'
 })
 

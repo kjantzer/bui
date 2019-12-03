@@ -4063,10 +4063,10 @@ class BtnElement extends _litElement.LitElement {
             --pink: #E91E63; */
 
             --radius: 3px;
-            --color: var(--black);
+            --color: var(--b-btn-bgd, var(--black)) ;
             --bgdColor: var(--color);
             --hoverBgdColor: rgba(255,255,255,.1);
-            --textColor: #fff;
+            --textColor: var(--b-btn-color, #fff);
             --borderColor: var(--color);
             --borderStyle: solid;
             --borderWidth: 1px;
@@ -5000,8 +5000,8 @@ class PaperElement extends _litElement.LitElement {
             --padding: 1em;
             padding: var(--padding);
             position: relative;
-            --bgd: #fff;
-            --bgdAccent: #fff;
+            --bgd: var(--b-paper-bgd, #fff);
+            --bgdAccent: var(--bgd);
         }
 
         :host([hidden]) {
@@ -5103,13 +5103,15 @@ class PaperElement extends _litElement.LitElement {
         }
 
         :host([color="postit"]) {
-            --bgd: #FFF8E1;
-            --bgdAccent: var(--orange);
+            color: var(--b-paper-postit-color, inherit);
+            --bgd: var(--b-paper-postit-bgd, #FFF8E1);
+            --bgdAccent: var(--b-paper-postit-bgd-accent, var(--orange));
         }
 
         :host([color="info"]) {
-            --bgd: var(--blue-50);
-            --bgdAccent: var(--blue);
+            color: var(--b-paper-info-color, inherit);
+            --bgd: var(--b-paper-info-bgd, var(--blue-50));
+            --bgdAccent: var(--b-paper-info-bgd-accent, var(--blue));
         }
     `;
   }
@@ -15257,7 +15259,7 @@ const normalizePath = path => {
 exports.normalizePath = normalizePath;
 
 const cleansePath = path => {
-  return path.replace(/^[#\/]+/, '');
+  return path.replace(new RegExp(`^(${config.PATH_ROOT})?(${config.PATH_PREFIX})?`), '');
 };
 
 exports.cleansePath = cleansePath;
@@ -16473,11 +16475,11 @@ class Panel extends _litElement.LitElement {
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,.4); /* overlay */
+            background: var(--b-panel-overlay, rgba(0,0,0,.4)); /* overlay */
             opacity: 0;
             transition: opacity ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1),
                         background-color ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
-            --radius: 5px;
+            --radius: var(--b-panel-radius, 5px);
             --radius-top: var(--radius);
             --radius-bottom: 0;
         }
@@ -16497,8 +16499,8 @@ class Panel extends _litElement.LitElement {
             display: flex;
             flex-direction: column;
             height: 100%;
-            background: #fff;
-            box-shadow: rgba(0,0,0,.2) 0 3px 10px;
+            background: var(--b-panel-bgd, #fff);
+            box-shadow: var(--b-panel-shadow, rgba(0,0,0,.2) 0 3px 10px);
             border-radius: var(--radius-top) var(--radius-top) var(--radius-bottom) var(--radius-bottom);
             transition: ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -19369,8 +19371,9 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
             --contentPadding: 2em;
             --menuItemPadding: .75em 1em;
             --menuItemRadius: 4px;
-            --inactiveColor: rgba(0,0,0,.4);
-            --activeColor: inherit;
+            --inactiveColor: var(--b-tabs-inactive-color, rgba(0,0,0,.4));
+            --activeColor:  var(--b-tabs-active-color, inherit);
+            --border-color: var(--b-tabs-border-color, rgba(0, 0, 0, 0.1));
             --contentBgd: none;
             --contentShadow: none;
         }
@@ -19422,10 +19425,10 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
             order: 2;
         }
 
-        :host([layout="top"]) .tab-bar { border-bottom: solid 1px rgba(0,0,0,.1); }
-        :host([layout="bottom"]) .tab-bar { border-top: solid 1px rgba(0,0,0,.1); }
-        :host([layout="left"]) .tab-bar { border-right: solid 1px rgba(0,0,0,.1); }
-        :host([layout="right"]) .tab-bar { border-left: solid 1px rgba(0,0,0,.1); }
+        :host([layout="top"]) .tab-bar { border-bottom: solid 1px var(--border-color); }
+        :host([layout="bottom"]) .tab-bar { border-top: solid 1px var(--border-color); }
+        :host([layout="left"]) .tab-bar { border-right: solid 1px var(--border-color); }
+        :host([layout="right"]) .tab-bar { border-left: solid 1px var(--border-color); }
 
         :host([layout="top"]) .tab-bar-item { border-bottom: solid 2px transparent; }
         :host([layout="bottom"]) .tab-bar-item { border-top: solid 2px transparent; }
@@ -19934,11 +19937,11 @@ slot[name="after"]{
 	position: relative;
 	display: inline-block;
 	vertical-align: top;
-	--placeholderColor: rgba(0,0,0,.3);
+	--placeholderColor: var(--fc-placeholder-color, rgba(0,0,0,.3));
 	--selectionBgd: #FFECB3;
 	--focusBgd: #FFF8E1;
 	--focusColor: var(--fc-theme);
-	--bgd: #fff;
+	 --bgd:var(--fc-bgd, #fff);
 	--borderColor: rgba(0,0,0,.3);
 	--invalidColor: #ff1744;
 	--unsavedColor: transparent; /*#FFC107;*/
@@ -20093,7 +20096,7 @@ slot[name="control"]::slotted(*) {
 slot[name="help"] {
 	margin: .5em 0 0;
 	font-size: .8em;
-	color: rgba(0,0,0,.6);
+	color: var(--fc-help-color, rgba(0,0,0,.6));
 	display: block;
 }
 
@@ -20101,6 +20104,7 @@ slot[name="help"] {
 ::slotted(input) {
 	font-family: inherit;
 	font-size: inherit;
+	color: inherit;
 	border: none;
 	background: none;
 	padding: var(--padX) var(--padY);
@@ -20328,11 +20332,11 @@ slot[name="help"] {
 	Filled
 */		
 :host([material="filled"]) {
-	--bgd: #eee;
+	--bgd: var(--fc-bgd, #eee);
 	--focusBgd: var(--bgd);
 	--padY: .75em;
 	--padX: .75em;
-	--placeholderColor: rgba(0,0,0,.3);
+	--placeholderColor: var(--fc-placeholder-color, rgba(0,0,0,.3));
 	margin: 0 0 .5em 0;
 }
 
@@ -37498,6 +37502,7 @@ function _default(customColors = {}, customLabels = {}) {
             --bgd: var(--b-file-icon-bgd-default, #aaa);
             --size: var(--b-file-icon-size, 2em);
             --radius: var(--b-file-icon-radius, 0px);
+            --border-color: transparent;
 
             width: calc(.8 * var(--size));
             height: var(--size);
@@ -37522,7 +37527,7 @@ function _default(customColors = {}, customLabels = {}) {
             justify-content: center;
             align-items: center;
             color: var(--color);
-            box-shadow: 0 0 0 calc(.05 * var(--size)) var(--border-color, transparent) inset;
+            box-shadow: 0 0 0 calc(.05 * var(--size)) var(--border-color) inset;
         }
 
         .dogear {

@@ -16,6 +16,7 @@
 * Extras
     * [Util](/util/README.md)
     * [Helpers](/helpers/README.md)
+        * [Backbone.js Relations](/helpers/backbone/relations/README.md)
     * [Models](/models/README.md)
     * [Router](/router/README.md)
     * [Realtime](/realtime/README.md)

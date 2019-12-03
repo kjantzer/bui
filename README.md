@@ -9,8 +9,8 @@
 <div align="center">
 
 [![demo](https://img.shields.io/badge/npm-v1.1.0-blue)](https://www.npmjs.com/package/blackstone-ui)
-[![demo](https://img.shields.io/badge/-Demo-blue)](http://kjantzer.github.io/bui/)
-[![docs](https://img.shields.io/badge/-Documentation-black)](http://kjantzer.github.io/bui/docs/)
+[![demo](https://img.shields.io/badge/-Demo-blue)](https://bui.js.org)
+[![docs](https://img.shields.io/badge/-Documentation-black)](https://bui.js.org/docs/)
 
 </div>
 
@@ -20,34 +20,58 @@ Web components for creating interfaces - built with [lit-html](https://lit-html.
 
 Example 
 ```html
+<b-paper compact>
 <b-tabs>
     <div title="Tab 1">
-
-        <b-paper>
-            <b-spinner-overlay></b-spinner-overlay>
-            <header>
-                <h1>
-                    <b-icon name="folder"></b-icon> 
-                    Title
-                    <b-label>Active</b-label>
-                </h1>
-                <b-btn icon="upload-cloud" class="text-btn">Upload</b-btn>
-            </header>
-            <main>
-                Content here
-                <b-hr></b-hr>
-                More content
-            </main>
-        </b-paper>
-
+        <b-spinner-overlay></b-spinner-overlay>
+        <header>
+            <h3>
+                <b-icon name="folder"></b-icon> 
+                Title
+                <b-label>Active</b-label>
+            </h3>
+            <b-uploader url="/" auto-upload></b-uploader>
+            <b-btn icon="upload-cloud" class="text-btn" onclick="this.previousElementSibling.selectFile()">Upload</b-btn>
+        </header>
+        <main>
+            Content here
+            <b-hr></b-hr>
+            More content
+        </main>
     </div>
     <div title="Tab 2">
         Tab 2 content
     </div>
-
 </b-tabs>
-
+</b-paper>
 ```
+
+<!--
+<b-paper compact>
+<b-tabs>
+    <div title="Tab 1">
+        <b-spinner-overlay></b-spinner-overlay>
+        <header>
+            <h3>
+                <b-icon name="folder"></b-icon> 
+                Title
+                <b-label>Active</b-label>
+            </h3>
+            <b-uploader url="/" auto-upload></b-uploader>
+            <b-btn icon="upload-cloud" class="text-btn" onclick="this.previousElementSibling.selectFile()">Upload</b-btn>
+        </header>
+        <main>
+            Content here
+            <b-hr></b-hr>
+            More content
+        </main>
+    </div>
+    <div title="Tab 2">
+        Tab 2 content
+    </div>
+</b-tabs>
+</b-paper>
+-->
 
 ## Installation
 Blackstone-UI is available as an [npm package](https://www.npmjs.com/package/blackstone-ui)
@@ -108,4 +132,4 @@ npm start
 ```
 
 ## Notes
-- consider switching out `moment.js` for something lighter weight
+- consider switching out `moment.js` for something lighter weight (like [day.js](https://day.js.org/))
