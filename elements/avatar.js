@@ -17,13 +17,11 @@ class AvatarElement extends HTMLElement {
         
         temp.innerHTML = `<style>
 			:host {
-				--radius: 50%;
-				--size: 1em;
 				--bgd: ${this.bgd};
 				--bgdDefault: transparent;
 				--color: ${this.color};
-				height: var(--size);
-			    width: var(--size);
+				height: var(--size, 1em);
+			    width: var(--size, 1em);
 			    display: inline-block;
 			    vertical-align: middle;
 
@@ -40,7 +38,7 @@ class AvatarElement extends HTMLElement {
 			}
 
 			svg {
-				border-radius: var(--radius);
+				border-radius: var(--b-avatar-radius, 50%);
 			}
 			
 			svg rect {

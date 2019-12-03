@@ -44,20 +44,20 @@ customElements.define('b-realtime-users', class extends LitElement{
     static get styles(){return css`
         :host {
             display: inline-block;
-            --theSize: 1.4em;
+            --size: 1.4em;
         }
 
         /* most likely in a b-panel-toolbar */
         :host([slot="middle"]) {
-            --theSize: 1.2em;
+            --size: 1.2em;
             vertical-align: text-bottom;
             margin: 0 0 0 .25em;
         }
 
         b-avatar,
         .avatar {
-            border-radius: var(--theSize);
-            --size: var(--theSize);
+            border-radius: var(--size);
+            --size: var(--size);
             /* box-shadow: rgba(0,0,0,.2) 0 0 2px */
         }
 
