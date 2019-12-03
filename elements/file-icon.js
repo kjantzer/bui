@@ -119,6 +119,7 @@ customElements.define('b-file-icon', class extends LitElement{
             --bgd: var(--b-file-icon-bgd-default, #aaa);
             --size: var(--b-file-icon-size, 2em);
             --radius: var(--b-file-icon-radius, 0px);
+            --border-color: transparent;
 
             width: calc(.8 * var(--size));
             height: var(--size);
@@ -143,7 +144,7 @@ customElements.define('b-file-icon', class extends LitElement{
             justify-content: center;
             align-items: center;
             color: var(--color);
-            box-shadow: 0 0 0 calc(.05 * var(--size)) var(--border-color, transparent) inset;
+            box-shadow: 0 0 0 calc(.05 * var(--size)) var(--border-color) inset;
         }
 
         .dogear {
