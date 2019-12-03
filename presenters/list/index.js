@@ -84,6 +84,13 @@ customElements.define('b-list', class extends LitElement {
 
         slot[name="header"] {
             display: block;
+            overflow-x: auto;
+        }
+
+        slot[name="header"]::-webkit-scrollbar {
+            display: none;
+            width: 0 !important;
+            height: 0 !important;
         }
 
         b-spinner-overlay {
@@ -251,6 +258,18 @@ customElements.define('b-list', class extends LitElement {
         this.spinner.show = true
         this.toolbar.count = await this.dataSource.length()
         this.spinner.show = false
+
+        this.header = this.$$('[name="header"]').assignedNodes()[0]
+
+        if( this.header )
+        this.list.addEventListener('scroll', e=>{
+            this.header.scrollLeft = e.currentTarget.scrollLeft
+            
+            if( e.currentTarget.scrollLeft == 0 )
+                this.removeAttribute('scrolled-x')
+            else
+                this.setAttribute('scrolled-x', '')
+        })
     }
 
     async refresh(){
