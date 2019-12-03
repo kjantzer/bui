@@ -109,8 +109,6 @@ customElements.define('b-file-icon', class extends LitElement{
     }}
 
     static get styles(){
-        console.log('applying styles');
-        
         return [css`
         :host {
             display: inline-block;
