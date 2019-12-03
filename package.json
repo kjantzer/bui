@@ -1,9 +1,9 @@
 {
     "name": "blackstone-ui",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "description": "Web components for creating app interfaces",
     "main": "index.js",
-    "homepage": "https://kjantzer.github.io/bui/",
+    "homepage": "https://bui.js.org",
     "repository": {
         "type": "git",
         "url": "https://github.com/kjantzer/bui"
@@ -23,7 +23,8 @@
         "web components",
         "ui framework",
         "ui components",
-        "lit-element"
+        "lit-element",
+        "bui"
     ],
     "author": "Kevin Jantzer, Blackstone Publishing",
     "license": "MIT",
