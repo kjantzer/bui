@@ -157,13 +157,16 @@ class PanelController extends LitElement {
             }
         })
 
-        if( this.parentElement ){
+        let hostEl = this.getRootNode()
+        hostEl = hostEl.host || hostEl.body || hostEl
+
+        if( hostEl ){
             if( this.length == 0 ){
-                this.parentElement.classList.remove('b-panel-open')
-                this.parentElement.style.overflow = ''
+                hostEl.classList.remove('b-panel-open')
+                hostEl.style.overflow = ''
             }else{
-                this.parentElement.classList.add('b-panel-open')
-                this.parentElement.style.overflow = 'hidden'
+                hostEl.classList.add('b-panel-open')
+                hostEl.style.overflow = 'hidden'
             }
         }
     }
