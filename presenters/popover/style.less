@@ -2,14 +2,14 @@
 .popover {
 	z-index: 10000;
 	--arrow-w: 8px;
-	--bgd: #fff;
+	--bgd: var(--b-popover-bgd, #fff);
 	--arrowBgd: var(--bgd);
 	--border: rgba(0,0,0,.2);
 	// transition: margin 200ms, opacity 200ms;
 	// opacity: 0;
 	
 	&.dark {
-		--bgd: #2c3033;
+		--bgd: var(--b-popover-bgd, #2c3033);
 		--border: #111;
 		color: #fff;
 		

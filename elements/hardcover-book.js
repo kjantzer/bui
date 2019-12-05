@@ -97,7 +97,7 @@ customElements.define('b-hardcover-book', class extends LitElement{
         }
 
         .spine li:first-child {
-            background: #eee;
+            background: var(--bgd-inside, #eee);
         }
         .spine li:last-child {
             background: #333;
