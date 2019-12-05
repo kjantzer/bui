@@ -163,3 +163,20 @@ would have been made or received (websocket).
 It may be important to trigger a refresh of data when resuming 
 from the background; this script enables such a function.
 
+## Touch Events
+
+`bindLongpress`  
+Mobile/touch devices do not have right+click abilities. In many cases, a long press can
+be good alternative. By default, `bindLongPress` will trigger a `contextmenu` event
+after the user has touched down for `500ms` without dragging.
+
+```js
+import {bindLongPress} from 'bui/util/touch-events'
+
+bindLongPress(el) // use defaults
+bindLongPress(el, {
+    event: 'contextmenu', // (default) what event to fire after long press
+    delay: 500 // (default) how long until triggering event
+})
+```
+
