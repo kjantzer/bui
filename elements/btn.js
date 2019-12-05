@@ -290,6 +290,7 @@ export class BtnElement extends LitElement {
         /* floating action btn */
         :host([fab]) {
             position: absolute;
+            z-index: 100;
             box-shadow: rgba(0,0,0,.4) 0 3px 10px;
             bottom: 1rem;
             right: 1rem;
