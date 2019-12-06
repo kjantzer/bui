@@ -65,6 +65,7 @@ export default class Popover {
 		if( !WatchingClicks ){
 			WatchingClicks = true
 			window.addEventListener(device.isMobile?'touchend':'click', WatchClicks, !device.isMobile)
+			window.addEventListener('contextmenu', WatchClicks, !device.isMobile)
 		}
 		
 		if( !WatchingKeyboard ){
@@ -86,7 +87,11 @@ export default class Popover {
 		
 		if( window.Backbone && view instanceof window.Backbone.View )
 			view = view.el
-		
+
+		if( target instanceof MouseEvent ){
+			target = this.createInvisiblePlaceholderTarget(target)
+		}
+
 		this.opts = opts
 		this.target = target
 		this.view = view
@@ -141,6 +146,16 @@ export default class Popover {
 		// keep track of open popovers so we can remove them later
 		OpenPopovers.push(this)
 	}
+
+	createInvisiblePlaceholderTarget(e){
+		let target = document.createElement('div')
+		target.classList.add('popover-invisible-placeholder')
+		target.style.position = 'absolute'
+		target.style.left = e.clientX+'px'
+		target.style.top = e.clientY+'px'
+		document.body.appendChild(target)
+		return target
+	}
 	
 	contains(target){
 		if( !target ) return false
@@ -188,6 +203,9 @@ export default class Popover {
 		this.mutationObserver.disconnect()
 		this.popper.destroy()
 		this.target.classList.remove('popover-open')
+
+		if( this.target.classList.contains('popover-invisible-placeholder') )
+			this.target.remove()
 		
 		// remove this from the list of open popovers as well as all popovers after it
 		var indx = OpenPopovers.indexOf(this)
@@ -201,6 +219,7 @@ export default class Popover {
 		if( OpenPopovers.length == 0 ){
 			WatchingClicks = false
 			window.removeEventListener(device.isMobile?'touchend':'click', WatchClicks, true)
+			window.removeEventListener('contextmenu', WatchClicks, !device.isMobile)
 			
 			WatchingKeyboard = false
 			window.removeEventListener('keydown', WatchKeyboard, true)

@@ -27,10 +27,15 @@ const DefaultOpts = {
 	closeOnHide: true,
 	maxHeight: 'auto',
 	maxHeightThreshold: 400,
+	overflowBoundry: 'scrollParent',
 	onClose: ()=>{},
 	onKeydown: e=>{}
 }
 ```
+
+### Target
+The target can be an element or a [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent).
+If the target is a mouse event, the dropdown will appear where the mouse is placed.
 
 ### Options
 
