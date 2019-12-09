@@ -37,6 +37,7 @@ export const download = (url, filename = '', {
 
     if( url instanceof URL ){
         url.searchParams.set('downloadReq', true)
+        url.searchParams.set('download', true)
         url.searchParams.set('filename', filename)
     }
 
