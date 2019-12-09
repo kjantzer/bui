@@ -52,7 +52,7 @@
 	.d-msg:not(:empty) {
 		padding: .25rem 1rem .5rem;
 		line-height: 1.2em;
-		color: rgba(0,0,0,.5);
+		color: var(--b-dialog-msg-color, rgba(0,0,0,.5));
 		text-align: left;
 		
 		form-control {
@@ -124,7 +124,7 @@
 	.d-icon:not(:empty) {
 		padding: .8em;
 		box-sizing: border-box;
-		background: rgba(0,0,0,.05);
+		background: var(--b-dialog-icon-bgd, rgba(0,0,0,.05));
 		// height: 100%;
 		border-radius: 4px 0 0 4px;
 	}
