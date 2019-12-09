@@ -497,6 +497,10 @@ export class Panel extends LitElement {
             transform: scale(.5);
         }
 
+        :host([anchor="center"][animation="fade"]) > main {
+            transform: none;
+        }
+
         :host([anchor="top"]) > main {
             margin-top: 0;
             transform: translateY(-100px);
