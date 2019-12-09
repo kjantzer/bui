@@ -65,7 +65,6 @@ export default class Popover {
 		if( !WatchingClicks ){
 			WatchingClicks = true
 			window.addEventListener(device.isMobile?'touchend':'click', WatchClicks, !device.isMobile)
-			window.addEventListener('contextmenu', WatchClicks, !device.isMobile)
 		}
 		
 		if( !WatchingKeyboard ){
@@ -219,7 +218,6 @@ export default class Popover {
 		if( OpenPopovers.length == 0 ){
 			WatchingClicks = false
 			window.removeEventListener(device.isMobile?'touchend':'click', WatchClicks, true)
-			window.removeEventListener('contextmenu', WatchClicks, !device.isMobile)
 			
 			WatchingKeyboard = false
 			window.removeEventListener('keydown', WatchKeyboard, true)
