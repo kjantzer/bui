@@ -3,6 +3,8 @@
 
 export const bindLongpress = (el, {event='contextmenu', delay=500}={}) =>{
 
+    if( !el ) return
+
     el.addEventListener('touchstart', e=>{
         el._longPressTimeout = setTimeout(() => {
 
