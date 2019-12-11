@@ -11,6 +11,10 @@ const device = {
     get isMac(){ return /Mac/.test(UA) },
     get isLinux(){ return /Linux/.test(UA) },
 
+    get minScreenSize(){
+        return window.outerWidth < window.outerHeight ? window.outerWidth : window.outerHeight;
+    },
+
     get isiOS(){
         return /iPad|iPhone|iPod/.test(UA)
         || (device.isMac && navigator.standalone !== undefined ) // iPadOS 13+
