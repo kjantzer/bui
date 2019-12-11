@@ -291,7 +291,9 @@ export class BtnElement extends LitElement {
         :host([fab]) {
             position: absolute;
             z-index: 100;
-            box-shadow: rgba(0,0,0,.4) 0 3px 10px;
+            box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2),
+                        0px 6px 10px 0px rgba(0,0,0,0.14),
+                        0px 1px 18px 0px rgba(0,0,0,0.12);
             bottom: 1rem;
             right: 1rem;
             font-size: 1.4em;
