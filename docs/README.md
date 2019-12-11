@@ -10,6 +10,7 @@
     * [List](/presenters/list/README.md)
     * [Menu](/presenters/menu/README.md)
     * [Panel](/presenters/panel/README.md)
+    * [Notif](/presenters/notif/README.md)
     * [Popover](/presenters/popover/README.md)
     * [Tabs](/presenters/tabs/README.md)
 

@@ -1,0 +1,22 @@
+export default {
+    error: {
+        icon: 'attention-circle',
+        color: 'red'
+    },
+    failed: {
+        icon: 'cancel-circled',
+        color: 'red'
+    },
+    success: {
+        icon: 'ok-circled',
+        color: 'green'
+    },
+    info: {
+        icon: 'info-circled',
+        color: 'blue'
+    },
+    warning: {
+        icon: 'attention-1',
+        color: 'orange'
+    }
+}
