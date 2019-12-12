@@ -11,7 +11,9 @@ const btnPresets = {
 	'delete': {label: 'Delete', color: 'red'}
 }
 
-module.exports = function makeBtn(opts={}, i){
+export const cancelBtns = ['dismiss', 'cancel', 'no']
+
+export default function makeBtn(opts={}, i){
 	
 	if( typeof opts == 'string' ){
 		if( !btnPresets[opts] )

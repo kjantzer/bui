@@ -2,12 +2,10 @@ import {render, TemplateResult} from 'lit-html';
 import device from '../../util/device';
 import Panel from '../panel'
 import Popover from '../popover'
-import makeBtn from './make-btn'
+import makeBtn, {cancelBtns} from './make-btn'
 
 // FIXME: this module needs to be refactored using lit-element to better apply styles
 const styles = require('./style.less')
-
-const cancelBtns = ['dismiss', 'cancel', 'no']
 
 export default class Dialog {
 	constructor(opts={}){
