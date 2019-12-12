@@ -90,41 +90,12 @@ slot {
     display: block;
 }
 
-.snackbar {
-    padding: 1em;
-    display: grid;
-    grid-template-columns: auto 1fr max-content;
-    align-items: center;
-    /* gap: 1em; */
-}
 
-.snackbar .icon > b-icon,
-.snackbar .icon > .icon {
-    margin: -.5em 0;
-    margin-right: .75em;
-    --size: 1.2em;
-    vertical-align: middle;
-}
-
-.snackbar .msg {
-    margin: 0.05em 0 -.05em; /* better alignment with icon and btns */
-}
-
-.snackbar .btns {
-    margin-top: -0.05em;
-    margin-right: calc(-.5 * var(--padding))
-}
-
-.snackbar .btns b-btn {
-    --b-notif-btn-color: var(--b-notif-color)
-    font-weight: bold;
-    text-transform: uppercase;
-    margin: -1em 0;
-    vertical-align: middle;
+:host {
+    --b-notif-btn-color: var(--b-notif-color);
 }
 
 :host([color]) {
-    --b-notif-btn-color: var(--b-notif-color);
     --b-notif-btn-bgd: rgba(255,255,255,.1);
 }
 

@@ -30,6 +30,8 @@ customElements.define('b-notif', class extends LitElement{
         this.onWindowFocus = this.onWindowFocus.bind(this)
         this.onWindowBlur = this.onWindowBlur.bind(this)
 
+        let controller = Controller.get(opts.controller || 'main')
+
         this.opts = Object.assign({
             nid: String(Math.round(Math.random() * 10000)),
             msg: '',
@@ -42,12 +44,11 @@ customElements.define('b-notif', class extends LitElement{
             autoClose: 4000,
             closeOnClick: true,
 
-            controller: 'main',
             anchor: 'bottom-right', //device.minScreenSize <= 699 ? 'bottom' : 'bottom-right',
 
             onClose(){},
             onClick(){}
-        }, (TYPES[opts.type]||{}), opts)
+        }, (TYPES[opts.type]||{}), (controller.defaults||{}), opts)
 
         let props = this.constructor.properties
 
@@ -73,8 +74,6 @@ customElements.define('b-notif', class extends LitElement{
             existingNotif.replaceWith(this)
             return
         }
-
-        let controller = Controller.get(this.opts.controller)
         
         if( controller )
             controller.appendChild(this)
