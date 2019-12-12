@@ -50,6 +50,7 @@ customElements.define('b-notifs', class extends LitElement{
             display: block;
             pointer-events: none;
             
+            overflow: hidden;
             position:absolute;
             top: 0;
             left: 0;
