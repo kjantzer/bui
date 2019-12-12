@@ -67,12 +67,19 @@ Model.prototype.editAttr = function(key, val, opts={}){
 		let edited = this._editedAttrs[key]
 		
 		// could be improved when comparing arrays
-		if( edited === orig || (edited && edited.length == 0 && orig && orig.length == 0) )
+		if( opts.save || edited === orig || (edited && edited.length == 0 && orig && orig.length == 0) )
 			delete this._editedAttrs[key]
+
+		if( opts.save === true )
+			this._origAttrs[key] = attrs[key]
 	}
 	
-	opts._edited = true
+	if( opts.save !== true )
+		opts._edited = true
 	
+	if( opts.save === true )
+		return this.save(attrs, opts)
+
 	this.set(attrs, opts)
 	
 	let edited = this.editedAttrs()
