@@ -37,6 +37,10 @@ const device = {
         return /CriOS/.test(UA)
     },
 
+    get isChromeInstalledApp(){
+        return this.isInstalled && /Chrome/.test(UA)
+    },
+
     get isInstalled(){
         return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches
     },
