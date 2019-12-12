@@ -35,6 +35,7 @@ import '../presenters/list'
 import Panel, {Modal} from '../presenters/panel'
 import Menu from '../presenters/menu'
 import Dialog from '../presenters/dialog'
+import Notif from '../presenters/notif'
 import moment from 'moment'
 
 window.moment = moment // for <b-ts> demo
@@ -310,6 +311,134 @@ window.openView = el=>{
     event.preventDefault()
     router.goTo(el.getAttribute('href'))
 }
+
+
+customElements.define('notif-demo', class extends LitElement{
+
+    createRenderRoot(){ return this }
+
+    render(){return html`
+        <style>
+            notif-demo {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 400px;
+                max-height: 100vh;
+                /* position: relative; */
+            }
+
+            notif-demo b-notifs {
+                top: 6em;
+            }
+        </style>
+        <b-notifs name="demo"></b-notifs>
+        <b-btn @click=${this.replay} text hidden>Replay Notifs</b-btn>
+    `}
+
+    firstUpdated(){
+
+        this.notif({
+            msg: 'A simple notification',
+            autoClose: false,
+            closeOnClick: false
+        }, 500)
+
+        this.showNotifs()
+    }
+
+    replay(e){
+        e.currentTarget.hidden = true
+        this.showNotifs()
+    }
+
+    showNotifs(){
+
+        this.notif({
+            msg: 'Top left, grow animation',
+            anchor: 'top-left',
+            animation: 'grow'
+        }, 1000)
+
+        this.notif({
+            msg: 'Top right, fade animation',
+            anchor: 'top-right',
+            animation: 'fade'
+        }, 2000)
+
+        this.notif({
+            msg: 'Bottom left',
+            anchor: 'bottom-left'
+        }, 3000)
+
+        this.notif({
+            icon: 'upload-cloud',
+            nid: 'uploading',
+            msg: 'File Uploading...',
+            autoClose: false,
+            closeOnClick: false,
+        }, 4000)
+
+        this.notif({
+            type: 'success',
+            msg: 'File Uploaded',
+            autoClose: 3000,
+            nid: 'uploading',
+            btns: [
+                {label: 'View', color: 'primary'}
+            ]
+        }, 6000)
+
+        this.notif({
+            msg: 'Photo moved to trash',
+            autoClose: 6000,
+            btns: [
+                {label: 'Undo', color: 'primary'}
+            ]
+        }, 5000)
+
+        this.notif({
+            type: 'info',
+            msg: 'Info type notif'
+        }, 8000)
+
+        this.notif({
+            type: 'error',
+            msg: 'Error type notif'
+        }, 9000)
+
+        this.notif({
+            type: 'failed',
+            msg: 'Failed type notif'
+        }, 10000)
+
+        this.notif({
+            type: 'warning',
+            msg: 'Warning type notif'
+        }, 11000)
+
+        this.notif({
+            type: 'success',
+            msg: 'Success type notif',
+            onClose: ()=>{
+                this.querySelector('b-btn').hidden = false
+            }
+        }, 12000)
+
+    }
+
+    notif(opts, delay){
+        setTimeout(()=>{
+            new Notif(Object.assign({
+                controller: 'demo',
+            }, opts))
+        }, delay)
+    }
+    
+
+})
+
+export default customElements.get('notif-demo')
 
 
 window.addEventListener('load', e=>{

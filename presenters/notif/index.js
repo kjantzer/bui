@@ -20,6 +20,7 @@ customElements.define('b-notif', class extends LitElement{
         btns: {type: Array},
         icon: {type: String},
         color: {type: String, reflect: true},
+        width: {type: String},
         animation: {type: String, reflect: true},
     }}
 
@@ -73,11 +74,10 @@ customElements.define('b-notif', class extends LitElement{
             return
         }
 
-        let controller = Controller.get('main')
+        let controller = Controller.get(this.opts.controller)
         
         if( controller )
             controller.appendChild(this)
-            
     }
 
     close(btn){
@@ -123,7 +123,7 @@ customElements.define('b-notif', class extends LitElement{
 
     onClick(btn){
         
-        if( btn instanceof MouseEvent || btn instanceof TouchEvent )
+        if( btn instanceof MouseEvent || (window.TouchEvent && btn instanceof TouchEvent) )
             btn = undefined
 
         if( this.opts.onClick(this, btn) !== false && this.opts.closeOnClick )
@@ -153,6 +153,9 @@ customElements.define('b-notif', class extends LitElement{
 
         window.addEventListener('blur', this.onWindowBlur)
         window.addEventListener('focus', this.onWindowFocus)
+
+        if( this.opts.width )
+            this.style.width = this.opts.width
 
         setTimeout(()=>{
             this.classList.add('entered')
@@ -191,6 +194,7 @@ customElements.define('b-notif', class extends LitElement{
                 .icon=${this.icon}
                 .msg=${this.msg}
                 .btns=${this.btns}
+                ?color=${!!this.color}
                 @click=${this.onSnackbarClick}></b-snackbar>
         </slot>
         </main>
@@ -206,76 +210,3 @@ customElements.define('b-notif', class extends LitElement{
 })
 
 export default customElements.get('b-notif')
-
-let Notif = customElements.get('b-notif')
-window.Notif = Notif // TEMP
-
-import Dialog from 'dialog'
-
-setTimeout(()=>{
-
-    return
-
-    // let notifs = document.createElement('b-notifs')
-    // document.body.appendChild(notifs)
-
-    new Notif({
-        nid: 'notif1',
-        msg: 'notif 1',
-        type: 'info',
-        autoClose: false,
-        onClick(notif, btn){
-
-            console.log(btn);
-            
-            new Notif({
-                nid: notif.nid, // replace
-                msg: 'Done',
-            })
-            return false
-        },
-    })
-
-    new Notif({
-        msg: 'Folder deleted',
-        autoClose: false,
-        btns: [{label: 'Undo'}],
-        onClick(notif, btn){
-
-            if( btn )
-                return false
-        }
-    })
-
-     new Notif({
-        icon: html`<a-user-avatar class="icon" uid=2></a-user-avatar>`,
-        msg: html`<b-sub>Hell Divers</b-sub><br><div>2 new messages</div>`,
-        autoClose: false,
-        btns: [{label: 'View'}],
-    })
-
-    // setTimeout(()=>{
-
-    //     let dialog = Dialog.alert({title: 'Alert'})
-    //     console.log(dialog);
-        
-    //     new Notif({view: dialog.el})
-
-    // },1000)
-
-    setTimeout(()=>{
-
-        new Notif({
-            msg: 'Cannot do that, sorry',
-            type: 'warning',
-        })
-
-        new Notif({
-            msg: 'Download finished',
-            type: 'success',
-        })
-
-    },1000)
-
-
-},300)

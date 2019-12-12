@@ -33,6 +33,18 @@ customElements.define('b-notifs', class extends LitElement{
         }
     }
 
+    disconnectedCallback(){
+        super.disconnectedCallback()
+        if( this.name )
+            delete NotifControllers[this.name]
+    }
+
+    connectedCallback(){
+        super.connectedCallback()
+        if( this.name && !NotifControllers[this.name] )
+            NotifControllers[this.name] = this
+    }
+
     static get styles(){return css`
         :host {
             display: block;
@@ -48,10 +60,21 @@ customElements.define('b-notifs', class extends LitElement{
         }
 
         :host([name="main"]) {
+            position: fixed;
             top: env(safe-area-inset-top);
             left: env(safe-area-inset-left);
             bottom: env(safe-area-inset-bottom);
             right: env(safe-area-inset-right);
+        }
+
+        @media (max-width:699px), (max-height: 699px) {
+            :host {
+                position: fixed;
+                top: env(safe-area-inset-top);
+                left: env(safe-area-inset-left);
+                bottom: env(safe-area-inset-bottom);
+                right: env(safe-area-inset-right);
+            }
         }
 
         slot {
@@ -80,26 +103,30 @@ customElements.define('b-notifs', class extends LitElement{
         slot[name*="left"] {
             left: 0;
             padding-left: var(--padding);
+            align-items: flex-start;
         }
 
         slot[name*="right"] {
             right: 0;
             padding-right: var(--padding);
+            align-items: flex-end;
         }
-
-        /* slot::slotted(*) {
-            margin: 0 .5em .5em 0;
-        } */
-
-        /* [name="bottom-right"] {
-            padding: 0 var(--padding) var(--padding) 0;
-        } */
 
         @media (max-width:699px) {
             slot {
                 padding: 0 !important;
                 position: static !important;
                 --b-notif-width: 100%;
+            }
+
+            .top {
+                position: absolute;
+                top: 0;
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                padding: var(--padding);
+                box-sizing: border-box;
             }
 
             .bottom {

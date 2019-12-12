@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
 import {unsafeHTML} from 'lit-html/directives/unsafe-html'
-import makeBtn from '../dialog/make-btn'
+import makeBtn, {cancelBtns} from '../dialog/make-btn'
+import '../../helpers/lit-element/events'
 
 customElements.define('b-snackbar', class extends LitElement{
 
@@ -12,7 +13,7 @@ customElements.define('b-snackbar', class extends LitElement{
 
     static get styles(){return css`
         :host {
-            padding: var(--b-snackbar-padding, 1em);
+            padding: var(--b-snackbar-padding, .85em 1em);
             display: grid;
             grid-template-columns: auto 1fr max-content;
             align-items: center;
@@ -32,15 +33,23 @@ customElements.define('b-snackbar', class extends LitElement{
 
         .btns {
             margin-top: -0.05em;
-            margin-right: calc(-.5 * var(--padding))
+            margin-right: calc(-.5 * var(--padding));
+            margin-left: calc(-.5 * var(--padding));
         }
 
         .btns b-btn {
-            color: var(--b-notif-btn-color, var(--blue));
             font-weight: bold;
             text-transform: uppercase;
             margin: -1em 0;
             vertical-align: middle;
+        }
+
+        .btns b-btn[color=''] {
+            color: var(--b-notif-btn-color, #333);
+        }
+
+        :host([color]) .btns b-btn  {
+            color: var(--b-notif-btn-color, #333);
         }
 
         @media (hover){
@@ -77,6 +86,9 @@ customElements.define('b-snackbar', class extends LitElement{
         e.stopPropagation()
         let index = Array.from(e.currentTarget.children).indexOf(e.target)
         let btnData = index > -1 ? this.btns[index] : e.target
+
+        if( cancelBtns.includes(btnData) )
+            btnData = undefined
 
         this.emitEvent('click', btnData)
     }

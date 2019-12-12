@@ -32,6 +32,9 @@ window.Dialog = Dialog
 import Menu from '../presenters/menu'
 window.Menu = Menu
 
+import Notif from '../presenters/notif'
+window.Notif = Notif
+
 
 function convertComments(){
     var tw = document.createTreeWalker(document, NodeFilter.SHOW_COMMENT, null, null)

@@ -116,7 +116,7 @@ slot {
 }
 
 .snackbar .btns b-btn {
-    color: var(--b-notif-btn-color, var(--blue));
+    --b-notif-btn-color: var(--b-notif-color)
     font-weight: bold;
     text-transform: uppercase;
     margin: -1em 0;
