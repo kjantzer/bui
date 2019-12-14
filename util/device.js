@@ -27,6 +27,10 @@ const device = {
     get isAndroid(){
         return /android/i.test(UA)
     },
+
+    get isTouch(){
+        return 'ontouchstart' in window
+    },
     
     get isMobile(){
         return device.isiOS || device.isAndroid
