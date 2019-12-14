@@ -25,6 +25,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
             display: flex;
             align-items: center;
             min-width: 0;
+            position: relative;
         }
 
         [hidden] { display: none; }
@@ -142,6 +143,8 @@ customElements.define('b-list-toolbar', class extends LitElement{
             <slot name="refresh-btn"></slot>
 
             <slot name="after"></slot>
+
+            <slot></slot>
         </div>
     `}
 

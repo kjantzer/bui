@@ -5,7 +5,8 @@ import Sorts from './data/sorts'
 import './toolbar'
 import './infinite-list'
 import '../../elements/spinner-overlay'
-
+import Selection from './selection'
+import './selection/toolbar'
 
 customElements.define('b-list', class extends LitElement {
 
@@ -172,7 +173,9 @@ customElements.define('b-list', class extends LitElement {
                 <b-btn text pill icon="arrows-ccw" @click=${this.refresh}></b-btn>
             </slot>
             <!-- <b-label slot="after" class="queuing-label">Queuing filters, release to apply</b-label> -->
+            <b-list-selection-bar></b-list-selection-bar>
         </b-list-toolbar>
+
         <slot name="header"></slot>
         <b-infinite-list
             row="${this.rowElement}"
@@ -270,6 +273,16 @@ customElements.define('b-list', class extends LitElement {
             else
                 this.setAttribute('scrolled-x', '')
         })
+
+        // TODO: unbind on disconnect?
+        let selectionToolbar = this.shadowRoot.querySelector('b-list-selection-bar')
+        this.selection = new Selection(selectionToolbar, this.list, this.rowElement)
+        this.addEventListener('list-selection', e=>{
+            this.selection.begin(e)
+        })
+
+        // TEST
+        //this.selection.begin() // TEMP
     }
 
     async refresh(){
