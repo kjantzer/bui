@@ -1,15 +1,20 @@
 import { LitElement, html, css } from 'lit-element'
 
-customElements.define('b-selection-bar', class extends LitElement{
+customElements.define('b-list-selection-bar', class extends LitElement{
 
     static get styles(){return css`
         :host {
             display: block;
-            position:relative;
+            position:absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background: var(--theme-bgd); /* FIXME: */
 
             display: flex;
             align-items: center;
-            padding: 0 1em;
+            min-width: 0;
         }
 
         :host(:not(.show)) {
@@ -19,6 +24,7 @@ customElements.define('b-selection-bar', class extends LitElement{
         .cancel-btn {
             margin: 0 1em;
         }
+
     `}
 
     set selection(selection){

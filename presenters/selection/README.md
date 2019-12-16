@@ -19,8 +19,8 @@ bulkSelect.result.models
 
 ## Methods
 
-### `begin`
-### `end`
+### `.begin()`
+### `.end()`
 
 ## Options
 
@@ -43,7 +43,9 @@ opts = {
     toolbar: null, // will set `.selection = this` on the toolbar
     selectedAttr: 'isSelected',
     endWhenNoResults: true,
-    
+    autoScrollThreshold: 48,
+    autoScrollAcceleration: 5,
+
     onBegin: ()=>{},
     onEnd: ()=>{},
     onChange: result=>{}
@@ -55,6 +57,19 @@ The attribute to be applied to selected items
 
 ### `endWhenNoResults`
 Once the last selected item is deselected, selection will be turned off
+
+### `autoScrollThreshold`
+How close (in px) to the top or bottom of the list until auto scrolling is triggered.
+Set to `false` to disable auto scrolling
+
+### `autoScrollAcceleration`
+How aggressively auto scroll should accelerate. The further away from the 
+threshold, the faster the list will scroll. 
+
+`1` = no acceleration (constant speed)  
+`5` = medium acceleration  
+`10` = rapid acceleration
+
 
 ## Events
 
@@ -74,3 +89,6 @@ Do something when selection ends
 
 ### `change`
 When items are selected and deselected
+
+## TODO
+- support selecting items programaticaly; e.g. `selection.select(3,6)`

@@ -32,6 +32,8 @@ export default class Selection {
             toolbar: null,
             selectedAttr: 'isSelected',
             endWhenNoResults: true,
+            autoScrollThreshold: 48,
+            autoScrollAcceleration: 5,
             onBegin: ()=>{},
             onEnd: ()=>{},
             onChange: result=>{}
@@ -40,7 +42,7 @@ export default class Selection {
         this.EVENTS = {
             DOWN: isTouch ? 'touchstart' : 'mousedown',
             UP: isTouch ? 'touchend' : 'mouseup',
-            OVER: isTouch ? 'touchmove' : 'mouseover'
+            DRAG: isTouch ? 'touchmove' : 'mouseover'
         }
 
         if( this.opts.toolbar )
@@ -59,7 +61,7 @@ export default class Selection {
         this.onScroll = this.onScroll.bind(this)
         this.onEventDown = this.onEventDown.bind(this)
         this.onEventUp = this.onEventUp.bind(this)
-        this.onEventOver = this.onEventOver.bind(this)
+        this.onEventDrag = this.onEventDrag.bind(this)
     }
 
     get isOn(){ return this.__on === true }
@@ -107,7 +109,7 @@ export default class Selection {
         this.list.addEventListener(this.EVENTS.UP, this.onEventUp, true)
 
         if( e && e.detail && e.detail.dragging )
-            this.list.addEventListener(this.EVENTS.OVER, this.onEventOver, true)
+            this.list.addEventListener(this.EVENTS.DRAG, this.onEventDrag, true)
     }
 
     unbindEvents(){
@@ -115,14 +117,20 @@ export default class Selection {
             this.list.removeEventListener(evt, this.stopPropagation, true)    
         })
         
-        // this.list.removeEventListener('click', this.onClick, true)
-        this.list.removeEventListener(this.EVENTS.OVER, this.onEventOver, true)
+        this.list.removeEventListener('scroll', this.onScroll, true)
+        this.list.removeEventListener(this.EVENTS.DRAG, this.onEventDrag, true)
         this.list.removeEventListener(this.EVENTS.DOWN, this.onEventDown, true)
         this.list.removeEventListener(this.EVENTS.UP, this.onEventUp, true)
     }
 
     getItems(start, end){
         let items = Array.from(this.list.querySelectorAll(this.itemTagName))
+
+        if( typeof start === 'number' )
+            start = items[start]
+        
+        if( typeof end === 'number' )
+            end = items[end]
         
         let oldStart = this._dragging&&this._dragging.start
         let oldEnd = this._dragging&&this._dragging.end
@@ -214,7 +222,8 @@ export default class Selection {
 
         e.stopPropagation()
 
-        this.list.addEventListener(this.EVENTS.OVER, this.onEventOver, true)
+        // while mouse/touch is down...watch dragging
+        this.list.addEventListener(this.EVENTS.DRAG, this.onEventDrag, true)
 
         let item = this.itemInEvent(e)
 
@@ -261,31 +270,45 @@ export default class Selection {
         }
 
         delete this._scrolling
-        this.list.removeEventListener(this.EVENTS.OVER, this.onEventOver, true)
+        this.list.removeEventListener(this.EVENTS.DRAG, this.onEventDrag, true)
     }
 
-    onEventOver(e){
+    onEventDrag(e){
 
         if( this._dragging )
             this.stopPropagation(e)
 
         if( this.isClickEvent || (this._scrolling && !this._autoScroll) ) return
 
+        // touch devices
         if( !e.path ){
-        
+
             let {clientX, clientY} = e.changedTouches[0]
+        
+            if( this.opts.autoScrollThreshold !== false){
+
+                let listRect = this.list.getBoundingClientRect()
+                
+                let top = listRect.y + this.opts.autoScrollThreshold
+                let bottom = listRect.y + listRect.height - this.opts.autoScrollThreshold
+
+                let acceleration = (this.opts.autoScrollAcceleration||1) / 10
+
+                // scroll up
+                if( clientY < top )
+                    this.autoScroll(-1 - Math.round(Math.pow(top-clientY, acceleration)))
+                
+                // scroll down
+                else if( clientY > bottom )
+                    this.autoScroll(1 + Math.round(Math.pow(clientY-bottom, acceleration)))
+                
+                // not within threshold, stop scrolling
+                else
+                    this.autoScroll(false)
+
+            }
+
             let item = this.list.getRootNode().elementFromPoint(clientX, clientY);
-
-            let top = this.list.offsetTop + 160 // FIXME: hardcoded
-            let bottom = this.list.offsetTop + this.list.offsetHeight
-
-            if( clientY < top )
-                this.autoScroll(-1 - Math.round(Math.pow(top-clientY, 0.4)))
-            else if( clientY > bottom )
-                this.autoScroll(1 + Math.round(Math.pow(clientY-bottom, 0.4)))
-            else
-                this.autoScroll(false)
-            
 
             if( item && item.tagName == this.itemTagName 
             && item != this._lastTouchItem ){
@@ -293,6 +316,7 @@ export default class Selection {
                 this.select(item, this._startItem)
             }
             
+        // mouse event
         }else{
             this.select(e, this._startItem)
         }

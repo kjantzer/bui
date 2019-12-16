@@ -3,10 +3,10 @@ import DataSource from './data/source'
 import Filters from './data/filters'
 import Sorts from './data/sorts'
 import './toolbar'
+import './toolbar/selection-bar'
 import './infinite-list'
 import '../../elements/spinner-overlay'
 import Selection from '../selection'
-import '../selection/toolbar'
 
 customElements.define('b-list', class extends LitElement {
 
@@ -282,9 +282,6 @@ customElements.define('b-list', class extends LitElement {
         this.addEventListener('list-selection', e=>{
             this.selection.begin(e)
         })
-
-        // TEST
-        //this.selection.begin() // TEMP
     }
 
     async refresh(){
