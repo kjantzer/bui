@@ -45,6 +45,7 @@ opts = {
     toolbar: null, // will set `.selection = this` on the toolbar
     selectedAttr: 'isSelected',
     endWhenNoResults: true,
+    closeOnEsc: true,
     autoScrollThreshold: 48,
     autoScrollAcceleration: 5,
 
@@ -59,6 +60,9 @@ The attribute to be applied to selected items
 
 ### `endWhenNoResults`
 Once the last selected item is deselected, selection will be turned off
+
+### `endOnEsc`
+End selection when escape key is pressed
 
 ### `autoScrollThreshold`
 How close (in px) to the top or bottom of the list until auto scrolling is triggered.

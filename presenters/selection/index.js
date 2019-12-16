@@ -32,6 +32,7 @@ export default class Selection {
             toolbar: null,
             selectedAttr: 'isSelected',
             endWhenNoResults: true,
+            endOnEsc: true,
             autoScrollThreshold: 48,
             autoScrollAcceleration: 5,
             onBegin: ()=>{},
@@ -59,6 +60,7 @@ export default class Selection {
         this.stopPropagation = this.stopPropagation.bind(this)
         // this.onClick = this.onClick.bind(this)
         this.onScroll = this.onScroll.bind(this)
+        this.onKeydown = this.onKeydown.bind(this)
         this.onEventDown = this.onEventDown.bind(this)
         this.onEventUp = this.onEventUp.bind(this)
         this.onEventDrag = this.onEventDrag.bind(this)
@@ -104,6 +106,7 @@ export default class Selection {
             this.list.addEventListener(evt, this.stopPropagation, true)    
         })
         
+        window.addEventListener('keydown', this.onKeydown)
         this.list.addEventListener('scroll', this.onScroll, true)
         this.list.addEventListener(this.EVENTS.DOWN, this.onEventDown, true)
         this.list.addEventListener(this.EVENTS.UP, this.onEventUp, true)
@@ -117,6 +120,7 @@ export default class Selection {
             this.list.removeEventListener(evt, this.stopPropagation, true)    
         })
         
+        window.removeEventListener('keydown', this.onKeydown)
         this.list.removeEventListener('scroll', this.onScroll, true)
         this.list.removeEventListener(this.EVENTS.DRAG, this.onEventDrag, true)
         this.list.removeEventListener(this.EVENTS.DOWN, this.onEventDown, true)
@@ -216,6 +220,11 @@ export default class Selection {
         if( isTouch && !this._autoScroll && !this._dragging ){
             this._scrolling = new Date().getTime()
         }
+    }
+
+    onKeydown(e){
+        if( this.opts.endOnEsc && e.key == 'Escape' )
+            this.end()
     }
 
     onEventDown(e){
