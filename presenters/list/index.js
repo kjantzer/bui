@@ -5,8 +5,8 @@ import Sorts from './data/sorts'
 import './toolbar'
 import './infinite-list'
 import '../../elements/spinner-overlay'
-import Selection from './selection'
-import './selection/toolbar'
+import Selection from '../selection'
+import '../selection/toolbar'
 
 customElements.define('b-list', class extends LitElement {
 
@@ -275,8 +275,10 @@ customElements.define('b-list', class extends LitElement {
         })
 
         // TODO: unbind on disconnect?
-        let selectionToolbar = this.shadowRoot.querySelector('b-list-selection-bar')
-        this.selection = new Selection(selectionToolbar, this.list, this.rowElement)
+        this.selection = new Selection(this.list, this.rowElement, {
+            toolbar: this.shadowRoot.querySelector('b-list-selection-bar')
+        })
+        
         this.addEventListener('list-selection', e=>{
             this.selection.begin(e)
         })

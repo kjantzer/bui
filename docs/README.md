@@ -13,6 +13,7 @@
     * [Notif](/presenters/notif/README.md)
     * [Popover](/presenters/popover/README.md)
     * [Tabs](/presenters/tabs/README.md)
+    * [Selection](/presenters/selection/README.md)
 
 * Extras
     * [Util](/util/README.md)

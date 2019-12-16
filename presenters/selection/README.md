@@ -1,0 +1,76 @@
+Selection
+============
+
+Enable bulk selection of items in a list. Supports desktop and touch/mobile devices; 
+selects items from a long press and drag; auto scrolls on mobile; selects range of items
+from a click and shfit+click (like a native desktop file explorer)
+
+![screenshot](./screenshot.gif)
+
+```js
+let bulkSelect = new Selection(listEl, 'tag-name-of-item', opts={})
+
+bulkSelect.begin()
+
+// ... later
+bulkSelect.result.length
+bulkSelect.result.models
+```
+
+## Methods
+
+### `begin`
+### `end`
+
+## Options
+
+```js
+new Selection(listElement, itemTagName, opts)
+```
+
+### `listElement`
+Watches for mouse/touch events on this element and captures selected items
+
+### `itemTagName`
+The tag name of the items to be selected
+
+>Note: currently assumes you will be selecting custom element items
+
+***
+
+```js
+opts = {
+    toolbar: null, // will set `.selection = this` on the toolbar
+    selectedAttr: 'isSelected',
+    endWhenNoResults: true,
+    
+    onBegin: ()=>{},
+    onEnd: ()=>{},
+    onChange: result=>{}
+}
+```
+
+### `selectedAttr`
+The attribute to be applied to selected items
+
+### `endWhenNoResults`
+Once the last selected item is deselected, selection will be turned off
+
+## Events
+
+```js
+let sel = new Selection(/*...*/)
+
+sel.on('change', result=>{
+    console.log(result.length)
+})
+```
+
+### `begin`
+Do something when bulk selection begins, such as showing a "bulk select toolbar"
+
+### `end`
+Do something when selection ends
+
+### `change`
+When items are selected and deselected
