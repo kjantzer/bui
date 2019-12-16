@@ -74,8 +74,14 @@ notif with the same `nid` (see `animationForReplace`)
 Some types have been defined that apply a color and icon:  
 `info`, `success`, `warning`, `error`, `failed`
 
+These types also have shortcuts created:
+
+```js
+Notif.error(msg, opts)
+```
+
 ### `animation`
-Possible animations include: `slide` (default), `grow`, and `fade`
+Possible animations include: `slide` (default), `grow`, `fade`, and `bounce`
 
 ### `animationForReplace`
 When replacing a notif, it often looks better to use a more subtle animation.

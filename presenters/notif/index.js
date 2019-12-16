@@ -209,3 +209,16 @@ customElements.define('b-notif', class extends LitElement{
 })
 
 export default customElements.get('b-notif')
+
+let notifClass = customElements.get('b-notif')
+
+for( let key in TYPES ){
+    if( !notifClass[key] )
+        notifClass[key] = (msg, opts={})=>{
+            if( typeof msg == 'string' ){
+                opts = opts || {}
+                opts.msg = msg
+            }
+            new Notif(Object.assign({}, TYPES[key], opts))
+        }
+}

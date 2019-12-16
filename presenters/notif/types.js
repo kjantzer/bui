@@ -1,7 +1,8 @@
 export default {
     error: {
         icon: 'attention-circle',
-        color: 'red'
+        color: 'red',
+        animation: 'bounce'
     },
     failed: {
         icon: 'cancel-circled',

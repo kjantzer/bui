@@ -28,6 +28,17 @@ export default css`
     transform: scale(.8)
 }
 
+:host([animation="bounce"]) {
+    transform: none;
+}
+
+:host([animation="bounce"].entered) {
+    animation-name: bounce;
+    animation-duration: 700ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation-fill-mode: forwards;
+}
+
 :host([animation="fade"]) {
     transform: none;
 }
@@ -99,4 +110,10 @@ slot {
     --b-notif-btn-bgd: rgba(255,255,255,.1);
 }
 
+@keyframes bounce {
+  0% { transform: scale(0.8); }
+  14% { transform: scale(1.1); }
+  28% { transform: scale(.9); }
+  42% { transform: scale(1.1); }
+  70% { transform: scale(1); }
 `
