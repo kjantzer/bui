@@ -21,6 +21,8 @@ bulkSelect.result.models
 
 ### `.begin()`
 ### `.end()`
+### `.on(event, callback)`
+See "events" below
 
 ## Options
 

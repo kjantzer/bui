@@ -10,11 +10,14 @@ customElements.define('b-list-selection-bar', class extends LitElement{
             top: 0;
             height: 100%;
             width: 100%;
+            box-sizing: border-box;
             background: var(--theme-bgd); /* FIXME: */
 
             display: flex;
+            justify-content: space-between;
             align-items: center;
             min-width: 0;
+            padding: 0 .5em;
         }
 
         :host(:not(.show)) {
@@ -22,7 +25,14 @@ customElements.define('b-list-selection-bar', class extends LitElement{
         }
 
         .cancel-btn {
-            margin: 0 1em;
+            margin-right: .5em;
+            /* margin: 0 1em; */
+        }
+
+        @media (max-width: 699px) {
+            .count > span {
+                display: none;
+            }
         }
 
     `}
@@ -49,10 +59,20 @@ customElements.define('b-list-selection-bar', class extends LitElement{
 
     render(){return html`
         ${this.selection?html`
-            <b-btn class="cancel-btn" icon="cancel-1" @click=${this.end} outline></b-btn>
 
-            ${this.selection.result.size} selected
+            <div>
+                <b-btn class="cancel-btn" icon="cancel-1" @click=${this.end} outline></b-btn>
 
+                <span class="count">
+                ${this.selection.result.size} <span>selected</span>
+                </span>
+
+                <slot name="left"></slot>
+            </div>
+
+            <div>
+                <slot name="right"></slot>
+            </div>
         `:''}
     `}
 

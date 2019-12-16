@@ -173,7 +173,10 @@ customElements.define('b-list', class extends LitElement {
                 <b-btn text pill icon="arrows-ccw" @click=${this.refresh}></b-btn>
             </slot>
             <!-- <b-label slot="after" class="queuing-label">Queuing filters, release to apply</b-label> -->
-            <b-list-selection-bar></b-list-selection-bar>
+            <b-list-selection-bar>
+                <slot name="actions:left" slot="left"></slot>
+                <slot name="actions:right" slot="right"></slot>
+            </b-list-selection-bar>
         </b-list-toolbar>
 
         <slot name="header"></slot>
@@ -279,7 +282,8 @@ customElements.define('b-list', class extends LitElement {
             toolbar: this.shadowRoot.querySelector('b-list-selection-bar')
         })
         
-        this.addEventListener('list-selection', e=>{
+        this.addEventListener('selection:begin', e=>{
+            e.stopPropagation()
             this.selection.begin(e)
         })
     }
