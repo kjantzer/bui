@@ -161,6 +161,7 @@ Creates a select field that uses `Menu` and `Popover` to display options.
 - `chip` - show selected values as "chips"
 - `menu-max-height`
 - `menu-align`
+- `no-arrow`
 
 ```html
 <form-control material="filled" label="Select an option">

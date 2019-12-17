@@ -5,11 +5,11 @@ const styles = css`
 
 :host {
     display: inline-block;
-    --color: #2196f3;
+    --color: var(--fc-theme);
     --radius: 4px;
     text-align: left;
     border-radius: var(--radius);
-    background: #fff;
+    /* background: #fff; */
 }
 
 main > header {
@@ -71,6 +71,7 @@ nav > svg {
     height: 1.4em;
     padding: .25em;
     margin: -.25em;
+	color: var(--theme-color, #000);
     opacity: .4;
     cursor: pointer;
 
@@ -92,8 +93,13 @@ section .days {
     text-align: center;
 }
 
+main.pick-year section > *,
+main.pick-month section > *{
+	visibility: hidden
+}
+
 section header {
-    color: rgba(0,0,0,.3);
+    color: var(--theme-color-accent, rgba(0,0,0,.3));
     margin: 1em 0;
     font-size: .7em;
 }
@@ -132,8 +138,9 @@ months {
     align-items: center;
     box-sizing: border-box;
     overflow: auto;
-    background: #fff;
+    /* background: #fff; */
     border-radius: 0 0 var(--radius) var(--radius);
+	visibility: visible !important;
 }
 
 main:not(.pick-year) years {
@@ -154,6 +161,8 @@ month[active] {
 months {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+	grid-template-rows: 1fr 1fr 1fr 1fr;
+	align-content: space-around;
 }
 
 month {
@@ -236,7 +245,7 @@ class DatePickerElement extends HTMLElement {
 		this._monthEl = this.$('.viewing-month')
 		this._monthDays = this.$('main .days')
 
-		this.shadowRoot.addEventListener('click', this._onClick.bind(this))
+		this.shadowRoot.querySelector('main').addEventListener('click', this._onClick.bind(this))
 	}
 
 	connectedCallback(){

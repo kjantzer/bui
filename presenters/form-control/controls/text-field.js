@@ -101,6 +101,10 @@ main {
 	display: inline-block;
 }
 
+:host([type="date"][disabled]) .calendar {
+	display: none;
+}
+
 /* .calendar:hover,
 .calendar.popover-open {
 	opacity: .7;
@@ -197,6 +201,8 @@ class TextFieldElement extends HTMLElement {
 
 		this.shadowRoot.addEventListener('click', this._onClick.bind(this))
 		this.addEventListener('click', this._onClick.bind(this))
+
+		this.shadowRoot.querySelector('.calendar').addEventListener('click', this._onClick.bind(this))
     }
 	
 	$(str){ return this.shadowRoot.querySelector(str)}
@@ -290,15 +296,21 @@ class TextFieldElement extends HTMLElement {
 	}
 
 	get currentValue(){
+
+		// retain current empty value
+		let emptyVal = this.value === null ? null : ''
+
 		if( this.hasAttribute('html') )
-			return this._editor.innerHTML
+			return this._editor.innerHTML || emptyVal
 		
 		if( this.input )
-			return this._input.value
+			return this._input.value || emptyVal
+			
 		else if( this._editor.innerHTML === '<p><br></p>' || this._editor.innerHTML === '<br>' )
-			return ''
+			return emptyVal
+		
 		else
-			return this._editor.innerText || this._editor.innerHTML
+			return this._editor.innerText || this._editor.innerHTML || emptyVal
 	}
 	
 	set isInvalid(invalid){
