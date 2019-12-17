@@ -1,10 +1,8 @@
 * [Blackstone UI](/README.md)
 
-* [Elements](/elements/README.md)
+* Components
+    * [Elements](/elements/README.md)
     * [Icons](./icons.md)
-    * [Colors](./colors.md)
-
-* Presenters
     * [Dialog](/presenters/dialog/README.md)
     * [Form Control](/presenters/form-control/README.md)
     * [List](/presenters/list/README.md)
@@ -16,6 +14,7 @@
     * [Selection](/presenters/selection/README.md)
 
 * Extras
+    * [Colors](./colors.md)
     * [Util](/util/README.md)
     * [Helpers](/helpers/README.md)
         * [Backbone.js Relations](/helpers/backbone/relations/README.md)
