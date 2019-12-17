@@ -4,6 +4,8 @@ class FormHandler extends HTMLElement {
 	
 	constructor(){
 		super()
+
+		this.editorsByKey = {}
 		
 		// bind context to functions
 		this.onModelSync = this.onModelSync.bind(this)
@@ -35,7 +37,6 @@ class FormHandler extends HTMLElement {
 	bindControls(){
 		// TODO: change to `controls`?
 		this.editors = Array.from(this.querySelectorAll('form-control[key], check-box[key], radio-group[key], text-field[key], select-field[key]'))
-		this.editorsByKey = {}
 
 		this.editors.forEach(el=>{
 			let key = el.getAttribute('key')
