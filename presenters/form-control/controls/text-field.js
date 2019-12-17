@@ -382,7 +382,7 @@ class TextFieldElement extends HTMLElement {
 			document.execCommand('insertHTML', false, val);
 
 		}else{
-			let val = e.clipboardData.getData(e.clipboardData.types[e.clipboardData.types.length-1]||'text/plain')
+			let val = e.clipboardData.getData('text')
 			document.execCommand('insertText', false, val);
 		}
 	}
