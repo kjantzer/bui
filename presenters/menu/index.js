@@ -586,7 +586,8 @@ export default class Menu {
 
 		if( opts.adjustForMobile && device.isMobile && !device.isiPad )
 			return this.modal(Object.assign({
-				btns: ['cancel','done']
+				btns: ['cancel','done'],
+				anchor: this.searchIsOn ? 'top' : 'center'
 			}, (typeof opts.adjustForMobile == 'object' ? opts.adjustForMobile : {})))
 		
 		this.render()
