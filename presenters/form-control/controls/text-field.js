@@ -75,7 +75,13 @@ main {
 :host([empty]) .editor:before {
 	content: attr(data-placeholder);
 	color: var(--placeholderColor);
+	/* position: absolute; */
+}
+
+:host([multiline]) .editor:before {
 	position: absolute;
+	left: 0;
+    right: 0;
 }
 
 /* keep placeholder on one line, clipping to ellipsis when overflowed */

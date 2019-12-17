@@ -214,7 +214,7 @@ class PanelController extends LitElement {
             return {
                 label: panel.title,
                 icon: panel.icon||'window',
-                description: panel.hash,
+                description: panel.path,
                 panel: panel
             }
         })
