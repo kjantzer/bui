@@ -165,7 +165,7 @@ class TextFieldElement extends HTMLElement {
 			
         this.shadowRoot.appendChild(temp.content.cloneNode(true));
 
-		if( this.hasAttribute('multiline') || this.hasAttribute('html') )
+		if( this.isMultiline )
 			this.removeAttribute('input')
 		
 		let value = this.$('#value')
@@ -191,7 +191,7 @@ class TextFieldElement extends HTMLElement {
 			this._input.value = this._val
 		}
 
-		if( !this._val && this.hasAttribute('multiline') ){
+		if( !this._val && this.isMultiline && !this.isPlain ){
 			this._val = '<p><br></p>'
 			this._editor.innerHTML = this._val
 		}
@@ -235,6 +235,11 @@ class TextFieldElement extends HTMLElement {
 	get name(){ return this.getAttribute('name') }
 	get autocomplete(){ return this.getAttribute('autocomplete') }
 	get format(){ return this.getAttribute('format') || 'MM/DD/YYYY' }
+
+	get isMultiline(){ return this.hasAttribute('multiline') }
+	get isHTML(){ return this.hasAttribute('html') }
+	// get isPlain(){ return this.hasAttribute('plain') }
+	get isPlain(){ return !this.isHTML }
 
 	get disabled(){ return this.hasAttribute('disabled') }
 	set disabled(val=true){val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled')}
@@ -280,7 +285,7 @@ class TextFieldElement extends HTMLElement {
 
 			if( this._editor.innerHTML != val ){
 				
-				if( this.hasAttribute('multiline') )
+				if( this.isMultiline && !this.isPlain )
 					val = val || '<p><br></p>'
 				else
 					val = val || ''
@@ -306,7 +311,7 @@ class TextFieldElement extends HTMLElement {
 		// retain current empty value
 		let emptyVal = this.value === null ? null : ''
 
-		if( this.hasAttribute('html') )
+		if( this.isHTML )
 			return this._editor.innerHTML || emptyVal
 		
 		if( this.input )
@@ -376,14 +381,16 @@ class TextFieldElement extends HTMLElement {
 	_onPaste(e){
 		e.preventDefault();
 
-		if( this.hasAttribute('html') ){
+		if( this.isHTML ){
 			let val = e.clipboardData.getData(e.clipboardData.types[e.clipboardData.types.length-1]||'text/html')
 			val = htmlCleaner.clean(val)
 			document.execCommand('insertHTML', false, val);
 
 		}else{
 			let val = e.clipboardData.getData('text')
-			document.execCommand('insertText', false, val);
+			// NOTE: using insertHTML (rather than insertText) keeps the browser from
+			// converting line breaks to <div> and <br> tags
+			document.execCommand('insertHTML', false, val);
 		}
 	}
 	
@@ -427,13 +434,31 @@ class TextFieldElement extends HTMLElement {
 		if( e.key.length == 1)
 			this.removeAttribute('empty')
 
-		if( e.key == 'Backspace' && this.hasAttribute('multiline') && this._editor.innerText.trim() == '' ){
+		if( e.key == 'Backspace' && this.isMultiline && this._editor.innerText.trim() == '' ){
 			e.preventDefault()
 			e.stopPropagation()
 			return false
 		}
+
+		// Multiline Plain – only use newlines (keep divs/br from appearing)
+		if( e.key == 'Enter' && this.isMultiline && this.isPlain ){
+			e.preventDefault()
+			e.stopPropagation()
+
+			let charLen = this._editor.innerText.length
+			let lastChar = this._editor.innerText[charLen-1]
+			let sel = this.shadowRoot.getSelection()
+			let range = sel.getRangeAt(0);
+
+			if( range.endOffset < charLen || lastChar=='\n' )
+				document.execCommand("insertHTML", false, '\n');
+			else
+				document.execCommand("insertHTML", false, '\n\n');
+			
+			return false
+		}
 		
-		if( e.key == 'Enter' && !this.hasAttribute('multiline')){
+		if( e.key == 'Enter' && !this.isMultiline){
 			stop = true
 			this.blur() // will trigger a change if there is one
 

@@ -98,6 +98,7 @@ Creates an input-like control. Add `multiline` attribute to make it perform like
 
 - `required`
 - `multiline`
+- `html` use html `<p>` tags for new lines
 - `pattern="int"` - regexp or preset
 - `max="10"` - max length of chars
 - `type="date"`
