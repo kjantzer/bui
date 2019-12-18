@@ -8,13 +8,13 @@ from a click and shfit+click (like a native desktop file explorer)
 ![screenshot](./screenshot.gif)
 
 ```js
-let bulkSelect = new Selection(listEl, 'tag-name-of-item', opts={})
+let selection = new Selection(listEl, 'tag-name-of-item', opts={})
 
-bulkSelect.begin()
+selection.begin()
 
 // ... later
-bulkSelect.result.length
-bulkSelect.result.models
+selection.result.length
+selection.result.models
 ```
 
 ## Methods

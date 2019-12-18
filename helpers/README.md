@@ -1,11 +1,23 @@
 # Helpers
 
+Helpers extend existing tools and libraries with added functionality. Typically helpers only need to be imported once and may be done on the root JS file.
+
+***
+
 ## LitElement
 
 Extend LitElement to fit our needs. I like doing this so that we dont have to create unnecessary subclasses
 
+```js
+// include all lit-element helpers
+import 'bui/helpers/lit-element'
+```
 
 ### Listeners
+
+```js
+import 'bui/helpers/lit-element/listeners'
+```
 
 Adds support for listening to Backbone Model/Collection/ChildCollection
 events and responding. Most events should just be calling `update` which
@@ -20,9 +32,18 @@ static get listeners(){ return {
         'reset': 'update'
     }
 }}
+
+// ^ equivalent to:
+this.model.on('change reset', this.update.bind(this))
+this.model.get('child-collection').on('reset', this.update.bind(this))
 ```
 
 ### Events
+
+```js
+import 'bui/helpers/lit-element/events'
+```
+
 To simplify event dispatching from inside the shadow dom, an `emitEvent`
 method has been added to lit-element
 
@@ -34,7 +55,31 @@ this.emitEvent('element-event', {id: 1})
 The emitted event with have `bubbles: true` and `composed: true` so that the even
 will bubble up and out of the shadow dom
 
+### Model / Coll
+
+```js
+import 'bui/helpers/lit-element/model'
+import 'bui/helpers/lit-element/coll'
+```
+
+A common pattern is to pass a model object to the custom element. This extension
+will unbind and rebind listeners (if using that extension; see above) and then
+call `onModelChange` to let you hook into the update and do something (like fetch data)
+
+```js
+onModelChange(model){
+    if( model )
+        model.fetch()
+}
+```
+
 ### Subviews
+
+> Considering DEPRECATION
+
+```js
+import 'bui/helpers/lit-element/sv'
+```
 
 Sometimes a linked subview needs to be created and we'd like to keep
 and reuse it rather than recreate it each time (for example, a view
@@ -48,18 +93,7 @@ this.sv(viewName, elementName)
 this.sv('edit', 'my-edit-view')
 ```
 
-### Model
-A common pattern is to pass a model object to the custom element. This extension
-will unbind and rebind listeners (if using that extension; see above) and then
-call `onModelChange` to let you hook into the update and do something (like fetch data)
-
-```js
-onModelChange(model){
-    if( model )
-        model.fetch()
-}
-```
-
+***
 
 ## Backbone.js
 
@@ -130,3 +164,10 @@ Backbone.registerModelAttrType('date', val=>{
 //....
 myModel.get('ts_created').fromNow()
 ```
+
+### Relations
+Any non-trivial app will require models contain nested children. This helper aids in the implementation
+of related models and collections. Children classes are only created when accessed and will pull data
+from the parent model's attributes or a specificed lookup collection.
+
+[Read more on Relations](./backbone/relations/README.md)
