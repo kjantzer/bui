@@ -55,3 +55,31 @@ const device = {
 }
 
 export default device
+
+// https://medium.com/@jonas_duri/enable-dark-mode-with-css-variables-and-javascript-today-66cedd3d7845
+export const colorScheme = {
+
+    get isDarkMode(){ return window.matchMedia("(prefers-color-scheme: dark)").matches },
+    get isLightMode(){ return window.matchMedia("(prefers-color-scheme: light)").matches },
+    get isUnset(){ return window.matchMedia("(prefers-color-scheme: no-preference)").matches },
+
+    get isSupported(){ return this.isDarkMode || this.isLightMode || this.isUnset },
+    
+    onChange(cb){
+        // first time, setup watchers
+        if( !this._watchers ){
+            this._watchers = new Map()
+
+            window.matchMedia("(prefers-color-scheme: dark)").addListener(e => e.matches && this._dispatchChange('dark'))
+            window.matchMedia("(prefers-color-scheme: light)").addListener(e => e.matches && this._dispatchChange('light'))
+        }
+
+        this._watchers.set(cb, cb)
+    },
+    
+    _dispatchChange(mode){
+        this._watchers.forEach(cb=>{
+            cb(mode)
+        })
+    }
+}
