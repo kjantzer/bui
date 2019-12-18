@@ -2,7 +2,8 @@
 const config = {
     APP_TITLE: document.title,
     PATH_ROOT: location.pathname,
-    PATH_PREFIX: ''
+    PATH_PREFIX: '',
+    clearInvalidPath: true
 }
 
 export default config

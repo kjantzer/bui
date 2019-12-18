@@ -8,14 +8,24 @@ export class Router {
 
     // NOTE: this must be setup before anything uses router.add()
     config(opts){
-        if( opts.root != undefined )
+        if( opts.root != undefined ){
             config.PATH_ROOT = opts.root
+            delete opts.root
+        }
 
-        if( opts.prefix != undefined )
+        if( opts.prefix != undefined ){
             config.PATH_PREFIX = opts.prefix
+            delete opts.prefix
+        }
 
-        if( opts.title != undefined )
+        if( opts.title != undefined ){
             config.APP_TITLE = opts.title
+            delete opts.title
+        }
+        
+        for( let key in opts ){
+            config[key] = opts[key]
+        }
     }
 
     start(opts={}){
@@ -96,7 +106,7 @@ export class Router {
         })
 
         // if none of the routes matched, change current state path back to the root
-        if( !didMatch )
+        if( !didMatch && config.clearInvalidPath )
             this.states.current.path = config.PATH_ROOT
     }
 
