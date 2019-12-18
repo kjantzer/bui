@@ -106,6 +106,7 @@ Creates an input-like control. Add `multiline` attribute to make it perform like
 - `input`
 - `name` - useful for autofill (must use `input`)
 - `autocomplete` (must use `input`)
+- `change-delay` will trigger change after stopped typing
 
 #### Input type
 `text-field` defaults to using `contenteditable` which allows the field to grow and shrink

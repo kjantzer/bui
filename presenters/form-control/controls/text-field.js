@@ -435,8 +435,11 @@ class TextFieldElement extends HTMLElement {
 		
 		if( e.key == 'Enter' && !this.hasAttribute('multiline')){
 			stop = true
-			this.dispatchEvent(new Event("change")); // Force change event for empty search/ re-search
 			this.blur() // will trigger a change if there is one
+
+			// Force change event for empty search/ re-search
+			if( !this.value )
+				this.dispatchEvent(new Event("change"));
 		}
 		
 		if( e.key == 'Escape' ){
