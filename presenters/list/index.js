@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit-element'
 import DataSource from './data/source'
 import Filters from './data/filters'
 import Sorts from './data/sorts'
+import Layouts from './data/layouts'
 import './toolbar'
 import './toolbar/selection-bar'
 import './infinite-list'
@@ -15,7 +16,8 @@ customElements.define('b-list', class extends LitElement {
 
         this.onKeydown = this.onKeydown.bind(this)
         this.onKeyup = this.onKeyup.bind(this)
-        this.divider = this.divider.bind(this)
+        this.createRow = this.createRow.bind(this)
+        this.createDivider = this.createDivider.bind(this)
     }
 
     get coll(){ return this.__coll }
@@ -62,6 +64,22 @@ customElements.define('b-list', class extends LitElement {
         }
         
         this.sorts.use(sorts)
+    }
+
+    get layout(){ return this.layouts&&this.layouts.active}
+    set layout(val){ if(this.layouts) this.layouts.active = val}
+    get layouts(){
+        if( !this.__layouts && this.listOptions && this.listOptions.layouts){
+            this.__layouts = new Layouts(this.listOptions.layouts)
+            this.layouts.key = this.key
+            this.layouts.list = this
+            this.layouts.on('change', e=>{
+                this.update()
+                this.reload()
+            })
+        }
+
+        return this.__layouts
     }
 
     get dataSource(){
@@ -165,7 +183,7 @@ customElements.define('b-list', class extends LitElement {
             <b-spinner-overlay></b-spinner-overlay>
         </slot>
         
-        <b-list-toolbar .filters=${this.filters} .sorts=${this.sorts} 
+        <b-list-toolbar .filters=${this.filters} .sorts=${this.sorts} .layouts=${this.layouts}
             @filter-term-changed=${this.onFilterTermChange}>
             <slot name="toolbar:before" slot="before"></slot>
             <slot name="toolbar:after" slot="after"></slot>
@@ -181,10 +199,11 @@ customElements.define('b-list', class extends LitElement {
 
         <slot name="header"></slot>
         <b-infinite-list
-            row="${this.rowElement}"
             empty="${this.emptyElement}"
-            .divider=${this.divider}
+            .row="${this.createRow}"
+            .divider=${this.createDivider}
             .dataSource=${this.dataSource}
+            layout="${this.layout}"
         ></b-infinite-list>
     `}
 
@@ -243,7 +262,19 @@ customElements.define('b-list', class extends LitElement {
         return this.shadowRoot.querySelector('b-infinite-list')
     }
 
-    divider(prevModel, model){
+    createRow(model){
+
+        let row = customElements.get(this.rowElement)
+
+        if( row ){
+            row = new row()
+            row.model = model
+            row.list = this
+            return row
+        }
+    }
+
+    createDivider(prevModel, model){
 
         let divider = this.getAttribute('divider')
         

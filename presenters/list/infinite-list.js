@@ -76,7 +76,6 @@ customElements.define('b-infinite-list', class extends LitElement {
         }
     }
 
-    get rowElement(){return this.getAttribute('row') || 'div'}
     get emptyElement(){return this.getAttribute('empty') || 'b-empty-state'}
 
     addContent(models){
@@ -99,9 +98,11 @@ customElements.define('b-infinite-list', class extends LitElement {
                 this.appendChild(divider)
             }
 
-            let el = document.createElement(this.rowElement)
-            el.model = model
-            this.appendChild(el)
+            let row = this.row && this.row(model)
+            if( row ){
+                this.appendChild(row)
+            }
+            
             this.prevModel = model
         })
     }

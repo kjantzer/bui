@@ -3,6 +3,7 @@ import Popover from '../../popover'
 import './sort-btn'
 import './sort-dir-btn'
 import './filter-btn'
+import './layout-btn'
 import './search'
 
 customElements.define('b-list-toolbar', class extends LitElement{
@@ -138,6 +139,10 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
             ${!this.filters||!this.filters.showSearch?'':html`
             <b-list-search-bar @keydown=${this.onKeyDown} placeholder=${this.filters.searchOptions.placeholder}></b-list-search-bar>
+            `}
+
+            ${!this.layouts?'':html`
+                <b-list-layout-btn .layouts=${this.layouts} pill text></b-list-layout-btn>
             `}
 
             <slot name="refresh-btn"></slot>

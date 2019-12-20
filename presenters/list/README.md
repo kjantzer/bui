@@ -29,6 +29,9 @@ and filter the results.
 - `.coll` - a Backbone.Collection to use for fetching data
 - `listOptions` - change defaults (see below)
 
+## List Row
+The custom element listed in the `row` attribute will have a link
+to the `b-list` element as `this.list`.
 
 ## List Options
 Options passed along to the infinite-list
@@ -36,7 +39,8 @@ Options passed along to the infinite-list
 ```js
 listOptions = {
     fetch: true, // true,false, 'more'
-    perPage: 30
+    perPage: 30,
+    layouts: null // see below for details
 }
 ```
 
@@ -47,6 +51,7 @@ when all available data has been displayed
 `perPage` - how many rows to display at one time.
 Also determines how many "more" rows are requested
 via fetch:more
+
 
 ## Custom Styles
 The list view uses shadow dom to render the content. If you need to apply 
@@ -222,6 +227,44 @@ const sorts = {
     db: true,
     title:{}
 }
+```
+
+## Layouts
+Renders a button in toolbar for toggling between different list layouts (e.g. list, grid)
+
+```js
+listOptions = {
+    layouts: {
+        // name: 'icon-name'
+        list: 'th-thumb'
+        grid: 'menu',
+    }
+}
+```
+
+Active layout can be accessed on the `b-list` element
+
+```js
+// alias to list.layouts.active
+list.layout // name of active layout ('list')
+
+// layouts object
+list.layouts
+list.layouts.active
+
+// go to next layout
+list.layouts.next()
+```
+
+#### Change Event
+The toolbar button and list will react to the layouts change, but 
+if you need to react to the change somewhere else, you can watch
+for the change event
+
+```js
+list.layouts.on('change', layout=>{
+    console.log(layout)
+})
 ```
 
 ## Other Views

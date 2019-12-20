@@ -412,8 +412,9 @@ export class Filter {
             this.value = this.customView.value
         }
         
+        // TODO: support `adjustForMobile`
         new Popover(el, this.customView, {
-            onClose: onClose
+            onClose: onClose,
         })
     }
 
