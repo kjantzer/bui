@@ -15,6 +15,7 @@ main {
 	display: flex;
 	align-items: center;
 	min-width: 1em;
+	position: relative;
 }
 
 main > svg {
