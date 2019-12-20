@@ -11,16 +11,22 @@ const fileTypes = {
 
 export const downloadContent = (content, filename, opts={})=>{
 
-    if( !(content instanceof Blob) ){
+    let url;
+    if (!(content instanceof Blob)) {
 
-        if( !opts.type )
+        if (!opts.type)
             opts.type = 'text/plain'
-        
+
         content = new Blob([content], {type: opts.type})
-        url = window.URL.createObjectURL(content);
     }
 
-    return download(content, filename, opts)
+    url = window.URL.createObjectURL(content);
+
+    const a = window.document.createElement('a');
+    a.href = url
+    a.download = filename||''
+    a.click();
+
 }
 
 export const download = (url, filename = '', {
