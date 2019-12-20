@@ -57,6 +57,13 @@ customElements.define('b-list-toolbar', class extends LitElement{
             flex: 1;
         }
 
+        @media (max-width:699px) {
+            /* move active filters  to front on small devices */
+            .filters b-list-filter-btn[active] {
+                order: -1;
+            }
+        }
+
         b-list-sort-btn + .filters {
             border-left: solid 2px rgba(0,0,0,.1);
             margin-left: .25em;
