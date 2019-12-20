@@ -465,11 +465,14 @@ class TextFieldElement extends HTMLElement {
 			// Force change event for empty search/ re-search
 			if( !this.value )
 				this.dispatchEvent(new Event("change"));
+			
+			this.dispatchEvent(new Event("enterkey"));
 		}
 		
 		if( e.key == 'Escape' ){
 			this.value = this.value // reset the value
 			this.blur()
+			this.dispatchEvent(new Event("esckey"));
 		}
 
 		let val = this.input ? this._input.value : this._editor.innerText
