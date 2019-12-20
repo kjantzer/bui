@@ -75,11 +75,11 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
 
         <div class="controls">
             <form-control key="date1">
-                <text-field reset-invalid placeholder="00/00/0000" type="date"></text-field>
+                <text-field reset-invalid placeholder="00/00/0000" type="date" @enterkey=${this.onEnter}></text-field>
             </form-control>
 
             <form-control key="date2">
-                <text-field reset-invalid placeholder="00/00/0000" type="date"></text-field>
+                <text-field reset-invalid placeholder="00/00/0000" type="date" @enterkey=${this.onEnter}></text-field>
             </form-control>
         </div>
     `}
@@ -181,9 +181,9 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
                 return month1+' ‘'+m1.format('YY')
             }
 
-            if( thisYear && m1.month() == 0 && m2.month() == 11)
+            if( thisYear && sameYear && m1.month() == 0 && m2.month() == 11)
                 return 'This Year'
-            else if( thisYear )
+            else if( thisYear && sameYear )
                 return month1+' - '+month2
             else if( sameYear )
                 return month1+' - '+month2+' '+m2.format('YYYY')
@@ -196,6 +196,10 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             return m1.format('MMM D')+' - '+m2.format('MMM D')
 
         return m1.format('M/D/YY')+' - '+m2.format('M/D/YY')
+    }
+
+    onEnter(){
+        this.close()
     }
 
     clearDates(){
