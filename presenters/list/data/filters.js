@@ -338,19 +338,45 @@ export class Filter {
 
     get valueLabel(){
         let val = this.value
+        
+        if( Array.isArray(val) )
+            val = val.map(v=>v.val||v)
+        else
+            val = val&&(val.val||val)
 
         if( this.isCustomView ){
             let view = this.customView
             return view ? view.label : 'UNSUPORRTED'
         }
 
-        let matchedVal = this.values.filter(v=>{
-            if( typeof v == 'string' || v.divider || v.text ) return false
+        let matchedVal = this.values.filter((v,i)=>{
+            if( typeof v == 'string' || v.divider || v.text || v.noDisplay ) return false
             // return v.val==val
-            return Array.isArray(val) ? val.includes(v.val) : v.val==val
+
+            if( !Array.isArray(val) )
+                return v.val==val
+
+            let matchedIndex = val.indexOf(v.val)
+
+            if( matchedIndex > -1 ){
+                
+                let mergeData = this.value[matchedIndex]
+                
+                if( mergeData && typeof mergeData == 'object' ){
+                    Object.assign(v, mergeData)
+                }
+
+                return true
+            }
+            
+            return false
         })
 
-        return matchedVal ? matchedVal.map(f=>f.toolbarLabel||f.label).join(', ') : val
+        return matchedVal 
+        ? matchedVal.map(f=>{
+            return [f.selection, f.toolbarLabel||f.label].filter(s=>s).join(' ')
+        }).join(', ')
+        : val
     }
 
     async showMenu(el){
@@ -372,9 +398,11 @@ export class Filter {
         if( selected === false || selected.length == 0  ) return
             // this.value = null
         else if( Array.isArray(selected))
-            this.value = selected.map(s=>s.val)
+            this.value = selected.map(s=>{
+                return s.selection ? {val: s.val, selection: s.selection} : s.val
+            })
         else
-            this.value = selected.val
+            this.value = selected.selection ? {val: selected.val, selection: selected.selection} : selected.val
     }
 
     get customView(){
