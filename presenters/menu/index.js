@@ -5,6 +5,7 @@ import Dialog from '../dialog'
 import Panel from '../panel'
 import Fuse from 'fuse.js'
 import '../form-control/controls/check-box'
+import '../form-control/controls/select-field'
 import device from '../../util/device';
 
 export const DefaultOpts = {
@@ -121,14 +122,27 @@ export default class Menu {
 		if( !Array.isArray(keys) )
 			keys = [keys]
 
+		let keyVals = keys.map(k=>k.val||k)
+
 		// store selected values as the actual values (not just the keys)
 		this.__selected = this.menu.filter(m=>{
 
+			if( m.val === undefined ) return false
+
+			let matchedIndex = keyVals.indexOf(m.val)
+
 			// select/deselect each value
-			if( m.val !== undefined && keys.includes(m.val) )
+			if( matchedIndex > -1 ){
+				let mergeData = keys[matchedIndex]
+				
+				if( mergeData && typeof mergeData == 'object' )
+                    Object.assign(m, mergeData)
+
 				m.selected = true
-			else{
+
+			}else{
 				delete m.selected
+				delete m.selection
 			}
 			
 			return m.selected
@@ -136,7 +150,7 @@ export default class Menu {
 
 		// keep values in the order that they were selected
 		this.__selected = this.__selected.sort((a,b)=>{
-			return keys.indexOf(a.val) - keys.indexOf(b.val)
+			return keyVals.indexOf(a.val) - keyVals.indexOf(b.val)
 		})
 	}
 	
@@ -147,7 +161,7 @@ export default class Menu {
 	toggleSelected(item){
 		let index = this.__selected.indexOf(item)
 				
-		if( index > -1 ){
+		if( index > -1 && !item.selection ){
 			item.selected = false
 			this.__selected.splice(index, 1)
 			return false
@@ -307,6 +321,14 @@ export default class Menu {
 		let checkbox = (this.opts.multiple && !m.clearsAll) || m.selected ? html`<check-box ?checked=${m.selected}></check-box>` : ''
 		let menuIcon = m.menu && this.opts.hasMenuIcon ? html`<b-icon class="has-menu" name="${this.opts.hasMenuIcon}"></b-icon>` :''
 
+		if( m.selections )
+			checkbox = html`<select-field 
+							.options=${[{label: 'unset', val:''}].concat(m.selections)} 
+							show-empty
+							@change=${this.selectOptionsChanged.bind(this)}
+							.selected=${m.selection}
+							></select-field>`
+
 		if( m.attrs && typeof m.attrs == 'object' )
 			console.warn('`attrs` unsupported right now')
 		// TODO: support this some how?
@@ -347,10 +369,25 @@ export default class Menu {
 			</div>
 		`
 	}
+
+	selectOptionsChanged(e){
+		let val = e.currentTarget.value
+		let data = this.displayMenu[e.currentTarget.parentElement.getAttribute('index')]
+		data.selection = val
+
+		if( !this.opts.multiple )
+			this.resolve(data)
+		else
+			this.toggleSelected(data)
+	}
 	
 	onClick(e){
 		
 		let target = e.target
+
+		if( target.tagName == 'SELECT-FIELD' )
+			return
+
 		let didClickCheckbox = target.tagName == 'CHECK-BOX'
 		
 		while(target && !target.classList.contains('menu-item')){
@@ -360,6 +397,9 @@ export default class Menu {
 		if( target ){
 			
 			let data = this.displayMenu[target.getAttribute('index')]
+
+			if( data.selections && !data.selection )
+				data.selection = data.selections[0]
 			
 			if( data.menu )
 				return this._itemMenu(target, data)

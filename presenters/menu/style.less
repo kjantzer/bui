@@ -160,6 +160,17 @@
 			margin: -.5em .25em -.5em -.5em;
 		}
 
+		> select-field {
+			order: 2;
+			margin-left: .5em;
+			margin-right: -.5em;
+			color: var(--checkboxColor);
+		}
+
+		> select-field[value=""] {
+			color: var(--b-menu-description-color, rgba(0,0,0,.5));
+		}
+
 		> .mi-content ~ * {
 			margin-left: 1em;
 		}
