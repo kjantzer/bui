@@ -58,7 +58,7 @@ The list view uses shadow dom to render the content. If you need to apply
 custom styles (ex: to make results display as a grid) you can provide
 a `.customStyles` prop
 
-```html
+```css
 let styles = css`
     :host b-infinite-list {
         display: grid;
@@ -66,6 +66,14 @@ let styles = css`
         grid-template-rows: 140px;
         gap: 1em;
     }
+
+    :host b-infinite-list[layout="list"] {
+        /* 
+            apply different styles for each layout 
+            see "layout" options below
+        */
+    }
+
 `
 <b-list .customStyles=${styles}></b-list>
 ```
@@ -247,10 +255,10 @@ Active layout can be accessed on the `b-list` element
 ```js
 // alias to list.layouts.active
 list.layout // name of active layout ('list')
+list.layout = 'grid' // change layout
 
 // layouts object
 list.layouts
-list.layouts.active
 
 // go to next layout
 list.layouts.next()

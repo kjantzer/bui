@@ -73,7 +73,9 @@ customElements.define('b-list', class extends LitElement {
             this.__layouts = new Layouts(this.listOptions.layouts)
             this.layouts.key = this.key
             this.layouts.list = this
-            this.layouts.on('change', e=>{
+            this.setAttribute('layout', this.layout)
+            this.layouts.on('change', layout=>{
+                this.setAttribute('layout', this.layout)
                 this.update()
                 this.reload()
             })
