@@ -213,10 +213,17 @@ class SelectFieldElement extends HTMLElement {
 
 		if( Array.isArray(opts) )
 			opts = opts.map(o=>{
-				if( typeof o == 'string')
+				if( typeof o != 'object' )
 					return {label: o, val: o}
 				return o
 			})
+		else if( typeof opts == 'object' ){
+			let _opts = []
+			for( let k in opts ){
+				_opts.push({label: opts[k], val: k})
+			}
+			opts = _opts
+		}
 
 		this.__options = opts
 		this.selected = this._selected
@@ -317,6 +324,9 @@ class SelectFieldElement extends HTMLElement {
 				this.selected = selected.map(m=>m.val)
 			}
 		}
+
+		if( this.getAttribute('search') == 'false' )
+			menuOpts.search = false
 		
 		let menu = this.options
 		let popoverOpts = {
@@ -324,7 +334,7 @@ class SelectFieldElement extends HTMLElement {
 			maxHeight: this.getAttribute('menu-max-height') || 'auto',
 			maxWidth: this.getAttribute('menu-max-width') || 'none',
 			overflowBoundry: this.getAttribute('menu-overflow') ? 'window' : null,
-			adjustForMobile: true
+			adjustForMobile: this.getAttribute('adjust-for-mobile') == 'false' ? false : true
 		}
 		
 		if( !menu || menu.length == 0 )
