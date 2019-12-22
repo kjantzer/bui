@@ -122,7 +122,7 @@ export default class Menu {
 		if( !Array.isArray(keys) )
 			keys = [keys]
 
-		let keyVals = keys.map(k=>k.val||k)
+		let keyVals = keys.map(k=>k&&k.val||k)
 
 		// store selected values as the actual values (not just the keys)
 		this.__selected = this.menu.filter(m=>{
