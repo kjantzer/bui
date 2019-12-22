@@ -78,6 +78,7 @@ class RadioGroupElement extends HTMLElement {
 			else
 				el.active=false
 		})
+		this.setAttribute('value', val)
 	}
 	
 	get disabled(){ return this.hasAttribute('disabled') }
