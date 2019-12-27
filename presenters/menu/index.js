@@ -321,13 +321,19 @@ export default class Menu {
 		let checkbox = (this.opts.multiple && !m.clearsAll) || m.selected ? html`<check-box ?checked=${m.selected}></check-box>` : ''
 		let menuIcon = m.menu && this.opts.hasMenuIcon ? html`<b-icon class="has-menu" name="${this.opts.hasMenuIcon}"></b-icon>` :''
 
-		if( m.selections )
+		if( m.selections ){
+			let selections = m.selections
+			
+			if( this.opts.multiple)
+				selections = [{label: 'unset', val:''}].concat(selections)
+
 			checkbox = html`<select-field 
-							.options=${[{label: 'unset', val:''}].concat(m.selections)} 
-							show-empty
+							.options=${selections} 
+							placeholder="unset"
 							@change=${this.selectOptionsChanged.bind(this)}
 							.selected=${m.selection}
 							></select-field>`
+		}
 
 		if( m.attrs && typeof m.attrs == 'object' )
 			console.warn('`attrs` unsupported right now')
@@ -399,7 +405,7 @@ export default class Menu {
 			let data = this.displayMenu[target.getAttribute('index')]
 
 			if( data.selections && !data.selection )
-				data.selection = data.selections[0]
+				data.selection = data.selections[0]&&data.selections[0].val||data.selections[0]
 			
 			if( data.menu )
 				return this._itemMenu(target, data)
