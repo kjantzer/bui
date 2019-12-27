@@ -353,8 +353,13 @@ export class Filter {
             if( typeof v == 'string' || v.divider || v.text || v.noDisplay ) return false
             // return v.val==val
 
-            if( !Array.isArray(val) )
-                return v.val==val
+            if( !Array.isArray(val) ){
+                if( v.val==val ){
+                    Object.assign(v, this.value)
+                    return true
+                }
+                return false
+            }
 
             let matchedIndex = val.indexOf(v.val)
 
