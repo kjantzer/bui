@@ -19,6 +19,10 @@ customElements.define('b-snackbar', class extends LitElement{
             align-items: center;
         }
 
+        .icon {
+            line-height: 0;
+        }
+
         .icon > b-icon,
         .icon > .icon {
             margin: -.5em 0;
