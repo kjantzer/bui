@@ -49,11 +49,11 @@ customElements.define('b-snackbar', class extends LitElement{
         }
 
         .btns b-btn[color=''] {
-            color: var(--b-notif-btn-color, #333);
+            color: var(--b-notif-btn-color, #fff);
         }
 
         :host([color]) .btns b-btn  {
-            color: var(--b-notif-btn-color, #333);
+            color: var(--b-notif-btn-color, #fff);
         }
 
         @media (hover){
