@@ -219,6 +219,8 @@ for( let key in TYPES ){
                 opts = opts || {}
                 opts.msg = msg
             }
+
+            let Notif = customElements.get('b-notif')
             new Notif(Object.assign({}, TYPES[key], opts))
         }
 }
