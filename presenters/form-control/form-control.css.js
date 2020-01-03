@@ -287,13 +287,18 @@ slot[name="help"] {
 	--labelFontSize: .7em;
 }
 
-/* :host([material]) .control:not([empty]) ~ .label, */
+:host([material]) .control:not([empty]) ~ .label,
 :host([material]:not([empty])) .label,
 :host([material]:focus-within) .label,
 :host([material][focused]) .label {
 	color: inherit;
 	transform: translateY(calc(-50% - (var(--padY) / 2)));
 	z-index: 11;
+}
+
+:host([material][empty]:not([nolabel]):not(:focus-within)) [name="control"]::slotted(*),
+:host([material][empty]:not([nolabel]):not(:focus-within)) [name="main"]::slotted(*) {
+	opacity: 0;
 }
 
 :host([material]:not([show*="prefix"])) .prefix,
