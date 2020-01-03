@@ -5,6 +5,7 @@ customElements.define('b-h1', class extends LitElement {
     static get styles(){return css`
 
         :host {
+            display: block;
             margin: 0;
             text-decoration: inherit;
             font-size: var(--bui-h1-size, 2em);
@@ -41,6 +42,7 @@ customElements.define('b-h2', class extends LitElement {
     static get styles(){return css`
 
         :host {
+            display: block;
             margin: 0;
             text-decoration: inherit;
             font-size: var(--bui-h2-size, 1.5em);
@@ -76,6 +78,7 @@ customElements.define('b-h3', class extends LitElement {
     static get styles(){return css`
 
         :host {
+            display: block;
             margin: 0;
             text-decoration: inherit;
             font-size: var(--bui-h3-size, 1.2em);
