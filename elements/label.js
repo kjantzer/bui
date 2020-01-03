@@ -76,6 +76,7 @@ export default class Label extends LitElement {
         }
 
         :host([filled="black"]), :host([badge="black"]) { --bgd: #333; }
+        :host([filled="white"]), :host([badge="white"]) { --bgd: #fff; --color: #333; }
         :host([filled="gray"]), :host([badge="gray"]) { --bgd: #ddd; --color: #777; }
         :host([filled="blue"]), :host([badge="blue"]) { --bgd: var(--blue); }
         :host([filled="red"]), :host([badge="red"]) { --bgd: var(--red); }
