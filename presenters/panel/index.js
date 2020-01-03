@@ -66,7 +66,7 @@ class RegisteredPanels {
                 registered.panel.html = registered.view
             }
             else
-                registered.panel = new Panel(registered.view)
+                registered.panel = new Panel(registered.view, (registered.opts||{}))
 
             if( registered.route )
                 registered.panel.route = registered.route
