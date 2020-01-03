@@ -63,8 +63,10 @@ customElements.define('b-notif', class extends LitElement{
         this.addEventListener(device.isMobile?'touchdown':'mouseover', this.onMouseOver)
         this.addEventListener(device.isMobile?'touchend':'mouseout', this.onMouseOut)
 
-        if( this.opts.view )
+        if( this.opts.view ){
             this.appendChild(this.opts.view)
+            this.opts.view.notif = this
+        }
 
         let existingNotif = NOTIFS.get(this.nid)
 
@@ -93,6 +95,10 @@ customElements.define('b-notif', class extends LitElement{
                 this.remove()
                 NOTIFS.delete(this.nid)
                 this.opts.onClose(this)
+                
+                if( this.opts.view )
+                    delete this.opts.view.notif
+
                 resolve(btn)
             },700)
 
