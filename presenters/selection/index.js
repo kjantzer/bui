@@ -229,6 +229,9 @@ export default class Selection {
 
     onEventDown(e){
 
+        // only work on "main" buttons
+        if( e.button !== undefined && e.button !== 0 ) return
+
         e.stopPropagation()
 
         // while mouse/touch is down...watch dragging
@@ -290,7 +293,7 @@ export default class Selection {
         if( this.isClickEvent || (this._scrolling && !this._autoScroll) ) return
 
         // touch devices
-        if( !e.path ){
+        if( e.changedTouches ){
 
             let {clientX, clientY} = e.changedTouches[0]
         
@@ -327,7 +330,8 @@ export default class Selection {
             
         // mouse event
         }else{
-            this.select(e, this._startItem)
+            let item = e.relatedTarget && e.relatedTarget.tagName == this.itemTagName ? e.relatedTarget : e
+            this.select(item, this._startItem)
         }
     }
 
