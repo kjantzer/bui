@@ -184,10 +184,11 @@ be good alternative. By default, `bindLongPress` will trigger a `contextmenu` ev
 after the user has touched down for `500ms` without dragging.
 
 ```js
-import {bindLongPress} from 'bui/util/touch-events'
+import {bindLongpress} from 'bui/util/touch-events'
 
-bindLongPress(el) // use defaults
-bindLongPress(el, {
+bindLongpress(el) // use defaults
+bindLongress(el, {
+    touchOnly: true, // change to false if you want to watch for mouse long press too
     event: 'contextmenu', // (default) what event to fire after long press
     delay: 500 // (default) how long until triggering event
 })
