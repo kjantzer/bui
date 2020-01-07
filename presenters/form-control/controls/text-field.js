@@ -266,6 +266,10 @@ class TextFieldElement extends HTMLElement {
 		}else{
 
 			if( this.type == 'date' ){
+				
+				if( val === 'Invalid date' )
+					val = null
+
 				this._datePicker.value = val
 	
 				if( !this._datePicker.isValid ){
