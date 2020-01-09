@@ -48,10 +48,17 @@ export const fileIconColors = {
     `,
     indd: css`
         :host([ext="indd"]),
-        :host([ext="idml"]),
-        :host([ext="icml"]) {
+        :host([ext="idml"]) {
             --bgd: #2a020b;
             --color: #ff3c95;
+            --dog-ear-bgd: var(--color);
+            --border-color: var(--color);
+        }
+    `,
+    icml: css`
+        :host([ext="icml"]) {
+            --bgd: #2a0c2a;
+            --color: #eb72eb;
             --dog-ear-bgd: var(--color);
             --border-color: var(--color);
         }
