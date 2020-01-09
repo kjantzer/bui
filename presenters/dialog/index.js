@@ -83,14 +83,14 @@ Dialog.prompt = function(opts={}){
 		
 		let control = dialog.$('form-control')
 		
-		if( !resp ) return resp
+		if( !resp ) return opts.btns.length > 2 ? [resp] : resp
 		
 		if( control.isInvalid )
 			throw Error('Invalid data')
 		
-		resp = opts.html ? control.value : (control.control.textValue || control.value)
+		let val = opts.html ? control.value : (control.control.textValue || control.value)
 		
-		return resp
+		return opts.btns.length > 2 ? [resp, val] : val
 	}
 	
 	let prefix = ''
