@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
-import AJAX from '../util/ajax';
+import AJAX from '../util/ajax.js';
+import '../util/file.ext.js'
 
 export class UploaderElement extends LitElement {
 
@@ -246,8 +247,13 @@ export class UploaderElement extends LitElement {
 
             _formData.append(fileKey, file)
 
-            for( let key in formData )
-                _formData.append(key, formData[key])
+
+            for( let key in formData ){
+                if( typeof formData[key] === 'function' )
+                    _formData.append(key, formData[key](file))
+                else
+                    _formData.append(key, formData[key])
+            }
 
             this._numUploading++
             this.requestUpdate()
