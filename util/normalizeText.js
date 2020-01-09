@@ -7,5 +7,4 @@ export default (str='') => {
             .replace(/\b([\.\?\!,]*)(?=[^>]*<)"/g, "$1\u201d")  // Closing doubles
             .replace(/\.\.\./g,  "\u2026")     			        // ellipsis
             .replace(/--/g,  "\u2014")     				        // em-dashes
-            .replace(/(?<=<b>)<br\/?>(?=.*<\/b>)/g, '')         // Remove line breaks between <b> tags (niche case, see #2487)
 }
