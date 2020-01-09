@@ -35,7 +35,7 @@ export class SpinnerOverlayElement extends LitElement {
 
     static get styles(){ return css`
 		:host {
-			--spinnerBgd: rgba(255,255,255 ,.6);
+			--spinnerBgd: var(--b-spinner-overlay-bgd, rgba(255,255,255 ,.6));
             --spinnerColor: inherit;
             --spinnerSize: 1.6em;
             position: absolute;
