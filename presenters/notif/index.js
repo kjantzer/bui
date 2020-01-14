@@ -227,6 +227,6 @@ for( let key in TYPES ){
             }
 
             let Notif = customElements.get('b-notif')
-            new Notif(Object.assign({}, TYPES[key], opts))
+            return new Notif(Object.assign({}, TYPES[key], opts))
         }
 }
