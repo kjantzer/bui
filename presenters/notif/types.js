@@ -1,4 +1,6 @@
 export default {
+    alert: {
+    },
     error: {
         icon: 'attention-circle',
         color: 'red',
