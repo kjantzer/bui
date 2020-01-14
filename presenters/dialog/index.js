@@ -64,7 +64,7 @@ Dialog.prompt = function(opts={}){
 		msg: '',
 		prefix: '',
 		suffix: '',
-		validate: '',
+		pattern: '',
 		html: false,
 		required: false,
 		label: '',
@@ -107,7 +107,7 @@ Dialog.prompt = function(opts={}){
 	}
 	
 	let control = `<text-field
-		validate="${opts.validate}"
+		pattern="${opts.pattern}"
 		placeholder="${opts.placeholder}"
 		${opts.html?'html':''}
 		${opts.multiline?'multiline':''}
