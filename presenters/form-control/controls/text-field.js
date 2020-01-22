@@ -385,17 +385,24 @@ class TextFieldElement extends HTMLElement {
 	_onPaste(e){
 		e.preventDefault();
 
-		if( this.isHTML ){
-			let val = e.clipboardData.getData(e.clipboardData.types[e.clipboardData.types.length-1]||'text/html')
-			val = htmlCleaner.clean(val)
-			document.execCommand('insertHTML', false, val);
+		let val = ''
 
+		if( this.isHTML 
+		&& !e.clipboardData.types.includes('text/rtf')
+		&& e.clipboardData.types.includes('text/html') )
+		{
+			val = e.clipboardData.getData('text/html')
+			val = htmlCleaner.clean(val)
 		}else{
-			let val = e.clipboardData.getData('text')
-			// NOTE: using insertHTML (rather than insertText) keeps the browser from
-			// converting line breaks to <div> and <br> tags
-			document.execCommand('insertHTML', false, val);
+			val = e.clipboardData.getData('text')
+			
+			// remove excessive line breaks
+			val = val.replace(/\n{2,}/g, "\n")
 		}
+
+		// NOTE: using insertHTML (rather than insertText) keeps the browser from
+		// converting line breaks to <div> and <br> tags
+		document.execCommand('insertHTML', false, val);
 	}
 	
 	get editorEl(){
