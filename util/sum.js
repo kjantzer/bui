@@ -13,5 +13,5 @@ const sum = function(array, fn){
 
 export default sum
 
-Array.prototype.sum =  sum
+Array.prototype.sum =  function(fn){ return sum(this, fn)}
 Object.defineProperty(Array.prototype, 'sum', {enumerable: false});
