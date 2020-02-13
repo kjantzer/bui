@@ -44,7 +44,10 @@ export default class BtnElement extends LitElement {
             color: var(--textColor);
             border-radius: var(--radius);
             cursor: pointer;
-            transition: 160ms;
+            transition: 
+                color 160ms,
+                background-color 160ms,
+                border 160ms;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
@@ -165,7 +168,7 @@ export default class BtnElement extends LitElement {
         }
 
         :host([stacked]) slot::slotted(*) {
-            opacity: .5;
+            opacity: var(--b-btn-stacked-label-opacity, .5);
         }
 
         :host([stacked]) slot[name="icon"] {
@@ -173,8 +176,9 @@ export default class BtnElement extends LitElement {
             display: contents;
         }
 
-        :host([stacked]) slot[name="icon"]::slotted(*) {
-            opacity: 1;
+        :host([stacked]) slot[name="icon"]::slotted(*),
+        :host([stacked]) slot[name="icon"] b-icon{
+            opacity: var(--b-btn-stacked-icon-opacity, 1);
         }
 
         :host([stacked]) b-spinner {
