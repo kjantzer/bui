@@ -10,7 +10,7 @@ customElements.define('b-tabs-router', class extends TabsView {
 
         // setup routes for each tab (if they opt in)
         this.views.forEach(tab=>{
-            router.add(rootPath+tab.path, (oldState, newState, dir)=>{
+            tab.route = router.add(rootPath+tab.path, (oldState, newState, dir)=>{
 
                 tab.routeState = newState
 
