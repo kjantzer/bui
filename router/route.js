@@ -24,6 +24,10 @@ export default class Route {
         return this.state&&this.state.isCurrent
     }
 
+    makePath(params){
+        return this.patt.stringify(params)
+    }
+
     update(props){
         this.state&&this.state.isCurrent&&this.state.update(props)
     }
