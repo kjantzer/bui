@@ -37,6 +37,7 @@ customElements.define('b-tabs', class extends LitElement {
                     let str = node.textContent.trim()
                     if( !str ) return
                     let _views = str.split("\n").map(s=>s.trim())
+                    _views = _views.filter(v=>v) // ignore empty lines
                     views.push(..._views)
                     node.textContent = ''
                 
