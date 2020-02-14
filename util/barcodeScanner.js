@@ -61,7 +61,7 @@ class BarcodeScanner {
 	}
 
 	startListening(){
-		if( this.textInputKeys ){
+		if( this.opts.textInputKeys ){
 			// document.addEventListener('input', this.onInput)
 			document.addEventListener('textInput', this.onTextInput)
 		}
@@ -72,7 +72,7 @@ class BarcodeScanner {
 	}
 
 	stopListening(){
-		if( this.textInputKeys ){
+		if( this.opts.textInputKeys ){
 			// document.removeEventListener('input', this.onInput)
 			document.removeEventListener('textInput', this.onTextInput)
 		}
@@ -185,7 +185,7 @@ class BarcodeScanner {
 	*/
 	onKeyDown(e){
 		
-		if( this.textInputKeys && (this.textInputKeys == e.key || this.textInputKeys.includes(e.key)) ){
+		if( this.opts.textInputKeys && (this.opts.textInputKeys == e.key || this.opts.textInputKeys.includes(e.key)) ){
 			this.waitingForTextInput = true
 			// we put the cursor (window.selection) in the editable div instead of calling `.focus` so that mobile keyboards do not open
 			this.selectText(this.textInputEl)
@@ -278,8 +278,8 @@ class BarcodeScanner {
                 range.moveToElementText(el);
             range.select();
         } else if (window.getSelection) {
-            selection = window.getSelection();    // Save the selection.
-            range = document.createRange();
+            let selection = window.getSelection();    // Save the selection.
+            let range = document.createRange();
             if( el )
                 range.selectNodeContents(el);
             selection.removeAllRanges();          // Remove all ranges from the selection.
