@@ -220,7 +220,7 @@ export default class Popover {
 			window.removeEventListener(device.isMobile?'touchend':'click', WatchClicks, true)
 			
 			WatchingKeyboard = false
-			window.removeEventListener('keydown', WatchKeyboard, true)
+			window.removeEventListener('keydown', WatchKeyboard, !device.isMobile)
 		}
 	}
 	
