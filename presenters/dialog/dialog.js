@@ -210,8 +210,17 @@ export default class Dialog {
 		return this.promise
 	}
 	
-	modal(opts={}){
-		return this.panel(opts) // might need to reactivate Modal below
+	modal(opts={}, mobileOpts){
+		if( mobileOpts && device.isMobile )
+			return this.panel(mobileOpts)
+		else
+			return this.panel(opts)
+	}
+
+	actionsheet(opts={}){
+		return this.panel(Object.assign({
+			type: 'actionsheet'
+		}, opts))
 	}
 
 	panel(opts={}){

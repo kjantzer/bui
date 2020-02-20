@@ -83,6 +83,8 @@
 		padding: 0;
 		padding-top: .5em !important;
 		color: inherit;
+		min-height: 0;
+    	overflow: auto;
 	}
 
 	.d-title:empty + .d-msg:not(:empty) {
@@ -143,3 +145,7 @@
 
 }
 
+[type="actionsheet"] .dialog {
+	width: auto !important;
+	font-size: 1.2em;
+}
