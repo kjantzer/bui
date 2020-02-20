@@ -19,9 +19,14 @@ customElements.define('b-ts', class extends LitElement{
         clearInterval(this._updateInterval)
     }
 
-    firstUpdated(){
-        if( this.date )
+    get date(){ return this.__date}
+    set date(date){
+        this.__date = date
+
+        if( date )
             this.title = this.date.format('l')
+        
+        this.requestUpdate()
     }
 
     get displayTime(){
