@@ -5,10 +5,12 @@ import titleize from '../../../util/titleize'
 import Fuse from 'fuse.js'
 import Emitter from 'component-emitter'
 import FilterViewDate from '../toolbar/filter-view-date'
+import FilterViewInput from '../toolbar/filter-view-input'
 import FilterViewSlider from '../toolbar/filter-view-slider'
 
 const CustomViews = {
     'date': FilterViewDate,
+    'input': FilterViewInput,
     'slider': FilterViewSlider
 }
 
@@ -88,7 +90,10 @@ export default class Filters extends Map {
             if( didChange.length > 0 ){
                 // emit a change on each filter
                 didChange.forEach(k=>{
-                    this.get(k).emit('change', val)    
+                    let filter = this.get(k)    
+                    if( filter.isCustomView )
+                        filter.customView.value = val
+                    filter.emit('change', val)
                 })
 
                 if( this.queuing )
