@@ -31,3 +31,25 @@ let orig = {
 Backbone.ChildCollection = Backbone.Collection.extend(require('./child-collection'))
 
 Object.assign(Backbone.Model.prototype, require('./child-model')(orig))
+
+// dot notation
+const CollGet = Backbone.Collection.prototype.get
+Object.assign(Backbone.Collection.prototype, {
+	get(key){
+
+		// else, default to normal get of `attributes`
+		if( typeof key !== 'string' )
+			return CollGet.apply(this, arguments)
+
+		var keys = (key||'').split('.')
+		key = keys.shift()
+		var path = keys.join('.')
+
+		let m = CollGet.call(this, key)
+
+		if( path && m )
+			return m.get(path)
+
+		return m
+	}
+})
