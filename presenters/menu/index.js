@@ -660,8 +660,17 @@ export default class Menu {
 		return this.promise
 	}
 	
-	modal(opts={}){
-		return this.panel(opts)
+	modal(opts={}, mobileOpts){
+		if( mobileOpts && device.isMobile )
+			return this.panel(mobileOpts)
+		else
+			return this.panel(opts)
+	}
+
+	actionsheet(opts={}){
+		return this.panel(Object.assign({
+			type: 'actionsheet'
+		}, opts))
 	}
 
 	panel(opts={}){

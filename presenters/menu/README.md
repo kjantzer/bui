@@ -115,6 +115,8 @@ You can use the built-in presenters to accomplish this.
 
 `menu.modal(opts)`
 
+`menu.actionsheet(opts)`
+
 `menu.popover(target, opts)`
 
 #### Promise based
