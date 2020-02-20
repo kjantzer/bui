@@ -189,6 +189,7 @@ slot[name="help"] {
 	font-family: inherit;
 	font-size: inherit;
 	color: inherit;
+	width: 4em; /* flex will make it grow */
 	border: none;
 	background: none;
 	padding: var(--padX) var(--padY);

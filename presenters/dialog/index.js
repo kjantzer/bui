@@ -71,6 +71,7 @@ Dialog.prompt = function(opts={}){
 		placeholder: '',
 		helpText: '',
 		w: 300,
+		type: '',
 		multiline: false,
 		multiple: false,
 		btns: ['cancel', 'save']
@@ -112,7 +113,17 @@ Dialog.prompt = function(opts={}){
 		${opts.html?'html':''}
 		${opts.multiline?'multiline':''}
 		${opts.required?'required':''}>${opts.val}</text-field>`
-		
+	
+	if( opts.type )
+		control = `<input
+					slot="control"
+					type=${opts.type} 
+					pattern="${opts.pattern}" 
+					placeholder="${opts.placeholder}"
+					value="${opts.val}"
+					autocomplete="off"
+					${opts.required?'required':''}>`
+
 	if( opts.options )
 		control = `<select-field
 					placeholder="${opts.placeholder}"
@@ -120,7 +131,11 @@ Dialog.prompt = function(opts={}){
 					></select-field>`
 	
 	opts.msg += `
-			<form-control material="outline" label="${opts.label}" prefix="${opts.prefix}"suffix="${opts.suffix}">
+			<form-control material="filled" 
+			${opts.label?`label="${opts.label}"`:''} 
+			show="suffix prefix"
+			prefix="${opts.prefix}"
+			suffix="${opts.suffix}">
 				${control}
 				<div slot="help">${opts.helpText}</div>
 				${prefix}
