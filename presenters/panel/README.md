@@ -17,7 +17,7 @@ panel.open()
 - `width` (string)
 - `height` (string)
 - `anchor` (top, right, bottom, left, center)
-- `type` (modal)
+- `type` ('', modal, actionsheet)
 - `closeBtn` (bool) - will show a close button in the top right
 - `animation` (scale [only works on anchor=center])
 - `quickJump` (bool) - show quick jump menu when right click on close btn
@@ -185,3 +185,13 @@ Modal('my-view', {width: '400px', closeBtn: true})
 ```
 
 **Note** `closeOnEsc:true` will be automatically set when `closeBtn:true` is set 
+
+## ActionSheet
+You can use `type:"actionsheet"` or import and use the function
+
+```js
+import {ActionSheet} from 'bui/presenters/panel'
+
+ActionSheet('my-view')
+ActionSheet('my-view', {anchor: 'top'})
+```

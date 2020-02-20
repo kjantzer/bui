@@ -109,6 +109,17 @@ export const Modal = function(view, opts={}){
     return new Panel(view, opts).open()
 }
 
+export const ActionSheet = function(view, opts={}){
+    opts = Object.assign({
+        type: 'actionsheet',
+    }, opts)
+
+    if( opts.closeOnEsc === undefined )
+        opts.closeOnEsc = true
+
+    return new Panel(view, opts).open()
+}
+
 export class Panel extends LitElement {
 
     static get properties(){return {
@@ -142,6 +153,12 @@ export class Panel extends LitElement {
             defaultOpts.width = 'auto'
             defaultOpts.height = 'auto'
             defaultOpts.anchor = 'center'
+        }
+
+        if( opts.type == 'actionsheet' ){
+            defaultOpts.width = '100%'
+            defaultOpts.height = 'auto'
+            defaultOpts.anchor = 'bottom'
         }
 
         opts = Object.assign(defaultOpts, opts)
@@ -460,6 +477,22 @@ export class Panel extends LitElement {
         :host([type="modal"]) > main {
             max-height: var(--max-height, 96%);
             max-width: var(--max-width, 96%);
+        }
+
+        :host([type="actionsheet"]) {
+            /* --radius: 12px; */
+        }
+
+        :host([type="actionsheet"]) > main {
+            transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* :host([type="actionsheet"][anchor="top"]) > main {
+            padding-top: env(safe-area-inset-top);
+        } */
+
+        :host([type="actionsheet"][anchor="bottom"]) > main {
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         :host([open]) {
