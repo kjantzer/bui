@@ -661,7 +661,7 @@ export default class Menu {
 	}
 	
 	modal(opts={}, mobileOpts){
-		if( mobileOpts && device.isMobile )
+		if( mobileOpts && device.isMobile && device.minScreenSize <= 699 )
 			return this.panel(mobileOpts)
 		else
 			return this.panel(opts)

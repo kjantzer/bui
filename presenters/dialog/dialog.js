@@ -31,7 +31,6 @@ export default class Dialog {
 
 		let [iconName, iconClass] = (opts.icon||'').split(' ')
 		
-		// FIXME: animation needs added
 		let icon = opts.icon ? `<b-icon name="${iconName}" class="${iconClass||''}"></b-icon>` : ''
 		let btns = opts.btns ? opts.btns.map(btn=>makeBtn(btn)).join("\n") : ''
 
@@ -211,6 +210,8 @@ export default class Dialog {
 	}
 	
 	modal(opts={}, mobileOpts){
+		console.log(device.minScreenSize);
+		
 		if( mobileOpts && device.isMobile )
 			return this.panel(mobileOpts)
 		else
