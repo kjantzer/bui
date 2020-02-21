@@ -479,7 +479,8 @@ export class Panel extends LitElement {
             max-width: var(--max-width, 96%);
         }
 
-        :host([type="actionsheet"]) {
+        :host([type="actionsheet"]) main {
+            max-width: var(--b-panel-actionsheet-max-w, 500px);
             /* --radius: 12px; */
         }
 
