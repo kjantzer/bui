@@ -210,8 +210,6 @@ export default class Dialog {
 	}
 	
 	modal(opts={}, mobileOpts){
-		console.log(device.minScreenSize);
-		
 		if( mobileOpts && device.isMobile )
 			return this.panel(mobileOpts)
 		else
