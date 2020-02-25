@@ -151,6 +151,11 @@ class BarcodeScanner {
 			type = 'reshelf_list'
 			str = match[1].split(',')
 		}
+		else if( match = str.match(/^\(251\)(\w{6}).+-\d/) ){
+			type = 'product_id'
+			str = match[1]
+
+		}
 		else if( str.length == 6 && str.match(/^[1-7][0-2]|^[zphb][a-z]/i) ) type = 'product_id'
 		else if( malformedOrderIDs.includes(str) || str.match(/^[\d]{6,9}(-\d)?$|^ae\d+|^[CLWEAI][\d]{8}/) ) type = 'order_id'
 		else if( match = str.match(/^RPLC([0-9]+)/i) ){
