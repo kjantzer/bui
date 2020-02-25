@@ -41,6 +41,15 @@ const device = {
         return /CriOS/.test(UA)
     },
 
+    get isElectron(){
+        return /Electron/.test(UA)
+    },
+
+    get electronVersion(){
+        let matches = UA.match(/Electron\/([\d\.]+) /)
+        return matches ? matches[1] : 0
+    },
+
     get isChromeInstalledApp(){
         return this.isInstalled && /Chrome/.test(UA)
     },
