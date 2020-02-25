@@ -109,8 +109,20 @@ class BarcodeScanner {
 		let malformedOrderIDs = ['Le1345139-2', 'Le1345139-4', 'Le1345148-0', 'Le1345148-5', 'Le1345148-6', 'Le1345148-7', 'Le1345148-8', 'Le1345148-9', 'We1345148-2', 'We1345148-3', 'We1345148-4', 'Ce1345139-3']
 
 		// make boombox show as an isbn...(maybe change to partner_ref?)
-		if( str.match(/^978[\d]{10}$/) || str == '027242896406' ) type = 'isbn'
-		else if( match = str.match(/^BX(\d{9})/) ){
+		if( str == '027242896406' )
+			type = 'isbn'
+		
+		// barcodes on pallet boxes prefix isbn with 011
+		else if( match = str.match(/^(?:011)?(978[\d]{10})$/) ){
+			type = 'isbn'
+			str = match[1]
+
+		// qty barcode found on print book boxes 
+		}else if( match = str.match(/^\(30\) (\d+)$/) ){
+			type = 'qty'
+			str = match[1]
+
+		}else if( match = str.match(/^BX(\d{9})/) ){
 			type = 'box_id'
 			str = parseInt(match[1])
 		}
@@ -120,8 +132,13 @@ class BarcodeScanner {
 		}else if( match = str.match(/^BXITP(\d{6})/) ){
 			type = 'boxit_pallet'
 			str = parseInt(match[1])
-		}
-		else if( str.match(/^\d{2}-[a-iA-I]([\d][a-iA-I]?)?$/)) type = 'shelf_location'
+	
+		}else if( match = str.match(/^\(_\)(.+)$/) ){
+			type = 'shelf_location'
+			str = match[1]
+
+		}else if( str.match(/^\d{2}-[a-iA-I]([\d][a-iA-I]?)?$/)) type = 'shelf_location'
+
 		else if( match = str.match(/^rma-item-([0-9]+)/) ){
 			type = 'rma_item'
 			str = match[1]
