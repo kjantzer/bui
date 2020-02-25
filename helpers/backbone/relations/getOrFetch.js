@@ -19,7 +19,7 @@ module.exports = function(id, opts){
 		var finishedCallback = function(model, resp, opts){
 			
 			delete model.isFetching
-			model.isInvalid = !!resp.getAllResponseHeaders // resp will be a `xhr` object when in the error callback
+			model.isInvalid = !!(resp && resp.getAllResponseHeaders) // resp will be a `xhr` object when in the error callback
 			
 			if( success ) success(model)
 
