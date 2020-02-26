@@ -12,6 +12,9 @@
 	
 	TODO
 	- rework to be a singleton that allows for outside code to listen
+
+	Docs:
+	https://www.databar-barcode.info/application-identifiers/
 */
 import Emmitter from 'component-emitter'
 
@@ -151,7 +154,7 @@ class BarcodeScanner {
 			type = 'reshelf_list'
 			str = match[1].split(',')
 		}
-		else if( match = str.match(/^\(251\)(\w{6}).+-\d/) ){
+		else if( match = str.match(/^\(251\)T?(\w{6}).+/) ){
 			type = 'product_id'
 			str = match[1]
 
