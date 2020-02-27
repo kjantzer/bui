@@ -19,6 +19,9 @@ export default class Single {
     
     assetPaths = soundAssets
 
+    if( !('AudioContext' in window) )
+      return
+
     this.context = new AudioContext();
     // Think of this as the "volume knob"   
     this.gainNode = this.context.createGain();
@@ -43,6 +46,9 @@ export default class Single {
   }
 
   play(key, volume) {
+    
+    if( !this.context ) return
+
     if (!Single.singleKeys.includes(key)) {
       return Error(`The requested sound is not available: ${key}`);
     }
