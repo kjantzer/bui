@@ -709,7 +709,8 @@ export default class Menu {
 		// if dialog btn clicked, take action
 		dialog.promise.then(btn=>{
 			if( btn )
-				this.presenter.close()
+				this.resolve(btn)
+				// this.presenter.close()
 			else
 				this.resolve(false)
 		})
