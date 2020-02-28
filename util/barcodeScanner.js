@@ -120,6 +120,11 @@ class BarcodeScanner {
 			type = 'isbn'
 			str = match[1]
 
+		// custom defined type: `[type]string`
+		}else if( match = str.match(/^\[(.+)\](.+)$/) ){
+			type = match[1]
+			str = match[2]
+
 		// qty barcode found on print book boxes 
 		}else if( match = str.match(/^\(30\) (\d+)$/) ){
 			type = 'qty'
