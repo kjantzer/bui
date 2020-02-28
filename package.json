@@ -38,6 +38,7 @@
         "docpress": "github:kjantzer/docpress#prod"
     },
     "dependencies": {
+        "@fnando/sparkline": "^0.3.10",
         "component-emitter": "^1.3.0",
         "fuse.js": "^3.4.5",
         "lit-element": "^2.2.1",
