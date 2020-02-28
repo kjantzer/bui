@@ -56,8 +56,6 @@ customElements.define('b-sparkline', class extends LitElement{
         
         val = val.split(',').map(s=>parseInt(s)||0)
         this.__value = val
-
-        console.log('set val', val);
         
         this.requestUpdate('value', oldVal)
     }
