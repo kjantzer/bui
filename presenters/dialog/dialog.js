@@ -32,7 +32,7 @@ export default class Dialog {
 		let [iconName, iconClass] = (opts.icon||'').split(' ')
 		
 		let icon = opts.icon ? `<b-icon name="${iconName}" class="${iconClass||''}"></b-icon>` : ''
-		let btns = opts.btns ? opts.btns.map(btn=>makeBtn(btn)).join("\n") : ''
+		let btns = opts.btns ? opts.btns.map(btn=>btn&&makeBtn(btn)).join("\n") : ''
 
 		if( opts.icon === 'spinner' )
 			icon = `<b-spinner></b-spinner>`
