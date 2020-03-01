@@ -100,11 +100,12 @@ export class Collection {
         if( params.data ){
             let data = params.data
 
-            if( data.filters )
-                data.filters = JSON.stringify(params.data.filters)
-            
-            if( data.sorts )
-                data.sorts = JSON.stringify(params.data.sorts)
+            if( data && typeof data == 'object' ){
+                for( let k in data ){
+                    if( typeof data[k] == 'object' )
+                        data[k] = JSON.stringify(data[k])
+                }
+            }
 
             url.search = new URLSearchParams(data)
         }
