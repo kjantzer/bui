@@ -64,6 +64,13 @@ export default class BtnElement extends LitElement {
             user-select: none; 
         }
 
+        /* hide by default */
+        @media print {
+            :host {
+                display: none;
+            }
+        }
+
         :host([hidden]) {
             display: none !important;
         }
