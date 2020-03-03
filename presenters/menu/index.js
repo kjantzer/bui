@@ -62,6 +62,9 @@ export default class Menu {
 		if( this.opts.minW )
 			this.el.style.minWidth = this.opts.minW
 		
+		if( this.opts.maxW )
+			this.el.style.maxWidth = this.opts.maxW
+		
 		if( this.opts.width )
 			this.el.style.width = this.opts.width
 		

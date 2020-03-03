@@ -66,6 +66,7 @@ let selected = await new Menu([], {
 	multiple: false, // more than one value selectable?
 	search: 20, // true (always show) or number of results for it to show
 	minW: false,
+    maxW: false,
 	width: null,
     autoSelectFirst: false,
 	jumpNav: false, // true (always show) or number of results for it to show
