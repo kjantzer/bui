@@ -294,9 +294,13 @@ customElements.define('b-list', class extends LitElement {
     }
 
     async firstUpdated(){
-        this.spinner.show = true
-        this.toolbar.count = await this.dataSource.length()
-        this.spinner.show = false
+
+        // defer to end of callstack to let infinite list view render and begin fetching
+        setTimeout(async ()=>{
+            this.spinner.show = true
+            this.toolbar.count = await this.dataSource.length()
+            this.spinner.show = false
+        })
 
         this.header = this.$$('[name="header"]').assignedNodes()[0]
 
