@@ -100,6 +100,7 @@ const filters = {
     type: {
         label: 'Type', // the key will be used if no label is set
         maxHeight: '60vh', // max height of dropdown menu
+        width: '160px', // exact width of menu
         multi: false, // can more than one value be selected?
         db: false, // true will make the filterBy happen on server instead
 
