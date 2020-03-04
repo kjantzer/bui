@@ -5,6 +5,7 @@ import '../form-control/controls/text-field'
 import '../../elements/btn'
 import '../../elements/spinner'
 import ResultView from './result'
+import device from '../../util/device'
 
 customElements.define('b-search', class extends LitElement{
 
@@ -130,11 +131,19 @@ customElements.define('b-search', class extends LitElement{
 
     render(){return html`
         <form-control material="filled" show="prefix">
-            <text-field placeholder="${this.placeholder}" @keyup=${this.onKeyUp} @focus=${this.onFocus} @blur=${this.onBlur}></text-field>
+            <text-field placeholder="${this.placeholder}"
+                @keyup=${this.onKeyUp}
+                @focus=${this.onFocus}
+                @change=${this.onChange}
+                @blur=${this.onBlur}></text-field>
             <b-icon name="search" slot="prefix"></b-icon>
             <b-icon name="cancel-circled" slot="suffix" @click=${this.clear}></b-icon>
         </form-control>
     `}
+
+    onChange(e){
+        this._search(e.target.value)
+    }
 
     firstUpdated(){
         this.fc = this.shadowRoot.querySelector('form-control')
@@ -193,7 +202,8 @@ customElements.define('b-search', class extends LitElement{
 
     onKeyUp(e){
         let val = e.currentTarget.currentValue 
-        this._search(val)
+        if( !device.isMobile )
+            this._search(val)
     }
 
     _search(val){
