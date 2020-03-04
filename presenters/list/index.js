@@ -17,6 +17,7 @@ customElements.define('b-list', class extends LitElement {
         this.onKeydown = this.onKeydown.bind(this)
         this.onKeyup = this.onKeyup.bind(this)
         this.createRow = this.createRow.bind(this)
+        this.createEmptyElement = this.createEmptyElement.bind(this)
         this.createDivider = this.createDivider.bind(this)
     }
 
@@ -201,10 +202,11 @@ customElements.define('b-list', class extends LitElement {
 
         <slot name="header"></slot>
         <b-infinite-list
-            empty="${this.emptyElement}"
+            .empty="${this.createEmptyElement}"
             .row="${this.createRow}"
             .divider=${this.createDivider}
             .dataSource=${this.dataSource}
+            fetch-on-load=${(this.listOptions&&this.listOptions.fetchOnLoad)}
             layout="${this.layout}"
         ></b-infinite-list>
     `}
@@ -254,7 +256,7 @@ customElements.define('b-list', class extends LitElement {
     }
 
     get rowElement(){ return this.getAttribute('row') || ''}
-    get emptyElement(){ return this.getAttribute('empty') || ''}
+    get emptyElement(){ return this.getAttribute('empty') || 'b-empty-state'}
 
     get toolbar(){
         return this.shadowRoot.querySelector('b-list-toolbar')
@@ -274,6 +276,17 @@ customElements.define('b-list', class extends LitElement {
             row.list = this
             return row
         }
+    }
+
+    createEmptyElement(){
+        this.emptyView = this.emptyView || document.createElement(this.emptyElement)
+        this.emptyView.list = this
+        this.emptyView.dataSource = this.dataSource
+        
+        let term = this.dataSource.filters&&this.dataSource.filters.term
+        this.emptyView.value = term ? `No results for “${term}”` : (this.getAttribute('placeholder') || 'No results')
+        this.emptyView.requestUpdate()
+        return this.emptyView
     }
 
     createDivider(prevModel, model){

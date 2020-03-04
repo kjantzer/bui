@@ -93,6 +93,8 @@ export default class DataSource {
             if( this._sorting )
                 await this._sorting
 
+            this.hasFetched = true
+
             resolve(this.data.slice(pageAt, pageAt+this.opts.perPage))
         }).finally(_=>delete this._fetching)
     }

@@ -19,7 +19,8 @@ customElements.define('b-infinite-list', class extends LitElement {
 
     firstUpdated(){
         // after first updating, reset and get content
-        this.reset()
+        let loadContent = this.getAttribute('fetch-on-load') !== 'false'
+        this.reset(loadContent)
     }
     
     connectedCallback(){
@@ -32,13 +33,16 @@ customElements.define('b-infinite-list', class extends LitElement {
         this.removeEventListener('scroll', this.onScroll, true)
     }
 
-    async reset(){
+    async reset(andLoadContent=true){
         this.pageAt = 0
         this.scrollTop = 0
         this.prevModel = null
         this.innerHTML = ''
         
-        await this.getContent()
+        if( andLoadContent )
+            await this.getContent()
+        else
+            this.addContent([])
     }
 
     onScroll(){
@@ -76,18 +80,16 @@ customElements.define('b-infinite-list', class extends LitElement {
         }
     }
 
-    get emptyElement(){return this.getAttribute('empty') || 'b-empty-state'}
+    // get emptyElement(){return this.getAttribute('empty') || 'b-empty-state'}
 
     addContent(models){
         
         this.pageAt += models.length
 
         if( this.pageAt == 0 ){
-            this.emptyView = this.emptyView || document.createElement(this.emptyElement)
-            this.emptyView.dataSource = this.dataSource
-            let term = this.dataSource.filters&&this.dataSource.filters.term
-            this.emptyView.value = term ? `No results for “${term}”` : (this.getAttribute('placeholder') || 'No results')
-            this.appendChild(this.emptyView)
+            let emptyView = this.empty && this.empty()
+            if( emptyView )
+                this.appendChild(emptyView)
             return 
         }
 
