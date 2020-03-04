@@ -7,11 +7,20 @@ customElements.define('b-list-filter-view-input', class extends LitElement{
         :host {
             display: grid;
             position:relative;
-            padding: .25em;
+            padding: .5em;
         }
 
         form-control {
             margin:0;
+        }
+
+        b-btn.cancel {
+            margin: -.5em -.5em -.5em 0;
+            vertical-align: middle;
+        }
+
+        [empty] ~ b-btn.cancel {
+            visibility: hidden;
         }
 
     `}
@@ -27,10 +36,10 @@ customElements.define('b-list-filter-view-input', class extends LitElement{
     }
 
     render(){return html`
-        <b-btn text md @click=${this.clearValue}>Clear</b-btn>
-
         <form-control material="filled" style="width:${this.get('width'), '200px'}">
             <text-field reset-invalid placeholder="${this.get('placeholder')}" @enterkey=${this.onEnter}></text-field>
+            <span slot="help">${this.get('helpText')}</span>
+            <b-btn slot="suffix" class="cancel" icon="cancel-circled" text @click=${this.clearValue}></b-btn>
         </form-control>
     `}
 

@@ -448,7 +448,11 @@ export class Filter {
             return Dialog.warn({msg:`${this.key}: unsupported view`}).popover(el)
         
         let onClose = _=>{
-            this.value = this.customView.value
+            // let menu close before attempting to set value
+            // with larger datasets, a user can feel it lag for a split second
+            setTimeout(()=>{
+                this.value = this.customView.value
+            })
         }
         
         // TODO: support `adjustForMobile`
