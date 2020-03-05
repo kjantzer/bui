@@ -1,26 +1,87 @@
 Util
 ========
 
+## `AJAX`
+A wrapper around [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) to simplify and provide async/await. 
+
+> `fetch` is a good solution most of the time, but does not provide progress.
+
+```js
+let formData = new FormData()
+
+formData.set('file', FileObject)
+
+new AJAX(method, url)
+.on('progress', e=>{
+    let progress = Math.round(e.loaded / e.total * 100)
+    console.log(progress)
+})
+.send(formData)
+.then(resp=>{
+    console.log(resp)
+})
+```
+
+The `.on` method provides a chainable version of `target.addEventListener`
+
+```js
+new AJAX(method, url)
+.on('loadstart', handler)
+.on('progress', handler)
+.send()
+```
+
+## Background Resume
+
+```js
+import 'bui/util/background-resume'
+
+window.addEventListener('background-resume', e=>{ /*do something*/ })
+```
+
+iOS devices (untested on Android) stop processing JS
+when backgrounded for a few seconds (10-20 in my testing)
+
+When the browser is reopended, safari resumes with the JS "state"
+intact but since time was essentially frozen, no updates (long poll)
+would have been made or received (websocket).
+
+It may be important to trigger a refresh of data when resuming 
+from the background; this script enables such a function.
+
+## `colorScheme`
+Detect OS level [color schemes](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme) and react to changes. You can do this with CSS, this utilty is for use in JS if needed
+
+```js
+import { colorScheme } from 'util/device'
+
+colorScheme.isDarkMode
+colorScheme.isLightMode
+colorScheme.isSupported
+
+colorScheme.onChange(mode=>console.log(mode))
+```
+
+## `device`
+Some simple device detection
+```js
+import device from 'util/device'
+
+device.is_ios
+device.is_android
+device.is_mobile
+```
+
 ## `normalizeText`
 Converts strings to some special characters, such as three periods to an ellipsis
 ```js
 let str = normalizeText(str)
 ```
 
-## `titleize`
-Converts underscores and dashes to spaces and then capitlizes each word
-```js
-let str = normalizeText('my_string') // My String
-```
+## `pick`
 
-## `sortString`
-Moves the leading article to the end (also strips leading and trailing quotes)
 ```js
-sortString('The Book Title') // Book Title, The
-sortString('"A Book Title"') // Book Title, A
-
-// disable quote strip
-sortString('"A Book Title"', false) // "A Book Title"
+let newObj = pick({first:'name', last:'name}, ['first'])
 ```
 
 ## `Promise.series`
@@ -39,27 +100,20 @@ Promise.series([task1, task2, task3], (task,i)=>{
 })
 ```
 
-## `device`
-Some simple device detection
+## `sortString`
+Moves the leading article to the end (also strips leading and trailing quotes)
 ```js
-import device from 'util/device'
+sortString('The Book Title') // Book Title, The
+sortString('"A Book Title"') // Book Title, A
 
-device.is_ios
-device.is_android
-device.is_mobile
+// disable quote strip
+sortString('"A Book Title"', false) // "A Book Title"
 ```
 
-## `colorScheme`
-Detect OS level [color schemes](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme) and react to changes. You can do this with CSS, this utilty is for use in JS if needed
-
+## `titleize`
+Converts underscores and dashes to spaces and then capitlizes each word
 ```js
-import { colorScheme } from 'util/device'
-
-colorScheme.isDarkMode
-colorScheme.isLightMode
-colorScheme.isSupported
-
-colorScheme.onChange(mode=>console.log(mode))
+let str = normalizeText('my_string') // My String
 ```
 
 ## `store`
@@ -125,59 +179,14 @@ Convert a CSV string to an array
 let data = csvToArray(str)
 ```
 
+## `range`
+
+
 ## `readFile`
 Read a [file](https://developer.mozilla.org/en-US/docs/Web/API/File) to text (async)
 ```js
 let text = await readFile(file)
 ```
-
-## `AJAX`
-A wrapper around [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) to simplify and provide async/await. 
-
-> `fetch` is a good solution most of the time, but does not provide progress.
-
-```js
-let formData = new FormData()
-
-formData.set('file', FileObject)
-
-new AJAX(method, url)
-.on('progress', e=>{
-    let progress = Math.round(e.loaded / e.total * 100)
-    console.log(progress)
-})
-.send(formData)
-.then(resp=>{
-    console.log(resp)
-})
-```
-
-The `.on` method provides a chainable version of `target.addEventListener`
-
-```js
-new AJAX(method, url)
-.on('loadstart', handler)
-.on('progress', handler)
-.send()
-```
-
-## Background Resume
-
-```js
-import 'bui/util/background-resume'
-
-window.addEventListener('background-resume', e=>{ /*do something*/ })
-```
-
-iOS devices (untested on Android) stop processing JS
-when backgrounded for a few seconds (10-20 in my testing)
-
-When the browser is reopended, safari resumes with the JS "state"
-intact but since time was essentially frozen, no updates (long poll)
-would have been made or received (websocket).
-
-It may be important to trigger a refresh of data when resuming 
-from the background; this script enables such a function.
 
 ## Touch Events
 
@@ -196,4 +205,3 @@ bindLongress(el, {
     delay: 500 // (default) how long until triggering event
 })
 ```
-
