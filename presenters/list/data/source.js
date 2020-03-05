@@ -7,8 +7,9 @@ export default class DataSource {
 
         this.opts = Object.assign({
             perPage: 30,
-            fetch: true
-        }, opts)
+            fetch: true,
+            fetchOnLoad: true
+        }, opts)   
     }
 
     reset(){
