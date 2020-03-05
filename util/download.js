@@ -29,6 +29,12 @@ export const downloadContent = (content, filename, opts={})=>{
 
 }
 
+export const downloadCSV = (content, filename, opts={})=>{
+    filename = filename || (new Date().getTime()+'.csv')
+    opts.type = 'text/csv'
+    downloadContent(content, filename, opts)
+}
+
 export const download = (url, filename = '', {
     standaloneHTML = ''
 }={})=>{
