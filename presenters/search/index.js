@@ -20,6 +20,7 @@ customElements.define('b-search', class extends LitElement{
         active: {type: Boolean, reflect: true},
         url: {type: String, reflect: true},
         placeholder: {type: String, reflect: true},
+        suffix: {type: String},
         minTermLength: {type: Number},
         typeDelay: {type: Number}
     }}
@@ -30,6 +31,7 @@ customElements.define('b-search', class extends LitElement{
         this.active = false
         this.placeholder = 'Search...'
         this.url = '/api/search'
+        this.suffix = ''
         this.minTermLength = 3
         this.typeDelay = 200
     }
@@ -137,6 +139,7 @@ customElements.define('b-search', class extends LitElement{
                 @change=${this.onChange}
                 @blur=${this.onBlur}></text-field>
             <b-icon name="search" slot="prefix"></b-icon>
+            <span slot="suffix">${this.suffix}</span>
             <b-icon name="cancel-circled" slot="suffix" @click=${this.clear}></b-icon>
         </form-control>
     `}
