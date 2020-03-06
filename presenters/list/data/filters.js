@@ -143,6 +143,9 @@ export default class Filters extends Map {
 
         for( let key in filters ){
 
+            if( !filters[key] )
+                continue
+
             if( key == 'search' ){
                 this.searchOptions = filters[key]
                 continue
