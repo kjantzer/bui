@@ -27,8 +27,9 @@ customElements.define('b-list', class extends LitElement {
         this.__coll = coll
         this.dataSource.coll = coll
 
+        // I think this is ok to do here
         if( didChange )
-            this.refresh() // I think this is ok to do here
+            this.shouldFetchData ? this.refresh() : this.reload() 
     }
 
     set key(key){ this.__key = key }
@@ -348,7 +349,7 @@ customElements.define('b-list', class extends LitElement {
 
     async reload(){
         this.dataSource.refilter()
-        this.list.reset()
+        this.list.reset(this.shouldFetchData)
         this.toolbar.count = await this.dataSource.length()
     }
 

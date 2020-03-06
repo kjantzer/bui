@@ -20,6 +20,12 @@ export default class DataSource {
         this.data = []          // filtered data with "search term" applied
     }
 
+    set coll(coll){
+        this.hasFetched = false
+        this.__coll = coll
+    }
+    get coll(){ return this.__coll}
+
     async refilter(){
         this.lastFiltered = 0
         this._rawData = this.coll.models || this.coll
