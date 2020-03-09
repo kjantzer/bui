@@ -29,8 +29,8 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         }
 
         text-field {
-            padding-right: .5em;
-            margin-right: -.5em;
+            /* padding-right: .5em; */
+            /* margin-right: -.5em; */
             /* width: 160px; */
         }
 
@@ -39,14 +39,28 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         }
         
         .controls {
-            padding: .5em;
-            font-size: 1.4em;
+            padding: .25em .5em;
+            /* font-size: 1.4em; */
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            /* flex-direction: column; */
+        }
+
+        .controls span {
+            margin: 0 .25em;
         }
 
         form-control:first-child {
             margin-bottom: .35em;
+        }
+
+        footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        b-label {
+            margin: 0 .5rem;
         }
     `}
 
@@ -61,27 +75,29 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
 
     render(){return html`
 
-        <header>
-            <b-btn text md @click=${this.clearDates}>Clear</b-btn>
-            <b-hr></b-hr>
+        <b-btn text md @click=${this.clearDates}>Clear</b-btn>
+        <b-hr></b-hr>
+
+        <div class="controls">
+            <form-control material="filled" key="date1">
+                <text-field reset-invalid placeholder="00/00/0000" type="date" @enterkey=${this.onEnter}></text-field>
+            </form-control>
+            
+            <span>–</span>
+            
+            <form-control material="filled" key="date2">
+                <text-field reset-invalid placeholder="00/00/0000" type="date" @enterkey=${this.onEnter}></text-field>
+            </form-control>
+        </div>
+
+        <b-label sm divider>Presets</b-label>
+        <footer>
             <b-btn text md @click=${this.usePreset}>Today</b-btn>
             <b-btn text md @click=${this.usePreset}>Yesterday</b-btn>
             <b-btn text md @click=${this.usePreset}>30 Days</b-btn>
             <b-btn text md @click=${this.usePreset}>This Month</b-btn>
             <b-btn text md @click=${this.usePreset}>This Year</b-btn>
-        </header>
-
-        <b-hr></b-hr>
-
-        <div class="controls">
-            <form-control key="date1">
-                <text-field reset-invalid placeholder="00/00/0000" type="date" @enterkey=${this.onEnter}></text-field>
-            </form-control>
-
-            <form-control key="date2">
-                <text-field reset-invalid placeholder="00/00/0000" type="date" @enterkey=${this.onEnter}></text-field>
-            </form-control>
-        </div>
+        </footer>
     `}
 
     get value(){

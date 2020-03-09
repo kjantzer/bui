@@ -7,8 +7,9 @@ export default class DataSource {
 
         this.opts = Object.assign({
             perPage: 30,
-            fetch: true
-        }, opts)
+            fetch: true,
+            fetchOnLoad: true
+        }, opts)   
     }
 
     reset(){
@@ -18,6 +19,12 @@ export default class DataSource {
         this._filteredData = [] // raw data with after filters applied
         this.data = []          // filtered data with "search term" applied
     }
+
+    set coll(coll){
+        this.hasFetched = false
+        this.__coll = coll
+    }
+    get coll(){ return this.__coll}
 
     async refilter(){
         this.lastFiltered = 0
@@ -92,6 +99,8 @@ export default class DataSource {
 
             if( this._sorting )
                 await this._sorting
+
+            this.hasFetched = true
 
             resolve(this.data.slice(pageAt, pageAt+this.opts.perPage))
         }).finally(_=>delete this._fetching)

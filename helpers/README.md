@@ -55,6 +55,16 @@ this.emitEvent('element-event', {id: 1})
 The emitted event with have `bubbles: true` and `composed: true` so that the even
 will bubble up and out of the shadow dom
 
+### Get
+
+```js
+import 'bui/helpers/lit-element/get'
+```
+Shortcut to `this.model.get()` that also supports `defaultValue`
+```js
+this.get('some_key', 'default Value')
+```
+
 ### Model / Coll
 
 ```js

@@ -62,6 +62,9 @@ export default class Menu {
 		if( this.opts.minW )
 			this.el.style.minWidth = this.opts.minW
 		
+		if( this.opts.maxW )
+			this.el.style.maxWidth = this.opts.maxW
+		
 		if( this.opts.width )
 			this.el.style.width = this.opts.width
 		
@@ -357,6 +360,9 @@ export default class Menu {
 
 		let dataTitle = (m.dataTitle || m.label+' '+m.description).trim().toLowerCase()
 
+		let label = m.label && m.label.constructor.name == 'TemplateResult' ? m.label : unsafeHTML(m.label||'')
+		let description = m.description && m.description.constructor.name == 'TemplateResult' ? m.description : unsafeHTML(m.description||'')
+
 		return html`
 			<div class="menu-item ${m.className}" val=${m.val} index=${i}
 				data-title=${dataTitle}
@@ -366,8 +372,8 @@ export default class Menu {
 				${icon}
 				${m.view&&m.view instanceof HTMLElement ?m.view:html`
 					<span class="mi-content">
-						<div class="mi-label">${unsafeHTML(m.label||'')}</div>
-						<div class="mi-description">${unsafeHTML(m.description||'')}</div>
+						<div class="mi-label">${label}</div>
+						<div class="mi-description">${description}</div>
 					</span>
 				`}
 				${extras}

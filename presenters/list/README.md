@@ -39,6 +39,7 @@ Options passed along to the infinite-list
 ```js
 listOptions = {
     fetch: true, // true,false, 'more'
+    fetchOnLoad: true,
     perPage: 30,
     layouts: null // see below for details
 }
@@ -47,6 +48,8 @@ listOptions = {
 `fetch:true` - will only fetch initial data.  
 `fetch:'more'` - will attempt to fetch more data
 when all available data has been displayed
+
+`fetchOnLoad` - should data be fetched upon initial load?
 
 `perPage` - how many rows to display at one time.
 Also determines how many "more" rows are requested
@@ -100,6 +103,7 @@ const filters = {
     type: {
         label: 'Type', // the key will be used if no label is set
         maxHeight: '60vh', // max height of dropdown menu
+        width: '160px', // exact width of menu
         multi: false, // can more than one value be selected?
         db: false, // true will make the filterBy happen on server instead
 
@@ -285,6 +289,16 @@ A list header can be rendered between the toolbar and the list items.
     <div slot="header"></div>
 </b-list>
 ```
+
+### Empty (view)
+A default "empty" view will used when no results. You can choose to use your own with custom info and actions
+
+```html
+<b-list empty="my-empty-view">
+```
+
+The empty view will have a reference to `.list` and `.dataSource`. Also, `.value` will be set which will
+hold the text that the list thinks should be displayed (it's up to you to display it).
 
 ### Divider
 A divider can be added to the list.

@@ -12,6 +12,17 @@ export default (rawData, opts)=>{
 
 	if( !rawData || rawData.length == 0 )
 		return console.log('No data to export');
+
+	// see if the array of data contains Backbone Models or custom classes that implement `toCSV` or `toJSON`
+	rawData = rawData.map(d=>{
+		if( d && d.toCSV )
+			return d.toCSV()
+
+		if( d && d.toJSON )
+			return d.toJSON()
+		
+		return d
+	})
 	
 	var header = Object.keys(rawData[0])
 	var rows = rawData.map(d=>Object.values(d))
@@ -47,16 +58,6 @@ export default (rawData, opts)=>{
 	   csvContent += index < data.length ? dataString+ opts.newline : dataString;
 	});
 
-    // let downloadName = 'download'
-    // let blob = new Blob([csvContent], {type:'text/csv'});
-    // let csvUrl = window.URL.createObjectURL(blob);
-    
-    // let ext = opts.delimiter == ',' ? 'csv' : 'txt'
-    // let link = document.createElement("a");
-    // link.setAttribute("href", csvUrl);
-    // link.setAttribute("download", downloadName+"."+ext);
-    
-    // link.click();
 	
 	return csvContent
 }

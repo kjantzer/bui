@@ -17,6 +17,7 @@ customElements.define('b-list', class extends LitElement {
         this.onKeydown = this.onKeydown.bind(this)
         this.onKeyup = this.onKeyup.bind(this)
         this.createRow = this.createRow.bind(this)
+        this.createEmptyElement = this.createEmptyElement.bind(this)
         this.createDivider = this.createDivider.bind(this)
     }
 
@@ -26,8 +27,9 @@ customElements.define('b-list', class extends LitElement {
         this.__coll = coll
         this.dataSource.coll = coll
 
+        // I think this is ok to do here
         if( didChange )
-            this.refresh() // I think this is ok to do here
+            this.shouldFetchData ? this.refresh() : this.reload() 
     }
 
     set key(key){ this.__key = key }
@@ -201,10 +203,11 @@ customElements.define('b-list', class extends LitElement {
 
         <slot name="header"></slot>
         <b-infinite-list
-            empty="${this.emptyElement}"
+            .empty="${this.createEmptyElement}"
             .row="${this.createRow}"
             .divider=${this.createDivider}
             .dataSource=${this.dataSource}
+            fetch-on-load=${(this.listOptions&&this.listOptions.fetchOnLoad)}
             layout="${this.layout}"
         ></b-infinite-list>
     `}
@@ -254,7 +257,7 @@ customElements.define('b-list', class extends LitElement {
     }
 
     get rowElement(){ return this.getAttribute('row') || ''}
-    get emptyElement(){ return this.getAttribute('empty') || ''}
+    get emptyElement(){ return this.getAttribute('empty') || 'b-empty-state'}
 
     get toolbar(){
         return this.shadowRoot.querySelector('b-list-toolbar')
@@ -276,6 +279,17 @@ customElements.define('b-list', class extends LitElement {
         }
     }
 
+    createEmptyElement(){
+        this.emptyView = this.emptyView || document.createElement(this.emptyElement)
+        this.emptyView.list = this
+        this.emptyView.dataSource = this.dataSource
+        
+        let term = this.dataSource.filters&&this.dataSource.filters.term
+        this.emptyView.value = term ? `No results for “${term}”` : (this.getAttribute('placeholder') || 'No results')
+        this.emptyView.requestUpdate()
+        return this.emptyView
+    }
+
     createDivider(prevModel, model){
 
         let divider = this.getAttribute('divider')
@@ -294,9 +308,13 @@ customElements.define('b-list', class extends LitElement {
     }
 
     async firstUpdated(){
-        this.spinner.show = true
-        this.toolbar.count = await this.dataSource.length()
-        this.spinner.show = false
+
+        // defer to end of callstack to let infinite list view render and begin fetching
+        setTimeout(async ()=>{
+            this.spinner.show = true
+            this.toolbar.count = await this.dataSource.length()
+            this.spinner.show = false
+        })
 
         this.header = this.$$('[name="header"]').assignedNodes()[0]
 
@@ -331,8 +349,12 @@ customElements.define('b-list', class extends LitElement {
 
     async reload(){
         this.dataSource.refilter()
-        this.list.reset()
+        this.list.reset(this.shouldFetchData)
         this.toolbar.count = await this.dataSource.length()
+    }
+
+    get shouldFetchData(){
+        return this.dataSource.hasFetched || this.listOptions&&this.listOptions.fetchOnLoad
     }
 
     async onFilterTermChange(changes){
@@ -343,7 +365,7 @@ customElements.define('b-list', class extends LitElement {
         }
 
         this.dataSource.applyFilters()
-        this.list.reset()
+        this.list.reset(shouldFetchData)
         this.toolbar.count = await this.dataSource.length()
     }
 
@@ -355,7 +377,7 @@ customElements.define('b-list', class extends LitElement {
         }
 
         this.dataSource.applyFilters()
-        this.list.reset()
+        this.list.reset(this.shouldFetchData)
         this.toolbar.count = await this.dataSource.length()
         this.spinner.show = false
     }
@@ -369,7 +391,7 @@ customElements.define('b-list', class extends LitElement {
             this.dataSource.sort()
         }
         
-        this.list.reset()
+        this.list.reset(this.shouldFetchData)
         this.toolbar.count = await this.dataSource.length()
         this.spinner.show = false
     }

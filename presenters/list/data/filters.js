@@ -143,6 +143,9 @@ export default class Filters extends Map {
 
         for( let key in filters ){
 
+            if( !filters[key] )
+                continue
+
             if( key == 'search' ){
                 this.searchOptions = filters[key]
                 continue
@@ -397,6 +400,7 @@ export class Filter {
         let selected = await new Menu(this.values, {
             selected: this.value,
             multiple: this.isMulti,
+            width: this.attrs.width||null
         }).popover(el, {
             overflowBoundry: this.attrs.overflowBoundry || 'scrollParent',
             maxHeight: this.attrs.maxHeight || '60vh',
@@ -447,7 +451,11 @@ export class Filter {
             return Dialog.warn({msg:`${this.key}: unsupported view`}).popover(el)
         
         let onClose = _=>{
-            this.value = this.customView.value
+            // let menu close before attempting to set value
+            // with larger datasets, a user can feel it lag for a split second
+            setTimeout(()=>{
+                this.value = this.customView.value
+            })
         }
         
         // TODO: support `adjustForMobile`

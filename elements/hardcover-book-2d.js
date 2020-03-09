@@ -19,6 +19,7 @@ customElements.define('b-hardcover-book-2d', class extends LitElement{
 
         .spine {
             position: absolute;
+            z-index: 2;
             top: 0;
             left: 0;
             width: 6%;
@@ -42,6 +43,7 @@ customElements.define('b-hardcover-book-2d', class extends LitElement{
         img {
             width: 100%;
             height: auto;
+            position: relative;
         }
 
         img[hidden] {
@@ -61,6 +63,10 @@ customElements.define('b-hardcover-book-2d', class extends LitElement{
         }
 
         slot {
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 0;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -69,7 +75,6 @@ customElements.define('b-hardcover-book-2d', class extends LitElement{
             width: 100%;
             height: 100%;
             line-height: 1em;
-            position: relative;
             padding: var(--b-hardcover-book-2d-pading, .5em);
         }
     `}
