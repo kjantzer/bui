@@ -2,7 +2,7 @@
 // This will parse a delimited string into an array of
 // arrays. The default delimiter is the comma, but this
 // can be overriden in the second argument.
-export default (strData, strDelimiter=',')=>{
+module.exports = (strData, {strDelimiter=',', hasHeader=true}={})=>{
 
     // Create a regular expression to parse the CSV values.
     var objPattern = new RegExp(
@@ -73,6 +73,16 @@ export default (strData, strDelimiter=',')=>{
         // Now that we have our value string, let's add
         // it to the data array.
         arrData[ arrData.length - 1 ].push( strMatchedValue );
+    }
+
+    if( hasHeader ){
+        let header = arrData.shift()
+    
+        arrData = arrData.map(line=>{
+            let obj = {};
+            header.forEach((key, i) => obj[key] = line[i]);
+            return obj
+        })
     }
 
     // Return the parsed data.
