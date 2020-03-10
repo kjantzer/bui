@@ -79,6 +79,7 @@ export class Collection {
     async getOrFetch(attrs, opts={}){
         let model = this.getOrCreate(attrs, opts)
         await model.fetchSync()
+        opts.success&&opts.success(model)
         return model
     }
 
