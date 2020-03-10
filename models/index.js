@@ -31,6 +31,12 @@ export class Collection {
         })
     }
 
+    create(attrs){
+        let model = this._createModel(attrs)
+        this.add(model)
+        model.save()
+    }
+
     _createModel(attrs){
         let Model = this.model
         let m = new Model(attrs)
@@ -68,6 +74,12 @@ export class Collection {
         }
 
         return m
+    }
+
+    async getOrFetch(attrs, opts={}){
+        let model = this.getOrCreate(attrs, opts)
+        await model.fetchSync()
+        return model
     }
 
     forEach(fn){ return this.models.forEach(fn) }
