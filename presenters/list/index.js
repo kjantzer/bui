@@ -365,7 +365,7 @@ customElements.define('b-list', class extends LitElement {
         }
 
         this.dataSource.applyFilters()
-        this.list.reset(shouldFetchData)
+        this.list.reset(this.shouldFetchData)
         this.toolbar.count = await this.dataSource.length()
     }
 
