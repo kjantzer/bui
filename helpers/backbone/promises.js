@@ -22,13 +22,6 @@ const fetchSync = function(opts={}){
             reject(xhrError(xhr, arguments))
         }
 
-        if( opts.data && typeof opts.data == 'object' ){
-            for( let k in opts.data ){
-                if( typeof opts.data[k] == 'object' )
-                    opts.data[k] = JSON.stringify(opts.data[k])
-            }
-        }
-
         model.isFetching = true
         this.fetch.call(this, opts)
     })
