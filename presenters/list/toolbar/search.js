@@ -20,7 +20,7 @@ customElements.define('b-list-search-bar', class extends LitElement{
 
         form-control {
             padding: .5em .65em;
-            background: var(--searchBgd, #f5f5f5);
+            background: var(--searchBgd, #f5f5f5); /* backwards comp */
             background: var(--list-search-bgd, var(--searchBgd));
             border-radius: 30px;
             /* max-width: 140px; */
@@ -48,7 +48,7 @@ customElements.define('b-list-search-bar', class extends LitElement{
         }
 
         b-icon {
-            color: #444;
+            color: var(--theme-color,#444);
             margin-right: .5em;
         }
     `}

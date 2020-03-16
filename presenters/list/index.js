@@ -117,7 +117,6 @@ customElements.define('b-list', class extends LitElement {
         }
 
         b-spinner-overlay {
-            --spinnerBgd: rgba(255,255,255,.5);
             --spinnerSize: 6em;
         }
 
