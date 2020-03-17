@@ -27,10 +27,14 @@ customElements.define('b-tabs-router', class extends TabsView {
 
     onMenuClick(e){
 
+        // must have been handled somewhere else
+        if( e.cancelBubble ) return
+
         let {tabView, oldTabView} = e.detail
 
         if( tabView != oldTabView ){
             let oldState = tabView.routeState
+
             let [newState, oldStates] = router.push(tabView.id, {title: tabView.title})
             tabView.routeState = newState
             
