@@ -17,7 +17,7 @@ export class PaperElement extends LitElement {
         :host {
             box-sizing: border-box;
             display: block;
-            background: var(--b-paper-bgd, var(--bgd));
+            background: var(--bgd);
             box-shadow: var(--b-paper-shadow, rgba(0,0,0,.1) 0 1px 5px);
             border: solid 1px transparent;
             --radius: var(--b-paper-radius, 3px);
