@@ -6,6 +6,7 @@ customElements.define('b-list-selection-bar', class extends LitElement{
         :host {
             display: block;
             position:absolute;
+            z-index: 10;
             left: 0;
             top: 0;
             height: 100%;
