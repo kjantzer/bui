@@ -44,6 +44,7 @@ customElements.define('b-hardcover-book-2d', class extends LitElement{
             width: 100%;
             height: auto;
             position: relative;
+            z-index: 1;
         }
 
         img[hidden] {
@@ -64,7 +65,7 @@ customElements.define('b-hardcover-book-2d', class extends LitElement{
 
         slot {
             position: absolute;
-            z-index: 1;
+            z-index: 2;
             top: 0;
             left: 0;
             box-sizing: border-box;
@@ -77,11 +78,16 @@ customElements.define('b-hardcover-book-2d', class extends LitElement{
             line-height: 1em;
             padding: var(--b-hardcover-book-2d-pading, .5em);
         }
+
+        slot[name="fallback"] {
+            z-index: 0;
+        }
     `}
 
     render(){return html`
         <div class="spine"></div>
         <img src="${this.src}" @error=${this.onError} @load=${this.onLoad}>
+        <slot name="fallback"></slot>
         <slot></slot>
     `}
 
