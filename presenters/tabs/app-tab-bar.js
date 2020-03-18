@@ -44,7 +44,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
         b-btn[active] {
             --b-btn-stacked-icon-opacity: 1;
-            color: var(--b-app-tab-bar-active-color, var(--theme-chosen, var(--theme-color)));
+            color: var(--b-app-tab-bar-active-color, var(--theme-color));
             /* top border */
             /* box-shadow: black 1px 6px 0px -2px inset; */
             border-radius: 0;
