@@ -21,3 +21,7 @@
     * [Router](/router/README.md)
     * [Realtime](/realtime/README.md)
     * [Models (WIP)](/models/README.md)
+
+* Server
+    * [Overview](/server/README.md)
+    * [Realtime](/server/realtime/README.md)
