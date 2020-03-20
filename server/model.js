@@ -60,7 +60,7 @@ module.exports = class Model {
     get config(){ return {} }
 
     get id(){ return this.__id || this.attrs[this.idAttribute] }
-    set id(id){ this.__id == id }
+    set id(id){ this.__id = id }
     
     get idAttribute(){ return this.config.idAttribute || defaultConfig.idAttribute }
     get tableAlias(){ return this.config.tableAlias || this.config.table }
@@ -172,17 +172,23 @@ module.exports = class Model {
             return this.findParseRow(row)
         }))
 
+        // might need to activate this if too  many conflicts
+        let convertToObject = true//this.config.resultsAsObject == true
         let ClassObj = Object.getPrototypeOf(this).constructor
         
         if( id && id == this.id ){
             this.attrs = resp[0]
             return this
         }else if( id ){
-            return new ClassObj(resp[0], this.req)
+            if( convertToObject )
+                return new ClassObj(resp[0], this.req)
+            else
+                return resp[0]
         }
 
         // convert each row to a class object
-        resp = resp.map(attrs=>new ClassObj(attrs, this.req))
+        if( convertToObject )
+            resp = resp.map(attrs=>new ClassObj(attrs, this.req))
 
         return resp;
     }
