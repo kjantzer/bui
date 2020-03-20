@@ -5,7 +5,7 @@ The list of colors is pulled from [material.io](https://material.io/design/color
 
 #### Using the colors
 ```css
-@import 'node_modules/blackstone-ui/helpers/colors.less';
+@import '~bui/styles/colors.less';
 
 .my-div {
     background: var(--gray-blue-50);

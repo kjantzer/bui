@@ -19,7 +19,6 @@
     * [Helpers](/helpers/README.md)
         * [Backbone.js Relations](/helpers/backbone/relations/README.md)
     * [Router](/router/README.md)
-    * [Realtime](/realtime/README.md)
     * [Models (WIP)](/models/README.md)
 
 * Server
