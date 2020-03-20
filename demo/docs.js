@@ -21,7 +21,7 @@ import '../presenters/tabs'
 import '../presenters/form-control'
 import '../presenters/list'
 import '../helpers/colors-list'
-import '../helpers/colors/index.less';
+import '../styles/colors.less';
 
 import defineFileIcon from '../elements/file-icon'
 defineFileIcon()
