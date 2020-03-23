@@ -1,0 +1,46 @@
+html {
+    overflow: visible;
+    position: relative;
+
+    /* prevent iOS from showing callouts like when long pressing an image */
+    -webkit-touch-callout: none;
+
+    /* Prevent font scaling in landscape while allowing user zoom */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+
+    /* make things more "app" like: disable text selection */
+    // -webkit-user-select: none;
+}
+
+html.ios.installed {
+    top: env(safe-area-inset-top);
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+@media (min-width:700px) {
+    html.mobile body {
+        // little larger on tablets
+        font-size: 18px;;
+    }
+}
+
+// slightly larger menu on small screens
+@media (max-width:699px) {
+    .popover .b-menu {
+        font-size: 1.1em;
+    }
+}
+
+// change Menu presenter styling when rendered within a Panel (or modal)
+b-panel {
+    --b-menu-input-radius: 4px;
+    --b-menu-input-font-size: 1em;
+    --b-menu-input-padding: .5em;
+}

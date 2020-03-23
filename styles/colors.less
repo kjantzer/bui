@@ -1,10 +1,13 @@
 // Material Colors
 // https://material.io/design/color
 :root {
-    --color-primary: var(--blue);
-    --color-secondary: var(--pink);
+    --color-primary: var(--theme-chosen, var(--theme, var(--blue))); // DEPRECATED
+    --color-secondary: var(--pink); // DEPRECATED
     --black: #000;
     --white: #fff;
+    --dark: #2c3033;
+    --dark-black: #1f2224;
+    --light: #f5f5f5;
 
     --red: var(--red-500);
     --pink: var(--pink-500);
@@ -27,4 +30,4 @@
     --gray-blue: var(--gray-blue-500);
 }
 
-@import "./material.less";
+@import "./colors-material.less";

@@ -271,7 +271,7 @@ customElements.define('b-backbone-relations', class extends HTMLElement{
 // import listDocs from '../presenters/list/README.md'
 // document.querySelector('#list-docs').innerHTML = listDocs
 
-import '../helpers/colors/index.less'
+import '../styles/colors.less'
 import '../helpers/colors-list'
 
 window.dialogs = {

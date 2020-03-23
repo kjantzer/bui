@@ -1,7 +1,7 @@
 {
     "name": "blackstone-ui",
     "version": "2.0.0",
-    "description": "Web components for creating app interfaces",
+    "description": "Web components, classes, and utilities for creating PWAs",
     "main": "index.js",
     "homepage": "https://bui.js.org",
     "repository": {
@@ -24,7 +24,11 @@
         "ui framework",
         "ui components",
         "lit-element",
-        "bui"
+        "bui",
+        "PWA",
+        "progressive web app",
+        "node.js",
+        "node app"
     ],
     "author": "Kevin Jantzer, Blackstone Publishing",
     "license": "MIT",
@@ -46,6 +50,7 @@
         "lodash": "^4.17.11",
         "moment": "^2.24.0",
         "popper.js": "^1.14.7",
+        "socket.io": "^2.3.0",
         "quill": "github:kjantzer/quill#shadow",
         "url-pattern": "^1.0.3"
     }

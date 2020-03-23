@@ -31,10 +31,19 @@ export class Collection {
         })
     }
 
-    create(attrs){
+    async create(attrs, opts={}){
         let model = this._createModel(attrs)
-        this.add(model)
-        model.save()
+        
+        if( !opts.wait )
+            this.add(model)
+
+        await model.save()
+
+        if( opts.wait )
+            this.add(model)
+        
+        opts.success&&opts.success(model)
+        return model
     }
 
     _createModel(attrs){
