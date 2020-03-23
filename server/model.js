@@ -70,7 +70,7 @@ module.exports = class Model {
     }
 
     toJSON(){
-        return !this[this.idAttribute] ? [] : this.attrs
+        return this.attrs||{}
     }
 
     get filters(){
