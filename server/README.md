@@ -1,13 +1,9 @@
-<p align="center">
-    <img width="200" src="./logo.png"/>
-</p>
-
 BUI Server
 ==================
 
 ![demo](https://img.shields.io/badge/Status-In_Development-blue)
 
-Classes and tools for the backend of a [BUI application](https://github.com/kjantzer/bui)
+Classes and utilities for node.js apps
 
 # Documentation
 
@@ -39,11 +35,16 @@ let result = await db.query(`SELECT * FROM table`)
 
 ```js
 const app = require('express')();
+const API = require('bui/server/api')
+const Sync = require('bui/server/realtime/server/sync')
 
 new API(app, [
     MyClass,
     AnotherClass
-])
+], {
+    root: '/api' // prefix all APIs,
+    sync: new Sync(io) // optionally support realtime syncing
+})
 
 class MyClass {
 
@@ -84,8 +85,10 @@ const Model = require('bui/server/model')
 
 module.exports = class MyModel extends Model {
 
+    // API config for the API class (above) to use
     static get api(){return {
         root: '/my-model',
+        sync: false, // API path will be the sync path
         routes: [
             ['get', '/:id?', 'find']
         ]
@@ -93,7 +96,8 @@ module.exports = class MyModel extends Model {
 
     get config(){ return {
         table: 'my_table',
-        tableAlias: false
+        tableAlias: false,
+        idAttribute: 'id'
     }}
 
     // alter the where clause
