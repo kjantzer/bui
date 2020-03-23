@@ -9,6 +9,7 @@ customElements.define('b-h1', class extends LitElement {
             margin: 0;
             text-decoration: inherit;
             font-size: var(--bui-h1-size, 2em);
+            line-height: var(--bui-h1-line-height, 1.0em);
             font-weight: bold;
             text-overflow: ellipsis;
             max-width: 100%;
@@ -46,6 +47,7 @@ customElements.define('b-h2', class extends LitElement {
             margin: 0;
             text-decoration: inherit;
             font-size: var(--bui-h2-size, 1.5em);
+            line-height: var(--bui-h2-line-height, 1.0em);
             font-weight: bold;
             text-overflow: ellipsis;
             max-width: 100%;
