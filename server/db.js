@@ -104,6 +104,8 @@ module.exports = class DB {
 		return mysql.escapeId.apply(mysql, args)
 	}
 
+    get NOW(){ return {toSqlString:()=>'NOW()'}; }
+
 }
 
 class DBResults extends Array {
