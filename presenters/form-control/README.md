@@ -111,7 +111,8 @@ Creates an input-like control. Add `multiline` attribute to make it perform like
 
 #### Events
 - `change`
-- `enterkey`
+- `submit`
+- `enterkey` (DEPRECATED, use submit)
 - `esckey`
 
 #### Input type
@@ -124,6 +125,9 @@ as `password`. For this purpose the `input` attribute can be applied.
 <text-field input="email"></text-field>
 <text-field input="tel" name="phone"></text-field>
 ```
+
+#### Multiline
+In this mode the enter key will create new lines instead of submitting/saving the value. Holding `ctrl/cmd` and enter will trigger the submit event.
 
 ## `<rich-text-field>`
 

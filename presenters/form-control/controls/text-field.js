@@ -469,20 +469,21 @@ class TextFieldElement extends HTMLElement {
 			return false
 		}
 		
-		if( e.key == 'Enter' && !this.isMultiline){
+		if( e.key == 'Enter' && (!this.isMultiline || e.metaKey || e.ctrlKey )){
 			stop = true
 			e.preventDefault()
 			e.stopPropagation()
 
 			// NOTE: will this be weird to not blur on enter?
-			this._onBlur()
+			this._onBlur() // doesn't actually blur, but does the logic like it did
 			// this.blur() // will trigger a change if there is one
 
 			// Force change event for empty search/ re-search
 			if( !this.value )
 				this.dispatchEvent(new Event("change"));
 			
-			this.dispatchEvent(new Event("enterkey"));
+			this.dispatchEvent(new Event("enterkey")); // DEPRECATED
+			this.dispatchEvent(new Event("submit")); // I think this makes more sense
 		}
 		
 		if( e.key == 'Escape' ){
