@@ -104,6 +104,15 @@ module.exports = class DB {
 		return mysql.escapeId.apply(mysql, args)
 	}
 
+    updateOnDuplicate(attrs){
+        let updates = []
+        for( let key in attrs ){
+            key = this.escapeId(key)
+            updates.push(`${key} = VALUES(${key})`)
+        }
+        return `ON DUPLICATE KEY UPDATE ${updates.join(', ')}`
+    }
+
     get NOW(){ return {toSqlString:()=>'NOW()'}; }
 
 }
