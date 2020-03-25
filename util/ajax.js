@@ -36,6 +36,12 @@ export default class AJAX {
     _onDone(e){
         let resp = this.xhr.responseText
 
+        if( this.xhr.status != 200 ){
+            let err = new Error(this.xhr.statusText||'Unknown error')
+            err.errorCode = this.xhr.status
+            return this.reject&&this.reject(err)
+        }
+
         // parse JSON if it looks like it
         if( resp && (resp[0] == '{' || resp[0] == '[') ){
             try{
