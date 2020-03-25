@@ -276,7 +276,7 @@ export class UploaderElement extends LitElement {
 
             }catch(e){
                 console.log(e);
-                // TODO: make error apparent to user
+                resp.push({error: e, file: file})
             }
         }
 
