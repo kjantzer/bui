@@ -200,7 +200,8 @@ module.exports = class Model {
         if( !attrs || Object.keys(attrs).length == 0 )
             return false;
 
-        let result = await db.q(/*sql*/`INSERT INTO ${this.config.table} SET ?`, attrs)
+        let result = await db.q(/*sql*/`INSERT INTO ${this.config.table} 
+                                        SET ? ${this.db.updateOnDuplicate(attrs)}`, attrs)
         
         if( !result.insertId && !result.affectedRows )
             throw Error('failed to insert')
