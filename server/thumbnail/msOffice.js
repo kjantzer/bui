@@ -7,15 +7,40 @@ if( require.main !== module){
 	exports.extensions = ['docx', 'doc', 'xlsx', 'xls']
 
 	exports.generate = function(file, {size=null}={}){
-		let args = [
-			__filename,
-			'--file='+file
-		]
 
-		if( size )
-			args.push('--size='+size)
+		return new Promise((resolve, reject)=>{
+			let args = [
+				__filename,
+				'--file='+file
+			]
 
-		spawn('nodejs', args)
+			if( size )
+				args.push('--size='+size)
+
+			let child = spawn('nodejs', args)
+			let error = ''
+			let resp = ''
+
+			child.stdout.on('data', (data) => {
+				resp += data
+			});
+
+			child.stderr.on('data', (data) => {
+				error += data
+			});
+
+			child.on('error', function(err) {
+				error += err
+			});
+
+			child.on('exit', (code) => {
+				if( error )
+					reject({code, error, resp})
+				else
+					resolve(resp)
+			});
+
+		})
 	}
 
 // when spawned directly
