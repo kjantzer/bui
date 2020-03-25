@@ -104,7 +104,7 @@ customElements.define('b-previewer', class extends LitElement{
             display: grid;
             grid-template-rows: auto 1fr;
             position:relative;
-            /* height: 100%; */
+            height: 100%;
         }
 
         main {
@@ -127,6 +127,13 @@ customElements.define('b-previewer', class extends LitElement{
             --bgdColor: var(--theme-color);
             color:  var(--theme-bgd-accent);
         }
+
+        b-empty-state > div {
+            background: var(--theme-bgd-accent);
+            padding: .25em 1em;
+            border-radius: 2em;
+            color: var(--theme-color);
+        }
     `}
 
     close(){ this.panel.close() }
@@ -143,7 +150,7 @@ customElements.define('b-previewer', class extends LitElement{
             return Presenter.useFor(model.get('ext')||model.ext)
         })
 
-        if( !Presenter ) return html`<b-empty-state>Preview not supported</b-empty-state>`
+        if( !Presenter ) return html`<b-empty-state><div>Preview not supported</div></b-empty-state>`
 
         let view = new Presenter()
         view.model = model
