@@ -146,6 +146,15 @@ Dialog.prompt = function(opts={}){
 	let dialog = new Dialog(opts)
 	
 	control = dialog.$('form-control')
+
+	let onSubmit = (e)=>{
+		if( ['TEXT-FIELD', 'INPUT'].includes(e.target.tagName) ){
+			control.control.blur()
+			control.removeEventListener('change', onSubmit)
+		}
+	}
+
+	control.addEventListener('change', onSubmit)
 	
 	if( opts.options )
 		control.options = opts.options
