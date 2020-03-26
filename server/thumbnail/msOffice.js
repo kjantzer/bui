@@ -124,7 +124,7 @@ if( require.main !== module){
 
 		if( !pdfFile.match(/\.pdf$/) ){
 			console.log('convert to pdf...');
-			let pdfFile = await convertDoc(argv.file)
+			pdfFile = await convertDoc(argv.file)
 		}
 		
 		console.log('create thumbnail...');
