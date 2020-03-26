@@ -34,7 +34,10 @@ export const bindLongpress = (el, {
     })
 
     el.addEventListener(isTouch?'touchmove':'mousemove', e=>{
-        clearTimeout(el._longPressTimeout)
+        // e.movementX not supported on iOS
+        let delta = e.movementX == undefined ? 1 : Math.max(Math.abs(e.movementX), Math.abs(e.movementY))
+        if( delta > 0 )
+            clearTimeout(el._longPressTimeout)
     })
 
     
