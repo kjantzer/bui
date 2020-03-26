@@ -4,7 +4,7 @@ if( require.main !== module){
 
 	const { spawn } = require('child_process')
 
-	exports.extensions = ['docx', 'doc', 'xlsx', 'xls']
+	exports.extensions = ['pdf', 'docx', 'doc', 'xlsx', 'xls']
 
 	exports.generate = function(file, {size=null}={}){
 
@@ -120,8 +120,12 @@ if( require.main !== module){
 		if( !fs.existsSync(argv.file) )
 			return console.error('file does not exist')
 
-		console.log('convert to pdf...');
-		let pdfFile = await convertDoc(argv.file)
+		let pdfFile = argv.file
+
+		if( !pdfFile.match(/\.pdf$/) ){
+			console.log('convert to pdf...');
+			let pdfFile = await convertDoc(argv.file)
+		}
 		
 		console.log('create thumbnail...');
 		await createThumbnail(pdfFile+'[0]', {
