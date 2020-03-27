@@ -119,6 +119,11 @@ customElements.define('b-notif', class extends LitElement{
         // setTimeout(()=>{
             super.replaceWith(el)
 
+            this.opts.onClose(this)
+            
+            if( this.opts.view )
+                delete this.opts.view.notif
+
             setTimeout(()=>{
                 el.animation = animation
             },310)
