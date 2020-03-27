@@ -49,19 +49,33 @@ if( require.main !== module){
 	const argv = require('yargs').argv
 	const fs = require('fs')
 	const childProcess = require('child_process')
+	const getPort = require('get-port')
+	const os = require('os')
+	const path = require('path')
 
 	function convertDoc(input, {
 		output= '',
 		format='pdf'
 	}={}){
-		return new Promise((resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 			
 			output = output || input+'.preview.'+format
 
+			const port = await getPort()
+			const userProfilePath = path.join(os.tmpdir(), port.toString())
 			const stderr = [];
 			const writerStream = fs.createWriteStream(output);
 
-			const worker = childProcess.spawn('unoconv', ['-f', format, '--stdout', input]);
+			// NOTE: port and user-profile are used so multiple unoconv can run in parallel
+			const args = [
+				'--format='+format,
+				'--stdout',
+				'--port='+port,
+            	'--user-profile='+userProfilePath,
+				input
+			]
+
+			const worker = childProcess.spawn('unoconv', args);
 
 			worker.on('error', err => {
 				if (err.message.indexOf('ENOENT') > -1) {
