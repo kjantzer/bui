@@ -319,6 +319,8 @@ class DividerElement extends HTMLElement {
 }
 ```
 
+> Note: `.list`, `.model`, and `.prevModel` properties are accessible via the render method
+
 ### Export Button
 Renders a button in the toolbar next to the refresh button to export the data in the list. Data models can implement `toCSV` to alter the exported data.
 The CSV will include the list `key` and active filters in the top of the file
@@ -332,8 +334,6 @@ import 'bui/presenters/list/export-btn`
     <b-list-export-btn></b-list-export-btn>
 </b-list>
 ```
-
-> Note: `.list`, `.model`, and `.prevModel` properties are accessible via the render method
 
 ### Slots
 The default list view can be extended with html slots
