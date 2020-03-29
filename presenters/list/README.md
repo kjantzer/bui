@@ -319,6 +319,20 @@ class DividerElement extends HTMLElement {
 }
 ```
 
+### Export Button
+Renders a button in the toolbar next to the refresh button to export the data in the list. Data models can implement `toCSV` to alter the exported data.
+The CSV will include the list `key` and active filters in the top of the file
+
+```js
+import 'bui/presenters/list/export-btn`
+```
+
+```html
+<b-list key="my-list">
+    <b-list-export-btn></b-list-export-btn>
+</b-list>
+```
+
 > Note: `.list`, `.model`, and `.prevModel` properties are accessible via the render method
 
 ### Slots
