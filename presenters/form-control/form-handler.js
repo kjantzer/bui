@@ -204,6 +204,14 @@ class FormHandler extends HTMLElement {
 		// TODO: think of a way to implement this again for the custom element?
 		// if( this.opts.onEditorChange && this.opts.onEditorChange(m, changes, key, val) === false )
 		// 	return
+		// if other changes where made from validate, propagate to other controls
+		if( this.validateChange )
+		for( let _key in changes ){
+			if( _key != key ){
+				let _el = this.get(_key)
+				if( _el ) _el.value = changes[_key]
+			}
+		}
 
 		// ugh, this is hacky and should be solved a better way
 		if( el.control && el.control.type=='date' && val ){
@@ -220,6 +228,8 @@ class FormHandler extends HTMLElement {
 				this.model.editAttr(changes)
 			}
 		}
+
+		this.onChange&&this.onChange(changes)
 	}
 	
 	get disabled(){ return this.__disabled || false }
