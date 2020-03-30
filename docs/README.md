@@ -12,6 +12,7 @@
     * [Popover](/presenters/popover/README.md)
     * [Tabs](/presenters/tabs/README.md)
     * [Selection](/presenters/selection/README.md)
+    * [Calendar](/presenters/cal/README.md)
 
 * Extras
     * [Colors](./colors.md)
