@@ -298,6 +298,7 @@ You can also choose to save changes in local storage instead of model by using t
 
 #### Properties
 - `.validateChange(m, changes, key, val)` - adjust or prevent changes from happening
+- `.onChange(changes)`
 
 ## Extras
 

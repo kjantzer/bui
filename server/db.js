@@ -42,8 +42,9 @@ module.exports = class DB {
                     return
                 }
 
-                if( Array.isArray(results) )
-                    results = new DBResults(...results)
+                if( Array.isArray(results) ){
+                    results = DBResults.loadLargeArray(results)
+                }
 
                 results.fromQuery = sql
 
@@ -118,6 +119,7 @@ module.exports = class DB {
 }
 
 class DBResults extends Array {
+    static get array_chunk_size(){return 10000}
     
     groupBy(key){
         let group = {}
@@ -139,5 +141,18 @@ class DBResults extends Array {
 		let values = this.map(d=>d[Object.keys(d)[0]])
 		return values[0]
 	}
+
+    /**
+     * Can't handle initializing with > ~42000 arguments. Use this instead of unpacking very large arrays
+     * @param {Array} values
+     * @returns {DBResults}
+     */
+	static loadLargeArray( values){
+        const results = new this();
+        for(let i=0; i < values.length; i+=DBResults.array_chunk_size){
+            results.push(...values.slice(i, i+DBResults.array_chunk_size))
+        }
+        return results;
+    }
     
 }

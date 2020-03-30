@@ -22,13 +22,21 @@ class RadioGroupElement extends HTMLElement {
 				this.nav(1)
 			}
 		})
-		
+
+		this.onChildrenChange = this.onChildrenChange.bind(this)
+		const observer = new MutationObserver(this.onChildrenChange);
+		observer.observe(this, {attributes: false, childList: true, subtree: false});
+	}
+
+	onChildrenChange(e){
 		this.radios = Array.from(this.querySelectorAll('radio-btn'))
 	}
 	
 	connectedCallback(){
 		if( !this.hasAttribute('tabindex') )
 			this.setAttribute('tabindex', '0')
+
+		this.radios = Array.from(this.querySelectorAll('radio-btn'))
 	}
 	
 	nav(dir=1){

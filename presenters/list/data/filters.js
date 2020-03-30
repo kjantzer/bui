@@ -49,6 +49,16 @@ export default class Filters extends Map {
         this.value(resetData)
     }
 
+    toString(){
+        let active = []
+        this.forEach(filter=>{
+            if( filter.isActive )
+                active.push(`${filter.label}: ${filter.valueLabel}`)
+        })
+
+        return active.join(' | ')
+    }
+
     value(key, val){
         // first time getting value, get it from local storage
         if( this.__value === undefined ){

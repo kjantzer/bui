@@ -15,8 +15,15 @@ module.exports = {
             let query = opts.data
             opts.data = null
 
-            if( typeof query == 'object' )
+            if( typeof query == 'object' ){
+
+                for( let k in query ){
+                    if( typeof query[k] == 'object' )
+                        query[k] = JSON.stringify(query[k])
+                }
+
                 query = new URLSearchParams(query).toString()
+            }
             
             opts.url += '?'+query
         }
