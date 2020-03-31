@@ -12,6 +12,7 @@ export default class TabView {
 
             if( this._viewClass && this._viewClass.title ){
                 this.__title = this._viewClass.title
+                this.__options = this._viewClass.tabOptions || {}
                 this.__icon = this._viewClass.icon
                 this.__id = this.__title
             }else{
@@ -83,6 +84,10 @@ export default class TabView {
 
     get title(){
         return this.__title || 'No Title'
+    }
+
+    get options(){
+        return this.__options || {}
     }
 
     get icon(){ return this.__icon }
