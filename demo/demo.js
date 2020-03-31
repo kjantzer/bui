@@ -32,6 +32,7 @@ router.config({
 import '../presenters/tabs'
 import '../presenters/form-control'
 import '../presenters/list'
+import '../presenters/cal'
 import Panel, {Modal} from '../presenters/panel'
 import Menu from '../presenters/menu'
 import Dialog from '../presenters/dialog'

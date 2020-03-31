@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import '../../elements/btn-group'
+import '../../helpers/lit-element/events'
 import moment from 'moment'
 import './day'
 
@@ -53,18 +54,18 @@ customElements.define('b-cal', class extends LitElement{
             grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
             grid-template-rows: repeat(6, 1fr);
             gap: 1px;
-            border-top: solid 1px rgba(var(--theme-rgb), .1);
+            border-top: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
         }
 
         b-cal-day {
-            border-right: solid 1px rgba(var(--theme-rgb), .1);
-            border-bottom: solid 1px rgba(var(--theme-rgb), .1);
+            border-right: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
+            border-bottom: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
             flex-shrink: 0;
             min-width: 0;
         }
 
         b-cal-day[weekend] {
-            background: var(--theme-bgd-accent);
+            background: var(--theme-bgd-accent, #f5f5f5);
         }
     `}
 

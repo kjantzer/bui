@@ -264,6 +264,26 @@
                     <div id="list-docs" docs></div> -->
                 </section>
 
+                <section title="Calendar">
+                    
+                    <b-cal style="margin: -2em;height: 700px;">
+                        <div class="cal-event" style="font-size: .8em; line-height: 1em;">
+                            A calendar event
+                        </div>
+                        <div class="cal-event2" style="font-size: .8em; line-height: 1em;">
+                            Another event
+                        </div>
+                    </b-cal>
+                    <script>
+                        setTimeout(()=>{
+                            // setting the event slots this way so they always show for the current month
+                            document.querySelector('.cal-event').slot=moment().set({date:12}).format('YYYY-MM-DD')
+                            document.querySelector('.cal-event2').slot=moment().set({date:24}).format('YYYY-MM-DD')
+                        },500)
+                    </script>
+
+                </section>
+
             </b-tabs>
 
 

@@ -24,13 +24,13 @@ customElements.define('b-cal-day', class extends LitElement{
         }
 
         :host([overflow]) .date {
-            color: var(--theme-color-accent);
+            color: var(--theme-color-accent, #999);
             padding: 0 .35em;
         }
 
         :host([today]) .date {
             color: #fff;
-            background: var(--theme);
+            background: var(--theme, var(--blue, #2196F3));
         }
     `}
 
