@@ -7,6 +7,7 @@ import './toolbar'
 import './toolbar/selection-bar'
 import './infinite-list'
 import '../../elements/spinner-overlay'
+import '../../helpers/lit-element/selectors'
 import Selection from '../selection'
 
 customElements.define('b-list', class extends LitElement {
