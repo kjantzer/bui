@@ -24,3 +24,9 @@ import 'bui/presenters/cal'
 ## Events
 
 - `date-changed` - `event.detail` will be the date range
+
+## Slots
+
+- `after-title`
+- `before-nav`
+- `after-nav`

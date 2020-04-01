@@ -31,6 +31,12 @@ customElements.define('b-cal', class extends LitElement{
             padding: 1em 1em .5em;
         }
 
+        header .title,
+        header .nav {
+            display: flex;
+            align-items: center;
+        }
+
         h1, h2, h3 {
             margin: 0;
         }
@@ -128,13 +134,18 @@ customElements.define('b-cal', class extends LitElement{
 
     render(){return html`
         <header>
-            <h1>${this.date.format('MMMM YYYY')}</h1>
-            <div>
+            <div class="title">
+                <h1>${this.date.format('MMMM YYYY')}</h1>
+                <slot name="after-title"></slot>
+            </div>
+            <div class="nav">
+                <slot name="before-nav"></slot>
                 <div>
                     <b-btn text icon="left-open-big" @click=${this.prevMonth}></b-btn>
                     <b-btn text @click=${this.goToToday}>Today</b-btn>
                     <b-btn text icon="right-open-big" @click=${this.nextMonth}></b-btn>
                 </div>
+                <slot name="after-nav"></slot>
             </div>
         </header>
         <div class="weekdays">${this.weekdays.map(str=>html`
