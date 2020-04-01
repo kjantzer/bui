@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit-element'
 import Popover from '../../popover'
 import './sort-btn'
 import './sort-dir-btn'
-import './filter-btn'
+import './filters-view'
 import './layout-btn'
 import './search'
 
@@ -10,15 +10,11 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
     static get properties(){return {
         count: {type: Number},
-        queuing: {type: Number}
     }}
 
     constructor(){
         super()
         this.count = 0
-
-        this.onFilterQueuing = this.onFilterQueuing.bind(this)
-        this.onFilterChange = this.onFilterChange.bind(this)
     }
 
     static get styles(){return css`
@@ -49,22 +45,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
         .scroller::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
 
-        .filters {
-            display: flex;
-            align-items: center;
-            /* overflow-y: auto; */
-            overflow: -moz-scrollbars-none;
-            flex: 1;
-        }
-
-        @media (max-width:699px) {
-            /* move active filters  to front on small devices */
-            .filters b-list-filter-btn[active] {
-                order: -1;
-            }
-        }
-
-        b-list-sort-btn + .filters {
+        b-list-sort-btn + b-list-filters {
             border-left: solid 2px rgba(0,0,0,.1);
             margin-left: .25em;
             padding-left: .25em;
@@ -83,15 +64,6 @@ customElements.define('b-list-toolbar', class extends LitElement{
             border-right: 2px solid rgba(0, 0, 0, 0.1);
             padding: 0 .75em 0 .25em;
             margin-right: .25em;
-        }
-
-        [icon='erase'] { display: none; }
-        b-list-filter-btn[active] ~ [icon="erase"] {
-            display: inline-block
-        }
-
-        b-list-filter-btn {
-            flex-shrink: 0;
         }
 
         .controls {
@@ -121,23 +93,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
             `}
             
             ${!this.filters?'':html`
-            <div class="filters">
-
-                <!-- <div class="controls">
-                    <b-icon name="layers" text></b-icon>
-                    <b-icon name="erase" text></b-icon>
-                </div> -->
-
-                <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" text
-                    @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
-                
-                ${this.filters.map(filter=>html`
-                    <b-list-filter-btn ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
-                `)}
-                
-                <b-btn color="hover-red" title="Clear filters" icon="erase" text @click=${this.resetFilters}></b-btn>
-                
-            </div>
+                <b-list-filters .filters=${this.filters}></b-list-filters>
             `}
 
         </div>
@@ -159,41 +115,6 @@ customElements.define('b-list-toolbar', class extends LitElement{
             <slot></slot>
         </div>
     `}
-
-    applyQueuedFilters(){
-        this.filters.queuing = false
-    }
-
-    resetFilters(){
-        this.filters.reset()
-    }
-
-    connectedCallback(){
-        super.connectedCallback()
-
-        if( this.filters ){
-            this.filters.on('queuing', this.onFilterQueuing)
-            this.filters.on('change', this.onFilterChange)
-        }
-        
-    }
-
-    disconnectedCallback(){
-        super.disconnectedCallback()
-        
-        if( this.filters ){
-            this.filters.off('queuing', this.onFilterQueuing)
-            this.filters.off('change', this.onFilterChange)
-        }
-    }
-
-    onFilterQueuing(length){
-        this.queuing = length
-    }
-
-    onFilterChange(){
-        this.update()
-    }
 
     // not used, testing idea
     openOver(el, opts){

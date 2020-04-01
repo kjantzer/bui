@@ -14,7 +14,7 @@ const CustomViews = {
     'slider': FilterViewSlider
 }
 
-// do NOT include '0' or 'false' as unset values
+// do NOT include 0 or false as unset values
 const unsetValues = [undefined, null, '']
 
 const defaultSearch = model => {
