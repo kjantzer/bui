@@ -5,7 +5,7 @@ const styles = css`
 :host {
 	--size: 1.6em;
 	--color: var(--fc-theme);
-	--colorDisabled: rgba(0, 0, 0, 0.26);
+	--colorDisabled: var(--fc-disabled-color, rgba(0, 0, 0, 0.26));
 	--labelSize: 1em;
 	--labelColor: currentColor;
 	display: inline-block;

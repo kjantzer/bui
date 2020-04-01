@@ -6,7 +6,7 @@ const styles = css`
 :host {
 	--size: 1.6em;
 	--color: var(--fc-theme);
-	--colorDisabled: rgba(0, 0, 0, 0.26);
+	--colorDisabled: var(--fc-disabled-color, rgba(0, 0, 0, 0.26));
 	display: inline-block;
 	vertical-align: middle;
 	flex-grow: 0 !important;
@@ -54,6 +54,10 @@ svg {
 
 :host([checked]) {
 	color: var(--color)
+}
+
+:host([disabled]) {
+	cursor: default;
 }
 
 :host([disabled]) svg {

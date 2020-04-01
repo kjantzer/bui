@@ -29,7 +29,7 @@ slot[name="after"]{
 	--borderColor: rgba(0,0,0,.3);
 	--invalidColor: #ff1744;
 	--unsavedColor: transparent; /*#FFC107;*/
-	--disabledColor: rgba(0,0,0,.3);
+	--disabledColor: var(--fc-disabled-color, rgba(0,0,0,.3));
 	--labelFontFamily: inherit;
 	--labelFontSize: inherit;
 	--padY: 0;
