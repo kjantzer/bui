@@ -35,14 +35,18 @@ customElements.define('b-app', class extends LitElement {
             this.rootPanels = this.rootPanels || document.querySelector('b-panels[name="root"]')
 
             let activePanel = this.rootPanels && this.rootPanels.panelOnTopWithRoute
+            let activeView = this.tabs.views.active
 
-            if( activePanel )
+            if( activePanel ){
                 router.states.current.update(activePanel.route.state.props)
-            else
+                activeView.view.didBecomeInactive&&activeView.view.didBecomeInactive()
+            }else{
                 router.states.current.update({
-                    title: this.tabs.views.active.title,
-                    path: this.tabs.views.active.id
+                    title: activeView.title,
+                    path: activeView.id
                 })
+                activeView.view.didBecomeActive&&activeView.view.didBecomeActive()
+            }
 
             this.trackScreenChange(router.states.current)
         })
