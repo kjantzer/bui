@@ -118,13 +118,20 @@ The tabbar/menu provides slots for rendering content before and after the menu i
 <div slot="menu:after">after menu items</div>
 ```
 
+## No Tab Bar
+You can disable a tab bar menu from showing by adding`tab-bar="none"` attribute
+
+```html
+<b-tabs tab-bar="none"></b-tabs>
+```
+
 ## Custom Tab Bar
 You can choose to implement your own tab bar menu by specificying the custom element in
 a `tab-bar` attribute. The custom tab bar will have inherit styles to support the 
 different layouts
 
 ```html
-<b-tabs tab-bar="my-custom-tab-bar">
+<b-tabs tab-bar="my-custom-tab-bar"></b-tabs>
 ```
 
 The tab bar will have the following references set:

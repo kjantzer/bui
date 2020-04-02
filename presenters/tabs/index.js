@@ -294,6 +294,9 @@ customElements.define('b-tabs', class extends LitElement {
 
     renderTabBar(){
 
+        if( ['none', 'false'].includes(this.getAttribute('tab-bar')) )
+            return html`<div></div>`
+
         if( this.getAttribute('tab-bar') ){
 
             if( !this.__customTabBar ){
