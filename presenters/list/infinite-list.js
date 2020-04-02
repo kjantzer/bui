@@ -37,12 +37,11 @@ customElements.define('b-infinite-list', class extends LitElement {
         this.pageAt = 0
         this.scrollTop = 0
         this.prevModel = null
-        this.innerHTML = ''
         
         if( andLoadContent )
-            await this.getContent()
+            await this.getContent({clear:true})
         else
-            this.addContent([])
+            this.addContent([], {clear:true})
     }
 
     onScroll(){
@@ -58,7 +57,7 @@ customElements.define('b-infinite-list', class extends LitElement {
             this.getContent()
     }
 
-    async getContent(){
+    async getContent({clear=false}={}){
         
         if( !this.dataSource ) return
 
@@ -68,7 +67,7 @@ customElements.define('b-infinite-list', class extends LitElement {
 
         this._fetching = true
         let models = await this.dataSource.fetch(pageAt)
-        this.addContent(models)
+        this.addContent(models, {clear:clear})
         this._fetching = null
 
         if( pageAt == 0 ){
@@ -82,9 +81,12 @@ customElements.define('b-infinite-list', class extends LitElement {
 
     // get emptyElement(){return this.getAttribute('empty') || 'b-empty-state'}
 
-    addContent(models){
+    addContent(models, {clear=false}={}){
         
         this.pageAt += models.length
+
+        if( clear )
+            this.innerHTML = ''
 
         if( this.pageAt == 0 ){
             let emptyView = this.empty && this.empty()
@@ -107,6 +109,14 @@ customElements.define('b-infinite-list', class extends LitElement {
             
             this.prevModel = model
         })
+
+        setTimeout(this.checkNotEnoughContent.bind(this))
+    }
+
+    checkNotEnoughContent(){
+        if( this.scrollHeight <= this.offsetHeight ){
+            this.getContent()
+        }
     }
 
 })
