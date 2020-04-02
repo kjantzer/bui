@@ -87,6 +87,22 @@ export class IconElement extends HTMLElement {
 			fill: currentColor;
 			color: currentColor;
 		}
+
+		@keyframes rotate360 {
+			to { transform: rotate(360deg); }
+		}
+
+		@keyframes rotate360CCW {
+			to { transform: rotate(-360deg); }
+		}
+
+		:host([spin]) svg {
+			animation: 1600ms rotate360 infinite linear;
+		}
+
+		:host([name="arrows-ccw"][spin]) svg {
+			animation: 1600ms rotate360CCW infinite linear;
+		}
 		</style>
 		<slot></slot>
 		`
@@ -118,6 +134,13 @@ export class IconElement extends HTMLElement {
 	
 	get name(){ return this.getAttribute('name')}
 	set name(val){ return this.setAttribute('name', val)}
+
+	set spin(val){
+		this.toggleAttribute('spin', Boolean(val))
+	}
+	get spin(){
+		return this.hasAttribute('spin')
+	}
 
 }
 	
