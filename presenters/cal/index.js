@@ -12,7 +12,7 @@ customElements.define('b-cal', class extends LitElement{
         this.weekdays = moment.weekdaysMin()
 
         this.days = new Array(7*6).fill('')
-        this.date = this._date || moment()
+        this.date = this._date || this.getAttribute('date') || moment()
     }
 
     static get styles(){return css`
@@ -21,14 +21,20 @@ customElements.define('b-cal', class extends LitElement{
             display: grid;
             position:relative;
             display: grid;
-            grid-template-rows: auto auto 1fr;
+            grid-template-rows: auto 1fr;
         }
 
         header {
-            display: flex;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--b-cal-header-bgd, var(--theme-bgd, #fff));
+            border-bottom: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
+            display: grid;
+            grid-template-columns: max-content max-content;
             justify-content: space-between;
             align-items: center;
-            padding: 1em 1em .5em;
+            padding: .75em 1em 0;
         }
 
         header .title,
@@ -42,6 +48,8 @@ customElements.define('b-cal', class extends LitElement{
         }
 
         .weekdays {
+            margin-top: .75em;
+            grid-column: 1/-1;
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
             text-align: right;
@@ -60,7 +68,6 @@ customElements.define('b-cal', class extends LitElement{
             grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
             grid-template-rows: repeat(6, 1fr);
             gap: 1px;
-            border-top: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
         }
 
         b-cal-day {
@@ -147,10 +154,12 @@ customElements.define('b-cal', class extends LitElement{
                 </div>
                 <slot name="after-nav"></slot>
             </div>
+
+            <div class="weekdays">${this.weekdays.map(str=>html`
+                <div>${str}</div>
+            `)}</div>
+
         </header>
-        <div class="weekdays">${this.weekdays.map(str=>html`
-            <div>${str}</div>
-        `)}</div>
         <main>
         ${this.days.map(date=>html`
             <b-cal-day .caldate=${this._date} .date=${date}>

@@ -12,6 +12,13 @@ import 'bui/presenters/cal'
     </div>
 </b-cal>
 ```
+<!--
+<b-cal date="2020-04-1" style="min-height:740px">
+    <div slot="2020-04-07">
+        Something for this day
+    </div>
+</b-cal>
+-->
 
 ## Properties
 - `date` - accepts a string, moment date, or object (ex: {month:3})

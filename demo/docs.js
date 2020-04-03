@@ -20,6 +20,7 @@ import '../elements/audio'
 import '../presenters/tabs'
 import '../presenters/form-control'
 import '../presenters/list'
+import '../presenters/cal'
 import '../helpers/colors-list'
 import '../styles/colors.less';
 
