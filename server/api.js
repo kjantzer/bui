@@ -90,7 +90,8 @@ module.exports = class API {
                     
                 console.log(err.stack)
                 let code = err.name == 'Error' ? 400 : 500
-                res.status(code).send({
+                res.statusMessage = err.message
+                res.status(code).json({
                     error: err.message,
                     code: code,
                     type: err.name
