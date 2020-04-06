@@ -2,18 +2,65 @@
 	Mention
 
 	NOTE: abondoned until more browsers support shadowRoot.getSelection() 😞
+	https://github.com/GoogleChromeLabs/shadow-selection-polyfill
 
 	https://medium.com/streak-developer-blog/the-complexities-of-implementing-inline-autocomplete-for-content-editables-e358c0ed504b
 */
-import debounce from '../../../util/debounce'
-import Menu from '../../menu'
-import { LitElement, html, css, query } from 'lit-element'
+import debounce from '../../util/debounce'
+import Menu from '../menu'
+import MentionElement from './element'
+import Fuse from 'fuse.js'
+
+export {MentionElement}
+
+let DefaultValues = null
 
 export default class {
 
-    constructor(el){
+    static set defaultValues(vals){
+        DefaultValues = vals
+    }
+
+    constructor(el, opts={}){
         this.el = el
-		// this.root = this.el.getRootNode()
+		el.mention = this
+
+		this.opts = Object.assign({
+            pattern: /@(.[^\s]*)$/,
+			element: 'b-mention',
+			values: DefaultValues, // array or function that returns array
+			
+			// fuse.js options
+			keys: [{
+				name: 'dataTitle',
+				weight: 0.7
+			},{
+				name: 'label',
+				weight: 0.5
+			}, {
+				name: 'description',
+				weight: 0.3
+			}],
+			minMatchCharLength: 2,
+			threshold: 0.2,
+			location: 0,
+			distance: 4
+
+		}, opts)
+
+		if( this.opts.values === null ){
+			this.opts.values = []
+			console.warn('Mentions: `defaultValues` is not set')
+		}
+
+		if( !customElements.get(this.opts.element) ){
+
+			if( this.opts.element == 'b-mention' ){
+                MentionElement.register()
+            }
+            else
+                return console.warn('Cannot initialize mention, element unregistered')
+		}
 
 		this.process = debounce(this.process.bind(this), 100) 
 		
@@ -21,17 +68,36 @@ export default class {
 		this.el.addEventListener('input', this.process)
 		this.el.addEventListener('click', this.process)
 		this.el.addEventListener('focus', this.process)
+        this.el.addEventListener('blur', this.process)
     }
+
+	menuFor(term){
+
+		let vals = this.opts.values 
+
+		if( typeof vals == 'function' )
+			this.__fuse = new Fuse(vals(), this.opts) // setup fuse each time
+		else if( !this.__fuse )
+			this.__fuse = new Fuse(vals, this.opts) // setup once since values wont chnage
+
+		return this.__fuse.search(term)
+	}
 
 	destroy(){
 		this.el.removeEventListener('keyup', this.process)
 		this.el.removeEventListener('input', this.process)
 		this.el.removeEventListener('click', this.process)
 		this.el.removeEventListener('focus', this.process)
+        this.el.removeEventListener('blur', this.process)
 		this.el = null
 	}
 
+    isMention(el){
+        return el.tagName == this.opts.element.toUpperCase()
+    }
+
 	process(e){
+
 		let cursorContext = getCursorContext(this.el)
 
 		if( ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter'].includes(e.code) ) return
@@ -41,54 +107,40 @@ export default class {
 
 		if( !cursorContext ) return
 
-		// if user edits b-mention, revert back to text node
-		if( cursorContext.textNodeParent.tagName == 'B-MENTION' ){
+        let mention = this.isMention(cursorContext.textNodeParent) ? cursorContext.textNodeParent : null
+        let lastMention = this.lastMention
+        this.lastMention = mention
 
-			let mention = cursorContext.textNodeParent
-			
-			if( mention.value != mention.innerText)
-				mention.revert()
+        if( e.type == 'focus' || e.type == 'click' ){
+            if( lastMention ) lastMention.active = false
+            if( mention ) mention.active = true
+        }
 
-			return
+        if( e.type == 'blur'){
+            if( lastMention ) lastMention.active = false
+            if( mention ) mention.active = false
+            return
+        }
+
+		// if user edits the mention element, revert back to text node
+		if( mention ){
+
+            if( e.key == 'Backspace' && mention.active )
+                return mention.remove()
+
+            if( e.type == 'keyup' && mention.value != mention.innerText)
+                    return this.revertMention(mention)
 		}
 
-		let queryMatch = cursorContext.textBeforeCursor.match(/@.[^\s]*$/)
-
-		// if( queryMatch && cursorContext.textNodeParent.tagName != 'B-MENTION' ){
-
-		// 	console.log('update?');
-			
-
-		// 	// update text node content with replaced text
-		// 	let query = queryMatch[0]
-		// 	let replacementText = ''
-		// 	const lastIndex = cursorContext.textBeforeCursor.lastIndexOf(query);
-		// 	cursorContext.textNode.textContent = cursorContext.textNodeContent.substring(0, lastIndex) + replacementText + cursorContext.textAfterCursor;
-
-		// 	const selection = this.el.getRootNode().getSelection();
-		// 	if(!selection) return;
-
-		// 	// put cursor at the end of the replaced text
-		// 	const range = document.createRange();
-		// 	range.setStart(cursorContext.textNode, lastIndex + replacementText.length);
-		// 	range.setEnd(cursorContext.textNode, lastIndex + replacementText.length);
-		// 	range.collapse(true);
-			
-		// 	const mention = document.createElement('b-mention');
-		// 	mention.innerText = query
-		// 	range.insertNode(mention);
-		// 	range.setStart(mention.firstChild, query.length);
-		// 	range.setEnd(mention.firstChild, query.length);
-		// 	range.collapse(true);
-
-		// 	selection.removeAllRanges();
-		// 	selection.addRange(range);
-
-		// }
+		let queryMatch = cursorContext.textBeforeCursor.match(this.opts.pattern)
 
 		if( !queryMatch ) return
 
 		let query = queryMatch[0]
+		let term = queryMatch[1]
+		let menu = this.menuFor(term)
+
+		if( menu.length == 0 ) return
 
 		let textNode = cursorContext.textNode;
 		const menuLeftEdgeCharaterPosition = Math.max(cursorContext.cursorCharacterPosition, 0);
@@ -98,18 +150,14 @@ export default class {
 		range.collapse(true);
 
 		const marker = document.createElement('span');
-		
-		// marker.style.display = 'inline-block';
-		// marker.style.width = '.5em'
-		// marker.style.backgroundColor = 'red'
-
 		range.insertNode(marker);
+		
+		this.menu = new Menu(menu, {search:false, autoSelectFirst: true})
 
-		this.menu = new Menu([{label: 'Megan Warenbrock', val:'megan'}, {label: 'Kevin Jantzer', val: 'kevin'}])
-		this.menu.popover(marker).then(this.insertMention.bind(this, cursorContext, query))
+		this.menu
+		.popover(marker, {maxHeight: '140px'})
+        .then(this.insertMention.bind(this, cursorContext, query))
 
-		//   document.body.appendChild(menuContainer);
-		//   containByScreen(menuContainer, marker, {position: 'bottom', hAlign: 'left'});
 		setTimeout(()=>{
 			marker.remove();
 		},0)
@@ -117,8 +165,16 @@ export default class {
 		cursorContext.textNodeParent.normalize();
 	}
 
+	createMention(selected){
+		const mention = document.createElement(this.opts.element);
+		mention.innerText = selected.label
+		mention.setAttribute('uid', selected.val)
+		return mention
+	}
+
 	insertMention(cursorContext, query, selected){
 		// console.log(cursorContext, selected);
+        if( !selected ) return
 		
 		let replacementText = ''
 		const lastIndex = cursorContext.textBeforeCursor.lastIndexOf(query);
@@ -133,19 +189,39 @@ export default class {
 		range.setEnd(cursorContext.textNode, lastIndex + replacementText.length);
 		range.collapse(true);
 		
-		const mention = document.createElement('b-mention');
-		const space = document.createTextNode(' ')
-		mention.innerText = selected.label
-		
-		range.insertNode(mention);
+        // const spaceZeroWidth = document.createTextNode('\u200B')
+        // range.insertNode(spaceZeroWidth)
+		// range.setStart(spaceZeroWidth, spaceZeroWidth.length);
+		// range.setEnd(spaceZeroWidth, spaceZeroWidth.length);
+
+        const mention = this.createMention(selected)	
+        range.insertNode(mention);
 		range.setStartAfter(mention)
 		range.setEndAfter(mention)
 		
+        const space = document.createTextNode(' ')
 		range.insertNode(space)
 		range.setStart(space, space.length);
 		range.setEnd(space, space.length);
-		// range.setStartAfter(mention)
-		// range.collapse(true);
+		range.setStartAfter(space)
+		range.collapse(true);
+
+		selection.removeAllRanges();
+		selection.addRange(range);
+	}
+
+    revertMention(mention){
+		const selection = mention.getRootNode().getSelection();
+
+		let textNode = mention.firstChild
+		let offset = selection.anchorOffset
+		mention.parentNode.replaceChild(textNode, mention)
+
+		const range = document.createRange();
+		
+		range.setStart(textNode, offset);
+		range.setEnd(textNode, offset);
+		range.collapse(true);
 
 		selection.removeAllRanges();
 		selection.addRange(range);
@@ -209,61 +285,3 @@ function getTextNodeAndParent(el){
 // 	selection.removeAllRanges();
 // 	selection.addRange(range);
 // }
-
-
-
-
-
-customElements.define('b-mention', class extends LitElement{
-
-	firstUpdated(){
-		this.value = this.innerText
-	}
-
-	static get styles(){return css`
-		:host {
-			display: inline-block;
-			position:relative;
-			white-space: normal;
-		}
-
-		slot {
-			display: inline-block;
-			background: var(--blue-50);
-			color: var(--blue);
-		}
-
-		:host(:focus) slot,
-		:host(:focus-within) slot,
-		:host(:active) slot {
-			background: red;
-		}
-	`}
-
-	render(){return html`
-		<slot></slot>
-	`}
-
-	revert(){
-		const selection = this.getRootNode().getSelection();
-		
-		console.log(selection.anchorNode, selection.anchorOffset);
-
-		let textNode = this.firstChild
-		let offset = selection.anchorOffset
-		this.parentNode.replaceChild(textNode, this)
-
-		const range = document.createRange();
-		
-		range.setStart(textNode, offset);
-		range.setEnd(textNode, offset);
-		range.collapse(true);
-
-		selection.removeAllRanges();
-		selection.addRange(range);
-		
-	}
-
-})
-
-// export default customElements.get('b-mention')
