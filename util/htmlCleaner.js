@@ -23,7 +23,13 @@ function parser(str){
         throw Error('DOMParser does not exist')
         
     var dom = new DOMParser().parseFromString(str, "text/html");
-    return [document, dom.body]
+    return [typeof document !== 'undefined' ? document : dom, dom.body||dom]
+}
+
+function stripHTML(str){
+    var [document, body] = this.parser(str)
+    let childNodes = Array.from(body.childNodes)
+    return childNodes.map(node=>node.textContent).join(' ')
 }
 
 function clean(str){
@@ -74,7 +80,7 @@ function clean(str){
         }
     })
 
-    let html = el.innerHTML
+    let html = el.innerHTML ? el.innerHTML : Array.from(el.childNodes).map(node=>node.toString()).join('')
 
     // remove line breaks as they dont provide anything and can cause problems in csv exports
     html = html.replace(/[\n\r]/g, ' ')
@@ -87,8 +93,8 @@ function cleanNode(parent, node){
     // remove all attributes known to be a problem
     if( node.removeAttribute ){
         
-        let isItalic = node.style.fontStyle == 'italic'
-        let isBold = node.style.fontWeight == 'bold'
+        let isItalic = node.style && node.style.fontStyle == 'italic'
+        let isBold = node.style && node.style.fontWeight == 'bold'
         
         node.removeAttribute('id')
         node.removeAttribute('class')
@@ -120,7 +126,7 @@ function cleanNode(parent, node){
     }
 
     // clean all child nodes of this node
-    let childNodes = Array.from(node.childNodes)
+    let childNodes = node.childNodes ? Array.from(node.childNodes) : []
     childNodes.forEach(n=>cleanNode(node, n))
 
     // remove any empty nodes (but keep <br> which are always empty)
@@ -144,7 +150,12 @@ function cleanNode(parent, node){
         // remove tags we dont want, but keep their contents
         // example: <font>we want to keep this text and any <b>good</b> tags</font>
         }else{
-            node.remove()
+
+            if( node.remove )
+                node.remove()
+            else
+                node.parentNode.removeChild(node) // node.js xmldom
+
             childNodes = Array.from(node.childNodes)
             childNodes.forEach(child=>{
                 parent.appendChild(child)
@@ -171,5 +182,6 @@ function simplifyTextNode(node){
 
 module.exports = {
     clean: clean,
+    stripHTML: stripHTML,
     parser: parser
 }
