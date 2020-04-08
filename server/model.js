@@ -216,7 +216,7 @@ module.exports = class Model {
     async update(attrs={}){
 
         // let subclass remove or modify attributes to be updated
-        attrs = this.validateUpdate(attrs)
+        attrs = await this.validateUpdate(attrs)
 
         if( !this.config.table ) throw Error('missing config.table')
 
