@@ -196,7 +196,7 @@ class FormHandler extends HTMLElement {
 		changes[key] = val
 		
 		if( this.validateChange && await this.validateChange(m, changes, key, val) === false ){
-			el.value = changes[key] || el.value
+			el.value = changes[key] !== undefined ? changes[key] : el.value
 			return
 		}
 
