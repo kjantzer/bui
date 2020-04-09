@@ -22,6 +22,11 @@ customElements.define('b-cal', class extends LitElement{
             position:relative;
             display: grid;
             grid-template-rows: auto 1fr;
+            --grid-cols: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        }
+
+        :host([collapse-weekend]) {
+            --grid-cols: 2.5em 1fr 1fr 1fr 1fr 1fr 2.5em;
         }
 
         header {
@@ -48,10 +53,10 @@ customElements.define('b-cal', class extends LitElement{
         }
 
         .weekdays {
-            margin-top: .75em;
+            margin: .75em -1em 0;
             grid-column: 1/-1;
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            grid-template-columns: var(--grid-cols);
             text-align: right;
         }
 
@@ -65,7 +70,7 @@ customElements.define('b-cal', class extends LitElement{
             display: grid;
             position:relative;
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            grid-template-columns: var(--grid-cols);
             grid-template-rows: repeat(6, 1fr);
             gap: 1px;
         }
@@ -155,8 +160,12 @@ customElements.define('b-cal', class extends LitElement{
                 <slot name="after-nav"></slot>
             </div>
 
-            <div class="weekdays">${this.weekdays.map(str=>html`
-                <div>${str}</div>
+            <div class="weekdays">${this.weekdays.map((str,i)=>html`
+                ${i==0||i==6?html`
+                    <div @click=${this.toggleCollapseWeekend}>${str}</div>
+                `:html`
+                    <div>${str}</div>
+                `}
             `)}</div>
 
         </header>
@@ -168,6 +177,10 @@ customElements.define('b-cal', class extends LitElement{
         `)}
         </main>
     `}
+
+    toggleCollapseWeekend(){
+        this.toggleAttribute('collapse-weekend', !this.hasAttribute('collapse-weekend'))
+    }
 
 })
 
