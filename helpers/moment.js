@@ -12,3 +12,7 @@ moment.fn.calendarDate = function(referenceTime, formats={}){
     }, formats)
     return this.calendar(referenceTime, formats)
 }
+
+export function invalidDateString(str=''){
+    moment.updateLocale(moment.locale(), { invalidDate: str })
+}
