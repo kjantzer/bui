@@ -32,7 +32,7 @@ customElements.define('b-cal', class extends LitElement{
         header {
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 10;
             background: var(--b-cal-header-bgd, var(--theme-bgd, #fff));
             border-bottom: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
             display: grid;
