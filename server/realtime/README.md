@@ -57,7 +57,7 @@ export class Book {
     }
 
     // this will be called when the model gets sync data
-    onSync(data){
+    onSync(sync){
     }
 }
 
@@ -68,6 +68,19 @@ myModel.realtimeSync.connect()
 
 // ... later the connection can be closed to stop syncing
 myModel.realtimeSync.close()
+```
+
+### Backbone Collection Sync
+A basic Backbone.Collection sync function is implemeted and can be used
+```js
+import {syncBackboneCollection} from 'bui/server/realtime/client/sync'
+
+class {
+    onSync(sync){
+        syncBackboneCollection.call(this, sync)
+    }
+}
+
 ```
 
 
