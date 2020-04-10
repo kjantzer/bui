@@ -142,6 +142,7 @@ export class Collection {
         }
 
         this._parse(data, params)
+        this.trigger('sync', this)
     }
 
     _parse(data, params={}){
