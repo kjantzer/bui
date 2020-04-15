@@ -109,6 +109,38 @@ module.exports = class Model {
 // =================================================
 //  Deafult CRUD method implementations
 
+    static parseWhere(where={}){
+
+        let fields = []
+        let values = []
+
+        for( let key in where ){
+            let val = where[key]
+
+            if( ['IS NULL', 'IS NOT NULL'].includes(val) ){
+                fields.push(`${key} ${val}`)
+            }else{
+
+                let oper = '='
+
+                if( typeof val == 'string' ){
+                    let [str, customOper, _val] = val.match(/((?:(?:!=)|(?:[><]=?)) )?(.+)/)
+                    oper = customOper || oper
+                    val = _val 
+                }
+
+                if( Array.isArray(val) )
+                    fields.push(`${key} IN(?)`)
+                else
+                    fields.push(`${key} ${oper} ?`)
+
+                values.push(val)
+            }
+        }
+
+        return [fields, values]
+    }
+
     async find(where=null){
 
         if( !this.config.table ) throw Error('missing config.table')
@@ -136,36 +168,10 @@ module.exports = class Model {
         // let subclassed model apply more to where clause
         await this.findWhere(where)
 
-        let whereFields = []
-        let whereVals = []
-
-        for( let key in where ){
-            let val = where[key]
-
-            if( ['IS NULL', 'IS NOT NULL'].includes(val) ){
-                whereFields.push(`${key} ${val}`)
-            }else{
-
-                let oper = '='
-
-                if( typeof val == 'string' ){
-                    let [str, customOper, _val] = val.match(/((?:(?:!=)|(?:[><]=?)) )?(.+)/)
-                    oper = customOper || oper
-                    val = _val 
-                }
-
-                if( Array.isArray(val) )
-                    whereFields.push(`${key} IN(?)`)
-                else
-                    whereFields.push(`${key} ${oper} ?`)
-
-                whereVals.push(val)
-            }
-        }
-
+        let [whereFields, whereVals] = Model.parseWhere(where)
         where = whereFields.length > 0 ? `WHERE ${whereFields.join(' AND ')}` : ''
 
-        let resp = await db.query(this.findSql(where), whereVals)
+        let resp = await this.db.query(this.findSql(where), whereVals)
 
         // parse each row (for decoding JSON strings, etc)
         await Promise.all(resp.map(row=>{
@@ -200,7 +206,7 @@ module.exports = class Model {
         if( !attrs || Object.keys(attrs).length == 0 )
             return false;
 
-        let result = await db.q(/*sql*/`INSERT INTO ${this.config.table} 
+        let result = await this.db.q(/*sql*/`INSERT INTO ${this.config.table} 
                                         SET ? ${this.db.updateOnDuplicate(attrs)}`, attrs)
         
         if( !result.insertId && !result.affectedRows )
@@ -223,7 +229,7 @@ module.exports = class Model {
         if( !this.id || !attrs || Object.keys(attrs).length == 0 )
             return false;
 
-        let result = await db.q(/*sql*/`UPDATE ${this.config.table} SET ? WHERE ?`, [attrs, {id:this.id}])
+        let result = await this.db.q(/*sql*/`UPDATE ${this.config.table} SET ? WHERE ?`, [attrs, {id:this.id}])
 
         if( result.affectedRows > 0 )
             return attrs
@@ -242,7 +248,7 @@ module.exports = class Model {
 
         await this.beforeDestroy()
 
-        let result = await db.q(/*sql*/`DELETE FROM ${this.config.table} WHERE id = ?`, this.id)
+        let result = await this.db.q(/*sql*/`DELETE FROM ${this.config.table} WHERE id = ?`, this.id)
         return String(result.affectedRows)
     }
 }
