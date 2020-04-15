@@ -109,37 +109,7 @@ module.exports = class Model {
 // =================================================
 //  Deafult CRUD method implementations
 
-    static parseWhere(where={}){
-
-        let fields = []
-        let values = []
-
-        for( let key in where ){
-            let val = where[key]
-
-            if( ['IS NULL', 'IS NOT NULL'].includes(val) ){
-                fields.push(`${key} ${val}`)
-            }else{
-
-                let oper = '='
-
-                if( typeof val == 'string' ){
-                    let [str, customOper, _val] = val.match(/((?:(?:!=)|(?:[><]=?)) )?(.+)/)
-                    oper = customOper || oper
-                    val = _val 
-                }
-
-                if( Array.isArray(val) )
-                    fields.push(`${key} IN(?)`)
-                else
-                    fields.push(`${key} ${oper} ?`)
-
-                values.push(val)
-            }
-        }
-
-        return [fields, values]
-    }
+    
 
     async find(where=null){
 
@@ -168,7 +138,7 @@ module.exports = class Model {
         // let subclassed model apply more to where clause
         await this.findWhere(where)
 
-        let [whereFields, whereVals] = Model.parseWhere(where)
+        let [whereFields, whereVals] = this.db.parseWhere(where)
         where = whereFields.length > 0 ? `WHERE ${whereFields.join(' AND ')}` : ''
 
         let resp = await this.db.query(this.findSql(where), whereVals)

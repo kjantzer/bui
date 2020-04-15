@@ -31,6 +31,21 @@ const db = require('./db')
 let result = await db.query(`SELECT * FROM table`)
 ```
 
+### db.parseWhere()
+Takes a hash of where key:values and converts them to fields and values to be used in a MySQL query
+
+```js
+let [fields, values] = db.parseWhere({
+    id: [1,2],
+    type: 'foobar'
+})
+
+console.log(fields) // ['id IN(?)', 'type = ?']
+console.log(values) // [[1,2], 'foobar']
+
+db.query(`SELECT * FROM table WHERE ${fields.join(' AND ')}`, values)
+```
+
 ## API
 
 ```js
@@ -126,21 +141,4 @@ module.exports = class MyModel extends Model {
     }
 
 }
-```
-
-### Model.parseWhere()
-Takes a hash of where key:values and converts them to fields and values to be used in a MySQL query
-
-```js
-const Model = require('bui/server/model')
-
-let [fields, values] = Model.parseWhere({
-    id: [1,2],
-    type: 'foobar'
-})
-
-console.log(fields) // ['id IN(?)', 'type = ?']
-console.log(values) // [[1,2], 'foobar']
-
-db.query(`SELECT * FROM table WHERE ${fields.join(' AND ')}`, values)
 ```

@@ -116,6 +116,39 @@ module.exports = class DB {
 
     get NOW(){ return {toSqlString:()=>'NOW()'}; }
 
+    // TODO: use escapeId()?
+    parseWhere(where={}){
+
+        let fields = []
+        let values = []
+
+        for( let key in where ){
+            let val = where[key]
+
+            if( ['IS NULL', 'IS NOT NULL'].includes(val) ){
+                fields.push(`${key} ${val}`)
+            }else{
+
+                let oper = '='
+
+                if( typeof val == 'string' ){
+                    let [str, customOper, _val] = val.match(/((?:(?:!=)|(?:[><]=?)) )?(.+)/)
+                    oper = customOper || oper
+                    val = _val 
+                }
+
+                if( Array.isArray(val) )
+                    fields.push(`${key} IN(?)`)
+                else
+                    fields.push(`${key} ${oper} ?`)
+
+                values.push(val)
+            }
+        }
+
+        return [fields, values]
+    }
+
 }
 
 class DBResults extends Array {
