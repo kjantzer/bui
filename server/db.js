@@ -138,7 +138,7 @@ module.exports = class DB {
                 }
 
                 if( Array.isArray(val) )
-                    fields.push(`${key} IN ?`)
+                    fields.push(`${key} IN(?)`)
                 else
                     fields.push(`${key} ${oper} ?`)
 
