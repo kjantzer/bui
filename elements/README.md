@@ -362,6 +362,9 @@ uploader.chooseFile()
 - `--uploadingBgd`
 - `--progressBgd`
 
+#### Server Side
+The `totalFiles` and `fileNum` will be passed along with each uploaded file. You can compare these values to determine when the last file is uploaded
+
 ## `<b-code>`
 ```html
 <b-code>inline code</b-code>

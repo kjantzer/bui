@@ -241,12 +241,14 @@ export class UploaderElement extends LitElement {
 
         let resp = []
 
-        for( let file of this.files ){
+        for( let i in this.files ){
 
+            let file = this.files[i]
             let _formData = new FormData();
 
             _formData.append(fileKey, file)
-
+            _formData.append('totalFiles', this.files.length)
+            _formData.append('fileNum', parseInt(i)+1)
 
             for( let key in formData ){
                 if( typeof formData[key] === 'function' )
