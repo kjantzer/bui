@@ -81,7 +81,9 @@ export class PaperElement extends LitElement {
         }
 
         ::slotted(b-icon:first-of-type) {
-            color: var(--bgdAccent);
+            /* color: var(--bgdAccent); */
+            color: #000;
+            opacity: .5;
             margin-right: .15em;
         }
 
