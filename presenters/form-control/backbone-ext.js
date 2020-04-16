@@ -19,7 +19,9 @@ Model.prototype.saveEdited = function(opts={}){
 	return new Promise(async (resolve, reject)=>{
 		
 		try{
-			await this.saveSync(attrs, opts)
+			// is there someting to save?
+			if( Object.keys(attrs).length > 0 )
+				await this.saveSync(attrs, opts)
 			
 			this._editedAttrs = {}
 			this._origAttrs = null
