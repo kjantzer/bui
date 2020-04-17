@@ -29,6 +29,9 @@ module.exports = function(Orig){ return {
 		
 		// traversing up the parents for every `get` is expensive when dealing with lots of models so only do it if no attribute matches
 		if( this.attributes[key] === undefined ){
+
+			if( this[key] !== undefined )
+				return typeof this[key] == 'function' ? this[key].call(this) : this[key]
 			
 			// traverse up the parent models to check for one with a matching "name"
 			let p = this.parentModel || (this.collection && this.collection.parentModel)
