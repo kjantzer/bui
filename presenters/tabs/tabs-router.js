@@ -16,7 +16,7 @@ customElements.define('b-tabs-router', class extends TabsView {
 
                 tab.routeState = newState
 
-                if( newState )
+                if( newState && this.active != tab.id )
                     this.active = tab
 
                 if( tab.view.onRouteChange )
@@ -35,7 +35,7 @@ customElements.define('b-tabs-router', class extends TabsView {
         if( tabView != oldTabView ){
             let oldState = tabView.routeState
 
-            let [newState, oldStates] = router.push(tabView.id, {title: tabView.title})
+            let [newState, oldStates] = router.push(tabView.id, {title: tabView.title, fromMenuClick:new Date().getTime()})
             tabView.routeState = newState
             
             // reuse data from old state

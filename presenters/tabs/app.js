@@ -20,36 +20,40 @@ customElements.define('b-app', class extends LitElement {
             })
         })
 
-        window.addEventListener('router:popstate', e=>{
-            this.trackScreenChange(e.detail.path)
-        })
+        window.addEventListener('router:popstate', this.onPush.bind(this))
 
         // when route changes to empty, update with current active tab
-        window.addEventListener('router:push', e=>{
+        window.addEventListener('router:push', this.onPush.bind(this))
+    }
 
-            if( e.detail.path != '' ){
-                this.trackScreenChange(e.detail.path)
-                return;
-            }
+    onPush(e){
+        this.rootPanels = this.rootPanels || document.querySelector('b-panels[name="root"]')
 
-            this.rootPanels = this.rootPanels || document.querySelector('b-panels[name="root"]')
+        let activePanel = this.rootPanels && this.rootPanels.panelOnTopWithRoute
+        let activeView = this.tabs.views.active
 
-            let activePanel = this.rootPanels && this.rootPanels.panelOnTopWithRoute
-            let activeView = this.tabs.views.active
-
-            if( activePanel ){
-                router.states.current.update(activePanel.route.state.props)
-                activeView.view.didBecomeInactive&&activeView.view.didBecomeInactive()
-            }else{
-                router.states.current.update({
-                    title: activeView.title,
-                    path: activeView.id
-                })
-                activeView.view.didBecomeActive&&activeView.view.didBecomeActive()
-            }
+        // new route matches active view...make it active again
+        if( !e.detail.path || activeView.route.patt.match(e.detail.path) ){
+            
+            router.states.current.update({
+                title: activeView.title,
+                path: activeView.id
+            })
+            
+            activeView.view.didBecomeActive&&activeView.view.didBecomeActive()
 
             this.trackScreenChange(router.states.current)
-        })
+
+        }else{
+
+            if( !e.detail.state.props.fromMenuClick || new Date().getTime() - e.detail.state.props.fromMenuClick > 200 )
+                activeView.view.didBecomeInactive&&activeView.view.didBecomeInactive()
+
+            if( activePanel )
+                router.states.current.update(activePanel.route.state.props)
+            else
+                this.trackScreenChange(e.detail.path)
+        }
     }
 
     static get styles(){return css`
