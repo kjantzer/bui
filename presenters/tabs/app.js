@@ -27,9 +27,7 @@ customElements.define('b-app', class extends LitElement {
     }
 
     onPush(e){
-        this.rootPanels = this.rootPanels || document.querySelector('b-panels[name="root"]')
 
-        let activePanel = this.rootPanels && this.rootPanels.panelOnTopWithRoute
         let activeView = this.tabs.views.active
 
         // new route matches active view...make it active again
@@ -49,10 +47,7 @@ customElements.define('b-app', class extends LitElement {
             if( !e.detail.state.props.fromMenuClick || new Date().getTime() - e.detail.state.props.fromMenuClick > 200 )
                 activeView.view.didBecomeInactive&&activeView.view.didBecomeInactive()
 
-            if( activePanel )
-                router.states.current.update(activePanel.route.state.props)
-            else
-                this.trackScreenChange(e.detail.path)
+            this.trackScreenChange(e.detail.path)
         }
     }
 
