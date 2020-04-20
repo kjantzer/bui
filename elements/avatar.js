@@ -187,6 +187,8 @@ class AvatarElement extends HTMLElement {
 	set gravatar(guid){
 		// wait until el is connected so we can determine the height of the avatar
 		if( !this.isConnected || !guid ) return
+		// FIXME: accessing offsetHeight is a perf hit...as it requires a reflow
+		// https://www.sitepoint.com/10-ways-minimize-reflows-improve-performance/
 		let size = this.offsetHeight * 2
 		if( size < 80 ) size = 80
 		this.url = guid ? `//gravatar.com/avatar/${guid}?d=404&s=${size}` : ''
