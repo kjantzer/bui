@@ -73,6 +73,7 @@ customElements.define('b-cal', class extends LitElement{
             grid-template-columns: var(--grid-cols);
             grid-template-rows: repeat(6, 1fr);
             gap: 1px;
+            /* min-height: 0; */
         }
 
         b-cal-day {
@@ -90,6 +91,8 @@ customElements.define('b-cal', class extends LitElement{
     get date(){ return this._date }
 
     set date(val){
+        
+        let oldDate = this._date && this._date.clone()
 
         if( val instanceof moment ){
             this._date = val
@@ -106,6 +109,9 @@ customElements.define('b-cal', class extends LitElement{
         }
 
 		this._date.set({date: 1})
+
+        if( oldDate && this._date.isSame(oldDate) )
+            return
 
         this._loadDays()
 
@@ -130,12 +136,12 @@ customElements.define('b-cal', class extends LitElement{
     }
 
     nextMonth(){
-		this.date = this.date.add('month', 1)
+		this.date = this._date.clone().add('month', 1)
         this.update()
 	}
 
 	prevMonth(){
-		this.date = this._date.add('month', -1)
+		this.date = this._date.clone().add('month', -1)
         this.update()
 	}
 

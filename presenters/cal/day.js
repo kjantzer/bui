@@ -4,13 +4,18 @@ customElements.define('b-cal-day', class extends LitElement{
 
     static get styles(){return css`
         :host {
-            display: block;
-            /* background: var(--theme-bgd); */
+            display: grid;
+            grid-template-rows: auto 1fr;
+            overflow: hidden;
             padding: .25em;
         }
 
         header {
             text-align: right;
+        }
+
+        main {
+            overflow: auto;
         }
 
         .date {
@@ -72,6 +77,23 @@ customElements.define('b-cal-day', class extends LitElement{
     get date(){
         return this.__date
     }
+
+    // firstUpdated(){
+    //     let slot = this.shadowRoot.querySelector('slot');
+    //     this.main = this.shadowRoot.querySelector('main');
+    //     slot.addEventListener('slotchange', this.onSlotChange.bind(this));
+    // }
+
+    // onSlotChange(e){
+    //     let nodes = e.target.assignedNodes();
+
+    //     if( nodes[0] && nodes[0].nodeName == '#text' )
+    //         return
+
+    //     let doesOverflow = this.main.offsetHeight < this.main.scrollHeight
+
+    //     console.log(doesOverflow);
+    // }
 
 })
 
