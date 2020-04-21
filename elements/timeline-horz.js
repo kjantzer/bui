@@ -37,8 +37,9 @@ customElements.define('b-timeline-horz', class extends LitElement{
         .line b-hr {
             margin: 0 auto;
             flex: 1;
-            --bgd: var(--theme-bgd-accent);
+            --bgd: var(--theme-bgd-accent, #e5e5e5);
             width: 3px;
+            display: var(--b-timeline-line-display, block);
             /* min-height: 40px; */
         }
 
@@ -55,8 +56,8 @@ customElements.define('b-timeline-horz', class extends LitElement{
             height: 1.6em;
             width: 1.6em;
             border-radius: 1em;
-            background: var(--b-timeline-bubble-bgd, var(--theme-bgd-accent));
-            color: var(--theme-color-accent);
+            background: var(--b-timeline-bubble-bgd, var(--theme-bgd-accent, #e5e5e5));
+            color: var(--theme-color-accent, #e5e5e5);
             transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
         }
         
@@ -64,6 +65,14 @@ customElements.define('b-timeline-horz', class extends LitElement{
         .bubble b-icon {
             font-size: 1.6em;
             color: var(--theme-color);
+        }
+
+        slot[name="bubble"]::slotted(b-icon) {
+            font-size: 1.6em;
+        }
+
+        slot[name="bubble"]::slotted(b-icon[name*="ok"]) {
+            color: var(--green);
         }
 
         :host([late]) .bubble {
