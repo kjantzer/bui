@@ -34,19 +34,19 @@ Align children elements in a grid
 
 ```html
 <b-grid cols="4">
-    <div span>Row 1</div>
-    <div span="2">Row 2</div>
-    <div>Row 3</div>
-    <div>Row 4</div>
+    <b-paper dense colspan>Row 1</b-paper>
+    <b-paper dense colspan="2">Row 2</b-paper>
+    <b-paper dense>Row 3</b-paper>
+    <b-paper dense>Row 4</b-paper>
 </b-grid>
 ```
 
 <!--
 <b-grid cols="4">
-    <div span>Row 1</div>
-    <div span="2">Row 2</div>
-    <div>Row 3</div>
-    <div>Row 4</div>
+    <b-paper dense colspan>Row 1</b-paper>
+    <b-paper dense colspan="2">Row 2</b-paper>
+    <b-paper dense>Row 3</b-paper>
+    <b-paper dense>Row 4</b-paper>
 </b-grid>
 -->
 
