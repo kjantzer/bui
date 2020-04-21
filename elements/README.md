@@ -29,6 +29,36 @@ A white box with rounded corners and a shadow.
 - `empty` - no background and a dashed border
 - `outline` - no shadow, just border
 
+## `<b-grid>`
+Align children elements in a grid
+
+```html
+<b-grid cols="4">
+    <div span>Row 1</div>
+    <div span="2">Row 2</div>
+    <div>Row 3</div>
+    <div>Row 4</div>
+</b-grid>
+```
+
+<!--
+<b-grid cols="4">
+    <div span>Row 1</div>
+    <div span="2">Row 2</div>
+    <div>Row 3</div>
+    <div>Row 4</div>
+</b-grid>
+-->
+
+#### Attributes
+- `gap` - none, `.5`, `1`, `2`
+- `cols`
+    - `1`-`8`
+    - `2,1` or `1,2` (two-thirds/third)
+    - `2,1,1` or `1,1,2` (half/quarter)
+- `align` - start, center, end (defaults to stretch)
+
+
 ## `<b-btn>`
 
 <!--

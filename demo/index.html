@@ -290,11 +290,94 @@
 
             <b-tabs title="Elements" key="elements" layout="left">
 
+                <section title="Grid">
+                    <h1>Grid</h1>
+
+                    <b-grid cols="4">
+                        <div colspan>Row 1</div>
+                        <div colspan=2>Row 2</div>
+                        <div>Row 3</div>
+                        <div>Row 4</div>
+                        <div>Row 5</div>
+                        <div>Row 6</div>
+                        <div>Row 7</div>
+                        <div>Row 8</div>
+                    </b-grid>
+
+                    <b-hr></b-hr>
+                    <h2>Columns</h2>
+                    <div>There are defaults columns, but if you need something custom, you can apply your own <code>grid-template-columns</code> style</div>
+
+                    <h3>4 Columns (1-8 supported) — <code>cols="4"</code></h3>
+                    <b-grid cols="4">
+                        <div>Row 1</div>
+                        <div>Row 2</div>
+                        <div>Row 3</div>
+                        <div>Row 4</div>
+                        <div>Row 5</div>
+                        <div>Row 6</div>
+                        <div>Row 7</div>
+                        <div>Row 8</div>
+                    </b-grid>
+
+                    <h3>Two-thirds, one-third — <code>cols="2,1"</code></h3>
+                    <b-grid cols="2,1">
+                        <div>Row 1</div>
+                        <div>Row 2</div>
+                        <div>Row 3</div>
+                        <div>Row 4</div>
+                        <div>Row 5</div>
+                        <div>Row 6</div>
+                        <div>Row 7</div>
+                        <div>Row 8</div>
+                    </b-grid>
+
+                    <h3>Half, quarter, quarter — <code>cols="2,1,1"</code></h3>
+                    <b-grid cols="2,1,1">
+                        <div>Row 1</div>
+                        <div>Row 2</div>
+                        <div>Row 3</div>
+                        <div>Row 4</div>
+                        <div>Row 5</div>
+                        <div>Row 6</div>
+                        <div>Row 7</div>
+                        <div>Row 8</div>
+                    </b-grid>
+
+                    <b-hr></b-hr>
+                    <h2>Gap</h2>
+
+                    <h3><code>gap="0"</code></h3>
+                    <b-grid gap="0">
+                        <div>Row 1</div>
+                        <div>Row 2</div>
+                        <div>Row 3</div>
+                        <div>Row 4</div>
+                    </b-grid>
+
+                    <h3><code>gap=".5"</code></h3>
+                    <b-grid gap=".5">
+                        <div>Row 1</div>
+                        <div>Row 2</div>
+                        <div>Row 3</div>
+                        <div>Row 4</div>
+                    </b-grid>
+
+                    <h3><code>gap="2"</code></h3>
+                    <b-grid gap="2">
+                        <div>Row 1</div>
+                        <div>Row 2</div>
+                        <div>Row 3</div>
+                        <div>Row 4</div>
+                    </b-grid>
+                    
+                </section>
+
                 <section title="Paper">
                     <h1>Paper</h1>
                 
                     <b-paper color="blue">
-                        Blue olor
+                        Blue color
                     </b-paper>
 
                     <b-paper color="red">
@@ -449,6 +532,15 @@
                     <b-label filled="red">Red</b-label>&nbsp;
                     <b-label filled="orange">Orange</b-label>&nbsp;
                     <b-label filled="green">Green</b-label>&nbsp;
+
+                    <br><br>
+
+                    <b-label muted filled>Filled</b-label>&nbsp;
+                    <b-label muted filled="black">Black</b-label>&nbsp;
+                    <b-label muted filled="blue">Blue</b-label>&nbsp;
+                    <b-label muted filled="red">Red</b-label>&nbsp;
+                    <b-label muted filled="orange">Orange</b-label>&nbsp;
+                    <b-label muted filled="green">Green</b-label>&nbsp;
                     
                     <br><br>
                     
@@ -556,6 +648,28 @@
                                 // uploader.upload({url:'url-to-upload-to'})
                         })
                     </script>
+                </section>
+
+                <section title="Timeline">
+                    <h1>Timeline</h1>
+
+                    <div>
+                        <b-timeline-horz>
+                            <div slot="date">Aug 10</div>
+                            <b-icon name="ok-circled" slot="bubble" style="color: var(--green)"></b-icon>
+                            <div>Timeline content</div>
+                        </b-timeline-horz>
+                        <b-timeline-horz>
+                            <div slot="date">Aug 27</div>
+                            <b-icon name="cancel-1" slot="bubble" style="color: var(--red)"></b-icon>
+                            <div>Timeline content</div>
+                        </b-timeline-horz>
+                        <b-timeline-horz style="--b-timeline-line-display:none;">
+                            <div slot="date">Sept 24</div>
+                            <div>Timeline content</div>
+                        </b-timeline-horz>
+                    </div>
+
                 </section>
 
                 <section title="Media">
