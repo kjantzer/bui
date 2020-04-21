@@ -10,6 +10,8 @@ export default class Label extends LitElement {
 
     static get styles(){return css`
         :host {
+            position: relative;
+            z-index: 1;
             display: inline-block;
             text-transform: uppercase;
             color: var(--b-label-color, rgba(0,0,0,.33));
@@ -18,6 +20,7 @@ export default class Label extends LitElement {
             line-height: 1rem;
             --dividerThickness: 1px;
             vertical-align: middle;
+            border-radius: var(--radius, 0);
 
             -webkit-touch-callout: none; /* iOS Safari */
             -webkit-user-select: none; /* Safari */
@@ -37,7 +40,7 @@ export default class Label extends LitElement {
             --bgd: #aaa;
             --color: #fff;
             padding: 0.15em 0.3em 0.1em;
-            border-radius: 3px;
+            --radius: 3px;
             font-size: .8rem;
             text-transform: none;
             background: var(--bgd);
@@ -57,7 +60,7 @@ export default class Label extends LitElement {
         }
 
         :host([badge]) {
-            border-radius: 30px;
+            --radius: 30px;
             /* padding-left: .6em;
             padding-right: .6em; */
             padding-right: .45em;
@@ -92,6 +95,28 @@ export default class Label extends LitElement {
         :host([outline="orange"]) { --bgd: var(--orange); }
         :host([outline="green"]) { --bgd: var(--green); }
         :host([outline="pink"]) { --bgd: var(--pink); }
+
+        .bgd {
+            display: none;
+            background: var(--bgd);
+            opacity: .2;
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: var(--radius);
+        }
+
+        :host([muted]) {
+            background: none;
+            --color: var(--bgd);
+        }
+
+        :host([muted]) .bgd {
+            display: block;
+        }
 
         /* causes unwanted wrap on chrome */
         /* slot {
@@ -134,6 +159,7 @@ export default class Label extends LitElement {
     `}
 
     render(){return html`
+        <div class="bgd"></div>
         <b-hr></b-hr>
         <slot></slot>
         <b-hr></b-hr>
