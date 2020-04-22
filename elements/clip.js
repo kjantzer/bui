@@ -1,3 +1,6 @@
+/*
+    DEPRECATED
+*/
 import { LitElement, html, css } from 'lit-element'
 
 customElements.define('b-clip', class extends LitElement{

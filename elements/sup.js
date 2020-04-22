@@ -1,3 +1,6 @@
+/*
+    DEPRECATED
+*/
 import { LitElement, html, css } from 'lit-element'
 
 customElements.define('b-sup', class extends LitElement{

@@ -30,6 +30,11 @@ export default class Label extends LitElement {
             user-select: none; 
         }
 
+        :host([text]) {
+            font-weight: normal;
+            text-transform: none;
+        }
+
         :host([hidden]) {
             display: none !important;
         }

@@ -58,6 +58,27 @@ Align children elements in a grid
     - `2,1,1` or `1,1,2` (half/quarter)
 - `align` - start, center, end (defaults to stretch)
 
+## `<b-text>`
+Effectively a "span" tag with attributes to apply styles
+
+<!--
+<div><b-text muted>Muted</b-text>, <b-text muted sm>Muted Small</b-text>, <b-text muted xs>Muted Extra Small</b-text></div>
+<div><b-text tone="critical" italic>Critical Italic</b-text>, <b-text tone="warning">Warning text</b-text>, and <b-text tone="info">Info text</b-text></div>
+<div>Text with<b-text xs sup muted>Super</b-text> Text with<b-text xs sub muted>sub</b-text></div>
+<div style="width:160px"><b-text clip>Text with clipping enabled</b-text></div>
+<div><b-text link>Link (hover me)</b-text></div>
+<div><b-text ucase>uppercase text</b-text>, <b-text lcase>LOWERCASE text</b-text>, and <b-text capitalize>capitalize text</b-text></div>
+-->
+
+#### Attributes
+- `xs`, `sm` - size
+- `tone` - critical, warning, info, muted
+- `muted` - shorthand for `tone="muted"`
+- `bold`, `italic`
+- `ucase`, `lcase`, `capitalize`
+- `link` - changes color on hover
+- `clip` - keeps text on one line, clipping with ellipsis
+- `sup`, `sub` - super/sub vertical align
 
 ## `<b-btn>`
 
@@ -172,7 +193,9 @@ Label 1 <b-hr vert></b-hr> Label 2
 - `short` - makes the line short (not full width)
 - `vert` - changes to a vertical line
 
-## `<b-sub>`
+## `<b-sub>` DEPRECATED
+>deprecated, use `<b-text sm muted></b-text>` instead
+
 A subdued (or sub text) text element that is slightly smaller and lighter in color
 
 <!--
