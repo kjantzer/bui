@@ -125,7 +125,9 @@ module.exports = class DB {
         for( let key in where ){
             let val = where[key]
 
-            if( ['IS NULL', 'IS NOT NULL'].includes(val) ){
+            if( ['NULL', 'NOT NULL'].includes(val) ){
+                fields.push(`${key} IS ${val}`)
+            }else if( ['IS NULL', 'IS NOT NULL'].includes(val) ){
                 fields.push(`${key} ${val}`)
             }else{
 
