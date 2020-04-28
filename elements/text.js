@@ -7,6 +7,10 @@ customElements.define('b-text', class extends LitElement{
             display: inline-block;
         }
 
+        :host([block]) {
+            display: block;
+        }
+
         :host([hidden]) {
             display: none;
         }
@@ -26,10 +30,19 @@ customElements.define('b-text', class extends LitElement{
         :host([ucase]) { text-transform: uppercase; }
         :host([lcase]) { text-transform: lowercase }
 
+        :host([align="left"]) { text-align: left; }
+        :host([align="right"]) { text-align: right; }
+        :host([align="center"]) { text-align: center; }
+        :host([align="justify"]) { text-align: justify; }
+
         :host([xs]) { font-size: .65em; }
         :host([sm]) { font-size: .8em; }
+        :host([md]) { font-size: 1.2em; }
+        :host([lg]) { font-size: 1.4em; }
+        :host([xl]) { font-size: 1.7em; }
+        :host([xxl]) { font-size: 2em; }
 
-        :host([tone="muted"]), :host([muted]) { color: var(--theme-color-accent, rgba(0,0,0,.4)); }
+        :host([tone="muted"]), :host([muted]) { color: rgba(var(--theme-rgb, 0,0,0),.4); }
         :host([tone="critical"]) { color: var(--b-text-tone-critical, var(--red-A400, red)); }
         :host([tone="warning"]) { color: var(--b-text-tone-warning, var(--orange, orange)); }
         :host([tone="info"]) { color: var(--b-text-tone-info, var(--blue, blue)); }

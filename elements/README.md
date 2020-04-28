@@ -71,14 +71,16 @@ Effectively a "span" tag with attributes to apply styles
 -->
 
 #### Attributes
-- `xs`, `sm` - size
+- `xs`, `sm`, `lg`, `xl`, `xxl` - size
 - `tone` - critical, warning, info, muted
 - `muted` - shorthand for `tone="muted"`
 - `bold`, `italic`
 - `ucase`, `lcase`, `capitalize`
+- `align` - left, center, right, justify
 - `link` - changes color on hover
 - `clip` - keeps text on one line, clipping with ellipsis
 - `sup`, `sub` - super/sub vertical align
+- `block` - change to a block element
 
 ## `<b-btn>`
 
