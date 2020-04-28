@@ -1,3 +1,5 @@
+require('../util/promise.series')
+
 let db
 
 const defaultConfig = {
@@ -144,9 +146,9 @@ module.exports = class Model {
         let resp = await this.db.query(this.findSql(where), whereVals)
 
         // parse each row (for decoding JSON strings, etc)
-        await Promise.all(resp.map(row=>{
+        await Promise.series(resp, row=>{
             return this.findParseRow(row)
-        }))
+        })
 
         // might need to activate this if too  many conflicts
         let convertToObject = true//this.config.resultsAsObject == true
