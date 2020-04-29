@@ -35,12 +35,12 @@ customElements.define('b-text', class extends LitElement{
         :host([align="center"]) { text-align: center; }
         :host([align="justify"]) { text-align: justify; }
 
-        :host([xs]) { font-size: .65em; }
-        :host([sm]) { font-size: .8em; }
-        :host([md]) { font-size: 1.2em; }
-        :host([lg]) { font-size: 1.4em; }
-        :host([xl]) { font-size: 1.7em; }
-        :host([xxl]) { font-size: 2em; }
+        :host([xs]) { font-size: .65em; line-height: 1.1em; }
+        :host([sm]) { font-size: .8em; line-height: 1.1em; }
+        :host([md]) { font-size: 1.2em; line-height: 1.1em; }
+        :host([lg]) { font-size: 1.4em; line-height: 1.1em; }
+        :host([xl]) { font-size: 1.7em; line-height: 1.1em; }
+        :host([xxl]) { font-size: 2em; line-height: 1.1em; }
 
         :host([tone="muted"]), :host([muted]) { color: rgba(var(--theme-rgb, 0,0,0),.4); }
         :host([tone="critical"]) { color: var(--b-text-tone-critical, var(--red-A400, red)); }
