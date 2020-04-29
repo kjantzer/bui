@@ -35,7 +35,7 @@ customElements.define('b-app', class extends LitElement {
             
             router.states.current.update({
                 title: activeView.title,
-                path: activeView.id
+                path: e.detail.path || activeView.id
             })
             
             activeView.view.didBecomeActive&&activeView.view.didBecomeActive()
