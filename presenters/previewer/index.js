@@ -120,16 +120,16 @@ customElements.define('b-previewer', class extends LitElement{
         }
 
         b-previewer-iframe ~ b-panel-toolbar {
-            background: var(--theme-bgd-accent);
+            background: var(--theme-bgd);
         }
 
         b-panel-toolbar b-btn {
             --bgdColor: var(--theme-color);
-            color:  var(--theme-bgd-accent);
+            color:  var(--theme-bgd);
         }
 
         b-empty-state > div {
-            background: var(--theme-bgd-accent);
+            background: var(--theme-bgd);
             padding: .25em 1em;
             border-radius: 2em;
             color: var(--theme-color);
