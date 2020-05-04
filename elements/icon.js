@@ -52,12 +52,9 @@ export const svgIcons = new SvgIcons()
 
 export class IconElement extends HTMLElement {
 
-	constructor(){
-		super()
-
-		this.attachShadow({mode: 'open'})
-        let temp = document.createElement('template')
-		temp.innerHTML = `<style>
+	// not ideal...
+	get styles(){
+		return `
 		:host {
 			display: inline-flex;
 			vertical-align: middle;
@@ -103,6 +100,16 @@ export class IconElement extends HTMLElement {
 		:host([name="arrows-ccw"][spin]) svg {
 			animation: 1600ms rotate360CCW infinite linear;
 		}
+		`
+	}
+
+	constructor(){
+		super()
+
+		this.attachShadow({mode: 'open'})
+        let temp = document.createElement('template')
+		temp.innerHTML = `<style>
+		${this.styles}
 		</style>
 		<slot></slot>
 		`
