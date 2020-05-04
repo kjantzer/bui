@@ -24,7 +24,7 @@ customElements.define('b-ts', class extends LitElement{
         this.__date = date
 
         if( date )
-            this.title = this.date.format('l')
+            this.title = this.date.format('LT l')
         
         this.requestUpdate()
     }
