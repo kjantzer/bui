@@ -45,7 +45,7 @@ module.exports = class Model {
 
 // =================================================
     
-    constructor(attrs, req){
+    constructor(attrs, req, opts={}){
 
         if( !db )
             console.warn('Model: `db` has not been set yet')
@@ -53,6 +53,7 @@ module.exports = class Model {
         this.db = db
         this.req = req
         this.attrs = attrs || {}
+        this.opts = opts
 
         for(let key in attrs){
             this[key] = attrs[key]
