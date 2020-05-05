@@ -79,15 +79,18 @@ customElements.define('b-timeline-horz', class extends LitElement{
             background: none;
         }
 
-        :host([started]) .bubble b-icon {
+        :host([started]) .bubble b-icon,
+        :host([started]) slot[name="bubble"]::slotted(b-icon) {
             color: var(--blue);
         }
 
-        :host([late]) .bubble b-icon {
+        :host([late]) .bubble b-icon,
+        :host([late]) slot[name="bubble"]::slotted(b-icon) {
             color: var(--red);
         }
 
-        :host([done]) .bubble b-icon {
+        :host([done]) .bubble b-icon,
+        :host([done]) slot[name="bubble"]::slotted(b-icon) {
             color: var(--green);
         }
 
