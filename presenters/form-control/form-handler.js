@@ -74,19 +74,16 @@ class FormHandler extends HTMLElement {
 	get model(){ return this._model }
 	set model(model){
 
-		if( !model ){
-			
-			if( this.model ){
-				this.model.off('sync', null, this)
-				this.model.off('change', null, this)
-				this.model.off('edited', null, this)
-				delete this._model
-			}
+		if( model == this.model ) return
 
-			return
+		if( this.model ){
+			this.model.off('sync', null, this)
+			this.model.off('change', null, this)
+			this.model.off('edited', null, this)
+			delete this._model
 		}
 
-		if( model == this.model ) return
+		if( !model ) return
 
 		this._model = model
 		this.model._editedAttrs = this.model._editedAttrs || {}
