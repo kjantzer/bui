@@ -4,6 +4,7 @@
   --bgd: var(--b-popover-bgd, #fff);
   --arrowBgd: var(--bgd);
   --border: rgba(0, 0, 0, 0.2);
+  color: var(--b-popover-color, #333);
 }
 .popover.dark {
   --bgd: var(--b-popover-bgd, #2c3033);
@@ -125,8 +126,8 @@
   padding: 0.5em;
   --focusBgd: none;
 }
-
 .dialog {
+  max-width: 100%;
   min-height: 1em;
   display: grid;
   grid-template-areas: 'icon' 'title' 'msg' 'btns';
@@ -191,7 +192,7 @@
 }
 .dialog .d-msg:not(:empty) form-control {
   text-align: left;
-  color: #222;
+  color: var(--theme-color, #222);
   width: 100%;
   margin-top: 0.5em;
 }
@@ -211,6 +212,8 @@
   padding: 0;
   padding-top: 0.5em !important;
   color: inherit;
+  min-height: 0;
+  overflow: auto;
 }
 .dialog .d-title:empty + .d-msg:not(:empty) {
   padding-top: 1em;
@@ -219,6 +222,7 @@
   padding: 0.5rem;
   display: flex;
   justify-content: flex-end;
+  text-align: right;
 }
 .dialog .d-btns > b-btn:not(:last-child) {
   margin-right: 0.5rem;
@@ -251,11 +255,17 @@
   font-size: 1rem;
   width: auto !important;
 }
-
+[type="actionsheet"] .dialog {
+  width: auto !important;
+  font-size: 1.2em;
+}
+[hidden] {
+  display: none;
+}
 .b-menu {
-  --hoverBgd: rgba(0, 0, 0, 0.1);
+  --hoverBgd: var(--b-menu-hover-bgd, rgba(0, 0, 0, 0.1));
   --hoverTextColor: inherit;
-  --checkboxColor: #e10050;
+  --checkboxColor: var(--b-menu-checkbox-color, #e10050);
   --checkboxColorHover: var(--checkboxColor);
   display: flex;
   flex-direction: column;
@@ -278,22 +288,24 @@
   flex: 1;
   box-shadow: none;
   border: none;
-  background: #eee !important;
-  border-radius: 30px;
-  font-size: 1rem;
-  padding-top: 0.25em;
-  padding-bottom: 0.25em;
+  background: var(--b-menu-input-bgd, #eee) !important;
+  color: var(--b-menu-input-color);
+  border-radius: var(--b-menu-input-radius, 30px);
+  font-size: var(--b-menu-input-font-size, 1rem);
+  padding-top: var(--b-menu-input-padding, 0.35em);
+  padding-bottom: var(--b-menu-input-padding, 0.35em);
   padding-left: 1.8em;
   padding-right: 0.5em;
   outline: none;
 }
 .b-menu .menu-search-bar input::placeholder {
-  color: rgba(0, 0, 0, 0.3);
+  color: var(--b-menu-color-accent, rgba(0, 0, 0, 0.3));
 }
 .b-menu .menu-search-bar b-icon {
   position: absolute;
-  top: 0.8em;
-  left: 0.9em;
+  top: 50%;
+  transform: translateY(-50%);
+  left: calc(1.1 * var(--b-menu-input-font-size, 1rem));
 }
 .b-menu .menu-search-bar b-spinner {
   position: absolute;
@@ -335,7 +347,7 @@
 .b-menu .menu-item .mi-description {
   font-size: 0.8em;
   line-height: 1.2em;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--b-menu-description-color, rgba(0, 0, 0, 0.5));
 }
 .b-menu .menu-item [selected] {
   background: var(--hoverBgd);
@@ -373,17 +385,26 @@
 }
 @media (hover) {
   .b-menu .menu-item.hover-red:hover {
-    background: var(--color-red);
+    background: var(--red-700, red);
     color: #fff;
   }
   .b-menu .menu-item.hover-orange:hover {
-    background: var(--color-orange);
+    background: var(--orange-700, orange);
     color: #fff;
   }
 }
 .b-menu .menu-item > check-box {
   --color: var(--checkboxColor) !important;
   margin: -0.5em 0.25em -0.5em -0.5em;
+}
+.b-menu .menu-item > select-field {
+  order: 2;
+  margin-left: 0.5em;
+  margin-right: -0.5em;
+  color: var(--checkboxColor);
+}
+.b-menu .menu-item > select-field[value=""] {
+  color: var(--b-menu-description-color, rgba(0, 0, 0, 0.5));
 }
 .b-menu .menu-item > .mi-content ~ * {
   margin-left: 1em;
@@ -401,8 +422,8 @@
   padding: 1em 1em 0.25em 1.1em;
   font-weight: normal;
   font-size: 0.9em;
-  border-top: solid 1px rgba(0, 0, 0, 0.1);
-  color: rgba(0, 0, 0, 0.5);
+  border-top: solid 1px var(--b-hr-bgd, rgba(0, 0, 0, 0.1));
+  color: var(--b-menu-color-accent, rgba(0, 0, 0, 0.5));
 }
 .b-menu .menu-divider:first-child {
   border-top: none;
@@ -411,8 +432,8 @@
   padding: 0.5em 1em;
   font-size: 0.9em;
   line-height: 1.2em;
-  color: rgba(0, 0, 0, 0.5);
-  background: #f5f5f5;
+  color: var(--b-menu-color-accent, rgba(0, 0, 0, 0.5));
+  background: var(--hoverBgd, #f5f5f5);
   font-style: italic;
 }
 .b-menu ~ .d-btns:empty {
@@ -457,12 +478,14 @@
 .b-menu.grid-centered .results .menu-item {
   justify-self: center;
 }
-
 :root {
-  --color-primary: var(--blue);
+  --color-primary: var(--theme-chosen, var(--theme, var(--blue)));
   --color-secondary: var(--pink);
   --black: #000;
   --white: #fff;
+  --dark: #2c3033;
+  --dark-black: #1f2224;
+  --light: #f5f5f5;
   --red: var(--red-500);
   --pink: var(--pink-500);
   --purple: var(--purple-500);
@@ -482,6 +505,8 @@
   --brown: var(--brown-500);
   --gray: var(--gray-500);
   --gray-blue: var(--gray-blue-500);
+}
+:root {
   --red-50: #FFEBEE;
   --red-100: #FFCDD2;
   --red-200: #EF9A9A;
@@ -737,6 +762,3 @@
   --gray-blue-800: #37474F;
   --gray-blue-900: #263238;
 }
-
-
-/*# sourceMappingURL=/bui.css.map */
