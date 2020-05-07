@@ -12,6 +12,8 @@ customElements.define('b-tabs-router', class extends TabsView {
 
         // setup routes for each tab (if they opt in)
         this.views.forEach(tab=>{
+
+            // when the route changes, switch to the appropriate  
             tab.route = router.add(rootPath+tab.path, (oldState, newState, dir)=>{
 
                 tab.routeState = newState
@@ -22,6 +24,14 @@ customElements.define('b-tabs-router', class extends TabsView {
                 if( tab.view.onRouteChange )
                     tab.view.onRouteChange(oldState, newState, dir)
             })
+
+            // now see if this tab is already active based on the current url state
+            let matchedState = router.states && tab.route.matches(router.states.current)
+            
+            if( matchedState ){
+                this.active = tab
+                tab.routeState = matchedState
+            }
         })
     }
 
