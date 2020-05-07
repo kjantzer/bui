@@ -23,6 +23,7 @@
         "web components",
         "ui framework",
         "ui components",
+        "design system",
         "lit-element",
         "bui",
         "PWA",
@@ -39,7 +40,8 @@
         "last 1 chrome versions"
     ],
     "devDependencies": {
-        "docpress": "github:kjantzer/docpress#prod"
+        "docpress": "github:kjantzer/docpress#prod",
+        "less": "^3.11.1"
     },
     "dependencies": {
         "@fnando/sparkline": "^0.3.10",
@@ -50,8 +52,8 @@
         "lodash": "^4.17.11",
         "moment": "^2.24.0",
         "popper.js": "^1.14.7",
-        "socket.io": "^2.3.0",
         "quill": "github:kjantzer/quill#shadow",
+        "socket.io": "^2.3.0",
         "url-pattern": "^1.0.3"
     }
 }

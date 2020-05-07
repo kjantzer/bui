@@ -5,6 +5,8 @@
 //
 // anything defined in a previous bundle is accessed via the
 // orig method which is the require for previous bundles
+
+// eslint-disable-next-line no-global-assign
 parcelRequire = (function (modules, cache, entry, globalName) {
   // Save the require from previous bundle to this closure if any
   var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
@@ -75,16 +77,8 @@ parcelRequire = (function (modules, cache, entry, globalName) {
     }, {}];
   };
 
-  var error;
   for (var i = 0; i < entry.length; i++) {
-    try {
-      newRequire(entry[i]);
-    } catch (e) {
-      // Save first error but execute all entries
-      if (!error) {
-        error = e;
-      }
-    }
+    newRequire(entry[i]);
   }
 
   if (entry.length) {
@@ -109,13 +103,6 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   // Override the current require with this new one
-  parcelRequire = newRequire;
-
-  if (error) {
-    // throw error from earlier, _after updating parcelRequire_
-    throw error;
-  }
-
   return newRequire;
 })({"uWh2":[function(require,module,exports) {
 "use strict";
@@ -193,7 +180,7 @@ const isDirective = o => {
 };
 
 exports.isDirective = isDirective;
-},{}],"ytxR":[function(require,module,exports) {
+},{}],"2ytx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -731,7 +718,7 @@ class TemplateInstance {
 }
 
 exports.TemplateInstance = TemplateInstance;
-},{"./dom.js":"ytxR","./template.js":"Av0K"}],"cVNN":[function(require,module,exports) {
+},{"./dom.js":"2ytx","./template.js":"Av0K"}],"cVNN":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -866,7 +853,7 @@ class SVGTemplateResult extends TemplateResult {
 }
 
 exports.SVGTemplateResult = SVGTemplateResult;
-},{"./dom.js":"ytxR","./template.js":"Av0K"}],"atl2":[function(require,module,exports) {
+},{"./dom.js":"2ytx","./template.js":"Av0K"}],"atl2":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1419,7 +1406,7 @@ const getOptions = o => o && (eventOptionsSupported ? {
   passive: o.passive,
   once: o.once
 } : o.capture);
-},{"./directive.js":"uWh2","./dom.js":"ytxR","./part.js":"pnLb","./template-instance.js":"bn5t","./template-result.js":"cVNN","./template.js":"Av0K"}],"LBiL":[function(require,module,exports) {
+},{"./directive.js":"uWh2","./dom.js":"2ytx","./part.js":"pnLb","./template-instance.js":"bn5t","./template-result.js":"cVNN","./template.js":"Av0K"}],"52LB":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1622,7 +1609,7 @@ const render = (result, container, options) => {
 };
 
 exports.render = render;
-},{"./dom.js":"ytxR","./parts.js":"atl2","./template-factory.js":"gbKZ"}],"SPDu":[function(require,module,exports) {
+},{"./dom.js":"2ytx","./parts.js":"atl2","./template-factory.js":"gbKZ"}],"SP/d":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1866,7 +1853,7 @@ exports.html = html;
 const svg = (strings, ...values) => new _templateResult.SVGTemplateResult(strings, values, 'svg', _defaultTemplateProcessor.defaultTemplateProcessor);
 
 exports.svg = svg;
-},{"./lib/default-template-processor.js":"LBiL","./lib/template-result.js":"cVNN","./lib/directive.js":"uWh2","./lib/dom.js":"ytxR","./lib/part.js":"pnLb","./lib/parts.js":"atl2","./lib/render.js":"Fhpq","./lib/template-factory.js":"gbKZ","./lib/template-instance.js":"bn5t","./lib/template.js":"Av0K"}],"NXoq":[function(require,module,exports) {
+},{"./lib/default-template-processor.js":"52LB","./lib/template-result.js":"cVNN","./lib/directive.js":"uWh2","./lib/dom.js":"2ytx","./lib/part.js":"pnLb","./lib/parts.js":"atl2","./lib/render.js":"Fhpq","./lib/template-factory.js":"gbKZ","./lib/template-instance.js":"bn5t","./lib/template.js":"Av0K"}],"NXoq":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2395,7 +2382,7 @@ const render = (result, container, options) => {
 };
 
 exports.render = render;
-},{"./dom.js":"ytxR","./modify-template.js":"NXoq","./render.js":"Fhpq","./template-factory.js":"gbKZ","./template-instance.js":"bn5t","./template.js":"Av0K","../lit-html.js":"SPDu"}],"fKvB":[function(require,module,exports) {
+},{"./dom.js":"2ytx","./modify-template.js":"NXoq","./render.js":"Fhpq","./template-factory.js":"gbKZ","./template-instance.js":"bn5t","./template.js":"Av0K","../lit-html.js":"SP/d"}],"fKvB":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3123,7 +3110,7 @@ _a = finalized;
  */
 
 UpdatingElement[_a] = true;
-},{}],"FzpZ":[function(require,module,exports) {
+},{}],"4Fzp":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3445,7 +3432,7 @@ const css = (strings, ...values) => {
 };
 
 exports.css = css;
-},{}],"bhxD":[function(require,module,exports) {
+},{}],"+bhx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3749,7 +3736,7 @@ LitElement['finalized'] = true;
  */
 
 LitElement.render = _shadyRender.render;
-},{"lit-html":"SPDu","lit-html/lib/shady-render.js":"eBH8","./lib/updating-element.js":"fKvB","./lib/decorators.js":"FzpZ","lit-html/lit-html.js":"SPDu","./lib/css-tag.js":"ZFCR"}],"ncPe":[function(require,module,exports) {
+},{"lit-html":"SP/d","lit-html/lib/shady-render.js":"eBH8","./lib/updating-element.js":"fKvB","./lib/decorators.js":"4Fzp","lit-html/lit-html.js":"SP/d","./lib/css-tag.js":"ZFCR"}],"ncPe":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3846,6 +3833,22 @@ class IconElement extends HTMLElement {
 			fill: currentColor;
 			color: currentColor;
 		}
+
+		@keyframes rotate360 {
+			to { transform: rotate(360deg); }
+		}
+
+		@keyframes rotate360CCW {
+			to { transform: rotate(-360deg); }
+		}
+
+		:host([spin]) svg {
+			animation: 1600ms rotate360 infinite linear;
+		}
+
+		:host([name="arrows-ccw"][spin]) svg {
+			animation: 1600ms rotate360CCW infinite linear;
+		}
 		</style>
 		<slot></slot>
 		`;
@@ -3878,6 +3881,14 @@ class IconElement extends HTMLElement {
 
   set name(val) {
     return this.setAttribute('name', val);
+  }
+
+  set spin(val) {
+    this.toggleAttribute('spin', Boolean(val));
+  }
+
+  get spin() {
+    return this.hasAttribute('spin');
   }
 
 }
@@ -3957,7 +3968,7 @@ class IconList extends _litElement.LitElement {
 
 exports.IconList = IconList;
 customElements.define('b-icon-list', IconList);
-},{"lit-element":"bhxD","./icons.svg.html":"pxeq"}],"EnCN":[function(require,module,exports) {
+},{"lit-element":"+bhx","./icons.svg.html":"pxeq"}],"EnCN":[function(require,module,exports) {
 /*
 	SVG and idea taken from https://ant.design/components/button/
 	
@@ -4015,7 +4026,7 @@ customElements.define('b-spinner', SpinnerElement);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.BtnElement = void 0;
+exports.default = void 0;
 
 var _litElement = require("lit-element");
 
@@ -4079,7 +4090,10 @@ class BtnElement extends _litElement.LitElement {
             color: var(--textColor);
             border-radius: var(--radius);
             cursor: pointer;
-            transition: 160ms;
+            transition: 
+                color 160ms,
+                background-color 160ms,
+                border 160ms;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
@@ -4094,6 +4108,13 @@ class BtnElement extends _litElement.LitElement {
             -moz-user-select: none; /* Firefox */
             -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; 
+        }
+
+        /* hide by default */
+        @media print {
+            :host {
+                display: none;
+            }
         }
 
         :host([hidden]) {
@@ -4200,7 +4221,7 @@ class BtnElement extends _litElement.LitElement {
         }
 
         :host([stacked]) slot::slotted(*) {
-            opacity: .5;
+            opacity: var(--b-btn-stacked-label-opacity, .5);
         }
 
         :host([stacked]) slot[name="icon"] {
@@ -4208,8 +4229,9 @@ class BtnElement extends _litElement.LitElement {
             display: contents;
         }
 
-        :host([stacked]) slot[name="icon"]::slotted(*) {
-            opacity: 1;
+        :host([stacked]) slot[name="icon"]::slotted(*),
+        :host([stacked]) slot[name="icon"] b-icon{
+            opacity: var(--b-btn-stacked-icon-opacity, 1);
         }
 
         :host([stacked]) b-spinner {
@@ -4378,9 +4400,9 @@ class BtnElement extends _litElement.LitElement {
 
 }
 
-exports.BtnElement = BtnElement;
+exports.default = BtnElement;
 customElements.define('b-btn', BtnElement);
-},{"lit-element":"bhxD","./spinner":"EnCN","./icon":"ncPe"}],"pV6C":[function(require,module,exports) {
+},{"lit-element":"+bhx","./spinner":"EnCN","./icon":"ncPe"}],"0pV6":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4398,7 +4420,12 @@ customElements.define('b-btn-group', class extends _litElement.LitElement {
         }
 
         ::slotted(b-btn:first-of-type:not(:last-of-type)){
-            border-radius: var(--radius) 0 0 var(--radius)
+            border-radius: var(--radius) 0 0 var(--radius);
+        }
+
+        ::slotted(b-btn:not(:first-of-type):not(:last-of-type)){
+            border-radius: 0;
+            border-left: solid 1px rgba(0,0,0,.2);
         }
 
         ::slotted(b-btn:last-of-type:not(:first-of-type)){
@@ -4419,7 +4446,7 @@ customElements.define('b-btn-group', class extends _litElement.LitElement {
 var _default = customElements.get('b-btn-group');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"eyVY":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"eyVY":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4471,7 +4498,7 @@ class SpinnerOverlayElement extends _litElement.LitElement {
   static get styles() {
     return _litElement.css`
 		:host {
-			--spinnerBgd: rgba(255,255,255 ,.6);
+			--spinnerBgd: var(--b-spinner-overlay-bgd, rgba(255,255,255 ,.6));
             --spinnerColor: inherit;
             --spinnerSize: 1.6em;
             position: absolute;
@@ -4548,7 +4575,7 @@ class SpinnerOverlayElement extends _litElement.LitElement {
 
 exports.SpinnerOverlayElement = SpinnerOverlayElement;
 customElements.define('b-spinner-overlay', SpinnerOverlayElement);
-},{"lit-element":"bhxD","./spinner":"EnCN"}],"EqRM":[function(require,module,exports) {
+},{"lit-element":"+bhx","./spinner":"EnCN"}],"5EqR":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4584,7 +4611,14 @@ class AJAX {
   }
 
   _onDone(e) {
-    let resp = this.xhr.responseText; // parse JSON if it looks like it
+    let resp = this.xhr.responseText;
+
+    if (this.xhr.status != 200) {
+      let err = new Error(this.xhr.statusText || 'Unknown error');
+      err.errorCode = this.xhr.status;
+      return this.reject && this.reject(err);
+    } // parse JSON if it looks like it
+
 
     if (resp && (resp[0] == '{' || resp[0] == '[')) {
       try {
@@ -4609,6 +4643,17 @@ class AJAX {
 }
 
 exports.default = AJAX;
+},{}],"trgA":[function(require,module,exports) {
+Object.defineProperty(File.prototype, 'ext', {
+  get: function () {
+    return this.name.split('.').pop();
+  }
+});
+Object.defineProperty(File.prototype, 'nameWithoutExt', {
+  get: function () {
+    return this.name.split('.').shift();
+  }
+});
 },{}],"aYTp":[function(require,module,exports) {
 "use strict";
 
@@ -4619,7 +4664,9 @@ exports.UploaderElement = void 0;
 
 var _litElement = require("lit-element");
 
-var _ajax = _interopRequireDefault(require("../util/ajax"));
+var _ajax = _interopRequireDefault(require("../util/ajax.js"));
+
+require("../util/file.ext.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4868,12 +4915,20 @@ class UploaderElement extends _litElement.LitElement {
     this.uploading = true;
     let resp = [];
 
-    for (let file of this.files) {
+    for (let i in this.files) {
+      let file = this.files[i];
+
       let _formData = new FormData();
 
       _formData.append(fileKey, file);
 
-      for (let key in formData) _formData.append(key, formData[key]);
+      _formData.append('totalFiles', this.files.length);
+
+      _formData.append('fileNum', parseInt(i) + 1);
+
+      for (let key in formData) {
+        if (typeof formData[key] === 'function') _formData.append(key, formData[key](file));else _formData.append(key, formData[key]);
+      }
 
       this._numUploading++;
       this.requestUpdate();
@@ -4889,7 +4944,11 @@ class UploaderElement extends _litElement.LitElement {
         this.requestUpdate();
         resp.push(uploadResp);
       } catch (e) {
-        console.log(e); // TODO: make error apparent to user
+        console.log(e);
+        resp.push({
+          error: e,
+          file: file
+        });
       }
     }
 
@@ -4960,7 +5019,7 @@ const dirEntries = dir => {
     });
   });
 };
-},{"lit-element":"bhxD","../util/ajax":"EqRM"}],"Yy3A":[function(require,module,exports) {
+},{"lit-element":"+bhx","../util/ajax.js":"5EqR","../util/file.ext.js":"trgA"}],"Yy3A":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5059,7 +5118,9 @@ class PaperElement extends _litElement.LitElement {
         }
 
         ::slotted(b-icon:first-of-type) {
-            color: var(--bgdAccent);
+            /* color: var(--bgdAccent); */
+            color: #000;
+            opacity: .5;
             margin-right: .15em;
         }
 
@@ -5129,7 +5190,169 @@ class PaperElement extends _litElement.LitElement {
 
 exports.PaperElement = PaperElement;
 customElements.define('b-paper', PaperElement);
-},{"lit-element":"bhxD"}],"inC5":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"yukA":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+customElements.define('b-text', class extends _litElement.LitElement {
+  static get styles() {
+    return _litElement.css`
+        :host {
+            display: inline-block;
+        }
+
+        :host([block]) {
+            display: block;
+        }
+
+        :host([hidden]) {
+            display: none;
+        }
+
+        :host([clip]) {
+            max-width: 100%;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            vertical-align: text-bottom;
+        }
+
+        :host([bold]) { font-weight: bold; }
+        :host([italic]) { font-style: italic; }
+
+        :host([capitalize]) { text-transform: capitalize; }
+        :host([ucase]) { text-transform: uppercase; }
+        :host([lcase]) { text-transform: lowercase }
+
+        :host([align="left"]) { text-align: left; }
+        :host([align="right"]) { text-align: right; }
+        :host([align="center"]) { text-align: center; }
+        :host([align="justify"]) { text-align: justify; }
+
+        :host([xs]) { font-size: .65em; line-height: 1.1em; }
+        :host([sm]) { font-size: .8em; line-height: 1.1em; }
+        :host([md]) { font-size: 1.2em; line-height: 1.1em; }
+        :host([lg]) { font-size: 1.4em; line-height: 1.1em; }
+        :host([xl]) { font-size: 1.7em; line-height: 1.1em; }
+        :host([xxl]) { font-size: 2em; line-height: 1.1em; }
+
+        :host([tone="muted"]), :host([muted]) { color: rgba(var(--theme-rgb, 0,0,0),.4); }
+        :host([tone="critical"]) { color: var(--b-text-tone-critical, var(--red-A400, red)); }
+        :host([tone="warning"]) { color: var(--b-text-tone-warning, var(--orange, orange)); }
+        :host([tone="info"]) { color: var(--b-text-tone-info, var(--blue, blue)); }
+
+        @media (hover){
+            :host([link]:hover) {
+                color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
+            }
+        }
+
+        :host([sup]) {
+            vertical-align: super;
+            margin-top: -1em;
+        }
+
+        :host([sub]) {
+            vertical-align: sub;
+            margin-bottom: -1em;
+        }
+    `;
+  }
+
+  firstUpdated() {
+    if (this.hasAttribute('clip') && !this.hasAttribute('title')) this.title = this.innerText;
+  }
+
+  render() {
+    return _litElement.html`
+        <slot></slot>
+    `;
+  }
+
+});
+
+var _default = customElements.get('b-text');
+
+exports.default = _default;
+},{"lit-element":"+bhx"}],"BALQ":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+customElements.define('b-grid', class extends _litElement.LitElement {
+  static get styles() {
+    return _litElement.css`
+        :host {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1em;
+            min-width: 0;
+        }
+
+        ::slotted(*) {
+            min-width: 0;
+            min-height: 0;
+        }
+
+        /* standard/simple colums */
+        :host([cols="1"]) { grid-template-columns: 1fr; }
+        :host([cols="2"]) { grid-template-columns: repeat(2, 1fr); }
+        :host([cols="3"]) { grid-template-columns: repeat(3, 1fr); }
+        :host([cols="4"]) { grid-template-columns: repeat(4, 1fr); }
+        :host([cols="5"]) { grid-template-columns: repeat(5, 1fr); }
+        :host([cols="6"]) { grid-template-columns: repeat(6, 1fr); }
+        :host([cols="7"]) { grid-template-columns: repeat(7, 1fr); }
+        :host([cols="8"]) { grid-template-columns: repeat(8, 1fr); }
+
+        /* two-thirds, one-third */
+        :host([cols="2,1"]) { grid-template-columns: 2fr 1fr; }
+        :host([cols="1,2"]) { grid-template-columns: 1fr 2fr; }
+
+        /* half, quarter, quarter */
+        :host([cols="2,1,1"]) { grid-template-columns: 2fr 1fr 1fr; }
+        :host([cols="1,1,2"]) { grid-template-columns: 1fr 1fr 2fr; }
+
+        :host([gap="0"]), :host([gap="none"]) { gap: 0; }
+        :host([gap=".5"]) { gap: .5em; }
+        :host([gap="1"]) { gap: 1em; }
+        :host([gap="2"]) { gap: 2em; }
+
+        :host([align="start"]) { justify-items: flex-start; }
+        :host([align="center"]) { justify-items: center; }
+        :host([align="end"]) { justify-items: flex-end; }
+
+        ::slotted([colspan]) { grid-column: 1/-1; }
+        ::slotted([colspan="2"]) { grid-column: span 2; }
+        ::slotted([colspan="3"]) { grid-column: span 3; }
+        ::slotted([colspan="4"]) { grid-column: span 4; }
+        ::slotted([colspan="5"]) { grid-column: span 5; }
+        ::slotted([colspan="6"]) { grid-column: span 6; }
+    `;
+  }
+
+  render() {
+    return _litElement.html`
+        <slot></slot>
+    `;
+  }
+
+});
+
+var _default = customElements.get('b-grid');
+
+exports.default = _default;
+},{"lit-element":"+bhx"}],"inC5":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5257,7 +5480,7 @@ customElements.define('b-carousel', class extends _litElement.LitElement {
 var _default = customElements.get('b-carousel');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"a2Bw":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"a2/B":[function(require,module,exports) {
 var define;
 var global = arguments[3];
 //! moment.js
@@ -9863,7 +10086,7 @@ var global = arguments[3];
 
 })));
 
-},{}],"uEYO":[function(require,module,exports) {
+},{}],"u+eY":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10018,7 +10241,7 @@ class TimerElement extends _litElement.LitElement {
 
 exports.TimerElement = TimerElement;
 customElements.define('b-timer', TimerElement);
-},{"lit-element":"bhxD","moment":"a2Bw"}],"dUnZ":[function(require,module,exports) {
+},{"lit-element":"+bhx","moment":"a2/B"}],"+2dU":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10099,7 +10322,7 @@ class EmptyState extends _litElement.LitElement {
 
 exports.default = EmptyState;
 customElements.define('b-empty-state', EmptyState);
-},{"lit-element":"bhxD"}],"DcCw":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"DcCw":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10130,6 +10353,8 @@ class Label extends _litElement.LitElement {
   static get styles() {
     return _litElement.css`
         :host {
+            position: relative;
+            z-index: 1;
             display: inline-block;
             text-transform: uppercase;
             color: var(--b-label-color, rgba(0,0,0,.33));
@@ -10138,6 +10363,7 @@ class Label extends _litElement.LitElement {
             line-height: 1rem;
             --dividerThickness: 1px;
             vertical-align: middle;
+            border-radius: var(--radius, 0);
 
             -webkit-touch-callout: none; /* iOS Safari */
             -webkit-user-select: none; /* Safari */
@@ -10145,6 +10371,11 @@ class Label extends _litElement.LitElement {
             -moz-user-select: none; /* Firefox */
             -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; 
+        }
+
+        :host([text]) {
+            font-weight: normal;
+            text-transform: none;
         }
 
         :host([hidden]) {
@@ -10157,7 +10388,7 @@ class Label extends _litElement.LitElement {
             --bgd: #aaa;
             --color: #fff;
             padding: 0.15em 0.3em 0.1em;
-            border-radius: 3px;
+            --radius: 3px;
             font-size: .8rem;
             text-transform: none;
             background: var(--bgd);
@@ -10177,7 +10408,7 @@ class Label extends _litElement.LitElement {
         }
 
         :host([badge]) {
-            border-radius: 30px;
+            --radius: 30px;
             /* padding-left: .6em;
             padding-right: .6em; */
             padding-right: .45em;
@@ -10196,6 +10427,7 @@ class Label extends _litElement.LitElement {
         }
 
         :host([filled="black"]), :host([badge="black"]) { --bgd: #333; }
+        :host([filled="white"]), :host([badge="white"]) { --bgd: #fff; --color: #333; }
         :host([filled="gray"]), :host([badge="gray"]) { --bgd: #ddd; --color: #777; }
         :host([filled="blue"]), :host([badge="blue"]) { --bgd: var(--blue); }
         :host([filled="red"]), :host([badge="red"]) { --bgd: var(--red); }
@@ -10211,6 +10443,28 @@ class Label extends _litElement.LitElement {
         :host([outline="orange"]) { --bgd: var(--orange); }
         :host([outline="green"]) { --bgd: var(--green); }
         :host([outline="pink"]) { --bgd: var(--pink); }
+
+        .bgd {
+            display: none;
+            background: var(--bgd);
+            opacity: .2;
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: var(--radius);
+        }
+
+        :host([muted]) {
+            background: none;
+            --color: var(--bgd);
+        }
+
+        :host([muted]) .bgd {
+            display: block;
+        }
 
         /* causes unwanted wrap on chrome */
         /* slot {
@@ -10255,6 +10509,7 @@ class Label extends _litElement.LitElement {
 
   render() {
     return _litElement.html`
+        <div class="bgd"></div>
         <b-hr></b-hr>
         <slot></slot>
         <b-hr></b-hr>
@@ -10265,7 +10520,7 @@ class Label extends _litElement.LitElement {
 
 exports.default = Label;
 customElements.define('b-label', Label);
-},{"lit-element":"bhxD"}],"jV4C":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"jV4C":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10397,7 +10652,7 @@ customElements.define('b-ribbon', class extends _litElement.LitElement {
 var _default = customElements.get('b-ribbon');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"IOAQ":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"IOAQ":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10450,7 +10705,7 @@ customElements.define('b-hr', class extends _litElement.LitElement {
 var _default = customElements.get('b-hr');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"VANQ":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"VANQ":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10460,6 +10715,9 @@ exports.default = void 0;
 
 var _litElement = require("lit-element");
 
+/*
+    DEPRECATED
+*/
 customElements.define('b-sub', class extends _litElement.LitElement {
   static get styles() {
     return _litElement.css`
@@ -10488,7 +10746,7 @@ customElements.define('b-sub', class extends _litElement.LitElement {
 var _default = customElements.get('b-sub');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"VfwF":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"29Vf":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10518,8 +10776,14 @@ customElements.define('b-ts', class extends _litElement.LitElement {
     clearInterval(this._updateInterval);
   }
 
-  firstUpdated() {
-    if (this.date) this.title = this.date.format('l');
+  get date() {
+    return this.__date;
+  }
+
+  set date(date) {
+    this.__date = date;
+    if (date) this.title = this.date.format('l');
+    this.requestUpdate();
   }
 
   get displayTime() {
@@ -10540,7 +10804,7 @@ customElements.define('b-ts', class extends _litElement.LitElement {
 var _default = customElements.get('b-ts');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"DaYz":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"Da++":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10726,7 +10990,9 @@ class AvatarElement extends HTMLElement {
 
   set gravatar(guid) {
     // wait until el is connected so we can determine the height of the avatar
-    if (!this.isConnected || !guid) return;
+    if (!this.isConnected || !guid) return; // FIXME: accessing offsetHeight is a perf hit...as it requires a reflow
+    // https://www.sitepoint.com/10-ways-minimize-reflows-improve-performance/
+
     let size = this.offsetHeight * 2;
     if (size < 80) size = 80;
     this.url = guid ? `//gravatar.com/avatar/${guid}?d=404&s=${size}` : '';
@@ -10792,7 +11058,7 @@ customElements.define('b-code', class extends _litElement.LitElement {
 var _default = customElements.get('b-code');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"bpDM":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"bpDM":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10802,6 +11068,7 @@ exports.default = void 0;
 
 var _litElement = require("lit-element");
 
+// https://embedresponsively.com/ 
 customElements.define('b-embed', class Embed extends _litElement.LitElement {
   static get properties() {
     return {
@@ -10868,7 +11135,7 @@ customElements.define('b-embed', class Embed extends _litElement.LitElement {
 var _default = customElements.get('b-embed');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"ZCfn":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"ZCfn":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11221,12 +11488,13 @@ customElements.define('range-slider', class extends _litElement.LitElement {
 var _default = customElements.get('range-slider');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"z4Ln":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"2z4L":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.forceStorageEventsLocally = forceStorageEventsLocally;
 exports.default = exports.sessionStore = exports.localStore = void 0;
 
 // TODO: support prefixing?
@@ -11266,6 +11534,37 @@ const sessionStore = (key, val) => {
 exports.sessionStore = sessionStore;
 var _default = localStore;
 exports.default = _default;
+
+function forceStorageEventsLocally() {
+  let setItem = window.localStorage.setItem;
+  let removeItem = window.localStorage.removeItem;
+
+  window.localStorage.setItem = function (key, val) {
+    setItem.call(window.localStorage, key, val);
+    window.dispatchEvent(new CustomEvent('storage', {
+      bubbles: true,
+      composed: true,
+      detail: {
+        key: key,
+        oldVal: null,
+        newVal: val
+      }
+    }));
+  };
+
+  window.localStorage.removeItem = function (key) {
+    removeItem.call(window.localStorage, key);
+    window.dispatchEvent(new CustomEvent('storage', {
+      bubbles: true,
+      composed: true,
+      detail: {
+        key: key,
+        oldVal: null,
+        newVal: null
+      }
+    }));
+  };
+}
 },{}],"EIVk":[function(require,module,exports) {
 "use strict";
 
@@ -11286,6 +11585,7 @@ var _store = _interopRequireDefault(require("../util/store"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import Menu from '../presenters/menu'
 // TODO: hook up settings menu
 const formatTime = sec => {
   var dur = _moment.default.duration(sec * 1000);
@@ -11699,7 +11999,7 @@ customElements.define('b-audio', class extends _litElement.LitElement {
 var _default = customElements.get('b-audio');
 
 exports.default = _default;
-},{"lit-element":"bhxD","./icon":"ncPe","../presenters/form-control/controls/range-slider":"ZCfn","moment":"a2Bw","../util/store":"z4Ln"}],"jTPt":[function(require,module,exports) {
+},{"lit-element":"+bhx","./icon":"ncPe","../presenters/form-control/controls/range-slider":"ZCfn","moment":"a2/B","../util/store":"2z4L"}],"/jTP":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11760,7 +12060,7 @@ const unsafeHTML = (0, _litHtml.directive)(value => part => {
   });
 });
 exports.unsafeHTML = unsafeHTML;
-},{"../lib/parts.js":"atl2","../lit-html.js":"SPDu"}],"loUd":[function(require,module,exports) {
+},{"../lib/parts.js":"atl2","../lit-html.js":"SP/d"}],"lo/u":[function(require,module,exports) {
 var global = arguments[3];
 "use strict";
 
@@ -14376,7 +14676,7 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports.colorScheme = exports.default = void 0;
 const UA = navigator.userAgent;
 const device = {
   get is_ios() {
@@ -14422,6 +14722,10 @@ const device = {
     return /android/i.test(UA);
   },
 
+  get isTouch() {
+    return 'ontouchstart' in window;
+  },
+
   get isMobile() {
     return device.isiOS || device.isAndroid;
   },
@@ -14429,6 +14733,19 @@ const device = {
   // https://developer.chrome.com/multidevice/user-agent
   get isiOSChrome() {
     return /CriOS/.test(UA);
+  },
+
+  get isElectron() {
+    return /Electron/.test(UA);
+  },
+
+  get electronVersion() {
+    let matches = UA.match(/Electron\/([\d\.]+) /);
+    return matches ? matches[1] : 0;
+  },
+
+  get isChromeInstalledApp() {
+    return this.isInstalled && /Chrome/.test(UA);
   },
 
   get isInstalled() {
@@ -14441,8 +14758,45 @@ const device = {
   }
 
 };
-var _default = device;
+var _default = device; // https://medium.com/@jonas_duri/enable-dark-mode-with-css-variables-and-javascript-today-66cedd3d7845
+
 exports.default = _default;
+const colorScheme = {
+  get isDarkMode() {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  },
+
+  get isLightMode() {
+    return window.matchMedia("(prefers-color-scheme: light)").matches;
+  },
+
+  get isUnset() {
+    return window.matchMedia("(prefers-color-scheme: no-preference)").matches;
+  },
+
+  get isSupported() {
+    return this.isDarkMode || this.isLightMode || this.isUnset;
+  },
+
+  onChange(cb) {
+    // first time, setup watchers
+    if (!this._watchers) {
+      this._watchers = new Map();
+      window.matchMedia("(prefers-color-scheme: dark)").addListener(e => e.matches && this._dispatchChange('dark'));
+      window.matchMedia("(prefers-color-scheme: light)").addListener(e => e.matches && this._dispatchChange('light'));
+    }
+
+    this._watchers.set(cb, cb);
+  },
+
+  _dispatchChange(mode) {
+    this._watchers.forEach(cb => {
+      cb(mode);
+    });
+  }
+
+};
+exports.colorScheme = colorScheme;
 },{}],"r4vn":[function(require,module,exports) {
 
 },{}],"Soyf":[function(require,module,exports) {
@@ -14663,7 +15017,7 @@ class Popover {
       WatchingClicks = false;
       window.removeEventListener(_device.default.isMobile ? 'touchend' : 'click', WatchClicks, true);
       WatchingKeyboard = false;
-      window.removeEventListener('keydown', WatchKeyboard, true);
+      window.removeEventListener('keydown', WatchKeyboard, !_device.default.isMobile);
     }
   } // internal close method that also triggers the onClose callback
 
@@ -14708,7 +15062,7 @@ class Popover {
 }
 
 exports.default = Popover;
-},{"popper.js":"loUd","../../util/device":"la8o","./style.less":"r4vn"}],"AZEX":[function(require,module,exports) {
+},{"popper.js":"lo/u","../../util/device":"la8o","./style.less":"r4vn"}],"AZEX":[function(require,module,exports) {
 var define;
 // Generated by CoffeeScript 1.10.0
 var slice = [].slice;
@@ -15267,7 +15621,8 @@ exports.cleansePath = exports.normalizePath = exports.default = void 0;
 const config = {
   APP_TITLE: document.title,
   PATH_ROOT: location.pathname,
-  PATH_PREFIX: ''
+  PATH_PREFIX: '',
+  clearInvalidPath: true
 };
 var _default = config; // normalize path (always begin with prefix and path root)
 
@@ -15319,6 +15674,10 @@ class Route {
     return this.state && this.state.isCurrent;
   }
 
+  makePath(params) {
+    return this.patt.stringify(params);
+  }
+
   update(props) {
     this.state && this.state.isCurrent && this.state.update(props);
   }
@@ -15367,9 +15726,7 @@ exports.default = void 0;
 
 var _config = _interopRequireWildcard(require("./config"));
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 class HistoryState {
   constructor(parent, props) {
@@ -15547,7 +15904,7 @@ class HistoryStates {
 }
 
 exports.default = HistoryStates;
-},{"./history-state":"phBv"}],"Qeq3":[function(require,module,exports) {
+},{"./history-state":"phBv"}],"38Qe":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15561,9 +15918,7 @@ var _historyStates = _interopRequireDefault(require("./history-states"));
 
 var _config = _interopRequireWildcard(require("./config"));
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15572,9 +15927,24 @@ const ROUTES = [];
 class Router {
   // NOTE: this must be setup before anything uses router.add()
   config(opts) {
-    if (opts.root != undefined) _config.default.PATH_ROOT = opts.root;
-    if (opts.prefix != undefined) _config.default.PATH_PREFIX = opts.prefix;
-    if (opts.title != undefined) _config.default.APP_TITLE = opts.title;
+    if (opts.root != undefined) {
+      _config.default.PATH_ROOT = opts.root;
+      delete opts.root;
+    }
+
+    if (opts.prefix != undefined) {
+      _config.default.PATH_PREFIX = opts.prefix;
+      delete opts.prefix;
+    }
+
+    if (opts.title != undefined) {
+      _config.default.APP_TITLE = opts.title;
+      delete opts.title;
+    }
+
+    for (let key in opts) {
+      _config.default[key] = opts[key];
+    }
   }
 
   start(opts = {}) {
@@ -15640,7 +16010,7 @@ class Router {
       if (route._change(oldStates, newState, dir)) didMatch = true;
     }); // if none of the routes matched, change current state path back to the root
 
-    if (!didMatch) this.states.current.path = _config.default.PATH_ROOT;
+    if (!didMatch && _config.default.clearInvalidPath) this.states.current.path = _config.default.PATH_ROOT;
   }
 
   add(path, onChange) {
@@ -15866,7 +16236,7 @@ class PanelController extends _litElement.LitElement {
       return {
         label: panel.title,
         icon: panel.icon || 'window',
-        description: panel.hash,
+        description: panel.path,
         panel: panel
       };
     });
@@ -15904,7 +16274,7 @@ customElements.define('b-panels', PanelController);
 var _default = customElements.get('b-panels');
 
 exports.default = _default;
-},{"lit-element":"bhxD","../menu":"tCYJ","../../router":"Qeq3","../../util/device":"la8o"}],"ZNP1":[function(require,module,exports) {
+},{"lit-element":"+bhx","../menu":"0tCY","../../router":"38Qe","../../util/device":"la8o"}],"ZNP1":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16059,13 +16429,13 @@ customElements.define('b-panel-toolbar', PanelToolbar);
 var _default = customElements.get('b-panel-toolbar');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"cmZt":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"cmZt":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.Panel = exports.Modal = exports.register = exports.PanelDefaults = void 0;
+exports.default = exports.Panel = exports.ActionSheet = exports.Modal = exports.register = exports.PanelDefaults = void 0;
 
 var _litElement = require("lit-element");
 
@@ -16140,7 +16510,7 @@ class RegisteredPanels {
       if (typeof registered.view == 'function') {
         registered.panel = new Panel();
         registered.panel.html = registered.view;
-      } else registered.panel = new Panel(registered.view);
+      } else registered.panel = new Panel(registered.view, registered.opts || {});
 
       if (registered.route) registered.panel.route = registered.route; // copy properties to panel
 
@@ -16174,6 +16544,16 @@ const Modal = function (view, opts = {}) {
 };
 
 exports.Modal = Modal;
+
+const ActionSheet = function (view, opts = {}) {
+  opts = Object.assign({
+    type: 'actionsheet'
+  }, opts);
+  if (opts.closeOnEsc === undefined) opts.closeOnEsc = true;
+  return new Panel(view, opts).open();
+};
+
+exports.ActionSheet = ActionSheet;
 
 class Panel extends _litElement.LitElement {
   static get properties() {
@@ -16225,6 +16605,12 @@ class Panel extends _litElement.LitElement {
       defaultOpts.width = 'auto';
       defaultOpts.height = 'auto';
       defaultOpts.anchor = 'center';
+    }
+
+    if (opts.type == 'actionsheet') {
+      defaultOpts.width = '100%';
+      defaultOpts.height = 'auto';
+      defaultOpts.anchor = 'bottom';
     }
 
     opts = Object.assign(defaultOpts, opts);
@@ -16467,7 +16853,7 @@ class Panel extends _litElement.LitElement {
 
   async close() {
     if (this.opts.onClose && (await this.opts.onClose()) === false) return;
-    if (this.view && this.view.onClose && this.view.onClose() === false) return;
+    if (this.view && this.view.onClose && (await this.view.onClose()) === false) return;
     this.route && this.route.update({
       didExit: true
     });
@@ -16531,6 +16917,23 @@ class Panel extends _litElement.LitElement {
         :host([type="modal"]) > main {
             max-height: var(--max-height, 96%);
             max-width: var(--max-width, 96%);
+        }
+
+        :host([type="actionsheet"]) main {
+            max-width: var(--b-panel-actionsheet-max-w, 500px);
+            /* --radius: 12px; */
+        }
+
+        :host([type="actionsheet"]) > main {
+            transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* :host([type="actionsheet"][anchor="top"]) > main {
+            padding-top: env(safe-area-inset-top);
+        } */
+
+        :host([type="actionsheet"][anchor="bottom"]) > main {
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         :host([open]) {
@@ -16716,7 +17119,7 @@ customElements.define('b-panel', Panel);
 var _default = customElements.get('b-panel');
 
 exports.default = _default;
-},{"lit-element":"bhxD","./controller":"R9Fe","../../router":"Qeq3","../../router/route":"WZSr","../../util/device":"la8o","./toolbar":"ZNP1","../../elements/btn":"DABr"}],"TZ6L":[function(require,module,exports) {
+},{"lit-element":"+bhx","./controller":"R9Fe","../../router":"38Qe","../../router/route":"WZSr","../../util/device":"la8o","./toolbar":"ZNP1","../../elements/btn":"DABr"}],"TZ6L":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16796,12 +17199,11 @@ var _popover = _interopRequireDefault(require("../popover"));
 
 var _makeBtn = _interopRequireWildcard(require("./make-btn"));
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// FIXME: this module needs to be refactored using lit-element to better apply styles
 const styles = require('./style.less');
 
 class Dialog {
@@ -16819,10 +17221,9 @@ class Dialog {
     opts.className += ' nopadding dialog';
     if (this.opts.icon) opts.className += ' sideicon';
     opts.className.split(' ').forEach(className => className && this.el.classList.add(className));
-    let [iconName, iconClass] = (opts.icon || '').split(' '); // FIXME: animation needs added
-
+    let [iconName, iconClass] = (opts.icon || '').split(' ');
     let icon = opts.icon ? `<b-icon name="${iconName}" class="${iconClass || ''}"></b-icon>` : '';
-    let btns = opts.btns ? opts.btns.map(btn => (0, _makeBtn.default)(btn)).join("\n") : '';
+    let btns = opts.btns ? opts.btns.map(btn => btn && (0, _makeBtn.default)(btn)).join("\n") : '';
     if (opts.icon === 'spinner') icon = `<b-spinner></b-spinner>`;else if (opts.icon && opts.icon[0] == '<') icon = opts.icon;else if (customElements.get(opts.icon)) icon = `<${opts.icon}></${opts.icon}>`;
     this.el.innerHTML = `${typeof styles === 'string' ? `<style>${styles}</style>` : ''}
 							<div class="d-icon">${icon}</div>
@@ -16900,7 +17301,7 @@ class Dialog {
     if (e.code == 'Escape') {
       btnInfo = this.opts.btns.find(btn => _makeBtn.cancelBtns.includes(btn));
     } else if (e.code == 'Enter') {
-      btnInfo = this.opts.btns.find(btn => !_makeBtn.cancelBtns.includes(btn));
+      btnInfo = this.opts.btns.reverse().find(btn => !_makeBtn.cancelBtns.includes(btn));
     }
 
     if (btnInfo != undefined) {
@@ -16965,8 +17366,14 @@ class Dialog {
     return this.promise;
   }
 
-  modal(opts = {}) {
-    return this.panel(opts); // might need to reactivate Modal below
+  modal(opts = {}, mobileOpts) {
+    if (mobileOpts && _device.default.isMobile) return this.panel(mobileOpts);else return this.panel(opts);
+  }
+
+  actionsheet(opts = {}) {
+    return this.panel(Object.assign({
+      type: 'actionsheet'
+    }, opts));
   }
 
   panel(opts = {}) {
@@ -17003,7 +17410,7 @@ class Dialog {
 }
 
 exports.default = Dialog;
-},{"lit-html":"SPDu","../../util/device":"la8o","../panel":"cmZt","../popover":"Soyf","./make-btn":"TZ6L","./style.less":"r4vn"}],"pos3":[function(require,module,exports) {
+},{"lit-html":"SP/d","../../util/device":"la8o","../panel":"cmZt","../popover":"Soyf","./make-btn":"TZ6L","./style.less":"r4vn"}],"pos3":[function(require,module,exports) {
 const Dialog = require('./dialog').default;
 
 module.exports = Dialog;
@@ -17068,13 +17475,14 @@ Dialog.prompt = function (opts = {}) {
     msg: '',
     prefix: '',
     suffix: '',
-    validate: '',
+    pattern: '',
     html: false,
     required: false,
     label: '',
     placeholder: '',
     helpText: '',
     w: 300,
+    type: '',
     multiline: false,
     multiple: false,
     btns: ['cancel', 'save']
@@ -17083,10 +17491,10 @@ Dialog.prompt = function (opts = {}) {
 
   opts.onResolve = function (resp, dialog) {
     let control = dialog.$('form-control');
-    if (!resp) return resp;
+    if (!resp) return opts.btns.length > 2 ? [resp] : resp;
     if (control.isInvalid) throw Error('Invalid data');
-    resp = opts.html ? control.value : control.control.textValue || control.value;
-    return resp;
+    let val = opts.html ? control.value : control.control.textValue || control.value;
+    return opts.btns.length > 2 ? [resp, val] : val;
   };
 
   let prefix = '';
@@ -17103,17 +17511,29 @@ Dialog.prompt = function (opts = {}) {
   }
 
   let control = `<text-field
-		validate="${opts.validate}"
+		pattern="${opts.pattern}"
 		placeholder="${opts.placeholder}"
 		${opts.html ? 'html' : ''}
 		${opts.multiline ? 'multiline' : ''}
 		${opts.required ? 'required' : ''}>${opts.val}</text-field>`;
+  if (opts.type) control = `<input
+					slot="control"
+					type=${opts.type} 
+					pattern="${opts.pattern}" 
+					placeholder="${opts.placeholder}"
+					value="${opts.val}"
+					autocomplete="off"
+					${opts.required ? 'required' : ''}>`;
   if (opts.options) control = `<select-field
 					placeholder="${opts.placeholder}"
 					${opts.multiple ? 'multiple' : ''}
 					></select-field>`;
   opts.msg += `
-			<form-control material="outline" label="${opts.label}" prefix="${opts.prefix}"suffix="${opts.suffix}">
+			<form-control material="filled" 
+			${opts.label ? `label="${opts.label}"` : ''} 
+			show="suffix prefix"
+			prefix="${opts.prefix}"
+			suffix="${opts.suffix}">
 				${control}
 				<div slot="help">${opts.helpText}</div>
 				${prefix}
@@ -17122,6 +17542,15 @@ Dialog.prompt = function (opts = {}) {
 			`;
   let dialog = new Dialog(opts);
   control = dialog.$('form-control');
+
+  let onSubmit = e => {
+    if (['TEXT-FIELD', 'INPUT'].includes(e.target.tagName)) {
+      control.control.blur();
+      control.removeEventListener('change', onSubmit);
+    }
+  };
+
+  control.addEventListener('change', onSubmit);
   if (opts.options) control.options = opts.options;
   setTimeout(function () {
     control.focus();
@@ -17872,7 +18301,7 @@ customElements.define('touch-ripple', TouchRippleElement);
 var _default = customElements.get('touch-ripple');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"jNfL":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"jNfL":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -17889,7 +18318,7 @@ const styles = _litElement.css`
 :host {
 	--size: 1.6em;
 	--color: var(--fc-theme);
-	--colorDisabled: rgba(0, 0, 0, 0.26);
+	--colorDisabled: var(--fc-disabled-color, rgba(0, 0, 0, 0.26));
 	display: inline-block;
 	vertical-align: middle;
 	flex-grow: 0 !important;
@@ -17937,6 +18366,10 @@ svg {
 
 :host([checked]) {
 	color: var(--color)
+}
+
+:host([disabled]) {
+	cursor: default;
 }
 
 :host([disabled]) svg {
@@ -18088,7 +18521,367 @@ customElements.define('check-box', CheckBoxElement);
 var _default = customElements.get('check-box');
 
 exports.default = _default;
-},{"lit-element":"bhxD","./touch-ripple":"uH6r"}],"tCYJ":[function(require,module,exports) {
+},{"lit-element":"+bhx","./touch-ripple":"uH6r"}],"h8fl":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+var _menu = _interopRequireDefault(require("../../menu"));
+
+var _device = _interopRequireDefault(require("../../../util/device"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/*
+	Select Field
+*/
+const styles = _litElement.css`
+
+:host(:not([disabled])) {
+	cursor: pointer;
+}
+
+main {
+	display: flex;
+	align-items: center;
+	min-width: 1em;
+	position: relative;
+}
+
+main > svg {
+	height: 1em;
+	width: 1em;
+	flex-shrink: 0;
+}
+
+slot#options {
+	display: none;
+}
+
+main input {
+	position: absolute;
+	z-index: -1;
+	opacity: 0;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+}
+
+
+#value {
+	flex-grow: 1;
+	min-width: 1em;
+}
+
+#value:empty:before {
+	content: attr(data-placeholder);
+	color: var(--placeholderColor);
+}
+
+#value > span {
+	display: inline-block;
+	padding: 0;
+    min-width: 1em;
+	vertical-align: bottom;
+}
+
+:host(:not([chip])) #value > span:not(:last-child):after {
+	content: ', ';
+	margin-right: .5em;
+}
+
+:host([chip]) #value {
+	margin-top: -.15em;
+	margin-bottom: -.15em;
+}
+
+:host([chip]) #value > span {
+	background: rgba(0,0,0,.1);
+    margin: .1em;
+    padding: .15em .5em;
+    border-radius: 20px;
+	line-height: 1em;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+}`;
+
+class SelectFieldElement extends HTMLElement {
+  constructor() {
+    super();
+    let shadow = this.attachShadow({
+      mode: 'open'
+    });
+    let temp = document.createElement('template');
+    let placeholder = this.getAttribute('placeholder') || '';
+    let arrow = this.hasAttribute('no-arrow') ? '' : '<svg focusable="false" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"></path></svg>';
+    temp.innerHTML = `<style>${styles.cssText}</style>
+			<main>
+				<input type="input" readonly="true"/>
+				<div id="value" data-placeholder="${placeholder}"></div>
+				${arrow}
+			</main>
+			<slot id="options"></slot>`;
+    this.shadowRoot.appendChild(temp.content.cloneNode(true));
+    this._input = this.$('input');
+    this._value = this.$('#value');
+    this._selected = [];
+    let options = this.$('#options');
+    this.options = [];
+    options.assignedNodes && options.assignedNodes().map(el => {
+      if (!el.tagName) return; // skip comments and empty text blocks
+
+      if (el.tagName == 'HR') return this.options.push('divider');
+      if (el.tagName == 'OPTGROUP') return this.options.push({
+        'divider': el.innerHTML
+      });
+
+      if (el.tagName != 'OPTION') {
+        return this.options.push({
+          'text': el.innerHTML
+        });
+      }
+
+      if (el.hasAttribute('selected')) this._selected.push(el.value);
+      let attrs = {};
+      Array.from(el.attributes).forEach(attr => {
+        if (!['value', 'selected'].includes(attr.name)) attrs[attr.name] = attr.value;
+      });
+      this.options.push(Object.assign(attrs, {
+        label: el.innerHTML,
+        val: el.value || null
+      }));
+    });
+    this.addEventListener('click', this.focus.bind(this));
+    this.addEventListener('keypress', this.onKeypress.bind(this));
+  }
+
+  onKeypress(e) {
+    if (e.code == 'Space') {
+      this.toggleMenu();
+    }
+  }
+
+  static get observedAttributes() {
+    return ['disabled'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'disabled') this._input.disabled = this.disabled;
+  }
+
+  setAttributes() {
+    if (this.isEmpty && !this.showEmpty && !this.getAttribute('placeholder')) this.setAttribute('empty', true);else this.removeAttribute('empty');
+  }
+
+  $(str) {
+    return this.shadowRoot.querySelector(str);
+  }
+
+  $$(str) {
+    return this.shadowRoot.querySelectorAll(str);
+  }
+
+  connectedCallback() {
+    this.selected = this._selected;
+  }
+
+  disconnectedCallback() {}
+
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+
+  set disabled(val = true) {
+    val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
+  }
+
+  get multiple() {
+    return this.hasAttribute('multiple');
+  }
+
+  get showEmpty() {
+    return this.hasAttribute('show-empty');
+  }
+
+  get value() {
+    if (this.multiple) return this.selected && this.selected.map(m => m.val);else return this.selected && this.selected.val;
+  }
+
+  set value(val) {
+    this.selected = val;
+  }
+
+  get isEmpty() {
+    let val = this.value;
+    return this.multiple ? val.length <= 1 && !val[0] : !val;
+  }
+
+  set isInvalid(invalid) {
+    this._isInvalid = invalid;
+    if (invalid) this.setAttribute('invalid', true);else this.removeAttribute('invalid');
+  }
+
+  get isInvalid() {
+    return this._isInvalid;
+  }
+
+  set options(opts) {
+    if (opts instanceof Promise) {
+      opts.then(result => {
+        this.options = result;
+        return result;
+      });
+      opts = []; // clear options until promise resolves
+    }
+
+    if (Array.isArray(opts)) opts = opts.map(o => {
+      if (typeof o != 'object') return {
+        label: o,
+        val: o
+      };
+      return o;
+    });else if (typeof opts == 'object') {
+      let _opts = [];
+
+      for (let k in opts) {
+        _opts.push({
+          label: opts[k],
+          val: k
+        });
+      }
+
+      opts = _opts;
+    }
+    this.__options = opts;
+    this.selected = this._selected;
+  }
+
+  get options() {
+    return this.__options;
+  }
+
+  set selected(val) {
+    this._oldSelected = this._selected.slice(0);
+    if (val === undefined || val === null) val = [];else if (!Array.isArray(val)) val = [String(val)];
+    let selected = this.options.filter(m => {
+      return val.includes(m.val) || val.length == 0 && !m.val;
+    }); // keep selected values in the order that they were selected
+
+    selected = selected.sort((a, b) => {
+      return val.indexOf(a.val) - val.indexOf(b.val);
+    });
+    this._selected = []; // if no options, keep the selected value
+    // FIXME: could be improved with the `labels`
+
+    if (this.options.length == 0) this._selected = val;
+    let labels = '';
+    selected.forEach(m => {
+      this._selected.push(m.val);
+
+      if (m.val || this.showEmpty) labels += `<span value="${m.val}">${m.label}</span>`;
+    });
+    this._value.innerHTML = labels;
+    this.setAttribute('value', val.join(','));
+    this.setAttributes();
+  }
+
+  get selected() {
+    let selected = this.options.filter(m => {
+      return this._selected.includes(m.val);
+    }); // keep selected values in the order that they were selected
+
+    selected = selected.sort((a, b) => {
+      return this._selected.indexOf(a.val) - this._selected.indexOf(b.val);
+    });
+    return this.multiple ? selected : selected[0];
+  }
+
+  get isFocused() {
+    return this.shadowRoot.activeElement == this._input || this.hasAttribute('focused');
+  }
+
+  focus() {
+    this.toggleMenu();
+  }
+
+  set focused(focused) {
+    if (focused) {
+      this._input.focus();
+
+      this.setAttribute('focused', '');
+    } else {
+      this._input.blur();
+
+      this.removeAttribute('focused');
+    }
+  }
+
+  async toggleMenu() {
+    if (this.disabled) return;
+
+    if (this.openMenu) {
+      this.openMenu.resolve(false);
+      return;
+    }
+
+    this.focused = true;
+    let menuOpts = {
+      minW: this.offsetWidth,
+      selected: this._selected,
+      multiple: this.multiple ? 'always' : false,
+      jumpNav: this.hasAttribute('jump-nav'),
+      // only called when in multiple mode
+      onSelect: selected => {
+        this.selected = selected.map(m => m.val);
+      }
+    };
+    if (this.getAttribute('search') == 'false') menuOpts.search = false;
+    let menu = this.options;
+    let popoverOpts = {
+      align: this.getAttribute('menu-align') || 'bottom',
+      maxHeight: this.getAttribute('menu-max-height') || 'auto',
+      maxWidth: this.getAttribute('menu-max-width') || 'none',
+      overflowBoundry: this.getAttribute('menu-overflow') ? 'window' : null,
+      adjustForMobile: this.getAttribute('adjust-for-mobile') == 'false' ? false : true
+    };
+    if (!menu || menu.length == 0) menu = [{
+      'divider': 'No options available'
+    }];
+    this.openMenu = new _menu.default(menu, menuOpts);
+    this.openMenu.el.setAttribute('select-field', this.className);
+    let val = await this.openMenu.popover(this.$('main'), popoverOpts);
+    this.openMenu = null;
+    this.focused = false;
+    if (!_device.default.is_mobile) this._input.focus(); // retain focus
+
+    if (val === false) return;
+    val = this.multiple ? val : [val];
+    this.selected = val.map(m => m.val);
+    var event = new CustomEvent('change', {
+      bubbles: true,
+      composed: true,
+      detail: {
+        value: this.value
+      }
+    });
+    this.dispatchEvent(event);
+  }
+
+}
+
+customElements.define('select-field', SelectFieldElement);
+
+var _default = customElements.get('select-field');
+
+exports.default = _default;
+},{"lit-element":"+bhx","../../menu":"0tCY","../../../util/device":"la8o"}],"0tCY":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18109,6 +18902,8 @@ var _panel = _interopRequireDefault(require("../panel"));
 var _fuse = _interopRequireDefault(require("fuse.js"));
 
 require("../form-control/controls/check-box");
+
+require("../form-control/controls/select-field");
 
 var _device = _interopRequireDefault(require("../../util/device"));
 
@@ -18161,6 +18956,7 @@ class Menu {
 
     this.selected = selected;
     if (this.opts.minW) this.el.style.minWidth = this.opts.minW;
+    if (this.opts.maxW) this.el.style.maxWidth = this.opts.maxW;
     if (this.opts.width) this.el.style.width = this.opts.width;
     this.el.addEventListener('click', this.onClick.bind(this));
     this.promise = new Promise(resolve => {
@@ -18203,18 +18999,27 @@ class Menu {
 
   set selected(keys) {
     // always store selected values as an array
-    if (!Array.isArray(keys)) keys = [keys]; // store selected values as the actual values (not just the keys)
+    if (!Array.isArray(keys)) keys = [keys];
+    let keyVals = keys.map(k => k && k.val || k); // store selected values as the actual values (not just the keys)
 
     this.__selected = this.menu.filter(m => {
-      // select/deselect each value
-      if (m.val !== undefined && keys.includes(m.val)) m.selected = true;else {
+      if (m.val === undefined) return false;
+      let matchedIndex = keyVals.indexOf(m.val); // select/deselect each value
+
+      if (matchedIndex > -1) {
+        let mergeData = keys[matchedIndex];
+        if (mergeData && typeof mergeData == 'object') Object.assign(m, mergeData);
+        m.selected = true;
+      } else {
         delete m.selected;
+        delete m.selection;
       }
+
       return m.selected;
     }); // keep values in the order that they were selected
 
     this.__selected = this.__selected.sort((a, b) => {
-      return keys.indexOf(a.val) - keys.indexOf(b.val);
+      return keyVals.indexOf(a.val) - keyVals.indexOf(b.val);
     });
   }
 
@@ -18225,7 +19030,7 @@ class Menu {
   toggleSelected(item) {
     let index = this.__selected.indexOf(item);
 
-    if (index > -1) {
+    if (index > -1 && !item.selection) {
       item.selected = false;
 
       this.__selected.splice(index, 1);
@@ -18344,6 +19149,21 @@ class Menu {
     if (m.icon && typeof m.icon == 'string') icon = _litHtml.html`<b-icon name="${m.icon}"></b-icon>`;else if (m.icon) icon = _litHtml.html`<span class="icon">${m.icon}</span>`;
     let checkbox = this.opts.multiple && !m.clearsAll || m.selected ? _litHtml.html`<check-box ?checked=${m.selected}></check-box>` : '';
     let menuIcon = m.menu && this.opts.hasMenuIcon ? _litHtml.html`<b-icon class="has-menu" name="${this.opts.hasMenuIcon}"></b-icon>` : '';
+
+    if (m.selections) {
+      let selections = m.selections;
+      if (this.opts.multiple) selections = [{
+        label: 'unset',
+        val: ''
+      }].concat(selections);
+      checkbox = _litHtml.html`<select-field 
+							.options=${selections} 
+							placeholder="unset"
+							@change=${this.selectOptionsChanged.bind(this)}
+							.selected=${m.selection}
+							></select-field>`;
+    }
+
     if (m.attrs && typeof m.attrs == 'object') console.warn('`attrs` unsupported right now'); // TODO: support this some how?
     // if( m.attrs && typeof m.attrs == 'object' ){
     // 	for(let key in m.attrs)
@@ -18362,6 +19182,8 @@ class Menu {
     }
 
     let dataTitle = (m.dataTitle || m.label + ' ' + m.description).trim().toLowerCase();
+    let label = m.label && m.label.constructor.name == 'TemplateResult' ? m.label : (0, _unsafeHtml.unsafeHTML)(m.label || '');
+    let description = m.description && m.description.constructor.name == 'TemplateResult' ? m.description : (0, _unsafeHtml.unsafeHTML)(m.description || '');
     return _litHtml.html`
 			<div class="menu-item ${m.className}" val=${m.val} index=${i}
 				data-title=${dataTitle}
@@ -18371,8 +19193,8 @@ class Menu {
 				${icon}
 				${m.view && m.view instanceof HTMLElement ? m.view : _litHtml.html`
 					<span class="mi-content">
-						<div class="mi-label">${(0, _unsafeHtml.unsafeHTML)(m.label || '')}</div>
-						<div class="mi-description">${(0, _unsafeHtml.unsafeHTML)(m.description || '')}</div>
+						<div class="mi-label">${label}</div>
+						<div class="mi-description">${description}</div>
 					</span>
 				`}
 				${extras}
@@ -18381,8 +19203,16 @@ class Menu {
 		`;
   }
 
+  selectOptionsChanged(e) {
+    let val = e.currentTarget.value;
+    let data = this.displayMenu[e.currentTarget.parentElement.getAttribute('index')];
+    data.selection = val;
+    if (!this.opts.multiple) this.resolve(data);else this.toggleSelected(data);
+  }
+
   onClick(e) {
     let target = e.target;
+    if (target.tagName == 'SELECT-FIELD') return;
     let didClickCheckbox = target.tagName == 'CHECK-BOX';
 
     while (target && !target.classList.contains('menu-item')) {
@@ -18391,6 +19221,7 @@ class Menu {
 
     if (target) {
       let data = this.displayMenu[target.getAttribute('index')];
+      if (data.selections && !data.selection) data.selection = data.selections[0] && data.selections[0].val || data.selections[0];
       if (data.menu) return this._itemMenu(target, data);
 
       if (this.opts.multiple) {
@@ -18551,7 +19382,8 @@ class Menu {
 
   popover(target, opts = {}) {
     if (opts.adjustForMobile && _device.default.isMobile && !_device.default.isiPad) return this.modal(Object.assign({
-      btns: ['cancel', 'done']
+      btns: ['cancel', 'done'],
+      anchor: this.searchIsOn ? 'top' : 'center'
     }, typeof opts.adjustForMobile == 'object' ? opts.adjustForMobile : {}));
     this.render();
     let onClose = opts.onClose;
@@ -18568,8 +19400,14 @@ class Menu {
     return this.promise;
   }
 
-  modal(opts = {}) {
-    return this.panel(opts);
+  modal(opts = {}, mobileOpts) {
+    if (mobileOpts && _device.default.isMobile && _device.default.minScreenSize <= 699) return this.panel(mobileOpts);else return this.panel(opts);
+  }
+
+  actionsheet(opts = {}) {
+    return this.panel(Object.assign({
+      type: 'actionsheet'
+    }, opts));
   }
 
   panel(opts = {}) {
@@ -18597,7 +19435,8 @@ class Menu {
     this.presenter.open(); // if dialog btn clicked, take action
 
     dialog.promise.then(btn => {
-      if (btn) this.presenter.close();else this.resolve(false);
+      if (btn) this.resolve(btn); // this.presenter.close()
+      else this.resolve(false);
     });
     this.scrollToSelected();
     if (this.searchIsOn) this.focusSearch();
@@ -18607,7 +19446,7 @@ class Menu {
 }
 
 exports.default = Menu;
-},{"lit-html":"SPDu","lit-html/directives/unsafe-html":"jTPt","../popover":"Soyf","../dialog":"pos3","../panel":"cmZt","fuse.js":"Wp9p","../form-control/controls/check-box":"jNfL","../../util/device":"la8o","./style.less":"r4vn"}],"P61z":[function(require,module,exports) {
+},{"lit-html":"SP/d","lit-html/directives/unsafe-html":"/jTP","../popover":"Soyf","../dialog":"pos3","../panel":"cmZt","fuse.js":"Wp9p","../form-control/controls/check-box":"jNfL","../form-control/controls/select-field":"h8fl","../../util/device":"la8o","./style.less":"r4vn"}],"7P61":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18626,6 +19465,7 @@ class TabView {
 
       if (this._viewClass && this._viewClass.title) {
         this.__title = this._viewClass.title;
+        this.__options = this._viewClass.tabOptions || {};
         this.__icon = this._viewClass.icon;
         this.__id = this.__title;
       } else {
@@ -18665,10 +19505,13 @@ class TabView {
   }
 
   set active(isActive) {
+    let didChange = this.__active != isActive;
     this.__active = isActive;
     if (!this.__view) return; // view not created yet
 
+    if (!didChange) didChange = this.view.hidden == isActive;
     this.view.hidden = !isActive;
+    if (!didChange) return;
     if (isActive) this.view.didBecomeActive && this.view.didBecomeActive();else this.view.didBecomeInactive && this.view.didBecomeInactive();
   }
 
@@ -18697,6 +19540,10 @@ class TabView {
     return this.__title || 'No Title';
   }
 
+  get options() {
+    return this.__options || {};
+  }
+
   get icon() {
     return this.__icon;
   } // NOTE: rename to "route" ?
@@ -18718,7 +19565,7 @@ class TabView {
 }
 
 exports.default = TabView;
-},{"lit-html":"SPDu"}],"jVU8":[function(require,module,exports) {
+},{"lit-html":"SP/d"}],"jVU8":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18784,7 +19631,7 @@ class TabViews extends Map {
 }
 
 exports.default = TabViews;
-},{"./view":"P61z"}],"u9vI":[function(require,module,exports) {
+},{"./view":"7P61"}],"u9vI":[function(require,module,exports) {
 /**
  * Checks if `value` is the
  * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
@@ -18835,7 +19682,7 @@ var root = freeGlobal || freeSelf || Function('return this')();
 
 module.exports = root;
 
-},{"./_freeGlobal":"j3D9"}],"pJf5":[function(require,module,exports) {
+},{"./_freeGlobal":"j3D9"}],"0pJf":[function(require,module,exports) {
 var root = require('./_root');
 
 /**
@@ -19293,7 +20140,7 @@ function debounce(func, wait, options) {
 
 module.exports = debounce;
 
-},{"./isObject":"u9vI","./now":"pJf5","./toNumber":"iS0Z"}],"BsQP":[function(require,module,exports) {
+},{"./isObject":"u9vI","./now":"0pJf","./toNumber":"iS0Z"}],"BsQP":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19352,6 +20199,8 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
           if (!str) return;
 
           let _views = str.split("\n").map(s => s.trim());
+
+          _views = _views.filter(v => v); // ignore empty lines
 
           views.push(..._views);
           node.textContent = '';
@@ -19607,6 +20456,8 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
   }
 
   renderTabBar() {
+    if (['none', 'false'].includes(this.getAttribute('tab-bar'))) return _litElement.html`<div></div>`;
+
     if (this.getAttribute('tab-bar')) {
       if (!this.__customTabBar) {
         let TabBar = customElements.get(this.getAttribute('tab-bar'));
@@ -19704,7 +20555,7 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
 var _default = customElements.get('b-tabs');
 
 exports.default = _default;
-},{"lit-element":"bhxD","../menu":"tCYJ","./views":"jVU8","./view":"P61z","lodash/debounce":"CXfR"}],"ZQnj":[function(require,module,exports) {
+},{"lit-element":"+bhx","../menu":"0tCY","./views":"jVU8","./view":"7P61","lodash/debounce":"CXfR"}],"ZQnj":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19718,7 +20569,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 class FormHandler extends HTMLElement {
   constructor() {
-    super(); // bind context to functions
+    super();
+    this.editorsByKey = {}; // bind context to functions
 
     this.onModelSync = this.onModelSync.bind(this);
     this.onModelChange = this.onModelChange.bind(this);
@@ -19758,7 +20610,6 @@ class FormHandler extends HTMLElement {
   bindControls() {
     // TODO: change to `controls`?
     this.editors = Array.from(this.querySelectorAll('form-control[key], check-box[key], radio-group[key], text-field[key], select-field[key]'));
-    this.editorsByKey = {};
     this.editors.forEach(el => {
       let key = el.getAttribute('key');
 
@@ -19887,14 +20738,22 @@ class FormHandler extends HTMLElement {
     changes[key] = val;
 
     if (this.validateChange && (await this.validateChange(m, changes, key, val)) === false) {
-      el.value = changes[key] || el.value;
+      el.value = changes[key] !== undefined ? changes[key] : el.value;
       return;
     } // optionally make other changes based on this change
     // TODO: think of a way to implement this again for the custom element?
     // if( this.opts.onEditorChange && this.opts.onEditorChange(m, changes, key, val) === false )
     // 	return
-    // ugh, this is hacky and should be solved a better way
+    // if other changes where made from validate, propagate to other controls
 
+
+    if (this.validateChange) for (let _key in changes) {
+      if (_key != key) {
+        let _el = this.get(_key);
+
+        if (_el) _el.value = changes[_key];
+      }
+    } // ugh, this is hacky and should be solved a better way
 
     if (el.control && el.control.type == 'date' && val) {
       changes[key] = el.control._datePicker.formatted('YYYY-MM-DD');
@@ -19912,6 +20771,8 @@ class FormHandler extends HTMLElement {
         this.model.editAttr(changes);
       }
     }
+
+    this.onChange && this.onChange(changes);
   }
 
   get disabled() {
@@ -19943,7 +20804,7 @@ customElements.define('form-handler', FormHandler);
 var _default = customElements.get('form-handler');
 
 exports.default = _default;
-},{"../../util/store":"z4Ln"}],"Sclr":[function(require,module,exports) {
+},{"../../util/store":"2z4L"}],"Sclr":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19982,7 +20843,7 @@ slot[name="after"]{
 	--borderColor: rgba(0,0,0,.3);
 	--invalidColor: #ff1744;
 	--unsavedColor: transparent; /*#FFC107;*/
-	--disabledColor: rgba(0,0,0,.3);
+	--disabledColor: var(--fc-disabled-color, rgba(0,0,0,.3));
 	--labelFontFamily: inherit;
 	--labelFontSize: inherit;
 	--padY: 0;
@@ -20142,6 +21003,7 @@ slot[name="help"] {
 	font-family: inherit;
 	font-size: inherit;
 	color: inherit;
+	width: 4em; /* flex will make it grow */
 	border: none;
 	background: none;
 	padding: var(--padX) var(--padY);
@@ -20240,13 +21102,18 @@ slot[name="help"] {
 	--labelFontSize: .7em;
 }
 
-/* :host([material]) .control:not([empty]) ~ .label, */
+:host([material]) .control:not([empty]) ~ .label,
 :host([material]:not([empty])) .label,
 :host([material]:focus-within) .label,
 :host([material][focused]) .label {
 	color: inherit;
 	transform: translateY(calc(-50% - (var(--padY) / 2)));
 	z-index: 11;
+}
+
+:host([material][empty]:not([nolabel]):not(:focus-within)) [name="control"]::slotted(*),
+:host([material][empty]:not([nolabel]):not(:focus-within)) [name="main"]::slotted(*) {
+	opacity: 0;
 }
 
 :host([material]:not([show*="prefix"])) .prefix,
@@ -20456,7 +21323,7 @@ slot[name="help"] {
 `;
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"pZT1":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"299p":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20471,7 +21338,7 @@ var _default = (el, val) => {
 };
 
 exports.default = _default;
-},{}],"hx3P":[function(require,module,exports) {
+},{}],"8hx3":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20603,7 +21470,7 @@ const onKeyDown = e => {
 
   if ((0, _stopMaxLength.default)(e, e.target, e.target.value)) e.preventDefault();
 };
-},{"./setValueAttrs":"pZT1","./validatePattern":"hx3P","./stopMaxLength":"h6i7"}],"swB1":[function(require,module,exports) {
+},{"./setValueAttrs":"299p","./validatePattern":"8hx3","./stopMaxLength":"h6i7"}],"swB1":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20827,11 +21694,11 @@ const styles = _litElement.css`
 
 :host {
     display: inline-block;
-    --color: #2196f3;
+    --color: var(--fc-theme);
     --radius: 4px;
     text-align: left;
     border-radius: var(--radius);
-    background: #fff;
+    /* background: #fff; */
 }
 
 main > header {
@@ -20893,6 +21760,7 @@ nav > svg {
     height: 1.4em;
     padding: .25em;
     margin: -.25em;
+	color: var(--theme-color, #000);
     opacity: .4;
     cursor: pointer;
 
@@ -20914,8 +21782,13 @@ section .days {
     text-align: center;
 }
 
+main.pick-year section > *,
+main.pick-month section > *{
+	visibility: hidden
+}
+
 section header {
-    color: rgba(0,0,0,.3);
+    color: var(--theme-color-accent, rgba(0,0,0,.3));
     margin: 1em 0;
     font-size: .7em;
 }
@@ -20954,8 +21827,9 @@ months {
     align-items: center;
     box-sizing: border-box;
     overflow: auto;
-    background: #fff;
+    /* background: #fff; */
     border-radius: 0 0 var(--radius) var(--radius);
+	visibility: visible !important;
 }
 
 main:not(.pick-year) years {
@@ -20976,6 +21850,8 @@ month[active] {
 months {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+	grid-template-rows: 1fr 1fr 1fr 1fr;
+	align-content: space-around;
 }
 
 month {
@@ -21056,7 +21932,7 @@ class DatePickerElement extends HTMLElement {
     this._dateEl = this.$('.selected-date');
     this._monthEl = this.$('.viewing-month');
     this._monthDays = this.$('main .days');
-    this.shadowRoot.addEventListener('click', this._onClick.bind(this));
+    this.shadowRoot.querySelector('main').addEventListener('click', this._onClick.bind(this));
   }
 
   connectedCallback() {
@@ -21285,7 +22161,7 @@ customElements.define('date-picker', DatePickerElement);
 var _default = customElements.get('date-picker');
 
 exports.default = _default;
-},{"moment":"a2Bw","lit-element":"bhxD"}],"E0RO":[function(require,module,exports) {
+},{"moment":"a2/B","lit-element":"+bhx"}],"E0RO":[function(require,module,exports) {
 /*
     HTML Cleaner
 
@@ -21308,7 +22184,13 @@ exports.default = _default;
 function parser(str) {
   if (typeof DOMParser === 'undefined') throw Error('DOMParser does not exist');
   var dom = new DOMParser().parseFromString(str, "text/html");
-  return [document, dom.body];
+  return [typeof document !== 'undefined' ? document : dom, dom.body || dom];
+}
+
+function stripHTML(str) {
+  var [document, body] = this.parser(str);
+  let childNodes = Array.from(body.childNodes);
+  return childNodes.map(node => node.textContent).join(' ');
 }
 
 function clean(str) {
@@ -21343,7 +22225,7 @@ function clean(str) {
       cleanNode(p, node);
     }
   });
-  let html = el.innerHTML; // remove line breaks as they dont provide anything and can cause problems in csv exports
+  let html = el.innerHTML ? el.innerHTML : Array.from(el.childNodes).map(node => node.toString()).join(''); // remove line breaks as they dont provide anything and can cause problems in csv exports
 
   html = html.replace(/[\n\r]/g, ' ');
   return html;
@@ -21352,8 +22234,8 @@ function clean(str) {
 function cleanNode(parent, node) {
   // remove all attributes known to be a problem
   if (node.removeAttribute) {
-    let isItalic = node.style.fontStyle == 'italic';
-    let isBold = node.style.fontWeight == 'bold';
+    let isItalic = node.style && node.style.fontStyle == 'italic';
+    let isBold = node.style && node.style.fontWeight == 'bold';
     node.removeAttribute('id');
     node.removeAttribute('class');
     node.removeAttribute('style'); // reapply certain styles // TODO: add option for whether we do this?
@@ -21373,7 +22255,7 @@ function cleanNode(parent, node) {
       // simplifyTextNode(node)
     } // clean all child nodes of this node
 
-  let childNodes = Array.from(node.childNodes);
+  let childNodes = node.childNodes ? Array.from(node.childNodes) : [];
   childNodes.forEach(n => cleanNode(node, n)); // remove any empty nodes (but keep <br> which are always empty)
 
   if (node.nodeName != 'BR' && node.innerText == '') return node.remove(); // if( parent && parent.tagName == 'P' ){
@@ -21388,7 +22270,8 @@ function cleanNode(parent, node) {
       parent.appendChild(node); // remove tags we dont want, but keep their contents
       // example: <font>we want to keep this text and any <b>good</b> tags</font>
     } else {
-      node.remove();
+      if (node.remove) node.remove();else node.parentNode.removeChild(node); // node.js xmldom
+
       childNodes = Array.from(node.childNodes);
       childNodes.forEach(child => {
         parent.appendChild(child);
@@ -21411,6 +22294,7 @@ function simplifyTextNode(node) {
 
 module.exports = {
   clean: clean,
+  stripHTML: stripHTML,
   parser: parser
 };
 },{}],"hNKD":[function(require,module,exports) {
@@ -21433,18 +22317,14 @@ var _default = (str = '') => {
 
 exports.default = _default;
 },{}],"E8jA":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
 // ref: http://stackoverflow.com/a/1293163/2343
 // This will parse a delimited string into an array of
 // arrays. The default delimiter is the comma, but this
 // can be overriden in the second argument.
-var _default = (strData, strDelimiter = ',') => {
+module.exports = (strData, {
+  strDelimiter = ',',
+  hasHeader = true
+} = {}) => {
   // Create a regular expression to parse the CSV values.
   var objPattern = new RegExp( // Delimiters.
   "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" + // Quoted fields.
@@ -21488,13 +22368,20 @@ var _default = (strData, strDelimiter = ',') => {
 
 
     arrData[arrData.length - 1].push(strMatchedValue);
+  }
+
+  if (hasHeader) {
+    let header = arrData.shift();
+    arrData = arrData.map(line => {
+      let obj = {};
+      header.forEach((key, i) => obj[key] = line[i]);
+      return obj;
+    });
   } // Return the parsed data.
 
 
   return arrData;
 };
-
-exports.default = _default;
 },{}],"Zwl6":[function(require,module,exports) {
 /*
 	Plural - create singular or plural sentence based on number given (all numbers but 1 return plural sentence)
@@ -21610,7 +22497,7 @@ function arrayMap(array, iteratee) {
 
 module.exports = arrayMap;
 
-},{}],"p0cq":[function(require,module,exports) {
+},{}],"p/0c":[function(require,module,exports) {
 /**
  * Checks if `value` is classified as an `Array` object.
  *
@@ -21638,7 +22525,7 @@ var isArray = Array.isArray;
 
 module.exports = isArray;
 
-},{}],"w4yJ":[function(require,module,exports) {
+},{}],"3w4y":[function(require,module,exports) {
 var Symbol = require('./_Symbol'),
     arrayMap = require('./_arrayMap'),
     isArray = require('./isArray'),
@@ -21677,7 +22564,7 @@ function baseToString(value) {
 
 module.exports = baseToString;
 
-},{"./_Symbol":"wppe","./_arrayMap":"BblM","./isArray":"p0cq","./isSymbol":"bgO7"}],"A8RV":[function(require,module,exports) {
+},{"./_Symbol":"wppe","./_arrayMap":"BblM","./isArray":"p/0c","./isSymbol":"bgO7"}],"A8RV":[function(require,module,exports) {
 var baseToString = require('./_baseToString');
 
 /**
@@ -21707,7 +22594,7 @@ function toString(value) {
 
 module.exports = toString;
 
-},{"./_baseToString":"w4yJ"}],"Chbn":[function(require,module,exports) {
+},{"./_baseToString":"3w4y"}],"Chbn":[function(require,module,exports) {
 /**
  * The base implementation of `_.slice` without an iteratee call guard.
  *
@@ -21740,7 +22627,7 @@ function baseSlice(array, start, end) {
 
 module.exports = baseSlice;
 
-},{}],"Kr2C":[function(require,module,exports) {
+},{}],"5Kr2":[function(require,module,exports) {
 var baseSlice = require('./_baseSlice');
 
 /**
@@ -21802,7 +22689,7 @@ function asciiToArray(string) {
 
 module.exports = asciiToArray;
 
-},{}],"NNKx":[function(require,module,exports) {
+},{}],"NN+K":[function(require,module,exports) {
 /** Used to compose unicode character classes. */
 var rsAstralRange = '\\ud800-\\udfff',
     rsComboMarksRange = '\\u0300-\\u036f',
@@ -21864,7 +22751,7 @@ function stringToArray(string) {
 
 module.exports = stringToArray;
 
-},{"./_asciiToArray":"ACee","./_hasUnicode":"oxMD","./_unicodeToArray":"NNKx"}],"prUu":[function(require,module,exports) {
+},{"./_asciiToArray":"ACee","./_hasUnicode":"oxMD","./_unicodeToArray":"NN+K"}],"prUu":[function(require,module,exports) {
 var castSlice = require('./_castSlice'),
     hasUnicode = require('./_hasUnicode'),
     stringToArray = require('./_stringToArray'),
@@ -21899,7 +22786,7 @@ function createCaseFirst(methodName) {
 
 module.exports = createCaseFirst;
 
-},{"./_castSlice":"Kr2C","./_hasUnicode":"oxMD","./_stringToArray":"smkV","./toString":"A8RV"}],"SwE8":[function(require,module,exports) {
+},{"./_castSlice":"5Kr2","./_hasUnicode":"oxMD","./_stringToArray":"smkV","./toString":"A8RV"}],"SwE8":[function(require,module,exports) {
 var createCaseFirst = require('./_createCaseFirst');
 
 /**
@@ -21965,7 +22852,7 @@ var _default = str => {
 };
 
 exports.default = _default;
-},{"lodash/capitalize":"NEda"}],"TuEj":[function(require,module,exports) {
+},{"lodash/capitalize":"NEda"}],"9TuE":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21981,7 +22868,13 @@ var _default = (rawData, opts) => {
     description: '',
     header: true
   }, opts);
-  if (!rawData || rawData.length == 0) return console.log('No data to export');
+  if (!rawData || rawData.length == 0) return console.log('No data to export'); // see if the array of data contains Backbone Models or custom classes that implement `toCSV` or `toJSON`
+
+  rawData = rawData.map(d => {
+    if (d && d.toCSV) return d.toCSV();
+    if (d && d.toJSON) return d.toJSON();
+    return d;
+  });
   var header = Object.keys(rawData[0]);
   var rows = rawData.map(d => Object.values(d));
   var data = opts.header === false ? rows : [header].concat(rows);
@@ -22005,15 +22898,7 @@ var _default = (rawData, opts) => {
   data.forEach(function (infoArray, index) {
     let dataString = infoArray.join(opts.delimiter);
     csvContent += index < data.length ? dataString + opts.newline : dataString;
-  }); // let downloadName = 'download'
-  // let blob = new Blob([csvContent], {type:'text/csv'});
-  // let csvUrl = window.URL.createObjectURL(blob);
-  // let ext = opts.delimiter == ',' ? 'csv' : 'txt'
-  // let link = document.createElement("a");
-  // link.setAttribute("href", csvUrl);
-  // link.setAttribute("download", downloadName+"."+ext);
-  // link.click();
-
+  });
   return csvContent;
 };
 
@@ -22035,7 +22920,7 @@ var _default = (ts = 0) => {
 };
 
 exports.default = _default;
-},{}],"xBze":[function(require,module,exports) {
+},{}],"+xBz":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22107,7 +22992,7 @@ var _toCSV = _interopRequireDefault(require("./toCSV"));
 var _wait = _interopRequireDefault(require("./wait"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./htmlCleaner":"E0RO","./normalizeText":"hNKD","./csvToArray":"E8jA","./plural":"Zwl6","./readFile":"MqKw","./titleize":"NUHt","./toCSV":"TuEj","./wait":"DKKB"}],"ezNL":[function(require,module,exports) {
+},{"./htmlCleaner":"E0RO","./normalizeText":"hNKD","./csvToArray":"E8jA","./plural":"Zwl6","./readFile":"MqKw","./titleize":"NUHt","./toCSV":"9TuE","./wait":"DKKB"}],"2ezN":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22201,7 +23086,13 @@ main {
 :host([empty]) .editor:before {
 	content: attr(data-placeholder);
 	color: var(--placeholderColor);
+	/* position: absolute; */
+}
+
+:host([multiline]) .editor:before {
 	position: absolute;
+	left: 0;
+    right: 0;
 }
 
 /* keep placeholder on one line, clipping to ellipsis when overflowed */
@@ -22225,6 +23116,10 @@ main {
 
 :host([type="date"]) .calendar {
 	display: inline-block;
+}
+
+:host([type="date"][disabled]) .calendar {
+	display: none;
 }
 
 /* .calendar:hover,
@@ -22277,7 +23172,7 @@ class TextFieldElement extends HTMLElement {
 			</main>
 			<slot id="value"></slot>`;
     this.shadowRoot.appendChild(temp.content.cloneNode(true));
-    if (this.hasAttribute('multiline') || this.hasAttribute('html')) this.removeAttribute('input');
+    if (this.isMultiline) this.removeAttribute('input');
     let value = this.$('#value');
     this._val = value.assignedNodes().map(el => el.textContent.trim()).join(' ');
     this._val = this._val.replace(/^\n|\n$/g, '').trim();
@@ -22300,7 +23195,7 @@ class TextFieldElement extends HTMLElement {
       this._input.value = this._val;
     }
 
-    if (!this._val && this.hasAttribute('multiline')) {
+    if (!this._val && this.isMultiline && !this.isPlain) {
       this._val = '<p><br></p>';
       this._editor.innerHTML = this._val;
     }
@@ -22321,6 +23216,7 @@ class TextFieldElement extends HTMLElement {
 
     this.shadowRoot.addEventListener('click', this._onClick.bind(this));
     this.addEventListener('click', this._onClick.bind(this));
+    this.shadowRoot.querySelector('.calendar').addEventListener('click', this._onClick.bind(this));
   }
 
   $(str) {
@@ -22366,6 +23262,19 @@ class TextFieldElement extends HTMLElement {
     return this.getAttribute('format') || 'MM/DD/YYYY';
   }
 
+  get isMultiline() {
+    return this.hasAttribute('multiline');
+  }
+
+  get isHTML() {
+    return this.hasAttribute('html');
+  } // get isPlain(){ return this.hasAttribute('plain') }
+
+
+  get isPlain() {
+    return !this.isHTML;
+  }
+
   get disabled() {
     return this.hasAttribute('disabled');
   }
@@ -22395,6 +23304,7 @@ class TextFieldElement extends HTMLElement {
       selection.removeAllRanges();
     } else {
       if (this.type == 'date') {
+        if (val === 'Invalid date') val = null;
         this._datePicker.value = val;
 
         if (!this._datePicker.isValid) {
@@ -22411,7 +23321,7 @@ class TextFieldElement extends HTMLElement {
       this._val = val;
 
       if (this._editor.innerHTML != val) {
-        if (this.hasAttribute('multiline')) val = val || '<p><br></p>';else val = val || '';
+        if (this.isMultiline && !this.isPlain) val = val || '<p><br></p>';else val = val || '';
         this._editor.innerHTML = val;
       }
 
@@ -22427,8 +23337,10 @@ class TextFieldElement extends HTMLElement {
   }
 
   get currentValue() {
-    if (this.hasAttribute('html')) return this._editor.innerHTML;
-    if (this.input) return this._input.value;else if (this._editor.innerHTML === '<p><br></p>' || this._editor.innerHTML === '<br>') return '';else return this._editor.innerText || this._editor.innerHTML;
+    // retain current empty value
+    let emptyVal = this.value === null ? null : '';
+    if (this.isHTML) return this._editor.innerHTML || emptyVal;
+    if (this.input) return this._input.value || emptyVal;else if (this._editor.innerHTML === '<p><br></p>' || this._editor.innerHTML === '<br>') return emptyVal;else return this._editor.innerText || this._editor.innerHTML || emptyVal;
   }
 
   set isInvalid(invalid) {
@@ -22479,15 +23391,20 @@ class TextFieldElement extends HTMLElement {
 
   _onPaste(e) {
     e.preventDefault();
+    let val = '';
 
-    if (this.hasAttribute('html')) {
-      let val = e.clipboardData.getData(e.clipboardData.types[e.clipboardData.types.length - 1] || 'text/html');
+    if (this.isHTML && !e.clipboardData.types.includes('text/rtf') && e.clipboardData.types.includes('text/html')) {
+      val = e.clipboardData.getData('text/html');
       val = _util.htmlCleaner.clean(val);
-      document.execCommand('insertHTML', false, val);
     } else {
-      let val = e.clipboardData.getData(e.clipboardData.types[e.clipboardData.types.length - 1] || 'text/plain');
-      document.execCommand('insertText', false, val);
-    }
+      val = e.clipboardData.getData('text'); // remove excessive line breaks
+
+      val = val.replace(/\n{2,}/g, "\n");
+    } // NOTE: using insertHTML (rather than insertText) keeps the browser from
+    // converting line breaks to <div> and <br> tags
+
+
+    document.execCommand('insertHTML', false, val);
   }
 
   get editorEl() {
@@ -22523,23 +23440,45 @@ class TextFieldElement extends HTMLElement {
     this.isInvalid = false;
     if (e.key.length == 1) this.removeAttribute('empty');
 
-    if (e.key == 'Backspace' && this.hasAttribute('multiline') && this._editor.innerText.trim() == '') {
+    if (e.key == 'Backspace' && this.isMultiline && this._editor.innerText.trim() == '') {
       e.preventDefault();
       e.stopPropagation();
       return false;
+    } // Multiline Plain – only use newlines (keep divs/br from appearing)
+
+
+    if (e.key == 'Enter' && this.isMultiline && this.isPlain) {
+      e.preventDefault();
+      e.stopPropagation();
+      let charLen = this._editor.innerText.length;
+      let lastChar = this._editor.innerText[charLen - 1];
+      let sel = this.shadowRoot.getSelection();
+      let range = sel.getRangeAt(0);
+      if (range.endOffset < charLen || lastChar == '\n') document.execCommand("insertHTML", false, '\n');else document.execCommand("insertHTML", false, '\n\n');
+      return false;
     }
 
-    if (e.key == 'Enter' && !this.hasAttribute('multiline')) {
+    if (e.key == 'Enter' && (!this.isMultiline || e.metaKey || e.ctrlKey)) {
       stop = true;
-      this.dispatchEvent(new Event("change")); // Force change event for empty search/ re-search
+      e.preventDefault();
+      e.stopPropagation(); // NOTE: will this be weird to not blur on enter?
 
-      this.blur(); // will trigger a change if there is one
+      this._onBlur(); // doesn't actually blur, but does the logic like it did
+      // this.blur() // will trigger a change if there is one
+      // Force change event for empty search/ re-search
+
+
+      if (!this.value) this.dispatchEvent(new Event("change"));
+      this.dispatchEvent(new Event("enterkey")); // DEPRECATED
+
+      this.dispatchEvent(new Event("submit")); // I think this makes more sense
     }
 
     if (e.key == 'Escape') {
       this.value = this.value; // reset the value
 
       this.blur();
+      this.dispatchEvent(new Event("esckey"));
     }
 
     let val = this.input ? this._input.value : this._editor.innerText;
@@ -22610,7 +23549,7 @@ customElements.define('text-field', TextFieldElement);
 var _default = customElements.get('text-field');
 
 exports.default = _default;
-},{"lit-element":"bhxD","moment":"a2Bw","../../dialog":"pos3","./date-picker":"VxKk","../util/setValueAttrs":"pZT1","../util/validatePattern":"hx3P","../util/stopMaxLength":"h6i7","../../../util":"xBze"}],"d7Am":[function(require,module,exports) {
+},{"lit-element":"+bhx","moment":"a2/B","../../dialog":"pos3","./date-picker":"VxKk","../util/setValueAttrs":"299p","../util/validatePattern":"8hx3","../util/stopMaxLength":"h6i7","../../../util":"+xBz"}],"d7Am":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22742,7 +23681,7 @@ rich-text-field:focus-within toolbar {
 `;
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"CQm3":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"CQm3":[function(require,module,exports) {
 var define;
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -25313,7 +26252,7 @@ module.exports = function isArguments(value) {
 
   return isArgs;
 };
-},{}],"orz8":[function(require,module,exports) {
+},{}],"orz+":[function(require,module,exports) {
 'use strict';
 
 var keysShim;
@@ -25485,7 +26424,7 @@ keysShim.shim = function shimObjectKeys() {
 };
 
 module.exports = keysShim;
-},{"./isArguments":"uTT0","./implementation":"orz8"}],"ordk":[function(require,module,exports) {
+},{"./isArguments":"uTT0","./implementation":"orz+"}],"6ord":[function(require,module,exports) {
 'use strict';
 
 var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
@@ -25514,136 +26453,7 @@ var supportsStandardArguments = function () {
 isStandardArguments.isLegacyArguments = isLegacyArguments; // for tests
 
 module.exports = supportsStandardArguments ? isStandardArguments : isLegacyArguments;
-},{}],"pTr6":[function(require,module,exports) {
-"use strict";
-/* https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.is */
-
-var NumberIsNaN = function (value) {
-  return value !== value;
-};
-
-module.exports = function is(a, b) {
-  if (a === 0 && b === 0) {
-    return 1 / a === 1 / b;
-  } else if (a === b) {
-    return true;
-  } else if (NumberIsNaN(a) && NumberIsNaN(b)) {
-    return true;
-  }
-
-  return false;
-};
-},{}],"B6OE":[function(require,module,exports) {
-'use strict';
-
-/* eslint no-invalid-this: 1 */
-
-var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
-var slice = Array.prototype.slice;
-var toStr = Object.prototype.toString;
-var funcType = '[object Function]';
-
-module.exports = function bind(that) {
-    var target = this;
-    if (typeof target !== 'function' || toStr.call(target) !== funcType) {
-        throw new TypeError(ERROR_MESSAGE + target);
-    }
-    var args = slice.call(arguments, 1);
-
-    var bound;
-    var binder = function () {
-        if (this instanceof bound) {
-            var result = target.apply(
-                this,
-                args.concat(slice.call(arguments))
-            );
-            if (Object(result) === result) {
-                return result;
-            }
-            return this;
-        } else {
-            return target.apply(
-                that,
-                args.concat(slice.call(arguments))
-            );
-        }
-    };
-
-    var boundLength = Math.max(0, target.length - args.length);
-    var boundArgs = [];
-    for (var i = 0; i < boundLength; i++) {
-        boundArgs.push('$' + i);
-    }
-
-    bound = Function('binder', 'return function (' + boundArgs.join(',') + '){ return binder.apply(this,arguments); }')(binder);
-
-    if (target.prototype) {
-        var Empty = function Empty() {};
-        Empty.prototype = target.prototype;
-        bound.prototype = new Empty();
-        Empty.prototype = null;
-    }
-
-    return bound;
-};
-
-},{}],"TiwC":[function(require,module,exports) {
-'use strict';
-
-var implementation = require('./implementation');
-
-module.exports = Function.prototype.bind || implementation;
-
-},{"./implementation":"B6OE"}],"ar57":[function(require,module,exports) {
-'use strict';
-
-var bind = require('function-bind');
-
-module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
-},{"function-bind":"TiwC"}],"DhUb":[function(require,module,exports) {
-'use strict';
-
-var has = require('has');
-
-var regexExec = RegExp.prototype.exec;
-var gOPD = Object.getOwnPropertyDescriptor;
-
-var tryRegexExecCall = function tryRegexExec(value) {
-  try {
-    var lastIndex = value.lastIndex;
-    value.lastIndex = 0;
-    regexExec.call(value);
-    return true;
-  } catch (e) {
-    return false;
-  } finally {
-    value.lastIndex = lastIndex;
-  }
-};
-
-var toStr = Object.prototype.toString;
-var regexClass = '[object RegExp]';
-var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
-
-module.exports = function isRegex(value) {
-  if (!value || typeof value !== 'object') {
-    return false;
-  }
-
-  if (!hasToStringTag) {
-    return toStr.call(value) === regexClass;
-  }
-
-  var descriptor = gOPD(value, 'lastIndex');
-  var hasLastIndexDataProperty = descriptor && has(descriptor, 'value');
-
-  if (!hasLastIndexDataProperty) {
-    return false;
-  }
-
-  return tryRegexExecCall(value);
-};
-},{"has":"ar57"}],"VxKF":[function(require,module,exports) {
+},{}],"VxKF":[function(require,module,exports) {
 'use strict';
 
 var keys = require('object-keys');
@@ -25712,15 +26522,544 @@ var defineProperties = function (object, map) {
 
 defineProperties.supportsDescriptors = !!supportsDescriptors;
 module.exports = defineProperties;
-},{"object-keys":"ywQn"}],"HmkM":[function(require,module,exports) {
+},{"object-keys":"ywQn"}],"B6/o":[function(require,module,exports) {
 'use strict';
 
-var toObject = Object;
-var TypeErr = TypeError;
+/* eslint no-invalid-this: 1 */
+
+var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
+var slice = Array.prototype.slice;
+var toStr = Object.prototype.toString;
+var funcType = '[object Function]';
+
+module.exports = function bind(that) {
+    var target = this;
+    if (typeof target !== 'function' || toStr.call(target) !== funcType) {
+        throw new TypeError(ERROR_MESSAGE + target);
+    }
+    var args = slice.call(arguments, 1);
+
+    var bound;
+    var binder = function () {
+        if (this instanceof bound) {
+            var result = target.apply(
+                this,
+                args.concat(slice.call(arguments))
+            );
+            if (Object(result) === result) {
+                return result;
+            }
+            return this;
+        } else {
+            return target.apply(
+                that,
+                args.concat(slice.call(arguments))
+            );
+        }
+    };
+
+    var boundLength = Math.max(0, target.length - args.length);
+    var boundArgs = [];
+    for (var i = 0; i < boundLength; i++) {
+        boundArgs.push('$' + i);
+    }
+
+    bound = Function('binder', 'return function (' + boundArgs.join(',') + '){ return binder.apply(this,arguments); }')(binder);
+
+    if (target.prototype) {
+        var Empty = function Empty() {};
+        Empty.prototype = target.prototype;
+        bound.prototype = new Empty();
+        Empty.prototype = null;
+    }
+
+    return bound;
+};
+
+},{}],"58Ti":[function(require,module,exports) {
+'use strict';
+
+var implementation = require('./implementation');
+
+module.exports = Function.prototype.bind || implementation;
+
+},{"./implementation":"B6/o"}],"jYt2":[function(require,module,exports) {
+'use strict';
+/* eslint complexity: [2, 18], max-statements: [2, 33] */
+
+module.exports = function hasSymbols() {
+  if (typeof Symbol !== 'function' || typeof Object.getOwnPropertySymbols !== 'function') {
+    return false;
+  }
+
+  if (typeof Symbol.iterator === 'symbol') {
+    return true;
+  }
+
+  var obj = {};
+  var sym = Symbol('test');
+  var symObj = Object(sym);
+
+  if (typeof sym === 'string') {
+    return false;
+  }
+
+  if (Object.prototype.toString.call(sym) !== '[object Symbol]') {
+    return false;
+  }
+
+  if (Object.prototype.toString.call(symObj) !== '[object Symbol]') {
+    return false;
+  } // temp disabled per https://github.com/ljharb/object.assign/issues/17
+  // if (sym instanceof Symbol) { return false; }
+  // temp disabled per https://github.com/WebReflection/get-own-property-symbols/issues/4
+  // if (!(symObj instanceof Symbol)) { return false; }
+  // if (typeof Symbol.prototype.toString !== 'function') { return false; }
+  // if (String(sym) !== Symbol.prototype.toString.call(sym)) { return false; }
+
+
+  var symVal = 42;
+  obj[sym] = symVal;
+
+  for (sym in obj) {
+    return false;
+  } // eslint-disable-line no-restricted-syntax
+
+
+  if (typeof Object.keys === 'function' && Object.keys(obj).length !== 0) {
+    return false;
+  }
+
+  if (typeof Object.getOwnPropertyNames === 'function' && Object.getOwnPropertyNames(obj).length !== 0) {
+    return false;
+  }
+
+  var syms = Object.getOwnPropertySymbols(obj);
+
+  if (syms.length !== 1 || syms[0] !== sym) {
+    return false;
+  }
+
+  if (!Object.prototype.propertyIsEnumerable.call(obj, sym)) {
+    return false;
+  }
+
+  if (typeof Object.getOwnPropertyDescriptor === 'function') {
+    var descriptor = Object.getOwnPropertyDescriptor(obj, sym);
+
+    if (descriptor.value !== symVal || descriptor.enumerable !== true) {
+      return false;
+    }
+  }
+
+  return true;
+};
+},{}],"NS5K":[function(require,module,exports) {
+var global = arguments[3];
+'use strict';
+
+var origSymbol = global.Symbol;
+
+var hasSymbolSham = require('./shams');
+
+module.exports = function hasNativeSymbols() {
+  if (typeof origSymbol !== 'function') {
+    return false;
+  }
+
+  if (typeof Symbol !== 'function') {
+    return false;
+  }
+
+  if (typeof origSymbol('foo') !== 'symbol') {
+    return false;
+  }
+
+  if (typeof Symbol('bar') !== 'symbol') {
+    return false;
+  }
+
+  return hasSymbolSham();
+};
+},{"./shams":"jYt2"}],"LENn":[function(require,module,exports) {
+'use strict';
+/* globals
+	Atomics,
+	SharedArrayBuffer,
+*/
+
+var undefined;
+var $TypeError = TypeError;
+var $gOPD = Object.getOwnPropertyDescriptor;
+
+if ($gOPD) {
+  try {
+    $gOPD({}, '');
+  } catch (e) {
+    $gOPD = null; // this is IE 8, which has a broken gOPD
+  }
+}
+
+var throwTypeError = function () {
+  throw new $TypeError();
+};
+
+var ThrowTypeError = $gOPD ? function () {
+  try {
+    // eslint-disable-next-line no-unused-expressions, no-caller, no-restricted-properties
+    arguments.callee; // IE 8 does not throw here
+
+    return throwTypeError;
+  } catch (calleeThrows) {
+    try {
+      // IE 8 throws on Object.getOwnPropertyDescriptor(arguments, '')
+      return $gOPD(arguments, 'callee').get;
+    } catch (gOPDthrows) {
+      return throwTypeError;
+    }
+  }
+}() : throwTypeError;
+
+var hasSymbols = require('has-symbols')();
+
+var getProto = Object.getPrototypeOf || function (x) {
+  return x.__proto__;
+}; // eslint-disable-line no-proto
+
+
+var generator; // = function * () {};
+
+var generatorFunction = generator ? getProto(generator) : undefined;
+var asyncFn; // async function() {};
+
+var asyncFunction = asyncFn ? asyncFn.constructor : undefined;
+var asyncGen; // async function * () {};
+
+var asyncGenFunction = asyncGen ? getProto(asyncGen) : undefined;
+var asyncGenIterator = asyncGen ? asyncGen() : undefined;
+var TypedArray = typeof Uint8Array === 'undefined' ? undefined : getProto(Uint8Array);
+var INTRINSICS = {
+  '%Array%': Array,
+  '%ArrayBuffer%': typeof ArrayBuffer === 'undefined' ? undefined : ArrayBuffer,
+  '%ArrayBufferPrototype%': typeof ArrayBuffer === 'undefined' ? undefined : ArrayBuffer.prototype,
+  '%ArrayIteratorPrototype%': hasSymbols ? getProto([][Symbol.iterator]()) : undefined,
+  '%ArrayPrototype%': Array.prototype,
+  '%ArrayProto_entries%': Array.prototype.entries,
+  '%ArrayProto_forEach%': Array.prototype.forEach,
+  '%ArrayProto_keys%': Array.prototype.keys,
+  '%ArrayProto_values%': Array.prototype.values,
+  '%AsyncFromSyncIteratorPrototype%': undefined,
+  '%AsyncFunction%': asyncFunction,
+  '%AsyncFunctionPrototype%': asyncFunction ? asyncFunction.prototype : undefined,
+  '%AsyncGenerator%': asyncGen ? getProto(asyncGenIterator) : undefined,
+  '%AsyncGeneratorFunction%': asyncGenFunction,
+  '%AsyncGeneratorPrototype%': asyncGenFunction ? asyncGenFunction.prototype : undefined,
+  '%AsyncIteratorPrototype%': asyncGenIterator && hasSymbols && Symbol.asyncIterator ? asyncGenIterator[Symbol.asyncIterator]() : undefined,
+  '%Atomics%': typeof Atomics === 'undefined' ? undefined : Atomics,
+  '%Boolean%': Boolean,
+  '%BooleanPrototype%': Boolean.prototype,
+  '%DataView%': typeof DataView === 'undefined' ? undefined : DataView,
+  '%DataViewPrototype%': typeof DataView === 'undefined' ? undefined : DataView.prototype,
+  '%Date%': Date,
+  '%DatePrototype%': Date.prototype,
+  '%decodeURI%': decodeURI,
+  '%decodeURIComponent%': decodeURIComponent,
+  '%encodeURI%': encodeURI,
+  '%encodeURIComponent%': encodeURIComponent,
+  '%Error%': Error,
+  '%ErrorPrototype%': Error.prototype,
+  '%eval%': eval,
+  // eslint-disable-line no-eval
+  '%EvalError%': EvalError,
+  '%EvalErrorPrototype%': EvalError.prototype,
+  '%Float32Array%': typeof Float32Array === 'undefined' ? undefined : Float32Array,
+  '%Float32ArrayPrototype%': typeof Float32Array === 'undefined' ? undefined : Float32Array.prototype,
+  '%Float64Array%': typeof Float64Array === 'undefined' ? undefined : Float64Array,
+  '%Float64ArrayPrototype%': typeof Float64Array === 'undefined' ? undefined : Float64Array.prototype,
+  '%Function%': Function,
+  '%FunctionPrototype%': Function.prototype,
+  '%Generator%': generator ? getProto(generator()) : undefined,
+  '%GeneratorFunction%': generatorFunction,
+  '%GeneratorPrototype%': generatorFunction ? generatorFunction.prototype : undefined,
+  '%Int8Array%': typeof Int8Array === 'undefined' ? undefined : Int8Array,
+  '%Int8ArrayPrototype%': typeof Int8Array === 'undefined' ? undefined : Int8Array.prototype,
+  '%Int16Array%': typeof Int16Array === 'undefined' ? undefined : Int16Array,
+  '%Int16ArrayPrototype%': typeof Int16Array === 'undefined' ? undefined : Int8Array.prototype,
+  '%Int32Array%': typeof Int32Array === 'undefined' ? undefined : Int32Array,
+  '%Int32ArrayPrototype%': typeof Int32Array === 'undefined' ? undefined : Int32Array.prototype,
+  '%isFinite%': isFinite,
+  '%isNaN%': isNaN,
+  '%IteratorPrototype%': hasSymbols ? getProto(getProto([][Symbol.iterator]())) : undefined,
+  '%JSON%': typeof JSON === 'object' ? JSON : undefined,
+  '%JSONParse%': typeof JSON === 'object' ? JSON.parse : undefined,
+  '%Map%': typeof Map === 'undefined' ? undefined : Map,
+  '%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols ? undefined : getProto(new Map()[Symbol.iterator]()),
+  '%MapPrototype%': typeof Map === 'undefined' ? undefined : Map.prototype,
+  '%Math%': Math,
+  '%Number%': Number,
+  '%NumberPrototype%': Number.prototype,
+  '%Object%': Object,
+  '%ObjectPrototype%': Object.prototype,
+  '%ObjProto_toString%': Object.prototype.toString,
+  '%ObjProto_valueOf%': Object.prototype.valueOf,
+  '%parseFloat%': parseFloat,
+  '%parseInt%': parseInt,
+  '%Promise%': typeof Promise === 'undefined' ? undefined : Promise,
+  '%PromisePrototype%': typeof Promise === 'undefined' ? undefined : Promise.prototype,
+  '%PromiseProto_then%': typeof Promise === 'undefined' ? undefined : Promise.prototype.then,
+  '%Promise_all%': typeof Promise === 'undefined' ? undefined : Promise.all,
+  '%Promise_reject%': typeof Promise === 'undefined' ? undefined : Promise.reject,
+  '%Promise_resolve%': typeof Promise === 'undefined' ? undefined : Promise.resolve,
+  '%Proxy%': typeof Proxy === 'undefined' ? undefined : Proxy,
+  '%RangeError%': RangeError,
+  '%RangeErrorPrototype%': RangeError.prototype,
+  '%ReferenceError%': ReferenceError,
+  '%ReferenceErrorPrototype%': ReferenceError.prototype,
+  '%Reflect%': typeof Reflect === 'undefined' ? undefined : Reflect,
+  '%RegExp%': RegExp,
+  '%RegExpPrototype%': RegExp.prototype,
+  '%Set%': typeof Set === 'undefined' ? undefined : Set,
+  '%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols ? undefined : getProto(new Set()[Symbol.iterator]()),
+  '%SetPrototype%': typeof Set === 'undefined' ? undefined : Set.prototype,
+  '%SharedArrayBuffer%': typeof SharedArrayBuffer === 'undefined' ? undefined : SharedArrayBuffer,
+  '%SharedArrayBufferPrototype%': typeof SharedArrayBuffer === 'undefined' ? undefined : SharedArrayBuffer.prototype,
+  '%String%': String,
+  '%StringIteratorPrototype%': hasSymbols ? getProto(''[Symbol.iterator]()) : undefined,
+  '%StringPrototype%': String.prototype,
+  '%Symbol%': hasSymbols ? Symbol : undefined,
+  '%SymbolPrototype%': hasSymbols ? Symbol.prototype : undefined,
+  '%SyntaxError%': SyntaxError,
+  '%SyntaxErrorPrototype%': SyntaxError.prototype,
+  '%ThrowTypeError%': ThrowTypeError,
+  '%TypedArray%': TypedArray,
+  '%TypedArrayPrototype%': TypedArray ? TypedArray.prototype : undefined,
+  '%TypeError%': $TypeError,
+  '%TypeErrorPrototype%': $TypeError.prototype,
+  '%Uint8Array%': typeof Uint8Array === 'undefined' ? undefined : Uint8Array,
+  '%Uint8ArrayPrototype%': typeof Uint8Array === 'undefined' ? undefined : Uint8Array.prototype,
+  '%Uint8ClampedArray%': typeof Uint8ClampedArray === 'undefined' ? undefined : Uint8ClampedArray,
+  '%Uint8ClampedArrayPrototype%': typeof Uint8ClampedArray === 'undefined' ? undefined : Uint8ClampedArray.prototype,
+  '%Uint16Array%': typeof Uint16Array === 'undefined' ? undefined : Uint16Array,
+  '%Uint16ArrayPrototype%': typeof Uint16Array === 'undefined' ? undefined : Uint16Array.prototype,
+  '%Uint32Array%': typeof Uint32Array === 'undefined' ? undefined : Uint32Array,
+  '%Uint32ArrayPrototype%': typeof Uint32Array === 'undefined' ? undefined : Uint32Array.prototype,
+  '%URIError%': URIError,
+  '%URIErrorPrototype%': URIError.prototype,
+  '%WeakMap%': typeof WeakMap === 'undefined' ? undefined : WeakMap,
+  '%WeakMapPrototype%': typeof WeakMap === 'undefined' ? undefined : WeakMap.prototype,
+  '%WeakSet%': typeof WeakSet === 'undefined' ? undefined : WeakSet,
+  '%WeakSetPrototype%': typeof WeakSet === 'undefined' ? undefined : WeakSet.prototype
+};
+
+var bind = require('function-bind');
+
+var $replace = bind.call(Function.call, String.prototype.replace);
+/* adapted from https://github.com/lodash/lodash/blob/4.17.15/dist/lodash.js#L6735-L6744 */
+
+var rePropName = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g;
+var reEscapeChar = /\\(\\)?/g;
+/** Used to match backslashes in property paths. */
+
+var stringToPath = function stringToPath(string) {
+  var result = [];
+  $replace(string, rePropName, function (match, number, quote, subString) {
+    result[result.length] = quote ? $replace(subString, reEscapeChar, '$1') : number || match;
+  });
+  return result;
+};
+/* end adaptation */
+
+
+var getBaseIntrinsic = function getBaseIntrinsic(name, allowMissing) {
+  if (!(name in INTRINSICS)) {
+    throw new SyntaxError('intrinsic ' + name + ' does not exist!');
+  } // istanbul ignore if // hopefully this is impossible to test :-)
+
+
+  if (typeof INTRINSICS[name] === 'undefined' && !allowMissing) {
+    throw new $TypeError('intrinsic ' + name + ' exists, but is not available. Please file an issue!');
+  }
+
+  return INTRINSICS[name];
+};
+
+module.exports = function GetIntrinsic(name, allowMissing) {
+  if (typeof name !== 'string' || name.length === 0) {
+    throw new TypeError('intrinsic name must be a non-empty string');
+  }
+
+  if (arguments.length > 1 && typeof allowMissing !== 'boolean') {
+    throw new TypeError('"allowMissing" argument must be a boolean');
+  }
+
+  var parts = stringToPath(name);
+  var value = getBaseIntrinsic('%' + (parts.length > 0 ? parts[0] : '') + '%', allowMissing);
+
+  for (var i = 1; i < parts.length; i += 1) {
+    if (value != null) {
+      if ($gOPD && i + 1 >= parts.length) {
+        var desc = $gOPD(value, parts[i]);
+
+        if (!allowMissing && !(parts[i] in value)) {
+          throw new $TypeError('base intrinsic for ' + name + ' exists, but the property is not available.');
+        }
+
+        value = desc ? desc.get || desc.value : value[parts[i]];
+      } else {
+        value = value[parts[i]];
+      }
+    }
+  }
+
+  return value;
+};
+},{"has-symbols":"NS5K","function-bind":"58Ti"}],"I+tp":[function(require,module,exports) {
+'use strict';
+
+var bind = require('function-bind');
+
+var GetIntrinsic = require('../GetIntrinsic');
+
+var $Function = GetIntrinsic('%Function%');
+var $apply = $Function.apply;
+var $call = $Function.call;
+
+module.exports = function callBind() {
+  return bind.apply($call, arguments);
+};
+
+module.exports.apply = function applyBind() {
+  return bind.apply($apply, arguments);
+};
+},{"function-bind":"58Ti","../GetIntrinsic":"LENn"}],"4md/":[function(require,module,exports) {
+'use strict';
+
+var numberIsNaN = function (value) {
+  return value !== value;
+};
+
+module.exports = function is(a, b) {
+  if (a === 0 && b === 0) {
+    return 1 / a === 1 / b;
+  }
+
+  if (a === b) {
+    return true;
+  }
+
+  if (numberIsNaN(a) && numberIsNaN(b)) {
+    return true;
+  }
+
+  return false;
+};
+},{}],"TyWm":[function(require,module,exports) {
+'use strict';
+
+var implementation = require('./implementation');
+
+module.exports = function getPolyfill() {
+  return typeof Object.is === 'function' ? Object.is : implementation;
+};
+},{"./implementation":"4md/"}],"Fi9R":[function(require,module,exports) {
+
+'use strict';
+
+var getPolyfill = require('./polyfill');
+
+var define = require('define-properties');
+
+module.exports = function shimObjectIs() {
+  var polyfill = getPolyfill();
+  define(Object, {
+    is: polyfill
+  }, {
+    is: function testObjectIs() {
+      return Object.is !== polyfill;
+    }
+  });
+  return polyfill;
+};
+},{"./polyfill":"TyWm","define-properties":"VxKF"}],"2pTr":[function(require,module,exports) {
+
+'use strict';
+
+var define = require('define-properties');
+
+var callBind = require('es-abstract/helpers/callBind');
+
+var implementation = require('./implementation');
+
+var getPolyfill = require('./polyfill');
+
+var shim = require('./shim');
+
+var polyfill = callBind(getPolyfill(), Object);
+define(polyfill, {
+  getPolyfill: getPolyfill,
+  implementation: implementation,
+  shim: shim
+});
+module.exports = polyfill;
+},{"define-properties":"VxKF","es-abstract/helpers/callBind":"I+tp","./implementation":"4md/","./polyfill":"TyWm","./shim":"Fi9R"}],"ar57":[function(require,module,exports) {
+'use strict';
+
+var bind = require('function-bind');
+
+module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
+},{"function-bind":"58Ti"}],"DhUb":[function(require,module,exports) {
+'use strict';
+
+var has = require('has');
+
+var regexExec = RegExp.prototype.exec;
+var gOPD = Object.getOwnPropertyDescriptor;
+
+var tryRegexExecCall = function tryRegexExec(value) {
+  try {
+    var lastIndex = value.lastIndex;
+    value.lastIndex = 0; // eslint-disable-line no-param-reassign
+
+    regexExec.call(value);
+    return true;
+  } catch (e) {
+    return false;
+  } finally {
+    value.lastIndex = lastIndex; // eslint-disable-line no-param-reassign
+  }
+};
+
+var toStr = Object.prototype.toString;
+var regexClass = '[object RegExp]';
+var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
+
+module.exports = function isRegex(value) {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  if (!hasToStringTag) {
+    return toStr.call(value) === regexClass;
+  }
+
+  var descriptor = gOPD(value, 'lastIndex');
+  var hasLastIndexDataProperty = descriptor && has(descriptor, 'value');
+
+  if (!hasLastIndexDataProperty) {
+    return false;
+  }
+
+  return tryRegexExecCall(value);
+};
+},{"has":"ar57"}],"1Hmk":[function(require,module,exports) {
+'use strict';
+
+var $Object = Object;
+var $TypeError = TypeError;
 
 module.exports = function flags() {
-  if (this != null && this !== toObject(this)) {
-    throw new TypeErr('RegExp.prototype.flags getter called on non-object');
+  if (this != null && this !== $Object(this)) {
+    throw new $TypeError('RegExp.prototype.flags getter called on non-object');
   }
 
   var result = '';
@@ -25758,16 +27097,16 @@ var implementation = require('./implementation');
 
 var supportsDescriptors = require('define-properties').supportsDescriptors;
 
-var gOPD = Object.getOwnPropertyDescriptor;
-var TypeErr = TypeError;
+var $gOPD = Object.getOwnPropertyDescriptor;
+var $TypeError = TypeError;
 
 module.exports = function getPolyfill() {
   if (!supportsDescriptors) {
-    throw new TypeErr('RegExp.prototype.flags requires a true ES5 environment that supports property descriptors');
+    throw new $TypeError('RegExp.prototype.flags requires a true ES5 environment that supports property descriptors');
   }
 
   if (/a/mig.flags === 'gim') {
-    var descriptor = gOPD(RegExp.prototype, 'flags');
+    var descriptor = $gOPD(RegExp.prototype, 'flags');
 
     if (descriptor && typeof descriptor.get === 'function' && typeof /a/.dotAll === 'boolean') {
       return descriptor.get;
@@ -25776,7 +27115,7 @@ module.exports = function getPolyfill() {
 
   return implementation;
 };
-},{"./implementation":"HmkM","define-properties":"VxKF"}],"Kszl":[function(require,module,exports) {
+},{"./implementation":"1Hmk","define-properties":"VxKF"}],"Kszl":[function(require,module,exports) {
 'use strict';
 
 var supportsDescriptors = require('define-properties').supportsDescriptors;
@@ -25808,11 +27147,13 @@ module.exports = function shimFlags() {
 
   return polyfill;
 };
-},{"define-properties":"VxKF","./polyfill":"YWiL"}],"DbQL":[function(require,module,exports) {
+},{"define-properties":"VxKF","./polyfill":"YWiL"}],"DbQ/":[function(require,module,exports) {
 
 'use strict';
 
 var define = require('define-properties');
+
+var callBind = require('es-abstract/helpers/callBind');
 
 var implementation = require('./implementation');
 
@@ -25820,19 +27161,19 @@ var getPolyfill = require('./polyfill');
 
 var shim = require('./shim');
 
-var flagsBound = Function.call.bind(implementation);
+var flagsBound = callBind(implementation);
 define(flagsBound, {
   getPolyfill: getPolyfill,
   implementation: implementation,
   shim: shim
 });
 module.exports = flagsBound;
-},{"define-properties":"VxKF","./implementation":"HmkM","./polyfill":"YWiL","./shim":"Kszl"}],"NyUK":[function(require,module,exports) {
+},{"define-properties":"VxKF","es-abstract/helpers/callBind":"I+tp","./implementation":"1Hmk","./polyfill":"YWiL","./shim":"Kszl"}],"NyUK":[function(require,module,exports) {
 'use strict';
 
 var getDay = Date.prototype.getDay;
 
-var tryDateObject = function tryDateObject(value) {
+var tryDateObject = function tryDateGetDayCall(value) {
   try {
     getDay.call(value);
     return true;
@@ -25966,7 +27307,7 @@ function objEquiv(a, b, opts) {
 
 module.exports = deepEqual;
 
-},{"object-keys":"ywQn","is-arguments":"ordk","object-is":"pTr6","is-regex":"DhUb","regexp.prototype.flags":"DbQL","is-date-object":"NyUK"}],"dgPI":[function(require,module,exports) {
+},{"object-keys":"ywQn","is-arguments":"6ord","object-is":"2pTr","is-regex":"DhUb","regexp.prototype.flags":"DbQ/","is-date-object":"NyUK"}],"dgPI":[function(require,module,exports) {
 'use strict';
 
 var hasOwn = Object.prototype.hasOwnProperty;
@@ -26695,7 +28036,7 @@ Break.blotName = 'break';
 Break.tagName = 'BR';
 var _default = Break;
 exports.default = _default;
-},{"parchment":"CQm3"}],"EMK6":[function(require,module,exports) {
+},{"parchment":"CQm3"}],"E/MK":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26772,7 +28113,7 @@ Inline.order = ['cursor', 'inline', // Must be lower
 ];
 var _default = Inline;
 exports.default = _default;
-},{"./text":"EMK6","parchment":"CQm3"}],"ehqu":[function(require,module,exports) {
+},{"./text":"E/MK","parchment":"CQm3"}],"ehqu":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26975,7 +28316,7 @@ function bubbleFormats(blot, formats = {}) {
 
   return bubbleFormats(blot.parent, formats);
 }
-},{"extend":"dgPI","quill-delta":"BYft","parchment":"CQm3","./break":"WpVR","./inline":"xisp","./text":"EMK6"}],"DdcE":[function(require,module,exports) {
+},{"extend":"dgPI","quill-delta":"BYft","parchment":"CQm3","./break":"WpVR","./inline":"xisp","./text":"E/MK"}],"DdcE":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27117,7 +28458,7 @@ exports.default = CodeBlock;
 CodeBlock.blotName = 'code-block';
 CodeBlock.tagName = 'PRE';
 CodeBlock.TAB = '  ';
-},{"quill-delta":"BYft","parchment":"CQm3","../blots/block":"ehqu","../blots/inline":"xisp","../blots/text":"EMK6"}],"ffqL":[function(require,module,exports) {
+},{"quill-delta":"BYft","parchment":"CQm3","../blots/block":"ehqu","../blots/inline":"xisp","../blots/text":"E/MK"}],"ffqL":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27255,7 +28596,7 @@ Cursor.CONTENTS = "\uFEFF"; // Zero width no break space
 
 var _default = Cursor;
 exports.default = _default;
-},{"parchment":"CQm3","./text":"EMK6"}],"uY6n":[function(require,module,exports) {
+},{"parchment":"CQm3","./text":"E/MK"}],"prL8":[function(require,module,exports) {
 'use strict'
 
 exports.byteLength = byteLength
@@ -27323,8 +28664,7 @@ function toByteArray (b64) {
     ? validLen - 4
     : validLen
 
-  var i
-  for (i = 0; i < len; i += 4) {
+  for (var i = 0; i < len; i += 4) {
     tmp =
       (revLookup[b64.charCodeAt(i)] << 18) |
       (revLookup[b64.charCodeAt(i + 1)] << 12) |
@@ -27409,7 +28749,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],"W670":[function(require,module,exports) {
+},{}],"iism":[function(require,module,exports) {
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -27495,14 +28835,14 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],"yP2X":[function(require,module,exports) {
+},{}],"2BOv":[function(require,module,exports) {
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],"Mcqd":[function(require,module,exports) {
+},{}],"XyCw":[function(require,module,exports) {
 
 var global = arguments[3];
 /*!
@@ -29295,7 +30635,7 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":"uY6n","ieee754":"W670","isarray":"yP2X","buffer":"Mcqd"}],"nTXV":[function(require,module,exports) {
+},{"base64-js":"prL8","ieee754":"iism","isarray":"2BOv","buffer":"XyCw"}],"nTXV":[function(require,module,exports) {
 var Buffer = require("buffer").Buffer;
 var clone = function () {
   'use strict';
@@ -29568,7 +30908,7 @@ var clone = function () {
 if (typeof module === 'object' && module.exports) {
   module.exports = clone;
 }
-},{"buffer":"Mcqd"}],"tTqF":[function(require,module,exports) {
+},{"buffer":"XyCw"}],"tTqF":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29596,9 +30936,7 @@ var _deepEqual = _interopRequireDefault(require("deep-equal"));
 
 var _extend = _interopRequireDefault(require("extend"));
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29889,7 +31227,7 @@ function normalizeDelta(delta) {
 
 var _default = Editor;
 exports.default = _default;
-},{"quill-delta":"BYft","quill-delta/lib/op":"Eba4","parchment":"CQm3","../formats/code":"DdcE","../blots/cursor":"ffqL","../blots/block":"ehqu","../blots/break":"WpVR","clone":"nTXV","deep-equal":"koiw","extend":"dgPI"}],"JJlS":[function(require,module,exports) {
+},{"quill-delta":"BYft","quill-delta/lib/op":"Eba4","parchment":"CQm3","../formats/code":"DdcE","../blots/cursor":"ffqL","../blots/block":"ehqu","../blots/break":"WpVR","clone":"nTXV","deep-equal":"koiw","extend":"dgPI"}],"2JJl":[function(require,module,exports) {
 'use strict';
 
 var has = Object.prototype.hasOwnProperty
@@ -30231,7 +31569,7 @@ debug.level = namespace.level = function (newLevel) {
 
 var _default = namespace;
 exports.default = _default;
-},{}],"WVH7":[function(require,module,exports) {
+},{}],"WV+H":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30721,7 +32059,7 @@ Emitter.sources = {
 };
 var _default = Emitter;
 exports.default = _default;
-},{"eventemitter3":"JJlS","./logger":"X7fV","./shadow-selection-polyfill":"WVH7"}],"ntkb":[function(require,module,exports) {
+},{"eventemitter3":"2JJl","./logger":"X7fV","./shadow-selection-polyfill":"WV+H"}],"+ntk":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31156,7 +32494,7 @@ function contains(parent, descendant) {
 
   return parent.contains(descendant);
 }
-},{"parchment":"CQm3","clone":"nTXV","deep-equal":"koiw","./emitter":"GJzd","./logger":"X7fV","./shadow-selection-polyfill":"WVH7"}],"ks5f":[function(require,module,exports) {
+},{"parchment":"CQm3","clone":"nTXV","deep-equal":"koiw","./emitter":"GJzd","./logger":"X7fV","./shadow-selection-polyfill":"WV+H"}],"ks5f":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31225,9 +32563,7 @@ var _logger = _interopRequireDefault(require("./logger"));
 
 var _theme = _interopRequireDefault(require("./theme"));
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31767,7 +33103,7 @@ function shiftRange(range, index, length, source) {
 
   return new _selection.Range(start, end - start);
 }
-},{"./polyfill":"y7Ne","quill-delta":"BYft","./editor":"tTqF","./emitter":"GJzd","./module":"ntkb","parchment":"CQm3","./selection":"owE4","extend":"dgPI","./logger":"X7fV","./theme":"ks5f"}],"tnfo":[function(require,module,exports) {
+},{"./polyfill":"y7Ne","quill-delta":"BYft","./editor":"tTqF","./emitter":"GJzd","./module":"+ntk","parchment":"CQm3","./selection":"owE4","extend":"dgPI","./logger":"X7fV","./theme":"ks5f"}],"6tnf":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31779,9 +33115,7 @@ var _parchment = _interopRequireDefault(require("parchment"));
 
 var _block = _interopRequireWildcard(require("./block"));
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31881,7 +33215,7 @@ class Embed extends _parchment.default.Embed {
 
 var _default = Embed;
 exports.default = _default;
-},{"parchment":"CQm3","./text":"EMK6"}],"FLS8":[function(require,module,exports) {
+},{"parchment":"CQm3","./text":"E/MK"}],"FLS8":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31901,9 +33235,7 @@ var _code = _interopRequireDefault(require("../formats/code"));
 
 var _container = _interopRequireDefault(require("./container"));
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32099,7 +33431,7 @@ Scroll.defaultChild = 'block';
 Scroll.allowedChildren = [_block.default, _block.BlockEmbed, _container.default];
 var _default = Scroll;
 exports.default = _default;
-},{"parchment":"CQm3","../core/emitter":"GJzd","./block":"ehqu","./break":"WpVR","../formats/code":"DdcE","./container":"tnfo"}],"y5yF":[function(require,module,exports) {
+},{"parchment":"CQm3","../core/emitter":"GJzd","./block":"ehqu","./break":"WpVR","../formats/code":"DdcE","./container":"6tnf"}],"y5y/":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32656,7 +33988,7 @@ function matchText(node, delta) {
 
   return delta.insert(text);
 }
-},{"extend":"dgPI","quill-delta":"BYft","parchment":"CQm3","../core/quill":"karo","../core/logger":"X7fV","../core/module":"ntkb","../formats/align":"y5yF","../formats/background":"ioe5","../formats/code":"DdcE","../formats/color":"Wxff","../formats/direction":"kk7L","../formats/font":"VBCP","../formats/size":"TDsq"}],"p1wc":[function(require,module,exports) {
+},{"extend":"dgPI","quill-delta":"BYft","parchment":"CQm3","../core/quill":"karo","../core/logger":"X7fV","../core/module":"+ntk","../formats/align":"y5y/","../formats/background":"ioe5","../formats/code":"DdcE","../formats/color":"Wxff","../formats/direction":"kk7L","../formats/font":"VBCP","../formats/size":"TDsq"}],"p1wc":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32811,7 +34143,7 @@ function getLastChangeIndex(delta) {
 
   return changeIndex;
 }
-},{"parchment":"CQm3","../core/quill":"karo","../core/module":"ntkb"}],"fCAC":[function(require,module,exports) {
+},{"parchment":"CQm3","../core/quill":"karo","../core/module":"+ntk"}],"fCAC":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33415,7 +34747,7 @@ function normalize(binding) {
 
   return binding;
 }
-},{"clone":"nTXV","deep-equal":"koiw","extend":"dgPI","quill-delta":"BYft","quill-delta/lib/op":"Eba4","parchment":"CQm3","../core/quill":"karo","../core/logger":"X7fV","../core/module":"ntkb"}],"qOpY":[function(require,module,exports) {
+},{"clone":"nTXV","deep-equal":"koiw","extend":"dgPI","quill-delta":"BYft","quill-delta/lib/op":"Eba4","parchment":"CQm3","../core/quill":"karo","../core/logger":"X7fV","../core/module":"+ntk"}],"qOpY":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33449,9 +34781,7 @@ var _history = _interopRequireDefault(require("./modules/history"));
 
 var _keyboard = _interopRequireDefault(require("./modules/keyboard"));
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33474,7 +34804,7 @@ _parchment.default.register(_block.default, _break.default, _cursor.default, _in
 
 var _default = _quill.default;
 exports.default = _default;
-},{"parchment":"CQm3","./core/quill":"karo","./blots/block":"ehqu","./blots/break":"WpVR","./blots/container":"tnfo","./blots/cursor":"ffqL","./blots/embed":"UVAQ","./blots/inline":"xisp","./blots/scroll":"FLS8","./blots/text":"EMK6","./modules/clipboard":"tAeH","./modules/history":"p1wc","./modules/keyboard":"fCAC"}],"UjOo":[function(require,module,exports) {
+},{"parchment":"CQm3","./core/quill":"karo","./blots/block":"ehqu","./blots/break":"WpVR","./blots/container":"6tnf","./blots/cursor":"ffqL","./blots/embed":"UVAQ","./blots/inline":"xisp","./blots/scroll":"FLS8","./blots/text":"E/MK","./modules/clipboard":"tAeH","./modules/history":"p1wc","./modules/keyboard":"fCAC"}],"5/Uj":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33778,7 +35108,7 @@ Toolbar.DEFAULTS = {
     }
   }
 };
-},{"quill-delta":"BYft","parchment":"CQm3","../core/quill":"karo","../core/logger":"X7fV","../core/module":"ntkb"}],"BIiT":[function(require,module,exports) {
+},{"quill-delta":"BYft","parchment":"CQm3","../core/quill":"karo","../core/logger":"X7fV","../core/module":"+ntk"}],"BIiT":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33813,7 +35143,7 @@ Bold.blotName = 'bold';
 Bold.tagName = ['STRONG', 'B'];
 var _default = Bold;
 exports.default = _default;
-},{"../blots/inline":"xisp"}],"WGr4":[function(require,module,exports) {
+},{"../blots/inline":"xisp"}],"4WGr":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33831,7 +35161,7 @@ Italic.blotName = 'italic';
 Italic.tagName = ['EM', 'I'];
 var _default = Italic;
 exports.default = _default;
-},{"./bold":"BIiT"}],"ao68":[function(require,module,exports) {
+},{"./bold":"BIiT"}],"ao6/":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33984,7 +35314,7 @@ List.scope = _parchment.default.Scope.BLOCK_BLOT;
 List.tagName = ['OL', 'UL'];
 List.defaultChild = 'list-item';
 List.allowedChildren = [ListItem];
-},{"parchment":"CQm3","../blots/block":"ehqu","../blots/container":"tnfo"}],"t5Za":[function(require,module,exports) {
+},{"parchment":"CQm3","../blots/block":"ehqu","../blots/container":"6tnf"}],"t5Za":[function(require,module,exports) {
 "use strict";
 
 var _core = _interopRequireDefault(require("quill/core"));
@@ -34024,7 +35354,7 @@ _core.default.debug('error');
 _core.default.register({
   'modules/clipboard': BUIClipboard
 });
-},{"quill/core":"qOpY","quill/modules/clipboard":"tAeH","../../../../util":"xBze"}],"IkMa":[function(require,module,exports) {
+},{"quill/core":"qOpY","quill/modules/clipboard":"tAeH","../../../../util":"+xBz"}],"IkMa":[function(require,module,exports) {
 "use strict";
 
 var _core = _interopRequireDefault(require("quill/core"));
@@ -34147,9 +35477,7 @@ require("./divider");
 
 var _break = require("./break");
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34165,7 +35493,7 @@ _core.default.register({
   'formats/list': _list.default,
   'formats/list-item': _list.ListItem
 });
-},{"quill/core":"qOpY","quill/modules/toolbar":"UjOo","quill/formats/bold":"BIiT","quill/formats/italic":"WGr4","quill/formats/list":"ao68","./clipboard":"t5Za","./divider":"IkMa","./break":"ZpO7"}],"k1zW":[function(require,module,exports) {
+},{"quill/core":"qOpY","quill/modules/toolbar":"5/Uj","quill/formats/bold":"BIiT","quill/formats/italic":"4WGr","quill/formats/list":"ao6/","./clipboard":"t5Za","./divider":"IkMa","./break":"ZpO7"}],"k1zW":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34486,354 +35814,7 @@ customElements.define('rich-text-field', RichTextField);
 var _default = customElements.get('rich-text-field');
 
 exports.default = _default;
-},{"lit-html":"SPDu","lit-html/directives/unsafe-html.js":"jTPt","../../../../util":"xBze","../../../menu":"tCYJ","./style":"d7Am","./quill":"COD5"}],"h8fl":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _litElement = require("lit-element");
-
-var _menu = _interopRequireDefault(require("../../menu"));
-
-var _device = _interopRequireDefault(require("../../../util/device"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/*
-	Select Field
-*/
-const styles = _litElement.css`
-
-:host(:not([disabled])) {
-	cursor: pointer;
-}
-
-main {
-	display: flex;
-	align-items: center;
-	min-width: 1em;
-}
-
-main > svg {
-	height: 1em;
-	width: 1em;
-	flex-shrink: 0;
-}
-
-slot#options {
-	display: none;
-}
-
-main input {
-	position: absolute;
-	z-index: -1;
-	opacity: 0;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-}
-
-
-#value {
-	flex-grow: 1;
-	min-width: 1em;
-}
-
-#value:empty:before {
-	content: attr(data-placeholder);
-	color: var(--placeholderColor);
-}
-
-#value > span {
-	display: inline-block;
-	padding: 0;
-    min-width: 1em;
-	vertical-align: bottom;
-}
-
-:host(:not([chip])) #value > span:not(:last-child):after {
-	content: ', ';
-	margin-right: .5em;
-}
-
-:host([chip]) #value {
-	margin-top: -.15em;
-	margin-bottom: -.15em;
-}
-
-:host([chip]) #value > span {
-	background: rgba(0,0,0,.1);
-    margin: .1em;
-    padding: .15em .5em;
-    border-radius: 20px;
-	line-height: 1em;
-	display: inline-flex;
-	justify-content: center;
-	align-items: center;
-}`;
-
-class SelectFieldElement extends HTMLElement {
-  constructor() {
-    super();
-    let shadow = this.attachShadow({
-      mode: 'open'
-    });
-    let temp = document.createElement('template');
-    let placeholder = this.getAttribute('placeholder') || '';
-    let arrow = this.hasAttribute('no-arrow') ? '' : '<svg focusable="false" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"></path></svg>';
-    temp.innerHTML = `<style>${styles.cssText}</style>
-			<main>
-				<input type="input" readonly="true"/>
-				<div id="value" data-placeholder="${placeholder}"></div>
-				${arrow}
-			</main>
-			<slot id="options"></slot>`;
-    this.shadowRoot.appendChild(temp.content.cloneNode(true));
-    this._input = this.$('input');
-    this._value = this.$('#value');
-    this._selected = [];
-    let options = this.$('#options');
-    this.options = [];
-    options.assignedNodes && options.assignedNodes().map(el => {
-      if (!el.tagName) return; // skip comments and empty text blocks
-
-      if (el.tagName == 'HR') return this.options.push('divider');
-      if (el.tagName == 'OPTGROUP') return this.options.push({
-        'divider': el.innerHTML
-      });
-
-      if (el.tagName != 'OPTION') {
-        return this.options.push({
-          'text': el.innerHTML
-        });
-      }
-
-      if (el.hasAttribute('selected')) this._selected.push(el.value);
-      let attrs = {};
-      Array.from(el.attributes).forEach(attr => {
-        if (!['value', 'selected'].includes(attr.name)) attrs[attr.name] = attr.value;
-      });
-      this.options.push(Object.assign(attrs, {
-        label: el.innerHTML,
-        val: el.value || null
-      }));
-    });
-    this.addEventListener('click', this.focus.bind(this));
-    this.addEventListener('keypress', this.onKeypress.bind(this));
-  }
-
-  onKeypress(e) {
-    if (e.code == 'Space') {
-      this.toggleMenu();
-    }
-  }
-
-  static get observedAttributes() {
-    return ['disabled'];
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'disabled') this._input.disabled = this.disabled;
-  }
-
-  setAttributes() {
-    if (this.isEmpty && !this.showEmpty && !this.getAttribute('placeholder')) this.setAttribute('empty', true);else this.removeAttribute('empty');
-  }
-
-  $(str) {
-    return this.shadowRoot.querySelector(str);
-  }
-
-  $$(str) {
-    return this.shadowRoot.querySelectorAll(str);
-  }
-
-  connectedCallback() {
-    this.selected = this._selected;
-  }
-
-  disconnectedCallback() {}
-
-  get disabled() {
-    return this.hasAttribute('disabled');
-  }
-
-  set disabled(val = true) {
-    val ? this.setAttribute('disabled', '') : this.removeAttribute('disabled');
-  }
-
-  get multiple() {
-    return this.hasAttribute('multiple');
-  }
-
-  get showEmpty() {
-    return this.hasAttribute('show-empty');
-  }
-
-  get value() {
-    if (this.multiple) return this.selected && this.selected.map(m => m.val);else return this.selected && this.selected.val;
-  }
-
-  set value(val) {
-    this.selected = val;
-  }
-
-  get isEmpty() {
-    let val = this.value;
-    return this.multiple ? val.length <= 1 && !val[0] : !val;
-  }
-
-  set isInvalid(invalid) {
-    this._isInvalid = invalid;
-    if (invalid) this.setAttribute('invalid', true);else this.removeAttribute('invalid');
-  }
-
-  get isInvalid() {
-    return this._isInvalid;
-  }
-
-  set options(opts) {
-    if (opts instanceof Promise) {
-      opts.then(result => {
-        this.options = result;
-        return result;
-      });
-      opts = []; // clear options until promise resolves
-    }
-
-    if (Array.isArray(opts)) opts = opts.map(o => {
-      if (typeof o == 'string') return {
-        label: o,
-        val: o
-      };
-      return o;
-    });
-    this.__options = opts;
-    this.selected = this._selected;
-  }
-
-  get options() {
-    return this.__options;
-  }
-
-  set selected(val) {
-    this._oldSelected = this._selected.slice(0);
-    if (val === undefined || val === null) val = [];else if (!Array.isArray(val)) val = [String(val)];
-    let selected = this.options.filter(m => {
-      return val.includes(m.val) || val.length == 0 && !m.val;
-    }); // keep selected values in the order that they were selected
-
-    selected = selected.sort((a, b) => {
-      return val.indexOf(a.val) - val.indexOf(b.val);
-    });
-    this._selected = []; // if no options, keep the selected value
-    // FIXME: could be improved with the `labels`
-
-    if (this.options.length == 0) this._selected = val;
-    let labels = '';
-    selected.forEach(m => {
-      this._selected.push(m.val);
-
-      if (m.val || this.showEmpty) labels += `<span value="${m.val}">${m.label}</span>`;
-    });
-    this._value.innerHTML = labels;
-    this.setAttribute('value', val.join(','));
-    this.setAttributes();
-  }
-
-  get selected() {
-    let selected = this.options.filter(m => {
-      return this._selected.includes(m.val);
-    }); // keep selected values in the order that they were selected
-
-    selected = selected.sort((a, b) => {
-      return this._selected.indexOf(a.val) - this._selected.indexOf(b.val);
-    });
-    return this.multiple ? selected : selected[0];
-  }
-
-  get isFocused() {
-    return this.shadowRoot.activeElement == this._input || this.hasAttribute('focused');
-  }
-
-  focus() {
-    this.toggleMenu();
-  }
-
-  set focused(focused) {
-    if (focused) {
-      this._input.focus();
-
-      this.setAttribute('focused', '');
-    } else {
-      this._input.blur();
-
-      this.removeAttribute('focused');
-    }
-  }
-
-  async toggleMenu() {
-    if (this.disabled) return;
-
-    if (this.openMenu) {
-      this.openMenu.resolve(false);
-      return;
-    }
-
-    this.focused = true;
-    let menuOpts = {
-      minW: this.offsetWidth,
-      selected: this._selected,
-      multiple: this.multiple ? 'always' : false,
-      jumpNav: this.hasAttribute('jump-nav'),
-      // only called when in multiple mode
-      onSelect: selected => {
-        this.selected = selected.map(m => m.val);
-      }
-    };
-    let menu = this.options;
-    let popoverOpts = {
-      align: this.getAttribute('menu-align') || 'bottom',
-      maxHeight: this.getAttribute('menu-max-height') || 'auto',
-      maxWidth: this.getAttribute('menu-max-width') || 'none',
-      overflowBoundry: this.getAttribute('menu-overflow') ? 'window' : null,
-      adjustForMobile: true
-    };
-    if (!menu || menu.length == 0) menu = [{
-      'divider': 'No options available'
-    }];
-    this.openMenu = new _menu.default(menu, menuOpts);
-    this.openMenu.el.setAttribute('select-field', this.className);
-    let val = await this.openMenu.popover(this.$('main'), popoverOpts);
-    this.openMenu = null;
-    this.focused = false;
-    if (!_device.default.is_mobile) this._input.focus(); // retain focus
-
-    if (val === false) return;
-    val = this.multiple ? val : [val];
-    this.selected = val.map(m => m.val);
-    var event = new CustomEvent('change', {
-      bubbles: true,
-      composed: true,
-      detail: {
-        value: this.value
-      }
-    });
-    this.dispatchEvent(event);
-  }
-
-}
-
-customElements.define('select-field', SelectFieldElement);
-
-var _default = customElements.get('select-field');
-
-exports.default = _default;
-},{"lit-element":"bhxD","../../menu":"tCYJ","../../../util/device":"la8o"}],"GLLF":[function(require,module,exports) {
+},{"lit-html":"SP/d","lit-html/directives/unsafe-html.js":"/jTP","../../../../util":"+xBz","../../../menu":"0tCY","./style":"d7Am","./quill":"COD5"}],"GLLF":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34848,7 +35829,7 @@ const styles = _litElement.css`
 :host {
 	--size: 1.6em;
 	--color: var(--fc-theme);
-	--colorDisabled: rgba(0, 0, 0, 0.26);
+	--colorDisabled: var(--fc-disabled-color, rgba(0, 0, 0, 0.26));
 	--labelSize: 1em;
 	--labelColor: currentColor;
 	display: inline-block;
@@ -34966,7 +35947,7 @@ customElements.define('radio-btn', RadioBtnElement);
 var _default = customElements.get('radio-btn');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"mCnW":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"mCnW":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34994,11 +35975,22 @@ class RadioGroupElement extends HTMLElement {
         this.nav(1);
       }
     });
+    this.onChildrenChange = this.onChildrenChange.bind(this);
+    const observer = new MutationObserver(this.onChildrenChange);
+    observer.observe(this, {
+      attributes: false,
+      childList: true,
+      subtree: false
+    });
+  }
+
+  onChildrenChange(e) {
     this.radios = Array.from(this.querySelectorAll('radio-btn'));
   }
 
   connectedCallback() {
     if (!this.hasAttribute('tabindex')) this.setAttribute('tabindex', '0');
+    this.radios = Array.from(this.querySelectorAll('radio-btn'));
   }
 
   nav(dir = 1) {
@@ -35036,6 +36028,7 @@ class RadioGroupElement extends HTMLElement {
     this.radios.forEach(el => {
       if (el.value == val) el.active = true;else el.active = false;
     });
+    this.setAttribute('value', val);
   }
 
   get disabled() {
@@ -35076,7 +36069,7 @@ require("./controls/radio-group");
 require("./controls/touch-ripple");
 
 require("./controls/range-slider");
-},{"./form-handler":"ZQnj","./form-control":"swB1","./controls/text-field":"ezNL","./controls/rich-text-field":"k1zW","./controls/select-field":"h8fl","./controls/check-box":"jNfL","./controls/radio-btn":"GLLF","./controls/radio-group":"mCnW","./controls/touch-ripple":"uH6r","./controls/range-slider":"ZCfn"}],"Wr69":[function(require,module,exports) {
+},{"./form-handler":"ZQnj","./form-control":"swB1","./controls/text-field":"2ezN","./controls/rich-text-field":"k1zW","./controls/select-field":"h8fl","./controls/check-box":"jNfL","./controls/radio-btn":"GLLF","./controls/radio-group":"mCnW","./controls/touch-ripple":"uH6r","./controls/range-slider":"ZCfn"}],"Wr69":[function(require,module,exports) {
 
 /**
  * Expose `Emitter`.
@@ -35270,7 +36263,8 @@ class DataSource {
     this.reset();
     this.opts = Object.assign({
       perPage: 30,
-      fetch: true
+      fetch: true,
+      fetchOnLoad: true
     }, opts);
   }
 
@@ -35282,6 +36276,15 @@ class DataSource {
     this._filteredData = []; // raw data with after filters applied
 
     this.data = []; // filtered data with "search term" applied
+  }
+
+  set coll(coll) {
+    this.hasFetched = false;
+    this.__coll = coll;
+  }
+
+  get coll() {
+    return this.__coll;
   }
 
   async refilter() {
@@ -35364,6 +36367,7 @@ class DataSource {
       if (this._rawData.length > pageAt) this.emit('change:count', this._rawData.length);
       if (this._filtering) await this._filtering;
       if (this._sorting) await this._sorting;
+      this.hasFetched = true;
       resolve(this.data.slice(pageAt, pageAt + this.opts.perPage));
     }).finally(_ => delete this._fetching);
   }
@@ -35438,8 +36442,8 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
         }
 
         text-field {
-            padding-right: .5em;
-            margin-right: -.5em;
+            /* padding-right: .5em; */
+            /* margin-right: -.5em; */
             /* width: 160px; */
         }
 
@@ -35448,14 +36452,28 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
         }
         
         .controls {
-            padding: .5em;
-            font-size: 1.4em;
+            padding: .25em .5em;
+            /* font-size: 1.4em; */
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            /* flex-direction: column; */
+        }
+
+        .controls span {
+            margin: 0 .25em;
         }
 
         form-control:first-child {
             margin-bottom: .35em;
+        }
+
+        footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        b-label {
+            margin: 0 .5rem;
         }
     `;
   }
@@ -35469,27 +36487,29 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
   render() {
     return _litElement.html`
 
-        <header>
-            <b-btn text md @click=${this.clearDates}>Clear</b-btn>
-            <b-hr></b-hr>
+        <b-btn text md @click=${this.clearDates}>Clear</b-btn>
+        <b-hr></b-hr>
+
+        <div class="controls">
+            <form-control material="filled" key="date1">
+                <text-field reset-invalid placeholder="00/00/0000" type="date" @enterkey=${this.onEnter}></text-field>
+            </form-control>
+            
+            <span>–</span>
+            
+            <form-control material="filled" key="date2">
+                <text-field reset-invalid placeholder="00/00/0000" type="date" @enterkey=${this.onEnter}></text-field>
+            </form-control>
+        </div>
+
+        <b-label sm divider>Presets</b-label>
+        <footer>
             <b-btn text md @click=${this.usePreset}>Today</b-btn>
             <b-btn text md @click=${this.usePreset}>Yesterday</b-btn>
             <b-btn text md @click=${this.usePreset}>30 Days</b-btn>
             <b-btn text md @click=${this.usePreset}>This Month</b-btn>
             <b-btn text md @click=${this.usePreset}>This Year</b-btn>
-        </header>
-
-        <b-hr></b-hr>
-
-        <div class="controls">
-            <form-control key="date1">
-                <text-field reset-invalid placeholder="00/00/0000" type="date"></text-field>
-            </form-control>
-
-            <form-control key="date2">
-                <text-field reset-invalid placeholder="00/00/0000" type="date"></text-field>
-            </form-control>
-        </div>
+        </footer>
     `;
   }
 
@@ -35553,12 +36573,16 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
         return month1 + ' ‘' + m1.format('YY');
       }
 
-      if (thisYear && m1.month() == 0 && m2.month() == 11) return 'This Year';else if (thisYear) return month1 + ' - ' + month2;else if (sameYear) return month1 + ' - ' + month2 + ' ' + m2.format('YYYY');else return month1 + ' ‘' + m1.format('YY') + ' - ' + month2 + ' ‘' + m2.format('YY');
+      if (thisYear && sameYear && m1.month() == 0 && m2.month() == 11) return 'This Year';else if (thisYear && sameYear) return month1 + ' - ' + month2;else if (sameYear) return month1 + ' - ' + month2 + ' ' + m2.format('YYYY');else return month1 + ' ‘' + m1.format('YY') + ' - ' + month2 + ' ‘' + m2.format('YY');
     } // leave off the year since it's this year
 
 
     if (thisYear) return m1.format('MMM D') + ' - ' + m2.format('MMM D');
     return m1.format('M/D/YY') + ' - ' + m2.format('M/D/YY');
+  }
+
+  onEnter() {
+    this.close();
   }
 
   clearDates() {
@@ -35604,7 +36628,101 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
 var _default = customElements.get('b-list-filter-view-date');
 
 exports.default = _default;
-},{"lit-element":"bhxD","moment":"a2Bw"}],"vufV":[function(require,module,exports) {
+},{"lit-element":"+bhx","moment":"a2/B"}],"7J1Y":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+var _moment = _interopRequireDefault(require("moment"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+customElements.define('b-list-filter-view-input', class extends _litElement.LitElement {
+  static get styles() {
+    return _litElement.css`
+        :host {
+            display: grid;
+            position:relative;
+            padding: .5em;
+        }
+
+        form-control {
+            margin:0;
+        }
+
+        b-btn.cancel {
+            margin: -.5em -.5em -.5em 0;
+            vertical-align: middle;
+        }
+
+        [empty] ~ b-btn.cancel {
+            visibility: hidden;
+        }
+
+    `;
+  }
+
+  firstUpdated() {
+    this.input = this.shadowRoot.querySelector('form-control');
+    let value = this.filter.value;
+    if (value) this.input.value = value;
+  }
+
+  render() {
+    return _litElement.html`
+        <form-control material="filled" style="width:${(this.get('width'), '200px')}">
+            <text-field reset-invalid placeholder="${this.get('placeholder')}" @enterkey=${this.onEnter}></text-field>
+            <span slot="help">${this.get('helpText')}</span>
+            <b-btn slot="suffix" class="cancel" icon="cancel-circled" text @click=${this.clearValue}></b-btn>
+        </form-control>
+    `;
+  }
+
+  get(key, defaultVal = '') {
+    let val = this.filter.attrs[key];
+    return val != undefined ? val : defaultVal;
+  }
+
+  get value() {
+    let value = ''; // editors not setup yet, so just use the value from the filter object
+
+    if (!this.input) return this.filter.value;
+    return this.input.value;
+  }
+
+  set value(val) {
+    if (this.input) this.input.value = val;
+  }
+  /*
+      We do a bunch of fancy logic to display a label that is hopefully
+      the easy to scan while taking up the least amount of space
+  */
+
+
+  get label() {
+    return this.value || this.get('defaultLabel', 'unset');
+  }
+
+  onEnter() {
+    this.close();
+  }
+
+  clearValue() {
+    this.value = null;
+    this.close();
+  }
+
+});
+
+var _default = customElements.get('b-list-filter-view-input');
+
+exports.default = _default;
+},{"lit-element":"+bhx","moment":"a2/B"}],"vufV":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35696,7 +36814,7 @@ customElements.define('b-list-filter-view-slider', class extends _litElement.Lit
 var _default = customElements.get('b-list-filter-view-slider');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"HGW8":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"HGW8":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35718,15 +36836,18 @@ var _componentEmitter = _interopRequireDefault(require("component-emitter"));
 
 var _filterViewDate = _interopRequireDefault(require("../toolbar/filter-view-date"));
 
+var _filterViewInput = _interopRequireDefault(require("../toolbar/filter-view-input"));
+
 var _filterViewSlider = _interopRequireDefault(require("../toolbar/filter-view-slider"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const CustomViews = {
   'date': _filterViewDate.default,
-  'slider': _filterViewSlider.default
-}; // do NOT include '0' or 'false' as unset values
+  'input': _filterViewInput.default,
+  'slider': _filterViewSlider.default // do NOT include 0 or false as unset values
 
+};
 const unsetValues = [undefined, null, ''];
 
 const defaultSearch = model => {
@@ -35755,6 +36876,14 @@ class Filters extends Map {
       resetData[filter.key] = filter.defaultVal;
     });
     this.value(resetData);
+  }
+
+  toString() {
+    let active = [];
+    this.forEach(filter => {
+      if (filter.isActive) active.push(`${filter.label}: ${filter.valueLabel}`);
+    });
+    return active.join(' | ');
   }
 
   value(key, val) {
@@ -35790,7 +36919,9 @@ class Filters extends Map {
       if (didChange.length > 0) {
         // emit a change on each filter
         didChange.forEach(k => {
-          this.get(k).emit('change', val);
+          let filter = this.get(k);
+          if (filter.isCustomView) filter.customView.value = val;
+          filter.emit('change', val);
         });
         if (this.queuing) this.queuedChanges = changes;else this.emit('change', changes);
       } // GETTING
@@ -35835,6 +36966,8 @@ class Filters extends Map {
     this.clear();
 
     for (let key in filters) {
+      if (!filters[key]) continue;
+
       if (key == 'search') {
         this.searchOptions = filters[key];
         continue;
@@ -35856,9 +36989,9 @@ class Filters extends Map {
 
   set searchOptions(opts) {
     if (opts === false) this.__searchOptions = {
-      data: false
-    }; // turns search off
+      data: false // turns search off
 
+    };
     if (typeof opts == 'object') this.__searchOptions = opts;
   }
 
@@ -35951,8 +37084,9 @@ class Filter {
     values = values.map(v => {
       if (typeof v == 'string' && !['divider'].includes(v)) v = {
         label: v,
-        val: v
-      }; // make "unset" values uniform
+        val: v // make "unset" values uniform
+
+      };
 
       if (typeof v == 'object' && unsetValues.includes(v.val)) {
         v.val = null;
@@ -36012,25 +37146,50 @@ class Filter {
 
   get valueLabel() {
     let val = this.value;
+    if (Array.isArray(val)) val = val.map(v => v.val || v);else val = val && (val.val || val);
 
     if (this.isCustomView) {
       let view = this.customView;
       return view ? view.label : 'UNSUPORRTED';
     }
 
-    let matchedVal = this.values.filter(v => {
-      if (typeof v == 'string' || v.divider || v.text) return false; // return v.val==val
+    let matchedVal = this.values.filter((v, i) => {
+      if (typeof v == 'string' || v.divider || v.text || v.noDisplay) return false; // return v.val==val
 
-      return Array.isArray(val) ? val.includes(v.val) : v.val == val;
+      if (!Array.isArray(val)) {
+        if (v.val == val) {
+          Object.assign(v, this.value);
+          return true;
+        }
+
+        return false;
+      }
+
+      let matchedIndex = val.indexOf(v.val);
+
+      if (matchedIndex > -1) {
+        let mergeData = this.value[matchedIndex];
+
+        if (mergeData && typeof mergeData == 'object') {
+          Object.assign(v, mergeData);
+        }
+
+        return true;
+      }
+
+      return false;
     });
-    return matchedVal ? matchedVal.map(f => f.toolbarLabel || f.label).join(', ') : val;
+    return matchedVal ? matchedVal.map(f => {
+      return [f.selection, f.toolbarLabel || f.label].filter(s => s).join(' ');
+    }).join(', ') : val;
   }
 
   async showMenu(el) {
     if (this.isCustomView) return this.showCustomView(el);
     let selected = await new _menu.default(this.values, {
       selected: this.value,
-      multiple: this.isMulti
+      multiple: this.isMulti,
+      width: this.attrs.width || null
     }).popover(el, {
       overflowBoundry: this.attrs.overflowBoundry || 'scrollParent',
       maxHeight: this.attrs.maxHeight || '60vh',
@@ -36038,7 +37197,15 @@ class Filter {
     });
     let oldVal = this.value;
     if (selected === false || selected.length == 0) return; // this.value = null
-    else if (Array.isArray(selected)) this.value = selected.map(s => s.val);else this.value = selected.val;
+    else if (Array.isArray(selected)) this.value = selected.map(s => {
+        return s.selection ? {
+          val: s.val,
+          selection: s.selection
+        } : s.val;
+      });else this.value = selected.selection ? {
+        val: selected.val,
+        selection: selected.selection
+      } : selected.val;
   }
 
   get customView() {
@@ -36074,8 +37241,13 @@ class Filter {
     }).popover(el);
 
     let onClose = _ => {
-      this.value = this.customView.value;
-    };
+      // let menu close before attempting to set value
+      // with larger datasets, a user can feel it lag for a split second
+      setTimeout(() => {
+        this.value = this.customView.value;
+      });
+    }; // TODO: support `adjustForMobile`
+
 
     new _popover.default(el, this.customView, {
       onClose: onClose
@@ -36099,7 +37271,7 @@ class Filter {
 exports.Filter = Filter;
 (0, _componentEmitter.default)(Filters.prototype);
 (0, _componentEmitter.default)(Filter.prototype);
-},{"../../menu":"tCYJ","../../dialog":"pos3","../../popover":"Soyf","../../../util/titleize":"NUHt","fuse.js":"Wp9p","component-emitter":"Wr69","../toolbar/filter-view-date":"YNHW","../toolbar/filter-view-slider":"vufV"}],"sAKI":[function(require,module,exports) {
+},{"../../menu":"0tCY","../../dialog":"pos3","../../popover":"Soyf","../../../util/titleize":"NUHt","fuse.js":"Wp9p","component-emitter":"Wr69","../toolbar/filter-view-date":"YNHW","../toolbar/filter-view-input":"7J1Y","../toolbar/filter-view-slider":"vufV"}],"4sAK":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36287,7 +37459,57 @@ class Sort {
   }
 
 }
-},{"lit-element":"bhxD","../../menu":"tCYJ","../../../util/titleize":"NUHt","../../../util/device":"la8o","component-emitter":"Wr69"}],"FOqU":[function(require,module,exports) {
+},{"lit-element":"+bhx","../../menu":"0tCY","../../../util/titleize":"NUHt","../../../util/device":"la8o","component-emitter":"Wr69"}],"ZTm8":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _componentEmitter = _interopRequireDefault(require("component-emitter"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+class Layouts extends Map {
+  get _storeKey() {
+    return 'b-list:' + this.key + ':layout';
+  }
+
+  constructor(layouts) {
+    if (!Array.isArray(layouts)) layouts = Object.entries(layouts);
+    super(layouts);
+  }
+
+  at(index) {
+    return Array.from(this.keys())[index];
+  }
+
+  next() {
+    let keys = Array.from(this.keys());
+    let index = keys.indexOf(this.active);
+    index++;
+    if (index >= keys.length) index = 0;
+    this.active = this.at(index);
+  }
+
+  get active() {
+    return this.__layout || localStorage.getItem(this._storeKey) || this.at(0);
+  }
+
+  set active(val) {
+    let oldVal = this.active;
+    if (!this.has(val)) val = this.at(0);
+    this.__layout = val;
+    if (this.key && val) localStorage.setItem(this._storeKey, this.__layout);else if (this.key && !val) localStorage.removeItem(this._storeKey);
+    if (val != oldVal) this.emit('change', val);
+  }
+
+}
+
+exports.default = Layouts;
+(0, _componentEmitter.default)(Layouts.prototype);
+},{"component-emitter":"Wr69"}],"FOqU":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36403,7 +37625,7 @@ customElements.define('b-list-sort-btn', class extends _litElement.LitElement {
 var _default = customElements.get('b-list-sort-btn');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"pUXj":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"pUXj":[function(require,module,exports) {
 "use strict";
 
 var _litElement = require("lit-element");
@@ -36445,7 +37667,7 @@ customElements.define('b-list-sort-dir-btn', class extends _litElement.LitElemen
   }
 
 });
-},{"lit-element":"bhxD"}],"zIYl":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"7zIY":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36529,7 +37751,7 @@ customElements.define('b-list-filter-btn', class extends _litElement.LitElement 
 var _default = customElements.get('b-list-filter-btn');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"uCjH":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"x6cT":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36538,113 +37760,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _litElement = require("lit-element");
-
-require("../../form-control/form-control");
-
-require("../../form-control/controls/text-field");
-
-customElements.define('b-list-search-bar', class extends _litElement.LitElement {
-  static get properties() {
-    return {
-      placeholder: {
-        type: String
-      }
-    };
-  }
-
-  constructor() {
-    super();
-    this.placeholder = 'Search';
-  }
-
-  static get styles() {
-    return _litElement.css`
-        :host {
-            display: block
-        }
-
-        form-control {
-            padding: .5em .65em;
-            background: var(--searchBgd, #f5f5f5);
-            background: var(--list-search-bgd, var(--searchBgd));
-            border-radius: 30px;
-            /* max-width: 140px; */
-        }
-
-        text-field {
-            min-width: 70px;
-            /* transition: 300ms; */
-        }
-
-        form-control[falsy]:not(:focus-within):not(:hover){
-            background: none;
-        }
-
-        form-control[falsy]:not(:focus-within){
-            cursor: pointer;
-        }
-
-        form-control[falsy]:not(:focus-within) text-field {
-            height: 1em;
-            overflow: hidden;
-            min-width: 0;
-            width: 0;
-            margin-right: -.5em;
-        }
-
-        b-icon {
-            color: #444;
-            margin-right: .5em;
-        }
-    `;
-  }
-
-  render() {
-    return _litElement.html`
-        <form-control>
-            <text-field placeholder="${this.placeholder}" bubble-keypress single-line></text-field>
-            <b-icon @click=${this.focus} name="search" slot="prefix"></b-icon>
-        </form-control>
-    `;
-  }
-
-  focus() {
-    this.shadowRoot.querySelector('form-control').focus();
-  }
-
-  get value() {
-    this.textField = this.textField || this.shadowRoot.querySelector('text-field');
-    return this.textField.currentValue;
-  }
-
-});
-
-var _default = customElements.get('b-list-search-bar');
-
-exports.default = _default;
-},{"lit-element":"bhxD","../../form-control/form-control":"swB1","../../form-control/controls/text-field":"ezNL"}],"iwaU":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _litElement = require("lit-element");
-
-var _popover = _interopRequireDefault(require("../../popover"));
-
-require("./sort-btn");
-
-require("./sort-dir-btn");
 
 require("./filter-btn");
 
-require("./search");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-customElements.define('b-list-toolbar', class extends _litElement.LitElement {
+customElements.define('b-list-filters', class extends _litElement.LitElement {
   static get properties() {
     return {
       count: {
@@ -36658,7 +37777,6 @@ customElements.define('b-list-toolbar', class extends _litElement.LitElement {
 
   constructor() {
     super();
-    this.count = 0;
     this.onFilterQueuing = this.onFilterQueuing.bind(this);
     this.onFilterChange = this.onFilterChange.bind(this);
   }
@@ -36668,56 +37786,8 @@ customElements.define('b-list-toolbar', class extends _litElement.LitElement {
         :host {
             display: flex;
             align-items: center;
-            min-width: 0;
-        }
-
-        [hidden] { display: none; }
-
-        b-list-sort-btn {
-            flex-shrink: 0;
-        }
-
-        b-btn {
-            color: var(--toolbarTextColor);
-        }
-
-        .scroller {
-            display: flex;
-            overflow-y: auto;
-            align-items: center;
             overflow: -moz-scrollbars-none;
             flex: 1;
-        }
-
-        .scroller::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
-
-        .filters {
-            display: flex;
-            align-items: center;
-            /* overflow-y: auto; */
-            overflow: -moz-scrollbars-none;
-            flex: 1;
-        }
-
-        b-list-sort-btn + .filters {
-            border-left: solid 2px rgba(0,0,0,.1);
-            margin-left: .25em;
-            padding-left: .25em;
-        }
-
-        .after {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-        }
-
-        .count {
-            align-self: stretch;
-            display: flex;
-            align-items: center;
-            border-right: 2px solid rgba(0, 0, 0, 0.1);
-            padding: 0 .75em 0 .25em;
-            margin-right: .25em;
         }
 
         [icon='erase'] { display: none; }
@@ -36729,66 +37799,25 @@ customElements.define('b-list-toolbar', class extends _litElement.LitElement {
             flex-shrink: 0;
         }
 
-        .controls {
-            display: inline-grid;
-        }
-
-        .controls > b-icon {
-            font-size: .8em;
-            padding: .2em .35em;
-            color: rgba(0, 0, 0, 0.4);
-        }
-
-        .controls > b-icon:hover {
-            color: #333;
+        @media (max-width:699px) {
+            /* move active filters  to front on small devices */
+            .filters b-list-filter-btn[active] {
+                order: -1;
+            }
         }
     `;
   }
 
   render() {
     return _litElement.html`
-        <slot name="before"></slot>
-
-        <div class="count">${this.count}</div>
-
-        <div class="scroller">
-
-            ${!this.sorts ? '' : _litElement.html`
-                <b-list-sort-btn .sorts=${this.sorts}></b-list-sort-btn>
-            `}
-            
-            ${!this.filters ? '' : _litElement.html`
-            <div class="filters">
-
-                <!-- <div class="controls">
-                    <b-icon name="layers" text></b-icon>
-                    <b-icon name="erase" text></b-icon>
-                </div> -->
-
-                <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" text
-                    @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
-                
-                ${this.filters.map(filter => _litElement.html`
-                    <b-list-filter-btn ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
-                `)}
-                
-                <b-btn color="hover-red" title="Clear filters" icon="erase" text @click=${this.resetFilters}></b-btn>
-                
-            </div>
-            `}
-
-        </div>
+        <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" text
+            @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
         
-        <div class="after">
-
-            ${!this.filters || !this.filters.showSearch ? '' : _litElement.html`
-            <b-list-search-bar @keydown=${this.onKeyDown} placeholder=${this.filters.searchOptions.placeholder}></b-list-search-bar>
-            `}
-
-            <slot name="refresh-btn"></slot>
-
-            <slot name="after"></slot>
-        </div>
+        ${this.filters.map(filter => _litElement.html`
+            <b-list-filter-btn ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
+        `)}
+        
+        <b-btn color="hover-red" title="Clear filters" icon="erase" text @click=${this.resetFilters}></b-btn>
     `;
   }
 
@@ -36824,6 +37853,285 @@ customElements.define('b-list-toolbar', class extends _litElement.LitElement {
 
   onFilterChange() {
     this.update();
+  }
+
+});
+
+var _default = customElements.get('b-list-filters');
+
+exports.default = _default;
+},{"lit-element":"+bhx","./filter-btn":"7zIY"}],"XQL9":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _btn = _interopRequireDefault(require("../../../elements/btn"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+customElements.define('b-list-layout-btn', class extends _btn.default {
+  firstUpdated() {
+    this.setIcon();
+    this.addEventListener('click', e => {
+      this.layouts.next();
+    });
+  }
+
+  setIcon() {
+    this.icon = this.layouts.get(this.layouts.active);
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.setIcon = this.setIcon.bind(this);
+    this.layouts.on('change', this.setIcon);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.layouts.off('change', this.setIcon);
+  }
+
+});
+
+var _default = customElements.get('b-list-layout-btn');
+
+exports.default = _default;
+},{"../../../elements/btn":"DABr"}],"uCjH":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+require("../../form-control/form-control");
+
+require("../../form-control/controls/text-field");
+
+customElements.define('b-list-search-bar', class extends _litElement.LitElement {
+  static get properties() {
+    return {
+      placeholder: {
+        type: String
+      }
+    };
+  }
+
+  constructor() {
+    super();
+    this.placeholder = 'Search';
+  }
+
+  static get styles() {
+    return _litElement.css`
+        :host {
+            display: block
+        }
+
+        form-control {
+            padding: .5em .65em;
+            background: var(--searchBgd, #f5f5f5); /* backwards comp */
+            background: var(--list-search-bgd, var(--searchBgd));
+            border-radius: 30px;
+            /* max-width: 140px; */
+        }
+
+        text-field {
+            min-width: 70px;
+            /* transition: 300ms; */
+        }
+
+        form-control[falsy]:not(:focus-within):not(:hover){
+            background: none;
+        }
+
+        form-control[falsy]:not(:focus-within){
+            cursor: pointer;
+        }
+
+        form-control[falsy]:not(:focus-within) text-field {
+            height: 1em;
+            overflow: hidden;
+            min-width: 0;
+            width: 0;
+            margin-right: -.5em;
+        }
+
+        b-icon {
+            color: var(--theme-color,#444);
+            margin-right: .5em;
+        }
+    `;
+  }
+
+  render() {
+    return _litElement.html`
+        <form-control>
+            <text-field placeholder="${this.placeholder}" bubble-keypress single-line></text-field>
+            <b-icon @click=${this.focus} name="search" slot="prefix"></b-icon>
+        </form-control>
+    `;
+  }
+
+  focus() {
+    this.shadowRoot.querySelector('form-control').focus();
+  }
+
+  get value() {
+    this.textField = this.textField || this.shadowRoot.querySelector('text-field');
+    return this.textField.currentValue;
+  }
+
+});
+
+var _default = customElements.get('b-list-search-bar');
+
+exports.default = _default;
+},{"lit-element":"+bhx","../../form-control/form-control":"swB1","../../form-control/controls/text-field":"2ezN"}],"iwaU":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+var _popover = _interopRequireDefault(require("../../popover"));
+
+require("./sort-btn");
+
+require("./sort-dir-btn");
+
+require("./filters-view");
+
+require("./layout-btn");
+
+require("./search");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+customElements.define('b-list-toolbar', class extends _litElement.LitElement {
+  static get properties() {
+    return {
+      count: {
+        type: Number
+      }
+    };
+  }
+
+  constructor() {
+    super();
+    this.count = 0;
+  }
+
+  static get styles() {
+    return _litElement.css`
+        :host {
+            display: flex;
+            align-items: center;
+            min-width: 0;
+            position: relative;
+        }
+
+        [hidden] { display: none; }
+
+        b-list-sort-btn {
+            flex-shrink: 0;
+        }
+
+        b-btn {
+            color: var(--toolbarTextColor);
+        }
+
+        .scroller {
+            display: flex;
+            overflow-y: auto;
+            align-items: center;
+            overflow: -moz-scrollbars-none;
+            flex: 1;
+        }
+
+        .scroller::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
+
+        b-list-sort-btn + b-list-filters {
+            border-left: solid 2px rgba(0,0,0,.1);
+            margin-left: .25em;
+            padding-left: .25em;
+        }
+
+        .after {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .count {
+            align-self: stretch;
+            display: flex;
+            align-items: center;
+            border-right: 2px solid rgba(0, 0, 0, 0.1);
+            padding: 0 .75em 0 .25em;
+            margin-right: .25em;
+        }
+
+        .controls {
+            display: inline-grid;
+        }
+
+        .controls > b-icon {
+            font-size: .8em;
+            padding: .2em .35em;
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .controls > b-icon:hover {
+            color: #333;
+        }
+    `;
+  }
+
+  render() {
+    return _litElement.html`
+        <slot name="before"></slot>
+
+        <div class="count">${this.count}</div>
+
+        <div class="scroller">
+
+            ${!this.sorts ? '' : _litElement.html`
+                <b-list-sort-btn .sorts=${this.sorts}></b-list-sort-btn>
+            `}
+            
+            ${!this.filters ? '' : _litElement.html`
+                <b-list-filters .filters=${this.filters}></b-list-filters>
+            `}
+
+        </div>
+        
+        <div class="after">
+
+            ${!this.filters || !this.filters.showSearch ? '' : _litElement.html`
+            <b-list-search-bar @keydown=${this.onKeyDown} placeholder=${this.filters.searchOptions.placeholder}></b-list-search-bar>
+            `}
+
+            ${!this.layouts ? '' : _litElement.html`
+                <b-list-layout-btn .layouts=${this.layouts} pill text></b-list-layout-btn>
+            `}
+
+            <slot name="refresh-btn"></slot>
+
+            <slot name="after"></slot>
+
+            <slot></slot>
+        </div>
+    `;
   } // not used, testing idea
 
 
@@ -36854,7 +38162,96 @@ customElements.define('b-list-toolbar', class extends _litElement.LitElement {
 var _default = customElements.get('b-list-toolbar');
 
 exports.default = _default;
-},{"lit-element":"bhxD","../../popover":"Soyf","./sort-btn":"FOqU","./sort-dir-btn":"pUXj","./filter-btn":"zIYl","./search":"uCjH"}],"zwrR":[function(require,module,exports) {
+},{"lit-element":"+bhx","../../popover":"Soyf","./sort-btn":"FOqU","./sort-dir-btn":"pUXj","./filters-view":"x6cT","./layout-btn":"XQL9","./search":"uCjH"}],"55xA":[function(require,module,exports) {
+"use strict";
+
+var _litElement = require("lit-element");
+
+customElements.define('b-list-selection-bar', class extends _litElement.LitElement {
+  static get styles() {
+    return _litElement.css`
+        :host {
+            display: block;
+            position:absolute;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            box-sizing: border-box;
+            background: var(--theme-bgd); /* FIXME: */
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-width: 0;
+            padding: 0 .5em;
+        }
+
+        :host(:not(.show)) {
+            display: none;
+        }
+
+        .cancel-btn {
+            margin-right: .5em;
+            /* margin: 0 1em; */
+        }
+
+        @media (max-width: 699px) {
+            .count > span {
+                display: none;
+            }
+        }
+
+    `;
+  }
+
+  set selection(selection) {
+    this.__selection = selection; // TODO: unbind when changing?
+
+    selection.on('begin', e => {
+      this.classList.add('show');
+      this.update();
+    });
+    selection.on('end', e => {
+      this.classList.remove('show');
+    });
+    selection.on('change', result => {
+      this.update();
+    });
+  }
+
+  get selection() {
+    return this.__selection;
+  }
+
+  render() {
+    return _litElement.html`
+        ${this.selection ? _litElement.html`
+
+            <div>
+                <b-btn class="cancel-btn" icon="cancel-1" @click=${this.end} outline></b-btn>
+
+                <span class="count">
+                ${this.selection.result.size} <span>selected</span>
+                </span>
+
+                <slot name="left"></slot>
+            </div>
+
+            <div>
+                <slot name="right"></slot>
+            </div>
+        ` : ''}
+    `;
+  }
+
+  end() {
+    this.selection.end();
+  }
+
+});
+},{"lit-element":"+bhx"}],"2zwr":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36884,7 +38281,8 @@ customElements.define('b-infinite-list', class extends _litElement.LitElement {
 
   firstUpdated() {
     // after first updating, reset and get content
-    this.reset();
+    let loadContent = this.getAttribute('fetch-on-load') !== 'false';
+    this.reset(loadContent);
   }
 
   connectedCallback() {
@@ -36897,12 +38295,15 @@ customElements.define('b-infinite-list', class extends _litElement.LitElement {
     this.removeEventListener('scroll', this.onScroll, true);
   }
 
-  async reset() {
+  async reset(andLoadContent = true) {
     this.pageAt = 0;
     this.scrollTop = 0;
     this.prevModel = null;
-    this.innerHTML = '';
-    await this.getContent();
+    if (andLoadContent) await this.getContent({
+      clear: true
+    });else this.addContent([], {
+      clear: true
+    });
   }
 
   onScroll() {
@@ -36913,13 +38314,17 @@ customElements.define('b-infinite-list', class extends _litElement.LitElement {
     if (delta <= this.threshold) this.getContent();
   }
 
-  async getContent() {
+  async getContent({
+    clear = false
+  } = {}) {
     if (!this.dataSource) return;
     if (this._fetching) return;
     let pageAt = this.pageAt;
     this._fetching = true;
     let models = await this.dataSource.fetch(pageAt);
-    this.addContent(models);
+    this.addContent(models, {
+      clear: clear
+    });
     this._fetching = null;
 
     if (pageAt == 0) {
@@ -36931,25 +38336,18 @@ customElements.define('b-infinite-list', class extends _litElement.LitElement {
         composed: true
       }));
     }
-  }
+  } // get emptyElement(){return this.getAttribute('empty') || 'b-empty-state'}
 
-  get rowElement() {
-    return this.getAttribute('row') || 'div';
-  }
 
-  get emptyElement() {
-    return this.getAttribute('empty') || 'b-empty-state';
-  }
-
-  addContent(models) {
+  addContent(models, {
+    clear = false
+  } = {}) {
     this.pageAt += models.length;
+    if (clear) this.innerHTML = '';
 
     if (this.pageAt == 0) {
-      this.emptyView = this.emptyView || document.createElement(this.emptyElement);
-      this.emptyView.dataSource = this.dataSource;
-      let term = this.dataSource.filters && this.dataSource.filters.term;
-      this.emptyView.value = term ? `No results for “${term}”` : this.getAttribute('placeholder') || 'No results';
-      this.appendChild(this.emptyView);
+      let emptyView = this.empty && this.empty();
+      if (emptyView) this.appendChild(emptyView);
       return;
     }
 
@@ -36960,11 +38358,21 @@ customElements.define('b-infinite-list', class extends _litElement.LitElement {
         this.appendChild(divider);
       }
 
-      let el = document.createElement(this.rowElement);
-      el.model = model;
-      this.appendChild(el);
+      let row = this.row && this.row(model);
+
+      if (row) {
+        this.appendChild(row);
+      }
+
       this.prevModel = model;
     });
+    setTimeout(this.checkNotEnoughContent.bind(this));
+  }
+
+  checkNotEnoughContent() {
+    if (this.scrollHeight <= this.offsetHeight) {
+      this.getContent();
+    }
   }
 
 });
@@ -36972,7 +38380,347 @@ customElements.define('b-infinite-list', class extends _litElement.LitElement {
 var _default = customElements.get('b-infinite-list');
 
 exports.default = _default;
-},{"lit-element":"bhxD","../../elements/empty-state":"dUnZ"}],"tkaB":[function(require,module,exports) {
+},{"lit-element":"+bhx","../../elements/empty-state":"+2dU"}],"yvN8":[function(require,module,exports) {
+"use strict";
+
+var _litElement = require("lit-element");
+
+/*
+    Creates shortcuts for selector querying
+*/
+_litElement.LitElement.prototype.$ = function (query) {
+  return this.querySelector(query);
+};
+
+_litElement.LitElement.prototype.$all = function (query) {
+  return this.querySelectorAll(query);
+};
+
+_litElement.LitElement.prototype.$$ = function (query) {
+  return this.shadowRoot ? this.shadowRoot.querySelector(query) : this.querySelector(query);
+};
+
+_litElement.LitElement.prototype.$$all = function (query) {
+  return this.shadowRoot ? this.shadowRoot.querySelectorAll(query) : this.querySelectorAll(query);
+};
+},{"lit-element":"+bhx"}],"a+R3":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _componentEmitter = _interopRequireDefault(require("component-emitter"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const isTouch = 'ontouchstart' in window;
+
+class ResultMap extends Map {
+  get models() {
+    return Array.from(this.values());
+  }
+
+  get elements() {
+    return Array.from(this.keys());
+  }
+
+  get length() {
+    return this.size;
+  }
+
+}
+
+const DISABLE_EVENTS = ['longpress', 'contextmenu', 'dragstart', 'mouseenter', 'mousemove', 'click'];
+
+class Selection {
+  constructor(list, itemTagName, opts = {}) {
+    this.opts = Object.assign({
+      toolbar: null,
+      selectedAttr: 'isSelected',
+      endWhenNoResults: true,
+      endOnEsc: true,
+      autoScrollThreshold: 48,
+      autoScrollAcceleration: 5,
+      onBegin: () => {},
+      onEnd: () => {},
+      onChange: result => {}
+    }, opts);
+    this.EVENTS = {
+      DOWN: isTouch ? 'touchstart' : 'mousedown',
+      UP: isTouch ? 'touchend' : 'mouseup',
+      DRAG: isTouch ? 'touchmove' : 'mouseover'
+    };
+    if (this.opts.toolbar) this.opts.toolbar.selection = this;
+    this.result = new ResultMap();
+    this.list = list;
+    this.itemTagName = itemTagName.toUpperCase();
+    this.SELECTED = this.opts.selectedAttr; // bind method context
+
+    this.stopPropagation = this.stopPropagation.bind(this); // this.onClick = this.onClick.bind(this)
+
+    this.onScroll = this.onScroll.bind(this);
+    this.onKeydown = this.onKeydown.bind(this);
+    this.onEventDown = this.onEventDown.bind(this);
+    this.onEventUp = this.onEventUp.bind(this);
+    this.onEventDrag = this.onEventDrag.bind(this);
+  }
+
+  get isOn() {
+    return this.__on === true;
+  }
+
+  begin(e) {
+    if (this.isOn) return;
+    this.__on = true;
+    this.bindEvents(e); // select the item that triggered the selection
+
+    if (e) {
+      this._dragging = true;
+      this._startItem = this.itemInEvent(e);
+      this.select(this._startItem);
+    }
+
+    this.opts.onBegin();
+    this.emit('begin');
+  }
+
+  end() {
+    this.__on = false;
+    this.unbindEvents();
+    let {
+      items
+    } = this.getItems();
+    items.forEach(item => {
+      this._deselect(item);
+    });
+    this.opts.onEnd();
+    this.emit('end');
+  }
+
+  bindEvents(e) {
+    // incase other code is listening for these events
+    // disable them while we are in selection mode
+    DISABLE_EVENTS.forEach(evt => {
+      this.list.addEventListener(evt, this.stopPropagation, true);
+    });
+    window.addEventListener('keydown', this.onKeydown);
+    this.list.addEventListener('scroll', this.onScroll, true);
+    this.list.addEventListener(this.EVENTS.DOWN, this.onEventDown, true);
+    this.list.addEventListener(this.EVENTS.UP, this.onEventUp, true);
+    if (e && e.detail && e.detail.dragging) this.list.addEventListener(this.EVENTS.DRAG, this.onEventDrag, true);
+  }
+
+  unbindEvents() {
+    DISABLE_EVENTS.forEach(evt => {
+      this.list.removeEventListener(evt, this.stopPropagation, true);
+    });
+    window.removeEventListener('keydown', this.onKeydown);
+    this.list.removeEventListener('scroll', this.onScroll, true);
+    this.list.removeEventListener(this.EVENTS.DRAG, this.onEventDrag, true);
+    this.list.removeEventListener(this.EVENTS.DOWN, this.onEventDown, true);
+    this.list.removeEventListener(this.EVENTS.UP, this.onEventUp, true);
+  }
+
+  getItems(start, end) {
+    let items = Array.from(this.list.querySelectorAll(this.itemTagName));
+    if (typeof start === 'number') start = items[start];
+    if (typeof end === 'number') end = items[end];
+    let oldStart = this._dragging && this._dragging.start;
+    let oldEnd = this._dragging && this._dragging.end;
+
+    if (start && end) {
+      let startIndex = items.indexOf(start);
+      let endIndex = items.indexOf(end);
+
+      if (startIndex == -1 || endIndex == -1) {
+        start = null;
+        end = null;
+      } else {
+        start = startIndex < endIndex ? startIndex : endIndex;
+        end = startIndex < endIndex ? endIndex : startIndex;
+      }
+
+      this._dragging = {
+        items,
+        start,
+        end
+      };
+    }
+
+    return {
+      items,
+      start,
+      end,
+      oldStart,
+      oldEnd
+    };
+  }
+
+  select(item, startItem) {
+    if (item instanceof Event) item = this.itemInEvent(item);
+    if (!item) return;
+
+    if (!startItem) {
+      this._toggleSelect(item);
+
+      this.opts.onChange(this.result);
+      this.emit('change', this.result);
+      if (this.opts.endWhenNoResults && this.result.size == 0) setTimeout(() => this.end()); // let mouseup finish
+
+      return;
+    }
+
+    let {
+      items,
+      start,
+      end,
+      oldStart,
+      oldEnd
+    } = this.getItems(startItem, item);
+    let shouldSelect = startItem.hasAttribute(this.SELECTED);
+    items.forEach((_item, i) => {
+      if (i >= start && i <= end) shouldSelect ? this._select(_item) : this._deselect(_item);else if (oldStart !== false && oldEnd !== false && i >= oldStart && i <= oldEnd) this._deselect(_item);
+    });
+    this.emit('change', this.result);
+    if (this.opts.endWhenNoResults && this.result.size == 0) setTimeout(() => this.end()); // let mouseup finish
+  }
+
+  _toggleSelect(item) {
+    if (item.hasAttribute(this.SELECTED)) this._deselect(item);else this._select(item);
+  }
+
+  _select(item) {
+    item.setAttribute(this.SELECTED, '');
+    this.result.set(item, item.model || item);
+  }
+
+  _deselect(item) {
+    item.removeAttribute(this.SELECTED);
+    this.result.delete(item);
+  }
+
+  stopPropagation(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+  }
+
+  onScroll() {
+    if (isTouch && !this._autoScroll && !this._dragging) {
+      this._scrolling = new Date().getTime();
+    }
+  }
+
+  onKeydown(e) {
+    if (this.opts.endOnEsc && e.key == 'Escape') this.end();
+  }
+
+  onEventDown(e) {
+    // only work on "main" buttons
+    if (e.button !== undefined && e.button !== 0) return;
+    e.stopPropagation(); // while mouse/touch is down...watch dragging
+
+    this.list.addEventListener(this.EVENTS.DRAG, this.onEventDrag, true);
+    let item = this.itemInEvent(e);
+    if (item) this.isClickEvent = setTimeout(() => {
+      let ts = new Date().getTime(); // no longer a mouse click
+
+      delete this.isClickEvent;
+      if (this._scrolling && ts - this._scrolling <= 50) return;
+      delete this._scrolling;
+      this._dragging = true;
+      this._startItem = item;
+
+      this._select(item);
+    }, 200);
+  }
+
+  onEventUp(e) {
+    this.stopPropagation(e);
+    this._dragging = false;
+    this.autoScroll(false);
+    clearTimeout(this.isClickEvent);
+    let ts = new Date().getTime();
+
+    if (this.isClickEvent && (!this._scrolling || ts - this._scrolling > 50)) {
+      delete this.isClickEvent;
+      let item = this.itemInEvent(e);
+      this.select(item, e.shiftKey ? this._startItem : null);
+      if (!e.shiftKey) this._startItem = item;
+    } else {
+      delete this._startItem;
+      delete this._lastTouchItem;
+    }
+
+    delete this._scrolling;
+    this.list.removeEventListener(this.EVENTS.DRAG, this.onEventDrag, true);
+  }
+
+  onEventDrag(e) {
+    if (this._dragging) this.stopPropagation(e);
+    if (this.isClickEvent || this._scrolling && !this._autoScroll) return; // touch devices
+
+    if (e.changedTouches) {
+      let {
+        clientX,
+        clientY
+      } = e.changedTouches[0];
+
+      if (this.opts.autoScrollThreshold !== false) {
+        let listRect = this.list.getBoundingClientRect();
+        let top = listRect.y + this.opts.autoScrollThreshold;
+        let bottom = listRect.y + listRect.height - this.opts.autoScrollThreshold;
+        let acceleration = (this.opts.autoScrollAcceleration || 1) / 10; // scroll up
+
+        if (clientY < top) this.autoScroll(-1 - Math.round(Math.pow(top - clientY, acceleration))); // scroll down
+        else if (clientY > bottom) this.autoScroll(1 + Math.round(Math.pow(clientY - bottom, acceleration))); // not within threshold, stop scrolling
+          else this.autoScroll(false);
+      }
+
+      let item = this.list.getRootNode().elementFromPoint(clientX, clientY);
+
+      if (item && item.tagName == this.itemTagName && item != this._lastTouchItem) {
+        this._lastTouchItem = item;
+        this.select(item, this._startItem);
+      } // mouse event
+
+    } else {
+      let item = e.relatedTarget && e.relatedTarget.tagName == this.itemTagName ? e.relatedTarget : e;
+      this.select(item, this._startItem);
+    }
+  }
+
+  itemInEvent(e) {
+    let path = e.composedPath();
+    return path.find(_el => _el.tagName == this.itemTagName);
+  }
+
+  autoScroll(speed = 2) {
+    if (speed == false || this._autoScrollSpeed != speed) {
+      clearInterval(this._autoScroll);
+
+      if (speed == false) {
+        delete this._autoScroll;
+        delete this._autoScrollSpeed;
+      }
+    }
+
+    if (speed !== false && this._autoScrollSpeed != speed) {
+      this._autoScrollSpeed = speed;
+      this.list.scrollTop = this.list.scrollTop + this._autoScrollSpeed;
+      this._autoScroll = setInterval(() => {
+        this.list.scrollTop = this.list.scrollTop + this._autoScrollSpeed;
+      }, 10);
+    }
+  }
+
+}
+
+exports.default = Selection;
+(0, _componentEmitter.default)(Selection.prototype);
+},{"component-emitter":"Wr69"}],"tkaB":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36988,11 +38736,19 @@ var _filters = _interopRequireDefault(require("./data/filters"));
 
 var _sorts = _interopRequireDefault(require("./data/sorts"));
 
+var _layouts = _interopRequireDefault(require("./data/layouts"));
+
 require("./toolbar");
+
+require("./toolbar/selection-bar");
 
 require("./infinite-list");
 
 require("../../elements/spinner-overlay");
+
+require("../../helpers/lit-element/selectors");
+
+var _selection = _interopRequireDefault(require("../selection"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37001,7 +38757,9 @@ customElements.define('b-list', class extends _litElement.LitElement {
     super();
     this.onKeydown = this.onKeydown.bind(this);
     this.onKeyup = this.onKeyup.bind(this);
-    this.divider = this.divider.bind(this);
+    this.createRow = this.createRow.bind(this);
+    this.createEmptyElement = this.createEmptyElement.bind(this);
+    this.createDivider = this.createDivider.bind(this);
   }
 
   get coll() {
@@ -37011,8 +38769,9 @@ customElements.define('b-list', class extends _litElement.LitElement {
   set coll(coll) {
     let didChange = !!this.__coll && this.__coll != coll;
     this.__coll = coll;
-    this.dataSource.coll = coll;
-    if (didChange) this.refresh(); // I think this is ok to do here
+    this.dataSource.coll = coll; // I think this is ok to do here
+
+    if (didChange) this.shouldFetchData ? this.refresh() : this.reload();
   }
 
   set key(key) {
@@ -37056,6 +38815,30 @@ customElements.define('b-list', class extends _litElement.LitElement {
     this.sorts.use(sorts);
   }
 
+  get layout() {
+    return this.layouts && this.layouts.active;
+  }
+
+  set layout(val) {
+    if (this.layouts) this.layouts.active = val;
+  }
+
+  get layouts() {
+    if (!this.__layouts && this.listOptions && this.listOptions.layouts) {
+      this.__layouts = new _layouts.default(this.listOptions.layouts);
+      this.layouts.key = this.key;
+      this.layouts.list = this;
+      this.setAttribute('layout', this.layout);
+      this.layouts.on('change', layout => {
+        this.setAttribute('layout', this.layout);
+        this.update();
+        this.reload();
+      });
+    }
+
+    return this.__layouts;
+  }
+
   get dataSource() {
     if (!this.__dataSource) {
       this.__dataSource = new _source.default(this.listOptions);
@@ -37090,7 +38873,6 @@ customElements.define('b-list', class extends _litElement.LitElement {
         }
 
         b-spinner-overlay {
-            --spinnerBgd: rgba(255,255,255,.5);
             --spinnerSize: 6em;
         }
 
@@ -37160,7 +38942,7 @@ customElements.define('b-list', class extends _litElement.LitElement {
             <b-spinner-overlay></b-spinner-overlay>
         </slot>
         
-        <b-list-toolbar .filters=${this.filters} .sorts=${this.sorts} 
+        <b-list-toolbar .filters=${this.filters} .sorts=${this.sorts} .layouts=${this.layouts}
             @filter-term-changed=${this.onFilterTermChange}>
             <slot name="toolbar:before" slot="before"></slot>
             <slot name="toolbar:after" slot="after"></slot>
@@ -37168,13 +38950,20 @@ customElements.define('b-list', class extends _litElement.LitElement {
                 <b-btn text pill icon="arrows-ccw" @click=${this.refresh}></b-btn>
             </slot>
             <!-- <b-label slot="after" class="queuing-label">Queuing filters, release to apply</b-label> -->
+            <b-list-selection-bar>
+                <slot name="actions:left" slot="left"></slot>
+                <slot name="actions:right" slot="right"></slot>
+            </b-list-selection-bar>
         </b-list-toolbar>
+
         <slot name="header"></slot>
         <b-infinite-list
-            row="${this.rowElement}"
-            empty="${this.emptyElement}"
-            .divider=${this.divider}
+            .empty="${this.createEmptyElement}"
+            .row="${this.createRow}"
+            .divider=${this.createDivider}
             .dataSource=${this.dataSource}
+            fetch-on-load=${this.listOptions && this.listOptions.fetchOnLoad}
+            layout="${this.layout}"
         ></b-infinite-list>
     `;
   }
@@ -37223,7 +39012,7 @@ customElements.define('b-list', class extends _litElement.LitElement {
   }
 
   get emptyElement() {
-    return this.getAttribute('empty') || '';
+    return this.getAttribute('empty') || 'b-empty-state';
   }
 
   get toolbar() {
@@ -37234,7 +39023,28 @@ customElements.define('b-list', class extends _litElement.LitElement {
     return this.shadowRoot.querySelector('b-infinite-list');
   }
 
-  divider(prevModel, model) {
+  createRow(model) {
+    let row = customElements.get(this.rowElement);
+
+    if (row) {
+      row = new row();
+      row.model = model;
+      row.list = this;
+      return row;
+    }
+  }
+
+  createEmptyElement() {
+    this.emptyView = this.emptyView || document.createElement(this.emptyElement);
+    this.emptyView.list = this;
+    this.emptyView.dataSource = this.dataSource;
+    let term = this.dataSource.filters && this.dataSource.filters.term;
+    this.emptyView.value = term ? `No results for “${term}”` : this.getAttribute('placeholder') || 'No results';
+    this.emptyView.requestUpdate();
+    return this.emptyView;
+  }
+
+  createDivider(prevModel, model) {
     let divider = this.getAttribute('divider');
     divider = divider && customElements.get(divider);
 
@@ -37250,13 +39060,24 @@ customElements.define('b-list', class extends _litElement.LitElement {
   }
 
   async firstUpdated() {
-    this.spinner.show = true;
-    this.toolbar.count = await this.dataSource.length();
-    this.spinner.show = false;
+    // defer to end of callstack to let infinite list view render and begin fetching
+    setTimeout(async () => {
+      this.spinner.show = true;
+      this.toolbar.count = await this.dataSource.length();
+      this.spinner.show = false;
+    });
     this.header = this.$$('[name="header"]').assignedNodes()[0];
     if (this.header) this.list.addEventListener('scroll', e => {
       this.header.scrollLeft = e.currentTarget.scrollLeft;
       if (e.currentTarget.scrollLeft == 0) this.removeAttribute('scrolled-x');else this.setAttribute('scrolled-x', '');
+    }); // TODO: unbind on disconnect?
+
+    this.selection = new _selection.default(this.list, this.rowElement, {
+      toolbar: this.shadowRoot.querySelector('b-list-selection-bar')
+    });
+    this.addEventListener('selection:begin', e => {
+      e.stopPropagation();
+      this.selection.begin(e);
     });
   }
 
@@ -37270,8 +39091,12 @@ customElements.define('b-list', class extends _litElement.LitElement {
 
   async reload() {
     this.dataSource.refilter();
-    this.list.reset();
+    this.list.reset(this.shouldFetchData);
     this.toolbar.count = await this.dataSource.length();
+  }
+
+  get shouldFetchData() {
+    return this.dataSource.hasFetched || this.listOptions && this.listOptions.fetchOnLoad;
   }
 
   async onFilterTermChange(changes) {
@@ -37281,7 +39106,7 @@ customElements.define('b-list', class extends _litElement.LitElement {
     }
 
     this.dataSource.applyFilters();
-    this.list.reset();
+    this.list.reset(this.shouldFetchData);
     this.toolbar.count = await this.dataSource.length();
   }
 
@@ -37292,7 +39117,7 @@ customElements.define('b-list', class extends _litElement.LitElement {
     }
 
     this.dataSource.applyFilters();
-    this.list.reset();
+    this.list.reset(this.shouldFetchData);
     this.toolbar.count = await this.dataSource.length();
     this.spinner.show = false;
   }
@@ -37305,7 +39130,7 @@ customElements.define('b-list', class extends _litElement.LitElement {
       this.dataSource.sort();
     }
 
-    this.list.reset();
+    this.list.reset(this.shouldFetchData);
     this.toolbar.count = await this.dataSource.length();
     this.spinner.show = false;
   }
@@ -37315,7 +39140,337 @@ customElements.define('b-list', class extends _litElement.LitElement {
 var _default = customElements.get('b-list');
 
 exports.default = _default;
-},{"lit-element":"bhxD","./data/source":"zXhY","./data/filters":"HGW8","./data/sorts":"sAKI","./toolbar":"iwaU","./infinite-list":"zwrR","../../elements/spinner-overlay":"eyVY"}],"TMO9":[function(require,module,exports) {
+},{"lit-element":"+bhx","./data/source":"zXhY","./data/filters":"HGW8","./data/sorts":"4sAK","./data/layouts":"ZTm8","./toolbar":"iwaU","./toolbar/selection-bar":"55xA","./infinite-list":"2zwr","../../elements/spinner-overlay":"eyVY","../../helpers/lit-element/selectors":"yvN8","../selection":"a+R3"}],"euwv":[function(require,module,exports) {
+"use strict";
+
+var _litElement = require("lit-element");
+
+_litElement.LitElement.prototype.emitEvent = function (eventName, detail = null) {
+  var event = new CustomEvent(eventName, {
+    bubbles: true,
+    composed: true,
+    detail: detail
+  });
+  this.dispatchEvent(event);
+};
+},{"lit-element":"+bhx"}],"tqEd":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+customElements.define('b-cal-day', class extends _litElement.LitElement {
+  static get styles() {
+    return _litElement.css`
+        :host {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            overflow: hidden;
+            padding: .25em;
+        }
+
+        header {
+            text-align: right;
+        }
+
+        main {
+            overflow: auto;
+        }
+
+        .date {
+            height: 1.8em;
+            min-width: 1.8em;
+            box-sizing: border-box;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 1em;
+        }
+
+        :host([overflow]) .date {
+            color: var(--theme-color-accent, #999);
+            padding: 0 .35em;
+        }
+
+        :host([today]) .date {
+            color: #fff;
+            background: var(--theme, var(--blue, #2196F3));
+        }
+    `;
+  }
+
+  get isOverflow() {
+    return this.caldate.month() != this.date.month();
+  }
+
+  get isWeekend() {
+    return [0, 6].includes(this.date.weekday());
+  }
+
+  get isToday() {
+    return this.date.isSame(new Date(), 'day');
+  }
+
+  render() {
+    return _litElement.html`
+
+        <header>
+            <div class="date">
+                ${this.date.date() == 1 ? this.date.format('MMM') : ''}
+                ${this.date.get('date')}
+            </div>
+        </header>
+        <main>
+            <slot></slot>
+        </main>
+    `;
+  }
+
+  set date(date) {
+    this.__date = date;
+    this.toggleAttribute('weekend', this.isWeekend);
+    this.toggleAttribute('overflow', this.isOverflow);
+    this.toggleAttribute('today', this.isToday);
+    this.requestUpdate();
+  }
+
+  get date() {
+    return this.__date;
+  } // firstUpdated(){
+  //     let slot = this.shadowRoot.querySelector('slot');
+  //     this.main = this.shadowRoot.querySelector('main');
+  //     slot.addEventListener('slotchange', this.onSlotChange.bind(this));
+  // }
+  // onSlotChange(e){
+  //     let nodes = e.target.assignedNodes();
+  //     if( nodes[0] && nodes[0].nodeName == '#text' )
+  //         return
+  //     let doesOverflow = this.main.offsetHeight < this.main.scrollHeight
+  //     console.log(doesOverflow);
+  // }
+
+
+});
+
+var _default = customElements.get('b-cal-day');
+
+exports.default = _default;
+},{"lit-element":"+bhx"}],"YTQF":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+require("../../elements/btn-group");
+
+require("../../helpers/lit-element/events");
+
+var _moment = _interopRequireDefault(require("moment"));
+
+require("./day");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+customElements.define('b-cal', class extends _litElement.LitElement {
+  constructor() {
+    super();
+    this.weekdays = _moment.default.weekdaysMin();
+    this.days = new Array(7 * 6).fill('');
+    this.date = this._date || this.getAttribute('date') || (0, _moment.default)();
+  }
+
+  static get styles() {
+    return _litElement.css`
+        :host {
+            /* height: 100%; */
+            display: grid;
+            position:relative;
+            display: grid;
+            grid-template-rows: auto 1fr;
+            --grid-cols: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        }
+
+        :host([collapse-weekend]) {
+            --grid-cols: 2.5em 1fr 1fr 1fr 1fr 1fr 2.5em;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--b-cal-header-bgd, var(--theme-bgd, #fff));
+            border-bottom: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
+            display: grid;
+            grid-template-columns: max-content max-content;
+            justify-content: space-between;
+            align-items: center;
+            padding: .75em 1em 0;
+        }
+
+        header .title,
+        header .nav {
+            display: flex;
+            align-items: center;
+        }
+
+        h1, h2, h3 {
+            margin: 0;
+        }
+
+        .weekdays {
+            margin: .75em -1em 0;
+            grid-column: 1/-1;
+            display: grid;
+            grid-template-columns: var(--grid-cols);
+            text-align: right;
+        }
+
+        .weekdays > div {
+            padding-right: .75em;
+            padding-bottom: .5em;
+        }
+
+        main {
+            /* height: 100%; */
+            display: grid;
+            position:relative;
+            display: grid;
+            grid-template-columns: var(--grid-cols);
+            grid-template-rows: repeat(6, 1fr);
+            gap: 1px;
+            /* min-height: 0; */
+        }
+
+        b-cal-day {
+            border-right: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
+            border-bottom: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
+            flex-shrink: 0;
+            min-width: 0;
+        }
+
+        b-cal-day[weekend] {
+            background: var(--theme-bgd-accent, #f5f5f5);
+        }
+    `;
+  }
+
+  get date() {
+    return this._date;
+  }
+
+  set date(val) {
+    let oldDate = this._date && this._date.clone();
+
+    if (val instanceof _moment.default) {
+      this._date = val;
+      this._dateSelected = this._date.clone();
+    } else if (typeof val == 'string') {
+      this._date = (0, _moment.default)(val);
+      this._dateSelected = this._date.clone();
+    } else if (val && typeof val == 'object') {
+      this._dateSelected.set(val);
+
+      this._date.set(val);
+    }
+
+    this._date.set({
+      date: 1
+    });
+
+    if (oldDate && this._date.isSame(oldDate)) return;
+
+    this._loadDays();
+
+    this.emitEvent('date-changed', this.range);
+  }
+
+  firstUpdated() {
+    this.emitEvent('date-changed', this.range);
+  }
+
+  _loadDays() {
+    let start = this._date.weekday();
+
+    let numDays = this._date.daysInMonth();
+
+    this.days = this.days.map((_, i) => {
+      return this._date.clone().add(i - start, 'day');
+    });
+  }
+
+  get range() {
+    return [this.days[0], this.days[this.days.length - 1]];
+  }
+
+  nextMonth() {
+    this.date = this._date.clone().add('month', 1);
+    this.update();
+  }
+
+  prevMonth() {
+    this.date = this._date.clone().add('month', -1);
+    this.update();
+  }
+
+  goToToday() {
+    this.date = (0, _moment.default)();
+    this.update();
+  }
+
+  render() {
+    return _litElement.html`
+        <header>
+            <div class="title">
+                <h1>${this.date.format('MMMM YYYY')}</h1>
+                <slot name="after-title"></slot>
+            </div>
+            <div class="nav">
+                <slot name="before-nav"></slot>
+                <div>
+                    <b-btn text icon="left-open-big" @click=${this.prevMonth}></b-btn>
+                    <b-btn text @click=${this.goToToday}>Today</b-btn>
+                    <b-btn text icon="right-open-big" @click=${this.nextMonth}></b-btn>
+                </div>
+                <slot name="after-nav"></slot>
+            </div>
+
+            <div class="weekdays">${this.weekdays.map((str, i) => _litElement.html`
+                ${i == 0 || i == 6 ? _litElement.html`
+                    <div @click=${this.toggleCollapseWeekend}>${str}</div>
+                ` : _litElement.html`
+                    <div>${str}</div>
+                `}
+            `)}</div>
+
+        </header>
+        <main>
+        ${this.days.map(date => _litElement.html`
+            <b-cal-day .caldate=${this._date} .date=${date}>
+                <slot name="${date.format('YYYY-MM-DD')}"></slot>
+            </b-cal-day>
+        `)}
+        </main>
+    `;
+  }
+
+  toggleCollapseWeekend() {
+    this.toggleAttribute('collapse-weekend', !this.hasAttribute('collapse-weekend'));
+  }
+
+});
+
+var _default = customElements.get('b-cal');
+
+exports.default = _default;
+},{"lit-element":"+bhx","../../elements/btn-group":"0pV6","../../helpers/lit-element/events":"euwv","moment":"a2/B","./day":"tqEd"}],"TMO9":[function(require,module,exports) {
 "use strict";
 
 var _litElement = require("lit-element");
@@ -37432,7 +39587,7 @@ customElements.define('b-list-of-colors', class extends _litElement.LitElement {
   }
 
 });
-},{"lit-element":"bhxD"}],"u6Cc":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"u6Cc":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37485,10 +39640,17 @@ const fileIconColors = {
     `,
   indd: _litElement.css`
         :host([ext="indd"]),
-        :host([ext="idml"]),
-        :host([ext="icml"]) {
+        :host([ext="idml"]) {
             --bgd: #2a020b;
             --color: #ff3c95;
+            --dog-ear-bgd: var(--color);
+            --border-color: var(--color);
+        }
+    `,
+  icml: _litElement.css`
+        :host([ext="icml"]) {
+            --bgd: #2a0c2a;
+            --color: #eb72eb;
             --dog-ear-bgd: var(--color);
             --border-color: var(--color);
         }
@@ -37634,7 +39796,7 @@ function _default(customColors = {}, customLabels = {}) {
 
   });
 }
-},{"lit-element":"bhxD"}],"sHUN":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"sHUN":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37686,6 +39848,7 @@ customElements.define('b-notifs', class extends _litElement.LitElement {
             display: block;
             pointer-events: none;
             
+            overflow: hidden;
             position:absolute;
             top: 0;
             left: 0;
@@ -37701,6 +39864,16 @@ customElements.define('b-notifs', class extends _litElement.LitElement {
             left: env(safe-area-inset-left);
             bottom: env(safe-area-inset-bottom);
             right: env(safe-area-inset-right);
+        }
+
+        @media (max-width:699px), (max-height: 699px) {
+            :host {
+                position: fixed;
+                top: env(safe-area-inset-top);
+                left: env(safe-area-inset-left);
+                bottom: env(safe-area-inset-bottom);
+                right: env(safe-area-inset-right);
+            }
         }
 
         slot {
@@ -37737,14 +39910,6 @@ customElements.define('b-notifs', class extends _litElement.LitElement {
             padding-right: var(--padding);
             align-items: flex-end;
         }
-
-        /* slot::slotted(*) {
-            margin: 0 .5em .5em 0;
-        } */
-
-        /* [name="bottom-right"] {
-            padding: 0 var(--padding) var(--padding) 0;
-        } */
 
         @media (max-width:699px) {
             slot {
@@ -37798,7 +39963,7 @@ customElements.define('b-notifs', class extends _litElement.LitElement {
 var _default = customElements.get('b-notifs');
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"HXsq":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"HXsq":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37834,6 +39999,17 @@ var _default = _litElement.css`
 
 :host([animation="grow"]) {
     transform: scale(.8)
+}
+
+:host([animation="bounce"]) {
+    transform: none;
+}
+
+:host([animation="bounce"].entered) {
+    animation-name: bounce;
+    animation-duration: 700ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation-fill-mode: forwards;
 }
 
 :host([animation="fade"]) {
@@ -37898,48 +40074,25 @@ slot {
     display: block;
 }
 
-.snackbar {
-    padding: 1em;
-    display: grid;
-    grid-template-columns: auto 1fr max-content;
-    align-items: center;
-    /* gap: 1em; */
-}
 
-.snackbar .icon > b-icon,
-.snackbar .icon > .icon {
-    margin: -.5em 0;
-    margin-right: .75em;
-    --size: 1.2em;
-    vertical-align: middle;
-}
-
-.snackbar .msg {
-    margin: 0.05em 0 -.05em; /* better alignment with icon and btns */
-}
-
-.snackbar .btns {
-    margin-top: -0.05em;
-    margin-right: calc(-.5 * var(--padding))
-}
-
-.snackbar .btns b-btn {
-    --b-notif-btn-color: var(--b-notif-color)
-    font-weight: bold;
-    text-transform: uppercase;
-    margin: -1em 0;
-    vertical-align: middle;
+:host {
+    --b-notif-btn-color: var(--b-notif-color);
 }
 
 :host([color]) {
-    --b-notif-btn-color: var(--b-notif-color);
     --b-notif-btn-bgd: rgba(255,255,255,.1);
 }
 
+@keyframes bounce {
+  0% { transform: scale(0.8); }
+  14% { transform: scale(1.1); }
+  28% { transform: scale(.9); }
+  42% { transform: scale(1.1); }
+  70% { transform: scale(1); }
 `;
 
 exports.default = _default;
-},{"lit-element":"bhxD"}],"tUj8":[function(require,module,exports) {
+},{"lit-element":"+bhx"}],"tUj8":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37947,9 +40100,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _default = {
+  alert: {},
   error: {
     icon: 'attention-circle',
-    color: 'red'
+    color: 'red',
+    animation: 'bounce'
   },
   failed: {
     icon: 'cancel-circled',
@@ -37969,20 +40124,7 @@ var _default = {
   }
 };
 exports.default = _default;
-},{}],"euwv":[function(require,module,exports) {
-"use strict";
-
-var _litElement = require("lit-element");
-
-_litElement.LitElement.prototype.emitEvent = function (eventName, detail = null) {
-  var event = new CustomEvent(eventName, {
-    bubbles: true,
-    composed: true,
-    detail: detail
-  });
-  this.dispatchEvent(event);
-};
-},{"lit-element":"bhxD"}],"Cw18":[function(require,module,exports) {
+},{}],"Cw//":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37998,9 +40140,7 @@ var _makeBtn = _interopRequireWildcard(require("../dialog/make-btn"));
 
 require("../../helpers/lit-element/events");
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 customElements.define('b-snackbar', class extends _litElement.LitElement {
   static get properties() {
@@ -38024,6 +40164,10 @@ customElements.define('b-snackbar', class extends _litElement.LitElement {
             display: grid;
             grid-template-columns: auto 1fr max-content;
             align-items: center;
+        }
+
+        .icon {
+            line-height: 0;
         }
 
         .icon > b-icon,
@@ -38052,11 +40196,11 @@ customElements.define('b-snackbar', class extends _litElement.LitElement {
         }
 
         .btns b-btn[color=''] {
-            color: var(--b-notif-btn-color, #333);
+            color: var(--b-notif-btn-color, #fff);
         }
 
         :host([color]) .btns b-btn  {
-            color: var(--b-notif-btn-color, #333);
+            color: var(--b-notif-btn-color, #fff);
         }
 
         @media (hover){
@@ -38099,7 +40243,7 @@ customElements.define('b-snackbar', class extends _litElement.LitElement {
 var _default = customElements.get('b-snackbar');
 
 exports.default = _default;
-},{"lit-element":"bhxD","lit-html/directives/unsafe-html":"jTPt","../dialog/make-btn":"TZ6L","../../helpers/lit-element/events":"euwv"}],"XAiK":[function(require,module,exports) {
+},{"lit-element":"+bhx","lit-html/directives/unsafe-html":"/jTP","../dialog/make-btn":"TZ6L","../../helpers/lit-element/events":"euwv"}],"XAiK":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38162,6 +40306,9 @@ customElements.define('b-notif', class extends _litElement.LitElement {
     super();
     this.onWindowFocus = this.onWindowFocus.bind(this);
     this.onWindowBlur = this.onWindowBlur.bind(this);
+
+    let controller = _controller.default.get(opts.controller || 'main');
+
     this.opts = Object.assign({
       nid: String(Math.round(Math.random() * 10000)),
       msg: '',
@@ -38171,7 +40318,6 @@ customElements.define('b-notif', class extends _litElement.LitElement {
       animationForReplace: 'grow',
       autoClose: 4000,
       closeOnClick: true,
-      controller: 'main',
       anchor: 'bottom-right',
 
       //device.minScreenSize <= 699 ? 'bottom' : 'bottom-right',
@@ -38179,7 +40325,7 @@ customElements.define('b-notif', class extends _litElement.LitElement {
 
       onClick() {}
 
-    }, _types.default[opts.type] || {}, opts);
+    }, _types.default[opts.type] || {}, controller.defaults || {}, opts);
     let props = this.constructor.properties;
 
     for (let key in this.opts) {
@@ -38190,7 +40336,12 @@ customElements.define('b-notif', class extends _litElement.LitElement {
     this.addEventListener('click', this.onClick, false);
     this.addEventListener(_device.default.isMobile ? 'touchdown' : 'mouseover', this.onMouseOver);
     this.addEventListener(_device.default.isMobile ? 'touchend' : 'mouseout', this.onMouseOut);
-    if (this.opts.view) this.appendChild(this.opts.view);
+
+    if (this.opts.view) {
+      this.appendChild(this.opts.view);
+      this.opts.view.notif = this;
+    }
+
     let existingNotif = NOTIFS.get(this.nid);
     NOTIFS.set(this.nid, this);
 
@@ -38198,8 +40349,6 @@ customElements.define('b-notif', class extends _litElement.LitElement {
       existingNotif.replaceWith(this);
       return;
     }
-
-    let controller = _controller.default.get(this.opts.controller);
 
     if (controller) controller.appendChild(this);
   }
@@ -38215,6 +40364,7 @@ customElements.define('b-notif', class extends _litElement.LitElement {
         this.remove();
         NOTIFS.delete(this.nid);
         this.opts.onClose(this);
+        if (this.opts.view) delete this.opts.view.notif;
         resolve(btn);
       }, 700);
     });
@@ -38231,6 +40381,8 @@ customElements.define('b-notif', class extends _litElement.LitElement {
     this.classList.remove('entered'); // setTimeout(()=>{
 
     super.replaceWith(el);
+    this.opts.onClose(this);
+    if (this.opts.view) delete this.opts.view.notif;
     setTimeout(() => {
       el.animation = animation;
     }, 310); // },310)
@@ -38313,7 +40465,20 @@ customElements.define('b-notif', class extends _litElement.LitElement {
 var _default = customElements.get('b-notif');
 
 exports.default = _default;
-},{"lit-element":"bhxD","./controller":"sHUN","../../util/device":"la8o","./style":"HXsq","./types":"tUj8","./snackbar":"Cw18"}],"gE6T":[function(require,module,exports) {
+let notifClass = customElements.get('b-notif');
+
+for (let key in _types.default) {
+  if (!notifClass[key]) notifClass[key] = (msg, opts = {}) => {
+    if (typeof msg == 'string') {
+      opts = opts || {};
+      opts.msg = msg;
+    }
+
+    let Notif = customElements.get('b-notif');
+    return new Notif(Object.assign({}, _types.default[key], opts));
+  };
+}
+},{"lit-element":"+bhx","./controller":"sHUN","../../util/device":"la8o","./style":"HXsq","./types":"tUj8","./snackbar":"Cw//"}],"gE6T":[function(require,module,exports) {
 "use strict";
 
 require("../elements/icon");
@@ -38329,6 +40494,10 @@ require("../elements/spinner-overlay");
 require("../elements/uploader");
 
 require("../elements/paper");
+
+require("../elements/text");
+
+require("../elements/grid");
 
 require("../elements/carousel");
 
@@ -38360,9 +40529,11 @@ require("../presenters/form-control");
 
 require("../presenters/list");
 
+require("../presenters/cal");
+
 require("../helpers/colors-list");
 
-require("../helpers/colors/index.less");
+require("../styles/colors.less");
 
 var _fileIcon = _interopRequireDefault(require("../elements/file-icon"));
 
@@ -38420,7 +40591,7 @@ history.replaceState = (f => function replaceState() {
 window.addEventListener('popstate', function () {
   convertComments();
 });
-},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/btn-group":"pV6C","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/carousel":"inC5","../elements/timer":"uEYO","../elements/empty-state":"dUnZ","../elements/label":"DcCw","../elements/ribbon":"jV4C","../elements/hr":"IOAQ","../elements/sub":"VANQ","../elements/ts":"VfwF","../elements/avatar":"DaYz","../elements/code":"v5wz","../elements/embed":"bpDM","../elements/audio":"EIVk","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../helpers/colors-list":"TMO9","../helpers/colors/index.less":"r4vn","../elements/file-icon":"u6Cc","../presenters/dialog":"pos3","../presenters/menu":"tCYJ","../presenters/notif":"XAiK"}],"If2r":[function(require,module,exports) {
+},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/btn-group":"0pV6","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/text":"yukA","../elements/grid":"BALQ","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/ribbon":"jV4C","../elements/hr":"IOAQ","../elements/sub":"VANQ","../elements/ts":"29Vf","../elements/avatar":"Da++","../elements/code":"v5wz","../elements/embed":"bpDM","../elements/audio":"EIVk","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../presenters/cal":"YTQF","../helpers/colors-list":"TMO9","../styles/colors.less":"r4vn","../elements/file-icon":"u6Cc","../presenters/dialog":"pos3","../presenters/menu":"0tCY","../presenters/notif":"XAiK"}],"I+C3":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -38436,7 +40607,7 @@ function getBundleURL() {
   try {
     throw new Error();
   } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
+    var matches = ('' + err.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g);
 
     if (matches) {
       return getBaseURL(matches[0]);
@@ -38447,12 +40618,12 @@ function getBundleURL() {
 }
 
 function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
+  return ('' + url).replace(/^((?:https?|file|ftp):\/\/.+)\/[^/]+$/, '$1') + '/';
 }
 
 exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
-},{}],"UMEN":[function(require,module,exports) {
+},{}],"/1fi":[function(require,module,exports) {
 var getBundleURL = require('./bundle-url').getBundleURL;
 
 function loadBundlesLazy(bundles) {
@@ -38535,13 +40706,13 @@ LazyPromise.prototype.catch = function (onError) {
   if (this.promise === null) this.promise = new Promise(this.executor);
   return this.promise.catch(onError);
 };
-},{"./bundle-url":"If2r"}],"RVwy":[function(require,module,exports) {
+},{"./bundle-url":"I+C3"}],"PzH6":[function(require,module,exports) {
 module.exports = function loadHTMLBundle(bundle) {
   return fetch(bundle).then(function (res) {
     return res.text();
   });
 };
 },{}],0:[function(require,module,exports) {
-var b=require("UMEN");b.register("html",require("RVwy"));b.load([["icons.svg.28577cf8.html","pxeq"]]).then(function(){require("gE6T");});
+var b=require("/1fi");b.register("html",require("PzH6"));b.load([["icons.svg.99a755f0.html","pxeq"]]).then(function(){require("gE6T");});
 },{}]},{},[0], null)
-//# sourceMappingURL=/bui.js.map
+//# sourceMappingURL=/bui.map
