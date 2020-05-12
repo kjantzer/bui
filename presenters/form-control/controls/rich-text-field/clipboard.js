@@ -8,7 +8,7 @@ const Delta = Quill.import('delta')
 class BUIClipboard extends Clipboard {
     onPaste (e) {
         e.preventDefault()
-        const dirtyHtml = e.clipboardData.getData('text/html')
+        const dirtyHtml = e.clipboardData.getData(e.clipboardData.items[0]['type']);
         this.insertHTML(dirtyHtml, true)
     }
 
