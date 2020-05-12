@@ -62,6 +62,10 @@ export class PaperElement extends LitElement {
             border-color: rgba(0, 0, 0, 0.1);
         }
 
+        :host([noshadow]) {
+            box-shadow: none;
+        }
+
         :host([dense]) {
             --padding: .5em;
         }
