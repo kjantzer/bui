@@ -31,6 +31,34 @@ const db = require('./db')
 let result = await db.query(`SELECT * FROM table`)
 ```
 
+### Utilities
+- `db.format()`
+- `db.escape()`
+- `db.escapeId()`
+- `db.NOW`
+    - use for inserting `{completed: db.NOW}`
+
+> See node mysql documentation
+
+### db.query()
+See node mysql documenation. Same syntax, but promise based.
+
+### db.transactionalQuery()
+Performs a series of queries and if any fail, will roll back. Accepts an array of queries, each matching the expected arguments of `.query`. **Returns** an array containing each query result.
+
+```js
+db.transactionalQuery([
+    `INSERT INTO table SET label = 'test'`,
+    [`INSERT INTO table SET ?`, {label: 'test 2'}],
+    prevResult=>{
+        if( !prevResult || prevResult.affectedRows == 0 )
+            throw new Error('insert failed') // the previous transactions will roll back
+
+        return `INSERT INTO table SET label = 'test 3'`,
+    }
+])
+```
+
 ### db.parseWhere()
 Takes a hash of where key:values and converts them to fields and values to be used in a MySQL query
 
@@ -45,6 +73,37 @@ console.log(values) // [[1,2], 'foobar']
 
 db.query(`SELECT * FROM table WHERE ${fields.join(' AND ')}`, values)
 ```
+
+### db.updateOnDuplicate()
+A utility function to be used when writting a query. Accepts a hash of attributes and will return the `UPDATE ON DUPLICATE...` string. *Values will be properly escaped.*
+
+```js
+let attrs = {id: 1: label: 'one'}
+
+db.query(`INSERT INTO table SET ? ${db.updateOnDuplicate(attrs)}`, [attrs])
+
+```
+
+### db.bulkInsert()
+Provide a table name and array of rows to insert. Query will be formatted as `INSERT INTO table (...) VALUES ...`
+
+```js
+let rows = [
+    {num: 1, label: 'one'},
+    {num: 2, label: 'two'}
+]
+
+let resp = await this.db.bulkInsert('table_name', rows)
+```
+
+### Results
+Results are returned in a subclass of `array` that provides a few helpers:
+
+- `.first`
+- `.last`
+- `.value` gets value of first column in first row
+- `.values` gets value of first column in all rows
+- `.groupBy(key)` groups results by a key
 
 ## API
 

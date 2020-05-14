@@ -143,9 +143,13 @@ function cleanNode(parent, node){
         // keep tags we want
         // TODO: make list of tags an option?
         }else if( ['#text', 'p', 'br', 'b', 'strong', 'em', 'i', 'ul', 'ol', 'li'].includes(node.nodeName.toLowerCase()) ){
-
+            // make sure inline elements dont start with a <br> tag ie <br><i><br> as this will parse to <p><i><br> and break Quill
+            if( ['i', 'b', 'strong', 'em'].includes(node.nodeName.toLowerCase()) ){
+                if( node.childNodes[0] && node.childNodes[0].nodeName == 'BR' )
+                    node.childNodes[0].remove()
+            }
             // if( parent.tagName == 'P' )
-                parent.appendChild(node)
+            parent.appendChild(node)
 
         // remove tags we dont want, but keep their contents
         // example: <font>we want to keep this text and any <b>good</b> tags</font>

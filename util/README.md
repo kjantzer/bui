@@ -89,7 +89,7 @@ Perform a set of promise tasks in series (waiting to complete until moving on to
 ```js
 import 'util/promise.series' // import once
 
-Promise.series([task1, task2, task3], task=>{
+Promise.series([task1, task2, task3], (task, i, prevResult)=>{
     await task()
 })
 

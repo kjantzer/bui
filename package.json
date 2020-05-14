@@ -41,7 +41,8 @@
     ],
     "devDependencies": {
         "docpress": "github:kjantzer/docpress#prod",
-        "less": "^3.11.1"
+        "less": "^3.11.1",
+        "parcel-bundler": "1.12.4"
     },
     "dependencies": {
         "@fnando/sparkline": "^0.3.10",

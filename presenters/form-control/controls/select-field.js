@@ -22,6 +22,7 @@ main > svg {
 	height: 1em;
 	width: 1em;
 	flex-shrink: 0;
+	fill: var(--theme-color-accent, #333);
 }
 
 slot#options {

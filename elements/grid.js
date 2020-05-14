@@ -33,6 +33,14 @@ customElements.define('b-grid', class extends LitElement{
         :host([cols="2,1,1"]) { grid-template-columns: 2fr 1fr 1fr; }
         :host([cols="1,1,2"]) { grid-template-columns: 1fr 1fr 2fr; }
 
+        @media (max-width:699px){
+            :host([cols-mobile="1"]) { grid-template-columns: 1fr; }
+            :host([cols-mobile="2"]) { grid-template-columns: repeat(2, 1fr); }
+            :host([cols-mobile="3"]) { grid-template-columns: repeat(3, 1fr); }
+            :host([cols-mobile="2,1"]) { grid-template-columns: 2fr 1fr; }
+            :host([cols-mobile="1,2"]) { grid-template-columns: 1fr 2fr; }
+        }
+
         :host([gap="0"]), :host([gap="none"]) { gap: 0; }
         :host([gap=".5"]) { gap: .5em; }
         :host([gap="1"]) { gap: 1em; }
