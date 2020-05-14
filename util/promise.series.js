@@ -9,7 +9,7 @@ module.exports = (global||globalThis).Promise.series = (array, fn)=>{
         if( resp === false )
             return Promise.resolve()
         
-        return fn(next, i++);
+        return fn(next, i++, resp);
 
     }, Promise.resolve());
 }
