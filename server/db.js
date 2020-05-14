@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-require('./util/promise.series')
+require('../util/promise.series')
 
 module.exports = class DB {
 
@@ -64,7 +64,14 @@ module.exports = class DB {
         try{
 
             /* peform each query, making sure each one succeeds */
-            await Promise.series(queries, query=>new Promise((resolve, reject)=>{
+            await Promise.series(queries, (query, i, prevResult)=>new Promise((resolve, reject)=>{
+
+                if( typeof query == 'function' )
+                    query = query(prevResult)
+
+                if( typeof query == 'string' )
+                    query = [query]
+
                 query.push((err, results, fields)=>{
                     if( err ) return reject(err)
                     queryResults.push(results)
@@ -88,7 +95,7 @@ module.exports = class DB {
         return queryResults
     }
 
-    // alias
+    // alias (DEPRECATED)
     q(){
         return this.query(...arguments)
     }
@@ -112,6 +119,19 @@ module.exports = class DB {
             updates.push(`${key} = VALUES(${key})`)
         }
         return `ON DUPLICATE KEY UPDATE ${updates.join(', ')}`
+    }
+
+    bulkInsert(table, rows){
+        let [cols, vals] = this.parseBulkInsert(rows)
+        let sql = `INSERT INTO ${table} (${cols}) VALUES ?`
+        return this.query(sql, [vals])
+    }
+
+    parseBulkInsert(rows=[]){
+        let cols = Object.keys(rows[0])
+        let vals = rows = rows.map(r=>Object.values(r))
+        cols = cols.map(col=>this.escapeId(col))
+        return [cols, vals]
     }
 
     get NOW(){ return {toSqlString:()=>'NOW()'}; }
