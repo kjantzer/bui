@@ -48,7 +48,8 @@ customElements.define('b-text', class extends LitElement{
         :host([tone="info"]) { color: var(--b-text-tone-info, var(--blue, blue)); }
 
         @media (hover){
-            :host([link]:hover) {
+            :host([link]:hover),
+            :host([href]:hover) {
                 color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
             }
         }
