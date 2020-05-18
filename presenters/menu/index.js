@@ -636,11 +636,17 @@ export default class Menu {
 */
 	popover(target, opts={}){
 
-		if( opts.adjustForMobile && device.isMobile && !device.isiPad )
-			return this.modal(Object.assign({
-				btns: ['cancel','done'],
-				anchor: this.searchIsOn ? 'top' : 'center'
-			}, (typeof opts.adjustForMobile == 'object' ? opts.adjustForMobile : {})))
+		if( opts.adjustForMobile && device.isMobile && !device.isiPad ){
+			let modalOpts = {btns: ['cancel','done']}
+
+			if( this.searchIsOn )
+				modalOpts.anchor = 'top'
+
+			if( typeof opts.adjustForMobile == 'object' )
+				modalOpts = Object.assign(modalOpts, opts.adjustForMobile)
+
+			return this.modal(modalOpts)
+		}
 		
 		this.render()
 		
@@ -685,7 +691,7 @@ export default class Menu {
 		
 		opts = Object.assign({
 			type: 'modal',
-			animation: 'scale'			
+			// animation: 'scale'
 		}, opts)
 
 		opts.onKeydown = this.onKeydown.bind(this)
