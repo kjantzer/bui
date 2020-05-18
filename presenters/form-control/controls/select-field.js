@@ -335,7 +335,7 @@ class SelectFieldElement extends HTMLElement {
 			maxHeight: this.getAttribute('menu-max-height') || 'auto',
 			maxWidth: this.getAttribute('menu-max-width') || 'none',
 			overflowBoundry: this.getAttribute('menu-overflow') ? 'window' : null,
-			adjustForMobile: this.getAttribute('adjust-for-mobile') == 'false' ? false : true
+			adjustForMobile: this.getAttribute('adjust-for-mobile') == 'false' ? false : {type:'actionsheet'}
 		}
 		
 		if( !menu || menu.length == 0 )
