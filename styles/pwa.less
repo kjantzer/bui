@@ -12,6 +12,8 @@ html {
 
     /* make things more "app" like: disable text selection */
     // -webkit-user-select: none;
+
+    --view-gutter: 2em;
 }
 
 html.ios.installed {
@@ -33,6 +35,11 @@ html, body {
 
 // slightly larger menu on small screens
 @media (max-width:699px) {
+
+    html {
+        --view-gutter: 1em;
+    }
+
     .popover .b-menu {
         font-size: 1.1em;
     }
