@@ -5,9 +5,7 @@ BUI Server
 
 Classes and utilities for node.js apps
 
-# Documentation
-
-## DB
+# DB
 Creates a pooled [MySQL](https://www.npmjs.com/package/mysql) connection with
 a promised based query method.
 
@@ -30,6 +28,8 @@ const db = require('./db')
 
 let result = await db.query(`SELECT * FROM table`)
 ```
+
+## Methods
 
 ### Utilities
 - `db.format()`
@@ -96,7 +96,7 @@ let rows = [
 let resp = await this.db.bulkInsert('table_name', rows)
 ```
 
-### Results
+## Results
 Results are returned in a subclass of `array` that provides a few helpers:
 
 - `.first`
@@ -105,7 +105,7 @@ Results are returned in a subclass of `array` that provides a few helpers:
 - `.values` gets value of first column in all rows
 - `.groupBy(key)` groups results by a key
 
-## API
+# API
 
 ```js
 const app = require('express')();

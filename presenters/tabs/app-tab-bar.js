@@ -59,6 +59,10 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             --hoverBgdColor: rgba(var(--theme-rgb),.01);
         }
 
+        [icon="search"] {
+            display: var(--app-tab-bar-search-display, inline-block);
+        }
+
         /* phones in landscape */
         @media /*(max-height: 699px) and (orientation:landscape),*/
         (min-width:700px) {
