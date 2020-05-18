@@ -8,7 +8,7 @@ customElements.define('b-tabs', class extends LitElement {
 
     static get properties(){return {
         key: {type: String, reflect: true},
-        layout: {type: 'String', reflect: true},
+        layout: {type: String, reflect: true},
         singlemenu: {type: Boolean, reflect: true}
     }}
 
@@ -41,7 +41,7 @@ customElements.define('b-tabs', class extends LitElement {
                     views.push(..._views)
                     node.textContent = ''
                 
-                }else if( node.slot || node.nodeName == '#comment' ){
+                }else if( node.slot || ['#comment', 'SCRIPT', 'STYLE'].includes(node.nodeName) ){
                     // ignore views that have a slot name
 
                 }else if( node.title ){
@@ -92,7 +92,7 @@ customElements.define('b-tabs', class extends LitElement {
 
             --menuBgd: none;
             --menuFontSize: 1em;
-            --contentPadding: 2em;
+            --contentPadding: var(--view-gutter);
             --menuItemPadding: .75em 1em;
             --menuItemRadius: 4px;
             --inactiveColor: var(--b-tabs-inactive-color, rgba(0,0,0,.4));
