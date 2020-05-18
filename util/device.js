@@ -1,3 +1,4 @@
+import colorizeFavicon from './colorize-favicon'
 
 const UA = navigator.userAgent
 
@@ -90,5 +91,71 @@ export const colorScheme = {
         this._watchers.forEach(cb=>{
             cb(mode)
         })
+    },
+
+    apply({colorizeFaviconComposition='light'}={}){
+        localStorage.setItem('theme-colorize-icon', colorizeFaviconComposition)
+        this.onChange(this.setTheme)
+        this.setTheme()
+        this.setAccent()
+    },
+
+    get theme(){ return localStorage.getItem('theme') },
+    get accent(){ return localStorage.getItem('theme-accent') },
+
+    setTheme(theme){
+
+        const html = document.documentElement
+        let metaThemeColor = document.head.querySelector('meta[name="theme-color"]')
+
+        // create the meta theme color if not found
+        // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name/theme-color
+        if( !metaThemeColor ){
+            metaThemeColor = document.createElement('meta')
+            metaThemeColor.setAttribute('name', 'theme-color')
+            document.head.appendChild(metaThemeColor)
+        }
+
+        html.removeAttribute('light')
+        html.removeAttribute('dark')
+
+        if( theme === undefined )
+            theme = localStorage.getItem('theme') || 'system'
+
+        localStorage.setItem('theme', theme)
+
+        if( theme == 'system' )
+            theme = this.isDarkMode ? 'dark' : 'light'
+
+        html.setAttribute(theme, '')
+        metaThemeColor.content = getComputedStyle(document.body).getPropertyValue('--theme-bgd')
+    },
+
+    setAccent(accent){
+
+        const html = document.documentElement
+        let colorizeFaviconComposition = localStorage.getItem('theme-colorize-icon')
+
+        if( accent === undefined ){
+            accent = localStorage.getItem('theme-accent')
+        }else{
+            localStorage.setItem('theme-accent', accent)
+        }
+
+        if( accent ){
+            html.style.setProperty('--theme', `var(--${accent}, #${accent})`);
+            html.style.setProperty('--theme-chosen', `var(--${accent}, #${accent})`);
+
+            if( colorizeFaviconComposition )
+                colorizeFavicon(getComputedStyle(document.body).getPropertyValue('--theme'), colorizeFaviconComposition)
+
+        }else{
+            html.style.removeProperty('--theme');
+            html.style.removeProperty('--theme-chosen');
+
+            colorizeFavicon(false)
+        }
+
     }
+
 }
