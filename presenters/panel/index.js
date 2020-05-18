@@ -150,14 +150,15 @@ export class Panel extends LitElement {
         let defaultOpts = Object.assign({}, PanelDefaults)
 
         if( opts.type == 'modal' ){
-            defaultOpts.width = 'auto'
-            defaultOpts.height = 'auto'
+            defaultOpts.width = ''
+            defaultOpts.height = ''
             defaultOpts.anchor = 'center'
+            defaultOpts.animation = 'scale'
         }
 
         if( opts.type == 'actionsheet' ){
             defaultOpts.width = '100%'
-            defaultOpts.height = 'auto'
+            defaultOpts.height = ''
             defaultOpts.anchor = 'bottom'
         }
 
@@ -266,7 +267,7 @@ export class Panel extends LitElement {
 
     render(){return html`
         <div class="backdrop"></div>
-        <main style="width:${this.width}; height:${this.height}">
+        <main style="${this.width?`width:${this.width};`:''}${this.height?`height:${this.height};`:''}">
             <b-btn icon="cancel-1" pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closeBtn!==true}></b-btn>
             <slot></slot>
             ${this.html}
@@ -467,7 +468,6 @@ export class Panel extends LitElement {
             overflow: visible;
             display: flex;
             flex-direction: column;
-            height: 100%;
             background: var(--b-panel-bgd, #fff);
             box-shadow: var(--b-panel-shadow, rgba(0,0,0,.2) 0 3px 10px);
             border-radius: var(--radius-top) var(--radius-top) var(--radius-bottom) var(--radius-bottom);
@@ -481,6 +481,8 @@ export class Panel extends LitElement {
 
         :host([type="actionsheet"]) main {
             max-width: var(--b-panel-actionsheet-max-w, 500px);
+            margin-bottom: 0;
+            max-height: var(--b-panel-actionsheet-max-h, 70vh);
             /* --radius: 12px; */
         }
 
@@ -507,12 +509,14 @@ export class Panel extends LitElement {
 
         :host([anchor="right"]) > main {
             transform: translateX(100px);
+            height: 100%;
         }
 
         :host([anchor="left"]) > main {
             right: auto;
             left: 0;
             transform: translateX(-100px);
+            height: 100%;
         }
 
         :host([anchor="center"]) > main,
