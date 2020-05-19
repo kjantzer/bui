@@ -2,6 +2,8 @@
 // This will parse a delimited string into an array of
 // arrays. The default delimiter is the comma, but this
 // can be overriden in the second argument.
+const mode = require('./math').mode
+
 module.exports = (strData, {strDelimiter=',', hasHeader=true}={})=>{
 
     // Create a regular expression to parse the CSV values.
@@ -75,6 +77,27 @@ module.exports = (strData, {strDelimiter=',', hasHeader=true}={})=>{
         arrData[ arrData.length - 1 ].push( strMatchedValue );
     }
 
+
+    let header = []
+    let footer = []
+    let foundRow = false
+    let rowLengths = arrData.map(r=>r.length)
+    let rowLength = mode(rowLengths)[0]
+
+    arrData = arrData.filter(row=>{
+        if( row.length < rowLength ){
+
+            if( row[0] && foundRow )
+                footer.push(row)
+            else if( row[0] )
+                header.push(row)
+            
+            return false
+        }
+        foundRow = true
+        return true
+    })
+
     if( hasHeader ){
         let header = arrData.shift()
     
@@ -84,6 +107,9 @@ module.exports = (strData, {strDelimiter=',', hasHeader=true}={})=>{
             return obj
         })
     }
+
+    arrData.header = header
+    arrData.footer = footer
 
     // Return the parsed data.
     return( arrData );
