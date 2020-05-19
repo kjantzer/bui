@@ -93,8 +93,9 @@ export const colorScheme = {
         })
     },
 
-    apply({colorizeFaviconComposition='light'}={}){
-        localStorage.setItem('theme-colorize-icon', colorizeFaviconComposition)
+    apply({colorizeFaviconComposition=''}={}){
+        localStorage.setItem('theme-colorize-icon',
+            colorizeFaviconComposition||localStorage.getItem('theme-colorize-icon')||'lighten')
         this.onChange(this.setTheme)
         this.setTheme()
         this.setAccent()
