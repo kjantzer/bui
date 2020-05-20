@@ -43,6 +43,7 @@ customElements.define('b-text', class extends LitElement{
         :host([xxl]) { font-size: 2em; line-height: 1.1em; }
 
         :host([tone="muted"]), :host([muted]) { color: rgba(var(--theme-rgb, 0,0,0),.4); }
+        :host([tone="theme"]) { color: var(--theme); }
         :host([tone="critical"]) { color: var(--b-text-tone-critical, var(--red-A400, red)); }
         :host([tone="warning"]) { color: var(--b-text-tone-warning, var(--orange, orange)); }
         :host([tone="info"]) { color: var(--b-text-tone-info, var(--blue, blue)); }
