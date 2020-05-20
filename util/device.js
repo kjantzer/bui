@@ -60,7 +60,19 @@ const device = {
     },
 
     // alias
-    get isStandalone(){ return device.isInstalled }
+    get isStandalone(){ return device.isInstalled },
+
+    applyClasses(){
+        const html = document.documentElement
+        if( !html ) return
+        html.classList.toggle('mobile', device.isMobile)
+        html.classList.toggle('ios', device.isiOS)
+        html.classList.toggle('electron', device.isElectron)
+        html.classList.toggle('android', device.isAndroid)
+        html.classList.toggle('mac', device.isMac)
+        html.classList.toggle('windows', device.isWindows)
+        html.classList.toggle('installed', device.isInstalled)
+    }
     
 }
 
