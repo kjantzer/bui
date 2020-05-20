@@ -1,6 +1,7 @@
 import {render, TemplateResult} from 'lit-html';
 import device from '../../util/device';
 import Panel from '../panel'
+import Notif from '../notif'
 import Popover from '../popover'
 import makeBtn, {cancelBtns} from './make-btn'
 
@@ -246,11 +247,13 @@ export default class Dialog {
 	notif(opts){
 		opts = Object.assign({
 			autoClose: this.opts.btns ? false : 3000,
-			clickRemoves: !this.opts.btns,
-			onAutoClose: ()=>{ this.resolve(false) }
+			closeOnClick: !this.opts.btns,
+			onClose: ()=>{ this.resolve(false) }
 		}, opts)
 		
-		this.presenter = app.msgs.add(this.el, opts)
+		opts.view = this.el
+
+		this.presenter = new Notif(opts)
 		return this.promise
 	}
 }

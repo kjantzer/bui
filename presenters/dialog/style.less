@@ -1,5 +1,8 @@
 .dialog {
 	// font-size: .9em;
+	border-radius: var(--radius);
+	background: var(--theme-bgd);
+	color: var(--theme-color);
 	max-width: 100%;
 	min-height: 1em;
 	display: grid;
@@ -119,6 +122,7 @@
 }
 
 .dialog.sideicon {
+	display: grid;
 	grid-template-areas: 
 	'icon title'
 	'icon msg'
