@@ -8,6 +8,7 @@ customElements.define('b-list-export-btn', class extends Btn{
     constructor(){
         super()
         this.setAttribute('text', '')
+        this.setAttribute('pill', '')
         this.icon = 'file-excel'
         this.slot = 'toolbar:after'
         this.title ="Export data to CSV file"
