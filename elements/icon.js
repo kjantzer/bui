@@ -195,7 +195,7 @@ export class IconList extends LitElement {
 		}
 
 		small {
-			color: rgba(0,0,0,.5);
+			color: var(--theme-color-accent);
 		}
 
 		@media (max-width: 550px) {
