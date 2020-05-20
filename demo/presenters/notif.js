@@ -1,31 +1,31 @@
 import { LitElement, html, css } from 'lit-element'
+import View from './view'
 import docs from 'bui/presenters/notif/README.md'
+import Notif from 'bui/presenters/notif'
 
-customElements.define('demo-presenter-notif', class extends LitElement{
+customElements.define('demo-presenter-notif', class extends View{
 
     static get title(){ return 'Notif' }
 
-    static get styles(){return css`
-        :host {
-            display: block;
-            position:relative;
-        }
+    get docs(){ return docs }
+
+    renderContent(){ return html`
+
+        ${notifExamples.map(n=>html`
+            <b-btn text .notif=${n} @click=${this.showNotif}>${n.msg}</b-btn>
+        `)}
+
+        <br><br>
+        <h2>Documentation</h2>
     `}
 
-    render(){return html`
-        <h1>Notif</h1>
-        <demo-markdown-docs docs=${docs}></demo-markdown-docs>
-    `}
-
-    notif(opts, delay){
-        setTimeout(()=>{
-            new Notif(Object.assign({
-                // controller: 'demo',
-            }, opts))
-        }, delay)
+    showNotif(e){
+        let opts = e.currentTarget.notif
+        new Notif(opts)
     }
 
 })
+
 
 export default customElements.get('demo-presenter-notif')
 
@@ -45,8 +45,8 @@ const notifExamples = [
     icon: 'upload-cloud',
     nid: 'uploading',
     msg: 'File Uploading...',
-    autoClose: false,
-    closeOnClick: false,
+    // autoClose: false,
+    // closeOnClick: false,
 },{
     type: 'success',
     msg: 'File Uploaded',
