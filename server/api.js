@@ -13,34 +13,46 @@ module.exports = class API {
         this.app = app
 		this._classes = new Map()
 
-		classes.forEach(Class=>{
-            
-            if( !Class.name )
-                return console.warn('! API: not a valid class')
-
-			if( !Class.api || !Class.api.routes )
-                return console.warn('! API: class must specify `api.routes`')
-
-            let path = Class.api.root
-            if( this.opts.root )
-                path = this.opts.root + path
-            path += '(/:'+(Class.api.idParam||'id')+')'
-
-            Class.prototype.apiPathPattern = new UrlPattern(path, {segmentNameCharset: 'a-zA-Z0-9_'})
-            Class.prototype.apiPathPattern.path = path
-
-            Object.defineProperty(Class.prototype, 'apiPath', {
-                get: function apiPath() {
-                    return this.apiPathPattern.stringify(this)
-                }
-            });
-
-			Class.api.routes.forEach(this.setupRoute.bind(this, Class))
-
-            if( Class.api.sync )
-                this.setupSync(Class)
-		})		
+        this.initClasses(classes)
 	}
+
+    initClasses(classes){
+        classes.forEach(Class=>{
+            
+            if( Array.isArray(Class) )
+                this.initClasses(Class)
+            else
+                this.initClassAPI(Class)
+            
+		})	
+    }
+
+    initClassAPI(Class){
+        if( !Class.name )
+            return console.warn('! API: not a valid class')
+
+        if( !Class.api || !Class.api.routes )
+            return console.warn('! API: class must specify `api.routes`')
+
+        let path = Class.api.root
+        if( this.opts.root )
+            path = this.opts.root + path
+        path += '(/:'+(Class.api.idParam||'id')+')'
+
+        Class.prototype.apiPathPattern = new UrlPattern(path, {segmentNameCharset: 'a-zA-Z0-9_'})
+        Class.prototype.apiPathPattern.path = path
+
+        Object.defineProperty(Class.prototype, 'apiPath', {
+            get: function apiPath() {
+                return this.apiPathPattern.stringify(this)
+            }
+        });
+
+        Class.api.routes.forEach(this.setupRoute.bind(this, Class))
+
+        if( Class.api.sync )
+            this.setupSync(Class)
+    }
 
     setupSync(Class){
         if( !this.opts.sync ) return console.error('`sync` not given')

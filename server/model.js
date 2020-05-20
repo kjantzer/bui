@@ -87,10 +87,11 @@ module.exports = class Model {
 
     get sorts(){    
         try{
-            return this.req.query.sorts ? JSON.parse(this.req.query.sorts) : {}
+            let sorts = this.req.query.sorts ? JSON.parse(this.req.query.sorts) : {}
+            return new Map(Object.entries(sorts));
         }catch(err){
             console.log('Malformed filters:', this.req.query.filters);
-            return {}
+            return new Map()
         }
     }
 

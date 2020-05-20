@@ -203,6 +203,7 @@ slot[name="help"] {
 /* remove autofill blue/yellow background */
 ::slotted(input:-webkit-autofill) {
     -webkit-box-shadow:0 0 0 50px var(--bgd) inset;
+	-webkit-text-fill-color: var(--theme-color);
 }
 
 ::slotted(input:-webkit-autofill:focus) {
