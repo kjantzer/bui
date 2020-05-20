@@ -1,7 +1,9 @@
 import { LitElement, html, css } from 'lit-element'
 import moment from 'moment'
+import Dialog from 'bui/presenters/dialog'
 import 'bui/presenters/tabs'
 import 'bui/elements/icon'
+import 'bui/elements/text'
 import 'bui/elements/btn'
 import 'bui/elements/btn-group'
 import 'bui/elements/spinner'
@@ -23,6 +25,9 @@ import 'bui/elements/audio'
 import 'bui/elements/carousel'
 import 'bui/elements/timeline-horz'
 import defineFileIcon from 'bui/elements/file-icon'
+
+import buttons from './elements/buttons'
+import text from './elements/text'
 
 defineFileIcon()
 
@@ -49,7 +54,45 @@ customElements.define('demo-elements', class extends LitElement{
         b-paper {
             margin-bottom: 1em;
         }
+
+        b-tabs-router > section {
+            position: relative;
+            height: 100%;
+            overflow: auto;
+        }
+
+        section:not([view-id="Paper"]) > b-paper {
+            padding: var(--view-gutter);
+        }
+
+        section > b-paper ~ b-paper {
+            margin-top: var(--view-gutter);
+        }
+
+        b-h1 {
+            border-bottom: solid 4px var(--theme-bgd-accent);
+            padding-bottom: .15em;
+            margin-bottom: 1em;
+        }
+
+        b-h1 ~ b-h1 {
+            margin-top: var(--view-gutter);
+        }
     `}
+
+    async onUpload(e){
+        let uploader = e.currentTarget
+        let filenames = uploader.files.map(f=>f.name)
+        
+        console.log('upload the file', uploader.files);
+
+        if( await Dialog.confirm({
+            title: 'Confirm Upload',
+            msg: filenames.join('<br>'),
+            btns: ['cancel', {label: 'Upload', color: 'theme'}]
+        }).modal() )
+            console.log('yes, upload');
+    }
 
     render(){return html`
         <b-tabs-router path="elements/" key="elements" layout="left">
@@ -186,167 +229,10 @@ customElements.define('demo-elements', class extends LitElement{
                     Compact padding (no padding) - useful when the child element wants to set it's own padding
                 </b-paper>
 
-                
-
             </section>
 
-
-            <section title="Buttons">
-                <h1>Buttons</h1>
-
-                <b-label divider>Default</b-label><br>
-                <div>
-                    <b-btn>Default</b-btn>
-                    <b-btn color="blue">Blue</b-btn>
-                    <b-btn color="red">Red</b-btn>
-                    <b-btn color="green">Green</b-btn>
-
-                    <b-hr vert></b-hr>
-
-                    <b-btn icon="user">With Icon</b-btn>
-                    <b-btn icon="cog"></b-btn>
-
-                    <b-hr vert></b-hr>
-
-                    <b-btn spin>With Spinner</b-btn>
-
-                    <b-hr vert></b-hr>
-
-                    <b-btn clear>Clear Style</b-btn>
-                    <b-btn clear color="red">Clear Red</b-btn>
-
-                </div>
-
-                <br><br><b-label divider>Outline</b-label><br>
-                <div>
-                    <b-btn outline>Default</b-btn>
-                    <b-btn outline color="blue">Blue</b-btn>
-                    <b-btn outline color="red">Red</b-btn>
-                    <b-btn outline color="green">Green</b-btn>
-                </div>
-
-                <br><br><b-label divider>Pill</b-label><br>
-                <div>
-                    <b-btn pill>Default</b-btn>
-                    <b-btn pill color="blue">Blue</b-btn>
-                    <b-btn pill color="red">Red</b-btn>
-                    <b-btn pill color="green">Green</b-btn>
-                </div>
-
-                <br><br><b-label divider>Text style</b-label><br>
-                <div>
-                    <b-btn text>Default</b-btn>
-                    <b-btn text color="blue">Blue</b-btn>
-                    <b-btn text color="red">Red</b-btn>
-                    <b-btn text color="green">Green</b-btn>
-
-                    <b-hr vert></b-hr>
-
-                    <b-btn text icon="user">With Icon</b-btn>
-                    <b-btn text icon="cog"></b-btn>
-                </div>
-
-                <br><br><b-label divider>Stacked style</b-label><br>
-                <div>
-                    <b-btn text stacked icon="cog"><span>Settings</span></b-btn>
-                    <b-btn text stacked icon="user"><span>Account</span></b-btn>
-                    <b-btn text stacked icon="download"><span>Download</span></b-btn>
-                    <b-btn text stacked icon="upload-cloud"><span>Upload</span></b-btn>
-                </div>
-
-                <br><br><b-label divider>Floating Action Button</b-label><br>
-                <div>
-                    <b-btn fab color="blue" icon="plus" style="position:relative;right:0;bottom:0"></b-btn>&nbsp;&nbsp;
-                    <b-btn fab icon="cog" style="position:relative;right:0;bottom:0"></b-btn>&nbsp;&nbsp;
-                    <b-btn fab color="gray" icon="download" style="position:relative;right:0;bottom:0"></b-btn>
-                </div>
-
-                <br><br>
-                <h1>Button Group</h1>
-
-                <b-btn-group>
-                    <b-btn color="blue">Send</b-btn>
-                    <b-btn color="blue" icon="down-open"></b-btn>
-                </b-btn-group>
-
-                <b-btn-group>
-                    <b-btn pill color="green">Open</b-btn>
-                    <b-btn pill color="green" icon="plus-circled"></b-btn>
-                </b-btn-group>
-
-
-            </section>
-
-
-            <section title="Label">
-
-                <h1>Label</h1>
-
-                <b-label>A label</b-label><br><br>
-                <b-label divider>A label with divider</b-label><br>
-                <b-label divider="center">Centered divider</b-label><br>
-                <b-label divider="right">Right divider</b-label>
-
-                
-                <br><br>
-                
-                <b-label filled>Filled</b-label>&nbsp;
-                <b-label filled="black">Black</b-label>&nbsp;
-                <b-label filled="blue">Blue</b-label>&nbsp;
-                <b-label filled="red">Red</b-label>&nbsp;
-                <b-label filled="orange">Orange</b-label>&nbsp;
-                <b-label filled="green">Green</b-label>&nbsp;
-
-                <br><br>
-
-                <b-label muted filled>Filled</b-label>&nbsp;
-                <b-label muted filled="black">Black</b-label>&nbsp;
-                <b-label muted filled="blue">Blue</b-label>&nbsp;
-                <b-label muted filled="red">Red</b-label>&nbsp;
-                <b-label muted filled="orange">Orange</b-label>&nbsp;
-                <b-label muted filled="green">Green</b-label>&nbsp;
-                
-                <br><br>
-                
-                <b-label outline>Outline</b-label>&nbsp;
-                <b-label outline="black">Black</b-label>&nbsp;
-                <b-label outline="blue">Blue</b-label>&nbsp;
-                <b-label outline="red">Red</b-label>&nbsp;
-                <b-label outline="orange">Orange</b-label>&nbsp;
-                <b-label outline="green">Green</b-label>&nbsp;
-                
-                <br><br>
-
-                <b-label badge>Badge</b-label>&nbsp;
-                <b-label badge="black">Black</b-label>&nbsp;
-                <b-label badge="blue">Blue</b-label>&nbsp;
-                <b-label badge="red">Red</b-label>&nbsp;
-                <b-label badge="orange">Orange</b-label>&nbsp;
-                <b-label badge="green">Green</b-label>&nbsp;
-
-                <br><br>
-
-                <b-label badge="red" dot></b-label>&nbsp;
-                <b-label badge="red">1</b-label>&nbsp;
-                <b-label badge="red">24</b-label>&nbsp;
-
-
-                <br><br>
-
-                <br><br>
-                <h1>Ribbon</h1>
-
-                <b-paper overshadow style="height: 120px">
-                    <b-ribbon>Ribbon</b-ribbon>
-                    <b-empty-state>Default</b-empty-state>
-                </b-paper>
-
-                <b-paper overshadow style="height: 140px">
-                    <b-ribbon pos="right" style="--color:var(--pink);font-size:1.4em;">Ribbon</b-ribbon>
-                    <b-empty-state>Right, color and size change</b-empty-state>
-                </b-paper>
-
-            </section>
+            ${text}
+            ${buttons}
 
             <section title="Avatar">
                 <h1>Avatar</h1>
@@ -385,33 +271,18 @@ customElements.define('demo-elements', class extends LitElement{
             </section>
 
             <section title="Empty State" view-id="Empty-State">
-                <h1>Empty state</h1>
-
-                <div style="height: 200px; position: relative">
-                    <b-empty-state>No results</b-empty-state>
-                </div>
+                
+                <b-empty-state>Empty state</b-empty-state>
 
             </section>
 
             <section title="Uploader" style="position: relative;">
                 <h1>Uploader</h1>
-                <b-uploader multiple></b-uploader>
+                <b-uploader multiple @change=${this.onUpload}></b-uploader>
                 
                 <div>Drag and drop a file here to upload<br><br></div>
 
                 <b-btn onclick="this.previousElementSibling.previousElementSibling.chooseFile()">Or select a file</b-btn>
-                
-                <script>
-                    let uploader = document.querySelector('b-uploader')
-                    uploader.addEventListener('change', async e=>{
-
-                        console.log('upload the file', uploader.files);
-
-                        if( await Dialog.confirm({title: 'Upload?', msg: uploader.files.map(f=>f.name).join('<br>')}).modal() )
-                            console.log('yes, upload');
-                            // uploader.upload({url:'url-to-upload-to'})
-                    })
-                </script>
             </section>
 
             <section title="Timeline">
@@ -454,14 +325,9 @@ customElements.define('demo-elements', class extends LitElement{
 
             <section title="Misc">
                 <h1>Misc</h1>
-                
-                <h2>Sub(dued) text</h2>
-                <b-sub>Smaller subdued text</b-sub>
-
-                <p>Normal text <b-sub>with smaller</b-sub></p>
 
                 <br><h2>Timestamp</h2>
-                <p>Element created <b-ts .date=${moment()}></b-ts></p>
+                <p>The following timestamp was created <b-text bold><b-ts .date=${moment()}></b-ts></b-text> and will auto update every minute</p>
 
                 <br><h2>Line/divider/hr</h2>
 
