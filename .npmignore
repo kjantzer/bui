@@ -2,6 +2,7 @@
 /demo
 /public
 /.cache
-node_modules_
+node_modules
 .gitlab-ci.yml
 .docpress.json
+.vscode
