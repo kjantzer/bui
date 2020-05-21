@@ -225,7 +225,7 @@ slot[name="help"] {
 
 :host([material]) {
 	--focusBgd: transparent;
-	padding-top: .25em;
+	/* padding-top: .25em; */
 	--padY: .6em;
 	--borderColor: rgba(0,0,0,.2);
 }
@@ -428,7 +428,7 @@ slot[name="help"] {
 	--padY: .75em;
 	--padX: .75em;
 	--placeholderColor: var(--fc-placeholder-color, rgba(0,0,0,.3));
-	margin: 0 0 .5em 0;
+	/* margin: 0 0 .5em 0; */
 }
 
 :host([material="filled"]) main {
