@@ -1,14 +1,14 @@
 <p align="center">
   <a href="https://github.com/kjantzer/bui" rel="noopener" target="_blank">
-    <img width="200" src="https://i.imgur.com/MZ8wSL8.png"/>
+    <img width="200" src="https://raw.githubusercontent.com/kjantzer/bui/master/logo.png"/>
   </a>
 </p>
 
-<h1 align="center">Blackstone-UI</h1>
+<h1 align="center">Blackstone UI (BUI)</h1>
 
 <div align="center">
 
-[![demo](https://img.shields.io/badge/npm-v2.0.0-blue)](https://www.npmjs.com/package/blackstone-ui)
+[![demo](https://img.shields.io/badge/npm-v3.0.0-blue)](https://www.npmjs.com/package/blackstone-ui)
 [![demo](https://img.shields.io/badge/-Demo-blue)](https://bui.js.org)
 [![docs](https://img.shields.io/badge/-Documentation-black)](https://bui.js.org/docs/)
 
@@ -16,62 +16,8 @@
 
 Web components for creating interfaces - built with [lit-html](https://lit-html.polymer-project.org/) and [lit-element](https://lit-element.polymer-project.org/) by [Blackstone Publishing](https://blackstonepublishing.com)
 
-***
+[![preview](https://repository-images.githubusercontent.com/204566076/10c85c80-9b40-11ea-8331-e9678c241682)](https://bui.js.org)
 
-Example 
-```html
-<b-paper compact>
-<b-tabs>
-    <div title="Tab 1">
-        <b-spinner-overlay></b-spinner-overlay>
-        <header>
-            <h3>
-                <b-icon name="folder"></b-icon> 
-                Title
-                <b-label>Active</b-label>
-            </h3>
-            <b-uploader url="/" auto-upload></b-uploader>
-            <b-btn icon="upload-cloud" class="text-btn" onclick="this.previousElementSibling.selectFile()">Upload</b-btn>
-        </header>
-        <main>
-            Content here
-            <b-hr></b-hr>
-            More content
-        </main>
-    </div>
-    <div title="Tab 2">
-        Tab 2 content
-    </div>
-</b-tabs>
-</b-paper>
-```
-
-<!--
-<b-paper compact>
-<b-tabs>
-    <div title="Tab 1">
-        <b-spinner-overlay></b-spinner-overlay>
-        <header>
-            <h3>
-                <b-icon name="folder"></b-icon> 
-                Title
-                <b-label>Active</b-label>
-            </h3>
-            <b-uploader url="/" auto-upload></b-uploader>
-            <b-btn icon="upload-cloud" class="text-btn" onclick="this.previousElementSibling.selectFile()">Upload</b-btn>
-        </header>
-        <main>
-            Content here
-            <b-hr></b-hr>
-            More content
-        </main>
-    </div>
-    <div title="Tab 2">
-        Tab 2 content
-    </div>
-</b-tabs>
-</b-paper>
--->
 
 ## Installation
 Blackstone-UI is available as an [npm package](https://www.npmjs.com/package/blackstone-ui)
