@@ -38,7 +38,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
         super()
         // this.addEventListener('error', e=>{
         //     console.log(e.currentTarget);
-
+            
         // })
     }
 
@@ -193,7 +193,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
         .toc [level]:hover {
             background: var(--theme-bgd-accent);
         }
-
+        
         .toc [level="1"] {
             margin-left: 0;
             font-weight: bold;
@@ -215,7 +215,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
         .toc [level="5"]:before {
             content: '— ';
         } */
-
+        
 
     `}
 

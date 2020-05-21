@@ -641,7 +641,7 @@ export default class Menu {
 
 			if( this.searchIsOn )
 				modalOpts.anchor = 'top'
-
+			
 			if( typeof opts.adjustForMobile == 'object' )
 				modalOpts = Object.assign(modalOpts, opts.adjustForMobile)
 

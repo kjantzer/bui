@@ -21,7 +21,7 @@ customElements.define('demo-presenter-panel', class extends View{
     renderContent(){ return html`
         <b-panels name="inset"></b-panels>
 
-
+        
         <b-paper overshadow>
             <b-btn text view="view-1" @click=${e=>openView(e)}>Default Panel view</b-btn>
             <b-btn text view="view-2-small" @click=${e=>openView(e)}>Custom sizing and anchor</b-btn>

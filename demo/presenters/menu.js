@@ -45,7 +45,7 @@ window.showMenu = async function(el, renderTo=false){
     }else{
         let selected = await menu.popover(el)
         console.log(selected);
-
+        
     }
 
 }

@@ -252,7 +252,7 @@ export default class Dialog {
 		}, opts)
 		
 		opts.view = this.el
-
+		
 		this.presenter = new Notif(opts)
 		return this.promise
 	}

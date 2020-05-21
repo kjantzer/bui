@@ -25,7 +25,7 @@ customElements.define('demo-presenter-form-control', class extends LitElement{
     `}
 
     render(){return html`
-
+        
 
 
         <b-paper>
@@ -45,7 +45,7 @@ customElements.define('demo-presenter-form-control', class extends LitElement{
             <form-control material="filled" label="Phone">
                 <input slot="control" type="tel">
             </form-control>
-
+            
             <form-control material="filled" label="Validate and prefix" prefix="$">
                 <text-field validate="decimal" max="2"></text-field>
             </form-control>
@@ -67,7 +67,7 @@ customElements.define('demo-presenter-form-control', class extends LitElement{
                 <span slot="help">Rich text editing is enabled using quill.js</span>
             </form-control>
 
-
+            
             <b-grid colspan cols-mobile=1>
                 <form-control material="filled" label="Select Field">
                     <select-field>

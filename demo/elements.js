@@ -83,7 +83,7 @@ customElements.define('demo-elements', class extends LitElement{
     async onUpload(e){
         let uploader = e.currentTarget
         let filenames = uploader.files.map(f=>f.name)
-
+        
         console.log('upload the file', uploader.files);
 
         if( await Dialog.confirm({
@@ -177,7 +177,7 @@ customElements.define('demo-elements', class extends LitElement{
                     <div>Row 3</div>
                     <div>Row 4</div>
                 </b-grid>
-
+                
             </section>
 
             <section title="Paper">
@@ -186,7 +186,7 @@ customElements.define('demo-elements', class extends LitElement{
                 <b-paper overshadow>
                     Default white with overshadow
                 </b-paper>
-
+            
                 <b-paper color="blue">
                     Blue color
                 </b-paper>
@@ -261,7 +261,7 @@ customElements.define('demo-elements', class extends LitElement{
                 <h1>Spinners</h1>
 
                 Inline spinner <b-spinner></b-spinner>
-
+                
                 <br><br>
 
                 <div style="position: relative; z-index: 0;">
@@ -271,7 +271,7 @@ customElements.define('demo-elements', class extends LitElement{
             </section>
 
             <section title="Empty State" view-id="Empty-State">
-
+                
                 <b-empty-state>Empty state</b-empty-state>
 
             </section>
@@ -279,7 +279,7 @@ customElements.define('demo-elements', class extends LitElement{
             <section title="Uploader" style="position: relative;">
                 <h1>Uploader</h1>
                 <b-uploader multiple @change=${this.onUpload}></b-uploader>
-
+                
                 <div>Drag and drop a file here to upload<br><br></div>
 
                 <b-btn onclick="this.previousElementSibling.previousElementSibling.chooseFile()">Or select a file</b-btn>
@@ -332,7 +332,7 @@ customElements.define('demo-elements', class extends LitElement{
                 <br><h2>Line/divider/hr</h2>
 
                 <b-hr></b-hr>
-                Vertical <b-hr vert></b-hr> Divider
+                Vertical <b-hr vert></b-hr> Divider 
                 <b-hr short></b-hr>
 
                 <br><h2>Code</h2>

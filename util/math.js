@@ -12,7 +12,7 @@ median(numbers){
     // median of [3, 5, 4, 4, 1, 1, 2, 3] = 3
     var median = 0, numsLen = numbers.length;
     numbers.sort();
-
+ 
     if (
         numsLen % 2 === 0 // is even
     ) {
@@ -22,7 +22,7 @@ median(numbers){
         // middle number only
         median = numbers[(numsLen - 1) / 2];
     }
-
+ 
     return median;
 },
 
@@ -39,7 +39,7 @@ mode(numbers) {
     // the returned result is provided as an array
     // mode of [3, 5, 4, 4, 1, 1, 2, 3] = [1, 3, 4]
     var modes = [], count = [], i, number, maxIndex = 0;
-
+ 
     for (i = 0; i < numbers.length; i += 1) {
         number = numbers[i];
         count[number] = (count[number] || 0) + 1;
@@ -47,14 +47,14 @@ mode(numbers) {
             maxIndex = count[number];
         }
     }
-
+ 
     for (i in count)
         if (count.hasOwnProperty(i)) {
             if (count[i] === maxIndex) {
                 modes.push(Number(i));
             }
         }
-
+ 
     return modes;
 }
 

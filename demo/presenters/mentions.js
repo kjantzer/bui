@@ -7,7 +7,7 @@ customElements.define('demo-presenter-mentions', class extends View{
     static get title(){ return 'Mentions' }
 
     static get styles(){return [super.styles, css`
-
+        
     `]}
 
     get docs(){ return docs }

@@ -81,14 +81,14 @@ customElements.define('demo-overview', class extends LitElement{
 
         <div class="bgd color"></div>
         <div class="bgd"></div>
-
+        
 
         <main>
 
             <header>
 
                 <bui-logo></bui-logo>
-
+                
                 <b-text xl align="center" block>
                     Blackstone <b-text bold>UI</b-text>
                 </b-text>
@@ -165,7 +165,7 @@ const codePreview = `
         <b-spinner-overlay></b-spinner-overlay>
         <header>
             <h3>
-                <b-icon name="folder"></b-icon>
+                <b-icon name="folder"></b-icon> 
                 Title
                 <b-label>Active</b-label>
             </h3>

@@ -15,7 +15,7 @@ customElements.define('demo-util', class extends LitElement{
             padding: var(--view-gutter);
             max-width: 100%;
         }
-
+        
         :host > b-paper {
           width: 1100px;
           max-width: 100%;
@@ -31,7 +31,7 @@ customElements.define('demo-util', class extends LitElement{
     `}
 
     render(){return html`
-	<b-paper>
+    	<b-paper>
             <b-h1>Util</b-h1>
 			<demo-markdown-docs .docs=${docs}></demo-markdown-docs>
 		</b-paper>

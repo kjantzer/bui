@@ -7,7 +7,7 @@ customElements.define('demo-presenter-tabs', class extends View{
     static get title(){ return 'Tabs' }
 
     static get styles(){return [super.styles, css`
-
+        
     `]}
 
     get docs(){ return docs }
@@ -17,7 +17,7 @@ customElements.define('demo-presenter-tabs', class extends View{
             <div title="Tab 1">Tab 1 content</div>
             <div title="Tab 2">Tab 2 content</div>
         </b-tabs></b-paper>
-
+        
         <br><br>
 
         <b-h2>Documentation</b-h2>

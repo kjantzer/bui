@@ -12,7 +12,7 @@ customElements.define('demo-presenter-dialog', class extends View{
 
 
     renderContent(){ return html`
-
+        
         <b-btn color="blue" text @click=${dialogs.confirm}>Confirm Modal</b-btn>
         <b-btn color="red" text @click=${dialogs.error}>Error Modal</b-btn>
         <b-btn color="orange" text @click=${dialogs.warn}>Warn Modal</b-btn>

@@ -91,7 +91,7 @@ module.exports = (strData, {strDelimiter=',', hasHeader=true}={})=>{
                 footer.push(row)
             else if( row[0] )
                 header.push(row)
-
+            
             return false
         }
         foundRow = true

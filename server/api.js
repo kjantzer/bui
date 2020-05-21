@@ -18,13 +18,13 @@ module.exports = class API {
 
     initClasses(classes){
         classes.forEach(Class=>{
-
+            
             if( Array.isArray(Class) )
                 this.initClasses(Class)
             else
                 this.initClassAPI(Class)
             
-		})
+		})	
     }
 
     initClassAPI(Class){

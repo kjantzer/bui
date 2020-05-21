@@ -106,7 +106,7 @@ export const colorScheme = {
     },
 
     apply({colorizeFaviconComposition=''}={}){
-        localStorage.setItem('theme-colorize-icon',
+        localStorage.setItem('theme-colorize-icon', 
             colorizeFaviconComposition||localStorage.getItem('theme-colorize-icon')||'lighten')
         this.onChange(this.setTheme)
         this.setTheme()
@@ -134,7 +134,7 @@ export const colorScheme = {
 
         if( theme === undefined )
             theme = localStorage.getItem('theme') || 'system'
-
+        
         localStorage.setItem('theme', theme)
 
         if( theme == 'system' )
@@ -170,5 +170,6 @@ export const colorScheme = {
         }
 
     }
-
+    
 }
+

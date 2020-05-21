@@ -70,7 +70,7 @@ customElements.define('demo-header', class extends LitElement{
         <div class="right">
             <b-btn text lg icon="invert-colors-on" title="Change theme" @click=${this.changeTheme}></b-btn>
             <b-btn text lg icon="github" title="Go to GitHub repo" href="https://github.com/kjantzer/bui"></b-btn>
-
+            
         </div>
     `}
 
@@ -95,12 +95,12 @@ customElements.define('demo-header', class extends LitElement{
         }).popover(e.currentTarget, {adjustForMobile:{type: 'actionsheet'}})
 
         if( !selected ) return
-
+        
         if( selected.theme )
             colorScheme.setTheme(selected.val)
         else
             colorScheme.setAccent(selected.val)
-
+        
 
     }
 

@@ -22,7 +22,7 @@ customElements.define('demo-presenter-selection', class extends View{
         .control {
             margin: -1em 0 1em;
         }
-
+        
         b-grid {
             margin-bottom: 2em;
         }
@@ -75,7 +75,7 @@ customElements.define('demo-presenter-selection', class extends View{
             <div></div>
             <div></div>
         </b-grid>
-
+        
     `}
 
 })
