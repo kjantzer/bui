@@ -23,6 +23,10 @@ customElements.define('b-text', class extends LitElement{
             vertical-align: text-bottom;
         }
 
+        :host([monospace]) {
+            font-family: var(--b-text-monospace, 'Source Code Pro', 'Courier New', Courier, monospace)
+        }
+
         :host([bold]) { font-weight: bold; }
         :host([italic]) { font-style: italic; }
 

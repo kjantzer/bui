@@ -80,6 +80,7 @@ Effectively a "span" tag with attributes to apply styles
 - `link` - changes color on hover
 - `clip` - keeps text on one line, clipping with ellipsis
 - `sup`, `sub` - super/sub vertical align
+- `monospace`
 - `block` - change to a block element
 
 ## `<b-btn>`
