@@ -1,4 +1,5 @@
 import { html } from 'lit-element'
+import 'bui/elements/numeral'
 
 export default html`
 <section title="Text">
@@ -78,6 +79,16 @@ export default html`
     <b-label badge="red">24</b-label>&nbsp;
 
 </b-paper>
+
+<b-paper>
+    <b-h1>Numeral</b-h1>
+
+    <b-numeral>130000000</b-numeral> &nbsp;&nbsp;
+    <b-numeral>25000</b-numeral> &nbsp;&nbsp;
+    <b-bytes>34554343323</b-bytes>
+
+</b-paper>
+
 <b-paper>
     <b-h1>Ribbon</b-h1>
 
