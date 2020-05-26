@@ -69,6 +69,10 @@ export class IconElement extends HTMLElement {
 			display: none !important;
 		}
 
+		:host([muted]) {
+			opacity: .5;
+		}
+
 		:host([square]) {
 			width: var(--size);
 		}
