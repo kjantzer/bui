@@ -54,7 +54,7 @@ export default class BtnElement extends LitElement {
             font-size: .9rem;
             line-height: 1rem;
             font-weight: bold;
-            font-family: var(--bui-btn-font);
+            font-family: var(--b-btn-font);
 
             -webkit-touch-callout: none; /* iOS Safari */
             -webkit-user-select: none; /* Safari */

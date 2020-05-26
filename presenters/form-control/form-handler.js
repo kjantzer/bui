@@ -14,7 +14,7 @@ class FormHandler extends HTMLElement {
 		this.onEditorChange = this.onEditorChange.bind(this)
 	}
 
-	get noGridArea(){ return this.hasAttribute('no-grid-area') }
+	get autoGridArea(){ return this.hasAttribute('auto-grid-area') }
 	
 	get autoSave(){ return this.hasAttribute('autosave') }
 	set autoSave(val){ val ? this.setAttribute('autosave', '') : this.removeAttribute('autosave') }
@@ -43,7 +43,7 @@ class FormHandler extends HTMLElement {
 			if( key ){
 				this.editorsByKey[key] = el
 
-				if( !this.noGridArea )
+				if( this.autoGridArea )
 					el.style.gridArea = key
 			}
 		})

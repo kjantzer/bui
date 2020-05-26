@@ -39,6 +39,8 @@ customElements.define('b-grid', class extends LitElement{
             :host([cols-mobile="3"]) { grid-template-columns: repeat(3, 1fr); }
             :host([cols-mobile="2,1"]) { grid-template-columns: 2fr 1fr; }
             :host([cols-mobile="1,2"]) { grid-template-columns: 1fr 2fr; }
+
+            :host([cols-mobile]) ::slotted([colspan]) {grid-column: 1/-1;}
         }
 
         :host([gap="0"]), :host([gap="none"]) { gap: 0; }

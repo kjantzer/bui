@@ -8,8 +8,9 @@ customElements.define('b-h1', class extends LitElement {
             display: block;
             margin: 0;
             text-decoration: inherit;
-            font-size: var(--bui-h1-size, 2em);
-            line-height: var(--bui-h1-line-height, 1.0em);
+            font-family: var(--b-h1-family, inherit);
+            font-size: var(--b-h1-size, 2em);
+            line-height: var(--b-h1-line-height, 1.0em);
             font-weight: bold;
             text-overflow: ellipsis;
             max-width: 100%;
@@ -26,7 +27,7 @@ customElements.define('b-h1', class extends LitElement {
 
         @media (max-width:699px){
             :host{
-                font-size: var(--bui-h1-size-mobile, 1.6em);
+                font-size: var(--b-h1-size-mobile, 1.6em);
             }
         }
 
@@ -46,8 +47,9 @@ customElements.define('b-h2', class extends LitElement {
             display: block;
             margin: 0;
             text-decoration: inherit;
-            font-size: var(--bui-h2-size, 1.5em);
-            line-height: var(--bui-h2-line-height, 1.0em);
+            font-family: var(--b-h2-family, inherit);
+            font-size: var(--b-h2-size, 1.5em);
+            line-height: var(--b-h2-line-height, 1.0em);
             font-weight: bold;
             text-overflow: ellipsis;
             max-width: 100%;
@@ -63,7 +65,7 @@ customElements.define('b-h2', class extends LitElement {
 
         @media (max-width:699px){
             :host {
-                font-size: var(--bui-h2-size-mobile, 1.3em);
+                font-size: var(--b-h2-size-mobile, 1.3em);
             }
         }
 
@@ -83,7 +85,8 @@ customElements.define('b-h3', class extends LitElement {
             display: block;
             margin: 0;
             text-decoration: inherit;
-            font-size: var(--bui-h3-size, 1.2em);
+            font-family: var(--b-h3-family, inherit);
+            font-size: var(--b-h3-size, 1.2em);
             font-weight: bold;
             text-overflow: ellipsis;
             max-width: 100%;
@@ -99,7 +102,7 @@ customElements.define('b-h3', class extends LitElement {
 
         @media (max-width:699px){
             :host {
-                font-size: var(--bui-h2-size-mobile, 1.3em);
+                font-size: var(--b-h2-size-mobile, 1.3em);
             }
         }
 

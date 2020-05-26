@@ -458,6 +458,10 @@ export class Panel extends LitElement {
             z-index: 1000; /* always on top */
         }
 
+        :host([type="actionsheet"]) {
+            z-index: 1001 !important;
+        }
+
         :host > main {
             position: absolute;
             right: 0;

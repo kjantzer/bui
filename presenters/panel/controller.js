@@ -141,7 +141,7 @@ class PanelController extends LitElement {
         // else
         this.panels.forEach((panel)=>{
             
-            if( panel.type != 'modal')
+            if( panel.type != 'modal' && panel.type != 'actionsheet' )
                 panel.style.zIndex = i++
             
             if( i == this.length ){
