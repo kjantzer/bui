@@ -52,6 +52,11 @@ customElements.define('b-text', class extends LitElement{
         :host([tone="warning"]) { color: var(--b-text-tone-warning, var(--orange, orange)); }
         :host([tone="info"]) { color: var(--b-text-tone-info, var(--blue, blue)); }
 
+        :host([link]),
+        :host([href]) {
+            cursor: default;
+        }
+
         @media (hover){
             :host([link]:hover),
             :host([href]:hover) {
@@ -71,8 +76,19 @@ customElements.define('b-text', class extends LitElement{
     `}
 
     firstUpdated(){
+
+        this.addEventListener('click', this.onClick)
+
         if( this.hasAttribute('clip') && !this.hasAttribute('title') )
             this.title = this.innerText
+    }
+
+    onClick(){
+        let href = this.getAttribute('href')
+        if( href ){
+            if( href.match(/@/) ) href = 'mailto:'+href
+            window.open(href)
+        }
     }
 
     render(){return html`
