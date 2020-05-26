@@ -83,6 +83,26 @@ onModelChange(model){
 }
 ```
 
+### Shared
+```js
+import 'bui/helpers/lit-element/shared'
+```
+
+Define a custom element with a "shared" singleton feature. Useful for when a view will be used in multiple places but only needs to be intialized once and then reused.
+
+```js
+let MyElement = customElements.defineShared('my-element', class extends LitElement{
+    open(){
+        log('open this view')
+    }
+})
+
+MyElement.shared.open()
+
+console.log(MyElement.shared == MyElement.shared) // true
+console.log(MyElement.shared == new MyElement() ) // false
+```
+
 ### Subviews
 
 > Considering DEPRECATION
@@ -109,6 +129,18 @@ this.sv('edit', 'my-edit-view')
 
 If you want to use Backbone.js for managing data (models/collections) there are some helpers
 to improve the workflow.
+
+### Singleton
+Export a a Collection as a singleton
+
+```js
+import 'helpers/backbone/singleton'
+import {Collection, singleton} from 'backbone'
+
+class Coll extends Collection{}
+
+export default singleton(Coll)
+```
 
 ### Promises
 Crud methods in promise form
