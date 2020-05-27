@@ -205,8 +205,13 @@ module.exports = class Model {
 
         let result = await this.db.q(/*sql*/`UPDATE ${this.config.table} SET ? WHERE ?`, [attrs, {id:this.id}])
 
-        if( result.affectedRows > 0 )
+        if( result.affectedRows > 0 ){
+            
+            if( this.id )
+                this.attrs = Object.assign(this.attrs||{}, attrs)
+
             return attrs
+        }
         
         return false
     }
