@@ -36,7 +36,14 @@ module.exports = {
             method: opts.type,
             headers: headers,
             body: opts.data
-        }).then(r=>r.json())
+        }).then(r=>{
+            if( r && r.json ) return r.json()
+
+            if( r && r.text && r.status != 200 )
+                return {error: r.text(), status: r.status}
+            
+            return r && r.text ? r.text() : r
+        })
         .then(resp=>{
             if( resp.error )
                 opts.error(null, resp.err, resp)
