@@ -133,14 +133,6 @@ class BarcodeScanner {
 		}else if( match = str.match(/^BX(\d{9})/) ){
 			type = 'box_id'
 			str = parseInt(match[1])
-		}
-		else if( match = str.match(/^BXIT(\d{6})/) ){
-			type = 'boxit_box'
-			str = parseInt(match[1])
-		}else if( match = str.match(/^BXITP(\d{6})/) ){
-			type = 'boxit_pallet'
-			str = parseInt(match[1])
-	
 		}else if( match = str.match(/^\(_\)(.+)$/) ){
 			type = 'shelf_location'
 			str = match[1]
