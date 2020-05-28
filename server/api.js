@@ -102,7 +102,7 @@ module.exports = class API {
                     
                 console.log(err.stack)
                 let code = err.name == 'Error' ? 400 : 500
-                res.statusMessage = err.message
+                res.statusMessage = err.code == 'ER_PARSE_ERROR' ? err.code : err.message
                 res.status(code).json({
                     error: err.message,
                     code: code,
