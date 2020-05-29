@@ -28,15 +28,19 @@ module.exports = class DB {
         })
     }
 
-    query(sql, data, {timeout=30000}={}){
+    query(sql, data, {timeout=30000, debug=false, logFailure=false}={}){
 		return new Promise((resolve, reject)=>{
 
 			sql = mysql.format(sql, data)
 
+            if( debug )
+                console.log(sql);
+
             // gets connection, queries, then releases connection
 			this.pool.query({sql, timeout}, (err, results, fields)=>{
 				if( err ){
-					console.info(sql);
+                    if( logFailure )
+					    console.info('QUERY FAILED: '+sql);
                     err.lastQuery = sql
 					reject(err)
                     return
