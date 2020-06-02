@@ -1,12 +1,12 @@
 import Backbone from 'backbone'
 
-Backbone.singleton = function singleton(CollClass, ...args){
-    let SingletonColl
+Backbone.singleton = function singleton(Class, ...args){
+    let SingletonInstance
 
     const factory = function(){
-        if( !SingletonColl )
-            SingletonColl = new CollClass(...args)
-        return SingletonColl
+        if( !SingletonInstance )
+            SingletonInstance = new Class(...args)
+        return SingletonInstance
     }
     factory.isSingletonFactory = true
     return factory
