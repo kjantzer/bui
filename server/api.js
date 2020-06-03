@@ -127,6 +127,9 @@ module.exports = class API {
         if( resp && resp.constructor && resp.constructor.name == 'Archiver' )
             return
 
+        if( resp && resp instanceof Buffer && resp.filename )
+            res.set('Content-disposition', 'attachment; filename='+resp.filename);
+
         if( resp && resp.sendFile ){
             res.sendFile(resp.sendFile)
 
