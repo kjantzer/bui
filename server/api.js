@@ -124,6 +124,9 @@ module.exports = class API {
 
     finishResponse(req, res, resp){
 
+        if( resp.pipe )
+            return resp.pipe(res)
+
         if( resp && resp.constructor && resp.constructor.name == 'Archiver' )
             return
 
