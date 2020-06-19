@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
+import device from '../../../util/device'
 
 customElements.define('range-slider', class extends LitElement{
 
@@ -29,11 +30,11 @@ customElements.define('range-slider', class extends LitElement{
 
     static get styles(){return css`
         :host {
-            --size: 2px;
-            --thumbSize: 14px;
+            --size: 6px;
+            --thumbSize: 18px;
             --color: var(--fc-theme);
             --thumbColor: var(--color);
-            --bgd: rgba(0,0,0,.4);
+            --bgd: var(--theme-color-accent, rgba(0,0,0,.4));
             --padding: 10px;
 
             display: inline-block;
@@ -72,6 +73,7 @@ customElements.define('range-slider', class extends LitElement{
             top: calc(var(--padding) + (var(--size) / 2));
             background: var(--thumbColor);
             border-radius: var(--thumbSize);
+            box-shadow: 0 0 0 1px var(--theme-bgd, var(--thumb-shadow, #fff)) inset
         }
 
         thumb:before {
@@ -119,7 +121,7 @@ customElements.define('range-slider', class extends LitElement{
             left: 50%;
             position: absolute;
             transform-origin: bottom left;
-            transform: translate(0%,-9px) rotate(-45deg) scale(0);
+            transform: translate(0%,-4px) rotate(-45deg) scale(0);
             border-radius: 50% 50% 50% 0;
             transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
             
@@ -132,7 +134,7 @@ customElements.define('range-slider', class extends LitElement{
         :host([label="show"]) thumb > div,
         thumb:hover > div,
         thumb[active] > div {
-            transform: translate(0%,-9px) rotate(-45deg) scale(1);
+            transform: translate(0%,-4px) rotate(-45deg) scale(1);
         }
 
         :host([label="none"]) thumb > div {
@@ -230,17 +232,17 @@ customElements.define('range-slider', class extends LitElement{
 
     connectedCallback(){
         super.connectedCallback()
-        this.addEventListener('mousedown', this.mouseDown, true)
+        this.addEventListener(device.isMobile ? 'touchstart' : 'mousedown', this.mouseDown, true)
     }
 
     disconnectedCallback(){
         super.disconnectedCallback()
-        this.removeEventListener('mousedown', this.mouseDown, true)
+        this.removeEventListener(device.isMobile ? 'touchstart' : 'mousedown', this.mouseDown, true)
     }
 
     get _len(){ return this.max - this.min }
-    get _minLeft(){ return this.valMin / this._len * 100 }
-    get _maxLeft(){ return this.valMax / this._len * 100 }
+    get _minLeft(){ return (this.valMin) / this._len * 100 }
+    get _maxLeft(){ return (this.valMax - this.min) / this._len * 100 }
     get _trackLength(){ return this._maxLeft - this._minLeft }
 
     get atMin(){ return (this.range ? this.valMin : this.valMax ) == this.min }
@@ -270,9 +272,9 @@ customElements.define('range-slider', class extends LitElement{
     `}
 
     mouseDown(e){
-        if( e.which !== 1) return // normal click
-        window.addEventListener('mouseup', this.mouseUp, true)
-        window.addEventListener('mousemove', this.mouseMove, true)
+        if( !device.isMobile && e.which !== 1 ) return // normal click
+        window.addEventListener(device.isMobile?'touchend':'mouseup', this.mouseUp, true)
+        window.addEventListener(device.isMobile?'touchmove':'mousemove', this.mouseMove, true)
         this._mouseDown = true
         this.mouseMove(e)
     }
@@ -280,8 +282,8 @@ customElements.define('range-slider', class extends LitElement{
     mouseUp(){
         this._active = null
         this._mouseDown = false
-        window.removeEventListener('mouseup', this.mouseUp, true)
-        window.removeEventListener('mousemove', this.mouseMove, true)
+        window.removeEventListener(device.isMobile?'touchend':'mouseup', this.mouseUp, true)
+        window.removeEventListener(device.isMobile?'touchmove':'mousemove', this.mouseMove, true)
         this.update()
 
         if( this._didChange ){
@@ -312,18 +314,21 @@ customElements.define('range-slider', class extends LitElement{
         }
 
         // let mouseX = offset.x < e.pageX ? (e.offsetX + e.srcElement.offsetLeft) : e.pagex
-        let mouseX = e.screenX - window.screenX
+        let eventScreenX = e.touches ? e.touches[0].screenX : e.screenX
+        let mouseX = eventScreenX - window.screenX
         let x = mouseX - offset.x
         let percent = x / this.clientWidth * 100;
 
-        let val = (percent / 100) * this._len
+        let val = ((percent / 100) * this._len) + this.min
 
+        let oldVal = this.value
         this.value = val
 
+        if( oldVal != this.value )
         this.dispatchEvent(new CustomEvent('changing', {
             bubbles: true,
             composed: true,
-            detail: {value: val}
+            detail: {value: this.value}
         }))
     }
 
