@@ -223,6 +223,17 @@ customElements.define('range-slider', class extends LitElement{
         if( oldMin == this.valMin && oldMax == this.valMax ) return
     
         this._didChange = true
+        
+        let setPropOn = this.parentElement && this.parentElement.tagName == 'FORM-CONTROL' 
+                        ? this.parentElement : this
+
+        if( this.range ){
+            setPropOn.style.setProperty('--range-slider-min-val', `'${this.valMin}'`)
+            setPropOn.style.setProperty('--range-slider-max-val', `'${this.valMax}'`)
+        }else{
+            setPropOn.style.setProperty('--range-slider-val', `'${this.valMax}'`)
+        }
+
         this.requestUpdate('value', oldVal)
     }
 
@@ -266,8 +277,8 @@ customElements.define('range-slider', class extends LitElement{
             <div><span>${this.valMax}</span></div>
         </thumb>
         <div class="labels">
-            <!-- <b-label xs>0 hrs</b-label>
-            <b-label xs>30 hrs</b-label> -->
+            <b-text sm muted><slot name="label:min"></slot></b-text>
+            <b-text sm muted><slot name="label:max"></slot></b-text>
         </div>
     `}
 
