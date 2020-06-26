@@ -285,7 +285,7 @@ export class Filter {
     get values(){
         // TODO: implement "context" for function?
         let values = this.attrs.values
-        values = typeof values == 'function' ? values.call(this.parent.list) : values
+        values = typeof values == 'function' ? values.call(this.parent.list, this) : values
 
         values = values.map(v=>{
             if( typeof v == 'string' && !['divider'].includes(v) )

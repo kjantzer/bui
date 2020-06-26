@@ -216,7 +216,8 @@ class SelectFieldElement extends HTMLElement {
 			opts = opts.map(o=>{
 				if( typeof o != 'object' )
 					return {label: o, val: o}
-				return o
+				else
+					return Object.assign({}, o, {val: String(o.val)})
 			})
 		else if( typeof opts == 'object' ){
 			let _opts = []

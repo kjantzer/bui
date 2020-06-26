@@ -25,6 +25,7 @@ export default class AJAX {
 
     send(){
         this.xhr.open(this.method, this.url);
+        this.xhr.setRequestHeader('x-requested-with', 'xmlhttprequest')
         this.xhr.send(...arguments)
 
         return new Promise((resolve, reject)=>{

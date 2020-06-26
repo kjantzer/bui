@@ -78,7 +78,7 @@ export default class DataSource {
     }
 
     fetch(pageAt){
-        return this._fetching = new Promise(async resolve=>{
+        return this._fetching = new Promise(async (resolve, reject)=>{
 
             if( (pageAt == 0 && this._rawData.length == 0) 
             || (this._pageFetched != pageAt && this._rawData.length == pageAt && this.opts.fetch == 'more' ) ){
@@ -86,7 +86,9 @@ export default class DataSource {
                 this._pageFetched = pageAt
 
                 if( this.opts.fetch )
-                    await this._fetchFromServer(pageAt)
+                    await this._fetchFromServer(pageAt).catch(err=>{
+                        reject(err)
+                    })
                 
                 await this.refilter()
             }

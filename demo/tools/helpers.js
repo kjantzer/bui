@@ -1,12 +1,11 @@
 import { LitElement, html, css } from 'lit-element'
-import './markdown-docs'
-import docs from 'bui/util/README.md'
+import '../markdown-docs'
+import docs from 'bui/helpers/README.md'
+import docsRelations from 'bui/helpers/backbone/relations/README.md'
 
-customElements.define('demo-util', class extends LitElement{
+customElements.define('demo-helpers', class extends LitElement{
 
-    static get title(){ return 'Util' }
-    static get icon(){ return 'wrench' }
-    static get path(){ return 'util(/:view)' }
+    static get title(){ return 'Helpers' }
 
     static get styles(){return css`
         :host {
@@ -32,11 +31,12 @@ customElements.define('demo-util', class extends LitElement{
 
     render(){return html`
     	<b-paper>
-            <b-h1>Util</b-h1>
+            <b-h1>Helpers</b-h1>
 			<demo-markdown-docs .docs=${docs}></demo-markdown-docs>
+            <demo-markdown-docs .docs=${docsRelations}></demo-markdown-docs>
 		</b-paper>
     `}
 
 })
 
-export default customElements.get('demo-util')
+export default customElements.get('demo-helpers')

@@ -109,9 +109,9 @@ customElements.define('demo-presenter-form-control', class extends LitElement{
         <b-paper>
 
             <b-h1>Sliders</b-h1>
-            <b-text muted italic block>The slider control still has some issues, particullary on mobile</b-text>
             <br>
 
+            <b-grid cols=4 cols-mobile="1">
             <div>
                 Standard&nbsp;&nbsp;&nbsp;&nbsp;
                 <range-slider></range-slider>
@@ -128,9 +128,11 @@ customElements.define('demo-presenter-form-control', class extends LitElement{
             </div>
 
             <div>
-                Styled&nbsp;&nbsp;&nbsp;&nbsp;
-                <range-slider class="bigger"></range-slider>
+                Min/Max&nbsp;&nbsp;&nbsp;&nbsp;
+                <range-slider min="-100" max=20></range-slider>
             </div>
+
+            </b-grid>
         </b-paper>
 
 

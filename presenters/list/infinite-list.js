@@ -66,8 +66,14 @@ customElements.define('b-infinite-list', class extends LitElement {
         let pageAt = this.pageAt
 
         this._fetching = true
-        let models = await this.dataSource.fetch(pageAt)
-        this.addContent(models, {clear:clear})
+        this._fetchFailed = false
+        try{
+            let models = await this.dataSource.fetch(pageAt)
+            this.addContent(models, {clear:clear})
+        }catch(err){
+            this._fetchFailed = err
+            this.addContent([], {clear:clear})
+        }
         this._fetching = null
 
         if( pageAt == 0 ){
@@ -77,6 +83,9 @@ customElements.define('b-infinite-list', class extends LitElement {
                 composed: true
             }))
         }
+
+        if( this._fetchFailed )
+            throw this._fetchFailed
     }
 
     // get emptyElement(){return this.getAttribute('empty') || 'b-empty-state'}
@@ -90,8 +99,10 @@ customElements.define('b-infinite-list', class extends LitElement {
 
         if( this.pageAt == 0 ){
             let emptyView = this.empty && this.empty()
-            if( emptyView )
+            if( emptyView ){
+                emptyView.fetchFailed = this._fetchFailed
                 this.appendChild(emptyView)
+            }
             return 
         }
 

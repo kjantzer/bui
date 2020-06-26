@@ -102,7 +102,7 @@ module.exports = class API {
                     
                 console.log(err.stack)
                 let code = err.name == 'Error' ? 400 : 500
-                res.statusMessage = err.message
+                res.statusMessage = err.code == 'ER_PARSE_ERROR' ? err.code : err.message
                 res.status(code).json({
                     error: err.message,
                     code: code,
@@ -124,8 +124,14 @@ module.exports = class API {
 
     finishResponse(req, res, resp){
 
+        if( resp && resp.pipe )
+            return resp.pipe(res)
+
         if( resp && resp.constructor && resp.constructor.name == 'Archiver' )
             return
+
+        if( resp && resp instanceof Buffer && resp.filename )
+            res.set('Content-disposition', 'attachment; filename='+resp.filename);
 
         if( resp && resp.sendFile ){
             res.sendFile(resp.sendFile)

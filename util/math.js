@@ -65,6 +65,26 @@ mode(numbers) {
         }
  
     return modes;
+},
+
+roundTo(num, ratio=2){
+    num = parseFloat(num)
+    if( isNaN(num) ) return ''
+    return Math.round(num * ratio) / ratio;
+},
+
+prettyDecimal(val='', ratio=null){
+    if( ratio != null )
+        val = this.roundTo(val, ratio)
+
+    val = String(val)
+
+    val = val.replace(/\.00?$/, '');
+    val = val.replace(/\.25$/, '¼');
+    val = val.replace(/\.50?$/, '½');
+    val = val.replace(/\.75$/, '¾');
+    val = val.replace(/^0*/, '') // remove leading 0s
+    return val
 }
 
 }

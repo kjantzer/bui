@@ -55,7 +55,7 @@
         "lit-html": "^1.1.2",
         "lodash": "^4.17.11",
         "moment": "^2.24.0",
-        "numeral":"^2.0.6",
+        "numeral": "^2.0.6",
         "popper.js": "^1.14.7",
         "quill": "github:kjantzer/quill#shadow",
         "socket.io": "^2.3.0",

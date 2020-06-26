@@ -361,7 +361,7 @@ export class Panel extends LitElement {
         this.__panelController = val
     }
 
-    async open(){
+    async open(...args){
         
         if( this.route && this.route.state.props.controller )
             this.controller = this.route.state.props.controller
@@ -386,7 +386,9 @@ export class Panel extends LitElement {
             this.setAttribute('open', '')
 
             if( this.view && this.view.onOpen ){
-                this.view.onOpen(this.route.state)
+                if( this.route )
+                    args.unshift(this.route.state)
+                this.view.onOpen(...args)
             }
 
         },100)
