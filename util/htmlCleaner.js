@@ -88,23 +88,38 @@ function clean(str){
     return html
 }
 
+// TODO: move to param
+let allowStyles = {
+    fontStyle: ['italic'],
+    fontWeight: ['bold'],
+    textAlign: true
+}
+
 function cleanNode(parent, node){
 
     // remove all attributes known to be a problem
     if( node.removeAttribute ){
         
-        let isItalic = node.style && node.style.fontStyle == 'italic'
-        let isBold = node.style && node.style.fontWeight == 'bold'
+        let styles = Object.assign({}, node.style)
         
         node.removeAttribute('id')
         node.removeAttribute('class')
         node.removeAttribute('style')
 
-        // reapply certain styles // TODO: add option for whether we do this?
-        if( isItalic && !['I', 'EM'].includes(node.nodeName) )
-            node.style.fontStyle = 'italic'
-        if( isBold  && !['B', 'STRONG'].includes(node.nodeName) )
-            node.style.fontWeight = 'bold'
+        for( let styleName in allowStyles ){
+            let allow = allowStyles[styleName]
+
+            if( allow === true && styles[styleName] ){
+                node.style[styleName] = styles[styleName]
+            }else{
+
+                allow = Array.isArray(allow) ? allow : [allow]
+
+                if( allow.includes(styles[styleName]) ){
+                    node.style[styleName] = styles[styleName]
+                }
+            }
+        }
     }
 
     // if the node is a comment or a known weird tag (word docs have things like <o:p>) remove it
