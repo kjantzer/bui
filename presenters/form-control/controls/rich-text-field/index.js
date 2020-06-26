@@ -76,6 +76,7 @@ class RichTextField extends HTMLElement {
         <toolbar>
             <b-btn tabindex=0 format="bold" text @click=${this.format} icon="bold"></b-btn>
             <b-btn tabindex=0 format="italic" text @click=${this.format} icon="italic"></b-btn>
+            <b-btn tabindex=0 format="align" value="center" text @click=${this.format} title="Center align" icon="paragraph-center"></b-btn>
             <b-btn tabindex=0 format="list" value="ordered" text @click=${this.format} icon="list-numbered"></b-btn>
             <b-btn tabindex=0 format="list" value="bullet" text @click=${this.format} icon="list2"></b-btn>
             <!-- <b-btn tabindex=0 @click=${this.insertDivider} text icon="minus"></b-btn> -->
@@ -177,7 +178,8 @@ class RichTextField extends HTMLElement {
         this.toolbar = this.querySelector('toolbar')
         
         this.quill = new Quill(this.main, {
-            formats: ['bold', 'italic', 'list', 'break'], // , 'divider'
+            // TODO: allow to be customized
+            formats: ['bold', 'italic', 'align', 'list', 'break'], // , 'divider'
             placeholder: this.getAttribute('placeholder') || '',
             modules: {
                 clipboard: {
