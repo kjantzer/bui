@@ -56,6 +56,7 @@ export default class Label extends LitElement {
         :host([sm]) { font-size: .8rem; line-height: .8rem; }
         :host([lg]) { font-size: 1.2rem; line-height: 1.2rem; }
         :host([xl]) { font-size: 1.4rem; line-height: 1.4rem; }
+        :host([xxl]) { font-size: 1.8rem; line-height: 1.8rem; }
 
         :host([outline]) {
             background: none;
