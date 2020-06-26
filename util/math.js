@@ -2,6 +2,15 @@
 
 module.exports = {
 
+round(num, decimals=2){
+    if( typeof num == 'string' )
+		num = parseFloat(num)
+	
+	let divisor = Math.pow(10, decimals)
+	
+	return Math.round(num * divisor) / divisor 
+},
+
 /**
  * The "median" is the "middle" value in the list of numbers.
  *
