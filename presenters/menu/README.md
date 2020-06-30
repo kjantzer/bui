@@ -41,7 +41,8 @@ let selected = await new Menu([], {
     icon: '', // name of an icon
     dataTitle: '', // set custom value for quickly 
     className: '',
-    extras: [] // array of custom elements to render after label
+    extras: [], // array of custom elements to render after label
+    fn: null // string or function (see handler docs)
 }
 
 // title
@@ -72,7 +73,8 @@ let selected = await new Menu([], {
 	jumpNav: false, // true (always show) or number of results for it to show
 	typeDelay: 700, // how long until typed characters reset
 	hasMenuIcon: 'right-open',
-	onSelect: ()=>{}
+	onSelect: ()=>{},
+    handler: null // see handler docs
 }
 ```
 
@@ -135,9 +137,35 @@ async showMenu(){
 }
 ```
 
-## Changelog
-#### 2019-06-11
-- changed how "selected" values are saved
-- `multiple` will only take affect when clicking the checkbox, clicking the row will choose that row only
-- menu items can have `clearsAll` property set which will be looked at when `multiple` is activated
-- adding `extras` feature
+## Handler
+Sometimes menu actions correlate to existing methods on a class. Instead of writing code to handle each menu item, you can set `fn` on items and automatically handle the selected item with:
+
+`Menu.handle(selected, handler)`  
+
+`fn` can be a string matching a function name on the handler object or a real function
+
+```js
+let myClass = {
+    item2Clicked(){
+        console.log('item 2 clicked')
+    }
+}
+
+let menuItems = [
+    {label: 'Item 1', fn(){ console.log('clicked') } }
+    {label: 'Item 2', fn: 'item2Clicked'},
+    {label: 'Item 3'}
+]
+
+// call the menu handler function directly
+let selected = await new Menu(menuItems).popover(target)
+let didHandle = Menu.handle(selected, myClass)
+if( !didHandle )
+    console.log(selected.label) // Item 3
+
+// OR use the handler option
+new Menu(menuItems, {handler:myClass}).popover(target)
+.then(selected=>{
+    console.log(selected.label) // Item 3
+})
+```

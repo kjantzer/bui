@@ -37,6 +37,26 @@ const SearchDefaults = {
 const styles = require('./style.less')
 
 export default class Menu {
+
+	static handle(selected, handler){
+		if( !selected ) return true
+
+		if( selected.fn && typeof selected.fn == 'function'){
+			setTimeout(()=>{ // move to end of call stack
+				selected.fn.call(handler)
+			})
+			return true
+		}
+
+		if( selected.fn && typeof handler[selected.fn] == 'function' ){
+			setTimeout(()=>{ // move to end of call stack
+				handler[selected.fn].call(handler)
+			})
+			return true
+		}
+		
+		return false // NOT handled
+	}
 	
 	constructor(menu=[], opts={}){
 		
@@ -618,8 +638,13 @@ export default class Menu {
 		
 		// if( this.opts.onSelect )
 		// 	this.opts.onSelect(data)
-		
-		if( this._resolve )
+
+		let didHandle = false
+
+		if( this.opts.handler )
+			didHandle = Menu.handle(data, this.opts.handler)
+
+		if( !didHandle && this._resolve )
 			this._resolve(data)
 			
 		if( this.presenter )
@@ -654,6 +679,9 @@ export default class Menu {
 		let onClose = opts.onClose
 		opts.onClose = ()=>{
 			onClose&&onClose()
+
+			console.log('on close?');
+			
 			
 			if( this.opts.multiple )
 				this.resolve(this.selected)
