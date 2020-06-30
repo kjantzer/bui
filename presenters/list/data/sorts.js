@@ -76,6 +76,7 @@ export default class Sorts extends Map {
 
         for( let key in sorts ){
             let sort = new Sort(key, sorts[key])
+            sort.sorts = this
             sort.selected = this.value[key]
             this.set(key, sort)
         }
