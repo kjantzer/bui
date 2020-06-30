@@ -171,7 +171,8 @@ module.exports = class MyModel extends Model {
     get config(){ return {
         table: 'my_table',
         tableAlias: false,
-        idAttribute: 'id'
+        idAttribute: 'id',
+        jsonFields: [] // will parse and encode on find/update/create
     }}
 
     // alter the where clause

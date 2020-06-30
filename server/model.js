@@ -28,10 +28,12 @@ module.exports = class Model {
     }
 
     findParseRow(row){
+        this.decodeJsonFields(row)
         return row
     }
 
     validateUpdate(attrs){
+        this.encodeJsonFields(attrs)
         return attrs
     }
 
@@ -113,7 +115,26 @@ module.exports = class Model {
 // =================================================
 //  Deafult CRUD method implementations
 
+    encodeJsonFields(attrs){
+        if( this.config.jsonFields && Array.isArray(this.config.jsonFields) ){
+            this.config.jsonFields.forEach(fieldName=>{
+                if( attrs[fieldName] != undefined )
+                    attrs[fieldName] = attrs[fieldName] ? JSON.stringify(attrs[fieldName]) : null
+            })
+        }
+    }
     
+    decodeJsonFields(attrs){
+        if( this.config.jsonFields && Array.isArray(this.config.jsonFields) ){
+            this.config.jsonFields.forEach(fieldName=>{
+                try{
+                    attrs[fieldName] = attrs[fieldName] ? JSON.parse(attrs[fieldName]) : []
+                }catch(err){
+                    attrs[fieldName] = {}
+                }
+            })
+        }
+    }
 
     async find(where=null){
 
@@ -180,6 +201,8 @@ module.exports = class Model {
         if( !attrs || Object.keys(attrs).length == 0 )
             return false;
 
+        this.encodeJsonFields(attrs)
+
         let result = await this.db.q(/*sql*/`INSERT INTO ${this.config.table} 
                                         SET ? ${this.db.updateOnDuplicate(attrs)}`, attrs)
         
@@ -207,6 +230,8 @@ module.exports = class Model {
 
         if( result.affectedRows > 0 ){
             
+            this.decodeJsonFields(attrs)
+
             if( this.id )
                 this.attrs = Object.assign(this.attrs||{}, attrs)
 
