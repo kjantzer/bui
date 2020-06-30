@@ -323,6 +323,31 @@ export default class BtnElement extends LitElement {
         :host([fab][spin]) b-spinner {
             margin-left: 0;
         }
+
+        @keyframes shake {
+            from,
+            to {
+                transform: translate3d(0, 0, 0);
+            }
+
+            15%,
+            45%,
+            75% {
+                transform: translate3d(-.25em, 0, 0);
+            }
+
+            30%,
+            60%,
+            90% {
+                transform: translate3d(.25em, 0, 0);
+            }
+        }
+
+        :host(.shake) {
+            animation-name: shake;
+            animation-duration: 700ms;
+            animation-fill-mode: both;
+        }
     `}
 
     render(){ return html`
@@ -349,6 +374,13 @@ export default class BtnElement extends LitElement {
             if( this.href )
                 window.location = this.href
         }, true)
+    }
+
+    shake(){
+        this.classList.add('shake')
+        setTimeout(()=>{
+            this.classList.remove('shake')
+        },1000)
     }
 
 }
