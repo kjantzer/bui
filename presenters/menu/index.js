@@ -679,9 +679,6 @@ export default class Menu {
 		let onClose = opts.onClose
 		opts.onClose = ()=>{
 			onClose&&onClose()
-
-			console.log('on close?');
-			
 			
 			if( this.opts.multiple )
 				this.resolve(this.selected)
