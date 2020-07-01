@@ -3,7 +3,7 @@
 	NOTE: this concept is still in it's early stages
 */
 import {Model} from 'backbone'
-import _ from 'underscore'
+import './promises'
 
 Model.prototype.isEdited = function(){
 	return this._editedAttrs&&Object.keys(this._editedAttrs).length>0
@@ -54,7 +54,7 @@ Model.prototype.resetEdited = function(opts={}){
 
 Model.prototype.editAttr = function(key, val, opts={}){
 	let attrs;
-	if (_.isObject(key)) {
+	if( typeof key == 'Object' ){
 		attrs = key;
 		opts = val || {};
 	} else {
