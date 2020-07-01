@@ -54,7 +54,7 @@ Model.prototype.resetEdited = function(opts={}){
 
 Model.prototype.editAttr = function(key, val, opts={}){
 	let attrs;
-	if( typeof key == 'Object' ){
+	if( typeof key == 'object' ){
 		attrs = key;
 		opts = val || {};
 	} else {
