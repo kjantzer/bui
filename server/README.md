@@ -182,7 +182,15 @@ module.exports = class MyModel extends Model {
 
     findSql(where){
         // this is the default query
-        return /*sql*/`SELECT * FROM ${this.config.table} ${where}`
+        return /*sql*/`SELECT * 
+                        FROM ${this.config.table} ${this.config.tableAlias||''}
+                        ${where}
+                        ${this.findOrderBy()}
+                        ${this.findLimit}`
+    }
+
+    findOrderBy(){
+        return ''
     }
 
     findParseRow(row){

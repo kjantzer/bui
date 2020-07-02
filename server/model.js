@@ -17,13 +17,22 @@ module.exports = class Model {
     }
 
     findSql(where){
-        return /*sql*/`SELECT * FROM ${this.config.table} ${this.config.tableAlias||''} ${where} ${this.findLimit}`
+        return /*sql*/`SELECT * 
+                        FROM ${this.config.table} ${this.config.tableAlias||''}
+                        ${where}
+                        ${this.findOrderBy()}
+                        ${this.findLimit}`
     }
 
     get findLimit(){
         if( this.req && this.req.query.perPage )
             return `LIMIT ${this.req.query.pageAt},${this.req.query.perPage}`
             
+        return ''
+    }
+
+    // TODO: flesh this out with default usign this.config?
+    findOrderBy(){
         return ''
     }
 
@@ -92,11 +101,12 @@ module.exports = class Model {
             let sorts = this.req.query.sorts ? JSON.parse(this.req.query.sorts) : {}
             return new Map(Object.entries(sorts));
         }catch(err){
-            console.log('Malformed filters:', this.req.query.filters);
+            console.log('Malformed sorts:', this.req.query.sorts);
             return new Map()
         }
     }
 
+    // NOTE: does't appear to be used anywhere....
     orderBy(fn){
         let sorts = this.sorts
         let orderBy = []
