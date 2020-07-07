@@ -183,8 +183,19 @@ class DBResults extends Array {
     groupBy(key){
         let group = {}
         this.forEach(row=>{
-            if( row[key] )
-                group[row[key]] =  row
+            if( row[key] ){
+
+                // exists with one row...convert to array of rows
+                if( group[row[key]] && group[row[key]][key] )
+                    group[row[key]] = [group[row[key]]]
+
+                // already set, must be array of rows
+                if( group[row[key]] )
+                    group[row[key]].push(row)
+                // single row so far
+                else
+                    group[row[key]] = row
+            }
         })
         return group
 	}
