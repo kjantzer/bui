@@ -35,6 +35,12 @@ router.config({
     root: '/', // defaults to initial location.pathname
     prefix: '#/' // defaults to ''
     title: 'My App' // defaults to document.title
+    clearInvalidPath: true,
+    handleInvalidRoute(state, config){
+        // default handler
+        if( config.clearInvalidPath )
+            state.path = config.PATH_ROOT
+    }
 })
 ```
 

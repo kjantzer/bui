@@ -106,8 +106,8 @@ export class Router {
         })
 
         // if none of the routes matched, change current state path back to the root
-        if( !didMatch && config.clearInvalidPath )
-            this.states.current.path = config.PATH_ROOT
+        if( !didMatch )
+            config.handleInvalidRoute(this.states.current, config)
     }
 
     add(path, onChange){

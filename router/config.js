@@ -3,7 +3,11 @@ const config = {
     APP_TITLE: document.title,
     PATH_ROOT: location.pathname,
     PATH_PREFIX: '',
-    clearInvalidPath: true
+    clearInvalidPath: true,
+    handleInvalidRoute(state, config){
+        if( config.clearInvalidPath )
+            state.path = config.PATH_ROOT
+    }
 }
 
 export default config
