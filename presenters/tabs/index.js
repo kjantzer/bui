@@ -100,6 +100,7 @@ customElements.define('b-tabs', class extends LitElement {
             --border-color: var(--b-tabs-border-color, rgba(0, 0, 0, 0.1));
             --contentBgd: none;
             --contentShadow: none;
+            --contentRadius: 0;
         }
 
         .tab-bar {
@@ -208,6 +209,7 @@ customElements.define('b-tabs', class extends LitElement {
             display: flex;
             background: var(--contentBgd);
             box-shadow: var(--contentShadow);
+            border-radius: var(--contentRadius);
             overflow: var(--overflow, auto);
         }
 
