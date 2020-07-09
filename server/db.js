@@ -140,7 +140,6 @@ module.exports = class DB {
 
     get NOW(){ return {toSqlString:()=>'NOW()'}; }
 
-    // TODO: use escapeId()?
     parseWhere(where={}){
 
         let fields = []
@@ -148,6 +147,10 @@ module.exports = class DB {
 
         for( let key in where ){
             let val = where[key]
+
+            // NOTE: this might create issues in existing code
+            if( key[0] != '`' )
+                key = this.escapeId(key)
 
             if( ['NULL', 'NOT NULL'].includes(val) ){
                 fields.push(`${key} IS ${val}`)
