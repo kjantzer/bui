@@ -84,6 +84,12 @@ let str = normalizeText(str)
 let newObj = pick({first:'name', last:'name}, ['first'])
 ```
 
+## `omit`
+
+```js
+let newObj = omit({first:'name', last:'name}, ['last'])
+```
+
 ## `Promise.series`
 Perform a set of promise tasks in series (waiting to complete until moving on to the next)
 ```js
