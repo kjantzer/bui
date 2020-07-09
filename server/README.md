@@ -203,10 +203,14 @@ module.exports = class MyModel extends Model {
         return attrs
     }
 
-    // do something before destroying the model in the database
-    beforeDestroy(){
-        // defaults to noop
-    }
+    async beforeAdd(attrs){ /* noop */ }
+    afterAdd(attrs){ /* noop */ }
+
+    async beforeUpdate(attrs){ /* noop */ }
+    afterUpdate(attrs){ /* noop */ }
+
+    async beforeDestroy(){ /* noop */ }
+    afterDestroy(){ /* noop */ }
 
 }
 ```

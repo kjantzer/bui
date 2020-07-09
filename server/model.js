@@ -46,13 +46,14 @@ module.exports = class Model {
         return attrs
     }
 
-    afterAdd(attrs){
-        // noop
-    }
+    async beforeAdd(attrs){ /* noop */ }
+    afterAdd(attrs){ /* noop */ }
 
-    beforeDestroy(){
-        // nothing to do
-    }
+    async beforeUpdate(attrs){ /* noop */ }
+    afterUpdate(attrs){ /* noop */ }
+
+    async beforeDestroy(){ /* noop */ }
+    afterDestroy(){ /* noop */ }
 
 // =================================================
     
@@ -212,6 +213,7 @@ module.exports = class Model {
             return false;
 
         this.encodeJsonFields(attrs)
+        await this.beforeAdd(attrs)
 
         let result = await this.db.q(/*sql*/`INSERT INTO ${this.config.table} 
                                         SET ? ${this.db.updateOnDuplicate(attrs)}`, attrs)
@@ -230,6 +232,7 @@ module.exports = class Model {
 
         // let subclass remove or modify attributes to be updated
         attrs = await this.validateUpdate(attrs)
+        await this.beforeUpdate(attrs)
 
         if( !this.config.table ) throw Error('missing config.table')
 
@@ -241,6 +244,8 @@ module.exports = class Model {
         if( result.affectedRows > 0 ){
             
             this.decodeJsonFields(attrs)
+
+            this.afterUpdate(attrs)
 
             if( this.id )
                 this.attrs = Object.assign(this.attrs||{}, attrs)
@@ -263,6 +268,9 @@ module.exports = class Model {
         await this.beforeDestroy()
 
         let result = await this.db.q(/*sql*/`DELETE FROM ${this.config.table} WHERE id = ?`, this.id)
+
+        this.afterDestroy(result)
+
         return String(result.affectedRows)
     }
 }
