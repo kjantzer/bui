@@ -2,7 +2,7 @@ import config, {normalizePath, cleansePath} from './config'
 
 export default class HistoryState {
 
-    constructor(parent, props){
+    constructor(parent, props={}){
 
         this.parent = parent
 
