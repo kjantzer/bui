@@ -5,7 +5,7 @@ const windowOpen = window.open
 // better window opening for chrome installed apps
 window.open = function(url, windowName, windowFeatures={}){
 
-    const PWA = device.isChromeInstalledApp && url.includes(location.host)
+    const PWA = device.isChromeInstalledApp && (url[0]=='/' || url.includes(location.host))
     
     windowFeatures = Object.assign({
         resizable:true,
