@@ -16,6 +16,10 @@ customElements.define('b-hr', class extends LitElement{
             grid-column: 1/-1;
         }
 
+        :host([thick]) {
+            height: 4px;
+        }
+
         :host([short]) {
             width: 180px;
             max-width: 100%;
@@ -29,6 +33,11 @@ customElements.define('b-hr', class extends LitElement{
             width: 1px;
             margin: 0 .5em;
             align-self: stretch;
+        }
+
+        :host([vert][thick]) {
+            height: auto;
+            width: 4px;
         }
     `}
 
