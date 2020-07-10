@@ -88,8 +88,9 @@ rich-text-field toolbar {
     font-size: .8em;
     position: absolute;
     display: flex;
-    background: #fff;
-    box-shadow: rgba(0,0,0,.1) 0 1px 3px;
+    background: var(--theme-bgd-accent2, #f5f5f5);
+    color: var(--theme-color, #000);
+    /* box-shadow: rgba(0,0,0,.1) 0 1px 3px; */
     border-radius: 3px;
     top: -1em;
     right: 0;
@@ -104,7 +105,7 @@ rich-text-field toolbar * {
 }
 
 rich-text-field toolbar b-btn.active {
-    --color: var(--blue);
+    --color: var(--theme, var(--blue, #2196F3));
 }
 
 rich-text-field .ql-clipboard {
