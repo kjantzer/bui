@@ -141,7 +141,8 @@ export const colorScheme = {
             theme = this.isDarkMode ? 'dark' : 'light'
 
         html.setAttribute(theme, '')
-        metaThemeColor.content = getComputedStyle(document.body).getPropertyValue('--theme-bgd')
+        metaThemeColor.content = getComputedStyle(document.body).getPropertyValue('--theme-bgd').trim()
+        localStorage.setItem('meta-theme-color', metaThemeColor.content)  
     },
 
     setAccent(accent){
