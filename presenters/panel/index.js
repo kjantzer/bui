@@ -465,6 +465,7 @@ export class Panel extends LitElement {
         }
 
         :host > main {
+            pointer-events: none;
             position: absolute;
             right: 0;
             min-width: 300px;
@@ -573,6 +574,7 @@ export class Panel extends LitElement {
 
         main > slot::slotted(*) {
             width: 100%;
+            pointer-events: all;
             /* display: grid;
             grid-template-rows: auto 1fr; */
         }
