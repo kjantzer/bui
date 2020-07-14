@@ -7,6 +7,9 @@ const readDir = (dirPath, {
     recursive=true
 }={})=>{
 
+    if( !fs.existsSync(dirPath) )
+        return []
+        
     let stats = fs.lstatSync(dirPath)
 
     if( stats.isFile() )
