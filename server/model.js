@@ -17,6 +17,9 @@ module.exports = class Model {
     }
 
     findSql(where){
+
+        if( !this.config.table ) throw Error('missing config.table')
+        
         return /*sql*/`SELECT * 
                         FROM ${this.config.table} ${this.config.tableAlias||''}
                         ${where}
@@ -148,8 +151,6 @@ module.exports = class Model {
     }
 
     async find(where=null){
-
-        if( !this.config.table ) throw Error('missing config.table')
 
         let id = null;
 
