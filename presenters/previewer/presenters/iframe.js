@@ -12,11 +12,13 @@ customElements.define('b-previewer-iframe', class extends LitElement{
             position:relative;
             height: 100%;
             min-height: 0;
+            pointer-events: none;
         }
 
         iframe {
             width: 100vw;
             height: 100vh;
+            pointer-events: all;
             /* background: transparent; */
             /* object-fit: contain; */
         }
@@ -32,8 +34,20 @@ customElements.define('b-previewer-iframe', class extends LitElement{
     onLoad(){
         // setTimeout(() => {
             // console.log(this.$$('iframe'));
+
+            console.log(this.$$('iframe').contentDocument.body);
             
+            // doesn't work
             this.$$('iframe').contentDocument.body.style.background = 'transparent'    
+
+            this.$$('iframe').contentDocument.body.onclick = function(){
+                console.log('on click');
+            }
+
+            // this.$$('iframe').addEventListener('click', e=>{
+            //     console.log('clicked?', e);
+                
+            // })
         // }, 0);
         
     }

@@ -74,6 +74,9 @@ customElements.define('b-previewer', class extends LitElement{
 
     static open(items){
 
+        if( items && !Array.isArray(items) )
+            items = [items]
+
         let item = items[0]
         
         // better experience on iOS (Android too?)
@@ -95,16 +98,13 @@ customElements.define('b-previewer', class extends LitElement{
         this.model = items[0]
     }
 
-    firstUpdated(){
-        this.panel.title = this.model.label
-    }
-
     static get styles(){return css`
         :host {
             display: grid;
-            grid-template-rows: auto 1fr;
+            grid-template-rows: 1fr;
             position:relative;
             height: 100%;
+            pointer-events: none !important;
         }
 
         main {
@@ -117,6 +117,7 @@ customElements.define('b-previewer', class extends LitElement{
 
         b-panel-toolbar {
             color:  var(--theme-color);
+            pointer-events: all;
         }
 
         b-previewer-iframe ~ b-panel-toolbar {
@@ -134,6 +135,10 @@ customElements.define('b-previewer', class extends LitElement{
             border-radius: 2em;
             color: var(--theme-color);
         }
+
+        b-file-icon {
+            --size: 1.5em;
+        }
     `}
 
     close(){ this.panel.close() }
@@ -142,6 +147,10 @@ customElements.define('b-previewer', class extends LitElement{
         ${this.presenterFor(this.model)}
         <b-panel-toolbar overlay>
             <b-btn slot="close-btn" @click=${this.close} pill lg color="black" icon="cancel-1"></b-btn>
+            <div slot="title">
+                <b-file-icon ext=${this.model.ext||this.model.get('ext')}></b-file-icon>
+                ${this.model.label}
+            </div>
         </b-panel-toolbar>
     `}
 

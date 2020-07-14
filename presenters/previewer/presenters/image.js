@@ -8,15 +8,21 @@ customElements.define('b-previewer-image', class extends LitElement{
 
     static get styles(){return css`
         :host {
-            display: block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position:relative;
             height: 100%;
             min-height: 0;
+            pointer-events: none;
         }
 
         img {
-            width: 100vw;
-            height: 100vh;
+            pointer-events: all;
+            width: auto;
+            height: auto;
+            max-height: 100vh;
+            max-width: 100vw;
             object-fit: contain;
             position: relative;
         }
