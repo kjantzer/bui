@@ -142,7 +142,7 @@ class PanelController extends LitElement {
         this.panels.forEach((panel)=>{
             
             if( panel.type != 'modal' && panel.type != 'actionsheet' )
-                panel.style.zIndex = i++
+                panel.style.zIndex = 100 + i++
             
             if( i == this.length ){
                 panel.setAttribute('ontop', '')
