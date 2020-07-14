@@ -141,6 +141,9 @@ module.exports = class Model {
     decodeJsonFields(attrs){
         if( this.config.jsonFields && Array.isArray(this.config.jsonFields) ){
             this.config.jsonFields.forEach(fieldName=>{
+                
+                if( attrs[fieldName] == undefined ) return
+
                 try{
                     attrs[fieldName] = attrs[fieldName] ? JSON.parse(attrs[fieldName]) : []
                 }catch(err){
