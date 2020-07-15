@@ -64,7 +64,7 @@ export default class Popover {
 		
 		if( !WatchingClicks ){
 			WatchingClicks = true
-			window.addEventListener(device.isMobile?'touchend':'click', WatchClicks, !device.isMobile)
+			window.addEventListener(device.isMobile?'touchend':'mousedown', WatchClicks, !device.isMobile)
 		}
 		
 		if( !WatchingKeyboard ){
@@ -95,7 +95,11 @@ export default class Popover {
 		this.target = target
 		this.view = view
 		
-		this.target.classList.add('popover-open')
+		if( this.target._popoverTarget )
+			this.target._popoverTarget.classList.add('popover-open')
+		else
+			this.target.classList.add('popover-open')
+		
 		this.view.classList.add('__view')
 		
 		this.el = document.createElement('div')
@@ -148,6 +152,7 @@ export default class Popover {
 
 	createInvisiblePlaceholderTarget(e){
 		let target = document.createElement('div')
+		target._popoverTarget = e.currentTarget
 		target.classList.add('popover-invisible-placeholder')
 		target.style.position = 'absolute'
 		target.style.left = e.clientX+'px'
@@ -201,10 +206,12 @@ export default class Popover {
 		
 		this.mutationObserver.disconnect()
 		this.popper.destroy()
-		this.target.classList.remove('popover-open')
 
-		if( this.target.classList.contains('popover-invisible-placeholder') )
+		if( this.target._popoverTarget ){
+			this.target._popoverTarget.classList.remove('popover-open')
 			this.target.remove()
+		}else
+			this.target.classList.remove('popover-open')
 		
 		// remove this from the list of open popovers as well as all popovers after it
 		var indx = OpenPopovers.indexOf(this)
@@ -217,7 +224,7 @@ export default class Popover {
 		// no more popovers, remove event listners
 		if( OpenPopovers.length == 0 ){
 			WatchingClicks = false
-			window.removeEventListener(device.isMobile?'touchend':'click', WatchClicks, true)
+			window.removeEventListener(device.isMobile?'touchend':'mousedown', WatchClicks, true)
 			
 			WatchingKeyboard = false
 			window.removeEventListener('keydown', WatchKeyboard, !device.isMobile)
