@@ -4,7 +4,9 @@ import device from 'bui/util/device'
 
 let Presenters = [
     require('./presenters/image').default,
+    require('./presenters/text').default,
     require('./presenters/json').default,
+    require('./presenters/csv').default,
     require('./presenters/iframe').default
 ]
 
