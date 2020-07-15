@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs')
+const csvToArray = require('./csvToArray')
 
 const readDir = (dirPath, {
     whitelist=false,
@@ -56,4 +57,26 @@ const getFileInfo = (dirPath, file='')=>{
     return fileInfo
 }
 
-module.exports = {readDir, getFileInfo}
+const readFile = (filePath, {raw=false}={})=>{
+    if( !fs.existsSync(filePath) )
+        throw Error('does not exist')
+
+    let contents = fs.readFileSync(filePath);
+
+    // attempt to parse content 
+    if( !raw ){
+
+        if( filePath.match(/\.json$/) )
+            contents = JSON.parse(contents)
+
+        if( filePath.match(/\.txt$/) )
+            contents = String(contents)
+
+        if( filePath.match(/\.csv$/) )
+            contents = csvToArray(String(contents))
+    }
+
+    return contents
+}
+
+module.exports = {readDir, readFile, getFileInfo}
