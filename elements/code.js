@@ -29,7 +29,7 @@ customElements.define('b-code', class extends LitElement{
 
     connectedCallback(){
         super.connectedCallback()
-        this.innerText = this.innerText.trim()
+        this.textContent = this.textContent.trim()
     }
 
     render(){return html`
