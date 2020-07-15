@@ -41,6 +41,7 @@ const getFileInfo = (dirPath, file='')=>{
     let stats = fs.statSync(path.join(dirPath, file))
     
     let fileInfo = {
+        id: file,
         path: dirPath,
         name: file,
         type: stats.isDirectory() ? 'd' : 'f',
