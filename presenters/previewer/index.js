@@ -4,6 +4,7 @@ import device from 'bui/util/device'
 
 let Presenters = [
     require('./presenters/image').default,
+    require('./presenters/json').default,
     require('./presenters/iframe').default
 ]
 
@@ -85,11 +86,17 @@ customElements.define('b-previewer', class extends LitElement{
 
         let view = new (customElements.get('b-previewer'))(items)
 
-        new Panel(view, {
+        let panel = new Panel(view, {
             type: 'previewer',
             anchor: 'center',
             animation: 'fade',
-        }).open()
+            onKeydown(e){
+                if( e.key == 'Escape' )
+                    panel.close()
+            }
+        })
+        
+        panel.open()
     }
 
     constructor(items=[]){
