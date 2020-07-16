@@ -84,6 +84,7 @@ export default class Label extends LitElement {
             padding: 0;
         }
 
+        :host([filled="clear"]), :host([badge="black"]) { --bgd: transparent; --color: inherit; }
         :host([filled="black"]), :host([badge="black"]) { --bgd: #333; }
         :host([filled="white"]), :host([badge="white"]) { --bgd: #fff; --color: #333; }
         :host([filled="gray"]), :host([badge="gray"]) { --bgd: #ddd; --color: #777; }
@@ -93,8 +94,10 @@ export default class Label extends LitElement {
         :host([filled="orange"]), :host([badge="orange"]) { --bgd: var(--orange); }
         :host([filled="green"]), :host([badge="green"]) { --bgd: var(--green); }
         :host([filled="pink"]), :host([badge="pink"]) { --bgd: var(--pink); }
+        :host([filled="purple"]), :host([badge="purple"]) { --bgd: var(--deep-purple); }
         
 
+        :host([outline="clear"]) { --bgd: transparent; --color: inherit; }
         :host([outline="black"]) { --bgd: #333; }
         :host([outline="gray"]) { --bgd: #ddd; }
         :host([outline="theme"]) { --bgd: var(--theme); }
@@ -103,6 +106,7 @@ export default class Label extends LitElement {
         :host([outline="orange"]) { --bgd: var(--orange); }
         :host([outline="green"]) { --bgd: var(--green); }
         :host([outline="pink"]) { --bgd: var(--pink); }
+        :host([outline="purple"]) { --bgd: var(--deep-purple); }
 
         .bgd {
             display: none;
