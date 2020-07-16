@@ -10,6 +10,8 @@ class SearchAPI {
         this.req = req
     }
 
+    get limit(){ return 100 }
+
     static get api(){return {
 		routes: [
 			['get', '/search/:term', 'searchDefault'],
@@ -67,25 +69,6 @@ class SearchAPI {
         })
         let result = fuse.search(this.term)
 
-        // sort data taking in account each type's "weight" (higher weight = more important)
-        result = result.sort((a,b)=>{
-
-            let aDelta =  1 + (-1 / (a.item.weight||0))
-            let bDelta =  1 + (-1 / (b.item.weight||0))
-            
-            a.item._score = a.score+aDelta
-            b.item._score = b.score+bDelta
-
-            // sort by fuse.js score and the weight
-            let scoreSort = (a.score+bDelta) - (b.score+aDelta)
-
-            if( scoreSort !== 0 ) return scoreSort
-
-            // if the score is the same, sort by the label (eg: "hell divers")
-            return a.item.label < b.item.label ? -1 : 1
-            
-        })
-
         // get list of IDs, grouped by type
         let byType = {}
         result.forEach(row=>{
@@ -102,17 +85,46 @@ class SearchAPI {
 
         // add the hydrated data to the sorted results
         let res = result.map(row=>{
-            return byType[row.item.type][row.item.id]
+            let rowData = byType[row.item.type][row.item.id]
+            rowData.search = Object.assign({
+                score: row.score,
+                weight: row.item.weight
+            }, rowData.search||{})
+            return rowData
         })
 
-        let uniqIds = {}
-
         // dedupe
+        let uniqIds = {}
         res = res.filter(row=>{
             let id = row.type+row.id
             if( uniqIds[id] ) return false
             return uniqIds[id] = true
         })
+
+        // final sort
+        // sort data taking in account each type's "weight" (higher weight = more important)
+        res = res.sort((a,b)=>{
+
+            let aDelta =  1 + (-1 / (a.search.weight||0))
+            let bDelta =  1 + (-1 / (b.search.weight||0))
+
+            // sort by fuse.js score and the weight
+            let scoreSort = (a.search.score+bDelta) - (b.search.score+aDelta)
+
+            if( scoreSort !== 0 ) return scoreSort
+
+            // different types, maintain current sort
+            if( a.type != b.type ) return 0
+
+            let SearchType = SearchTypes.get(a.type)
+            if( SearchType && SearchType.finalSort )
+                return SearchType.finalSort(a, b)
+            
+            return 0
+        })
+        
+        if( this.limit > 0 )
+            res = res.slice(0, this.limit)
 
         return res
     }

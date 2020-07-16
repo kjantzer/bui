@@ -6,8 +6,13 @@ module.exports = class SearchType {
         this.req = req
         this.db = db
     }
+
+    static finalSort(a, b){
+        return a.item.label < b.item.label ? -1 : 1
+    }
     
     formatTerm(term){ return term }
+    parseRow(row){ /* noop */ }
 
     get limit(){ return 100 }
     get type(){ return this.constructor.name || 'unknown' }
@@ -24,7 +29,8 @@ module.exports = class SearchType {
         return this.db.query(this.fillSql, [ids]).then(rows=>{
             rows.forEach(row=>{
                 row.type=row.type||this.type
-                row.search_matched=this.type
+                row.search = {matched:this.type}
+                this.parseRow(row)
             })
             return rows
         })
@@ -47,11 +53,11 @@ module.exports = class SearchType {
         let result = fuse.search(term)
 
         // use Map so order is retained
-        let mappedResult = new Map()
+        let mappedResult = new Map() // NOTE: not really needed now
         let ids = []
         result.forEach(row=>{
             ids.push(row.item.id)
-            mappedResult.set(row.item.id, row.item)
+            mappedResult.set(row.item.id, row)
         })
 
         if( ids.length == 0 )
@@ -64,9 +70,26 @@ module.exports = class SearchType {
 
         // replace original search results with hydrated data
         hydratedResults.forEach(row=>{
+            row.search = Object.assign({
+                score: mappedResult.get(row.id).score,
+                weight: mappedResult.get(row.id).item.weight
+            },row.search||{})
+
             mappedResult.set(row.id, row)
         })
 
-        return Array.from(mappedResult.values())
+        let res = Array.from(mappedResult.values())
+
+        res = res.sort((a,b)=>{
+            if( a.search.score != b.search.score )
+                return a.search.score - b.search.score
+            
+            if( this.constructor.finalSort )
+                return this.constructor.finalSort(a, b)
+
+            return 0
+        })
+
+        return res
     }
 }
