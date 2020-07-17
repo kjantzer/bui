@@ -7,9 +7,7 @@ module.exports = class SearchType {
         this.db = db
     }
 
-    static finalSort(a, b){
-        return a.item.label < b.item.label ? -1 : 1
-    }
+    static finalSort(a, b){ return 0 }
     
     formatTerm(term){ return term }
     parseRow(row){ /* noop */ }
