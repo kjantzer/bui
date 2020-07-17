@@ -47,6 +47,7 @@ customElements.define('range-slider', class extends LitElement{
             cursor: pointer;
             font-size: .9em;
             user-select: none;
+            --label-rotation: 45deg;
         }
 
         rail, track {
@@ -121,23 +122,29 @@ customElements.define('range-slider', class extends LitElement{
             left: 50%;
             position: absolute;
             transform-origin: bottom left;
-            transform: translate(0%,-4px) rotate(-45deg) scale(0);
+            transform: translate(0%,-4px) rotate(calc(-1 * var(--label-rotation))) scale(0);
             border-radius: 50% 50% 50% 0;
             transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
             
         }
 
-        thumb > div > span {
-            transform: rotate(45deg)
+        :host([label*="bottom"]) thumb > div{
+            bottom: auto;
+            top: calc(0% - 4px);
+            --label-rotation: -135deg;
         }
 
-        :host([label="show"]) thumb > div,
+        thumb > div > span {
+            transform: rotate(var(--label-rotation))
+        }
+
+        :host([label*="show"]) thumb > div,
         thumb:hover > div,
         thumb[active] > div {
-            transform: translate(0%,-4px) rotate(-45deg) scale(1);
+            transform: translate(0%,-4px) rotate(calc(-1 * var(--label-rotation))) scale(1);
         }
 
-        :host([label="none"]) thumb > div {
+        :host([label*="none"]) thumb > div {
             display: none !important;
         }
 
