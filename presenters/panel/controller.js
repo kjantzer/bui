@@ -144,8 +144,13 @@ class PanelController extends LitElement {
             if( panel.type != 'modal' && panel.type != 'actionsheet' )
                 panel.style.zIndex = 100 + i++
             
+            let wasOnTop = panel.onTop
+
             if( i == this.length ){
                 panel.setAttribute('ontop', '')
+
+                if( !wasOnTop )
+                    panel.view.didBecomeActive&&panel.view.didBecomeActive()
 
                 // if( updateRoutes && panel.route && !panel.route.isCurrent ){
                 //     console.log(panel.route);
@@ -154,6 +159,10 @@ class PanelController extends LitElement {
 
             }else{
                 panel.removeAttribute('ontop')
+                if( wasOnTop )
+                    setTimeout(()=>{
+                        panel.view.didBecomeInactive&&panel.view.didBecomeInactive()
+                    })
             }
         })
 
