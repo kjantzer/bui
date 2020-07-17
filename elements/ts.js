@@ -2,6 +2,15 @@ import { LitElement, html, css } from 'lit-element'
 
 customElements.define('b-ts', class extends LitElement{
 
+    static get properties(){return {
+        format: {type: String}
+    }}
+
+    constructor(){
+        super()
+        this.format = 'relative'
+    }
+
     static get styles(){return css`
         :host {
             display: inline-block;
@@ -11,7 +20,8 @@ customElements.define('b-ts', class extends LitElement{
 
     connectedCallback(){
         super.connectedCallback()
-        this._updateInterval = setInterval(this.update.bind(this), 60*1000)
+        if( this.format == 'relative' )
+            this._updateInterval = setInterval(this.update.bind(this), 60*1000)
     }
     
     disconnectedCallback(){
@@ -33,7 +43,10 @@ customElements.define('b-ts', class extends LitElement{
         if( !this.date ) return ''
         // TODO: support different formats?
         // TODO: this is a moment.js format...what if moment not used?
-        return this.date.fromNow()
+        if( this.format == 'relative' )
+            return this.date.fromNow()
+        else
+            return this.date.format(this.format)
     }
 
     render(){return html`
