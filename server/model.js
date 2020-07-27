@@ -16,11 +16,11 @@ module.exports = class Model {
         // add or manipulate the where clause
     }
 
-    findSql(where){
+    findSql(where, {select="*"}={}){
 
         if( !this.config.table ) throw Error('missing config.table')
         
-        return /*sql*/`SELECT * 
+        return /*sql*/`SELECT ${select} 
                         FROM ${this.config.table} ${this.config.tableAlias||''}
                         ${where}
                         ${this.findOrderBy()}
@@ -153,7 +153,7 @@ module.exports = class Model {
         }
     }
 
-    async find(where=null){
+    async find(where=null, opts={}){
 
         let id = null;
 
@@ -181,7 +181,7 @@ module.exports = class Model {
         let [whereFields, whereVals] = this.db.parseWhere(where)
         where = whereFields.length > 0 ? `WHERE ${whereFields.join(' AND ')}` : ''
 
-        let resp = await this.db.query(this.findSql(where), whereVals)
+        let resp = await this.db.query(this.findSql(where, opts), whereVals)
 
         // parse each row (for decoding JSON strings, etc)
         await Promise.series(resp, row=>{
