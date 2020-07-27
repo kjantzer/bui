@@ -11,7 +11,7 @@ customElements.define('b-search', class extends LitElement{
 
     resultsView(data){ return new ResultView(data) }
 
-    goTo(selected){
+    goTo(selected, metaKey){
         console.log('Go to:', selected);
     }
 
@@ -282,7 +282,9 @@ customElements.define('b-search', class extends LitElement{
 
         if( !selected ) return
 
-        this.goTo(selected)
+        let e = window.event || {} // get keyboard event for metakey
+        let metaKey = e.metaKey || e.ctrlKey
+        this.goTo(selected, metaKey)
 
         this.clear()
         this.fc.control.blur()
