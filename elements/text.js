@@ -34,6 +34,8 @@ customElements.define('b-text', class extends LitElement{
         :host([ucase]) { text-transform: uppercase; }
         :host([lcase]) { text-transform: lowercase }
 
+        :host([breakall]) { word-break: break-all; }
+
         :host([align="left"]) { text-align: left; }
         :host([align="right"]) { text-align: right; }
         :host([align="center"]) { text-align: center; }
