@@ -323,13 +323,8 @@ customElements.define('range-slider', class extends LitElement{
         
         this._lastMousePos = e.pageX
 
-        let offset = {x: this.offsetLeft, y: this.offsetTop}
-        let parent = this.offsetParent
-        while(parent){
-            offset.x += parent.offsetLeft
-            offset.y += parent.offsetTop
-            parent = parent.offsetParent
-        }
+        let rect = this.getBoundingClientRect()
+        let offset = {x: rect.x, y: rect.y}
 
         // let mouseX = offset.x < e.pageX ? (e.offsetX + e.srcElement.offsetLeft) : e.pagex
         let eventScreenX = e.touches ? e.touches[0].screenX : e.screenX
