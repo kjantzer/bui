@@ -193,6 +193,7 @@ export class Panel extends LitElement {
             this.close()
 
         this.opts.onKeydown&&this.opts.onKeydown(e)
+        this.view.onKeydown&&this.view.onKeydown(e)
     }
 
     // DEPRECATED: hash changed to path
