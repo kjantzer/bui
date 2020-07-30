@@ -80,7 +80,7 @@ class RadioGroupElement extends HTMLElement {
 	}
 	
 	set value(val){
-		this.radios.forEach(el=>{
+		(this.radios||[]).forEach(el=>{
 			if( el.value == val )
 				el.active=true
 			else
