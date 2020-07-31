@@ -5,10 +5,10 @@ module.exports = function(Orig){ return {
 	childCollection: function(key ){ return this.getCollection(key); }, // alias
 	
 	// Overrides default to get a collection if no attribute for given `key` exists
-	get: function(key){
+	get: function(key, {dotnotation=true}={}){
 
 		// else, default to normal get of `attributes`
-		if( typeof key !== 'string' )
+		if( !dotnotation || typeof key !== 'string' )
 			return Orig.Get.apply(this, arguments)
 		
 		// get the key, subkey, and path of they exists; ex: "key/subkey.path"

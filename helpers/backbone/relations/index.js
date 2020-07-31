@@ -35,14 +35,17 @@ Object.assign(Backbone.Model.prototype, require('./child-model')(orig))
 // dot notation
 const CollGet = Backbone.Collection.prototype.get
 Object.assign(Backbone.Collection.prototype, {
-	get(key){
+	get(key, {dotnotation=true}={}){
 
 		// else, default to normal get of `attributes`
-		if( typeof key !== 'string' )
+		if( !dotnotation || typeof key !== 'string' )
 			return CollGet.apply(this, arguments)
 
+		key = (key||'')
+		key = key.replace(/\[\.\]/g, '[dot]')
 		var keys = (key||'').split('.')
 		key = keys.shift()
+		key = key.replace(/\[dot\]/g, '.')
 		var path = keys.join('.')
 
 		let m = CollGet.call(this, key)

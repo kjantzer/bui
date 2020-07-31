@@ -246,6 +246,11 @@ myCompany.get('employees.1.name')
 
 A benefit of using dot notation is if a nested item does not exist a fatal error *will not* occur.
 
+**Opt Out:** if you ever need to disable dot notation, pass a second parameter:  
+`.get('file.jpg', {dotnotation:false})`  
+or escape with square brackets:  
+`.get('files.file[.]jpg')`
+
 
 ## Changelog
 
