@@ -100,7 +100,7 @@ module.exports = function(Orig){ return {
 		var CollGiven = CollInfo 
 						&& (
 							(CollInfo.prototype && CollInfo.prototype.toJSON && CollInfo.prototype.fetch)
-							|| CollInfo.prototype.constructor /* class */
+							|| (CollInfo.prototype && CollInfo.prototype.constructor) /* class */
 						)
 		
 		// whoops, couldn't find a collection for the given key
