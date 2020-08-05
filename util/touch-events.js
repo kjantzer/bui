@@ -2,7 +2,8 @@
 export const bindLongpress = (el, {
     touchOnly=true,
     event='contextmenu',
-    delay=500
+    delay=500,
+    detail={} // event detail to be passed
 }={}) =>{
 
     if( !el ) return
@@ -16,10 +17,13 @@ export const bindLongpress = (el, {
 
         el._longPressTimeout = setTimeout(() => {
 
+            detail.target = el
+            
             el._didLongPress = true
             el.dispatchEvent(new CustomEvent(event, {
                 bubbles: true,
                 composed: true,
+                detail
             }))
 
         }, delay);
