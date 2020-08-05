@@ -19,7 +19,7 @@ Object.defineProperty(LitElement.prototype, 'model', {
             this.bindListeners&&this.bindListeners()
 
             this.requestUpdate('model', oldVal)
-            this.onModelChange&&this.onModelChange(val)
+            this.onModelChange&&this.onModelChange(val, oldVal)
         }
     },
 
