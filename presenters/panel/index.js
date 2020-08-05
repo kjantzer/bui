@@ -309,6 +309,15 @@ export class Panel extends LitElement {
         this.__view = view;
         
         if( this.view ){
+
+            // already in the DOM, add a placeholder so we can put this view back after closing
+            if( this.view.offsetParent ){
+                this.__viewOriginalPlacement = document.createElement('span')
+                this.__viewOriginalPlacement.classList.add('panel-view-placeholder')
+                this.__viewOriginalPlacement.style.position = 'absolute'
+                this.view.replaceWith(this.__viewOriginalPlacement)
+            }
+
             this.view.panel = this
             this.appendChild(this.view)
             this._linkToolbar()
@@ -421,6 +430,12 @@ export class Panel extends LitElement {
 
         if( this.route)
             this.panelController._updateRoute()
+
+        // put the view back to it's original DOM location (if it had one)
+        if( this.__viewOriginalPlacement ){
+            this.__viewOriginalPlacement.replaceWith(this.view)
+            delete this.__viewOriginalPlacement
+        }
 
         return this
     }
