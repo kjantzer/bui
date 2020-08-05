@@ -139,18 +139,26 @@ customElements.define('b-list', class extends LitElement {
             -webkit-overflow-scrolling: touch;
         }
 
-        b-infinite-list > [selected] {
-            position: relative;
+        b-infinite-list[selection-on] {
+            user-select: none;
         }
 
-        b-infinite-list > [selected]:before {
+        b-infinite-list > [isselected] {
+            position: relative;
+            z-index: 0;
+        }
+
+        b-infinite-list > [isselected]:before {
             position: absolute;
             content: '';
-            border: solid 1.4em #E3F2FD;
-            border-left-width: 2em;
+            background: var(--theme, #2196F3);
+            opacity: .1;
+            /* border: solid 1.4em #E3F2FD;
+            border-left-width: 2em; */
             height: 100%;
             width: 100%;
             box-sizing: border-box;
+            z-index: -1;
         }
 
         contract-draft-row { /* FIXME: remove? */
@@ -333,9 +341,9 @@ customElements.define('b-list', class extends LitElement {
         })
 
         // TODO: unbind on disconnect?
-        this.selection = new Selection(this.list, this.rowElement, {
-            toolbar: this.shadowRoot.querySelector('b-list-selection-bar')
-        })
+        this.selection = new Selection(this.list, this.rowElement, Object.assign({
+            toolbar: this.shadowRoot.querySelector('b-list-selection-bar'),
+        }, (this.selectionOptions||{})))
         
         this.addEventListener('selection:begin', e=>{
             e.stopPropagation()
