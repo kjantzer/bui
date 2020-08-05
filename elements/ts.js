@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
+import moment from 'moment'
 
 customElements.define('b-ts', class extends LitElement{
 
@@ -31,6 +32,10 @@ customElements.define('b-ts', class extends LitElement{
 
     get date(){ return this.__date}
     set date(date){
+
+        if( typeof date === 'string' )
+            date = moment(date)
+
         this.__date = date
 
         if( date )
