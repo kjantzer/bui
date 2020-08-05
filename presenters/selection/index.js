@@ -73,6 +73,7 @@ export default class Selection {
         if( this.isOn ) return
 
         this.__on = true
+        this.list.setAttribute('selection-on', '')
 
         this.bindEvents(e)
 
@@ -89,6 +90,7 @@ export default class Selection {
 
     end(){
         this.__on = false
+        this.list.removeAttribute('selection-on')
         this.unbindEvents()
         let {items} = this.getItems()
         items.forEach(item=>{
@@ -330,7 +332,9 @@ export default class Selection {
             
         // mouse event
         }else{
-            let item = e.relatedTarget && e.relatedTarget.tagName == this.itemTagName ? e.relatedTarget : e
+            // hmm....why relatedTarget? it doesn't work right
+            // let item = e.relatedTarget && e.relatedTarget.tagName == this.itemTagName ? e.relatedTarget : e
+            let item = e
             this.select(item, this._startItem)
         }
     }
