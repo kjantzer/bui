@@ -1,4 +1,8 @@
 export default {
+    sticky: {
+        closeOnClick: false,
+        autoClose: false
+    },
     alert: {
     },
     error: {
