@@ -27,6 +27,7 @@ Model.prototype.saveEdited = function(opts={}){
 			this._editedAttrs = {}
 			this._origAttrs = null
 
+			this.trigger('edited:saved', attrs)
 			this.trigger('edited', false, {})
 			resolve(dataToSave)
 
@@ -52,7 +53,7 @@ Model.prototype.resetEdited = function(opts={}){
 	this.trigger('edited', this.isEdited(), {})
 }
 
-Model.prototype.editAttr = function(key, val, opts={}){
+Model.prototype.editAttr = async function(key, val, opts={}){
 	let attrs;
 	if( typeof key == 'object' ){
 		attrs = key;
@@ -80,8 +81,11 @@ Model.prototype.editAttr = function(key, val, opts={}){
 	if( opts.save !== true )
 		opts._edited = true
 	
-	if( opts.save === true )
-		return this.save(attrs, opts)
+	if( opts.save === true ){
+		await this.saveSync(attrs, opts)
+		this.trigger('edited:saved', attrs)
+		return
+	}
 
 	this.set(attrs, opts)
 	
