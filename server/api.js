@@ -66,14 +66,22 @@ module.exports = class API {
         args = Array.from(args)
 
         let fnName = args.pop()
+        let opts = {}
+
+        if( typeof fnName == 'object' ){
+            opts = fnName
+            fnName = args.pop()
+        }
 
         if( !Class.prototype[fnName] ){
             return console.warn(`! API: ${Class.name}.${fnName} does not exist`)
         }
 
         args.push(async (req, res)=>{
-
-            if( Class.api.requiresAuthentication !== false && !req.isAuthenticated() )
+            
+            if( opts.requiresAuthentication !== false // this particular route needs AUTH
+            && Class.api.requiresAuthentication !== false // all routes on class need AUTH
+            && !req.isAuthenticated() )
                 return res.status(401).send({error: 'session expired', code: 401})
 
 			// let c = this.init(Class)

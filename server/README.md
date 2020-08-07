@@ -126,8 +126,10 @@ class MyClass {
     static get api(){return {
         root: null // optional root to append to each route path
         idParam: 'id' // used in creation of apiPathPattern (used by Sync)
+        requiresAuthentication: false, // make all API routes require a logged in user
         routes: [
-            ['get', '/url-path', 'methodName']
+            ['get', '/url-path', 'methodName'],
+            ['get', '/url-path-auth', 'methodName', {requiresAuthentication:true}]
         ]
     }}
 
