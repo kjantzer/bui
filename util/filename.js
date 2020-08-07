@@ -14,6 +14,13 @@ module.exports = {
         num = `(${num})`
         if( ext ) ext = '.'+ext
         return [name,num,ext].filter(s=>s).join('')
+    },
+
+    getUnique(fs, path, filename){
+        while(fs.existsSync(path+'/'+filename)){
+            filename = this.increase(filename)
+        }
+        return filename
     }
 }
 
