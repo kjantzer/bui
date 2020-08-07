@@ -13,8 +13,9 @@ const readDir = (dirPath, {
         
     let stats = fs.lstatSync(dirPath)
 
-    if( stats.isFile() )
+    if( stats.isFile() ){
         return getFileInfo(dirPath)
+    }
 
     let files = fs.readdirSync(dirPath).filter(file=>{
         if( whitelist ) 
@@ -39,11 +40,17 @@ const readDir = (dirPath, {
 
 const getFileInfo = (dirPath, file='')=>{
 
+    if( !file ){
+        let filePath = dirPath.split('/')
+        file = filePath.pop()
+        dirPath = filePath.join('/')
+    }
+
     let stats = fs.statSync(path.join(dirPath, file))
     
     let fileInfo = {
         id: file,
-        path: dirPath,
+        path: dirPath+'/'+file,
         name: file,
         type: stats.isDirectory() ? 'd' : 'f',
         size: stats.size,
