@@ -438,6 +438,10 @@ slot[name="help"] {
 	background: var(--bgd);
 }
 
+:host([material="filled"][outside]) main {
+	padding-top: 0;
+}
+
 :host([material="filled"].nolabel) main, /* deprecated, use attribute */
 :host([material="filled"][nolabel]) main {
 	padding-top: 0;
@@ -470,6 +474,10 @@ slot[name="help"] {
 	width: auto;
 }
 
+:host([material="filled"][outside]) .label {
+	transform: translateY(0%);
+}
+
 :host([material="filled"]) .prefix {
 	padding: var(--padY) var(--padX);
     padding-right: 0;
@@ -489,6 +497,14 @@ slot[name="help"] {
 	padding: 0 .35em;
 	margin-left: var(--padX);
 	transform: translateY(-50%);
+}
+
+:host([material="filled"][outside]:not([empty])) .label,
+:host([material="filled"][outside]:focus-within) .label,
+:host([material="filled"][outside][focused]) .label {
+	transform: translateY(-100%);
+	background: none;
+	margin-left: 0;
 }
 
 :host([material="filled"]:focus-within) main:before,
