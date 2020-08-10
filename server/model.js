@@ -52,10 +52,10 @@ module.exports = class Model {
     async beforeAdd(attrs){ /* noop */ }
     afterAdd(attrs){ /* noop */ }
 
-    async beforeUpdate(attrs){ /* noop */ }
+    async beforeUpdate(attrs, where){ /* noop */ }
     afterUpdate(attrs){ /* noop */ }
 
-    async beforeDestroy(){ /* noop */ }
+    async beforeDestroy(where){ /* noop */ }
     afterDestroy(){ /* noop */ }
 
 // =================================================
@@ -236,14 +236,18 @@ module.exports = class Model {
 
         // let subclass remove or modify attributes to be updated
         attrs = await this.validateUpdate(attrs)
-        await this.beforeUpdate(attrs)
+        let where = {[this.idAttribute]:this.id}
+        await this.beforeUpdate(attrs, where)
 
         if( !this.config.table ) throw Error('missing config.table')
 
         if( !this.id || !attrs || Object.keys(attrs).length == 0 )
             return false;
 
-        let result = await this.db.q(/*sql*/`UPDATE ${this.config.table} SET ? WHERE ?`, [attrs, {id:this.id}])
+        let result = await this.db.q(/*sql*/`UPDATE ${this.config.table} SET ? WHERE ?`, [
+            attrs, 
+            where
+        ])
 
         if( result.affectedRows > 0 ){
             
@@ -269,9 +273,13 @@ module.exports = class Model {
         
         if( this.isInvalid ) throw Error('not found')
 
-        await this.beforeDestroy()
+        let where = {[this.idAttribute]:this.id}
+        await this.beforeDestroy(where)
 
-        let result = await this.db.q(/*sql*/`DELETE FROM ${this.config.table} WHERE id = ?`, this.id)
+        let [whereFields, whereVals] = this.db.parseWhere(where)
+        where = `WHERE ${whereFields.join(' AND ')}`
+
+        let result = await this.db.q(/*sql*/`DELETE FROM ${this.config.table} ${where}`, whereVals)
 
         this.afterDestroy(result)
 
