@@ -107,8 +107,16 @@ module.exports = class API {
 
                 if( err.name == 'AccessError' )
                     return res.status(err.code).send({error: err.message, code: err.code})
-                    
-                console.log(err.stack)
+
+                // database error
+                if( err.lastQuery ){
+                    console.error(err.message)
+                    console.log(err.lastQuery)
+                }
+                else{
+                    console.log(err.stack)
+                }
+                
                 let code = err.name == 'Error' ? 400 : 500
                 res.statusMessage = err.code == 'ER_PARSE_ERROR' ? err.code : err.message
                 res.status(code).json({
