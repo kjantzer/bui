@@ -13,6 +13,7 @@ export const DefaultOpts = {
 	closeOnHide: true,
 	maxHeight: 'auto',
 	maxHeightThreshold: 400,
+	maxWidth: '',
 	flip: true,
 	overflowBoundry: 'scrollParent',
 	onClose: ()=>{},

@@ -25,6 +25,7 @@ const DefaultOpts = {
 	className: '',
 	clickToggles: true,
 	closeOnHide: true,
+	maxWidth: '',
 	maxHeight: 'auto',
 	maxHeightThreshold: 400,
 	overflowBoundry: 'scrollParent',
