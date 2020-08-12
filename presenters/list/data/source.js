@@ -73,7 +73,12 @@ export default class DataSource {
             if( this.sorts )
                 data.sorts = this.sorts.value
 
-            await this.coll.fetchSync({data:data})
+            await this.coll.fetchSync({
+                data:data,
+                merge: true,
+                // for Backone 0.9.10/0.9.9, 'update' is needed to register change events on the model, rather than mass "reset" (see line 815 in backbone source)
+                update: true,
+            })
         }
     }
 
