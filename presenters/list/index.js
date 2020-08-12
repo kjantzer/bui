@@ -354,6 +354,7 @@ customElements.define('b-list', class extends LitElement {
     async refresh(){
         this.spinner.show = true
         try{
+            this.selection.end()
             this.dataSource.reset()
             this.list.reset()
             this.toolbar.count = await this.dataSource.length()
@@ -362,6 +363,7 @@ customElements.define('b-list', class extends LitElement {
     }
 
     async reload(){
+        this.selection.end()
         this.dataSource.refilter()
         this.list.reset(this.shouldFetchData)
         this.toolbar.count = await this.dataSource.length()
