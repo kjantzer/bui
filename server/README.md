@@ -174,6 +174,7 @@ module.exports = class MyModel extends Model {
         table: 'my_table',
         tableAlias: false,
         idAttribute: 'id',
+        orderBy: '',
         jsonFields: [] // will parse and encode on find/update/create
     }}
 
@@ -189,10 +190,6 @@ module.exports = class MyModel extends Model {
                         ${where}
                         ${this.findOrderBy()}
                         ${this.findLimit}`
-    }
-
-    findOrderBy(){
-        return ''
     }
 
     findParseRow(row){

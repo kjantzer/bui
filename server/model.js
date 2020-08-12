@@ -33,10 +33,10 @@ module.exports = class Model {
             
         return ''
     }
-
-    // TODO: flesh this out with default usign this.config?
+    
     findOrderBy(){
-        return ''
+        let orderBy = this.config.orderBy
+        return  orderBy ? `ORDER BY ${orderBy}` : ''
     }
 
     findParseRow(row){
