@@ -202,8 +202,8 @@ class TextFieldElement extends HTMLElement {
 		this._editor.addEventListener('keydown', this._onKeydown.bind(this), true)
 		this._input.addEventListener('keydown', this._onKeydown.bind(this), true)
 		this._editor.addEventListener('keyup', this._onKeypress.bind(this), true)
-		this._editor.addEventListener('blur', this._onBlur.bind(this))
-		this._input.addEventListener('blur', this._onBlur.bind(this))
+		this._editor.addEventListener('blur', this._updateValue.bind(this))
+		this._input.addEventListener('blur', this._updateValue.bind(this))
 
 		this.shadowRoot.addEventListener('click', this._onClick.bind(this))
 		this.addEventListener('click', this._onClick.bind(this))
@@ -400,9 +400,38 @@ class TextFieldElement extends HTMLElement {
 			val = val.replace(/\n{2,}/g, "\n")
 		}
 
+		let eventDetail = {
+			str: val
+		}
+
+		// only keep first line, but send extra lines in the event detail
+		if( !this.isMultiline ){
+
+			let div = document.createElement('div')
+			div.innerHTML = htmlCleaner.clean(val, {
+				keepParent: false,
+				allowTags:['p', 'b', 'i', 'strong', 'em']
+			})
+
+			let lines = []
+			for( let child of div.children ){
+				lines.push(child.innerHTML)
+			}
+
+			// if( !truncate ) // TODO: support this?
+			// val = lines.join(' ')
+
+			eventDetail.str = val = lines.shift()
+			eventDetail.extras = lines 
+		}
+
 		// NOTE: using insertHTML (rather than insertText) keeps the browser from
 		// converting line breaks to <div> and <br> tags
 		document.execCommand('insertHTML', false, val);
+
+		this._updateValue()
+
+		this.dispatchEvent(new CustomEvent("pasted", {detail:eventDetail}));
 	}
 	
 	get editorEl(){
@@ -475,7 +504,7 @@ class TextFieldElement extends HTMLElement {
 			e.stopPropagation()
 
 			// NOTE: will this be weird to not blur on enter?
-			this._onBlur() // doesn't actually blur, but does the logic like it did
+			this._updateValue()
 			// this.blur() // will trigger a change if there is one
 
 			// Force change event for empty search/ re-search
@@ -499,7 +528,7 @@ class TextFieldElement extends HTMLElement {
 		clearTimeout(this._changeDelay)
 		if( delay !== null ){
 			delay = delay || 500
-			this._changeDelay = setTimeout(this._onBlur.bind(this), delay)
+			this._changeDelay = setTimeout(this._updateValue.bind(this), delay)
 		}
 
 		if( stop ){
@@ -516,7 +545,7 @@ class TextFieldElement extends HTMLElement {
 			this.select()
 	}
 	
-	_onBlur(){
+	_updateValue(){
 		
 		let val = this.currentValue
 		

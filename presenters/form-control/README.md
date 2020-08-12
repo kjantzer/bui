@@ -114,6 +114,9 @@ Creates an input-like control. Add `multiline` attribute to make it perform like
 - `submit`
 - `enterkey` (DEPRECATED, use submit)
 - `esckey`
+- `pasted` (see event.detail)
+
+`pasted` - if multiline is not activated and a multiline string is pasted, the first line will kept and the remaining will be available in the event details: `{str='', extras=[]}`
 
 #### Input type
 `text-field` defaults to using `contenteditable` which allows the field to grow and shrink
