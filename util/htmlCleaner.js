@@ -18,6 +18,15 @@
     ```
 */
 
+const DEFAULT_ALLOW_TAGS = ['p', 'br', 'b', 'strong', 'em', 'i', 'ul', 'ol', 'li']
+
+// TODO: move to param
+const DEFAULT_ALLOW_STYLES = {
+    fontStyle: ['italic'],
+    fontWeight: ['bold'],
+    textAlign: ['left', 'justify', 'right', 'center']
+}
+
 function parser(str){
     if( typeof DOMParser === 'undefined' )
         throw Error('DOMParser does not exist')
@@ -32,8 +41,14 @@ function stripHTML(str){
     return childNodes.map(node=>node.textContent).join(' ')
 }
 
-function clean(str){
+function clean(str, opts={}){
 
+    opts = Object.assign({
+        keepParent:true,
+        allowTags: DEFAULT_ALLOW_TAGS,
+        allowStyles: DEFAULT_ALLOW_STYLES
+    }, opts)
+    
     var [document, body] = this.parser(str)
     var el = document.createElement('div')
     var p = null
@@ -54,11 +69,11 @@ function clean(str){
             return p = null
 
         // if we have a top level <p>, lets keep it
-        if( node.nodeName == 'P' ){
+        if( childNodes.length == 1 && node.nodeName == 'P' ){
             p = node
 
             // clean all its children
-            cleanNode(null, p)
+            cleanNode(null, p, opts)
 
             // if NOT empty after cleaning, keep it
             if( p.innerText !== '')
@@ -76,9 +91,12 @@ function clean(str){
             }
         
             // cleaning will append to `p`
-            cleanNode(p, node)
+            cleanNode(p, node, opts)
         }
     })
+
+    if( opts.keepParent === false )
+        el = el.childNodes[0] || el
 
     let html = el.innerHTML ? el.innerHTML : Array.from(el.childNodes).map(node=>node.toString()).join('')
 
@@ -88,14 +106,10 @@ function clean(str){
     return html
 }
 
-// TODO: move to param
-let allowStyles = {
-    fontStyle: ['italic'],
-    fontWeight: ['bold'],
-    textAlign: true
-}
+function cleanNode(parent, node, opts={}){
 
-function cleanNode(parent, node){
+    opts.allowTags = opts.allowTags || DEFAULT_ALLOW_TAGS
+    opts.allowStyles = opts.allowStyles || DEFAULT_ALLOW_STYLES
 
     // remove all attributes known to be a problem
     if( node.removeAttribute ){
@@ -106,8 +120,8 @@ function cleanNode(parent, node){
         node.removeAttribute('class')
         node.removeAttribute('style')
 
-        for( let styleName in allowStyles ){
-            let allow = allowStyles[styleName]
+        for( let styleName in opts.allowStyles ){
+            let allow = opts.allowStyles[styleName]
 
             if( allow === true && styles[styleName] ){
                 node.style[styleName] = styles[styleName]
@@ -142,7 +156,7 @@ function cleanNode(parent, node){
 
     // clean all child nodes of this node
     let childNodes = node.childNodes ? Array.from(node.childNodes) : []
-    childNodes.forEach(n=>cleanNode(node, n))
+    childNodes.forEach(n=>cleanNode(node, n, opts))
 
     // remove any empty nodes (but keep <br> which are always empty)
     if( node.nodeName != 'BR' && node.innerText == '' )
@@ -156,8 +170,7 @@ function cleanNode(parent, node){
             parent.appendChild(node)
 
         // keep tags we want
-        // TODO: make list of tags an option?
-        }else if( ['#text', 'p', 'br', 'b', 'strong', 'em', 'i', 'ul', 'ol', 'li'].includes(node.nodeName.toLowerCase()) ){
+        }else if( (['#text'].concat(opts.allowTags)).includes(node.nodeName.toLowerCase()) ){
             // make sure inline elements dont start with a <br> tag ie <br><i><br> as this will parse to <p><i><br> and break Quill
             if( ['i', 'b', 'strong', 'em'].includes(node.nodeName.toLowerCase()) ){
                 if( node.childNodes[0] && node.childNodes[0].nodeName == 'BR' )
