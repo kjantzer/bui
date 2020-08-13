@@ -118,6 +118,9 @@ Creates an input-like control. Add `multiline` attribute to make it perform like
 
 `pasted` - if multiline is not activated and a multiline string is pasted, the first line will kept and the remaining will be available in the event details: `{str='', extras=[]}`
 
+#### Styles
+`--b-text-field-paragraph-margin`
+
 #### Input type
 `text-field` defaults to using `contenteditable` which allows the field to grow and shrink
 as the user types. However, doing so removes support for autofill and input types such

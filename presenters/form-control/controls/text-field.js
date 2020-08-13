@@ -59,6 +59,10 @@ main {
 	margin: -.1em 0;
 }
 
+.editor p {
+	margin: var(--b-text-field-paragraph-margin, 1em) 0;
+}
+
 .editor p:first-child{ margin-top: 0;}
 .editor p:last-child{ margin-bottom: 0;}
 
