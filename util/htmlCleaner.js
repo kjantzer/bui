@@ -95,7 +95,7 @@ function clean(str, opts={}){
         }
     })
 
-    if( opts.keepParent === false )
+    if( opts.keepParent === false && el.childNodes[0].childNodes.length > 1 )
         el = el.childNodes[0] || el
 
     let html = el.innerHTML ? el.innerHTML : Array.from(el.childNodes).map(node=>node.toString()).join('')
