@@ -13,6 +13,7 @@ module.exports = class SearchType {
     parseRow(row){ /* noop */ }
 
     get limit(){ return 100 }
+    get threshold(){ return 0.2 }
     get type(){ return this.constructor.name || 'unknown' }
 
     query(term){
@@ -43,7 +44,7 @@ module.exports = class SearchType {
 
         // further reduce and sort the results from a string search
         let fuse = new Fuse(data, {
-            threshold: 0.2,
+            threshold: this.threshold,
             includeScore: true,
             keys: ["label"]
         })
@@ -61,6 +62,7 @@ module.exports = class SearchType {
         if( ids.length == 0 )
             return []
 
+        // limit ids here so the hydrate query doesn't fetch too much data
         if( this.limit )
             ids = ids.splice(0, this.limit)
 
@@ -78,7 +80,12 @@ module.exports = class SearchType {
 
         let res = Array.from(mappedResult.values())
 
+        // now limit the original query results
+        if( this.limit )
+            res = res.splice(0, this.limit)
+
         res = res.sort((a,b)=>{
+            
             if( a.search.score != b.search.score )
                 return a.search.score - b.search.score
             
