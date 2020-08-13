@@ -398,28 +398,32 @@ class TextFieldElement extends HTMLElement {
 			
 			// remove excessive line breaks
 			val = val.replace(/\n{2,}/g, "\n")
+
+			if( this.isHTML )
+				val = '<p>'+val.split(`\n`).join(`</p>\n<p>`)+'</p>'
+			else
+				val = val.split(`\n`).join(`<br>\n`)
 		}
 
 		let eventDetail = {
-			str: val
+			str: val,
+			extras: []
 		}
 
 		// only keep first line, but send extra lines in the event detail
 		if( !this.isMultiline ){
+
+			let lines = []
 
 			let div = document.createElement('div')
 			div.innerHTML = htmlCleaner.clean(val, {
 				keepParent: false,
 				allowTags:['p', 'b', 'i', 'strong', 'em']
 			})
-
-			let lines = []
+			
 			for( let child of div.children ){
-				lines.push(child.innerHTML)
+				lines.push( this.isHTML ? child.outerHTML : child.textContent )
 			}
-
-			// if( !truncate ) // TODO: support this?
-			// val = lines.join(' ')
 
 			eventDetail.str = val = lines.shift()
 			eventDetail.extras = lines 
@@ -542,7 +546,7 @@ class TextFieldElement extends HTMLElement {
 		if( this.input )
 			this._input.focus()
 		else
-			this.select()
+			this.select('end')
 	}
 	
 	_updateValue(){
