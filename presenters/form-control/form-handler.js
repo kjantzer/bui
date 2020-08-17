@@ -5,7 +5,7 @@ class FormHandler extends HTMLElement {
 	constructor(){
 		super()
 
-		this.editorsByKey = {}
+		this.controlsByKey = {}
 		
 		// bind context to functions
 		this.onModelSync = this.onModelSync.bind(this)
@@ -36,12 +36,12 @@ class FormHandler extends HTMLElement {
 
 	bindControls(){
 		// TODO: change to `controls`?
-		this.editors = Array.from(this.querySelectorAll('form-control[key], check-box[key], radio-group[key], text-field[key], select-field[key]'))
+		this.controls = this.editors = Array.from(this.querySelectorAll('form-control[key], check-box[key], radio-group[key], text-field[key], select-field[key]'))
 
-		this.editors.forEach(el=>{
+		this.controls.forEach(el=>{
 			let key = el.getAttribute('key')
 			if( key ){
-				this.editorsByKey[key] = el
+				this.controlsByKey[key] = el
 
 				if( this.autoGridArea )
 					el.style.gridArea = key
@@ -64,8 +64,8 @@ class FormHandler extends HTMLElement {
 	}
 
 	disconnectedCallback(){
-		this.editors = []
-		this.editorsByKey = {}
+		this.controls = this.editors = []
+		this.controlsByKey = {}
 		this.model = null
 
 		this.removeEventListener('change', this.onEditorChange)
@@ -118,8 +118,8 @@ class FormHandler extends HTMLElement {
 	}
 
 	_updateEditors(){
-		if( this.editors && (this.model || this.hasAttribute('store')) )
-		this.editors.forEach(el=>{
+		if( this.controls && (this.model || this.hasAttribute('store')) )
+		this.controls.forEach(el=>{
 			// set the value of each editor based on the value in the model
 			let key = el.getAttribute('key')
 			let val = this.storedValue(key)
@@ -149,7 +149,7 @@ class FormHandler extends HTMLElement {
 	}
 	
 	onModelEdited(isEdited, editedAttrs){
-		this.editors.forEach(el=>{
+		this.controls.forEach(el=>{
 			if( editedAttrs[el.key] != undefined && !this.autoSave )
 				el.setAttribute('unsaved', '')
 			else
@@ -167,9 +167,9 @@ class FormHandler extends HTMLElement {
 			}
 			
 			// set the editor with the new value
-			if( this.editorsByKey[key] ){
-				this.editorsByKey[key].value = m.changed[key]
-				this.editorsByKey[key].removeAttribute('unsaved')
+			if( this.controlsByKey[key] ){
+				this.controlsByKey[key].value = m.changed[key]
+				this.controlsByKey[key].removeAttribute('unsaved')
 				
 				// this causes problems with tracking "editedAttr"
 				// if( m._origAttrs )
@@ -233,22 +233,22 @@ class FormHandler extends HTMLElement {
 	get disabled(){ return this.__disabled || false }
 	set disabled(disabled=false){
 		this.__disabled = disabled === true
-		this.editors&&this.editors.forEach(el=>el.disabled=this.__disabled)
+		this.controls&&this.controls.forEach(el=>el.disabled=this.__disabled)
 	}
 
 	get isInvalid(){
-		return !!this.editors.find(el=>el.isInvalid)
+		return !!this.controls.find(el=>el.isInvalid)
 	}
 	
 	focus(index=0){
-		this.editors[index]&&this.editors[index].focus()
+		this.controls[index]&&this.controls[index].focus()
 	}
 	
 	get(key){
 		if( typeof key == 'number' )
-			return this.editors[key]
+			return this.controls[key]
 			
-		return Array.from(this.editors).find(ed=>ed.key==key)
+		return Array.from(this.controls).find(ed=>ed.key==key)
 	}
 }
 
