@@ -221,6 +221,7 @@ class FormHandler extends HTMLElement {
 			if( this.autoSave === true ){
 				this.model.save(changes, {patch:this.patchSave||false})
 				this.model.trigger('edited', false, changes)
+				this.model.trigger('saved', changes)
 			}else{
 				this.model.editAttr(changes)
 			}
