@@ -6,6 +6,7 @@ customElements.define('b-grid', class extends LitElement{
         :host {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            grid-template-rows: max-content;
             gap: 1em;
             min-width: 0;
         }
