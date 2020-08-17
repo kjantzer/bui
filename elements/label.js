@@ -95,6 +95,15 @@ export default class Label extends LitElement {
         :host([filled="green"]), :host([badge="green"]) { --bgd: var(--green); }
         :host([filled="pink"]), :host([badge="pink"]) { --bgd: var(--pink); }
         :host([filled="purple"]), :host([badge="purple"]) { --bgd: var(--deep-purple); }
+
+        :host([filled="text"]), :host([badge="text"]) { 
+            --bgd: var(--theme-color, #333);
+            --color: var(--theme-bgd, #fff);
+        }
+        :host([filled="accent"]), :host([badge="accent"]) {
+            --bgd: rgb(var(--theme-rgb, 255,255,255), .2);
+            --color: var(--theme-color, #333);
+        }
         
 
         :host([outline="clear"]) { --bgd: transparent; --color: inherit; }
