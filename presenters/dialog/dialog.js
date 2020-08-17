@@ -126,10 +126,10 @@ export default class Dialog {
 		
 		let btnInfo = undefined
 	
-		if( e.code == 'Escape' ){
+		if( this.opts.btns && e.code == 'Escape' ){
 			btnInfo = this.opts.btns.find(btn=>cancelBtns.includes(btn))
 		
-		}else if( e.code == 'Enter' ){
+		}else if( this.opts.btns && e.code == 'Enter' ){
 			btnInfo = this.opts.btns.reverse().find(btn=>!cancelBtns.includes(btn))
 		}
 		
