@@ -69,6 +69,10 @@ export class IconElement extends HTMLElement {
 			display: none !important;
 		}
 
+		:host([link]) {
+			cursor: pointer;
+		}
+
 		:host([muted]) {
 			opacity: .5;
 		}
