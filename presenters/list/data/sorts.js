@@ -122,7 +122,7 @@ export default class Sorts extends Map {
             className: 'b-list-sort-menu',
             multiple: true,
 			selected: Object.keys(oldVal)
-        }).popover(el, {adjustForMobile:true})
+        }).popover(el, {adjustForMobile:true, maxHeight: '50vh'})
 
         if( selected === false ) return
 
