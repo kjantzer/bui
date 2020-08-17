@@ -74,7 +74,8 @@ Dialog.prompt = function(opts={}){
 		type: '',
 		multiline: false,
 		multiple: false,
-		btns: ['cancel', 'save']
+		btns: ['cancel', 'save'],
+		onSubmit(val, control, blur){}
 	}, opts)
 	
 	if( opts.msg )
@@ -83,6 +84,8 @@ Dialog.prompt = function(opts={}){
 	opts.onResolve = function(resp, dialog){
 		
 		let control = dialog.$('form-control')
+
+		control.removeEventListener('change', onSubmit)
 		
 		if( !resp ) return opts.btns.length > 2 ? [resp] : resp
 		
@@ -149,8 +152,15 @@ Dialog.prompt = function(opts={}){
 
 	let onSubmit = (e)=>{
 		if( ['TEXT-FIELD', 'INPUT'].includes(e.target.tagName) ){
-			control.control.blur()
-			control.removeEventListener('change', onSubmit)
+			// if onSubmit given, dont close input...let function do that if 
+			if( opts.onSubmit ){
+				let val = opts.html ? control.value : (control.control.textValue || control.value)
+				let blur = function(){ control.control.blur() }
+				opts.onSubmit(val, control, blur)
+			}
+			else{
+				control.control.blur()
+			}
 		}
 	}
 
