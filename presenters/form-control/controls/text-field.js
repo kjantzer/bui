@@ -206,8 +206,8 @@ class TextFieldElement extends HTMLElement {
 		this._editor.addEventListener('keydown', this._onKeydown.bind(this), true)
 		this._input.addEventListener('keydown', this._onKeydown.bind(this), true)
 		this._editor.addEventListener('keyup', this._onKeypress.bind(this), true)
-		this._editor.addEventListener('blur', this._updateValue.bind(this))
-		this._input.addEventListener('blur', this._updateValue.bind(this))
+		this._editor.addEventListener('blur', this._onBlur.bind(this))
+		this._input.addEventListener('blur', this._onBlur.bind(this))
 
 		this.shadowRoot.addEventListener('click', this._onClick.bind(this))
 		this.addEventListener('click', this._onClick.bind(this))
@@ -529,6 +529,8 @@ class TextFieldElement extends HTMLElement {
 			this.dispatchEvent(new Event("esckey"));
 		}
 
+		this._didPressKey = true
+
 		let val = this.input ? this._input.value : this._editor.innerText
 		stop = stopMaxLength(e, this, val)
 
@@ -551,6 +553,13 @@ class TextFieldElement extends HTMLElement {
 			this._input.focus()
 		else
 			this.select('end')
+	}
+
+	_onBlur(){
+		if( this._didPressKey )
+			this._updateValue()
+			
+		delete this._didPressKey
 	}
 	
 	_updateValue(){
