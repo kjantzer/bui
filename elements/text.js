@@ -75,6 +75,10 @@ customElements.define('b-text', class extends LitElement{
             vertical-align: sub;
             margin-bottom: -1em;
         }
+
+        ::slotted(b-icon) {
+            vertical-align: bottom;
+        }
     `}
 
     firstUpdated(){
