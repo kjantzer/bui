@@ -80,6 +80,15 @@ class FormControlElement extends HTMLElement {
 		this.addEventListener('click', this._onClick.bind(this), true)
 		
 		this.addEventListener('change', this._onChange)
+
+		this.$$('slot').forEach(slot=>{
+			slot.addEventListener('slotchange', e=>{
+				if( slot.assignedNodes().length == 0 )
+					slot.setAttribute('hidden', '')
+				else
+					slot.removeAttribute('hidden')
+			})
+		})
     }
 	
 	_onChange(e){

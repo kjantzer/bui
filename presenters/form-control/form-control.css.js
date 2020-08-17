@@ -227,11 +227,11 @@ slot[name="help"] {
 	--focusBgd: transparent;
 	/* padding-top: .25em; */
 	--padY: .6em;
-	--borderColor: rgba(0,0,0,.2);
+	--borderColor: var(--fc-border-color, rgba(0,0,0,.2));
 }
 
 :host([material]) main {
-	border-bottom: solid 1px var(--borderColor);
+	border-bottom: solid var(--fc-border-size, 1px) var(--borderColor);
 	padding-top: var(--padY);
 	border-radius: var(--fc-border-radius, 0px);
 }
