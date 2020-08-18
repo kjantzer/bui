@@ -153,7 +153,7 @@ export default class Popover {
 
 	createInvisiblePlaceholderTarget(e){
 		let target = document.createElement('div')
-		target._popoverTarget = e.currentTarget
+		target._popoverTarget = e._popoverTarget = (e._popoverTarget || e.currentTarget)
 		target.classList.add('popover-invisible-placeholder')
 		target.style.position = 'absolute'
 		target.style.left = e.clientX+'px'
@@ -258,7 +258,7 @@ export default class Popover {
 					h = top - (arrowH*2)	
 
 				this.maxHeight = h
-				this.view.style.maxWidth = this.opts.maxWidth||''
+				this.view.style.maxWidth = this.opts.maxWidth||this.view.style.maxWidth
 			}
 		})
 	}
