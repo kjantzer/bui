@@ -74,7 +74,8 @@ let selected = await new Menu([], {
 	typeDelay: 700, // how long until typed characters reset
 	hasMenuIcon: 'right-open',
 	onSelect: ()=>{},
-    handler: null // see handler docs
+    handler: null, // see handler docs
+    handlerArgs: null
 }
 ```
 
@@ -140,9 +141,11 @@ async showMenu(){
 ## Handler
 Sometimes menu actions correlate to existing methods on a class. Instead of writing code to handle each menu item, you can set `fn` on items and automatically handle the selected item with:
 
-`Menu.handle(selected, handler)`  
+`Menu.handle(selected, handler, args)`  
 
-`fn` can be a string matching a function name on the handler object or a real function
+`fn` can be a string matching a function name on the handler object or a real function. `opts.handlerArgs` will be sent to the function as arguments.
+
+Example: `{handlerArgs:[1,2,3]} => theHandler(one, two, three){}`
 
 ```js
 let myClass = {

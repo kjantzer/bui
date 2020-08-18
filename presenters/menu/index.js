@@ -38,19 +38,24 @@ const styles = require('./style.less')
 
 export default class Menu {
 
-	static handle(selected, handler){
+	static handle(selected, handler, args){
 		if( !selected ) return true
+
+		if( !args )
+			args = []
+		else if( !Array.isArray(args) )
+			args = [args]
 
 		if( selected.fn && typeof selected.fn == 'function'){
 			setTimeout(()=>{ // move to end of call stack
-				selected.fn.call(handler)
+				selected.fn.apply(handler, args)
 			})
 			return true
 		}
 
 		if( selected.fn && typeof handler[selected.fn] == 'function' ){
 			setTimeout(()=>{ // move to end of call stack
-				handler[selected.fn].call(handler)
+				handler[selected.fn].apply(handler, args)
 			})
 			return true
 		}
@@ -323,10 +328,10 @@ export default class Menu {
 		if( m == 'divider' || (m.label == 'divider' && m.val == 'divider') )
 			return html`<b-hr></b-hr>`
 
-		if( m.divider )
+		if( m.divider !== undefined )
 			return html`<div class="menu-divider">${m.divider}</div>`
 		
-		if( m.text )
+		if( m.text !== undefined )
 			return html`<div class="menu-text">${m.text}</div>`
 		
 		if( m.title )
@@ -642,7 +647,7 @@ export default class Menu {
 		let didHandle = false
 
 		if( this.opts.handler )
-			didHandle = Menu.handle(data, this.opts.handler)
+			didHandle = Menu.handle(data, this.opts.handler, this.opts.handlerArgs)
 
 		if( !didHandle && this._resolve )
 			this._resolve(data)
