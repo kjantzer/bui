@@ -95,6 +95,8 @@ function clean(str, opts={}){
         }
     })
 
+    if( opts.keepParent === 'never' )
+        el = el.childNodes[0] || el
     if( opts.keepParent === false && el.childNodes[0].childNodes.length > 1 )
         el = el.childNodes[0] || el
 
@@ -102,14 +104,16 @@ function clean(str, opts={}){
 
     // remove line breaks as they dont provide anything and can cause problems in csv exports
     html = html.replace(/[\n\r]/g, ' ')
+    // replace non-breaking spaces with normal spaces
+    html = html.replace(/&nbsp;/g, ' ')
 
     return html
 }
 
 function cleanNode(parent, node, opts={}){
 
-    opts.allowTags = opts.allowTags || DEFAULT_ALLOW_TAGS
-    opts.allowStyles = opts.allowStyles || DEFAULT_ALLOW_STYLES
+    opts.allowTags = opts.allowTags != undefined ? opts.allowTags : DEFAULT_ALLOW_TAGS
+    opts.allowStyles = opts.allowStyles != undefined ? opts.allowStyles : DEFAULT_ALLOW_STYLES
 
     // remove all attributes known to be a problem
     if( node.removeAttribute ){
