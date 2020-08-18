@@ -99,6 +99,7 @@ Creates an input-like control. Add `multiline` attribute to make it perform like
 - `required`
 - `multiline`
 - `html` use html `<p>` tags for new lines
+- `.htmlClean` - see below
 - `pattern="int"` - regexp or preset
 - `max="10"` - max length of chars
 - `type="date"`
@@ -108,6 +109,12 @@ Creates an input-like control. Add `multiline` attribute to make it perform like
 - `name` - useful for autofill (must use `input`)
 - `autocomplete` (must use `input`)
 - `change-delay` will trigger change after stopped typing
+
+`.htmlClean` - override `util/htmlCleaner` options to change how the html is cleaned when the value is set or pasted.
+```html
+<!-- only allow <i> tags -->
+<text-field html .htmlClean=${{allowTags:['i'], allowStyles:false}}></text-field>
+```
 
 #### Events
 - `change`

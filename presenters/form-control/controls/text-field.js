@@ -191,7 +191,7 @@ class TextFieldElement extends HTMLElement {
 		}
 		
 		if( this._val ){
-			this._editor.innerHTML = htmlCleaner.clean(this._val)
+			this._editor.innerHTML = htmlCleaner.clean(this._val, this.htmlClean||{})
 			this._input.value = this._val
 		}
 
@@ -396,7 +396,7 @@ class TextFieldElement extends HTMLElement {
 		&& e.clipboardData.types.includes('text/html') )
 		{
 			val = e.clipboardData.getData('text/html')
-			val = htmlCleaner.clean(val)
+			val = htmlCleaner.clean(val, this.htmlClean||{})
 		}else{
 			val = e.clipboardData.getData('text')
 			
@@ -420,12 +420,17 @@ class TextFieldElement extends HTMLElement {
 			let lines = []
 
 			let div = document.createElement('div')
-			div.innerHTML = htmlCleaner.clean(val, {
+			let cleanOpts = Object.assign({
 				keepParent: false,
 				allowTags:['p', 'b', 'i', 'strong', 'em']
-			})
+			}, this.htmlClean||{})
+
+			div.innerHTML = htmlCleaner.clean(val, cleanOpts)
 			
-			for( let child of div.children ){
+			if( cleanOpts.keepParent == 'never' )
+				lines.push(this.isHTML ? div.innerHTML : div.textContent)
+				
+			else for( let child of div.children ){
 				lines.push( this.isHTML ? child.outerHTML : child.textContent )
 			}
 
@@ -481,6 +486,14 @@ class TextFieldElement extends HTMLElement {
 
 		if( e.key.length == 1)
 			this.removeAttribute('empty')
+
+		// make sure to remove trailing <br> when deleting content
+		if( e.key == 'Backspace' && this.isHTML ){
+			setTimeout(()=>{
+				if( this._editor.innerHTML == '<br>' )
+					this._editor.innerHTML = ''
+			})
+		}
 
 		if( e.key == 'Backspace' && this.isMultiline && this._editor.innerText.trim() == '' ){
 			e.preventDefault()
