@@ -236,7 +236,7 @@ module.exports = function(Orig){ return {
 			if( typeof coll == 'function' ){
 				var Model = coll.call(this, id, key)
 			}else{
-				var Model = info.fetch ? coll.getOrFetch(id, {success:this._childModelFetched.bind(this, key), silent:true}) : coll.getOrCreate(id)
+				var Model = info.fetch ? coll.getOrFetch(id, {success:this._childModelFetched.bind(this, key), silent:true}) : coll.getOrCreate(attributes)
 				Model.refColl = coll
 			}
 
