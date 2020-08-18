@@ -499,7 +499,10 @@ export default class Menu {
 		if( e.target.tagName == 'INPUT' && ['ArrowLeft', 'ArrowRight'].includes(e.code) )
 			return
 		
-		if( !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter'].includes(e.code) ) return
+		// stop processing the keypress unless it is one of these
+		if( !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Space'].includes(e.code) ) return
+
+		if( !this.opts.multiple && e.code == 'Space' ) return
 		
 		let items = this.el.querySelectorAll('.menu-item')
 		let activeItem = items[this._active]
@@ -507,6 +510,22 @@ export default class Menu {
 		// if active item has a menu open, dont perform any actions
 		if( activeItem && activeItem.classList.contains('popover-open') )
 			return
+
+		if( this.opts.multiple && e.code == 'Space' ){
+			if( activeItem ){
+				activeItem.click()
+				e.preventDefault()
+				e.stopPropagation()
+			}
+			return
+		}
+
+		if( this.opts.multiple && e.code == 'Enter' ){
+			this.resolve(this.selected)
+			e.preventDefault()
+			e.stopPropagation()
+			return
+		}
 
 		if( e.code == 'Enter' ){
 			if( activeItem )
