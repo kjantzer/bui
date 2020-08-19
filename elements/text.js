@@ -11,6 +11,10 @@ customElements.define('b-text', class extends LitElement{
             display: block;
         }
 
+        :host([inline]) {
+            display: inline;
+        }
+
         :host([hidden]) {
             display: none;
         }
@@ -57,6 +61,10 @@ customElements.define('b-text', class extends LitElement{
         :host([link]),
         :host([href]) {
             cursor: default;
+        }
+
+        :host([link].popover-open){
+            color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
         }
 
         @media (hover){
