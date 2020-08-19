@@ -374,14 +374,17 @@ export default class Menu {
 
 		let extras = ''
 		if( m.extras ){
-			extras = m.extras
-				.filter(elName=>customElements.get(elName))
-				.map(elName=>{
+			extras = m.extras.map(elName=>{
+
+				if( typeof elName == 'string' && customElements.get(elName) ){
 					let el = document.createElement(elName)
 					el.item = m
 					el.classList.add('menu-item-extra')
 					return el
-				})
+				}
+
+				return elName
+			})
 		}
 
 		let dataTitle = (m.dataTitle || m.label+' '+m.description).trim().toLowerCase()
