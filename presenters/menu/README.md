@@ -66,6 +66,7 @@ let selected = await new Menu([], {
 	selected: false, // value or array of values
 	multiple: false, // more than one value selectable?
 	search: 20, // true (always show) or number of results for it to show
+    matching: false, // prefilter results
 	minW: false,
     maxW: false,
 	width: null,
@@ -82,6 +83,8 @@ let selected = await new Menu([], {
 `multiple` - when `true` clicking an item's checkbox will toggle that item and clicking anywhere else on the row will select ONLY that item.
 
 Set to `multiple:'always'` to make the rows toggle no matter where they are clicked
+
+`matching` - will prefilter results that match the given string.
 
 ### Search
 Menu will detect keystrokes and auto scroll to matching rows. However, if you want better (fuzzy)

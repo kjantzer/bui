@@ -93,10 +93,23 @@ export default class Menu {
 		
 		if( this.opts.width )
 			this.el.style.width = this.opts.width
+
+		if( this.opts.matching )
+			this.matching(this.opts.matching)
 		
 		this.el.addEventListener('click', this.onClick.bind(this))
-		
-		this.promise = new Promise(resolve=>{this._resolve = resolve})
+	}
+
+	get promise(){
+		if( !this._promise )
+			this._promise = new Promise(resolve=>{this._resolve = resolve})
+		return this._promise
+	}
+
+	set promise(val){
+		this._promise = val
+		if( !val )
+			this._resolve = null
 	}
 
 	set menu(menu){
@@ -299,7 +312,7 @@ export default class Menu {
 				<div class="menu-search-bar">
 					<b-icon name="${this.searchIcon}"></b-icon>
 					<b-spinner hidden></b-spinner>
-					<input type="text" placeholder="${this.searchPlaceholder}">
+					<input type="text" placeholder="${this.searchPlaceholder}" value=${this.opts.matching||''}>
 				</div>
 			`:''}
 
@@ -499,7 +512,8 @@ export default class Menu {
 			return;
 		}
 
-		if( e.target.tagName == 'INPUT' && ['ArrowLeft', 'ArrowRight'].includes(e.code) )
+		// if( e.target.tagName == 'INPUT' && ['ArrowLeft', 'ArrowRight'].includes(e.code) )
+		if( ['ArrowLeft', 'ArrowRight'].includes(e.code) )
 			return
 		
 		// stop processing the keypress unless it is one of these
@@ -632,11 +646,7 @@ export default class Menu {
 					}, 700)
 
 				}else{
-					if( !val )
-						this.__filteredMenu = null
-					else
-						this.__filteredMenu = this.__fuse.search(val)
-					
+					this.matching(val)
 					this.render()
 					this.setActiveItem(this.opts.autoSelectFirst?0:null)
 				}
@@ -660,6 +670,13 @@ export default class Menu {
 		if( li )
 			this.setActiveItem(li)
 	}
+
+	matching(val){
+		if( !val )
+			this.__filteredMenu = null
+		else
+			this.__filteredMenu = this.__fuse.search(val)
+	}
 	
 	resolve(data){
 		
@@ -671,8 +688,10 @@ export default class Menu {
 		if( this.opts.handler )
 			didHandle = Menu.handle(data, this.opts.handler, this.opts.handlerArgs)
 
-		if( !didHandle && this._resolve )
+		if( !didHandle && this._resolve ){
 			this._resolve(data)
+			this._resolve = null
+		}
 			
 		if( this.presenter )
 			this.presenter.close()
@@ -684,10 +703,28 @@ export default class Menu {
 			el && this.setActiveItem(el)
 		},0)
 	}
+
+	close(){
+		this.presenter&&this.presenter.close()
+		this.presenter = null
+		this._resolve = null
+		this.promise = null
+	}
+
 /*
 	Presenters
 */
 	popover(target, opts={}){
+
+		if( this.__filteredMenu && this.__filteredMenu.length == 0 ){
+			this.promise = null
+			return Promise.resolve(false)
+		}
+
+		if( this.presenter && this.presenter instanceof Popover ){
+			this.presenter.positionOver(target)
+			return this.promise
+		}
 
 		if( opts.adjustForMobile && device.isMobile && !device.isiPad ){
 			let modalOpts = {btns: ['cancel','done']}
@@ -706,6 +743,7 @@ export default class Menu {
 		let onClose = opts.onClose
 		opts.onClose = ()=>{
 			onClose&&onClose()
+			this.presenter = null
 			
 			if( this.opts.multiple )
 				this.resolve(this.selected)
