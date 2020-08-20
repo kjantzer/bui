@@ -88,18 +88,8 @@ export default class Popover {
 		if( window.Backbone && view instanceof window.Backbone.View )
 			view = view.el
 
-		if( target instanceof MouseEvent ){
-			target = this.createInvisiblePlaceholderTarget(target)
-		}
-
 		this.opts = opts
-		this.target = target
 		this.view = view
-		
-		if( this.target._popoverTarget )
-			this.target._popoverTarget.classList.add('popover-open')
-		else
-			this.target.classList.add('popover-open')
 		
 		this.view.classList.add('__view')
 		
@@ -113,35 +103,10 @@ export default class Popover {
 			this.opts.className.split(' ').forEach(className=>this.el.classList.add(className));
 		}
 		
-		this.target.popover = this
 		this.el.popover = this
 		this.view.popover = this
 		
-		// set position of the popover using Popper
-		this.popper = new Popper(target, this.el, {
-			placement: opts.align,
-			removeOnDestroy: true,
-			onCreate: this._onPositionCreate.bind(this),
-			onUpdate: this._onPositionUpdate.bind(this),
-			modifiers: {
-				inner: {
-					enabled: opts.inner || false
-				},
-				offset: {
-					enabled: opts.offset?true:false,
-					offset: opts.offset
-				},
-				flip: {
-					enabled: opts.flip
-				},
-				preventOverflow: {
-					enabled: opts.preventDefault !== undefined ? opts.preventDefault : true, // FIXME: confusing naming and not sure it works
-					boundariesElement: opts.overflowBoundry || 'scrollParent',
-					// priority: []
-					priority: ['top', 'bottom'].includes(opts.align) ? ['left', 'right'] : ['top', 'bottom']
-				}
-			}
-		});
+		this.positionOver(target)
 		
 		// watch for the view to add elements so we can adjust position
 		this.mutationObserver = new MutationObserver(this.viewMutated.bind(this));
@@ -151,13 +116,78 @@ export default class Popover {
 		OpenPopovers.push(this)
 	}
 
+	positionOver(target){
+
+		this.clearTarget()
+		let opts = this.opts
+
+		if( target instanceof MouseEvent || target instanceof KeyboardEvent ){
+			target = this.createInvisiblePlaceholderTarget(target)
+		}
+
+		this.target = target
+		this.target.popover = this
+
+		if( this.target._popoverTarget )
+			this.target._popoverTarget.classList.add('popover-open')
+		else
+			this.target.classList.add('popover-open')
+
+		if( !this.popper ){
+
+			// set position of the popover using Popper
+			this.popper = new Popper(target, this.el, {
+				placement: opts.align,
+				removeOnDestroy: true,
+				onCreate: this._onPositionCreate.bind(this),
+				onUpdate: this._onPositionUpdate.bind(this),
+				modifiers: {
+					inner: {
+						enabled: opts.inner || false
+					},
+					offset: {
+						enabled: opts.offset?true:false,
+						offset: opts.offset
+					},
+					flip: {
+						enabled: opts.flip
+					},
+					preventOverflow: {
+						enabled: opts.preventDefault !== undefined ? opts.preventDefault : true, // FIXME: confusing naming and not sure it works
+						boundariesElement: opts.overflowBoundry || 'scrollParent',
+						// priority: []
+						priority: ['top', 'bottom'].includes(opts.align) ? ['left', 'right'] : ['top', 'bottom']
+					}
+				}
+			});
+
+		}else{
+			this.popper.reference = target
+			this.popper.update()
+		}
+	}
+
 	createInvisiblePlaceholderTarget(e){
 		let target = document.createElement('div')
 		target._popoverTarget = e._popoverTarget = (e._popoverTarget || e.currentTarget)
 		target.classList.add('popover-invisible-placeholder')
 		target.style.position = 'absolute'
-		target.style.left = e.clientX+'px'
-		target.style.top = e.clientY+'px'
+		
+		if( e instanceof MouseEvent ){
+			target.style.left = e.clientX+'px'
+			target.style.top = e.clientY+'px'
+
+		}else if( e instanceof KeyboardEvent ){
+			// https://stackoverflow.com/a/16210994/484780
+			let root = e.target.getRootNode() // shadowRoot or window
+			let range = root.getSelection().getRangeAt(0)
+			let rect = range.getBoundingClientRect()
+
+			target.style.left = rect.x+'px'
+			target.style.top = rect.y+'px'
+			target.style.height = rect.height+'px'
+		}
+
 		document.body.appendChild(target)
 		return target
 	}
@@ -196,23 +226,30 @@ export default class Popover {
 	viewMutated(mutationsList, observer){
 		this._updatePosition()
 	}
-	
-	close(){
-		
-		if( !this.target.popover ) return;
-		
+
+	clearTarget(){
+		if( !this.target ) return
+
 		this.target.popover = null
-		this.el.popover = null
-		this.view.popover = null
-		
-		this.mutationObserver.disconnect()
-		this.popper.destroy()
 
 		if( this.target._popoverTarget ){
 			this.target._popoverTarget.classList.remove('popover-open')
 			this.target.remove()
 		}else
 			this.target.classList.remove('popover-open')
+	}
+	
+	close(){
+		
+		if( !this.target.popover ) return;
+		
+		this.el.popover = null
+		this.view.popover = null
+
+		this.mutationObserver.disconnect()
+		this.popper.destroy()
+
+		this.clearTarget()
 		
 		// remove this from the list of open popovers as well as all popovers after it
 		var indx = OpenPopovers.indexOf(this)

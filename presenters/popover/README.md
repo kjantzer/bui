@@ -36,7 +36,15 @@ const DefaultOpts = {
 
 ### Target
 The target can be an element or a [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent).
-If the target is a mouse event, the dropdown will appear where the mouse is placed.
+If the target is a mouse event, the popover will appear where the mouse is placed.
+
+It can also be a [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent) in which case the popover will appear near the caret
+
+The position can be updated with `positionOver`:
+
+```js
+popover.positionOver(newKeyboardEvent)
+```
 
 ### Options
 
