@@ -52,7 +52,7 @@ class FormControlElement extends HTMLElement {
 		this._val = value.assignedNodes().map(el=>el.textContent.trim()).join(' ')
 		this._val = this._val.replace(/^\n|\n$/g, '').trim()
 		
-		this.control = this.querySelector('[slot="control"], .control, text-field, rich-text-field, select-field, check-box, radio-group')
+		this.control = this.querySelector('[slot="control"], .control, text-field, rich-text-field, select-field, check-box, radio-group token-text-field')
 		
 		if( this.control ){
 			

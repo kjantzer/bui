@@ -263,8 +263,6 @@ Radio buttons should be nested inside of a `radio-group`
 
 ## `<range-slider>`
 
-*Only tested in Chrome*
-
 <!--
 <range-slider></range-slider>
 -->
@@ -276,6 +274,76 @@ Radio buttons should be nested inside of a `radio-group`
 - `max`
 - `step` - how much the value should change by
 - `label` - auto/show (toggle or always show the value label)
+
+## `<token-text-field>`
+A specialized text field that detects typed words and presents a menu of tokens to select. Selected tokens cannot be edited, but they can be deleted.
+
+> Note: maybe this functionality should be incorporated into text-field?  
+> TODO: add `change` event so `form-handler` can use it  
+> TODO: fix bug when clicking token in auto complete menu
+
+#### Attributes
+- `placeholder`
+- `.value`
+- `.tokens` - array of tokens for autocomplete (see below)
+- `.options` - special options to override
+- `tokenName` - the custom element to use for token (defaults to `b-label`)
+- `lines` - number of lines to allow (default is 999)
+- `showlines` - lines will be drawn when in disabled mode
+
+**Value**
+```js
+let value = [
+    [
+        "Simple text string",
+        {
+            "label": "Token label",
+            "attrs": {
+                "id": "22645"
+            }
+        }
+    ],
+    [
+        "Simple text on line 2",
+    ]
+]"
+```
+
+Accessing the `control.value` will return this ^ same format. The HTML version can be accessed with `control.htmlValue`
+
+**Tokens**
+
+```js
+let tokens = [
+	{
+		label: 'Required Label',
+		// attributes will be added to the token dataset
+		attrs: {
+			optional: 'attributes',
+			id: 'some id'
+		}
+	}
+]
+```
+
+**Options**
+
+```js
+// default options
+let options = {
+	autoComplete: {
+        minLength: 3, // word length to trigger auto complete
+        allResults: '@' // set to null to disable feature
+    },
+    allowPaste: false,
+    allowStyling: false,
+}
+```
+
+#### Style Hooks
+- `--token-text-field-line-height`
+- `--token-text-field-padding`
+
 
 ## `<form-handler>`
 

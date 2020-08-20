@@ -1,157 +1,194 @@
 import { LitElement, html, css } from 'lit-element'
+import '../../../../helpers/lit-element/events'
+import '../../../../helpers/lit-element/selectors'
+import '../../../../elements/label'
+import autoComplete from './auto-complete'
+import ContentEditableHistory from './history'
 
 const DEFAULT_OPTS = {
-    className: '',
-    value: '',				// html string or JSON format,
-    autoComplete: {},		// options for auto complete
-    multiLines: true,
+    autoComplete: {
+        minLength: 3,
+        allResults: '@' // set to null to disable feature
+    },
     allowPaste: false,
     allowStyling: false,	// bold/italics keyboard shorcuts
-    editing: true, 		// set to true if you want to be in edit mode upon init
-    dblClickToEdit: true,
-    beforeToken:'',
-    afterToken: '',
-    onTokenInsert(data){}
+}
+
+function metaKey(e){
+    e = e || event;
+    return e && (e.ctrlKey || e.altKey || e.metaKey);
 }
 
 customElements.define('token-text-field', class extends LitElement{
 
-    // get renderRoot(){ return this }
+    static get properties(){return {
+        disabled: {type: Boolean, reflect: true},
+        key: {type: String},
+        value: {type: Object},
+        lines: {type: Number, reflect: true},
+        tokenName: {type: String, attribute: 'token-name'},
+        tokens: {type: Array},
+        placeholder: {type: String, reflect: true}
+    }}
 
     static get styles(){return css`
         :host {
             display: block;
             position: relative;
-            padding: .5em;
-            margin: 0 -.5em;
-            background: #fff;
             min-height: 1em;
-            border: solid 1px transparent;
-            font-family: Helvetica;
-            line-height: 1.5em;
-            outline: none;
-            clear: both;
-            cursor: pointer;
+            --line-height: var(--token-text-field-line-height, 1em);
+            line-height: var(--line-height);
 
-            width: 400px;
+            min-width: 120px;
             border-color: gray;
         }
+
+        :host([disabled]) {
+            user-select: none;
+        }
+
+        :host(:not([disabled])) ::selection,
+        :host(:not([disabled])) main ::selection {
+            background: var(--selectionBgd, #FFF8E1);
+        }
+
+        main {
+            min-height: var(--line-height);
+            outline: none;
+            padding: var(--token-text-field-padding, 0);
+        }
+
+        main[contenteditable] {
+            cursor: text;
+        }
+
+        :host([showlines]) main:not([contenteditable]) br:not(:last-child) {
+            content: '';
+            display: block !important;
+            height: 1px !important;
+            min-height: 0 !important;
+            margin: .15em 0 0;
+            border-top: dashed 1px rgba(var(--theme-rgb), .15);
+        }
+
+        .token {
+            user-select: auto;
+            /* make it easier to see caret */
+            margin-left: 1px;
+            margin-right: 1px;
+        }
+
+
+        /* br:nth-of-type(1) ~ .token {
+            --bgd: var(--token-color-line2, var(--theme));
+        } */
+
+        main:not([contenteditable]) .token {
+            --bgd: var(--theme-bgd-accent, #eee);
+            color: inherit;
+        }
+
+        .token {
+            font-size: 1em;
+            margin-top: -.15em;
+            margin-bottom: -.15em;
+            font-weight: normal;
+            vertical-align: baseline;
+            line-height: .9em;
+        }
+
+        .token > span {
+            font-size: .9em;
+        }
+
+        .placeholder {
+            display: block;
+            margin-bottom: calc(-1 * var(--line-height));
+            pointer-events: none;
+            min-height: var(--line-height);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        :host([empty]) .placeholder {
+            opacity: 1;
+            visibility: visible;
+        }
     `}
 
-    render(){return html`
-        <slot></slot>
-    `}
+    constructor(){
+        super()
 
-    // events: {
-    //     'dblclick': 'onDblClick',
-    //     'click': 'onClick',
-    //     'click .token': 'onTokenClick',
-    //     'blur': 'onBlur',
-    //     'keydown': 'onKeydown',
-    //     'keyup': 'onKeyup',
-    //     'keypress': 'onKeypress',
-    //     'paste': 'onPaste'
-    // }
-
-    initialize(){
-        super.initialize()
-
-        window.tokenEditor = this; // TEMP
+        this.disabled = false
+        this.lines = 999 // effectively no limit
+        this.tokens = []
+        this.value = ''
 
         this.options = Object.assign({}, DEFAULT_OPTS, this.options||{});
-        this.history =[];
-        this.historyAt = 0;
 
-        // TEMP
-        this.options.value = [["By ",{"label":"Meg Gardiner","attrs":{"id":"22645"}}],["Read by ",{"label":"Hillary Huber","attrs":{"id":"5954"}}]]
-
-        var autoCompleteOptions = this.options.autoComplete;
-        autoCompleteOptions.target = this;
-
-        // this.subview('auto-complete') || this.subview('auto-complete', new AutoCompleteView(autoCompleteOptions))
-        // this.listenTo(this.subview('auto-complete'), 'select', this.onAutoCompleteSelect)
-
-        // if( this.options.items )
-        //     this.setAutoCompleteItems(this.options.items)
-
-        this.setValue()
-        this.markHistory();
-
-        if( this.options.editing )
-            this.edit();
-    }
-    
-    onTokenClick(e){
-        selection = window.getSelection();
-        range = document.createRange();
-        range.selectNodeContents(e.currentTarget);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        this.focus();
+        this.history = new ContentEditableHistory({
+            capture:()=>{
+                return {
+                    caret: this.getSelection(),
+                    content: this.main.innerHTML
+                }
+            },
+            apply:(hist)=>{
+                // console.log('apply:', hist.caret.start, hist.caret.end);
+                this.main.innerHTML = hist.content;
+                this.setSelection(hist.caret.start, hist.caret.end)
+            }
+        })
     }
 
-    isEditing(){
-        return this.contentEditable == 'true'
+    firstUpdated(){
+        // if a value was given at init, set it now
+        // we dont do this in the `render` function as we dont
+        // want to update the innerHTML on every render
+        this.main.innerHTML = this._value
     }
 
-    edit(doEdit){
-        this.contentEditable = doEdit !== false
-    }
+    get main(){ return this.$$('main') }
 
-    setValue(val){
+    render(){return html`
+        <b-text muted class="placeholder">${this.placeholder}</b-text>
+        <main 
+            ?contenteditable=${!this.disabled}
+            @click=${this.onClick}
+            @contextmenu=${this.onContextmenu}
+            @keydown=${this.onKeydown}
+            @keyup=${this.onKeyup}
+            @keypress=${this.onKeypress}
+            @paste=${this.onPaste}
+        ></main>
+        
+    `}
 
-        if( arguments.length == 0 )
-            val = this.options.value;
-        else
-            this.options.value = val;
-
+    set value(val){
         var html = typeof val == 'string' ? val : this.jsonToHTML(val)
 
-        this.innerHTML = html;
+        if( !html.match(/<br>$/) )
+            html += '<br>'
 
-        html ? this.classList.remove('empty') : this.classList.add('empty')
+        if( this.main )
+            this.main.innerHTML = html;
+        else
+            this._value = html
 
-        this.endWithBrTag();
-    }
-
-    // sets the items available in 'auto complete'
-    setAutoCompleteItems(items){
-        this.items = items;
-        // this.subview('auto-complete').setItems(items);
-    }
-
-    // when a users selects an 'auto complete' item
-    onAutoCompleteSelect(data, autoComplete){
-        autoComplete.hide();
-        this.replaceWithToken(data)
-    }
-
-    onDblClick(){
-        if( this.options.dblClickToEdit == true && !this.isEditing() ){
-            this.edit(true)
-            this.focusEnd();
-        }
-    }
-
-    // when clicked somewhere else in the editor, hide auto complete
-    onClick(){ 
-        // this.subview('auto-complete').hide();
+        html&&html!='<br>' ? this.removeAttribute('empty') : this.setAttribute('empty', '')
     }
     
-    onBlur(){
-        if( this._manualBlur ){
-            this._manualBlur = false;
-            return;
-        }
-        // this.subview('auto-complete').hide(); this.trigger('blur', this)
-    }
-
-    blur(){ his._manualBlur=true; this.blur() }
+    get value(){ return this.toJSON() }
+    get htmlValue(){ return this.main ? this.main.innerHTML.replace(/<br>$/, '') : this._value }
 
     makeToken(d){
         if( !d ) return;
         
-        var node = document.createElement('b-label');
+        let tokenName = this.tokenName
+        if( !tokenName || !customElements.get(tokenName) )
+            tokenName = 'b-label'
+
+        var node = document.createElement(tokenName);
         node.setAttribute('filled', 'theme')
         node.contentEditable = false;
         node.classList.add('token');
@@ -159,53 +196,54 @@ customElements.define('token-text-field', class extends LitElement{
         for( let key in d.attrs ){
             node.setAttribute('data-'+key, d.attrs[key]);
         }
-        // _.each(d.attrs, function(val, key){
-        //     node.setAttribute('data-'+key, val);
-        // })
 
         var label = document.createElement('span');
         label.innerHTML = d.label;
         node.appendChild(label)
 
-        return this.options.beforeToken + node.outerHTML + this.options.afterToken;
+        return node.outerHTML
     }
 
-    insertToken(d){
-        this.insertHTML( this.makeToken(d) )
-        this.options.onTokenInsert(d)
-    }
+    replaceWithToken(token){
 
-    replaceWithToken(token, allText=false){
+        this.history.cancelMark()
 
-        clearTimeout( this.historyTimeout )
-
-        var sel = window.getSelection(),
+        var sel = this.shadowRoot.getSelection(),
             range = sel.getRangeAt(0),
             text = range.endContainer.textContent.slice(0, range.endOffset ),
-            lastSpace = text.lastIndexOf(' ') > -1 ? text.lastIndexOf(' ') : text.lastIndexOf(' ');
+            lastSpace = text.lastIndexOf(' ') > -1 ? text.lastIndexOf(' ') : text.lastIndexOf(' '),
             word = lastSpace > -1 ? text.slice(lastSpace+1) : text;
 
         // delete the word the user was typing so we can replace it with a token
-        range.setStart(range.endContainer, (allText ? 0 : lastSpace+1));
+        range.setStart(range.endContainer, lastSpace+1);
         range.deleteContents();
 
-        if( token )
-            this.insertToken(token);
+        // added to keep space before range from being removed
+        // not sure why this works..but seems to on Chrome
+        let nonBreakSpace = document.createTextNode("\u00A0")
+        range.insertNode(nonBreakSpace)
+
+        if( token ){
+            this.insertHTML( this.makeToken(token) )
+            // TODO: implement this? not needed atm
+            // this.emitEvent('token-insert', {token: null})
+        }
+
+        nonBreakSpace.remove()
     }
 
     currentWord(){
 
-        var sel = window.getSelection(),
+        var sel = this.shadowRoot.getSelection(),
             range = sel.getRangeAt(0);
 
-        if( range.endContainer == this
+        if( range.endContainer == this.main
         || !range.endContainer.textContent ) return [];
 
         var text = range.endContainer.textContent.slice(0, range.endOffset ),
-            lastSpace = text.lastIndexOf(' ') > -1 ? text.lastIndexOf(' ') : text.lastIndexOf(' ');
+            lastSpace = text.lastIndexOf(' ') > -1 ? text.lastIndexOf(' ') : text.lastIndexOf(' '),
             word = lastSpace > -1 ? text.slice(lastSpace+1) : text;
 
-        //console.log('current word: ', word);
         return [word, text];
     }
 
@@ -214,90 +252,106 @@ customElements.define('token-text-field', class extends LitElement{
             e.preventDefault(); // disable pasting so we dont have to do style cleanup
             return false;
         }else{
-            this.markHistoryIn(0);
+            // TODO: use util/htmlCleaner?
+            this.history.markAfterDelay(0);
         }
     }
 
     onKeydown(e){
-        
+
         // backspace
         if( e.which == 8 ){
             this.deleteTokenIfSelected();
         }
         
-        // left or right
-        if( e.which == 37 || e.which == 39){
+        if( ['ArrowLeft', 'ArrowRight'].includes(e.key) ){
             this.moveCursorIfTokenSelected(e.which)
         }
 
-        if( e.which === 27 ){ // esc
-            this.trigger('cancel', this)
+        if( e.key === 'Escape' ){
             return;
         }
 
         // disable style commands like bold an italic
-        if( this.metaKey() && (e.keyCode === 66 /* bold */ || e.keyCode === 73 /* italics */)){
+        if( metaKey(e) && (e.keyCode === 66 /* bold */ || e.keyCode === 73 /* italics */)){
 
-            if( this.options.allowStyling !== true )
+            if( this.options.allowStyling !== true ){
+                e.preventDefault()
+                e.stopPropagation()
                 return false;
+            }
             else
-                this.markHistoryIn(0);
+                this.history.markAfterDelay(0);
         }
 
         // override undo/redo for our own built in history manager
-        if( this.metaKey() && e.keyCode === 90 ){ // ctrl/cmd + z
-            e.shiftKey ? this.redo() : this.undo()
+        if( metaKey(e) && e.keyCode === 90 ){ // ctrl/cmd + z
+            e.shiftKey ? this.history.redo() : this.history.undo()
+            e.preventDefault()
+            e.stopPropagation()
             return false;
         }
 
-        // on enter, force `<br>` tags instead of <div> or <p>
-        if (e.keyCode === 13) {
+        
+        if (e.key === 'Enter') {
 
-            if( this.options.multiLines <= 0 ) return false;
+            // only one line allowed
+            if( this.lines <= 1 ){
+                e.preventDefault()
+                e.stopPropagation()
+                return false
+            }
             
-            if( this.options.multiLines > 1 && this.currentNumberOfLines() >= this.options.multiLines )
+            if( this.currentNumberOfLines >= this.lines ){
+                e.preventDefault()
+                e.stopPropagation()
                 return false;
+            }
 
-            // if at the end of editor, a trailing <br> is needed to make the cursor jump to the next line
-            if( this.getSelection().start >= this.length() )
-                document.execCommand('insertHTML', false, '<br class="newline"><br>');
-            else
-                document.execCommand('insertHTML', false, '<br class="newline">');
-
-            this.markHistoryIn(0);
+            this.history.markAfterDelay(0);
 
             return false;
         }
     }
     
-    currentNumberOfLines(){
-        return this.$('.newline').length + 1
+    get currentNumberOfLines(){
+        // there should always be a trailing <br> which is why we can simply count them
+        return this.$$all('br').length
     }
 
     onKeyup(e){
 
-        // re-render auto-complete with the current word
-        setTimeout(()=>{
-            let [word, text] = this.currentWord()
-            // this.subview('auto-complete').render( word ) // FIXME:  
-        })
+        if( ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Escape'].includes(e.key) ) return
+
+        let [word, text] = this.currentWord()
+
+        autoComplete(e, word, this.tokens, Object.assign(this.options.autoComplete, {
+            onSelect: (selected)=>{
+                if( selected )
+                    this.replaceWithToken(selected)
+            }
+        }))
 
         // backspace
         if( e.which == 8 )
-            this.markHistoryIn(500);
+            this.history.markAfterDelay(500);
+
+        if( this.main.innerHTML == '' || this.main.innerHTML == '<br>' ) 
+            this.setAttribute('empty', '')
+        else
+            this.removeAttribute('empty')
 
         // make sure we end with a `<br>` tag.
         clearTimeout( this.keyupTimeout )
         this.keyupTimeout = setTimeout(this.endWithBrTag.bind(this), 300);
-
     }
 
     onKeypress(e){
-        this.markHistoryIn(500);
+        this.history.markAfterDelay(500);
     }
     
     tokenIsSelected(){
-        var s = window.getSelection();
+        var s = this.shadowRoot.getSelection();
         var r = s.getRangeAt(0);
         
         return r.startContainer.classList && r.startContainer.classList.contains('token') 
@@ -308,11 +362,11 @@ customElements.define('token-text-field', class extends LitElement{
         var token;
         if( token = this.tokenIsSelected() ){
             
-            this.markHistory()
+            this.history.mark()
             setTimeout(function(){
                 token.remove();
             },100)
-            this.markHistoryIn(200)
+            this.history.markAfterDelay(200)
             return;
         }
     }
@@ -322,10 +376,7 @@ customElements.define('token-text-field', class extends LitElement{
             
             var s = this.getSelection();
             
-            // clear selection
-            // window.getSelection().empty()
-            
-            // // left
+            // left
             if( char == 37 )
                 this.focus(s.start)
             // right
@@ -336,16 +387,13 @@ customElements.define('token-text-field', class extends LitElement{
 
     endWithBrTag(){
 
-        // dont do this if auto complete showing, cause when calling `replaceWithToken`;
-        // it would replace more than the word if 300ms passed before selecting
-        // if( this.subview('auto-complete').isShowing ) return;
+        if( !this.main.innerHTML.match(/<br>$/) ){
 
-        if( !this.innerHTML.match(/<br>$/) ){
+            // NOTE: why do this??
+            // if( !this.isInFocus() )
+            //     this.focusEnd();
 
-            if( !this.isInFocus() )
-                this.focusEnd();
-
-            var sel = window.getSelection();
+            var sel = this.shadowRoot.getSelection();
 
             // no selection after telling to focus? then the editor is not in the DOM
             if( sel.type == 'None'){
@@ -357,8 +405,7 @@ customElements.define('token-text-field', class extends LitElement{
             var frag = document.createDocumentFragment()
             var br = frag.appendChild( document.createElement('br') );
 
-            //document.execCommand('insertHTML', false, frag);
-            this.appendChild(frag)
+            this.main.appendChild(frag)
 
             // this breaks in Safari....
             range = range.cloneRange();
@@ -372,20 +419,20 @@ customElements.define('token-text-field', class extends LitElement{
 
     insertHTML(html){
 
-        if( !this.isInFocus() )
-            this.focusEnd();
+        // if( !this.isInFocus() ) // what was the point of this?
+        //     this.focusEnd();
 
         // http://stackoverflow.com/a/6691294/484780
-        sel = window.getSelection();
+        let sel = this.shadowRoot.getSelection();
 
         if (sel.getRangeAt && sel.rangeCount) {
-            range = sel.getRangeAt(0);
+            let range = sel.getRangeAt(0);
             range.deleteContents();
 
-            var el = document.createElement("div");
+            let el = document.createElement("div");
             el.innerHTML = html;
 
-            var frag = document.createDocumentFragment(), node, lastNode;
+            let frag = document.createDocumentFragment(), node, lastNode;
 
             while ( (node = el.firstChild) ) {
                 lastNode = frag.appendChild(node);
@@ -402,18 +449,60 @@ customElements.define('token-text-field', class extends LitElement{
                 sel.addRange(range);
             }
 
-            this.markHistory();
+            this.history.markAfterDelay()
         }
+    }
 
+    onContextmenu(e){
+        let token = null
+
+        if( e.target.tagName == 'SPAN' && e.target.parentElement.classList.contains('token') )
+            token = e.target.parentElement
+        else if( e.target.classList.contains('token') )
+            token = e.target
+
+        if( token && !this.disabled ){
+            e.stopPropagation()
+            e.preventDefault()
+            this.emitEvent('token-contextmenu', {token: token, control: this})
+        }
+    }
+
+    onClick(e){
+
+        if( this.disabled ) return
+
+        if( e.target.tagName == 'SPAN' && e.target.parentElement.classList.contains('token') )
+            this.onTokenClick(e.target.parentElement)
+
+        else if( e.target.classList.contains('token') )
+            this.onTokenClick(e.target)
+
+        this.history.markAfterDelay()
+    }
+
+    onTokenClick(token){        
+        
+        this.emitEvent('token-click', {token: token, control: this})
+
+        let selection = this.shadowRoot.getSelection();
+        let range = document.createRange();
+        range.selectNodeContents(token);
+        range.setStart(this.main, 0)
+        
+        this.focus(range.toString().length);
     }
 
     length(){
-        return this.textContent.trim().replace(/\n/g, '').length
+        return this.main.textContent.trim().replace(/\n/g, '').length
     }
 
-    isInFocus(){
-        return document.activeElement == this
-    }
+    // isInFocus(){
+    //     // FIXME: if still needed?
+    //     return document.activeElement == this
+    // }
+
+    blur(){ this.main.blur() }
 
     // focuses editor and sets caret position
     focus(atChar){
@@ -430,135 +519,12 @@ customElements.define('token-text-field', class extends LitElement{
 
     selectAll(){ this.setSelection(0, this.length()) }
 
-    jsonToHTML(json){
-
-        let lines = []
-        
-        for( let line of json ){
-            let htmlLine = ''
-
-            for( let node of line ){
-                
-                if( typeof node == 'string' )
-                    htmlLine += node
-                else if( node.label !== undefined )
-                    htmlLine += this.makeToken(node)
-                // legacy support
-                else
-                    htmlLine + this._objectTextareaObjectToHTML(node) // FIXME:
-            }
-
-            lines.push(htmlLine)
-        }
-
-        return lines.join('<br class="newline">');
-
-        // var self = this;
-        // var lines = _.map(json, function(row){ // FIXME:
-        //     return _.reduce(row, function(str, d){
-        //         if( typeof d == 'string' )
-        //             return str + d
-        //         else if( d.label !== undefined )
-        //             return str + self.makeToken(d)
-
-        //         // legacy support
-        //         else
-        //             return str + self._objectTextareaObjectToHTML(d)
-        //     }, '')
-        // })
-        // return lines.join('<br class="newline">');
-    }
-
-    // legacy support
-    _objectTextareaObjectToHTML(d){
-        if( d.type == 'text' )
-            return d.data.text;
-
-        // var attrs = _.clone(d.data);
-        var attrs = Object.assign({}, d.data);
-        var label = d.data.text; delete attrs.text;
-
-        return this.makeToken({label: label, attrs: attrs})
-    }
-
-    toHTML(){
-        return this.innerHTML.replace(/<br>$/, '');
-    }
-
-    toString(lineSeparator){
-        lineSeparator = lineSeparator || "\n";
-        // FIXME:
-        var html = _.stripTags( this.toHTML().replace(/<br class="newline">/g, "||") )
-        return html.replace(/\|\|/g, lineSeparator)
-    }
-
-    // creates a JSON structure of the editor content
-    toJSON(objectsOnly=false){
-
-        var html = this.toHTML();
-
-        if( !html ) return [];
-
-        // split each row by the `<br>` tag
-        var json = html.split('<br class="newline">');
-
-        // covert each row to array of strings and objects
-        json = _.map(json, function(str){ // FIXME:
-
-            // make a temp DOM element for navigating through child nodes
-            var div = document.createElement('div')
-            div.innerHTML = str;
-
-            // row data
-            var row = [];
-
-            // make each node an object
-            _.each(div.childNodes, function(node){
-
-                // simple string of text
-                if( !node.tagName && !objectsOnly )
-                    row.push(escape(node.textContent))
-
-                // spans are 'tokens', so make them an {}
-                else if( node.tagName == 'SPAN'){
-                    row.push({
-                        label: escape(node.textContent),
-                        attrs: _.clone(node.dataset)
-                    })
-                }
-
-            })
-
-            return row;
-
-        })
-
-        return json;
-    }
-
-    // Legacy support until code that relies on old objectTextarea format is updated
-    toObjectTextarea(){
-        var json = this.toJSON();
-
-        return _.map(json, function(row){ return _.map(row, function(d){
-
-            if( typeof d == 'string' ){
-                return {type: "text", data: {text: d}}
-            }else{
-                var attrs = d.attrs;
-                attrs.text = d.label;
-                return {type: "bubble", data: attrs}
-            }
-
-        })})
-    }
-
     setSelection(start, end) {
 
         var range = document.createRange(),
             el = this, count = 0, startNode, endNode;
 
-        this.childNodes.forEach((node, indx)=>{
+        this.main.childNodes.forEach((node, indx)=>{
 
             var len = (node.textContent ? node.textContent.length : node.length) || 0;
 
@@ -588,8 +554,6 @@ customElements.define('token-text-field', class extends LitElement{
                 }
             }
 
-            // console.log(start, count, len);
-
             // found start of selection
             if( (count > start || (count == start && len == 0)) && !startNode ){
 
@@ -613,20 +577,18 @@ customElements.define('token-text-field', class extends LitElement{
 
         })
 
-        // this.focus();
+        this.main.focus();
 
-        var sel = window.getSelection();
+        var sel = this.shadowRoot.getSelection();
         sel.removeAllRanges();
         sel.addRange(range);
-
-        return;
 
         // http://stackoverflow.com/a/16100733/484780
     }
 
     getSelection() {
 
-        var sel = window.getSelection();
+        var sel = this.shadowRoot.getSelection();
 
         if( sel.type == 'None' )
             return {
@@ -638,6 +600,11 @@ customElements.define('token-text-field', class extends LitElement{
 
         var preSelectionRange = range.cloneRange();
         preSelectionRange.selectNodeContents(this);
+        
+        // no range selected
+        if( preSelectionRange.collapsed )
+            preSelectionRange.setStart(this.main, 0);
+        
         preSelectionRange.setEnd(range.startContainer, range.startOffset);
         var start = preSelectionRange.toString().length;
         return {
@@ -646,39 +613,120 @@ customElements.define('token-text-field', class extends LitElement{
         };
     }
 
-    metaKey(e){
-        e = e || event;
-        return e && (e.ctrlKey || e.altKey || e.metaKey);
+    jsonToHTML(json){
+
+        let lines = []
+        
+        for( let line of json ){
+            let htmlLine = ''
+
+            for( let node of line ){
+                
+                if( typeof node == 'string' )
+                    htmlLine += node
+                else if( node.label !== undefined )
+                    htmlLine += this.makeToken(node)
+                // legacy support
+                else
+                    htmlLine + this._objectTextareaObjectToHTML(node)
+            }
+
+            lines.push(htmlLine)
+        }
+
+        return lines.join('<br>');
     }
 
-    markHistory(){
-        // splices history at current history index (and removes all history after current index)
-        this.history.splice(this.historyAt+1, Number.MAX_VALUE, {
-            caret: this.getSelection(),
-            content: this.innerHTML
+    // legacy support
+    _objectTextareaObjectToHTML(d){
+        if( d.type == 'text' )
+            return d.data.text;
+
+        // var attrs = _.clone(d.data);
+        var attrs = Object.assign({}, d.data);
+        var label = d.data.text; delete attrs.text;
+
+        return this.makeToken({label: label, attrs: attrs})
+    }
+
+    toString(lineSeparator="\n"){
+        let lines = []
+        let line = ''
+
+        this.main.childNodes.forEach(node=>{
+            if( node.tagName && node.tagName == 'BR' ){
+                lines.push(line)
+                line = ''
+            }
+
+            line += node.textContent
         })
 
-        this.historyAt = this.history.length - 1;
+        if( line )
+            lines.push(line)
+
+        return lines.join(lineSeparator)
     }
 
-    markHistoryIn(ms){
-        clearTimeout( this.historyTimeout )
-        this.historyTimeout = setTimeout(this.markHistory.bind(this), ms||0);
+    // creates a JSON structure of the editor content
+    toJSON(objectsOnly=false){
+
+        let html = this.htmlValue;
+
+        if( !html ) return [];
+
+        // split each row by the `<br>` tag
+        let json = html.split('<br>');
+
+        // covert each row to array of strings and objects
+        json = json.map((str)=>{
+
+            // make a temp DOM element for navigating through child nodes
+            var div = document.createElement('div')
+            div.innerHTML = str;
+
+            // row data
+            var row = [];
+
+            // make each node an object
+            div.childNodes.forEach((node)=>{
+
+                // simple string of text
+                if( !node.tagName ){
+                    if( !objectsOnly)
+                        row.push(escape(node.textContent))
+
+                // spans are 'tokens', so make them an {}
+                }else if( node.classList.contains('token') ){
+                    row.push({
+                        label: escape(node.textContent),
+                        attrs: Object.assign({}, node.dataset)
+                    })
+                }
+
+            })
+
+            return row;
+        })
+
+        return json;
     }
 
-    undo(){
-        if( this.historyAt <= 0 ) return;
-        this.applyHistory(this.history[ --this.historyAt ])
-    }
+    // Legacy support until code that relies on old objectTextarea format is updated
+    toObjectTextarea(){
+        var json = this.toJSON();
 
-    redo(){
-        if( this.historyAt >= this.history.length - 1 ) return;
-        this.applyHistory(this.history[ ++this.historyAt ])
-    }
+        return json.map((row)=>{ return row.map((d)=>{
 
-    applyHistory(hist){
-        this.innerHTML = hist.content;
-        this.setSelection(hist.caret.start, hist.caret.end)
+            if( typeof d == 'string' ){
+                return {type: "text", data: {text: d}}
+            }else{
+                var attrs = d.attrs;
+                attrs.text = d.label;
+                return {type: "bubble", data: attrs}
+            }
+
+        })})
     }
 
 })
