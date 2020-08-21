@@ -80,6 +80,10 @@ module.exports = class SearchType {
 
         let res = Array.from(mappedResult.values())
 
+        res = res.filter(row=>{
+            return !!row.search
+        })
+
         // now limit the original query results
         if( this.limit )
             res = res.splice(0, this.limit)

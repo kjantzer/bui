@@ -86,16 +86,20 @@ class SearchAPI {
         // add the hydrated data to the sorted results
         let res = result.map(row=>{
             let rowData = byType[row.item.type][row.item.id]
+
+            if( rowData )
             rowData.search = Object.assign({
                 score: row.score,
                 weight: row.item.weight
             }, rowData.search||{})
+
             return rowData
         })
 
-        // dedupe
+        // dedupe and remove rows that didnt hydrate
         let uniqIds = {}
         res = res.filter(row=>{
+            if( !row ) return false
             let id = row.type+row.id
             if( uniqIds[id] ) return false
             return uniqIds[id] = true
