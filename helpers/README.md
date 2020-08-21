@@ -103,6 +103,36 @@ console.log(MyElement.shared == MyElement.shared) // true
 console.log(MyElement.shared == new MyElement() ) // false
 ```
 
+### Event Target Model
+
+```js
+import 'bui/helpers/lit-element/event-target-model'
+```
+
+A pattern at Blackstone when using lit-html is to render 
+a collection of items as a set of controls. Buttons and actions
+are taken that need access to the model which has been set at the top
+level of the html item. This extension makes it easer to access 
+the model and top parent target
+
+```js
+html`<div class="item" .model=${m}>
+    <p>stuff here</p>
+    <footer>
+        <b-btn @click=${this.takeAction}></b-btn>
+    </footer>
+</div>`
+
+takeAction(e){
+    let model = e.model
+    let target = e.modelTarget // => `.item`
+
+    // same as
+    target = e.currentTarget.parentElement.parentElement
+    model = target.model
+}
+```
+
 ### Subviews
 
 > Considering DEPRECATION
