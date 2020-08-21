@@ -80,7 +80,7 @@ export class PaperElement extends LitElement {
             margin-bottom: var(--padding);
             padding: var(--padding);
             display: flex; 
-            align-content: center;
+            align-items: center;
             justify-content: space-between;
         }
 
