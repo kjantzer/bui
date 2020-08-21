@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
 import '../../../../helpers/lit-element/events'
 import '../../../../helpers/lit-element/selectors'
-import '../../../../elements/label'
+import './token'
 import autoComplete from './auto-complete'
 import ContentEditableHistory from './history'
 
@@ -186,7 +186,7 @@ customElements.define('token-text-field', class extends LitElement{
         
         let tokenName = this.tokenName
         if( !tokenName || !customElements.get(tokenName) )
-            tokenName = 'b-label'
+            tokenName = 'token-text-field-token'
 
         var node = document.createElement(tokenName);
         node.setAttribute('filled', 'theme')
@@ -615,6 +615,9 @@ customElements.define('token-text-field', class extends LitElement{
 
     jsonToHTML(json){
 
+        if( !json )
+            return ''
+
         let lines = []
         
         for( let line of json ){
@@ -628,7 +631,7 @@ customElements.define('token-text-field', class extends LitElement{
                     htmlLine += this.makeToken(node)
                 // legacy support
                 else
-                    htmlLine + this._objectTextareaObjectToHTML(node)
+                    htmlLine += this._objectTextareaObjectToHTML(node)
             }
 
             lines.push(htmlLine)
@@ -649,6 +652,7 @@ customElements.define('token-text-field', class extends LitElement{
         return this.makeToken({label: label, attrs: attrs})
     }
 
+    // TODO: change to get string from `toJSON`?
     toString(lineSeparator="\n"){
         let lines = []
         let line = ''
@@ -694,12 +698,12 @@ customElements.define('token-text-field', class extends LitElement{
                 // simple string of text
                 if( !node.tagName ){
                     if( !objectsOnly)
-                        row.push(escape(node.textContent))
+                        row.push(node.textContent)
 
                 // spans are 'tokens', so make them an {}
                 }else if( node.classList.contains('token') ){
                     row.push({
-                        label: escape(node.textContent),
+                        label: node.textContent,
                         attrs: Object.assign({}, node.dataset)
                     })
                 }
@@ -715,20 +719,25 @@ customElements.define('token-text-field', class extends LitElement{
     // Legacy support until code that relies on old objectTextarea format is updated
     toObjectTextarea(){
         var json = this.toJSON();
-
-        return json.map((row)=>{ return row.map((d)=>{
-
-            if( typeof d == 'string' ){
-                return {type: "text", data: {text: d}}
-            }else{
-                var attrs = d.attrs;
-                attrs.text = d.label;
-                return {type: "bubble", data: attrs}
-            }
-
-        })})
+        return jsonToObjectTextarea(json)
     }
 
 })
 
 export default customElements.get('token-text-field')
+
+
+// Legacy support until code that relies on old objectTextarea format is updated
+export function jsonToObjectTextarea(json){
+    return json.map((row)=>{ return row.map((d)=>{
+
+        if( typeof d == 'string' ){
+            return {type: "text", data: {text: d}}
+        }else{
+            var attrs = d.attrs;
+            attrs.text = d.label;
+            return {type: "bubble", data: attrs}
+        }
+
+    })})
+}

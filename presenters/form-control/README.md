@@ -287,7 +287,7 @@ A specialized text field that detects typed words and presents a menu of tokens 
 - `.value`
 - `.tokens` - array of tokens for autocomplete (see below)
 - `.options` - special options to override
-- `tokenName` - the custom element to use for token (defaults to `b-label`)
+- `token-name` - the custom element to use for token (defaults to `b-label`)
 - `lines` - number of lines to allow (default is 999)
 - `showlines` - lines will be drawn when in disabled mode
 
