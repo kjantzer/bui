@@ -213,11 +213,11 @@ module.exports = class Model {
 
         if( !this.config.table ) throw Error('missing config.table')
 
-        if( !attrs || Object.keys(attrs).length == 0 )
-            return false;
-
         this.encodeJsonFields(attrs)
         await this.beforeAdd(attrs)
+
+        if( !attrs || Object.keys(attrs).length == 0 )
+            throw Error('no data to add')
 
         let result = await this.db.q(/*sql*/`INSERT INTO ${this.config.table} 
                                         SET ? ${this.db.updateOnDuplicate(attrs)}`, attrs)
