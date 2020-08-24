@@ -101,7 +101,7 @@ export default class Label extends LitElement {
             --color: var(--theme-bgd, #fff);
         }
         :host([filled="accent"]), :host([badge="accent"]) {
-            --bgd: rgb(var(--theme-rgb, 255,255,255), .2);
+            --bgd: rgba(var(--theme-rgb, 0,0,0), .2);
             --color: var(--theme-color, #333);
         }
         
