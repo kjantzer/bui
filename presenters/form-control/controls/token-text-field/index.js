@@ -94,11 +94,11 @@ customElements.define('token-text-field', class extends LitElement{
             margin-bottom: -.15em;
             font-weight: normal;
             vertical-align: baseline;
-            line-height: .9em;
+            line-height: var(--token-font-size, .9em);
         }
 
         .token > span {
-            font-size: .9em;
+            font-size: var(--token-font-size, .9em);
         }
 
         .placeholder {
