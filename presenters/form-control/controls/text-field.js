@@ -319,15 +319,15 @@ class TextFieldElement extends HTMLElement {
 		// retain current empty value
 		let emptyVal = this.value === null ? null : ''
 
-		if( this.isHTML )
-			return this._editor.innerHTML || emptyVal
-		
 		if( this.input )
 			return this._input.value || emptyVal
 			
 		else if( this._editor.innerHTML === '<p><br></p>' || this._editor.innerHTML === '<br>' )
 			return emptyVal
 		
+		else if( this.isHTML )
+			return this._editor.innerHTML || emptyVal
+			
 		else
 			return this._editor.innerText || this._editor.innerHTML || emptyVal
 	}
