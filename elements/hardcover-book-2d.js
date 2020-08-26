@@ -15,6 +15,7 @@ customElements.define('b-hardcover-book-2d', class extends LitElement{
             background: var(--b-hardcover-book-2d-bgd, #bfbfbf);
             box-shadow: var(--b-hardcover-book-2d-shadow, rgba(0, 0, 0, 0.3) 0px 4px 10px);
             box-sizing: border-box;
+            line-height: 0;
         }
 
         .spine {
