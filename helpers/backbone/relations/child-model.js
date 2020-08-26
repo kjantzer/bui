@@ -30,8 +30,26 @@ module.exports = function(Orig){ return {
 		// traversing up the parents for every `get` is expensive when dealing with lots of models so only do it if no attribute matches
 		if( this.attributes[key] === undefined ){
 
-			if( this[key] !== undefined )
-				return typeof this[key] == 'function' ? this[key].call(this) : this[key]
+			if( this[key] !== undefined ){
+
+				if( typeof this[key] == 'function' ){
+
+					// keep infinite loop from happening:
+					// example: key(){ return this.get('key') }
+					// NOTE: this is a fix for legacy code... this ^ shouldn't be done
+					if( this[key]._calledFromGetKey != key ){
+						this[key]._calledFromGetKey = key
+						let m = this[key].call(this)
+						delete this[key]._calledFromGetKey
+						return path && m.get ? m.get(path) : m
+					}
+
+					delete this[key]._calledFromGetKey
+
+				}else{
+					return this[key]
+				}
+			}
 			
 			// traverse up the parent models to check for one with a matching "name"
 			let p = this.parentModel || (this.collection && this.collection.parentModel)
