@@ -6,11 +6,15 @@ import {Model} from 'backbone'
 import './promises'
 
 Model.prototype.isEdited = function(){
-	return this._editedAttrs&&Object.keys(this._editedAttrs).length>0
+	return this.numberEditedAttrs()>0
 }
 
 Model.prototype.editedAttrs = function(){
 	return Object.assign({}, this._editedAttrs||{})
+}
+
+Model.prototype.numberEditedAttrs = function(){
+	return this._editedAttrs&&Object.keys(this._editedAttrs).length
 }
 
 Model.prototype.saveEdited = function(opts={}){
