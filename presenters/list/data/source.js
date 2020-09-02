@@ -28,7 +28,7 @@ export default class DataSource {
 
     async refilter(){
         this.lastFiltered = 0
-        this._rawData = this.coll.models || this.coll
+        this._rawData = this.coll && this.coll.models || this.coll || []
         this._filteredData = this._rawData
         this.data = this._rawData
 

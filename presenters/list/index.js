@@ -24,9 +24,10 @@ customElements.define('b-list', class extends LitElement {
 
     get coll(){ return this.__coll }
     set coll(coll){
-        let didChange = !!this.__coll && this.__coll != coll
+        let didChange = this.__collHasBeenSetOnce && this.__coll != coll
         this.__coll = coll
         this.dataSource.coll = coll
+        this.__collHasBeenSetOnce = true
 
         // I think this is ok to do here
         if( didChange )
