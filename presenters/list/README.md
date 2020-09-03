@@ -115,7 +115,8 @@ const filters = {
                 // optional
                 toolbarLabel: 'all', // label will be used if this is unset
                 description: '',
-                icon: ''
+                icon: '',
+                clearsAll: false // never allowed to multi select
             },
             'divider',
             {label: 'Type 1', val: '1'},

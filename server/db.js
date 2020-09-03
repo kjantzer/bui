@@ -1,10 +1,20 @@
 const mysql = require('mysql');
 require('../util/promise.series')
 
+const clauses = require('./db/clauses')
+
 module.exports = class DB {
 
     constructor(config){
         this.pool = mysql.createPool(config);
+    }
+
+    get clauses(){ return clauses }
+
+    clause(name, ...args){
+        let Class = clauses[name]
+        if( !Class ) throw new Error('Invalid clause: '+name)
+        return new Class(...args)
     }
     
     getConnection(){
@@ -152,10 +162,15 @@ module.exports = class DB {
             if( key[0] != '`' )
                 key = this.escapeId(key)
 
-            if( ['NULL', 'NOT NULL'].includes(val) ){
+            if( val instanceof clauses.Clause )
+                fields.push(val.toSqlString(key, this))
+
+            else if( ['NULL', 'NOT NULL'].includes(val) ){
                 fields.push(`${key} IS ${val}`)
+
             }else if( ['IS NULL', 'IS NOT NULL'].includes(val) ){
                 fields.push(`${key} ${val}`)
+                
             }else{
 
                 let oper = '='

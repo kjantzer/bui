@@ -60,7 +60,7 @@ db.transactionalQuery([
 ```
 
 ### db.parseWhere()
-Takes a hash of where key:values and converts them to fields and values to be used in a MySQL query
+Takes a hash of where key:values and converts them to fields and values to be used in a MySQL query. See "Clauses" feature below
 
 ```js
 let [fields, values] = db.parseWhere({
@@ -94,6 +94,40 @@ let rows = [
 ]
 
 let resp = await this.db.bulkInsert('table_name', rows)
+```
+
+## Clauses
+> In development
+
+Predefined clauses can be used to aid in creation of the where clause (currently `parseWhere` is the only thing that knows how to use clauses)
+
+```js
+let where = {
+    'release_date': db.clauses.DateRange('2020-01-01', '2020-01-31')
+}
+
+```
+
+#### Defined Clauses
+- `DateRange(start, end)`  
+makes "BETWEEN date AND date"
+
+#### Custom Clauses
+```
+class CustomClause extends db.clauses.Clause {
+    
+    constructor(val){
+        super()
+        this.val = val
+    }
+
+    // REQUIRED
+    // note: `key` will already be escaped
+    // but you should escape values from the constructor
+    toSqlString(key, db){
+        return `${key} = ${db.escape(this.val)}`
+    }
+}
 ```
 
 ## Results
@@ -192,7 +226,7 @@ module.exports = class MyModel extends Model {
                         ${this.findLimit}`
     }
 
-    findParseRow(row, resultCount){
+    findParseRow(row, index, resultCount){
         // defaults to noop, only passing the row along as-is
         return row
     }

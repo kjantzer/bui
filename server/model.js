@@ -39,7 +39,7 @@ module.exports = class Model {
         return  orderBy ? `ORDER BY ${orderBy}` : ''
     }
 
-    findParseRow(row, resultCount){
+    findParseRow(row, index, resultCount){
         this.decodeJsonFields(row)
         return row
     }
@@ -187,8 +187,8 @@ module.exports = class Model {
         let resp = await this.db.query(sql, whereVals)
 
         // parse each row (for decoding JSON strings, etc)
-        await Promise.series(resp, row=>{
-            return this.findParseRow(row, resp.length)
+        await Promise.series(resp, (row,i)=>{
+            return this.findParseRow(row, i, resp.length)
         })
 
         // might need to activate this if too  many conflicts
