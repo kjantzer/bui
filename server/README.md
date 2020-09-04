@@ -112,7 +112,7 @@ db.query(`SELECT * FROM table_name WHERE ${clause}`, values)
 - `FullText(val)`
 
 #### Custom Clauses
-```
+```js
 class CustomClause extends db.clauses.Clause {
     
     // default constructor
