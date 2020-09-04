@@ -1,6 +1,6 @@
 const Clause = require('./Clause')
 
-module.exports = class DateRange extends Clause {
+module.exports = class Between extends Clause {
 
     constructor(start, end){
         super()
@@ -8,7 +8,7 @@ module.exports = class DateRange extends Clause {
         this.end = end
     }
 
-    toSqlString(key, db){
+    toSqlString(db, key){
         return `${key} BETWEEN ${db.escape(this.start)} AND ${db.escape(this.end)}`
     }
 }

@@ -59,21 +59,6 @@ db.transactionalQuery([
 ])
 ```
 
-### db.parseWhere()
-Takes a hash of where key:values and converts them to fields and values to be used in a MySQL query. See "Clauses" feature below
-
-```js
-let [fields, values] = db.parseWhere({
-    id: [1,2],
-    type: 'foobar'
-})
-
-console.log(fields) // ['id IN(?)', 'type = ?']
-console.log(values) // [[1,2], 'foobar']
-
-db.query(`SELECT * FROM table WHERE ${fields.join(' AND ')}`, values)
-```
-
 ### db.updateOnDuplicate()
 A utility function to be used when writting a query. Accepts a hash of attributes and will return the `UPDATE ON DUPLICATE...` string. *Values will be properly escaped.*
 
@@ -97,34 +82,49 @@ let resp = await this.db.bulkInsert('table_name', rows)
 ```
 
 ## Clauses
-> In development
+> In development, but useable
 
-Predefined clauses can be used to aid in creation of the where clause (currently `parseWhere` is the only thing that knows how to use clauses)
+Predefined clauses can be used to aid in creation of queries, particularly when clauses are optional or given from an outside source.
 
 ```js
-let where = {
-    'release_date': db.clauses.DateRange('2020-01-01', '2020-01-31')
-}
+let clauses = new db.clauses.Group({
+    'is_active': true,
+    'release_date': new db.clauses.Between('2020-01-01', '2020-01-31'),
+    'a-clause-group': new db.clauses.Group({
+        'category': ['Adventure', 'Science'],
+        'genre': 'Non-Fiction'
+    }, 'OR')
+})
 
+// add to the clauses
+clauses.set('is_deleted', false)
+
+// get the clause string and values to be given to `db.query`
+let [clause, values] = clauses.toSqlString(db)
+
+db.query(`SELECT * FROM table_name WHERE ${clause}`, values)
 ```
 
 #### Defined Clauses
-- `DateRange(start, end)`  
-makes "BETWEEN date AND date"
+- `Group(clauses, operator)` defaults to `AND` operator
+- `Like(val)`
+- `DateRange(start, end)`
+- `FullText(val)`
 
 #### Custom Clauses
 ```
 class CustomClause extends db.clauses.Clause {
     
-    constructor(val){
+    // default constructor
+    constructor(value){
         super()
-        this.val = val
+        this.value = value
     }
 
     // REQUIRED
     // note: `key` will already be escaped
     // but you should escape values from the constructor
-    toSqlString(key, db){
+    toSqlString(db, key){
         return `${key} = ${db.escape(this.val)}`
     }
 }
@@ -133,6 +133,7 @@ class CustomClause extends db.clauses.Clause {
 ## Results
 Results are returned in a subclass of `array` that provides a few helpers:
 
+#### Properties
 - `.first`
 - `.last`
 - `.value` gets value of first column in first row

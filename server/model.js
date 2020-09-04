@@ -185,13 +185,13 @@ module.exports = class Model {
         // let subclassed model apply more to where clause
         await this.findWhere(where)
 
-        let [whereFields, whereVals] = this.db.parseWhere(where)
-        where = whereFields.length > 0 ? `WHERE ${whereFields.join(' AND ')}` : ''
+        let [clause, clauseValues] = new this.db.clauses.Group(where).toSqlString(this.db)
+        where = clause ? `WHERE ${clause}` : ''
 
         let sql = this.findSql(where, opts)
         if( typeof sql != 'string' ) return sql
 
-        let resp = await this.db.query(sql, whereVals)
+        let resp = await this.db.query(sql, clauseValues)
 
         // parse each row (for decoding JSON strings, etc)
         await Promise.series(resp, (row,i)=>{
@@ -286,10 +286,9 @@ module.exports = class Model {
         let where = {[this.idAttribute]:this.id}
         await this.beforeDestroy(where)
 
-        let [whereFields, whereVals] = this.db.parseWhere(where)
-        where = `WHERE ${whereFields.join(' AND ')}`
-
-        let result = await this.db.q(/*sql*/`DELETE FROM ${this.config.table} ${where}`, whereVals)
+        let [clause, clauseValues] = new this.db.clauses.Group(where).toSqlString(this.db)
+        
+        let result = await this.db.q(/*sql*/`DELETE FROM ${this.config.table} WHERE ${clause}`, clauseValues)
 
         this.afterDestroy(result)
 

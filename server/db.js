@@ -150,7 +150,10 @@ module.exports = class DB {
 
     get NOW(){ return {toSqlString:()=>'NOW()'}; }
 
+    // DEPRECATED
     parseWhere(where={}){
+
+        console.warning('!DEPRECATED - please stop using `db.parseWhere` and use clauses');
 
         let fields = []
         let values = []
@@ -163,7 +166,7 @@ module.exports = class DB {
                 key = this.escapeId(key)
 
             if( val instanceof clauses.Clause )
-                fields.push(val.toSqlString(key, this))
+                fields.push(val.toSqlString(this, key))
 
             else if( ['NULL', 'NOT NULL'].includes(val) ){
                 fields.push(`${key} IS ${val}`)
