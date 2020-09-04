@@ -131,6 +131,12 @@ export default class DataSource {
 
             this.lastFiltered = new Date().getTime()
 
+            clearTimeout(this._applyFiltersEventEmit)
+            this._applyFiltersEventEmit = setTimeout(()=>{
+                this.emit('changed')
+            },500)
+
+
         }).finally(_=>delete this._filtering)
     }
 

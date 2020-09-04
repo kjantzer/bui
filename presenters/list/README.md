@@ -352,6 +352,7 @@ Filters and Sorts emit events when changed:
 ```
 list.filters.on('change', changes=>{})
 list.sorts.on('change', selectedSorts=>{})
+list.dataSource.on('changed', ()=>{})
 ```
 
 The list dispatches a DOM event when the content changes (this would happen when applied filters change, sort changes, or content is fetched from the server)
