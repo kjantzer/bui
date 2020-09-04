@@ -93,7 +93,14 @@ module.exports = class Model {
 
     get filters(){
         try {
-            return this.req.query.filters ? JSON.parse(this.req.query.filters) : {}
+            let filters = this.req.query.filters
+
+            if( filters && typeof filters == 'string')
+                return JSON.parse(filters)
+            else if( filters )
+                return filters
+            else
+                return {}
         }catch(err){
             console.log('Malformed filters:', this.req.query.filters);
             return {}
