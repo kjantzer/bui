@@ -135,6 +135,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         if( val.length == 0 )
             val = [val[0], val[0]]
 
+        if( this.editors )
         this.editors.forEach((el,i)=>{
             el.value = val[i]||null
         })
