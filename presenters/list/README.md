@@ -291,6 +291,15 @@ A list header can be rendered between the toolbar and the list items.
 </b-list>
 ```
 
+### Footer
+A list footer can be displayed at the bottom of the list
+
+```html
+<b-list>
+    <div slot="footer"></div>
+</b-list>
+```
+
 ### Empty (view)
 A default "empty" view will used when no results. You can choose to use your own with custom info and actions
 
@@ -344,6 +353,7 @@ The default list view can be extended with html slots
 - `toolbar:after`
 - `toolbar:refresh` - your own refresh button (or to remove default)
 - `header`
+- `footer`
 
 ## Events
 

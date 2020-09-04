@@ -101,18 +101,20 @@ customElements.define('b-list', class extends LitElement {
     static get styles(){return css`
         :host {
             display: grid;
-            grid-template-rows: auto auto 1fr;
+            grid-template-rows: auto auto 1fr auto;
             overflow: hidden;
             flex: 1;
             position: relative;
         }
 
-        slot[name="header"] {
+        slot[name="header"],
+        slot[name="footer"] {
             display: block;
             overflow-x: auto;
         }
 
-        slot[name="header"]::-webkit-scrollbar {
+        slot[name="header"]::-webkit-scrollbar,
+        slot[name="footer"]::-webkit-scrollbar {
             display: none;
             width: 0 !important;
             height: 0 !important;
@@ -219,6 +221,7 @@ customElements.define('b-list', class extends LitElement {
             fetch-on-load=${(this.listOptions&&this.listOptions.fetchOnLoad)}
             layout="${this.layout}"
         ></b-infinite-list>
+        <slot name="footer"></slot>
     `}
 
     connectedCallback(){
@@ -330,10 +333,16 @@ customElements.define('b-list', class extends LitElement {
         })
 
         this.header = this.$$('[name="header"]').assignedNodes()[0]
+        this.footer = this.$$('[name="footer"]').assignedNodes()[0]
 
-        if( this.header )
+        if( this.header || this.footer )
         this.list.addEventListener('scroll', e=>{
-            this.header.scrollLeft = e.currentTarget.scrollLeft
+            
+            if( this.header )
+                this.header.scrollLeft = e.currentTarget.scrollLeft
+
+            if( this.footer )
+                this.footer.scrollLeft = e.currentTarget.scrollLeft
             
             if( e.currentTarget.scrollLeft == 0 )
                 this.removeAttribute('scrolled-x')
