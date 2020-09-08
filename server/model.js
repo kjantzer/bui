@@ -12,7 +12,7 @@ module.exports = class Model {
 
 // methods to override in subclass
 
-    findWhere(where){
+    findWhere(where, opts){
         // add or manipulate the where clause
     }
 
@@ -183,7 +183,7 @@ module.exports = class Model {
         where = where || {}
 
         // let subclassed model apply more to where clause
-        await this.findWhere(where)
+        await this.findWhere(where, opts)
 
         let [clause, clauseValues] = new this.db.clauses.Group(where).toSqlString(this.db)
         where = clause ? `WHERE ${clause}` : ''

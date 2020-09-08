@@ -214,11 +214,11 @@ module.exports = class MyModel extends Model {
     }}
 
     // alter the where clause
-    findWhere(where){
+    findWhere(where, opts){
         // defaults to noop
     }
 
-    findSql(where){
+    findSql(where, opts){
         // this is the default query
         return /*sql*/`SELECT * 
                         FROM ${this.config.table} ${this.config.tableAlias||''}
