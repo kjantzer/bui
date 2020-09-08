@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
-import Menu from 'menu'
+import Menu from '../../../menu'
 
 customElements.define('b-list-filter-view-search', class extends LitElement{
 
