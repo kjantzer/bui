@@ -14,6 +14,7 @@ export const DefaultOpts = {
 	maxHeight: 'auto',
 	maxHeightThreshold: 400,
 	maxWidth: '',
+	width: '',
 	flip: true,
 	overflowBoundry: 'scrollParent',
 	onClose: ()=>{},
@@ -295,6 +296,7 @@ export default class Popover {
 					h = top - (arrowH*2)	
 
 				this.maxHeight = h
+				this.view.style.width = this.opts.width||this.view.style.width
 				this.view.style.maxWidth = this.opts.maxWidth||this.view.style.maxWidth
 			}
 		})
