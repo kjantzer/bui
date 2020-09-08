@@ -1,5 +1,4 @@
 import { LitElement, html, css } from 'lit-element'
-import moment from 'moment'
 
 customElements.define('b-list-filter-view-input', class extends LitElement{
 
@@ -25,6 +24,11 @@ customElements.define('b-list-filter-view-input', class extends LitElement{
 
     `}
 
+    constructor(opts){
+        super()
+        this.opts = opts
+    }
+
     firstUpdated(){
 
         this.input = this.shadowRoot.querySelector('form-control')
@@ -36,7 +40,7 @@ customElements.define('b-list-filter-view-input', class extends LitElement{
     }
 
     render(){return html`
-        <form-control material="filled" style="width:${this.get('width'), '200px'}">
+        <form-control material="filled">
             <text-field reset-invalid placeholder="${this.get('placeholder')}" @enterkey=${this.onEnter}></text-field>
             <span slot="help">${this.get('helpText')}</span>
             <b-btn slot="suffix" class="cancel" icon="cancel-circled" text @click=${this.clearValue}></b-btn>
@@ -44,7 +48,12 @@ customElements.define('b-list-filter-view-input', class extends LitElement{
     `}
 
     get(key, defaultVal=''){
-        let val = this.filter.attrs[key]
+        let val = this.opts[key]
+        
+        // legacy - should use viewOpts now
+        if( val == undefined )
+            val = this.filter.attrs[key]
+        
         return val != undefined ? val : defaultVal
     }
 

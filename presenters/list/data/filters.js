@@ -7,11 +7,13 @@ import Emitter from 'component-emitter'
 import FilterViewDate from '../toolbar/filter-view-date'
 import FilterViewInput from '../toolbar/filter-view-input'
 import FilterViewSlider from '../toolbar/filter-view-slider'
+import FilterViewSearch from '../toolbar/filter-view/search'
 
 const CustomViews = {
     'date': FilterViewDate,
     'input': FilterViewInput,
-    'slider': FilterViewSlider
+    'slider': FilterViewSlider,
+    'search': FilterViewSearch
 }
 
 // do NOT include 0 or false as unset values
@@ -116,6 +118,23 @@ export default class Filters extends Map {
         }else{
             return key ? this.__value[key] : this.__value
         }
+    }
+
+    toPostData(){
+        let data = {}
+
+        for( let key in this.__value ){
+            let d = this.__value[key]
+            // only send "values" from the `search` filter view
+            if( Array.isArray(d) )
+                data[key] = d.map(item=>{
+                    return item.val != undefined ? item.val : item
+                })
+            else
+                data[key] = d
+        }
+
+        return data
     }
 
     get queuing(){return this.__queue || false }
@@ -445,7 +464,7 @@ export class Filter {
 
             if( View ){
                 View.prototype.close = function(){
-                    this.popover._close() // to trigger onClose
+                    this.popover&&this.popover._close() // to trigger onClose
                 }
                 this._customView = new View((this.attrs.viewOpts||{}))
                 this._customView.filter = this
@@ -465,12 +484,19 @@ export class Filter {
             // with larger datasets, a user can feel it lag for a split second
             setTimeout(()=>{
                 this.value = this.customView.value
+                this.customView.didClose&&this.customView.didClose()
             })
         }
         
         // TODO: support `adjustForMobile`
         new Popover(el, this.customView, {
+            width: this.attrs.width||null,
             onClose: onClose,
+            onKeydown: (...args)=>{
+                if( this.customView.onKeydown ){
+                    this.customView.onKeydown(...args)
+                }
+            }
         })
     }
 

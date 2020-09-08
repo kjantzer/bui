@@ -126,8 +126,33 @@ const filters = {
         filterBy(model, val, key){
             return model.get(key) == val
         }
-    },
+    }
+    // there are some more advanced filters with "filter views"; see below
+}
+```
 
+### Search
+Search options are specified as part of filters (see above).
+
+**Tips**  
+- You can hide the search bar by adding: `search:false`. Search is on by default and will use defautl settings
+- `row.model.searchMatches` - when the search bar is actively searching, row models will have 
+a `searchMatches` property they can check to see why they are being displayed
+
+### Filter Views
+A view can be specified instead of values – `view` can be a preset
+or the name of a custom element
+
+#### Presets
+- `date`
+- `slider`
+- `search`
+- `input`
+
+View options can be given to the view with `viewOpts`
+
+```js
+const filters = {
     timestamp_created: {
         label: 'Created',
         view: 'date',
@@ -142,26 +167,31 @@ const filters = {
             suffix: ' hrs.'
         }
     },
+
+    keywords: {
+        view: 'input',
+        viewOpts: {
+            placeholder: 'Keywords...',
+            helpText: 'Separate with delimited',
+            defaultLabel: '-',
+            width: '200px'
+        }
+    }
+
+    author: {
+        view: 'search',
+        viewOpts: {
+            url: '/api/search/author?term='
+            parseResult(row){
+                // must match `Menu` syntax
+                return {label: row.name, val: row.id}
+            },
+            // optional
+            placeholder: 'Search'
+        }
+    }
 }
 ```
-
-### Search
-Search options are specified as part of filters (see above).
-
-**Tips**  
-- You can hide the search bar by adding: `search:false`. Search is on by default and will use defautl settings
-- `row.model.searchMatches` - when the search bar is actively searching, row models will have 
-a `searchMatches` property they can check to see why they are being displayed
-
-### Custom Filter View
-A view can be specified instead of values – `view` can be a preset
-or the name of a custom element
-
-#### Presets
-- `date`
-- `slider`
-
-View options can be given to the view with `viewOpts`
 
 #### Custom Filter View
 Custom elements need to have a `.value` and `.label` getter

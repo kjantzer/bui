@@ -68,7 +68,7 @@ export default class DataSource {
             }
 
             if( this.filters )
-                data.filters = this.filters.value()
+                data.filters = this.filters.toPostData()
 
             if( this.sorts )
                 data.sorts = this.sorts.value
