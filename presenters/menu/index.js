@@ -1,5 +1,6 @@
 import {html, render} from 'lit-html'
 import {unsafeHTML} from 'lit-html/directives/unsafe-html'
+import {live} from 'lit-html/directives/live'
 import Popover from '../popover'
 import Dialog from '../dialog'
 import Panel from '../panel'
@@ -110,6 +111,13 @@ export default class Menu {
 		this._promise = val
 		if( !val )
 			this._resolve = null
+	}
+
+	updateMenu(menu, selected){
+		this.menu = menu
+		if( selected != undefined )
+			this.selected = selected
+		this.render()
 	}
 
 	set menu(menu){
@@ -360,7 +368,7 @@ export default class Menu {
 		else if( m.icon ) 
 			icon = html`<span class="icon">${m.icon}</span>`
 
-		let checkbox = (this.opts.multiple && !m.clearsAll) || m.selected ? html`<check-box ?checked=${m.selected}></check-box>` : ''
+		let checkbox = (this.opts.multiple && !m.clearsAll) || m.selected ? html`<check-box ?checked=${live(m.selected)}></check-box>` : ''
 		let menuIcon = m.menu && this.opts.hasMenuIcon ? html`<b-icon class="has-menu" name="${this.opts.hasMenuIcon}"></b-icon>` :''
 
 		if( m.selections ){
@@ -461,6 +469,7 @@ export default class Menu {
 			if( this.opts.multiple ){
 
 				if( data.clearsAll || (this.opts.multiple !== 'always' && !didClickCheckbox) ){
+					this.opts.onSelect&&this.opts.onSelect([data])
 					return this.resolve([data])
 				}
 
@@ -482,9 +491,19 @@ export default class Menu {
 				this.opts.onSelect&&this.opts.onSelect(this.selected)
 				
 			}else{
+				this.opts.onSelect&&this.opts.onSelect(data)
 				this.resolve(data)
 			}
 		}
+	}
+
+	clear(){
+		let input = this.el.querySelector('.menu-search-bar input')
+		if( input )
+			input.value = ''
+		
+		this.menu = this.__origMenu
+		this.render()	
 	}
 
 	async _itemMenu(target, data){
