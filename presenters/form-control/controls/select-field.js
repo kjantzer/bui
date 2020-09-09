@@ -323,7 +323,7 @@ class SelectFieldElement extends HTMLElement {
 			
 			// only called when in multiple mode
 			onSelect: selected=>{
-				this.selected = selected.map(m=>m.val)
+				this.selected = Array.isArray(selected) ? selected.map(m=>m.val) : selected.val
 			}
 		}
 
