@@ -1,10 +1,10 @@
 import { LitElement, html, css } from 'lit-element'
 import docs from 'bui/server/README.md'
 
-customElements.define('demo-server', class extends LitElement{
+customElements.define('demo-server-api', class extends LitElement{
 
-    static get title(){ return 'Server' }
-    static get icon(){ return 'database' }
+    static get title(){ return 'API' }
+    static get icon(){ return 'terminal' }
 
     static get styles(){return css`
         :host {
@@ -30,11 +30,11 @@ customElements.define('demo-server', class extends LitElement{
 
     render(){return html`
     	<b-paper>
-            <b-h1>Server</b-h1>
+            <b-h1>API</b-h1>
 			<demo-markdown-docs .docs=${docs}></demo-markdown-docs>
 		</b-paper>
     `}
 
 })
 
-export default customElements.get('demo-server')
+export default customElements.get('demo-server-api')

@@ -44,7 +44,7 @@
         "highlight.js": "^10.0.3",
         "less": "^3.11.1",
         "marked": "^1.0.0",
-        "parcel-bundler": "1.12.4",
+        "parcel-bundler": "^1.12.4",
         "parcel-plugin-markdown-string": "^1.4.2"
     },
     "dependencies": {
