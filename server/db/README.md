@@ -102,6 +102,7 @@ db.query(`SELECT * FROM table_name WHERE ${clause}`, values)
 
 #### Defined Clauses
 - `Group(clauses, operator)` defaults to `AND` operator
+- `Value(operator, val)`
 - `Like(val)`
 - `Between(start, end)`
 - `FullText(val)`
