@@ -8,6 +8,10 @@
 	color: var(--b-popover-color, #333);
 	// transition: margin 200ms, opacity 200ms;
 	// opacity: 0;
+
+	&.no-pointer {
+		pointer-events: none;
+	}
 	
 	// DEPRECATED
 	&.dark {
@@ -33,6 +37,17 @@
 	// only add padding to "divs" - allowing custom elements to define their own padding
 	div.__view:not(.nopadding) { padding: 1em; }
 	div.__view.padding-lite { padding: .25em; }
+
+	&.tooltip {
+		pointer-events: none;
+		--bgd: var(--theme-color, #222);
+		color: var(--theme-bgd, #fff);
+
+		div.__view {
+			font-size: .8em;
+			padding: .25rem .5rem;
+		}
+	}
 	
 	&[x-out-of-boundaries] {
 		display: none;
