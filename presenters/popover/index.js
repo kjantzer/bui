@@ -122,6 +122,8 @@ export default class Popover {
 		this.clearTarget()
 		let opts = this.opts
 
+		if( !target ) return
+
 		if( target instanceof MouseEvent || target instanceof KeyboardEvent ){
 			target = this.createInvisiblePlaceholderTarget(target)
 		}
