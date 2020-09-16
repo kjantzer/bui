@@ -227,14 +227,14 @@ myModel.get('ts_created') // Date()
 
 #### Registering your own attribute type
 ```js
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 Backbone.registerModelAttrType('date', val=>{
-    return moment(val)
+    return dayjs(val)
 })
 
 //....
-myModel.get('ts_created').fromNow()
+myModel.get('ts_created').format('l')
 ```
 
 ### Relations

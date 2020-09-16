@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 customElements.define('b-ts', class extends LitElement{
 
@@ -34,7 +34,7 @@ customElements.define('b-ts', class extends LitElement{
     set date(date){
 
         if( typeof date === 'string' )
-            date = moment(date)
+            date = dayjs(date)
 
         this.__date = date
 
@@ -46,9 +46,7 @@ customElements.define('b-ts', class extends LitElement{
 
     get displayTime(){
         if( !this.date ) return ''
-        // TODO: support different formats?
-        // TODO: this is a moment.js format...what if moment not used?
-        if( this.format == 'relative' )
+        if( this.format == 'relative' && this.date.fromNow )
             return this.date.fromNow()
         else
             return this.date.format(this.format)

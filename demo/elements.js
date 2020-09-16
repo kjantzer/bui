@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import Dialog from 'bui/presenters/dialog'
 import 'bui/presenters/tabs'
 import 'bui/elements/icon'
@@ -25,6 +25,7 @@ import 'bui/elements/audio'
 import 'bui/elements/carousel'
 import 'bui/elements/timeline-horz'
 import defineFileIcon from 'bui/elements/file-icon'
+import 'bui/helpers/dayjs'
 
 import buttons from './elements/buttons'
 import text from './elements/text'
@@ -327,7 +328,7 @@ customElements.define('demo-elements', class extends LitElement{
                 <h1>Misc</h1>
 
                 <br><h2>Timestamp</h2>
-                <p>The following timestamp was created <b-text bold><b-ts .date=${moment()}></b-ts></b-text> and will auto update every minute</p>
+                <p>The following timestamp was created <b-text bold><b-ts .date=${dayjs()}></b-ts></b-text> and will auto update every minute</p>
 
                 <br><h2>Line/divider/hr</h2>
 
