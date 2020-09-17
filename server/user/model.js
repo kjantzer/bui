@@ -1,0 +1,212 @@
+const Model = require('../model')
+const bcrypt = require('bcrypt')
+var crypto = require("crypto");
+
+const serializedUsers = new Map()
+const MIN_PW_LEN = 8
+let db
+
+module.exports = class User extends Model {
+
+    static setDB(_db){ db = _db }
+
+    static get api(){return {
+        root: '/user',
+        routes: [
+            ['get', '/:id?', 'find'],
+            ['put', '/:id?', 'update'],
+            ['post', '', 'add'],
+            ['patch', '/:id?', 'update'],
+            ['put', '/:id/change-password', 'changePassword']
+        ]
+    }}
+
+    // override these fit own use
+
+    get firstName(){
+        return (this.name||'').split(' ')[0]||this.name
+    }
+
+    get isAdmin(){ return false }
+    get emailHashKey(){ return 'email_hash' }
+
+    get hasTempPassword(){
+        return this.attrs.password_is_temp
+    }
+
+    async saveNewPassword(user, pw, isTemp=false){
+        return user.update({
+            password: pw,
+            password_is_temp: isTemp,
+            password_last_changed: new Date()
+        })
+    }
+
+    // only existing admins can update these values
+    get adminOnlyUpdates(){
+        return ['type', 'is_admin']
+    }
+
+    get canUpdateOtherUsers(){
+        return this.req.user.isAdmin
+    }
+
+    get config(){ return {
+        table: 'users',
+        tableAlias: 'u',
+        jsonFields: ['settings']
+    }}
+
+
+// ==============================================================
+
+    constructor(attrs={}, req){
+
+        if( attrs.id == 'me' )
+            attrs.id = req.user.id
+
+        super(attrs, req)
+        this.req = req
+        this.attrs = attrs
+        this.sockets = new Map()
+
+        if( this.emailHashKey ){
+            this[this.emailHashKey] = this.attrs[this.emailHashKey] = null
+
+            if( attrs.email )
+                this[this.emailHashKey] = this.attrs[this.emailHashKey] = crypto.createHash('md5').update(attrs.email).digest("hex");
+        }
+    }
+
+    async find(where){
+
+        if( this.id && this.id == this.req.user.id )
+            return this.req.user
+        
+        let resp = await super.find(where)
+
+        if( !this.id )
+            resp.unshift(this.req.user)
+
+        return resp
+    }
+
+    findParseRow(row){
+
+        let sessionUser = serializedUsers.get(row.id)
+        if( sessionUser && sessionUser.sockets.size > 0 )
+            row.online = true
+        else
+            row.online = false
+    }
+
+    validateUpdate(attrs){
+        if( attrs.email && this.emailHashKey )
+            attrs[this.emailHashKey] = crypto.createHash('md5').update(attrs.email).digest("hex")
+
+        // only existing admins can update these values
+        if( !this.req.user.isAdmin ){
+            this.adminOnlyUpdates.map(k=>{
+                delete attrs[k]
+            })
+        }
+
+        return attrs
+    }
+
+    async update(attrs){
+
+        // only internal users can update other users accounts
+        if( this.id != this.req.user.id && !this.canUpdateOtherUsers )
+            throw new AccessError()
+        
+        let resp = await super.update(attrs)
+
+        // TODO: improve how attrs are updated?
+        // merge updated attrs with the cached request user
+        if( this.id == this.req.user.id)
+            this.req.user.attrs = Object.assign(this.req.user.attrs, attrs)
+
+        return attrs
+    }
+
+    async verifyPassword(pw){
+        if( !this.attrs.password )
+            return false
+            
+        return bcrypt.compare(pw, this.attrs.password)
+    }
+
+    async changePassword(){
+
+        // users can change their own passwords and admins can always change
+        if( this.id != this.req.user.id && !this.req.user.isAdmin )
+            throw new AccessError()
+
+        let user = await User.findBy('id', this.id)
+        let {currentPW, newPW} = this.req.body
+
+        // if NOT the logged in user, then only a temp password can be set
+        let isTemp = this.id != this.req.user.id
+        let isResetting = !isTemp || this.req.user.hasTempPassword
+
+        if( currentPW == newPW )
+            throw new Error('same password')
+
+        if( !newPW || newPW.length < MIN_PW_LEN )
+            throw new Error('too short')
+
+        if( !isTemp && !isResetting && !await user.verifyPassword(currentPW) )
+            throw new Error('invalid current password')
+
+        let newPWHash = await User.encryptPassword(newPW)
+        
+        user.req = this.req
+        this.saveNewPassword(user, newPWHash, isTemp)
+    }
+
+    static async encryptPassword(pw){
+        return pw ? bcrypt.hash(pw, 10) : null
+    }
+
+    static async findBy(key="id", id){
+        // FIXME: what if table is not `users`?
+        let resp = await db.q(`SELECT * FROM users WHERE ${key} = ?`, id)
+        
+        if( !resp || resp.length == 0 )
+            throw Error(key+' not found')
+
+        return new User(resp[0], this.req)
+    }
+
+    static async login(email, password, req){
+        
+        let user = await User.findBy('email', email)
+
+        if( !await user.verifyPassword(password) ){
+            throw Error('password does not match')
+        }
+        
+        return user
+    }
+
+    static async deserializeUser(id, idKey='id'){
+        let key = id
+        
+        if( idKey != 'id')
+            key = idKey+'_'+id
+
+        if( !serializedUsers.get(key) ){
+            let user = await User.findBy(idKey, id)
+            if( user )
+                serializedUsers.set(key, user)
+        }
+
+        return serializedUsers.get(key)
+    }
+
+    logout(){
+        serializedUsers.delete(this.id)
+    }
+
+}
