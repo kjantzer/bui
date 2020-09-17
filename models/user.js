@@ -109,15 +109,8 @@ export class User extends Model {
     }
 
     applyTheme(){
-
-        let theme = this.settings.get('theme')
-        let themeColor = this.settings.get('theme_color')
-        
-        if( !theme && colorScheme.isDarkMode )
-            theme = 'dark'
-        
-        colorScheme.setTheme(theme)
-        colorScheme.setAccent(themeColor)
+        colorScheme.setTheme(this.settings.get('theme'))
+        colorScheme.setAccent(this.settings.get('theme_color'))
     }
 
     logout(){
@@ -146,14 +139,9 @@ export class User extends Model {
 }
 
 class UserSettings extends Model {
-    
-    constructor(...args){
-        args[0] = JSON.parse(args[0].id||'{}')
-        super(...args)
-    }
 
     save(...args){
         this.set(...args)
-        return this.parentModel.saveSync('settings', JSON.stringify(this.toJSON()), {patch: true})
+        return this.parentModel.saveSync('settings', this.toJSON(), {patch: true})
     }
 }

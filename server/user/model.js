@@ -11,6 +11,7 @@ module.exports = class User extends Model {
     static setDB(_db){ db = _db }
 
     static get api(){return {
+        sync: true,
         root: '/user',
         routes: [
             ['get', '/:id?', 'find'],
@@ -20,6 +21,9 @@ module.exports = class User extends Model {
             ['put', '/:id/change-password', 'changePassword']
         ]
     }}
+
+    get syncPath(){ 
+        return this.apiPathPattern.stringify() }
 
     // override these fit own use
 
@@ -93,6 +97,8 @@ module.exports = class User extends Model {
 
     findParseRow(row){
 
+        this.decodeJsonFields(row)
+
         let sessionUser = serializedUsers.get(row.id)
         if( sessionUser && sessionUser.sockets.size > 0 )
             row.online = true
@@ -101,6 +107,9 @@ module.exports = class User extends Model {
     }
 
     validateUpdate(attrs){
+
+        this.encodeJsonFields(attrs)
+
         if( attrs.email && this.emailHashKey )
             attrs[this.emailHashKey] = crypto.createHash('md5').update(attrs.email).digest("hex")
 
