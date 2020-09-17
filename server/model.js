@@ -73,6 +73,8 @@ module.exports = class Model {
         for(let key in attrs){
             this[key] = attrs[key]
         }
+
+        this.decodeJsonFields(attrs)
     }
 
     get config(){ return {} }
@@ -152,7 +154,10 @@ module.exports = class Model {
                 if( attrs[fieldName] == undefined ) return
 
                 try{
-                    attrs[fieldName] = attrs[fieldName] ? JSON.parse(attrs[fieldName]) : []
+                    if( attrs[fieldName] && typeof attrs[fieldName] == 'string' )
+                        attrs[fieldName] = JSON.parse(attrs[fieldName])
+                    else
+                        attrs[fieldName] = attrs[fieldName] || []
                 }catch(err){
                     attrs[fieldName] = {}
                 }
