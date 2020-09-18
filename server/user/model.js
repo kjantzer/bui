@@ -179,7 +179,7 @@ module.exports = class User extends Model {
 
     static async findBy(key="id", id){
         // FIXME: what if table is not `users`?
-        let resp = await db.q(`SELECT * FROM users WHERE ${key} = ?`, id)
+        let resp = await Model.db.q(`SELECT * FROM users WHERE ${key} = ?`, id)
         
         if( !resp || resp.length == 0 )
             throw Error(key+' not found')
