@@ -1,14 +1,16 @@
 require('../util/promise.series')
 
-let db
-
 const defaultConfig = {
     idAttribute: 'id'
 }
 
 module.exports = class Model {
 
-    static setDB(_db){ db = _db }
+    // DEPRECATED
+    static setDB(_db){ Model.db = _db }
+    
+    get db(){ return this.__db || this.constructor.db }
+    set db(db){ this.__db = db }
 
 // methods to override in subclass
 
@@ -62,10 +64,9 @@ module.exports = class Model {
     
     constructor(attrs, req, opts={}){
 
-        if( !db )
-            console.warn('Model: `db` has not been set yet')
+        if( !this.db )
+            console.warn('Model.db has not been set yet')
             
-        this.db = db
         this.req = req
         this.attrs = attrs || {}
         this.opts = opts

@@ -4,11 +4,8 @@ var crypto = require("crypto");
 
 const serializedUsers = new Map()
 const MIN_PW_LEN = 8
-let db
 
 module.exports = class User extends Model {
-
-    static setDB(_db){ db = _db }
 
     static get api(){return {
         sync: true,
@@ -84,7 +81,9 @@ module.exports = class User extends Model {
 
     async find(where){
 
-        if( this.id && this.id == this.req.user.id )
+        if( this.id 
+        && this.id == this.req.user.id 
+        && this.constructor == this.req.user.constructor)
             return this.req.user
         
         let resp = await super.find(where)
