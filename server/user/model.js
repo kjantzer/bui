@@ -189,7 +189,7 @@ module.exports = class User extends Model {
 
     static async login(email, password, req){
         
-        let user = await this.constructor.findBy('email', email)
+        let user = await this.findBy('email', email)
 
         if( !await user.verifyPassword(password) ){
             throw Error('password does not match')
