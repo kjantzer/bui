@@ -94,6 +94,10 @@ Supported anchor positions are:
 On small screens, all `top*` anchors and all `bottom*` anchors will be stacked together
 
 ### `controller`
+Specify a different controller than the main. See "custom controller"
+
+## Custom Controller
+
 By default, all notifs will render to the `main` controller. The main controller will be
 created and appended to the the `document.body` when the first notif is presented (if
 it does not already exist)
@@ -102,7 +106,10 @@ You can create multiple controllers for rendering notifs in different views
 
 ```html
 <div style="position: relative; min-height: 400px">
-    <b-notifs name="custom-controller"></b-notifs>
+    <b-notifs 
+        name="custom-controller"
+        .defaults=${{width: 'auto', anchor: 'top-right'}}
+    ></b-notifs>
 </div>
 ```
 
