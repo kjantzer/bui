@@ -151,7 +151,7 @@ module.exports = class User extends Model {
         if( this.id != this.req.user.id && !this.req.user.isAdmin )
             throw new AccessError()
 
-        let user = await User.findBy('id', this.id)
+        let user = await this.constructor.findBy('id', this.id)
         let {currentPW, newPW} = this.req.body
 
         // if NOT the logged in user, then only a temp password can be set
@@ -164,13 +164,13 @@ module.exports = class User extends Model {
         if( !newPW || newPW.length < MIN_PW_LEN )
             throw new Error('too short')
 
-        if( !isTemp && !isResetting && !await user.verifyPassword(currentPW) )
+        if( !isTemp && isResetting && !await user.verifyPassword(currentPW) )
             throw new Error('invalid current password')
 
-        let newPWHash = await User.encryptPassword(newPW)
+        let newPWHash = await this.constructor.encryptPassword(newPW)
         
         user.req = this.req
-        this.saveNewPassword(user, newPWHash, isTemp)
+        return this.saveNewPassword(user, newPWHash, isTemp)
     }
 
     static async encryptPassword(pw){
@@ -179,17 +179,17 @@ module.exports = class User extends Model {
 
     static async findBy(key="id", id){
         // FIXME: what if table is not `users`?
-        let resp = await Model.db.q(`SELECT * FROM users WHERE ${key} = ?`, id)
+        let resp = await this.db.q(`SELECT * FROM users WHERE ${key} = ?`, id)
         
         if( !resp || resp.length == 0 )
             throw Error(key+' not found')
 
-        return new User(resp[0], this.req)
+        return new this(resp[0], this.req)
     }
 
     static async login(email, password, req){
         
-        let user = await User.findBy('email', email)
+        let user = await this.constructor.findBy('email', email)
 
         if( !await user.verifyPassword(password) ){
             throw Error('password does not match')
@@ -205,7 +205,7 @@ module.exports = class User extends Model {
             key = idKey+'_'+id
 
         if( !serializedUsers.get(key) ){
-            let user = await User.findBy(idKey, id)
+            let user = await this.findBy(idKey, id)
             if( user )
                 serializedUsers.set(key, user)
         }
