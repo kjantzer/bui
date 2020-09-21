@@ -33,7 +33,7 @@ module.exports = class Model {
         if( this.req && this.req.query.perPage )
             return `LIMIT ${this.req.query.pageAt},${this.req.query.perPage}`
             
-        return ''
+        return this.config.limit ? `LIMIT ${this.config.limit}` : ''
     }
     
     findOrderBy(){
