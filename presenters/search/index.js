@@ -52,6 +52,10 @@ customElements.define('b-search', class extends LitElement{
         else
             document.body.classList.remove(this.key+'-active')
 
+        window.dispatchEvent(new CustomEvent(this.key+'-active', {
+            detail:{active:this.active}
+        }))
+
         this.requestUpdate('active', oldVal)
     }
 
