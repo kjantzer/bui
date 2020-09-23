@@ -16,6 +16,8 @@ const styles = css`
 	outline: none;
 }
 
+:host([hidden]) { display: none; }
+
 :host([checked]) svg.uncheck,
 :host(:not([checked])) svg.check {
 	display: none
