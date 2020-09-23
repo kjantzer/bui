@@ -5,6 +5,10 @@
 import styles from './form-control.css.js'
 import nativeInputHelper from './util/nativeInputHelper'
 
+const CONTROLS = '[slot="control"], .control, text-field, rich-text-field, select-field, check-box, radio-group, token-text-field'
+const MIRROR_CONTROL_ATTRS = ['invalid', 'empty', 'no-value', 'falsy', 'focused', 'value']
+
+
 class FormControlElement extends HTMLElement {
 	
 	constructor() {
@@ -52,7 +56,7 @@ class FormControlElement extends HTMLElement {
 		this._val = value.assignedNodes().map(el=>el.textContent.trim()).join(' ')
 		this._val = this._val.replace(/^\n|\n$/g, '').trim()
 		
-		this.control = this.querySelector('[slot="control"], .control, text-field, rich-text-field, select-field, check-box, radio-group, token-text-field')
+		this.control = this.querySelector(CONTROLS)
 		
 		if( this.control ){
 			
@@ -62,9 +66,9 @@ class FormControlElement extends HTMLElement {
 				mutations.forEach(m=>{
 					
 					// mirror these attributes from the control onto the form-control
-					if( ['invalid', 'empty', 'no-value', 'falsy', 'focused'].includes(m.attributeName) ){
+					if( MIRROR_CONTROL_ATTRS.includes(m.attributeName) ){
 						if( this.control.hasAttribute(m.attributeName) )
-							this.setAttribute(m.attributeName, true)
+							this.setAttribute(m.attributeName, this.control.getAttribute(m.attributeName))
 						else
 							this.removeAttribute(m.attributeName)
 					}
