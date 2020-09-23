@@ -1,3 +1,6 @@
+/*
+    NOTE: should this move to server/util?
+*/
 const path = require('path')
 const fs = require('fs')
 const csvToArray = require('./csvToArray')
