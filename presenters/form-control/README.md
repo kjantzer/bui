@@ -381,6 +381,19 @@ You can also choose to save changes in local storage instead of model by using t
 - `.validateChange(m, changes, key, val)` - adjust or prevent changes from happening
 - `.onChange(changes)`
 
+#### Control "Display If"
+> Needs better documentation
+
+```html
+<check-box key="another_value"></check-box>
+<check-box key="is_active" .displayIf=${{another_value:true}}></check-box>
+```
+
+- `.displayIf`
+- `.enableIf`
+- `.disableIf`
+
+
 ## Extras
 
 ### `<date-picker>`

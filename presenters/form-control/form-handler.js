@@ -118,18 +118,23 @@ class FormHandler extends HTMLElement {
 	}
 
 	_updateEditors(){
-		if( this.controls && (this.model || this.hasAttribute('store')) )
-		this.controls.forEach(el=>{
-			// set the value of each editor based on the value in the model
-			let key = el.getAttribute('key')
-			let val = this.storedValue(key)
+		if( this.controls && (this.model || this.hasAttribute('store')) ){
 
-			if( val && val._isAMomentObject )
-				val = val.format(el.control._datePicker?el.control._datePicker.format:'MM/DD/YYYY')
+			this.controls.forEach(el=>{
+				// set the value of each editor based on the value in the model
+				let key = el.getAttribute('key')
+				let val = this.storedValue(key)
 
-			if( val !== undefined )
-				el.value = val
-		})
+				if( val && val._isAMomentObject )
+					val = val.format(el.control._datePicker?el.control._datePicker.format:'MM/DD/YYYY')
+
+				if( val !== undefined )
+					el.value = val
+			})
+
+			this.setControlIfs()
+
+		}
 	}
 	
 	onModelSync(m, attrs, opts){
@@ -155,6 +160,9 @@ class FormHandler extends HTMLElement {
 			else
 				el.removeAttribute('unsaved')
 		})
+
+		if( !isEdited )
+			this.setControlIfs()
 	}
 	
 	onModelChange(m, opts={}){
@@ -227,7 +235,54 @@ class FormHandler extends HTMLElement {
 			}
 		}
 
+		this.setControlIfs(key)
+
 		this.onChange&&this.onChange(changes)
+	}
+
+	setControlIfs(ifKey){
+
+		let toggleTypes = Object.keys(toggleIf)
+
+		this.controls.forEach(control=>{
+
+			toggleTypes.forEach(toggleKey=>{
+
+				// skip controls that dont need testing
+				if( !control[toggleKey] ) return
+
+				let valid = true
+
+				if( typeof control[toggleKey] == 'function' ){
+
+					valid = control[toggleKey](this, control)
+
+				}else{
+
+					if( ifKey && control[toggleKey][ifKey] === undefined ) return
+					
+					for( let key in control[toggleKey] ){
+
+						let allowedVal = control[toggleKey][key]
+						
+						// prefer the model, but 
+						let val = this.model ? this.model.get(key) : this.get(key).value
+
+						if( Array.isArray(allowedVal) ){
+							if( !allowedVal.includes(val) )
+								valid = false
+						}else{
+							if( allowedVal != val )
+								valid = false
+						}
+					}
+				}
+
+				toggleIf[toggleKey](control, valid)
+
+			})
+
+		})
 	}
 	
 	get disabled(){ return this.__disabled || false }
@@ -255,3 +310,31 @@ class FormHandler extends HTMLElement {
 customElements.define('form-handler', FormHandler)
 
 export default customElements.get('form-handler')
+
+
+const toggleIf = {
+	displayIf(control, valid){
+		if( valid )
+			control.hidden = false
+		else
+			control.hidden = true
+	},
+	hideIf(control, valid){
+		if( valid )
+			control.hidden = true
+		else
+			control.hidden = false
+	},
+	disableIf(control, valid){
+		if( valid )
+			control.disabled = true
+		else
+			control.disabled = false
+	},
+	enableIf(control, valid){
+		if( valid )
+			control.disabled = false
+		else
+			control.disabled = true
+	}
+}
