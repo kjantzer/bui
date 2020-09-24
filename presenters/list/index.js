@@ -105,6 +105,7 @@ customElements.define('b-list', class extends LitElement {
             overflow: hidden;
             flex: 1;
             position: relative;
+            z-index: 10;
         }
 
         slot[name="header"],
