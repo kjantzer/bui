@@ -25,7 +25,7 @@ import 'bui/elements/audio'
 import 'bui/elements/carousel'
 import 'bui/elements/timeline-horz'
 import defineFileIcon from 'bui/elements/file-icon'
-import 'bui/helpers/dayjs'
+import 'bui/helpers/day-js'
 
 import buttons from './elements/buttons'
 import text from './elements/text'
