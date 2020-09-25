@@ -427,11 +427,13 @@ class TextFieldElement extends HTMLElement {
 
 			div.innerHTML = htmlCleaner.clean(val, cleanOpts)
 			
-			if( cleanOpts.keepParent == 'never' )
+			let isInlineText = div.firstChild instanceof Text || !['P','DIV'].includes(div.firstChild.tagName)
+
+			if( cleanOpts.keepParent == 'never' || isInlineText )
 				lines.push(this.isHTML ? div.innerHTML : div.textContent)
 				
-			else for( let child of div.children ){
-				lines.push( this.isHTML ? child.outerHTML : child.textContent )
+			else for( let child of div.childNodes ){
+				lines.push( this.isHTML ? (child.outerHTML||child.textContent) : child.textContent )
 			}
 
 			eventDetail.str = val = lines.shift()
