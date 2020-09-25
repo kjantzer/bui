@@ -37,6 +37,13 @@ module.exports = {
             headers: headers,
             body: opts.data
         }).then(r=>{
+
+            if( r.status == 404 && r.statusText == 'Not Found' ){
+                let err = new Error(`${opts.type} ${opts.url}`)
+                err.name = 'API not found'
+                throw err
+            }
+
             if( r && r.json ) return r.json()
 
             if( r && r.text && r.status != 200 )
