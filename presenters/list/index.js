@@ -296,6 +296,7 @@ customElements.define('b-list', class extends LitElement {
         this.emptyView = this.emptyView || document.createElement(this.emptyElement)
         this.emptyView.list = this
         this.emptyView.dataSource = this.dataSource
+        this.emptyView.innerHTML = '<slot name="empty"></slot>'
         
         let term = this.dataSource.filters&&this.dataSource.filters.term
         this.emptyView.value = term ? `No results for “${term}”` : (this.getAttribute('placeholder') || 'No results')
