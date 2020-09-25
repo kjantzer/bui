@@ -70,6 +70,7 @@ module.exports = class MyModel extends Model {
         tableAlias: false,
         idAttribute: 'id',
         orderBy: '',
+        limit: '',
         jsonFields: [] // will parse and encode on find/update/create
     }}
 
