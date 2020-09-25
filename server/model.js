@@ -287,7 +287,7 @@ module.exports = class Model {
 
         await this.find()
         
-        if( this.isInvalid ) throw Error('not found')
+        if( this.isInvalid ) throw Error('Cannot delete: model not found')
 
         let where = {[this.idAttribute]:this.id}
         await this.beforeDestroy(where)
