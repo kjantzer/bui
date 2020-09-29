@@ -34,6 +34,12 @@ customElements.define('b-grid', class extends LitElement{
         :host([cols="2,1,1"]) { grid-template-columns: 2fr 1fr 1fr; }
         :host([cols="1,1,2"]) { grid-template-columns: 1fr 1fr 2fr; }
 
+        :host([cols="auto,1"]) { grid-template-columns: auto 1fr; }
+        :host([cols="1,auto"]) { grid-template-columns: auto 1fr; }
+
+        :host([rows="auto,1"]) { grid-template-rows: auto 1fr; }
+        :host([rows="1,auto"]) { grid-template-rows: auto 1fr; }
+
         @media (max-width:699px){
             :host([cols-mobile="1"]) { grid-template-columns: 1fr; }
             :host([cols-mobile="2"]) { grid-template-columns: repeat(2, 1fr); }
@@ -42,6 +48,9 @@ customElements.define('b-grid', class extends LitElement{
             :host([cols-mobile="1,2"]) { grid-template-columns: 1fr 2fr; }
 
             :host([cols-mobile]) ::slotted([colspan]) {grid-column: 1/-1;}
+
+            :host([rows-mobile="auto,1"]) { grid-template-rows: auto 1fr; }
+            :host([rows-mobile="1,auto"]) { grid-template-rows: auto 1fr; }
         }
 
         :host([gap="0"]), :host([gap="none"]) { gap: 0; }
