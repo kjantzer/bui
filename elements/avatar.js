@@ -15,7 +15,7 @@ class AvatarElement extends HTMLElement {
         let shadow = this.attachShadow({mode: 'open'})
         let temp = document.createElement('template')
         
-        temp.innerHTML = `<style>
+        temp.innerHTML = /*html*/`<style>
 			:host {
 				--bgd: ${this.bgd};
 				--bgdDefault: transparent;
@@ -24,6 +24,8 @@ class AvatarElement extends HTMLElement {
 			    width: var(--size, 1em);
 			    display: inline-block;
 			    vertical-align: middle;
+				position: relative;
+				border-radius: var(--b-avatar-radius, 50%);
 
 				-webkit-touch-callout: none; /* iOS Safari */
 				-webkit-user-select: none; /* Safari */
@@ -47,6 +49,7 @@ class AvatarElement extends HTMLElement {
 			
 			svg text {
 				fill: var(--color);
+				font-size: var(--b-avatar-font-size, 60px);
 			}
 			
 			:host([nobgd]) svg.imgloaded rect {
@@ -75,9 +78,12 @@ class AvatarElement extends HTMLElement {
 			
 		<svg class="imgloading" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
             <rect x="0" y="0" width="100%" height="100%" rx="0" ry="0"></rect>
-            <text x="50%" y="50%" font-size="65" dominant-baseline="central" text-anchor="middle">${this.initials}</text>
-			<image xlink:href="" x="0" y="0" width="100%" height="100%" onload="this.parentElement.classList.add('imgloaded')">
-        </svg>`
+            <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle">${this.initials}</text>
+			<image xlink:href="" x="0" y="0" width="100%" height="100%"
+				preserveAspectRatio="xMinYMin slice"
+				onload="this.parentElement.classList.add('imgloaded')">
+        </svg>
+		<slot></slot>`
 		
         this.shadowRoot.appendChild(temp.content.cloneNode(true));
 		
