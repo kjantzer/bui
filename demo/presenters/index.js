@@ -12,6 +12,7 @@ import './panel'
 import './dialog'
 import './menu'
 import './list'
+import './previewer'
 
 customElements.define('demo-presenters', class extends LitElement{
 
@@ -41,6 +42,7 @@ customElements.define('demo-presenters', class extends LitElement{
             demo-presenter-dialog
             demo-presenter-menu
             demo-presenter-panel
+            demo-presenter-previewer
             demo-presenter-notif
             demo-presenter-tabs
             demo-presenter-list
