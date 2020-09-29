@@ -166,7 +166,10 @@ module.exports = class API {
             res.sendFile(path)
         
         }else{
-            res.send(resp)
+            if( res.headersSent )
+                res.end(resp)
+            else
+                res.send(resp)
         }
     }
 
