@@ -82,7 +82,7 @@ export default class Menu {
 		if( opts.multiple == undefined && this.opts.selected instanceof Array )
 			this.opts.multiple = true
 		
-		let selected = (this.opts.selected || [])
+		let selected = this.opts.selected !== undefined ? this.opts.selected : []
 		if( Array.isArray(selected) ) selected = selected.slice(0) // clone
 		this.selected = selected
 		
