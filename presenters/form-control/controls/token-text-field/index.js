@@ -647,7 +647,12 @@ customElements.define('token-text-field', class extends LitElement{
 
         // var attrs = _.clone(d.data);
         var attrs = Object.assign({}, d.data);
-        var label = d.data.text; delete attrs.text;
+        var label = ''
+
+        if( d.data ) label = d.data.text; // old
+        if( d.obj ) label = d.obj.label; // really old
+        
+        delete attrs.text;
 
         return this.makeToken({label: label, attrs: attrs})
     }
