@@ -46,8 +46,11 @@ customElements.define('b-ts', class extends LitElement{
 
     get displayTime(){
         if( !this.date ) return ''
+        
         if( this.format == 'relative' && this.date.fromNow )
             return this.date.fromNow()
+        if( this.format == 'calendar' && this.date.calendarDate )
+            return this.date.calendarDate()
         else
             return this.date.format(this.format)
     }
