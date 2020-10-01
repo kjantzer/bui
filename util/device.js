@@ -141,7 +141,7 @@ export const colorScheme = {
             theme = this.isDarkMode ? 'dark' : 'light'
 
         html.setAttribute(theme, '')
-        metaThemeColor.content = getComputedStyle(document.body).getPropertyValue('--theme-bgd').trim()
+        metaThemeColor.content = this.getCssVar('theme-bgd')
         localStorage.setItem('meta-theme-color', metaThemeColor.content)  
     },
 
@@ -161,7 +161,7 @@ export const colorScheme = {
             html.style.setProperty('--theme-chosen', `var(--${accent}, #${accent})`);
 
             if( colorizeFaviconComposition )
-                colorizeFavicon(getComputedStyle(document.body).getPropertyValue('--theme'), colorizeFaviconComposition)
+                colorizeFavicon(this.getCssVar('theme'), colorizeFaviconComposition)
 
         }else{
             html.style.removeProperty('--theme');
@@ -170,6 +170,12 @@ export const colorScheme = {
             colorizeFavicon(false)
         }
 
+    },
+
+    getCssVar(name){
+        if( name[0] != '-' )
+            name = '--'+name
+        return getComputedStyle(document.body).getPropertyValue(name).trim()
     }
     
 }
