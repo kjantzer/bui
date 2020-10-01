@@ -57,6 +57,41 @@ customElements.define('b-search', class extends LitElement{
         }))
 
         this.requestUpdate('active', oldVal)
+
+        this.toggleHistory()
+    }
+
+    toggleHistory(){
+
+        if( !this.active && this._historyMenu ){
+
+            setTimeout(()=>{
+                this._historyMenu.close()
+            })
+
+        }else if( this.active ){
+
+            let history = this.historyMenu
+
+            if( !history ) return
+
+            this._historyMenu = new Menu(history, {
+                search: false,
+                onSelect: (selected)=>{
+                    this.goTo(selected)
+                }
+            })
+            
+            this._historyMenu.modal({
+                width: '600px',
+                height: 'auto',
+                anchor: 'top',
+                type: this.key+'-history',
+                // onBackdropClick: this.clear.bind(this),
+                disableOverscrollClose: true
+            })
+
+        }
     }
 
     get active(){
