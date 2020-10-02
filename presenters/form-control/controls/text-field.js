@@ -530,12 +530,18 @@ class TextFieldElement extends HTMLElement {
 			this._updateValue()
 			// this.blur() // will trigger a change if there is one
 
+			let detail = {
+				shiftKey: e.shiftKey,
+				ctrlKey: e.ctrlKey,
+				metaKey: e.metaKey,
+			}
+
 			// Force change event for empty search/ re-search
 			if( !this.value )
-				this.dispatchEvent(new Event("change"));
+				this.dispatchEvent(new CustomEvent("change", {detail}));
 			
 			this.dispatchEvent(new Event("enterkey")); // DEPRECATED
-			this.dispatchEvent(new Event("submit")); // I think this makes more sense
+			this.dispatchEvent(new CustomEvent("submit", {detail})); // I think this makes more sense
 		}
 		
 		if( e.key == 'Escape' ){
