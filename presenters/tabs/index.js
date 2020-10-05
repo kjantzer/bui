@@ -312,6 +312,10 @@ customElements.define('b-tabs', class extends LitElement {
                 this.__customTabBar.views = this.views
                 this.__customTabBar.onMenuClick = this.menuClick.bind(this)
                 this.__customTabBar.classList.add('tab-bar')
+                this.__customTabBar.innerHTML = /*html*/`
+                    <span slot="menu:before"><slot name="menu:before"></slot></span>
+                    <span slot="menu:after"><slot name="menu:after"></slot></span>
+                `
             }else{
                 this.__customTabBar.update()
             }
