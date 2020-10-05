@@ -402,5 +402,15 @@ list.addEventListener('content-changed', e=>{})
 ```
 
 ## Methods
-- `refresh` - clears the list and fetches new data
-- `reload` - reapplies the filters and reloads the table (new data NOT fetched)
+
+`list.refresh()`  
+clears the list and fetches new data
+
+`list.reload()`  
+reapplies the filters and reloads the table (new data is NOT fetched)
+
+`list.filters.reset(filterVals={})`  
+reset filters to default or given values
+
+`list.filters.update(filterVals)`  
+applies the given filters

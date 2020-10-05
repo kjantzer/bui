@@ -42,11 +42,11 @@ export default class Filters extends Map {
 
     get _storeKey(){ return 'b-list:'+this.key+':filters' }
 
-    reset(){
+    reset(values={}){
         this.queuing = false
         let resetData = {}
         this.map(filter=>{
-            resetData[filter.key] = filter.defaultVal
+            resetData[filter.key] = values[filter.key] !== undefined ? values[filter.key] : filter.defaultVal
         })
         this.value(resetData)
     }
@@ -59,6 +59,11 @@ export default class Filters extends Map {
         })
 
         return active.join(' | ')
+    }
+
+    // alias that makes more sense when working programically
+    update(filters){
+        this.value(filters)
     }
 
     value(key, val){
@@ -104,8 +109,8 @@ export default class Filters extends Map {
                 didChange.forEach(k=>{
                     let filter = this.get(k)    
                     if( filter.isCustomView )
-                        filter.customView.value = val
-                    filter.emit('change', val)
+                        filter.customView.value = this.value(k)
+                    filter.emit('change', this.value(k))
                 })
 
                 if( this.queuing )
