@@ -207,7 +207,7 @@ export default class BtnElement extends LitElement {
             justify-content: center
         }
 
-        :host(:empty) main {
+        :host(:empty) {
             --padding: .4em .5em;
         }
 
