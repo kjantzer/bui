@@ -5,6 +5,8 @@ const clauses = require('./db/clauses')
 
 module.exports = class DB {
 
+    static get DBResults(){ return DBResults }
+
     constructor(config){
         this.pool = mysql.createPool(config);
     }
