@@ -58,11 +58,11 @@ module.exports = class Group extends Map {
                 }
 
                 if( Array.isArray(val) )
-                    clauses.push(`${key} IN(?)`)
+                    clauses.push(`${key} IN(${db.escape(val)})`)
                 else
-                    clauses.push(`${key} ${oper} ?`)
+                    clauses.push(`${key} ${oper} ${db.escape(val)}`)
 
-                values.push(val)
+                // values.push(val)
             }
         })
 

@@ -106,6 +106,7 @@ db.query(`SELECT * FROM table_name WHERE ${clause}`, values)
 - `Like(val)`
 - `Between(start, end)`
 - `FullText(val)`
+- `FindInSet(val)`
 
 #### Custom Clauses
 ```js
