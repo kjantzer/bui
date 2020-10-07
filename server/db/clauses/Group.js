@@ -58,7 +58,10 @@ module.exports = class Group extends Map {
                 }
 
                 if( Array.isArray(val) )
-                    clauses.push(`${key} IN(${db.escape(val)})`)
+                    if( val.length == 0 )
+                        clauses.push(`${key} IS NULL`)
+                    else
+                        clauses.push(`${key} IN(${db.escape(val)})`)
                 else
                     clauses.push(`${key} ${oper} ${db.escape(val)}`)
 
