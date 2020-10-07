@@ -221,7 +221,7 @@ export default class Filters extends Map {
     }
 
     get showSearch(){
-        return typeof this.searchOptions.data == 'function'
+        return !!this.searchOptions.data
     }
 
     filterByTerm(data){
@@ -235,7 +235,7 @@ export default class Filters extends Map {
             })
 
             if( !this.term 
-            || !searchOptions.data
+            || (!searchOptions.data || searchOptions.data === 'db' )
             || this.term.length < searchOptions.minMatchCharLength )
                 return resolve(data)
 
