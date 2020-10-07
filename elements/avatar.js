@@ -14,6 +14,8 @@ class AvatarElement extends HTMLElement {
 		
         let shadow = this.attachShadow({mode: 'open'})
         let temp = document.createElement('template')
+
+		let aspectRatio = this.getAttribute('cover') == 'false' ? '' : 'xMinYMin slice'
         
         temp.innerHTML = /*html*/`<style>
 			:host {
@@ -80,7 +82,7 @@ class AvatarElement extends HTMLElement {
             <rect x="0" y="0" width="100%" height="100%" rx="0" ry="0"></rect>
             <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle">${this.initials}</text>
 			<image xlink:href="" x="0" y="0" width="100%" height="100%"
-				preserveAspectRatio="xMinYMin slice"
+				preserveAspectRatio="${aspectRatio}"
 				onload="this.parentElement.classList.add('imgloaded')">
         </svg>
 		<slot></slot>`
