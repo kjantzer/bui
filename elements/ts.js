@@ -10,6 +10,7 @@ customElements.define('b-ts', class extends LitElement{
     constructor(){
         super()
         this.format = 'relative'
+        this._extraTitle = this.getAttribute('title')||''
     }
 
     static get styles(){return css`
@@ -39,7 +40,7 @@ customElements.define('b-ts', class extends LitElement{
         this.__date = date
 
         if( date )
-            this.title = this.date.format('LT l')
+            this.title = this._extraTitle+this.date.format('LT l')
         
         this.requestUpdate()
     }
