@@ -37,7 +37,7 @@ export class Collection {
         if( !opts.wait )
             this.add(model)
 
-        await model.save()
+        await (model.saveSync ? model.saveSync() : model.save())
 
         if( opts.wait )
             this.add(model)
@@ -45,6 +45,9 @@ export class Collection {
         opts.success&&opts.success(model)
         return model
     }
+
+    // alias to match helpers/backbone/promises
+    async createSync(...args){ return this.create(...args)}
 
     _createModel(attrs){
         let Model = this.model
