@@ -47,6 +47,10 @@ export default (rawData, opts)=>{
 			if( typeof val === 'string' && val.match(/,|\n|"/) ){
 				val = '"'+val.replace(/"/gi,'""')+'"';
 			}
+
+			if( Array.isArray(val) ){
+				val = '[array]'
+			}
 	
 			return val;
 		})
