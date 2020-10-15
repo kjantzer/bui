@@ -23,10 +23,17 @@ customElements.define('b-list-export-btn', class extends Btn{
         let list = this.parentElement
         let data = list.dataSource.data
 
+        if( typeof this.data == 'function' )
+            data = this.data()
+
         if( data.length == 0 )
             return Notif.alert('No data to export', {autoClose: 2000})
         
         let filename = list.key+'-'+(new Date().getTime())+'.csv'
+
+        if( typeof this.filename == 'function' )
+            filename = this.filename()
+
         downloadCSV(toCSV(data, {
             title: list.key,
             description: list.filters.toString()
