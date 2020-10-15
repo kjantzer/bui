@@ -63,6 +63,8 @@ customElements.define('b-search', class extends LitElement{
 
     toggleHistory(){
 
+        if( this.resultsMenu ) return
+
         if( !this.active && this._historyMenu ){
 
             setTimeout(()=>{

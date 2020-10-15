@@ -90,7 +90,9 @@ class SearchAPI {
             if( rowData )
             rowData.search = Object.assign({
                 score: row.score,
-                weight: row.item.weight
+                weight: row.item.weight,
+                matched: row.item.matched || this.type,
+                label: row.item.label
             }, rowData.search||{})
 
             return rowData
@@ -109,8 +111,8 @@ class SearchAPI {
         // sort data taking in account each type's "weight" (higher weight = more important)
         res = res.sort((a,b)=>{
 
-            let aDelta =  1 + (-1 / (a.search.weight||0))
-            let bDelta =  1 + (-1 / (b.search.weight||0))
+            let aDelta =  1 + (-1 / (a.search.weight||50))
+            let bDelta =  1 + (-1 / (b.search.weight||50))
 
             // sort by fuse.js score and the weight
             let scoreSort = (a.search.score+bDelta) - (b.search.score+aDelta)

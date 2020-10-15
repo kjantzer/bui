@@ -28,7 +28,6 @@ module.exports = class SearchType {
         return this.db.query(this.fillSql, [ids]).then(rows=>{
             rows.forEach(row=>{
                 row.type=row.type||this.type
-                row.search = {matched:this.type}
                 this.parseRow(row)
             })
             return rows
@@ -72,7 +71,9 @@ module.exports = class SearchType {
         hydratedResults.forEach(row=>{
             row.search = Object.assign({
                 score: mappedResult.get(row.id).score,
-                weight: mappedResult.get(row.id).item.weight
+                weight: mappedResult.get(row.id).item.weight,
+                matched: mappedResult.get(row.id).item.matched || this.type,
+                label: mappedResult.get(row.id).item.label
             },row.search||{})
 
             mappedResult.set(row.id, row)
