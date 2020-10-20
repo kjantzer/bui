@@ -35,7 +35,7 @@ function autoComplete(e, word, items=[], opts={}){
             matching: matchingWord,
         })
 
-        OpenMenu.popover(e)
+        OpenMenu.popover(e, {maxHeight: '40vh'})
         .then(selected=>{
             if( selected )
                 opts.onSelect&&opts.onSelect(selected)
