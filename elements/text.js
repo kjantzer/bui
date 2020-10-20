@@ -63,6 +63,10 @@ customElements.define('b-text', class extends LitElement{
             cursor: default;
         }
 
+        :host([nopointer]) {
+            pointer-events: none;
+        }
+
         :host([link].popover-open){
             color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
         }
