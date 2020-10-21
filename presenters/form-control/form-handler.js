@@ -33,6 +33,15 @@ class FormHandler extends HTMLElement {
 			this.bindControls()
 		},0)
 	}
+	
+	get values(){
+		let vals = {}
+		this.controls.forEach(control=>{
+			if( control.key )
+				vals[control.key] = control.value
+		})
+		return vals
+	}
 
 	bindControls(){
 		// TODO: change to `controls`?
