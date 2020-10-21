@@ -76,7 +76,7 @@ export default css`
 }
 
 :host([color="orange"]) {
-    --b-notif-color: #fff;
+    --b-notif-color: #222;
     --b-notif-bgd: var(--orange);
 }
 
