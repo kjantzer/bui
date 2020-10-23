@@ -484,7 +484,7 @@ export class Panel extends LitElement {
             pointer-events: none;
             position: absolute;
             right: 0;
-            min-width: 300px;
+            min-width: min(80vw, 300px);
             min-height: 1em;
             max-width: var(--max-width, 100%);
             max-height: var(--max-height, 100%);
