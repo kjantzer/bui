@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
 import './spinner'
-import './icon'
+// import './icon' // can cause problems with parcel.js...make user import on their own
 
 export default class BtnElement extends LitElement {
 
@@ -372,7 +372,10 @@ export default class BtnElement extends LitElement {
     firstUpdated(){
         this.addEventListener('click', ()=>{
             if( this.href )
-                window.location = this.href
+                if( this.getAttribute('target') == '_blank' )
+                    window.open(this.href)
+                else
+                    window.location = this.href
         }, true)
     }
 
