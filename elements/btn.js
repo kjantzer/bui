@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
 import './spinner'
-// import './icon' // can cause problems with parcel.js...make user import on their own
+import './icon'
 
 export default class BtnElement extends LitElement {
 
