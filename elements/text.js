@@ -57,6 +57,7 @@ customElements.define('b-text', class extends LitElement{
         :host([tone="critical"]) { color: var(--b-text-tone-critical, var(--red-A400, red)); }
         :host([tone="warning"]) { color: var(--b-text-tone-warning, var(--orange, orange)); }
         :host([tone="info"]) { color: var(--b-text-tone-info, var(--blue, blue)); }
+        :host([tone="good"]) { color: var(--b-text-tone-good, var(--green, blue)); }
 
         :host([link]),
         :host([href]) {
