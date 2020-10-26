@@ -10,6 +10,8 @@ import '../form-control/controls/check-box'
 import '../form-control/controls/select-field'
 import device from '../../util/device';
 
+const styles = require('./style.less')
+
 export const DefaultOpts = {
 	selected: false,
 	multiple: false,
@@ -34,8 +36,6 @@ const SearchDefaults = {
 		}
 	}
 }
-
-const styles = require('./style.less')
 
 export default class Menu {
 
