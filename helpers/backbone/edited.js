@@ -26,7 +26,10 @@ Model.prototype.saveEdited = function(opts={}){
 			let dataToSave = Object.keys(attrs).length > 0
 			
 			if( dataToSave )
-				await this.saveSync(attrs, opts)
+				if( opts.setOnly )
+					this.set(attrs, opts)
+				else
+					await this.saveSync(attrs, opts)
 			
 			this._editedAttrs = {}
 			this._origAttrs = null
