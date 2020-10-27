@@ -39,8 +39,6 @@ function autoComplete(e, word, items=[], opts={}){
         .then(selected=>{
             if( selected )
                 opts.onSelect&&opts.onSelect(selected)
-            
-            autoComplete.close()
         })
     }
 }
