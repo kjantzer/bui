@@ -8,12 +8,14 @@ import FilterViewDate from '../toolbar/filter-view-date'
 import FilterViewInput from '../toolbar/filter-view-input'
 import FilterViewSlider from '../toolbar/filter-view-slider'
 import FilterViewSearch from '../toolbar/filter-view/search'
+// import FilterViewToken from '../toolbar/filter-view/token'
 
 const CustomViews = {
     'date': FilterViewDate,
     'input': FilterViewInput,
     'slider': FilterViewSlider,
-    'search': FilterViewSearch
+    'search': FilterViewSearch,
+    // 'token': FilterViewToken
 }
 
 // do NOT include 0 or false as unset values
