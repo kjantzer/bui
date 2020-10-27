@@ -385,13 +385,6 @@ export default class Menu {
 							></select-field>`
 		}
 
-		if( m.attrs && typeof m.attrs == 'object' )
-			console.warn('`attrs` unsupported right now')
-		// TODO: support this some how?
-		// if( m.attrs && typeof m.attrs == 'object' ){
-		// 	for(let key in m.attrs)
-		// 		el.setAttribute(key, m.attrs[key])
-		// }
 
 		let extras = ''
 		if( m.extras ){
