@@ -138,10 +138,14 @@ export class Collection {
         let data = []
 
         try {
-            data = await fetch(url).then(resp=>resp.json())
+            let resp = await fetch(url)
+
+            if( resp.status != 200 )
+                throw new Error(resp.statusText)
+            
+            data = await resp.json()
         }catch(err){
-            console.log('failed to fetch data');
-            return
+            throw err
         }
 
         this._parse(data, params)
