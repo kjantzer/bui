@@ -68,14 +68,18 @@ customElements.define('b-text', class extends LitElement{
             pointer-events: none;
         }
 
-        :host([link].popover-open){
+        :host([link].popover-open),
+        :host([href]){
             color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
         }
 
         @media (hover){
-            :host([link]:hover),
-            :host([href]:hover) {
+            :host([link]:hover){
                 color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
+            }
+
+            :host([href]:hover) {
+                text-decoration: underline;
             }
         }
 
