@@ -254,6 +254,13 @@ class TextFieldElement extends HTMLElement {
 		let doc = (new DOMParser()).parseFromString(this.value, 'text/html')
 		return Array.from(doc.body.childNodes).map(node=>node.nodeValue||node.innerText).join("\n")
 	}
+
+	insertText(text){
+		if( !this.isFocused )
+			this.focus()
+		document.execCommand('insertText', false, text)
+		this._updateValue()
+	}
 	
 	set value(val){
 		
