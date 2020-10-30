@@ -32,8 +32,6 @@ module.exports = class DB {
         return new Promise(async (resolve, reject)=>{
             let conn = await this.getConnection()
             conn.beginTransaction(err=>{
-                console.log(err);
-                
                 if( err ) reject(err)
                 else resolve(conn)
             })
