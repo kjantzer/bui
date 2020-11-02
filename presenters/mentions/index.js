@@ -178,7 +178,8 @@ export default class {
 		
 		let replacementText = ''
 		const lastIndex = cursorContext.textBeforeCursor.lastIndexOf(query);
-		cursorContext.textNode.textContent = cursorContext.textNodeContent.substring(0, lastIndex) + replacementText + cursorContext.textAfterCursor;
+		cursorContext.textNode.textContent = cursorContext.textNodeContent.substring(0, lastIndex) + replacementText
+		// + cursorContext.textAfterCursor; // why was I adding this? (duplicates text)
 
 		const selection = this.el.getRootNode().getSelection();
 		if(!selection) return;
