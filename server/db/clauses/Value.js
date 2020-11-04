@@ -1,7 +1,7 @@
 const Clause = require('./Clause')
 
 const AllowedOperators = [
-    '!=', '>', '>=', '<', '<='
+    '!=', '>', '>=', '<', '<=', '='
 ]
 
 /*
