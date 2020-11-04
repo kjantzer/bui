@@ -128,10 +128,11 @@ export default class Filters extends Map {
     }
 
     toPostData(){
+        let value = this.value()
         let data = {}
 
-        for( let key in this.__value ){
-            let d = this.__value[key]
+        for( let key in value ){
+            let d = value[key]
             // only send "values" from the `search` filter view
             if( Array.isArray(d) )
                 data[key] = d.map(item=>{
