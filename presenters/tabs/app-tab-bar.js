@@ -10,7 +10,8 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
             border-top: solid 1px var(--theme-bgd-accent) !important;
             background: var(--theme-bgd) !important;
-            padding-bottom: env(safe-area-inset-bottom)
+            padding-bottom: env(safe-area-inset-bottom);
+            position: relative;
         }
 
         @media (orientation:landscape) {
@@ -103,6 +104,9 @@ customElements.define('b-app-tab-bar', class extends LitElement{
     `}
 
     render(){return html`
+
+        <slot name="menu:before"></slot>
+
         ${this.views.map(v=>html`
             ${v.canDisplay&&(!device.isMobile||v.id!='emails')?html`
 
@@ -118,6 +122,8 @@ customElements.define('b-app-tab-bar', class extends LitElement{
                 <span>Search</span>
             </b-btn>
         `:''}
+
+        <slot name="menu:after"></slot>
     `}
 
     get shouldShowSearch(){
