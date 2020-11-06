@@ -149,7 +149,7 @@ class PanelController extends LitElement {
             if( i == this.length ){
                 panel.setAttribute('ontop', '')
 
-                if( !wasOnTop )
+                if( !wasOnTop && panel.view )
                     panel.view.didBecomeActive&&panel.view.didBecomeActive()
 
                 // if( updateRoutes && panel.route && !panel.route.isCurrent ){
@@ -161,7 +161,8 @@ class PanelController extends LitElement {
                 panel.removeAttribute('ontop')
                 if( wasOnTop )
                     setTimeout(()=>{
-                        panel.view.didBecomeInactive&&panel.view.didBecomeInactive()
+                        if( panel.view && panel.view.didBecomeInactive )
+                            panel.view.didBecomeInactive()
                     })
             }
         })

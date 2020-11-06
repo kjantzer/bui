@@ -31,15 +31,13 @@ const rendererOverrides = {
 customElements.define('demo-markdown-docs', class extends LitElement{
 
     static get properties(){ return {
-        docs: String,
+        docs: {type: String},
+        notoc: {type: Boolean, reflect: true}
     }}
 
     constructor(){
         super()
-        // this.addEventListener('error', e=>{
-        //     console.log(e.currentTarget);
-            
-        // })
+        this.notoc = false
     }
 
     shouldUpdate(changedProps){
@@ -53,13 +51,13 @@ customElements.define('demo-markdown-docs', class extends LitElement{
         this.content = ''
 
         var renderer = new marked.Renderer();
-        this.toc = []; // your table of contents as a list.
+        this._toc = []; // your table of contents as a list.
 
         renderer = Object.assign(renderer, rendererOverrides)
         renderer.heading = (text, level, raw, slugger)=>{
             var slug = slugger.slug(raw)
 
-            this.toc.push({
+            this._toc.push({
                 level: level,
                 slug: slug,
                 title: raw,
@@ -95,6 +93,14 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             position:relative;
             max-width: 100%;
             gap: var(--view-gutter);
+        }
+
+        :host([notoc]) {
+            grid-template-columns: 1fr;
+        }
+
+        :host([notoc]) .toc {
+            display: none;
         }
 
         @media (max-width: 699px) {
@@ -149,6 +155,10 @@ customElements.define('demo-markdown-docs', class extends LitElement{
         pre code {
           padding: 0;
           background: none;
+        }
+
+        img {
+            max-width: 100%;
         }
 
         [blockquote] :first-child {margin-top: 0;}
@@ -232,7 +242,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
 
         <div class="toc"><div class="toc-inner">
             <slot name="toc:top"></slot>
-            ${this.toc.map(t=>html`
+            ${this._toc.map(t=>html`
                 <div slug=${t.slug} level=${t.level} @click=${this.tocClick}>
                     ${unsafeHTML(t.title)}
                 </div>

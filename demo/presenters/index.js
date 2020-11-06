@@ -9,10 +9,12 @@ import './tabs'
 import './selection'
 import './mentions'
 import './panel'
+import './popover'
 import './dialog'
 import './menu'
 import './list'
 import './previewer'
+import dayjs from 'dayjs'
 
 customElements.define('demo-presenters', class extends LitElement{
 
@@ -42,6 +44,7 @@ customElements.define('demo-presenters', class extends LitElement{
             demo-presenter-dialog
             demo-presenter-menu
             demo-presenter-panel
+            demo-presenter-popover
             demo-presenter-previewer
             demo-presenter-notif
             demo-presenter-tabs
@@ -49,25 +52,24 @@ customElements.define('demo-presenters', class extends LitElement{
 
             <b-cal title="Calendar">
                 <div class="cal-event" style="font-size: .8em; line-height: 1em;">
-                    A calendar event
+                    <b-label badge="orange" dot></b-label> A calendar event
                 </div>
                 <div class="cal-event2" style="font-size: .8em; line-height: 1em;">
-                    Another event
+                    <b-label badge="green" dot></b-label> Another event
                 </div>
             </b-cal>
-            <script>
-                setTimeout(()=>{
-                    // setting the event slots this way so they always show for the current month
-                    document.querySelector('.cal-event').slot=moment().set({date:12}).format('YYYY-MM-DD')
-                    document.querySelector('.cal-event2').slot=moment().set({date:24}).format('YYYY-MM-DD')
-                },500)
-            </script>
 
             demo-presenter-selection
             demo-presenter-mentions
 
         </b-tabs-router>
     `}
+
+    firstUpdated(){
+        // setting the event slots this way so they always show for the current month
+        this.shadowRoot.querySelector('.cal-event').slot=dayjs().set('date', 12).format('YYYY-MM-DD')
+        this.shadowRoot.querySelector('.cal-event2').slot=dayjs().set('date', 24).format('YYYY-MM-DD')
+    }
 
 })
 

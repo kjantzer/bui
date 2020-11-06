@@ -1,5 +1,5 @@
 import {css} from 'lit-element'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import Dialog from '../../dialog'
 import './date-picker'
 import setValueAttrs from '../util/setValueAttrs'
@@ -185,7 +185,7 @@ class TextFieldElement extends HTMLElement {
 			this._datePicker.format = this.format
 
 			if( !this._datePicker.isValid ){
-				let date = moment(this._val)
+				let date = dayjs(this._val)
 				this._val = this._datePicker.value = date.format(this._datePicker.format)
 			}
 		}
@@ -284,7 +284,7 @@ class TextFieldElement extends HTMLElement {
 				this._datePicker.value = val
 	
 				if( !this._datePicker.isValid ){
-					let date = moment(val)
+					let date = dayjs(val)
 					val = this._datePicker.value = date.format(this._datePicker.format)
 				}
 

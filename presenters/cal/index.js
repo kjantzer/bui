@@ -1,7 +1,8 @@
 import { LitElement, html, css } from 'lit-element'
 import '../../elements/btn-group'
 import '../../helpers/lit-element/events'
-import moment from 'moment'
+import '../../helpers/day-js'
+import dayjs from 'dayjs'
 import './day'
 
 customElements.define('b-cal', class extends LitElement{
@@ -9,10 +10,10 @@ customElements.define('b-cal', class extends LitElement{
     constructor(){
         super()
 
-        this.weekdays = moment.weekdaysMin()
+        this.weekdays = dayjs.weekdaysMin()
 
         this.days = new Array(7*6).fill('')
-        this.date = this._date || this.getAttribute('date') || moment()
+        this.date = this._date || this.getAttribute('date') || dayjs()
     }
 
     static get styles(){return css`
@@ -94,13 +95,13 @@ customElements.define('b-cal', class extends LitElement{
         
         let oldDate = this._date && this._date.clone()
 
-        if( val instanceof moment ){
+        if( val instanceof dayjs ){
             this._date = val
 			this._dateSelected = this._date.clone()
 
         }else if( typeof val == 'string' ){
 
-            this._date = moment(val)
+            this._date = dayjs(val)
 			this._dateSelected = this._date.clone()
 
 		}else if( val && typeof val == 'object' ){
@@ -123,7 +124,7 @@ customElements.define('b-cal', class extends LitElement{
     }
 
     _loadDays(){
-        let start = this._date.weekday()
+        let start = this._date.day()
 		let numDays = this._date.daysInMonth()
 
         this.days = this.days.map((_, i)=>{
@@ -136,17 +137,17 @@ customElements.define('b-cal', class extends LitElement{
     }
 
     nextMonth(){
-		this.date = this._date.clone().add('month', 1)
+		this.date = this._date.clone().add(1, 'month')
         this.update()
 	}
 
 	prevMonth(){
-		this.date = this._date.clone().add('month', -1)
+		this.date = this._date.clone().add(-1, 'month')
         this.update()
 	}
 
     goToToday(){
-        this.date = moment()
+        this.date = dayjs()
         this.update()
     }
 

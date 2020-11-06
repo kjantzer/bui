@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import {css} from 'lit-element'
 
 const styles = css`
@@ -72,6 +72,7 @@ nav > svg {
     padding: .25em;
     margin: -.25em;
 	color: var(--theme-color, #000);
+	fill: currentColor;
     opacity: .4;
     cursor: pointer;
 
@@ -198,7 +199,7 @@ class DatePickerElement extends HTMLElement {
 	constructor(){
 		super()
 	
-		let htmlDaysHeader = moment.weekdaysMin().map(str=>`<div>${str}</div>`).join("\n")
+		let htmlDaysHeader = dayjs.weekdaysMin().map(str=>`<div>${str}</div>`).join("\n")
 
 		let startYear = parseInt(this.getAttribute('year-start') || '1900')
 		let endYear = parseInt(this.getAttribute('year-end') || '2099')
@@ -207,7 +208,7 @@ class DatePickerElement extends HTMLElement {
 			years += `<year value="${startYear}">${startYear++}</year>`
         }
         
-        let months = moment.monthsShort().map((m,i)=>`<month value="${i}">${m}</month>`).join("\n")
+        let months = dayjs.monthsShort().map((m,i)=>`<month value="${i}">${m}</month>`).join("\n")
 
 		this.attachShadow({mode: 'open'})
         let temp = document.createElement('template')
@@ -270,7 +271,7 @@ class DatePickerElement extends HTMLElement {
 
 	_renderMonth(){
 
-		let start = this._date.weekday()
+		let start = this._date.day()
 		let numDays = this._date.daysInMonth()
 		let days = new Array(7*6).fill('')
 		let i = 0
@@ -295,12 +296,12 @@ class DatePickerElement extends HTMLElement {
 	}
 
 	nextMonth(){
-		this._date.add('month', 1)
+		this._date = this._date.add(1, 'month')
 		this._renderMonth()
 	}
 
 	prevMonth(){
-		this._date.add('month', -1)
+		this._date = this._date.add(-1, 'month')
 		this._renderMonth()
 	}
 
@@ -337,7 +338,7 @@ class DatePickerElement extends HTMLElement {
 				this._setDate({
 					year: this._date.year(),
 					month: this._date.month(),
-					date: val
+					date: parseInt(val)
                 })
 			}
 			return
@@ -347,7 +348,7 @@ class DatePickerElement extends HTMLElement {
 			let val = e.target.getAttribute('value')
 			if( val ){
 				this._setDate({
-					year: val
+					year: parseInt(val)
 				})
                 this.pickYear(false)
 			}
@@ -359,7 +360,7 @@ class DatePickerElement extends HTMLElement {
 			if( val ){
 				this._setDate({
                     date: 1,
-					month: val
+					month: parseInt(val)
 				})
                 this.pickMonth(false)
 			}
@@ -388,28 +389,28 @@ class DatePickerElement extends HTMLElement {
     }
     
     get _lookingAtToday(){
-        this._today = this._today || moment()
+        this._today = this._today || dayjs()
         return this._date.year() == this._today.year() && this._date.month() == this._today.month()
     }
 
     get _lookingAtSelectedMonth(){
-        this._today = this._today || moment()
+        this._today = this._today || dayjs()
         return this._date.year() == this._dateSelected.year() && this._date.month() == this._dateSelected.month()
     }
 
 	_setDate(val){
 
 		if( val && typeof val == 'object' ){
-			this._dateSelected.set(val)
-			this._date.set(val)
+			this._dateSelected = this._dateSelected.set(val)
+			this._date = this._date.set(val)
 
 			changeEvent(this, val)
 		}else{
-			this._date = val ? moment(val, this.format) : moment()
+			this._date = val ? dayjs(val, this.format) : dayjs()
 			this._dateSelected = this._date.clone()
 		}
 
-		this._date.set({date: 1})
+		this._date = this._date.set({date: 1})
 
 		this._renderMonth()
 		this._refresh()

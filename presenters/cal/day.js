@@ -44,7 +44,7 @@ customElements.define('b-cal-day', class extends LitElement{
     }
 
     get isWeekend(){
-        return [0, 6].includes(this.date.weekday())
+        return [0, 6].includes(this.date.day())
     }
 
     get isToday(){

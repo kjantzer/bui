@@ -1,5 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
+dayjs.extend(duration)
 
 export class TimerElement extends LitElement {
 
@@ -24,10 +26,10 @@ export class TimerElement extends LitElement {
 		const oldVal = this.__time
 		
 		if( !this.dur )
-			this.dur = moment.duration(val)
+			this.dur = dayjs.duration(val)
 		else{
 			let delta = val - oldVal
-			this.dur.add(delta)
+			this.dur = this.dur.add(delta)
 		}
 
 		if( val == 0 )

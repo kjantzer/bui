@@ -1,6 +1,19 @@
 import { LitElement, html, css } from 'lit-element'
 import 'bui/elements/headers'
 import 'bui/elements/hr'
+import docs from 'bui/README.md'
+
+let docsStr = docs
+let trimIndex = docsStr.search('## Installation')
+docsStr = trimIndex > -1 ? docsStr.substr(trimIndex) : docsStr
+
+// FIXME: needs improvement
+var matches;
+while (matches = /\(\.\/(.[^\/]+)\/README\.md\)/.exec(docsStr)) {
+    docsStr = docsStr.replace(matches[0], `(/${matches[1]})`)
+}
+
+window.docsStr = docsStr
 
 customElements.define('demo-overview', class extends LitElement{
 
@@ -99,55 +112,7 @@ customElements.define('demo-overview', class extends LitElement{
 
             <b-paper overshadow>
 
-                <b-h1>Installation</b-h1>
-                <p>Blackstone-UI is available as an [npm package](https://www.npmjs.com/package/blackstone-ui)</p>
-
-                <b-code block>
-                npm install blackstone-ui --save
-                </b-code>
-
-                <p>Or if you want the latest cutting-edge version</p>
-
-                <b-code block>
-                npm install https://github.com/kjantzer/bui.git --save
-                </b-code>
-
-                <br><b-hr></b-hr>
-
-                <b-h1>Overview</b-h1>
-
-                <p>Web components (or custom elements) allow us to encapsalate
-                logic, designs, and features in html elements. Along with custom
-                elements, various "presenters" (or views) have been created
-                for all the ways an app needs to display data</p>
-
-                <br><b-hr></b-hr>
-
-                <b-h1>Developing</b-h1>
-
-                <p>[lit-html](https://lit-html.polymer-project.org) and [lit-element](https://lit-element.polymer-project.org)
-                are being used to create and render custom elements. The beauty in these tools
-                is that they are simply syntactic sugar for native web technologies</p>
-
-                <p><b-code>lit-html</b-code> - this is a templating tool that replaces a need for something like mustache.js</p>
-
-                <p><b-code>lit-element</b-code> - this is a base class for that makes it easier to make custom elements removing a lot of the boilerplate code usually needed.</p>
-
-                <br><b-hr></b-hr>
-
-                <b-h1>Demo</b-h1>
-
-                Install the parcel bundler
-
-                <b-code block>
-                npm install -g parcel-bundler
-                </b-code>
-
-                Then <b-code>cd</b-code> to this directory and run:
-
-                <b-code block>
-                npm start
-                </b-code>
+                <demo-markdown-docs notoc .docs=${docsStr}></demo-markdown-docs>
 
             </b-paper>
 

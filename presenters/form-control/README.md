@@ -408,7 +408,7 @@ picker.addEventListener('change', e=>{
 
 #### Attributes
 - `value`
-- `format` - [moment.js](https://momentjs.com/docs/#/displaying/format/) format (default `MM/DD/YYYY`)
+- `format` - [day.js](https://day.js.org/docs/en/display/format) format (default `MM/DD/YYYY`)
 - `year-start` - defaults to 1900
 - `year-end` - defaults to 2099
 

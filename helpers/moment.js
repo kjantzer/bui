@@ -1,3 +1,6 @@
+/*
+    !DEPRECATED - use day-js instead
+*/
 import moment from 'moment'
 
 // .calendar includes time, this will only show dates/days

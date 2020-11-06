@@ -21,7 +21,7 @@ import 'bui/presenters/cal'
 -->
 
 ## Properties
-- `date` - accepts a string, moment date, or object (ex: {month:3})
+- `date` - accepts a string, dayjss date, or object (ex: {month:3})
 
 ## Methods
 - `nextMonth()`

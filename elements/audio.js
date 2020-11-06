@@ -2,13 +2,16 @@ import { LitElement, html, css } from 'lit-element'
 // import Menu from '../presenters/menu'
 import './icon'
 import '../presenters/form-control/controls/range-slider'
-import moment from 'moment'
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
 import store from '../util/store'
+
+dayjs.extend(duration)
 
 // TODO: hook up settings menu
 
 const formatTime = sec=>{
-    var dur = moment.duration(sec * 1000)
+    var dur = dayjs.duration(sec * 1000)
     var hours = dur.hours()
     var min = hours > 0 ? String(dur.minutes()).padStart(2,'0') : dur.minutes()
     return (hours?hours+':':'') + min + ':' + String(dur.seconds()).padStart(2,'0')
@@ -40,7 +43,7 @@ customElements.define('b-audio', class extends LitElement {
             position:relative;
             /* padding: 1em; */
             border: solid 1px rgba(0,0,0,.1);
-            background: #fff;
+            background: var(--theme-bgd, #fff);
             border-radius: var(--radius);
             --radius: 4px;
         }
@@ -74,7 +77,7 @@ customElements.define('b-audio', class extends LitElement {
             flex-shrink: 0;
             border-radius: 20px;
             /* margin-right: .5em; */
-            background: #eee;
+            background: var(--theme-bgd-accent, #eee);
             /* color: #fff; */
             /* border: solid 2px; */
             transition: color .15s ease-in-out, border-color .15s ease-in-out;
@@ -99,7 +102,7 @@ customElements.define('b-audio', class extends LitElement {
             min-width: 100px;
             height: 10px;
             border-radius: 5px;
-            background: var(--black);
+            background: var(--theme-color, var(--black));
             outline: none;
             padding: 0;
             margin: 0 .5em;
@@ -119,8 +122,8 @@ customElements.define('b-audio', class extends LitElement {
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            border: solid 2px #fff;
-            background: var(--black);
+            border: solid 2px var(--theme-bgd, #fff);
+            background: var(--theme-color, var(--black));
             cursor: pointer;
             box-shadow: none;
             margin-top: -4px;
@@ -292,9 +295,11 @@ customElements.define('b-audio', class extends LitElement {
 
         var percent = this.progress.value / this.audio.duration * 100;
         var time = this.progress.value
-        var color = '#2c3033' // this.classList.contains('progress-hover') ? '#3498db' : '#2c3033';
+        var color = 'var(--theme-color, #333)'
+        var color2 = 'var(--theme-bgd-accent, #bbb)'
         
-        this.progress.style.background = "linear-gradient(to right, "+color+" "+percent+"%, #bbb "+percent+"%)"
+        this.progress.style.background = `linear-gradient(to right, ${color} ${percent}%, ${color2} ${percent}%)`
+
         this.elapsed.innerHTML = formatTime(time)
         this.remaining.innerHTML = this.audio.duration == Infinity ? '' : formatTime(this.audio.duration - time)
     }

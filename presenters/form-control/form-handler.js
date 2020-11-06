@@ -134,7 +134,7 @@ class FormHandler extends HTMLElement {
 				let key = el.getAttribute('key')
 				let val = this.storedValue(key)
 
-				if( val && val._isAMomentObject )
+				if( val && val.format )
 					val = val.format(el.control._datePicker?el.control._datePicker.format:'MM/DD/YYYY')
 
 				if( val !== undefined )

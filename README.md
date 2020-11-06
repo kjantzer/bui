@@ -40,17 +40,20 @@ elements, various "presenters" (or views) have been created
 for all the ways an app needs to display data
 
 - [Elements](./elements/README.md) - common building-block elements 
+- [Presenters](./presenters/README.md) - ways to present views and data
 - [Util](./util/README.md) - utility methods
 - [Router](./router/README.md) - manages the url and triggers views
 - [Helpers](./elements/README.md) - helper/extensions
-- **Presenters** - ways to present views and data
-    - [Dialog](./presenters/dialog/README.md)
-    - [Form Control](./presenters/form-control/README.md)
-    - [List](./presenters/list/README.md)
-    - [Menu](./presenters/menu/README.md)
-    - [Panel](./presenters/panel/README.md)
-    - [Popover](./presenters/popover/README.md)
-    - [Tabs](./presenters/tabs/README.md)
+
+
+## Run the Demo
+
+You can run the demo locally by fist installing the parcel bundler (globally) then start the demo
+
+```
+$ npm install -g parcel-bundler
+$ npm start
+```
 
 ## Developing
 
@@ -62,20 +65,3 @@ is that they are simply syntactic sugar for native web technologies
 
 `lit-element` - this is a base class for that makes it easier to make custom elements removing
 a lot of the boilerplate code usually needed.
-
-## Demo
-
-Install the parcel bundler
-
-```
-npm install -g parcel-bundler
-```
-
-Then `cd` to this directory and run:
-
-```
-npm start
-```
-
-## Notes
-- consider switching out `moment.js` for something lighter weight (like [day.js](https://day.js.org/))

@@ -1,6 +1,9 @@
 import { LitElement, html, css } from 'lit-element'
 import docs from 'bui/presenters/form-control/README.md'
 
+// must be deliberately imported
+import 'bui/presenters/form-control/controls/rich-text-field'
+
 customElements.define('demo-presenter-form-control', class extends LitElement{
 
     static get title(){ return 'Form Control' }

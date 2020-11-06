@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 customElements.define('b-list-filter-view-date', class extends LitElement{
 
@@ -153,15 +153,15 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             return '–'
 
         let [d1, d2] = val
-        let m = moment().startOf('day')
-        let m1 = moment(d1)
-        let m2 = moment(d2)
+        let m = dayjs().startOf('day')
+        let m1 = dayjs(d1)
+        let m2 = dayjs(d2)
         let thisYear = m1.year() == m.year() && m2.year() == m2.year()
         let sameYear = m1.year() == m2.year()
 
         // single day selected
         if( d1 == d2 ){
-            let m1 = moment(d1)
+            let m1 = dayjs(d1)
 
             if( m.isSame(m1) )
                 return 'Today'
@@ -227,7 +227,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
     usePreset(e){
         let preset = e.target.innerText
         let values = []
-        let date = moment()
+        let date = dayjs()
         let format = 'YYYY-MM-DD'
 
         switch(preset){

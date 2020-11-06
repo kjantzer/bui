@@ -74,7 +74,7 @@ avatar(){
 
 
         // FIXME: is this date right timezone?
-        let ts = moment().format('YYYY/MM/DD hh:mm:ss')
+        let ts = dayjs().format('YYYY/MM/DD hh:mm:ss')
         this.update({has_avatar:ts})
 
         return {has_avatar: ts}

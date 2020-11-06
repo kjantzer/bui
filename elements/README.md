@@ -206,12 +206,13 @@ A subdued (or sub text) text element that is slightly smaller and lighter in col
 -->
 
 ## `<b-ts>`
-Simple element for displaying timestamps. Should be given a moment date object. `moment.fromNow()` will be rendered and updated every 1 minute.
+Simple element for displaying timestamps. If a string is given, it will be converted to a dayjs date. Or set the dayjs date using `.date=${myDate}`. `dayjs.fromNow()` will be rendered and updated every 1 minute.
 ```html
-<b-ts .date=${moment()}></b-ts>
+<b-ts date="2020-04-23"></b-ts>
+<b-ts .date=${myDate}></b-ts>
 ```
 <!--
-Element created <b-ts .date=${moment()}></b-ts>
+<b-ts date="2020-04-23"></b-ts>
 -->
 
 ## `<b-label>`
