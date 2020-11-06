@@ -12,7 +12,7 @@ customElements.define('b-list-selection-bar', class extends LitElement{
             height: 100%;
             width: 100%;
             box-sizing: border-box;
-            background: var(--theme-bgd); /* FIXME: */
+            background: var(--theme-bgd, #fff);
 
             display: flex;
             justify-content: space-between;
