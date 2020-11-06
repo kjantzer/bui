@@ -271,7 +271,9 @@ export class Panel extends LitElement {
         <main style="${this.width?`width:${this.width};`:''}${this.height?`height:${this.height};`:''}">
             <b-btn icon="cancel-1" pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closeBtn!==true}></b-btn>
             <slot></slot>
-            ${this.html}
+            <div class="inlinehtml">
+                ${this.html}
+            </div>
         </main>
     `}
 
@@ -610,6 +612,14 @@ export class Panel extends LitElement {
 
         main > section {
             padding: 1em;
+        }
+
+        .inlinehtml {
+            display: contents;
+        }
+
+        .inlinehtml > * {
+            pointer-events: all;
         }
 
         @media print {
