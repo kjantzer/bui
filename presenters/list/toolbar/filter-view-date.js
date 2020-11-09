@@ -41,7 +41,9 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         .controls {
             padding: .25em .5em;
             /* font-size: 1.4em; */
-            display: flex;
+            /* display: flex; */
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
             /* flex-direction: column; */
         }
