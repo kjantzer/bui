@@ -66,6 +66,15 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         }
     `}
 
+    constructor(opts={}){
+        super()
+        
+        this.opts = Object.assign({
+            defaultLabel: '-',
+            presets: true // TODO: support custom presets?
+        }, opts)
+    }
+
     firstUpdated(){
         this.editors = this.shadowRoot.querySelectorAll('form-control')
 
@@ -92,6 +101,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             </form-control>
         </div>
 
+        ${this.opts.presets!==false?html`
         <b-label sm divider>Presets</b-label>
         <footer>
             <b-btn text md @click=${this.usePreset}>Today</b-btn>
@@ -100,6 +110,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             <b-btn text md @click=${this.usePreset}>This Month</b-btn>
             <b-btn text md @click=${this.usePreset}>This Year</b-btn>
         </footer>
+        `:''}
     `}
 
     get value(){
@@ -152,7 +163,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         let val = this.value
 
         if( !val )
-            return '–'
+            return this.opts.defaultLabel
 
         let [d1, d2] = val
         let m = dayjs().startOf('day')
