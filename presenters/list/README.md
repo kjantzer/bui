@@ -272,6 +272,35 @@ const sorts = {
 }
 ```
 
+## Selection
+The list includes the `selection` module. You can turn it on manually or use the `<b-list-selection-btn>` (see below)
+
+#### Begin/End
+```js
+list.selection.begin()
+list.selection.end()
+```
+
+#### Results
+```js
+let models = list.selection.results.models
+console.log(models.length)
+```
+
+#### Actions
+If using selection you'll most likely want to define some "actions". Do so by using the `actions:left` and `actions:right` slots
+
+```html
+<b-list>
+    <b-list-selection-btn></b-list-selection-btn>
+
+    <b-btn slot="actions:left" @click=${this.moveSelected}>Move</b-btn>
+    <b-btn slot="actions:left" @click=${this.deleteSelected}>Delete</b-btn>
+    
+    <b-list-export-btn slot="actions:right"></b-list-export-btn>
+</b-list>
+```
+
 ## Layouts
 Renders a button in toolbar for toggling between different list layouts (e.g. list, grid)
 
@@ -372,6 +401,23 @@ import 'bui/presenters/list/export-btn`
 ```html
 <b-list key="my-list">
     <b-list-export-btn></b-list-export-btn>
+</b-list>
+```
+
+### Selection Button
+Shows a "select" icon button next to the list count. Will turn on list selection when clicked.
+If you dont also provide an export button or some actions, this will not be of any use.
+
+```js
+import 'bui/presenters/list/selection-btn`
+```
+
+```html
+<b-list key="my-list">
+    <b-list-selection-btn></b-list-selection-btn>
+
+    <!-- note: add this if you want selected rows to be exportable -->
+    <b-list-export-btn slot="actions:right"></b-list-export-btn>
 </b-list>
 ```
 
