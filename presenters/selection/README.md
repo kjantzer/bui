@@ -77,7 +77,7 @@ threshold, the faster the list will scroll.
 `10` = rapid acceleration
 
 ## Result
-Result are a native [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map). Access them via `selection.result` and use the following getters:
+Result is a native [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map). Access them via `selection.result` and use the following getters:
 
 ### `.elements`
 Array of all selected elements

@@ -430,6 +430,8 @@ The default list view can be extended with html slots
 - `toolbar:refresh` - your own refresh button (or to remove default)
 - `header`
 - `footer`
+- `actions:left` - displayed when selection is on
+- `actions:right`
 
 ## Events
 
