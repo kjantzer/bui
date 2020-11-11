@@ -216,7 +216,12 @@ export class UploaderElement extends LitElement {
     }
 
     _dragenter(e){
-        if( this.disabled || !e.dataTransfer.types.includes('Files') ) return
+        if( this.disabled 
+        || this.hidden
+        || !e.dataTransfer.types.includes('Files')
+        || window.getComputedStyle(this).display == 'none'
+        ) return
+        
         this.dragging = true
     }
 
