@@ -359,6 +359,14 @@ customElements.define('b-list', class extends LitElement {
         this.selection = new Selection(this.list, this.rowElement, Object.assign({
             toolbar: this.shadowRoot.querySelector('b-list-selection-bar'),
         }, (this.selectionOptions||{})))
+
+        this.selection.on('begin', ()=>{
+            this.setAttribute('selection-on', '')
+        })
+
+        this.selection.on('end', ()=>{
+            this.removeAttribute('selection-on')
+        })
         
         this.addEventListener('selection:begin', e=>{
             e.stopPropagation()
