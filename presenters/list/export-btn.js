@@ -9,9 +9,9 @@ customElements.define('b-list-export-btn', class extends Btn{
         super()
         this.setAttribute('text', '')
         this.setAttribute('pill', '')
-        this.icon = 'file-excel'
-        this.slot = 'toolbar:after'
-        this.title ="Export data to CSV file"
+        this.icon = this.icon || 'file-excel'
+        this.slot = this.slot || 'toolbar:after'
+        this.title = this.title || "Export data to CSV file"
 
         this.addEventListener('click', this.export)
     }
@@ -22,6 +22,12 @@ customElements.define('b-list-export-btn', class extends Btn{
 
         let list = this.parentElement
         let data = list.dataSource.data
+        let description = list.filters.toString()
+
+        if( list.selection.isOn ){
+            data = list.selection.result.models
+            description += ' | User manually selected rows'
+        }
 
         if( typeof this.data == 'function' )
             data = this.data()
@@ -36,7 +42,7 @@ customElements.define('b-list-export-btn', class extends Btn{
 
         downloadCSV(toCSV(data, {
             title: list.key,
-            description: list.filters.toString()
+            description: description
         }), filename)
     }
 
