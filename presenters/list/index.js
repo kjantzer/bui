@@ -159,6 +159,8 @@ customElements.define('b-list', class extends LitElement {
             opacity: .1;
             /* border: solid 1.4em #E3F2FD;
             border-left-width: 2em; */
+            top: 0;
+            left: 0;
             height: 100%;
             width: 100%;
             box-sizing: border-box;
