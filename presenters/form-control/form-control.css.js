@@ -284,6 +284,7 @@ slot[name="help"] {
 }
 
 :host([material]:not([empty])),
+:host([material][show*="placeholder"]),
 :host([material]:focus-within),
 :host([material][focused]) {
 	--labelFontSize: .7em;
@@ -291,6 +292,7 @@ slot[name="help"] {
 
 :host([material]) .control:not([empty]) ~ .label,
 :host([material]:not([empty])) .label,
+:host([material][show*="placeholder"]) .label,
 :host([material]:focus-within) .label,
 :host([material][focused]) .label {
 	color: inherit;
@@ -307,6 +309,10 @@ slot[name="help"] {
 :host([material]:not([show*="suffix"])) .suffix {
 	opacity: 0;
 	transition: 120ms;
+}
+
+:host([material][show*="placeholder"]) [name="control"]::slotted(*) {
+	opacity: 1 !important;
 }
 
 /* :host([material]) .control:not([empty]) ~ .prefix,
@@ -491,6 +497,7 @@ slot[name="help"] {
 }
 
 :host([material="filled"]:not([empty])) .label,
+:host([material="filled"][show*="placeholder"]) .label,
 :host([material="filled"]:focus-within) .label,
 :host([material="filled"][focused]) .label {
 	background: var(--bgd);
@@ -500,6 +507,7 @@ slot[name="help"] {
 }
 
 :host([material="filled"][outside]:not([empty])) .label,
+:host([material="filled"][outside][show*="placeholder"]) .label,
 :host([material="filled"][outside]:focus-within) .label,
 :host([material="filled"][outside][focused]) .label {
 	transform: translateY(-100%);
