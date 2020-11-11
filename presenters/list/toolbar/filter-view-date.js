@@ -249,8 +249,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
                 break;
 
             case 'Yesterday':
-                date.subtract('1', 'day')
-                values = [date.format(format)]
+                values = [date.subtract('1', 'day').format(format)]
                 break;
 
             case '30 Days':
