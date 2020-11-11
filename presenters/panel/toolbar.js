@@ -28,6 +28,8 @@ class PanelToolbar extends LitElement {
             grid-column: 1/-1; /* full width */
         }
 
+        :host([hidden]) { display: none; }
+
         /* @media (max-width: 699px) {
             .middle {
                 display: none;
