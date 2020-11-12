@@ -283,18 +283,28 @@ export default class Popover {
 	}
 	
 	_onPositionCreate(data){
-		
+		this._setDimensions(data)
+	}
+	
+	_onPositionUpdate(data){
+		if( data.hide && this.opts.closeOnHide )
+			this._close()
+	}
+
+	_setDimensions(data){
+
 		let arrowH = data.arrowElement.offsetHeight
 		let top = data.offsets.reference.top
+		// NOTE: bottom of element in relation to top of window
 		let bottom = data.offsets.reference.bottom
 
 		data.instance.modifiers.forEach(m=>{
 			if( m.name == 'preventOverflow' && m.boundaries ){
 
 				// TODO: needs improvement when alignmen is not bottom-*
-				let h = (m.boundaries.height || window.innerHeight) - bottom - (arrowH*2)
+				let h = (window.innerHeight) - bottom - (arrowH*2)
 
-				if( bottom > m.boundaries.height/2 )
+				if( bottom > window.innerHeight/2 )
 					h = top - (arrowH*2)	
 
 				this.maxHeight = h
@@ -302,11 +312,6 @@ export default class Popover {
 				this.view.style.maxWidth = this.opts.maxWidth||this.view.style.maxWidth
 			}
 		})
-	}
-	
-	_onPositionUpdate(data){
-		if( data.hide && this.opts.closeOnHide )
-			this._close()
 	}
 	
 	_onKeydown(e){
@@ -317,8 +322,8 @@ export default class Popover {
 	set maxHeight(val){
 		if( this.opts.maxHeight != 'auto' )
 			this.view.style.maxHeight = this.opts.maxHeight
-		else if( this.opts.maxHeight !== false /*&& this.view.offsetHeight > this.opts.maxHeightThreshold*/ )
-			this.view.style.maxHeight = val
+		else if( this.opts.maxHeight !== false )
+			this.view.style.maxHeight = val+'px'
 	}
 	
 }
