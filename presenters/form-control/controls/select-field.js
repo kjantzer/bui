@@ -5,6 +5,8 @@ import {css} from 'lit-element'
 import Menu from '../../menu'
 import device from '../../../util/device';
 
+const SHOW_ALL_RESULTS_THRESHOLD = 100
+
 const styles = css`
 
 :host(:not([disabled])) {
@@ -77,6 +79,22 @@ main input {
 	justify-content: center;
 	align-items: center;
 }`
+
+const SearchTypes = new Map()
+
+// search opts should match `Menu.options.search`
+export function registerSearchType(type, searchOpts={}){
+
+	if( !opts.url )
+		return console.warn(`Cannot register select-field search type: '${type}' - opts.url is required`)
+	
+	if( SearchTypes.get(type) )
+		return console.warn(`select-field search type ${type} already set`)
+
+	SearchTypes.set(type, Object.assign({
+		// no defaults yet
+	}, searchOpts))
+}
 
 class SelectFieldElement extends HTMLElement {
 	
@@ -327,8 +345,36 @@ class SelectFieldElement extends HTMLElement {
 			}
 		}
 
+		if( this.search && typeof this.search == "object" ){
+			if( !this.search.url )
+				console.warn('select-field .search=${} must contain a `url`')
+			else
+				menuOpts.search = this.search
+
+		}else if( this.hasAttribute('search')){
+			let search = this.getAttribute('search')
+			// use search type or assume a URL was given
+			menuOpts.search = SearchTypes.get(search) || {url:search}
+		}
+
+		if( menuOpts.search && this.multiple ){
+			delete menuOpts.search
+			console.warn('select-field[multiple] does work with `search`')
+		}else if( menuOpts.search  )
+			menuOpts.autoSelectFirst = true
+
 		if( this.getAttribute('search') == 'false' )
 			menuOpts.search = false
+
+		// change "search.showAll" to false when over 100 results
+		// lots of results are slow to render to DOM
+		if( this.options.length > SHOW_ALL_RESULTS_THRESHOLD ){
+			menuOpts.search = Object.assign({
+				showAll: false,
+				placeholder: `Search (${this.options.length} results)`
+			}, menuOpts.search)
+
+		}
 		
 		let menu = this.options
 		let popoverOpts = {
@@ -357,6 +403,16 @@ class SelectFieldElement extends HTMLElement {
 		if( val === false ) return
 		
 		val = this.multiple ? val : [val]
+
+		if( menuOpts.search && menuOpts.search.url ){
+			
+			let optionVals = this.options.map(o=>o.val)
+			
+			val.forEach(v=>{
+				if( !optionVals.includes(v.val) )
+					this.__options.push(v)
+			})
+		}
 		
 		this.selected = val.map(m=>m.val)
 		
