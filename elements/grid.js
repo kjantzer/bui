@@ -7,6 +7,7 @@ customElements.define('b-grid', class extends LitElement{
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: max-content;
+            align-content: flex-start;
             gap: 1em;
             min-width: 0;
         }
