@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
-import dayjs from 'dayjs'
+import dayjs from '../helpers/day-js'
 
 customElements.define('b-ts', class extends LitElement{
 
