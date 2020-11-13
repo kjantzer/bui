@@ -29,6 +29,7 @@ import 'bui/helpers/day-js'
 
 import buttons from './elements/buttons'
 import text from './elements/text'
+import specialty, {styles as specialtyStyles} from './elements/specialty'
 
 defineFileIcon()
 
@@ -79,6 +80,8 @@ customElements.define('demo-elements', class extends LitElement{
         b-h1 ~ b-h1 {
             margin-top: var(--view-gutter);
         }
+
+        ${specialtyStyles}
     `}
 
     async onUpload(e){
@@ -286,28 +289,6 @@ customElements.define('demo-elements', class extends LitElement{
                 <b-btn onclick="this.previousElementSibling.previousElementSibling.chooseFile()">Or select a file</b-btn>
             </section>
 
-            <section title="Timeline">
-                <h1>Timeline</h1>
-
-                <div>
-                    <b-timeline-horz>
-                        <div slot="date">Aug 10</div>
-                        <b-icon name="ok-circled" slot="bubble" style="color: var(--green)"></b-icon>
-                        <div>Timeline content</div>
-                    </b-timeline-horz>
-                    <b-timeline-horz>
-                        <div slot="date">Aug 27</div>
-                        <b-icon name="cancel-1" slot="bubble" style="color: var(--red)"></b-icon>
-                        <div>Timeline content</div>
-                    </b-timeline-horz>
-                    <b-timeline-horz style="--b-timeline-line-display:none;">
-                        <div slot="date">Sept 24</div>
-                        <div>Timeline content</div>
-                    </b-timeline-horz>
-                </div>
-
-            </section>
-
             <section title="Media">
                 <h1>Media</h1>
 
@@ -327,35 +308,17 @@ customElements.define('demo-elements', class extends LitElement{
             <section title="Misc">
                 <h1>Misc</h1>
 
-                <br><h2>Timestamp</h2>
-                <p>The following timestamp was created <b-text bold><b-ts .date=${dayjs()}></b-ts></b-text> and will auto update every minute</p>
-
                 <br><h2>Line/divider/hr</h2>
 
                 <b-hr></b-hr>
                 Vertical <b-hr vert></b-hr> Divider 
                 <b-hr short></b-hr>
 
-                <br><h2>Code</h2>
-                This is <b-code>inline code</b-code>
-
-                <br><br>
-                <b-code block>
-                    This is a code block
-                </b-code>
-
-                <br><h2>Timer</h2>
-                <b-timer running></b-timer>
-
-                <br><h2>Carousel</h2>
-                (This is a very basic implementation)<br><br>
-                <b-carousel>
-                    <div><b-paper color="gray" block>Slide 1</b-paper></div>
-                    <div><b-paper color="gray" block>Slide 2</b-paper></div>
-                    <div><b-paper color="gray" block>Slide 3</b-paper></div>
-                </b-carousel>
+                
 
             </section>
+
+            ${specialty}
 
 
             <section title="Icons">
