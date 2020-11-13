@@ -42,9 +42,10 @@ customElements.define('b-hardcover-book', class extends LitElement{
         :host {
             --width: 160px;
             --height: 250px;
-            --bgd: #eee;
-            --bgd-inside: #fffbec;
-            --bgd-edge: #999;
+            --bgd: var(--theme-bgd-accent, #eee);
+            --bgd-inside: var(--theme-bgd-accent, #fffbec);
+            --color-inside: #333;
+            --bgd-edge: rgba(var(--theme-bgd-rgb, 0,0,0), 0.6);
             --shadow-color: rgba(0,0,0,.6);
             position: relative;
             width: var(--width); 
@@ -53,7 +54,6 @@ customElements.define('b-hardcover-book', class extends LitElement{
             flex-shrink: 0;
             display: inline-block;
             transform-style: preserve-3d;
-            
         }
 
         *, *:after, *:before { 
@@ -425,6 +425,7 @@ customElements.define('b-hardcover-book', class extends LitElement{
 
         li.inside {
             overflow: hidden;
+            color: var(--color-inside);
         }
 
         slot[name="inside"]::slotted(*) {
