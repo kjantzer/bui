@@ -7,7 +7,7 @@ customElements.define('b-hr', class extends LitElement{
             --bgd: var(--b-hr-bgd, rgba(0,0,0,.1));
 
             display: block;
-            margin: 1em auto;
+            margin: var(--padding, 1em) auto;
             height: 1px;
             width: 100%;
             background: var(--bgd);
@@ -31,9 +31,15 @@ customElements.define('b-hr', class extends LitElement{
             min-height: 1em;
             height: auto;
             width: 1px;
-            margin: 0 .5em;
+            margin: 0 var(--padding, .5em);
             align-self: stretch;
         }
+
+        :host([pad="none"]) { --padding: 0em; }
+        :host([pad="xs"]) { --padding: .25em; }
+        :host([pad="sm"]) { --padding: .5em; }
+        :host([pad="md"]) { --padding: 1.5em; }
+        :host([pad="lg"]) { --padding: 2em; }
 
         :host([vert][thick]) {
             height: auto;
