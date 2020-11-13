@@ -65,14 +65,14 @@ customElements.define('b-comment', class extends LitElement{
     `}
 
     render(){return html`
-        <div>
+        <div part="avatar">
             <slot name="avatar"></slot>
         </div>
-        <slot name="main"><main>
-            <header><b-bgd-overlay></b-bgd-overlay>
+        <slot name="main"><main part="main">
+            <header part="header"><b-bgd-overlay></b-bgd-overlay>
                 <slot name="header"></slot>
             </header>
-            <div>
+            <div part="content">
                 <slot></slot>
             </div>
         </main></slot>
