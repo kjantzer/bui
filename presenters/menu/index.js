@@ -277,9 +277,9 @@ export default class Menu {
 
 		// URL can be a dynamic function
 		if( typeof url == 'function' )
-			url = url(term)
+			url = url(encodeURIComponent(term))
 		else
-			url += term
+			url += encodeURIComponent(term)
 
 		this.searchSpinner.hidden = false
 
