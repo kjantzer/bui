@@ -8,6 +8,16 @@ customElements.define('b-numeral', class extends LitElement{
         num: {type: Number, reflect: true}
     }}
 
+    set num(val){
+        let oldVal = this.num
+        this.__num = val
+    
+        this.requestUpdate('num', oldVal)
+        this.title = this._title+` `+val
+    }
+    
+    get num(){ return this.__num}
+
     static get styles(){return css`
         :host {
             display: inline-block;
@@ -22,6 +32,8 @@ customElements.define('b-numeral', class extends LitElement{
     }
 
     firstUpdated(){
+
+        this._title = this.title
 
         let num = this.textContent
         if( num )
