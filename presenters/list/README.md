@@ -56,31 +56,6 @@ Also determines how many "more" rows are requested
 via fetch:more
 
 
-## Custom Styles
-The list view uses shadow dom to render the content. If you need to apply 
-custom styles (ex: to make results display as a grid) you can provide
-a `.customStyles` prop
-
-```css
-let styles = css`
-    :host b-infinite-list {
-        display: grid;
-        grid-template-columns: repeat( auto-fit, minmax(140px, 1fr) );
-        grid-template-rows: 140px;
-        gap: 1em;
-    }
-
-    :host b-infinite-list[layout="list"] {
-        /* 
-            apply different styles for each layout 
-            see "layout" options below
-        */
-    }
-
-`
-<b-list .customStyles=${styles}></b-list>
-```
-
 ## Filters
 ```js
 const filters = {
@@ -433,11 +408,71 @@ The default list view can be extended with html slots
 - `actions:left` - displayed when selection is on
 - `actions:right`
 
+## Styling
+
+### CSS Variables
+> Needs documentation
+
+- `--list-toolbar-shadow`
+
+### Parts
+Certain [parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) can be styled:
+
+- `toolbar`
+- `selectionbar`
+- `list`
+- `row`
+- `divider`
+- `empty-view`
+
+
+```css
+/* example */
+b-list::part(toolbar) {
+    background: black;
+    color: white;
+}
+
+b-list[layout="grid"]::part(list) {
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax(140px, 1fr) );
+    grid-template-rows: 140px;
+    gap: 1em;
+}
+```
+
+### Custom Styles
+The list view uses shadow dom to render the content. If you need to apply 
+custom styles (ex: to make results display as a grid) you can provide
+a `.customStyles` prop
+
+>NOTE: using `parts` is preferred now
+
+```css
+let styles = css`
+    :host b-infinite-list {
+        display: grid;
+        grid-template-columns: repeat( auto-fit, minmax(140px, 1fr) );
+        grid-template-rows: 140px;
+        gap: 1em;
+    }
+
+    :host b-infinite-list[layout="list"] {
+        /* 
+            apply different styles for each layout 
+            see "layout" options below
+        */
+    }
+
+`
+<b-list .customStyles=${styles}></b-list>
+```
+
 ## Events
 
 Filters and Sorts emit events when changed:
 
-```
+```js
 list.filters.on('change', changes=>{})
 list.sorts.on('change', selectedSorts=>{})
 list.dataSource.on('changed', ()=>{})

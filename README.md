@@ -40,7 +40,7 @@ elements, various "presenters" (or views) have been created
 for all the ways an app needs to display data
 
 - [Elements](./elements/README.md) - common building-block elements 
-- [Presenters](./presenters/README.md) - ways to present views and data
+- Presenters - ways to present views and data
 - [Util](./util/README.md) - utility methods
 - [Router](./router/README.md) - manages the url and triggers views
 - [Helpers](./elements/README.md) - helper/extensions

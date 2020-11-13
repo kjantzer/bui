@@ -6,6 +6,9 @@
   --border: rgba(0, 0, 0, 0.2);
   color: var(--b-popover-color, #333);
 }
+.popover.no-pointer {
+  pointer-events: none;
+}
 .popover.dark {
   --bgd: var(--b-popover-bgd, #2c3033);
   --border: #111;
@@ -28,6 +31,15 @@
 }
 .popover div.__view.padding-lite {
   padding: 0.25em;
+}
+.popover.tooltip {
+  pointer-events: none;
+  --bgd: var(--theme-color, #222);
+  color: var(--theme-bgd, #fff);
+}
+.popover.tooltip div.__view {
+  font-size: 0.8em;
+  padding: 0.25rem 0.5rem;
 }
 .popover[x-out-of-boundaries] {
   display: none;
@@ -126,7 +138,11 @@
   padding: 0.5em;
   --focusBgd: none;
 }
+
 .dialog {
+  border-radius: var(--radius);
+  background: var(--theme-bgd);
+  color: var(--theme-color);
   max-width: 100%;
   min-height: 1em;
   display: grid;
@@ -237,6 +253,7 @@
   padding: 0.25em;
 }
 .dialog.sideicon {
+  display: grid;
   grid-template-areas: 'icon title' 'icon msg' 'icon btns';
   grid-template-columns: auto 1fr;
 }
@@ -259,6 +276,11 @@
   width: auto !important;
   font-size: 1.2em;
 }
+b-panel .dialog {
+  /* is this really the right solution? */
+  display: contents;
+}
+
 [hidden] {
   display: none;
 }
@@ -286,6 +308,7 @@
 .b-menu .menu-search-bar input {
   width: auto;
   flex: 1;
+  min-width: 2em;
   box-shadow: none;
   border: none;
   background: var(--b-menu-input-bgd, #eee) !important;
@@ -428,6 +451,9 @@
 .b-menu .menu-divider:first-child {
   border-top: none;
 }
+.b-menu .menu-divider:last-child {
+  padding-bottom: 1em;
+}
 .b-menu .menu-text {
   padding: 0.5em 1em;
   font-size: 0.9em;
@@ -478,6 +504,7 @@
 .b-menu.grid-centered .results .menu-item {
   justify-self: center;
 }
+
 :root {
   --color-primary: var(--theme-chosen, var(--theme, var(--blue)));
   --color-secondary: var(--pink);
@@ -485,6 +512,7 @@
   --white: #fff;
   --dark: #2c3033;
   --dark-black: #1f2224;
+  --white-bluetint: #edf2f3;
   --light: #f5f5f5;
   --red: var(--red-500);
   --pink: var(--pink-500);
@@ -505,6 +533,9 @@
   --brown: var(--brown-500);
   --gray: var(--gray-500);
   --gray-blue: var(--gray-blue-500);
+}
+:root[dark] {
+  --deep-purple: var(--deep-purple-300);
 }
 :root {
   --red-50: #FFEBEE;
@@ -762,3 +793,6 @@
   --gray-blue-800: #37474F;
   --gray-blue-900: #263238;
 }
+
+
+/*# sourceMappingURL=/bui.css.map */

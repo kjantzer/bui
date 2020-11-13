@@ -5,8 +5,6 @@
 //
 // anything defined in a previous bundle is accessed via the
 // orig method which is the require for previous bundles
-
-// eslint-disable-next-line no-global-assign
 parcelRequire = (function (modules, cache, entry, globalName) {
   // Save the require from previous bundle to this closure if any
   var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
@@ -77,8 +75,16 @@ parcelRequire = (function (modules, cache, entry, globalName) {
     }, {}];
   };
 
+  var error;
   for (var i = 0; i < entry.length; i++) {
-    newRequire(entry[i]);
+    try {
+      newRequire(entry[i]);
+    } catch (e) {
+      // Save first error but execute all entries
+      if (!error) {
+        error = e;
+      }
+    }
   }
 
   if (entry.length) {
@@ -103,84 +109,15 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   // Override the current require with this new one
+  parcelRequire = newRequire;
+
+  if (error) {
+    // throw error from earlier, _after updating parcelRequire_
+    throw error;
+  }
+
   return newRequire;
-})({"uWh2":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.isDirective = exports.directive = void 0;
-
-/**
- * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-const directives = new WeakMap();
-/**
- * Brands a function as a directive factory function so that lit-html will call
- * the function during template rendering, rather than passing as a value.
- *
- * A _directive_ is a function that takes a Part as an argument. It has the
- * signature: `(part: Part) => void`.
- *
- * A directive _factory_ is a function that takes arguments for data and
- * configuration and returns a directive. Users of directive usually refer to
- * the directive factory as the directive. For example, "The repeat directive".
- *
- * Usually a template author will invoke a directive factory in their template
- * with relevant arguments, which will then return a directive function.
- *
- * Here's an example of using the `repeat()` directive factory that takes an
- * array and a function to render an item:
- *
- * ```js
- * html`<ul><${repeat(items, (item) => html`<li>${item}</li>`)}</ul>`
- * ```
- *
- * When `repeat` is invoked, it returns a directive function that closes over
- * `items` and the template function. When the outer template is rendered, the
- * return directive function is called with the Part for the expression.
- * `repeat` then performs it's custom logic to render multiple items.
- *
- * @param f The directive factory function. Must be a function that returns a
- * function of the signature `(part: Part) => void`. The returned function will
- * be called with the part object.
- *
- * @example
- *
- * import {directive, html} from 'lit-html';
- *
- * const immutable = directive((v) => (part) => {
- *   if (part.value !== v) {
- *     part.setValue(v)
- *   }
- * });
- */
-
-const directive = f => (...args) => {
-  const d = f(...args);
-  directives.set(d, true);
-  return d;
-};
-
-exports.directive = directive;
-
-const isDirective = o => {
-  return typeof o === 'function' && directives.has(o);
-};
-
-exports.isDirective = isDirective;
-},{}],"2ytx":[function(require,module,exports) {
+})({"ytxR":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -205,7 +142,7 @@ exports.removeNodes = exports.reparentNodes = exports.isCEPolyfill = void 0;
 /**
  * True if the custom elements polyfill is in use.
  */
-const isCEPolyfill = window.customElements !== undefined && window.customElements.polyfillWrapFlushCallback !== undefined;
+const isCEPolyfill = typeof window !== 'undefined' && window.customElements != null && window.customElements.polyfillWrapFlushCallback !== undefined;
 /**
  * Reparents nodes, starting from `start` (inclusive) to `end` (exclusive),
  * into another container (could be the same container), before `before`. If
@@ -238,40 +175,6 @@ const removeNodes = (container, start, end = null) => {
 };
 
 exports.removeNodes = removeNodes;
-},{}],"pnLb":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.nothing = exports.noChange = void 0;
-
-/**
- * @license
- * Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-
-/**
- * A sentinel value that signals that a value was handled by a directive and
- * should not be written to the DOM.
- */
-const noChange = {};
-/**
- * A sentinel value that signals a NodePart to fully clear its content.
- */
-
-exports.noChange = noChange;
-const nothing = {};
-exports.nothing = nothing;
 },{}],"Av0K":[function(require,module,exports) {
 "use strict";
 
@@ -315,7 +218,7 @@ const markerRegex = new RegExp(`${marker}|${nodeMarker}`);
 exports.markerRegex = markerRegex;
 const boundAttributeSuffix = '$lit$';
 /**
- * An updateable Template that tracks the location of dynamic parts.
+ * An updatable Template that tracks the location of dynamic parts.
  */
 
 exports.boundAttributeSuffix = boundAttributeSuffix;
@@ -551,8 +454,287 @@ const createMarker = () => document.createComment('');
 
 
 exports.createMarker = createMarker;
-const lastAttributeNameRegex = /([ \x09\x0a\x0c\x0d])([^\0-\x1F\x7F-\x9F "'>=/]+)([ \x09\x0a\x0c\x0d]*=[ \x09\x0a\x0c\x0d]*(?:[^ \x09\x0a\x0c\x0d"'`<>=]*|"[^"]*|'[^']*))$/;
+const lastAttributeNameRegex = // eslint-disable-next-line no-control-regex
+/([ \x09\x0a\x0c\x0d])([^\0-\x1F\x7F-\x9F "'>=/]+)([ \x09\x0a\x0c\x0d]*=[ \x09\x0a\x0c\x0d]*(?:[^ \x09\x0a\x0c\x0d"'`<>=]*|"[^"]*|'[^']*))$/;
 exports.lastAttributeNameRegex = lastAttributeNameRegex;
+},{}],"NXoq":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.removeNodesFromTemplate = removeNodesFromTemplate;
+exports.insertNodeIntoTemplate = insertNodeIntoTemplate;
+
+var _template = require("./template.js");
+
+/**
+ * @license
+ * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+const walkerNodeFilter = 133
+/* NodeFilter.SHOW_{ELEMENT|COMMENT|TEXT} */
+;
+/**
+ * Removes the list of nodes from a Template safely. In addition to removing
+ * nodes from the Template, the Template part indices are updated to match
+ * the mutated Template DOM.
+ *
+ * As the template is walked the removal state is tracked and
+ * part indices are adjusted as needed.
+ *
+ * div
+ *   div#1 (remove) <-- start removing (removing node is div#1)
+ *     div
+ *       div#2 (remove)  <-- continue removing (removing node is still div#1)
+ *         div
+ * div <-- stop removing since previous sibling is the removing node (div#1,
+ * removed 4 nodes)
+ */
+
+function removeNodesFromTemplate(template, nodesToRemove) {
+  const {
+    element: {
+      content
+    },
+    parts
+  } = template;
+  const walker = document.createTreeWalker(content, walkerNodeFilter, null, false);
+  let partIndex = nextActiveIndexInTemplateParts(parts);
+  let part = parts[partIndex];
+  let nodeIndex = -1;
+  let removeCount = 0;
+  const nodesToRemoveInTemplate = [];
+  let currentRemovingNode = null;
+
+  while (walker.nextNode()) {
+    nodeIndex++;
+    const node = walker.currentNode; // End removal if stepped past the removing node
+
+    if (node.previousSibling === currentRemovingNode) {
+      currentRemovingNode = null;
+    } // A node to remove was found in the template
+
+
+    if (nodesToRemove.has(node)) {
+      nodesToRemoveInTemplate.push(node); // Track node we're removing
+
+      if (currentRemovingNode === null) {
+        currentRemovingNode = node;
+      }
+    } // When removing, increment count by which to adjust subsequent part indices
+
+
+    if (currentRemovingNode !== null) {
+      removeCount++;
+    }
+
+    while (part !== undefined && part.index === nodeIndex) {
+      // If part is in a removed node deactivate it by setting index to -1 or
+      // adjust the index as needed.
+      part.index = currentRemovingNode !== null ? -1 : part.index - removeCount; // go to the next active part.
+
+      partIndex = nextActiveIndexInTemplateParts(parts, partIndex);
+      part = parts[partIndex];
+    }
+  }
+
+  nodesToRemoveInTemplate.forEach(n => n.parentNode.removeChild(n));
+}
+
+const countNodes = node => {
+  let count = node.nodeType === 11
+  /* Node.DOCUMENT_FRAGMENT_NODE */
+  ? 0 : 1;
+  const walker = document.createTreeWalker(node, walkerNodeFilter, null, false);
+
+  while (walker.nextNode()) {
+    count++;
+  }
+
+  return count;
+};
+
+const nextActiveIndexInTemplateParts = (parts, startIndex = -1) => {
+  for (let i = startIndex + 1; i < parts.length; i++) {
+    const part = parts[i];
+
+    if ((0, _template.isTemplatePartActive)(part)) {
+      return i;
+    }
+  }
+
+  return -1;
+};
+/**
+ * Inserts the given node into the Template, optionally before the given
+ * refNode. In addition to inserting the node into the Template, the Template
+ * part indices are updated to match the mutated Template DOM.
+ */
+
+
+function insertNodeIntoTemplate(template, node, refNode = null) {
+  const {
+    element: {
+      content
+    },
+    parts
+  } = template; // If there's no refNode, then put node at end of template.
+  // No part indices need to be shifted in this case.
+
+  if (refNode === null || refNode === undefined) {
+    content.appendChild(node);
+    return;
+  }
+
+  const walker = document.createTreeWalker(content, walkerNodeFilter, null, false);
+  let partIndex = nextActiveIndexInTemplateParts(parts);
+  let insertCount = 0;
+  let walkerIndex = -1;
+
+  while (walker.nextNode()) {
+    walkerIndex++;
+    const walkerNode = walker.currentNode;
+
+    if (walkerNode === refNode) {
+      insertCount = countNodes(node);
+      refNode.parentNode.insertBefore(node, refNode);
+    }
+
+    while (partIndex !== -1 && parts[partIndex].index === walkerIndex) {
+      // If we've inserted the node, simply adjust all subsequent parts
+      if (insertCount > 0) {
+        while (partIndex !== -1) {
+          parts[partIndex].index += insertCount;
+          partIndex = nextActiveIndexInTemplateParts(parts, partIndex);
+        }
+
+        return;
+      }
+
+      partIndex = nextActiveIndexInTemplateParts(parts, partIndex);
+    }
+  }
+}
+},{"./template.js":"Av0K"}],"uWh2":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.isDirective = exports.directive = void 0;
+
+/**
+ * @license
+ * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+const directives = new WeakMap();
+/**
+ * Brands a function as a directive factory function so that lit-html will call
+ * the function during template rendering, rather than passing as a value.
+ *
+ * A _directive_ is a function that takes a Part as an argument. It has the
+ * signature: `(part: Part) => void`.
+ *
+ * A directive _factory_ is a function that takes arguments for data and
+ * configuration and returns a directive. Users of directive usually refer to
+ * the directive factory as the directive. For example, "The repeat directive".
+ *
+ * Usually a template author will invoke a directive factory in their template
+ * with relevant arguments, which will then return a directive function.
+ *
+ * Here's an example of using the `repeat()` directive factory that takes an
+ * array and a function to render an item:
+ *
+ * ```js
+ * html`<ul><${repeat(items, (item) => html`<li>${item}</li>`)}</ul>`
+ * ```
+ *
+ * When `repeat` is invoked, it returns a directive function that closes over
+ * `items` and the template function. When the outer template is rendered, the
+ * return directive function is called with the Part for the expression.
+ * `repeat` then performs it's custom logic to render multiple items.
+ *
+ * @param f The directive factory function. Must be a function that returns a
+ * function of the signature `(part: Part) => void`. The returned function will
+ * be called with the part object.
+ *
+ * @example
+ *
+ * import {directive, html} from 'lit-html';
+ *
+ * const immutable = directive((v) => (part) => {
+ *   if (part.value !== v) {
+ *     part.setValue(v)
+ *   }
+ * });
+ */
+
+const directive = f => (...args) => {
+  const d = f(...args);
+  directives.set(d, true);
+  return d;
+};
+
+exports.directive = directive;
+
+const isDirective = o => {
+  return typeof o === 'function' && directives.has(o);
+};
+
+exports.isDirective = isDirective;
+},{}],"pnLb":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.nothing = exports.noChange = void 0;
+
+/**
+ * @license
+ * Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+
+/**
+ * A sentinel value that signals that a value was handled by a directive and
+ * should not be written to the DOM.
+ */
+const noChange = {};
+/**
+ * A sentinel value that signals a NodePart to fully clear its content.
+ */
+
+exports.noChange = noChange;
+const nothing = {};
+exports.nothing = nothing;
 },{}],"bn5t":[function(require,module,exports) {
 "use strict";
 
@@ -577,10 +759,6 @@ var _template = require("./template.js");
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
- */
-
-/**
- * @module lit-html
  */
 
 /**
@@ -634,7 +812,7 @@ class TemplateInstance {
     // Given these constraints, with full custom elements support we would
     // prefer the order: Clone, Process, Adopt, Upgrade, Update, Connect
     //
-    // But Safari dooes not implement CustomElementRegistry#upgrade, so we
+    // But Safari does not implement CustomElementRegistry#upgrade, so we
     // can not implement that order and still have upgrade-before-update and
     // upgrade disconnected fragments. So we instead sacrifice the
     // process-before-upgrade constraint, since in Custom Elements v1 elements
@@ -718,7 +896,7 @@ class TemplateInstance {
 }
 
 exports.TemplateInstance = TemplateInstance;
-},{"./dom.js":"2ytx","./template.js":"Av0K"}],"cVNN":[function(require,module,exports) {
+},{"./dom.js":"ytxR","./template.js":"Av0K"}],"cVNN":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -747,6 +925,18 @@ var _template = require("./template.js");
 /**
  * @module lit-html
  */
+
+/**
+ * Our TrustedTypePolicy for HTML which is declared using the html template
+ * tag function.
+ *
+ * That HTML is a developer-authored constant, and is parsed with innerHTML
+ * before any untrusted expressions have been mixed in. Therefor it is
+ * considered safe by construction.
+ */
+const policy = window.trustedTypes && trustedTypes.createPolicy('lit-html', {
+  createHTML: s => s
+});
 const commentMarker = ` ${_template.marker} `;
 /**
  * The return type of `html`, which holds a Template and the values from
@@ -774,7 +964,7 @@ class TemplateResult {
       const s = this.strings[i]; // For each binding we want to determine the kind of marker to insert
       // into the template source before it's parsed by the browser's HTML
       // parser. The marker type is based on whether the expression is in an
-      // attribute, text, or comment poisition.
+      // attribute, text, or comment position.
       //   * For node-position bindings we insert a comment with the marker
       //     sentinel as its text content, like <!--{{lit-guid}}-->.
       //   * For attribute bindings we insert just the marker sentinel for the
@@ -793,7 +983,7 @@ class TemplateResult {
       // comment close. Because <-- can appear in an attribute value there can
       // be false positives.
 
-      isCommentBinding = (commentOpen > -1 || isCommentBinding) && s.indexOf('-->', commentOpen + 1) === -1; // Check to see if we have an attribute-like sequence preceeding the
+      isCommentBinding = (commentOpen > -1 || isCommentBinding) && s.indexOf('-->', commentOpen + 1) === -1; // Check to see if we have an attribute-like sequence preceding the
       // expression. This can match "name=value" like structures in text,
       // comments, and attribute values, so there can be false-positives.
 
@@ -801,7 +991,7 @@ class TemplateResult {
 
       if (attributeMatch === null) {
         // We're only in this branch if we don't have a attribute-like
-        // preceeding sequence. For comments, this guards against unusual
+        // preceding sequence. For comments, this guards against unusual
         // attribute values like <div foo="<!--${'bar'}">. Cases like
         // <!-- foo=${'bar'}--> are handled correctly in the attribute branch
         // below.
@@ -820,7 +1010,17 @@ class TemplateResult {
 
   getTemplateElement() {
     const template = document.createElement('template');
-    template.innerHTML = this.getHTML();
+    let value = this.getHTML();
+
+    if (policy !== undefined) {
+      // this is secure because `this.strings` is a TemplateStringsArray.
+      // TODO: validate this when
+      // https://github.com/tc39/proposal-array-is-template-object is
+      // implemented.
+      value = policy.createHTML(value);
+    }
+
+    template.innerHTML = value;
     return template;
   }
 
@@ -853,7 +1053,7 @@ class SVGTemplateResult extends TemplateResult {
 }
 
 exports.SVGTemplateResult = SVGTemplateResult;
-},{"./dom.js":"2ytx","./template.js":"Av0K"}],"atl2":[function(require,module,exports) {
+},{"./dom.js":"ytxR","./template.js":"Av0K"}],"atl2":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -886,10 +1086,6 @@ var _template = require("./template.js");
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-
-/**
- * @module lit-html
- */
 const isPrimitive = value => {
   return value === null || !(typeof value === 'object' || typeof value === 'function');
 };
@@ -897,12 +1093,12 @@ const isPrimitive = value => {
 exports.isPrimitive = isPrimitive;
 
 const isIterable = value => {
-  return Array.isArray(value) || // tslint:disable-next-line:no-any
+  return Array.isArray(value) || // eslint-disable-next-line @typescript-eslint/no-explicit-any
   !!(value && value[Symbol.iterator]);
 };
 /**
  * Writes attribute values to the DOM for a group of AttributeParts bound to a
- * single attibute. The value is only set once even if there are multiple parts
+ * single attribute. The value is only set once even if there are multiple parts
  * for an attribute.
  */
 
@@ -933,11 +1129,37 @@ class AttributeCommitter {
   _getValue() {
     const strings = this.strings;
     const l = strings.length - 1;
+    const parts = this.parts; // If we're assigning an attribute via syntax like:
+    //    attr="${foo}"  or  attr=${foo}
+    // but not
+    //    attr="${foo} ${bar}" or attr="${foo} baz"
+    // then we don't want to coerce the attribute value into one long
+    // string. Instead we want to just return the value itself directly,
+    // so that sanitizeDOMValue can get the actual value rather than
+    // String(value)
+    // The exception is if v is an array, in which case we do want to smash
+    // it together into a string without calling String() on the array.
+    //
+    // This also allows trusted values (when using TrustedTypes) being
+    // assigned to DOM sinks without being stringified in the process.
+
+    if (l === 1 && strings[0] === '' && strings[1] === '') {
+      const v = parts[0].value;
+
+      if (typeof v === 'symbol') {
+        return String(v);
+      }
+
+      if (typeof v === 'string' || !isIterable(v)) {
+        return v;
+      }
+    }
+
     let text = '';
 
     for (let i = 0; i < l; i++) {
       text += strings[i];
-      const part = this.parts[i];
+      const part = parts[i];
 
       if (part !== undefined) {
         const v = part.value;
@@ -1077,6 +1299,10 @@ class NodePart {
   }
 
   commit() {
+    if (this.startNode.parentNode === null) {
+      return;
+    }
+
     while ((0, _directive.isDirective)(this.__pendingValue)) {
       const directive = this.__pendingValue;
       this.__pendingValue = _part.noChange;
@@ -1309,7 +1535,7 @@ class PropertyCommitter extends AttributeCommitter {
 
   commit() {
     if (this.dirty) {
-      this.dirty = false; // tslint:disable-next-line:no-any
+      this.dirty = false; // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
       this.element[this.name] = this._getValue();
     }
@@ -1320,27 +1546,31 @@ class PropertyCommitter extends AttributeCommitter {
 exports.PropertyCommitter = PropertyCommitter;
 
 class PropertyPart extends AttributePart {} // Detect event listener options support. If the `capture` property is read
-// from the options object, then options are supported. If not, then the thrid
+// from the options object, then options are supported. If not, then the third
 // argument to add/removeEventListener is interpreted as the boolean capture
 // value so we should only pass the `capture` property.
 
 
 exports.PropertyPart = PropertyPart;
-let eventOptionsSupported = false;
+let eventOptionsSupported = false; // Wrap into an IIFE because MS Edge <= v41 does not support having try/catch
+// blocks right into the body of a module
 
-try {
-  const options = {
-    get capture() {
-      eventOptionsSupported = true;
-      return false;
-    }
+(() => {
+  try {
+    const options = {
+      get capture() {
+        eventOptionsSupported = true;
+        return false;
+      }
 
-  }; // tslint:disable-next-line:no-any
+    }; // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
-  window.addEventListener('test', options, options); // tslint:disable-next-line:no-any
+    window.addEventListener('test', options, options); // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
-  window.removeEventListener('test', options, options);
-} catch (_e) {}
+    window.removeEventListener('test', options, options);
+  } catch (_e) {// event options not supported
+  }
+})();
 
 class EventPart {
   constructor(element, eventName, eventContext) {
@@ -1406,78 +1636,7 @@ const getOptions = o => o && (eventOptionsSupported ? {
   passive: o.passive,
   once: o.once
 } : o.capture);
-},{"./directive.js":"uWh2","./dom.js":"2ytx","./part.js":"pnLb","./template-instance.js":"bn5t","./template-result.js":"cVNN","./template.js":"Av0K"}],"52LB":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.defaultTemplateProcessor = exports.DefaultTemplateProcessor = void 0;
-
-var _parts = require("./parts.js");
-
-/**
- * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-
-/**
- * Creates Parts when a template is instantiated.
- */
-class DefaultTemplateProcessor {
-  /**
-   * Create parts for an attribute-position binding, given the event, attribute
-   * name, and string literals.
-   *
-   * @param element The element containing the binding
-   * @param name  The attribute name
-   * @param strings The string literals. There are always at least two strings,
-   *   event for fully-controlled bindings with a single expression.
-   */
-  handleAttributeExpressions(element, name, strings, options) {
-    const prefix = name[0];
-
-    if (prefix === '.') {
-      const committer = new _parts.PropertyCommitter(element, name.slice(1), strings);
-      return committer.parts;
-    }
-
-    if (prefix === '@') {
-      return [new _parts.EventPart(element, name.slice(1), options.eventContext)];
-    }
-
-    if (prefix === '?') {
-      return [new _parts.BooleanAttributePart(element, name.slice(1), strings)];
-    }
-
-    const committer = new _parts.AttributeCommitter(element, name, strings);
-    return committer.parts;
-  }
-  /**
-   * Create parts for a text-position binding.
-   * @param templateFactory
-   */
-
-
-  handleTextExpression(options) {
-    return new _parts.NodePart(options);
-  }
-
-}
-
-exports.DefaultTemplateProcessor = DefaultTemplateProcessor;
-const defaultTemplateProcessor = new DefaultTemplateProcessor();
-exports.defaultTemplateProcessor = defaultTemplateProcessor;
-},{"./parts.js":"atl2"}],"gbKZ":[function(require,module,exports) {
+},{"./directive.js":"uWh2","./dom.js":"ytxR","./part.js":"pnLb","./template-instance.js":"bn5t","./template-result.js":"cVNN","./template.js":"Av0K"}],"gbKZ":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1570,10 +1729,6 @@ var _templateFactory = require("./template-factory.js");
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-
-/**
- * @module lit-html
- */
 const parts = new WeakMap();
 /**
  * Renders a template result or other value to a container.
@@ -1609,7 +1764,78 @@ const render = (result, container, options) => {
 };
 
 exports.render = render;
-},{"./dom.js":"2ytx","./parts.js":"atl2","./template-factory.js":"gbKZ"}],"SP/d":[function(require,module,exports) {
+},{"./dom.js":"ytxR","./parts.js":"atl2","./template-factory.js":"gbKZ"}],"LBiL":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.defaultTemplateProcessor = exports.DefaultTemplateProcessor = void 0;
+
+var _parts = require("./parts.js");
+
+/**
+ * @license
+ * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+
+/**
+ * Creates Parts when a template is instantiated.
+ */
+class DefaultTemplateProcessor {
+  /**
+   * Create parts for an attribute-position binding, given the event, attribute
+   * name, and string literals.
+   *
+   * @param element The element containing the binding
+   * @param name  The attribute name
+   * @param strings The string literals. There are always at least two strings,
+   *   event for fully-controlled bindings with a single expression.
+   */
+  handleAttributeExpressions(element, name, strings, options) {
+    const prefix = name[0];
+
+    if (prefix === '.') {
+      const committer = new _parts.PropertyCommitter(element, name.slice(1), strings);
+      return committer.parts;
+    }
+
+    if (prefix === '@') {
+      return [new _parts.EventPart(element, name.slice(1), options.eventContext)];
+    }
+
+    if (prefix === '?') {
+      return [new _parts.BooleanAttributePart(element, name.slice(1), strings)];
+    }
+
+    const committer = new _parts.AttributeCommitter(element, name, strings);
+    return committer.parts;
+  }
+  /**
+   * Create parts for a text-position binding.
+   * @param templateFactory
+   */
+
+
+  handleTextExpression(options) {
+    return new _parts.NodePart(options);
+  }
+
+}
+
+exports.DefaultTemplateProcessor = DefaultTemplateProcessor;
+const defaultTemplateProcessor = new DefaultTemplateProcessor();
+exports.defaultTemplateProcessor = defaultTemplateProcessor;
+},{"./parts.js":"atl2"}],"SPDu":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1823,8 +2049,7 @@ var _template = require("./lib/template.js");
  * -  [[svg]]
  * -  [[render]]
  *
- * @module lit-html
- * @preferred
+ * @packageDocumentation
  */
 
 /**
@@ -1835,11 +2060,14 @@ var _template = require("./lib/template.js");
 // IMPORTANT: do not change the property name or the assignment expression.
 // This line will be used in regexes to search for lit-html usage.
 // TODO(justinfagnani): inject version number at build time
-(window['litHtmlVersions'] || (window['litHtmlVersions'] = [])).push('1.1.2');
+if (typeof window !== 'undefined') {
+  (window['litHtmlVersions'] || (window['litHtmlVersions'] = [])).push('1.3.0');
+}
 /**
  * Interprets a template literal as an HTML template that can efficiently
  * render to and update a container.
  */
+
 
 const html = (strings, ...values) => new _templateResult.TemplateResult(strings, values, 'html', _defaultTemplateProcessor.defaultTemplateProcessor);
 /**
@@ -1853,179 +2081,7 @@ exports.html = html;
 const svg = (strings, ...values) => new _templateResult.SVGTemplateResult(strings, values, 'svg', _defaultTemplateProcessor.defaultTemplateProcessor);
 
 exports.svg = svg;
-},{"./lib/default-template-processor.js":"52LB","./lib/template-result.js":"cVNN","./lib/directive.js":"uWh2","./lib/dom.js":"2ytx","./lib/part.js":"pnLb","./lib/parts.js":"atl2","./lib/render.js":"Fhpq","./lib/template-factory.js":"gbKZ","./lib/template-instance.js":"bn5t","./lib/template.js":"Av0K"}],"NXoq":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.removeNodesFromTemplate = removeNodesFromTemplate;
-exports.insertNodeIntoTemplate = insertNodeIntoTemplate;
-
-var _template = require("./template.js");
-
-/**
- * @license
- * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at
- * http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at
- * http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at
- * http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at
- * http://polymer.github.io/PATENTS.txt
- */
-
-/**
- * @module shady-render
- */
-const walkerNodeFilter = 133
-/* NodeFilter.SHOW_{ELEMENT|COMMENT|TEXT} */
-;
-/**
- * Removes the list of nodes from a Template safely. In addition to removing
- * nodes from the Template, the Template part indices are updated to match
- * the mutated Template DOM.
- *
- * As the template is walked the removal state is tracked and
- * part indices are adjusted as needed.
- *
- * div
- *   div#1 (remove) <-- start removing (removing node is div#1)
- *     div
- *       div#2 (remove)  <-- continue removing (removing node is still div#1)
- *         div
- * div <-- stop removing since previous sibling is the removing node (div#1,
- * removed 4 nodes)
- */
-
-function removeNodesFromTemplate(template, nodesToRemove) {
-  const {
-    element: {
-      content
-    },
-    parts
-  } = template;
-  const walker = document.createTreeWalker(content, walkerNodeFilter, null, false);
-  let partIndex = nextActiveIndexInTemplateParts(parts);
-  let part = parts[partIndex];
-  let nodeIndex = -1;
-  let removeCount = 0;
-  const nodesToRemoveInTemplate = [];
-  let currentRemovingNode = null;
-
-  while (walker.nextNode()) {
-    nodeIndex++;
-    const node = walker.currentNode; // End removal if stepped past the removing node
-
-    if (node.previousSibling === currentRemovingNode) {
-      currentRemovingNode = null;
-    } // A node to remove was found in the template
-
-
-    if (nodesToRemove.has(node)) {
-      nodesToRemoveInTemplate.push(node); // Track node we're removing
-
-      if (currentRemovingNode === null) {
-        currentRemovingNode = node;
-      }
-    } // When removing, increment count by which to adjust subsequent part indices
-
-
-    if (currentRemovingNode !== null) {
-      removeCount++;
-    }
-
-    while (part !== undefined && part.index === nodeIndex) {
-      // If part is in a removed node deactivate it by setting index to -1 or
-      // adjust the index as needed.
-      part.index = currentRemovingNode !== null ? -1 : part.index - removeCount; // go to the next active part.
-
-      partIndex = nextActiveIndexInTemplateParts(parts, partIndex);
-      part = parts[partIndex];
-    }
-  }
-
-  nodesToRemoveInTemplate.forEach(n => n.parentNode.removeChild(n));
-}
-
-const countNodes = node => {
-  let count = node.nodeType === 11
-  /* Node.DOCUMENT_FRAGMENT_NODE */
-  ? 0 : 1;
-  const walker = document.createTreeWalker(node, walkerNodeFilter, null, false);
-
-  while (walker.nextNode()) {
-    count++;
-  }
-
-  return count;
-};
-
-const nextActiveIndexInTemplateParts = (parts, startIndex = -1) => {
-  for (let i = startIndex + 1; i < parts.length; i++) {
-    const part = parts[i];
-
-    if ((0, _template.isTemplatePartActive)(part)) {
-      return i;
-    }
-  }
-
-  return -1;
-};
-/**
- * Inserts the given node into the Template, optionally before the given
- * refNode. In addition to inserting the node into the Template, the Template
- * part indices are updated to match the mutated Template DOM.
- */
-
-
-function insertNodeIntoTemplate(template, node, refNode = null) {
-  const {
-    element: {
-      content
-    },
-    parts
-  } = template; // If there's no refNode, then put node at end of template.
-  // No part indices need to be shifted in this case.
-
-  if (refNode === null || refNode === undefined) {
-    content.appendChild(node);
-    return;
-  }
-
-  const walker = document.createTreeWalker(content, walkerNodeFilter, null, false);
-  let partIndex = nextActiveIndexInTemplateParts(parts);
-  let insertCount = 0;
-  let walkerIndex = -1;
-
-  while (walker.nextNode()) {
-    walkerIndex++;
-    const walkerNode = walker.currentNode;
-
-    if (walkerNode === refNode) {
-      insertCount = countNodes(node);
-      refNode.parentNode.insertBefore(node, refNode);
-    }
-
-    while (partIndex !== -1 && parts[partIndex].index === walkerIndex) {
-      // If we've inserted the node, simply adjust all subsequent parts
-      if (insertCount > 0) {
-        while (partIndex !== -1) {
-          parts[partIndex].index += insertCount;
-          partIndex = nextActiveIndexInTemplateParts(parts, partIndex);
-        }
-
-        return;
-      }
-
-      partIndex = nextActiveIndexInTemplateParts(parts, partIndex);
-    }
-  }
-}
-},{"./template.js":"Av0K"}],"eBH8":[function(require,module,exports) {
+},{"./lib/default-template-processor.js":"LBiL","./lib/template-result.js":"cVNN","./lib/directive.js":"uWh2","./lib/dom.js":"ytxR","./lib/part.js":"pnLb","./lib/parts.js":"atl2","./lib/render.js":"Fhpq","./lib/template-factory.js":"gbKZ","./lib/template-instance.js":"bn5t","./lib/template.js":"Av0K"}],"eBH8":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2049,7 +2105,7 @@ Object.defineProperty(exports, "TemplateResult", {
     return _litHtml.TemplateResult;
   }
 });
-exports.render = void 0;
+exports.render = exports.shadyTemplateFactory = void 0;
 
 var _dom = require("./dom.js");
 
@@ -2083,8 +2139,7 @@ var _litHtml = require("../lit-html.js");
  * Module to add shady DOM/shady CSS polyfill support to lit-html template
  * rendering. See the [[render]] method for details.
  *
- * @module shady-render
- * @preferred
+ * @packageDocumentation
  */
 
 /**
@@ -2146,6 +2201,7 @@ const shadyTemplateFactory = scopeName => result => {
   return template;
 };
 
+exports.shadyTemplateFactory = shadyTemplateFactory;
 const TEMPLATE_TYPES = ['html', 'svg'];
 /**
  * Removes all style elements from Templates for the given scopeName.
@@ -2382,7 +2438,7 @@ const render = (result, container, options) => {
 };
 
 exports.render = render;
-},{"./dom.js":"2ytx","./modify-template.js":"NXoq","./render.js":"Fhpq","./template-factory.js":"gbKZ","./template-instance.js":"bn5t","./template.js":"Av0K","../lit-html.js":"SP/d"}],"fKvB":[function(require,module,exports) {
+},{"./dom.js":"ytxR","./modify-template.js":"NXoq","./render.js":"Fhpq","./template-factory.js":"gbKZ","./template-instance.js":"bn5t","./template.js":"Av0K","../lit-html.js":"SPDu"}],"fKvB":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2405,6 +2461,12 @@ exports.UpdatingElement = exports.notEqual = exports.defaultConverter = void 0;
  */
 var _a;
 /**
+ * Use this module if you want to create your own base class extending
+ * [[UpdatingElement]].
+ * @packageDocumentation
+ */
+
+/*
  * When using Closure Compiler, JSCompiler_renameProperty(property, object) is
  * replaced at compile time by the munged name for object[property]. We cannot
  * alias this function, so we have to use a small shim that has the same
@@ -2467,12 +2529,10 @@ const defaultPropertyDeclaration = {
   reflect: false,
   hasChanged: notEqual
 };
-const microtaskPromise = Promise.resolve(true);
 const STATE_HAS_UPDATED = 1;
 const STATE_UPDATE_REQUESTED = 1 << 2;
 const STATE_IS_REFLECTING_TO_ATTRIBUTE = 1 << 3;
 const STATE_IS_REFLECTING_TO_PROPERTY = 1 << 4;
-const STATE_HAS_CONNECTED = 1 << 5;
 /**
  * The Closure JS Compiler doesn't currently have good support for static
  * property semantics where "this" is dynamic (e.g.
@@ -2485,26 +2545,12 @@ const finalized = 'finalized';
  * Base element class which manages element properties and attributes. When
  * properties change, the `update` method is asynchronously called. This method
  * should be supplied by subclassers to render updates as desired.
+ * @noInheritDoc
  */
 
 class UpdatingElement extends HTMLElement {
   constructor() {
     super();
-    this._updateState = 0;
-    this._instanceProperties = undefined;
-    this._updatePromise = microtaskPromise;
-    this._hasConnectedResolver = undefined;
-    /**
-     * Map with keys for any properties that have changed since the last
-     * update cycle with previous values.
-     */
-
-    this._changedProperties = new Map();
-    /**
-     * Map with keys of properties that should be reflected when updated.
-     */
-
-    this._reflectingProperties = undefined;
     this.initialize();
   }
   /**
@@ -2553,10 +2599,25 @@ class UpdatingElement extends HTMLElement {
     }
   }
   /**
-   * Creates a property accessor on the element prototype if one does not exist.
+   * Creates a property accessor on the element prototype if one does not exist
+   * and stores a PropertyDeclaration for the property with the given options.
    * The property setter calls the property's `hasChanged` property option
    * or uses a strict identity check to determine whether or not to request
    * an update.
+   *
+   * This method may be overridden to customize properties; however,
+   * when doing so, it's important to call `super.createProperty` to ensure
+   * the property is setup correctly. This method calls
+   * `getPropertyDescriptor` internally to get a descriptor to install.
+   * To customize what properties do when they are get or set, override
+   * `getPropertyDescriptor`. To customize the options for a property,
+   * implement `createProperty` like this:
+   *
+   * static createProperty(name, options) {
+   *   options = Object.assign(options, {myOption: true});
+   *   super.createProperty(name, options);
+   * }
+   *
    * @nocollapse
    */
 
@@ -2579,7 +2640,40 @@ class UpdatingElement extends HTMLElement {
     }
 
     const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
-    Object.defineProperty(this.prototype, name, {
+    const descriptor = this.getPropertyDescriptor(name, key, options);
+
+    if (descriptor !== undefined) {
+      Object.defineProperty(this.prototype, name, descriptor);
+    }
+  }
+  /**
+   * Returns a property descriptor to be defined on the given named property.
+   * If no descriptor is returned, the property will not become an accessor.
+   * For example,
+   *
+   *   class MyElement extends LitElement {
+   *     static getPropertyDescriptor(name, key, options) {
+   *       const defaultDescriptor =
+   *           super.getPropertyDescriptor(name, key, options);
+   *       const setter = defaultDescriptor.set;
+   *       return {
+   *         get: defaultDescriptor.get,
+   *         set(value) {
+   *           setter.call(this, value);
+   *           // custom action.
+   *         },
+   *         configurable: true,
+   *         enumerable: true
+   *       }
+   *     }
+   *   }
+   *
+   * @nocollapse
+   */
+
+
+  static getPropertyDescriptor(name, key, options) {
+    return {
       // tslint:disable-next-line:no-any no symbol in index
       get() {
         return this[key];
@@ -2588,13 +2682,29 @@ class UpdatingElement extends HTMLElement {
       set(value) {
         const oldValue = this[name];
         this[key] = value;
-
-        this._requestUpdate(name, oldValue);
+        this.requestUpdateInternal(name, oldValue, options);
       },
 
       configurable: true,
       enumerable: true
-    });
+    };
+  }
+  /**
+   * Returns the property options associated with the given property.
+   * These options are defined with a PropertyDeclaration via the `properties`
+   * object or the `@property` decorator and are registered in
+   * `createProperty(...)`.
+   *
+   * Note, this method should be considered "final" and not overridden. To
+   * customize the options for a given property, override `createProperty`.
+   *
+   * @nocollapse
+   * @final
+   */
+
+
+  static getPropertyOptions(name) {
+    return this._classProperties && this._classProperties.get(name) || defaultPropertyDeclaration;
   }
   /**
    * Creates property accessors for registered properties and ensures
@@ -2696,11 +2806,15 @@ class UpdatingElement extends HTMLElement {
 
 
   initialize() {
+    this._updateState = 0;
+    this._updatePromise = new Promise(res => this._enableUpdatingResolver = res);
+    this._changedProperties = new Map();
+
     this._saveInstanceProperties(); // ensures first update will be caught by an early access of
     // `updateComplete`
 
 
-    this._requestUpdate();
+    this.requestUpdateInternal();
   }
   /**
    * Fixes any properties set on the instance before upgrade time.
@@ -2747,15 +2861,16 @@ class UpdatingElement extends HTMLElement {
   }
 
   connectedCallback() {
-    this._updateState = this._updateState | STATE_HAS_CONNECTED; // Ensure first connection completes an update. Updates cannot complete
-    // before connection and if one is pending connection the
-    // `_hasConnectionResolver` will exist. If so, resolve it to complete the
-    // update, otherwise requestUpdate.
+    // Ensure first connection completes an update. Updates cannot complete
+    // before connection.
+    this.enableUpdating();
+  }
 
-    if (this._hasConnectedResolver) {
-      this._hasConnectedResolver();
+  enableUpdating() {
+    if (this._enableUpdatingResolver !== undefined) {
+      this._enableUpdatingResolver();
 
-      this._hasConnectedResolver = undefined;
+      this._enableUpdatingResolver = undefined;
     }
   }
   /**
@@ -2818,12 +2933,14 @@ class UpdatingElement extends HTMLElement {
       return;
     }
 
-    const ctor = this.constructor;
+    const ctor = this.constructor; // Note, hint this as an `AttributeMap` so closure clearly understands
+    // the type; it has issues with tracking types through statics
+    // tslint:disable-next-line:no-unnecessary-type-assertion
 
     const propName = ctor._attributeToPropertyMap.get(name);
 
     if (propName !== undefined) {
-      const options = ctor._classProperties.get(propName) || defaultPropertyDeclaration; // mark state reflecting
+      const options = ctor.getPropertyOptions(propName); // mark state reflecting
 
       this._updateState = this._updateState | STATE_IS_REFLECTING_TO_PROPERTY;
       this[propName] = // tslint:disable-next-line:no-any
@@ -2833,18 +2950,18 @@ class UpdatingElement extends HTMLElement {
     }
   }
   /**
-   * This private version of `requestUpdate` does not access or return the
+   * This protected version of `requestUpdate` does not access or return the
    * `updateComplete` promise. This promise can be overridden and is therefore
    * not free to access.
    */
 
 
-  _requestUpdate(name, oldValue) {
+  requestUpdateInternal(name, oldValue, options) {
     let shouldRequestUpdate = true; // If we have a property key, perform property update steps.
 
     if (name !== undefined) {
       const ctor = this.constructor;
-      const options = ctor._classProperties.get(name) || defaultPropertyDeclaration;
+      options = options || ctor.getPropertyOptions(name);
 
       if (ctor._valueHasChanged(this[name], oldValue, options.hasChanged)) {
         if (!this._changedProperties.has(name)) {
@@ -2869,7 +2986,7 @@ class UpdatingElement extends HTMLElement {
     }
 
     if (!this._hasRequestedUpdate && shouldRequestUpdate) {
-      this._enqueueUpdate();
+      this._updatePromise = this._enqueueUpdate();
     }
   }
   /**
@@ -2888,8 +3005,7 @@ class UpdatingElement extends HTMLElement {
 
 
   requestUpdate(name, oldValue) {
-    this._requestUpdate(name, oldValue);
-
+    this.requestUpdateInternal(name, oldValue);
     return this.updateComplete;
   }
   /**
@@ -2898,46 +3014,25 @@ class UpdatingElement extends HTMLElement {
 
 
   async _enqueueUpdate() {
-    // Mark state updating...
     this._updateState = this._updateState | STATE_UPDATE_REQUESTED;
-    let resolve;
-    let reject;
-    const previousUpdatePromise = this._updatePromise;
-    this._updatePromise = new Promise((res, rej) => {
-      resolve = res;
-      reject = rej;
-    });
 
     try {
       // Ensure any previous update has resolved before updating.
       // This `await` also ensures that property changes are batched.
-      await previousUpdatePromise;
-    } catch (e) {} // Ignore any previous errors. We only care that the previous cycle is
-    // done. Any error should have been handled in the previous update.
-    // Make sure the element has connected before updating.
-
-
-    if (!this._hasConnected) {
-      await new Promise(res => this._hasConnectedResolver = res);
+      await this._updatePromise;
+    } catch (e) {// Ignore any previous errors. We only care that the previous cycle is
+      // done. Any error should have been handled in the previous update.
     }
 
-    try {
-      const result = this.performUpdate(); // If `performUpdate` returns a Promise, we await it. This is done to
-      // enable coordinating updates with a scheduler. Note, the result is
-      // checked to avoid delaying an additional microtask unless we need to.
+    const result = this.performUpdate(); // If `performUpdate` returns a Promise, we await it. This is done to
+    // enable coordinating updates with a scheduler. Note, the result is
+    // checked to avoid delaying an additional microtask unless we need to.
 
-      if (result != null) {
-        await result;
-      }
-    } catch (e) {
-      reject(e);
+    if (result != null) {
+      await result;
     }
 
-    resolve(!this._hasRequestedUpdate);
-  }
-
-  get _hasConnected() {
-    return this._updateState & STATE_HAS_CONNECTED;
+    return !this._hasRequestedUpdate;
   }
 
   get _hasRequestedUpdate() {
@@ -2966,7 +3061,14 @@ class UpdatingElement extends HTMLElement {
 
 
   performUpdate() {
-    // Mixin instance properties once, if they exist.
+    // Abort any update if one is not pending when this is called.
+    // This can happen if `performUpdate` is called early to "flush"
+    // the update.
+    if (!this._hasRequestedUpdate) {
+      return;
+    } // Mixin instance properties once, if they exist.
+
+
     if (this._instanceProperties) {
       this._applyInstanceProperties();
     }
@@ -2979,15 +3081,17 @@ class UpdatingElement extends HTMLElement {
 
       if (shouldUpdate) {
         this.update(changedProperties);
+      } else {
+        this._markUpdated();
       }
     } catch (e) {
       // Prevent `firstUpdated` and `updated` from running when there's an
       // update exception.
-      shouldUpdate = false;
-      throw e;
-    } finally {
-      // Ensure element can accept additional updates after an exception.
+      shouldUpdate = false; // Ensure element can accept additional updates after an exception.
+
       this._markUpdated();
+
+      throw e;
     }
 
     if (shouldUpdate) {
@@ -3050,7 +3154,7 @@ class UpdatingElement extends HTMLElement {
    * an update. By default, this method always returns `true`, but this can be
    * customized to control when to update.
    *
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
 
 
@@ -3063,7 +3167,7 @@ class UpdatingElement extends HTMLElement {
    * Setting properties inside this method will *not* trigger
    * another update.
    *
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
 
 
@@ -3075,6 +3179,8 @@ class UpdatingElement extends HTMLElement {
 
       this._reflectingProperties = undefined;
     }
+
+    this._markUpdated();
   }
   /**
    * Invoked whenever the element is updated. Implement to perform
@@ -3083,7 +3189,7 @@ class UpdatingElement extends HTMLElement {
    * Setting properties inside this method will trigger the element to update
    * again after this update cycle completes.
    *
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
 
 
@@ -3095,7 +3201,7 @@ class UpdatingElement extends HTMLElement {
    * Setting properties inside this method will trigger the element to update
    * again after this update cycle completes.
    *
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
 
 
@@ -3110,16 +3216,20 @@ _a = finalized;
  */
 
 UpdatingElement[_a] = true;
-},{}],"4Fzp":[function(require,module,exports) {
+},{}],"FzpZ":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.property = property;
+exports.internalProperty = internalProperty;
 exports.query = query;
+exports.queryAsync = queryAsync;
 exports.queryAll = queryAll;
-exports.eventOptions = exports.customElement = void 0;
+exports.eventOptions = eventOptions;
+exports.queryAssignedNodes = queryAssignedNodes;
+exports.customElement = void 0;
 
 /**
  * @license
@@ -3164,7 +3274,16 @@ const standardCustomElement = (tagName, descriptor) => {
 /**
  * Class decorator factory that defines the decorated class as a custom element.
  *
- * @param tagName the name of the custom element to define
+ * ```
+ * @customElement('my-element')
+ * class MyElement {
+ *   render() {
+ *     return html``;
+ *   }
+ * }
+ * ```
+ * @category Decorator
+ * @param tagName The name of the custom element to define.
  */
 
 
@@ -3177,7 +3296,7 @@ const standardProperty = (options, element) => {
   // Note, the `hasOwnProperty` check in `createProperty` ensures we don't
   // stomp over the user's accessor.
   if (element.kind === 'method' && element.descriptor && !('value' in element.descriptor)) {
-    return Object.assign({}, element, {
+    return Object.assign(Object.assign({}, element), {
       finisher(clazz) {
         clazz.createProperty(element.key, options);
       }
@@ -3221,9 +3340,20 @@ const legacyProperty = (options, proto, name) => {
 };
 /**
  * A property decorator which creates a LitElement property which reflects a
- * corresponding attribute value. A `PropertyDeclaration` may optionally be
+ * corresponding attribute value. A [[`PropertyDeclaration`]] may optionally be
  * supplied to configure property features.
  *
+ * This decorator should only be used for public fields. Private or protected
+ * fields should use the [[`internalProperty`]] decorator.
+ *
+ * @example
+ * ```ts
+ * class MyElement {
+ *   @property({ type: Boolean })
+ *   clicked = false;
+ * }
+ * ```
+ * @category Decorator
  * @ExportDecoratedItems
  */
 
@@ -3233,18 +3363,124 @@ function property(options) {
   return (protoOrDescriptor, name) => name !== undefined ? legacyProperty(options, protoOrDescriptor, name) : standardProperty(options, protoOrDescriptor);
 }
 /**
- * A property decorator that converts a class property into a getter that
- * executes a querySelector on the element's renderRoot.
+ * Declares a private or protected property that still triggers updates to the
+ * element when it changes.
  *
- * @ExportDecoratedItems
+ * Properties declared this way must not be used from HTML or HTML templating
+ * systems, they're solely for properties internal to the element. These
+ * properties may be renamed by optimization tools like closure compiler.
+ * @category Decorator
  */
 
 
-function query(selector) {
+function internalProperty(options) {
+  return property({
+    attribute: false,
+    hasChanged: options === null || options === void 0 ? void 0 : options.hasChanged
+  });
+}
+/**
+ * A property decorator that converts a class property into a getter that
+ * executes a querySelector on the element's renderRoot.
+ *
+ * @param selector A DOMString containing one or more selectors to match.
+ * @param cache An optional boolean which when true performs the DOM query only
+ * once and caches the result.
+ *
+ * See: https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector
+ *
+ * @example
+ *
+ * ```ts
+ * class MyElement {
+ *   @query('#first')
+ *   first;
+ *
+ *   render() {
+ *     return html`
+ *       <div id="first"></div>
+ *       <div id="second"></div>
+ *     `;
+ *   }
+ * }
+ * ```
+ * @category Decorator
+ */
+
+
+function query(selector, cache) {
   return (protoOrDescriptor, // tslint:disable-next-line:no-any decorator
   name) => {
     const descriptor = {
       get() {
+        return this.renderRoot.querySelector(selector);
+      },
+
+      enumerable: true,
+      configurable: true
+    };
+
+    if (cache) {
+      const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
+
+      descriptor.get = function () {
+        if (this[key] === undefined) {
+          this[key] = this.renderRoot.querySelector(selector);
+        }
+
+        return this[key];
+      };
+    }
+
+    return name !== undefined ? legacyQuery(descriptor, protoOrDescriptor, name) : standardQuery(descriptor, protoOrDescriptor);
+  };
+} // Note, in the future, we may extend this decorator to support the use case
+// where the queried element may need to do work to become ready to interact
+// with (e.g. load some implementation code). If so, we might elect to
+// add a second argument defining a function that can be run to make the
+// queried element loaded/updated/ready.
+
+/**
+ * A property decorator that converts a class property into a getter that
+ * returns a promise that resolves to the result of a querySelector on the
+ * element's renderRoot done after the element's `updateComplete` promise
+ * resolves. When the queried property may change with element state, this
+ * decorator can be used instead of requiring users to await the
+ * `updateComplete` before accessing the property.
+ *
+ * @param selector A DOMString containing one or more selectors to match.
+ *
+ * See: https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector
+ *
+ * @example
+ * ```ts
+ * class MyElement {
+ *   @queryAsync('#first')
+ *   first;
+ *
+ *   render() {
+ *     return html`
+ *       <div id="first"></div>
+ *       <div id="second"></div>
+ *     `;
+ *   }
+ * }
+ *
+ * // external usage
+ * async doSomethingWithFirst() {
+ *  (await aMyElement.first).doSomething();
+ * }
+ * ```
+ * @category Decorator
+ */
+
+
+function queryAsync(selector) {
+  return (protoOrDescriptor, // tslint:disable-next-line:no-any decorator
+  name) => {
+    const descriptor = {
+      async get() {
+        await this.updateComplete;
         return this.renderRoot.querySelector(selector);
       },
 
@@ -3258,7 +3494,26 @@ function query(selector) {
  * A property decorator that converts a class property into a getter
  * that executes a querySelectorAll on the element's renderRoot.
  *
- * @ExportDecoratedItems
+ * @param selector A DOMString containing one or more selectors to match.
+ *
+ * See:
+ * https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll
+ *
+ * @example
+ * ```ts
+ * class MyElement {
+ *   @queryAll('div')
+ *   divs;
+ *
+ *   render() {
+ *     return html`
+ *       <div id="first"></div>
+ *       <div id="second"></div>
+ *     `;
+ *   }
+ * }
+ * ```
+ * @category Decorator
  */
 
 
@@ -3289,7 +3544,7 @@ const standardQuery = (descriptor, element) => ({
 });
 
 const standardEventOptions = (options, element) => {
-  return Object.assign({}, element, {
+  return Object.assign(Object.assign({}, element), {
     finisher(clazz) {
       Object.assign(clazz.prototype[element.key], options);
     }
@@ -3305,38 +3560,100 @@ const legacyEventOptions = // tslint:disable-next-line:no-any legacy decorator
  * Adds event listener options to a method used as an event listener in a
  * lit-html template.
  *
- * @param options An object that specifis event listener options as accepted by
+ * @param options An object that specifies event listener options as accepted by
  * `EventTarget#addEventListener` and `EventTarget#removeEventListener`.
  *
  * Current browsers support the `capture`, `passive`, and `once` options. See:
  * https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Parameters
  *
  * @example
+ * ```ts
+ * class MyElement {
+ *   clicked = false;
  *
- *     class MyElement {
+ *   render() {
+ *     return html`
+ *       <div @click=${this._onClick}`>
+ *         <button></button>
+ *       </div>
+ *     `;
+ *   }
  *
- *       clicked = false;
- *
- *       render() {
- *         return html`<div @click=${this._onClick}`><button></button></div>`;
- *       }
- *
- *       @eventOptions({capture: true})
- *       _onClick(e) {
- *         this.clicked = true;
- *       }
- *     }
+ *   @eventOptions({capture: true})
+ *   _onClick(e) {
+ *     this.clicked = true;
+ *   }
+ * }
+ * ```
+ * @category Decorator
  */
 
 
-const eventOptions = options => // Return value typed as any to prevent TypeScript from complaining that
-// standard decorator function signature does not match TypeScript decorator
-// signature
-// TODO(kschaaf): unclear why it was only failing on this decorator and not
-// the others
-(protoOrDescriptor, name) => name !== undefined ? legacyEventOptions(options, protoOrDescriptor, name) : standardEventOptions(options, protoOrDescriptor);
+function eventOptions(options) {
+  // Return value typed as any to prevent TypeScript from complaining that
+  // standard decorator function signature does not match TypeScript decorator
+  // signature
+  // TODO(kschaaf): unclear why it was only failing on this decorator and not
+  // the others
+  return (protoOrDescriptor, name) => name !== undefined ? legacyEventOptions(options, protoOrDescriptor, name) : standardEventOptions(options, protoOrDescriptor);
+} // x-browser support for matches
+// tslint:disable-next-line:no-any
 
-exports.eventOptions = eventOptions;
+
+const ElementProto = Element.prototype;
+const legacyMatches = ElementProto.msMatchesSelector || ElementProto.webkitMatchesSelector;
+/**
+ * A property decorator that converts a class property into a getter that
+ * returns the `assignedNodes` of the given named `slot`. Note, the type of
+ * this property should be annotated as `NodeListOf<HTMLElement>`.
+ *
+ * @param slotName A string name of the slot.
+ * @param flatten A boolean which when true flattens the assigned nodes,
+ * meaning any assigned nodes that are slot elements are replaced with their
+ * assigned nodes.
+ * @param selector A string which filters the results to elements that match
+ * the given css selector.
+ *
+ * * @example
+ * ```ts
+ * class MyElement {
+ *   @queryAssignedNodes('list', true, '.item')
+ *   listItems;
+ *
+ *   render() {
+ *     return html`
+ *       <slot name="list"></slot>
+ *     `;
+ *   }
+ * }
+ * ```
+ * @category Decorator
+ */
+
+function queryAssignedNodes(slotName = '', flatten = false, selector = '') {
+  return (protoOrDescriptor, // tslint:disable-next-line:no-any decorator
+  name) => {
+    const descriptor = {
+      get() {
+        const slotSelector = `slot${slotName ? `[name=${slotName}]` : ':not([name])'}`;
+        const slot = this.renderRoot.querySelector(slotSelector);
+        let nodes = slot && slot.assignedNodes({
+          flatten
+        });
+
+        if (nodes && selector) {
+          nodes = nodes.filter(node => node.nodeType === Node.ELEMENT_NODE && node.matches ? node.matches(selector) : legacyMatches.call(node, selector));
+        }
+
+        return nodes;
+      },
+
+      enumerable: true,
+      configurable: true
+    };
+    return name !== undefined ? legacyQuery(descriptor, protoOrDescriptor, name) : standardQuery(descriptor, protoOrDescriptor);
+  };
+}
 },{}],"ZFCR":[function(require,module,exports) {
 "use strict";
 
@@ -3355,7 +3672,11 @@ found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
 part of the polymer project is also subject to an additional IP rights grant
 found at http://polymer.github.io/PATENTS.txt
 */
-const supportsAdoptingStyleSheets = 'adoptedStyleSheets' in Document.prototype && 'replace' in CSSStyleSheet.prototype;
+
+/**
+ * Whether the current browser supports `adoptedStyleSheets`.
+ */
+const supportsAdoptingStyleSheets = window.ShadowRoot && (window.ShadyCSS === undefined || window.ShadyCSS.nativeShadow) && 'adoptedStyleSheets' in Document.prototype && 'replace' in CSSStyleSheet.prototype;
 exports.supportsAdoptingStyleSheets = supportsAdoptingStyleSheets;
 const constructionToken = Symbol();
 
@@ -3372,8 +3693,8 @@ class CSSResult {
 
   get styleSheet() {
     if (this._styleSheet === undefined) {
-      // Note, if `adoptedStyleSheets` is supported then we assume CSSStyleSheet
-      // is constructable.
+      // Note, if `supportsAdoptingStyleSheets` is true then we assume
+      // CSSStyleSheet is constructable.
       if (supportsAdoptingStyleSheets) {
         this._styleSheet = new CSSStyleSheet();
 
@@ -3392,7 +3713,7 @@ class CSSResult {
 
 }
 /**
- * Wrap a value for interpolation in a css tagged template literal.
+ * Wrap a value for interpolation in a [[`css`]] tagged template literal.
  *
  * This is unsafe because untrusted CSS text can be used to phone home
  * or exfiltrate data to an attacker controlled site. Take care to only use
@@ -3419,10 +3740,10 @@ const textFromCSSResult = value => {
   }
 };
 /**
- * Template tag which which can be used with LitElement's `style` property to
- * set element styles. For security reasons, only literal string values may be
- * used. To incorporate non-literal values `unsafeCSS` may be used inside a
- * template string part.
+ * Template tag which which can be used with LitElement's [[LitElement.styles |
+ * `styles`]] property to set element styles. For security reasons, only literal
+ * string values may be used. To incorporate non-literal values [[`unsafeCSS`]]
+ * may be used inside a template string part.
  */
 
 
@@ -3432,7 +3753,7 @@ const css = (strings, ...values) => {
 };
 
 exports.css = css;
-},{}],"+bhx":[function(require,module,exports) {
+},{}],"bhxD":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3448,30 +3769,28 @@ var _exportNames = {
 Object.defineProperty(exports, "html", {
   enumerable: true,
   get: function () {
-    return _litHtml2.html;
+    return _litHtml.html;
   }
 });
 Object.defineProperty(exports, "svg", {
   enumerable: true,
   get: function () {
-    return _litHtml2.svg;
+    return _litHtml.svg;
   }
 });
 Object.defineProperty(exports, "TemplateResult", {
   enumerable: true,
   get: function () {
-    return _litHtml2.TemplateResult;
+    return _litHtml.TemplateResult;
   }
 });
 Object.defineProperty(exports, "SVGTemplateResult", {
   enumerable: true,
   get: function () {
-    return _litHtml2.SVGTemplateResult;
+    return _litHtml.SVGTemplateResult;
   }
 });
 exports.LitElement = void 0;
-
-var _litHtml = require("lit-html");
 
 var _shadyRender = require("lit-html/lib/shady-render.js");
 
@@ -3480,6 +3799,7 @@ var _updatingElement = require("./lib/updating-element.js");
 Object.keys(_updatingElement).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _updatingElement[key]) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     get: function () {
@@ -3493,6 +3813,7 @@ var _decorators = require("./lib/decorators.js");
 Object.keys(_decorators).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _decorators[key]) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     get: function () {
@@ -3501,13 +3822,14 @@ Object.keys(_decorators).forEach(function (key) {
   });
 });
 
-var _litHtml2 = require("lit-html/lit-html.js");
+var _litHtml = require("lit-html/lit-html.js");
 
 var _cssTag = require("./lib/css-tag.js");
 
 Object.keys(_cssTag).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _cssTag[key]) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     get: function () {
@@ -3529,86 +3851,146 @@ Object.keys(_cssTag).forEach(function (key) {
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
+
+/**
+ * The main LitElement module, which defines the [[`LitElement`]] base class and
+ * related APIs.
+ *
+ *  LitElement components can define a template and a set of observed
+ * properties. Changing an observed property triggers a re-render of the
+ * element.
+ *
+ *  Import [[`LitElement`]] and [[`html`]] from this module to create a
+ * component:
+ *
+ *  ```js
+ * import {LitElement, html} from 'lit-element';
+ *
+ * class MyElement extends LitElement {
+ *
+ *   // Declare observed properties
+ *   static get properties() {
+ *     return {
+ *       adjective: {}
+ *     }
+ *   }
+ *
+ *   constructor() {
+ *     this.adjective = 'awesome';
+ *   }
+ *
+ *   // Define the element's template
+ *   render() {
+ *     return html`<p>your ${adjective} template here</p>`;
+ *   }
+ * }
+ *
+ * customElements.define('my-element', MyElement);
+ * ```
+ *
+ * `LitElement` extends [[`UpdatingElement`]] and adds lit-html templating.
+ * The `UpdatingElement` class is provided for users that want to build
+ * their own custom element base classes that don't use lit-html.
+ *
+ * @packageDocumentation
+ */
 // IMPORTANT: do not change the property name or the assignment expression.
 // This line will be used in regexes to search for LitElement usage.
 // TODO(justinfagnani): inject version number at build time
-(window['litElementVersions'] || (window['litElementVersions'] = [])).push('2.2.1');
+(window['litElementVersions'] || (window['litElementVersions'] = [])).push('2.4.0');
 /**
- * Minimal implementation of Array.prototype.flat
- * @param arr the array to flatten
- * @param result the accumlated result
+ * Sentinal value used to avoid calling lit-html's render function when
+ * subclasses do not implement `render`
  */
 
-function arrayFlat(styles, result = []) {
-  for (let i = 0, length = styles.length; i < length; i++) {
-    const value = styles[i];
-
-    if (Array.isArray(value)) {
-      arrayFlat(value, result);
-    } else {
-      result.push(value);
-    }
-  }
-
-  return result;
-}
-/** Deeply flattens styles array. Uses native flat if available. */
-
-
-const flattenStyles = styles => styles.flat ? styles.flat(Infinity) : arrayFlat(styles);
+const renderNotImplemented = {};
+/**
+ * Base element class that manages element properties and attributes, and
+ * renders a lit-html template.
+ *
+ * To define a component, subclass `LitElement` and implement a
+ * `render` method to provide the component's template. Define properties
+ * using the [[`properties`]] property or the [[`property`]] decorator.
+ */
 
 class LitElement extends _updatingElement.UpdatingElement {
-  /** @nocollapse */
-  static finalize() {
-    // The Closure JS Compiler does not always preserve the correct "this"
-    // when calling static super methods (b/137460243), so explicitly bind.
-    super.finalize.call(this); // Prepare styling that is stamped at first render time. Styling
-    // is built from user provided `styles` or is inherited from the superclass.
-
-    this._styles = this.hasOwnProperty(JSCompiler_renameProperty('styles', this)) ? this._getUniqueStyles() : this._styles || [];
+  /**
+   * Return the array of styles to apply to the element.
+   * Override this method to integrate into a style management system.
+   *
+   * @nocollapse
+   */
+  static getStyles() {
+    return this.styles;
   }
   /** @nocollapse */
 
 
   static _getUniqueStyles() {
-    // Take care not to call `this.styles` multiple times since this generates
-    // new CSSResults each time.
+    // Only gather styles once per class
+    if (this.hasOwnProperty(JSCompiler_renameProperty('_styles', this))) {
+      return;
+    } // Take care not to call `this.getStyles()` multiple times since this
+    // generates new CSSResults each time.
     // TODO(sorvell): Since we do not cache CSSResults by input, any
     // shared styles will generate new stylesheet objects, which is wasteful.
     // This should be addressed when a browser ships constructable
     // stylesheets.
-    const userStyles = this.styles;
-    const styles = [];
+
+
+    const userStyles = this.getStyles();
 
     if (Array.isArray(userStyles)) {
-      const flatStyles = flattenStyles(userStyles); // As a performance optimization to avoid duplicated styling that can
-      // occur especially when composing via subclassing, de-duplicate styles
-      // preserving the last item in the list. The last item is kept to
-      // try to preserve cascade order with the assumption that it's most
-      // important that last added styles override previous styles.
+      // De-duplicate styles preserving the _last_ instance in the set.
+      // This is a performance optimization to avoid duplicated styles that can
+      // occur especially when composing via subclassing.
+      // The last item is kept to try to preserve the cascade order with the
+      // assumption that it's most important that last added styles override
+      // previous styles.
+      const addStyles = (styles, set) => styles.reduceRight((set, s) => // Note: On IE set.add() does not return the set
+      Array.isArray(s) ? addStyles(s, set) : (set.add(s), set), set); // Array.from does not work on Set in IE, otherwise return
+      // Array.from(addStyles(userStyles, new Set<CSSResult>())).reverse()
 
-      const styleSet = flatStyles.reduceRight((set, s) => {
-        set.add(s); // on IE set.add does not return the set.
 
-        return set;
-      }, new Set()); // Array.from does not work on Set in IE
+      const set = addStyles(userStyles, new Set());
+      const styles = [];
+      set.forEach(v => styles.unshift(v));
+      this._styles = styles;
+    } else {
+      this._styles = userStyles === undefined ? [] : [userStyles];
+    } // Ensure that there are no invalid CSSStyleSheet instances here. They are
+    // invalid in two conditions.
+    // (1) the sheet is non-constructible (`sheet` of a HTMLStyleElement), but
+    //     this is impossible to check except via .replaceSync or use
+    // (2) the ShadyCSS polyfill is enabled (:. supportsAdoptingStyleSheets is
+    //     false)
 
-      styleSet.forEach(v => styles.unshift(v));
-    } else if (userStyles) {
-      styles.push(userStyles);
-    }
 
-    return styles;
+    this._styles = this._styles.map(s => {
+      if (s instanceof CSSStyleSheet && !_cssTag.supportsAdoptingStyleSheets) {
+        // Flatten the cssText from the passed constructible stylesheet (or
+        // undetectable non-constructible stylesheet). The user might have
+        // expected to update their stylesheets over time, but the alternative
+        // is a crash.
+        const cssText = Array.prototype.slice.call(s.cssRules).reduce((css, rule) => css + rule.cssText, '');
+        return (0, _cssTag.unsafeCSS)(cssText);
+      }
+
+      return s;
+    });
   }
   /**
-   * Performs element initialization. By default this calls `createRenderRoot`
-   * to create the element `renderRoot` node and captures any pre-set values for
-   * registered properties.
+   * Performs element initialization. By default this calls
+   * [[`createRenderRoot`]] to create the element [[`renderRoot`]] node and
+   * captures any pre-set values for registered properties.
    */
 
 
   initialize() {
     super.initialize();
+
+    this.constructor._getUniqueStyles();
+
     this.renderRoot = this.createRenderRoot(); // Note, if renderRoot is not a shadowRoot, styles would/could apply to the
     // element's getRootNode(). While this could be done, we're choosing not to
     // support this now since it would require different logic around de-duping.
@@ -3632,7 +4014,7 @@ class LitElement extends _updatingElement.UpdatingElement {
     });
   }
   /**
-   * Applies styling to the element shadowRoot using the `static get styles`
+   * Applies styling to the element shadowRoot using the [[`styles`]]
    * property. Styling will apply using `shadowRoot.adoptedStyleSheets` where
    * available and will fallback otherwise. When Shadow DOM is polyfilled,
    * ShadyCSS scopes styles and adds them to the document. When Shadow DOM
@@ -3649,7 +4031,7 @@ class LitElement extends _updatingElement.UpdatingElement {
       return;
     } // There are three separate cases here based on Shadow DOM support.
     // (1) shadowRoot polyfilled: use ShadyCSS
-    // (2) shadowRoot.adoptedStyleSheets available: use it.
+    // (2) shadowRoot.adoptedStyleSheets available: use it
     // (3) shadowRoot.adoptedStyleSheets polyfilled: append styles after
     // rendering
 
@@ -3657,7 +4039,7 @@ class LitElement extends _updatingElement.UpdatingElement {
     if (window.ShadyCSS !== undefined && !window.ShadyCSS.nativeShadow) {
       window.ShadyCSS.ScopingShim.prepareAdoptedCssText(styles.map(s => s.cssText), this.localName);
     } else if (_cssTag.supportsAdoptingStyleSheets) {
-      this.renderRoot.adoptedStyleSheets = styles.map(s => s.styleSheet);
+      this.renderRoot.adoptedStyleSheets = styles.map(s => s instanceof CSSStyleSheet ? s : s.styleSheet);
     } else {
       // This must be done after rendering so the actual style insertion is done
       // in `update`.
@@ -3677,15 +4059,18 @@ class LitElement extends _updatingElement.UpdatingElement {
    * Updates the element. This method reflects property values to attributes
    * and calls `render` to render DOM via lit-html. Setting properties inside
    * this method will *not* trigger another update.
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
 
 
   update(changedProperties) {
-    super.update(changedProperties);
+    // Setting properties in `render` should not trigger an update. Since
+    // updates are allowed after super.update, it's important to call `render`
+    // before that.
     const templateResult = this.render();
+    super.update(changedProperties); // If render is not implemented by the component, don't call lit-html render
 
-    if (templateResult instanceof _litHtml.TemplateResult) {
+    if (templateResult !== renderNotImplemented) {
       this.constructor.render(templateResult, this.renderRoot, {
         scopeName: this.localName,
         eventContext: this
@@ -3706,13 +4091,16 @@ class LitElement extends _updatingElement.UpdatingElement {
     }
   }
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
+   * Invoked on each update to perform rendering tasks. This method may return
+   * any value renderable by lit-html's `NodePart` - typically a
+   * `TemplateResult`. Setting properties inside this method will *not* trigger
+   * the element to update.
    */
 
 
-  render() {}
+  render() {
+    return renderNotImplemented;
+  }
 
 }
 /**
@@ -3727,16 +4115,25 @@ class LitElement extends _updatingElement.UpdatingElement {
 exports.LitElement = LitElement;
 LitElement['finalized'] = true;
 /**
- * Render method used to render the lit-html TemplateResult to the element's
- * DOM.
- * @param {TemplateResult} Template to render.
- * @param {Element|DocumentFragment} Node into which to render.
- * @param {String} Element name.
+ * Reference to the underlying library method used to render the element's
+ * DOM. By default, points to the `render` method from lit-html's shady-render
+ * module.
+ *
+ * **Most users will never need to touch this property.**
+ *
+ * This  property should not be confused with the `render` instance method,
+ * which should be overridden to define a template for the element.
+ *
+ * Advanced users creating a new base class based on LitElement can override
+ * this property to point to a custom render method with a signature that
+ * matches [shady-render's `render`
+ * method](https://lit-html.polymer-project.org/api/modules/shady_render.html#render).
+ *
  * @nocollapse
  */
 
 LitElement.render = _shadyRender.render;
-},{"lit-html":"SP/d","lit-html/lib/shady-render.js":"eBH8","./lib/updating-element.js":"fKvB","./lib/decorators.js":"4Fzp","lit-html/lit-html.js":"SP/d","./lib/css-tag.js":"ZFCR"}],"ncPe":[function(require,module,exports) {
+},{"lit-html/lib/shady-render.js":"eBH8","./lib/updating-element.js":"fKvB","./lib/decorators.js":"FzpZ","lit-html/lit-html.js":"SPDu","./lib/css-tag.js":"ZFCR"}],"ncPe":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3797,13 +4194,9 @@ const svgIcons = new SvgIcons();
 exports.svgIcons = svgIcons;
 
 class IconElement extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({
-      mode: 'open'
-    });
-    let temp = document.createElement('template');
-    temp.innerHTML = `<style>
+  // not ideal...
+  get styles() {
+    return `
 		:host {
 			display: inline-flex;
 			vertical-align: middle;
@@ -3816,6 +4209,14 @@ class IconElement extends HTMLElement {
 
 		:host([hidden]) {
 			display: none !important;
+		}
+
+		:host([link]) {
+			cursor: pointer;
+		}
+
+		:host([muted]) {
+			opacity: .5;
 		}
 
 		:host([square]) {
@@ -3849,6 +4250,17 @@ class IconElement extends HTMLElement {
 		:host([name="arrows-ccw"][spin]) svg {
 			animation: 1600ms rotate360CCW infinite linear;
 		}
+		`;
+  }
+
+  constructor() {
+    super();
+    this.attachShadow({
+      mode: 'open'
+    });
+    let temp = document.createElement('template');
+    temp.innerHTML = `<style>
+		${this.styles}
 		</style>
 		<slot></slot>
 		`;
@@ -3912,7 +4324,7 @@ class IconList extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
 		:host {
 			display: block;
 			column-count: 6;
@@ -3943,7 +4355,7 @@ class IconList extends _litElement.LitElement {
 		}
 
 		small {
-			color: rgba(0,0,0,.5);
+			color: var(--theme-color-accent);
 		}
 
 		@media (max-width: 550px) {
@@ -3955,8 +4367,8 @@ class IconList extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
-		${svgIcons.names.map(name => _litElement.html`
+    return (0, _litElement.html)`
+		${svgIcons.names.map(name => (0, _litElement.html)`
 			<div>
 				<b-icon name=${name}></b-icon> <small>${name}</small>
 			</div>
@@ -3968,7 +4380,7 @@ class IconList extends _litElement.LitElement {
 
 exports.IconList = IconList;
 customElements.define('b-icon-list', IconList);
-},{"lit-element":"+bhx","./icons.svg.html":"pxeq"}],"EnCN":[function(require,module,exports) {
+},{"lit-element":"bhxD","./icons.svg.html":"pxeq"}],"EnCN":[function(require,module,exports) {
 /*
 	SVG and idea taken from https://ant.design/components/button/
 	
@@ -4057,7 +4469,7 @@ class BtnElement extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
     
         :host{
             --red: var(--red-700);
@@ -4100,7 +4512,7 @@ class BtnElement extends _litElement.LitElement {
             font-size: .9rem;
             line-height: 1rem;
             font-weight: bold;
-            font-family: var(--bui-btn-font);
+            font-family: var(--b-btn-font);
 
             -webkit-touch-callout: none; /* iOS Safari */
             -webkit-user-select: none; /* Safari */
@@ -4253,7 +4665,7 @@ class BtnElement extends _litElement.LitElement {
             justify-content: center
         }
 
-        :host(:empty) main {
+        :host(:empty) {
             --padding: .4em .5em;
         }
 
@@ -4268,6 +4680,7 @@ class BtnElement extends _litElement.LitElement {
         }
 
         :host([color^="primary"])  { --color: var(--color-primary); }
+        :host([color^="theme"])  { --color: var(--theme); }
         :host([color^="black"])  { --color: var(--black); }
         :host([color^="white"])  { --color: var(--white); --textColor: var(--black); }
         :host([color^="orange"]) { --color: var(--orange); }
@@ -4368,17 +4781,42 @@ class BtnElement extends _litElement.LitElement {
         :host([fab][spin]) b-spinner {
             margin-left: 0;
         }
+
+        @keyframes shake {
+            from,
+            to {
+                transform: translate3d(0, 0, 0);
+            }
+
+            15%,
+            45%,
+            75% {
+                transform: translate3d(-.25em, 0, 0);
+            }
+
+            30%,
+            60%,
+            90% {
+                transform: translate3d(.25em, 0, 0);
+            }
+        }
+
+        :host(.shake) {
+            animation-name: shake;
+            animation-duration: 700ms;
+            animation-fill-mode: both;
+        }
     `;
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <div class="hover"></div>
         <main>
             <span>
                 <b-spinner></b-spinner>
                 <slot name="icon">
-                    ${this.icon ? _litElement.html`<b-icon name="${this.icon}"></b-icon>` : ''}
+                    ${this.icon ? (0, _litElement.html)`<b-icon name="${this.icon}"></b-icon>` : ''}
                 </slot>
             </span>
             <slot></slot>
@@ -4394,15 +4832,22 @@ class BtnElement extends _litElement.LitElement {
 
   firstUpdated() {
     this.addEventListener('click', () => {
-      if (this.href) window.location = this.href;
+      if (this.href) if (this.getAttribute('target') == '_blank') window.open(this.href);else window.location = this.href;
     }, true);
+  }
+
+  shake() {
+    this.classList.add('shake');
+    setTimeout(() => {
+      this.classList.remove('shake');
+    }, 1000);
   }
 
 }
 
 exports.default = BtnElement;
 customElements.define('b-btn', BtnElement);
-},{"lit-element":"+bhx","./spinner":"EnCN","./icon":"ncPe"}],"0pV6":[function(require,module,exports) {
+},{"lit-element":"bhxD","./spinner":"EnCN","./icon":"ncPe"}],"pV6C":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4414,7 +4859,7 @@ var _litElement = require("lit-element");
 
 customElements.define('b-btn-group', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: inline-flex;
         }
@@ -4436,7 +4881,7 @@ customElements.define('b-btn-group', class extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <slot></slot>
     `;
   }
@@ -4446,7 +4891,7 @@ customElements.define('b-btn-group', class extends _litElement.LitElement {
 var _default = customElements.get('b-btn-group');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"eyVY":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"eyVY":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4496,7 +4941,7 @@ class SpinnerOverlayElement extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
 		:host {
 			--spinnerBgd: var(--b-spinner-overlay-bgd, rgba(255,255,255 ,.6));
             --spinnerColor: inherit;
@@ -4563,7 +5008,7 @@ class SpinnerOverlayElement extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
 		<main>
 			<b-spinner></b-spinner>
 			<label>${this.label}</label>
@@ -4575,7 +5020,7 @@ class SpinnerOverlayElement extends _litElement.LitElement {
 
 exports.SpinnerOverlayElement = SpinnerOverlayElement;
 customElements.define('b-spinner-overlay', SpinnerOverlayElement);
-},{"lit-element":"+bhx","./spinner":"EnCN"}],"5EqR":[function(require,module,exports) {
+},{"lit-element":"bhxD","./spinner":"EnCN"}],"EqRM":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4603,6 +5048,7 @@ class AJAX {
 
   send() {
     this.xhr.open(this.method, this.url);
+    this.xhr.setRequestHeader('x-requested-with', 'xmlhttprequest');
     this.xhr.send(...arguments);
     return new Promise((resolve, reject) => {
       this.resolve = resolve;
@@ -4703,7 +5149,7 @@ class UploaderElement extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             --hoverBgd: rgba(255,236,179 ,.7);
             --uploadingBgd: rgba(238,238,238 ,.8);
@@ -4801,7 +5247,7 @@ class UploaderElement extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <input class="choose" type="file" @click=${e => e.stopPropagation()} @change=${this._inputChange} accept=${this.accept} ?multiple=${this.multiple}>
         <div class="placeholder">${this.placeholder}</div>
         <div class="progress">
@@ -4892,7 +5338,7 @@ class UploaderElement extends _litElement.LitElement {
   }
 
   _dragenter(e) {
-    if (this.disabled || !e.dataTransfer.types.includes('Files')) return;
+    if (this.disabled || this.hidden || !e.dataTransfer.types.includes('Files') || window.getComputedStyle(this).display == 'none') return;
     this.dragging = true;
   }
 
@@ -5019,7 +5465,7 @@ const dirEntries = dir => {
     });
   });
 };
-},{"lit-element":"+bhx","../util/ajax.js":"5EqR","../util/file.ext.js":"trgA"}],"Yy3A":[function(require,module,exports) {
+},{"lit-element":"bhxD","../util/ajax.js":"EqRM","../util/file.ext.js":"trgA"}],"Yy3A":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5050,7 +5496,7 @@ class PaperElement extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             box-sizing: border-box;
             display: block;
@@ -5099,6 +5545,10 @@ class PaperElement extends _litElement.LitElement {
             border-color: rgba(0, 0, 0, 0.1);
         }
 
+        :host([noshadow]) {
+            box-shadow: none;
+        }
+
         :host([dense]) {
             --padding: .5em;
         }
@@ -5113,7 +5563,7 @@ class PaperElement extends _litElement.LitElement {
             margin-bottom: var(--padding);
             padding: var(--padding);
             display: flex; 
-            align-content: center;
+            align-items: center;
             justify-content: space-between;
         }
 
@@ -5181,7 +5631,7 @@ class PaperElement extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <slot></slot>
     `;
   }
@@ -5190,7 +5640,7 @@ class PaperElement extends _litElement.LitElement {
 
 exports.PaperElement = PaperElement;
 customElements.define('b-paper', PaperElement);
-},{"lit-element":"+bhx"}],"yukA":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"yukA":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5202,13 +5652,17 @@ var _litElement = require("lit-element");
 
 customElements.define('b-text', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: inline-block;
         }
 
         :host([block]) {
             display: block;
+        }
+
+        :host([inline]) {
+            display: inline;
         }
 
         :host([hidden]) {
@@ -5223,12 +5677,18 @@ customElements.define('b-text', class extends _litElement.LitElement {
             vertical-align: text-bottom;
         }
 
+        :host([monospace]) {
+            font-family: var(--b-text-monospace, 'Source Code Pro', 'Courier New', Courier, monospace)
+        }
+
         :host([bold]) { font-weight: bold; }
         :host([italic]) { font-style: italic; }
 
         :host([capitalize]) { text-transform: capitalize; }
         :host([ucase]) { text-transform: uppercase; }
         :host([lcase]) { text-transform: lowercase }
+
+        :host([breakall]) { word-break: break-all; }
 
         :host([align="left"]) { text-align: left; }
         :host([align="right"]) { text-align: right; }
@@ -5243,13 +5703,33 @@ customElements.define('b-text', class extends _litElement.LitElement {
         :host([xxl]) { font-size: 2em; line-height: 1.1em; }
 
         :host([tone="muted"]), :host([muted]) { color: rgba(var(--theme-rgb, 0,0,0),.4); }
+        :host([tone="theme"]) { color: var(--theme); }
         :host([tone="critical"]) { color: var(--b-text-tone-critical, var(--red-A400, red)); }
         :host([tone="warning"]) { color: var(--b-text-tone-warning, var(--orange, orange)); }
         :host([tone="info"]) { color: var(--b-text-tone-info, var(--blue, blue)); }
+        :host([tone="good"]) { color: var(--b-text-tone-good, var(--green, blue)); }
+
+        :host([link]),
+        :host([href]) {
+            cursor: default;
+        }
+
+        :host([nopointer]) {
+            pointer-events: none;
+        }
+
+        :host([link].popover-open),
+        :host([href]){
+            color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
+        }
 
         @media (hover){
-            :host([link]:hover) {
+            :host([link]:hover){
                 color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
+            }
+
+            :host([href]:hover) {
+                text-decoration: underline;
             }
         }
 
@@ -5262,15 +5742,29 @@ customElements.define('b-text', class extends _litElement.LitElement {
             vertical-align: sub;
             margin-bottom: -1em;
         }
+
+        ::slotted(b-icon) {
+            vertical-align: bottom;
+        }
     `;
   }
 
   firstUpdated() {
+    this.addEventListener('click', this.onClick);
     if (this.hasAttribute('clip') && !this.hasAttribute('title')) this.title = this.innerText;
   }
 
+  onClick() {
+    let href = this.getAttribute('href');
+
+    if (href) {
+      if (href.match(/@/)) href = 'mailto:' + href;
+      window.open(href);
+    }
+  }
+
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <slot></slot>
     `;
   }
@@ -5280,7 +5774,7 @@ customElements.define('b-text', class extends _litElement.LitElement {
 var _default = customElements.get('b-text');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"BALQ":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"BALQ":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5292,10 +5786,12 @@ var _litElement = require("lit-element");
 
 customElements.define('b-grid', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            grid-template-rows: max-content;
+            align-content: flex-start;
             gap: 1em;
             min-width: 0;
         }
@@ -5323,6 +5819,25 @@ customElements.define('b-grid', class extends _litElement.LitElement {
         :host([cols="2,1,1"]) { grid-template-columns: 2fr 1fr 1fr; }
         :host([cols="1,1,2"]) { grid-template-columns: 1fr 1fr 2fr; }
 
+        :host([cols="auto,1"]) { grid-template-columns: auto 1fr; }
+        :host([cols="1,auto"]) { grid-template-columns: auto 1fr; }
+
+        :host([rows="auto,1"]) { grid-template-rows: auto 1fr; }
+        :host([rows="1,auto"]) { grid-template-rows: auto 1fr; }
+
+        @media (max-width:699px){
+            :host([cols-mobile="1"]) { grid-template-columns: 1fr; }
+            :host([cols-mobile="2"]) { grid-template-columns: repeat(2, 1fr); }
+            :host([cols-mobile="3"]) { grid-template-columns: repeat(3, 1fr); }
+            :host([cols-mobile="2,1"]) { grid-template-columns: 2fr 1fr; }
+            :host([cols-mobile="1,2"]) { grid-template-columns: 1fr 2fr; }
+
+            :host([cols-mobile]) ::slotted([colspan]) {grid-column: 1/-1;}
+
+            :host([rows-mobile="auto,1"]) { grid-template-rows: auto 1fr; }
+            :host([rows-mobile="1,auto"]) { grid-template-rows: auto 1fr; }
+        }
+
         :host([gap="0"]), :host([gap="none"]) { gap: 0; }
         :host([gap=".5"]) { gap: .5em; }
         :host([gap="1"]) { gap: 1em; }
@@ -5342,7 +5857,7 @@ customElements.define('b-grid', class extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <slot></slot>
     `;
   }
@@ -5352,7 +5867,7 @@ customElements.define('b-grid', class extends _litElement.LitElement {
 var _default = customElements.get('b-grid');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"inC5":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"inC5":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5382,7 +5897,7 @@ customElements.define('b-carousel', class extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: block;
             position:relative;
@@ -5440,9 +5955,9 @@ customElements.define('b-carousel', class extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <slot></slot>
-        <nav ?hidden=${this.views.length <= 1}>${this.views.map((v, i) => _litElement.html`
+        <nav ?hidden=${this.views.length <= 1}>${this.views.map((v, i) => (0, _litElement.html)`
             <div i=${i} ?active=${i == this.active} @click=${this.navTo}>
                 <div></div>
             </div>
@@ -5480,4613 +5995,15 @@ customElements.define('b-carousel', class extends _litElement.LitElement {
 var _default = customElements.get('b-carousel');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"a2/B":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"dZYI":[function(require,module,exports) {
 var define;
-var global = arguments[3];
-//! moment.js
+!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):t.dayjs=e()}(this,function(){"use strict";var t="millisecond",e="second",n="minute",r="hour",i="day",s="week",u="month",a="quarter",o="year",f="date",h=/^(\d{4})[-/]?(\d{1,2})?[-/]?(\d{0,2})[^0-9]*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?.?(\d+)?$/,c=/\[([^\]]+)]|Y{2,4}|M{1,4}|D{1,2}|d{1,4}|H{1,2}|h{1,2}|a|A|m{1,2}|s{1,2}|Z{1,2}|SSS/g,d={name:"en",weekdays:"Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"),months:"January_February_March_April_May_June_July_August_September_October_November_December".split("_")},$=function(t,e,n){var r=String(t);return!r||r.length>=e?t:""+Array(e+1-r.length).join(n)+t},l={s:$,z:function(t){var e=-t.utcOffset(),n=Math.abs(e),r=Math.floor(n/60),i=n%60;return(e<=0?"+":"-")+$(r,2,"0")+":"+$(i,2,"0")},m:function t(e,n){if(e.date()<n.date())return-t(n,e);var r=12*(n.year()-e.year())+(n.month()-e.month()),i=e.clone().add(r,u),s=n-i<0,a=e.clone().add(r+(s?-1:1),u);return+(-(r+(n-i)/(s?i-a:a-i))||0)},a:function(t){return t<0?Math.ceil(t)||0:Math.floor(t)},p:function(h){return{M:u,y:o,w:s,d:i,D:f,h:r,m:n,s:e,ms:t,Q:a}[h]||String(h||"").toLowerCase().replace(/s$/,"")},u:function(t){return void 0===t}},y="en",M={};M[y]=d;var m=function(t){return t instanceof S},D=function(t,e,n){var r;if(!t)return y;if("string"==typeof t)M[t]&&(r=t),e&&(M[t]=e,r=t);else{var i=t.name;M[i]=t,r=i}return!n&&r&&(y=r),r||!n&&y},v=function(t,e){if(m(t))return t.clone();var n="object"==typeof e?e:{};return n.date=t,n.args=arguments,new S(n)},g=l;g.l=D,g.i=m,g.w=function(t,e){return v(t,{locale:e.$L,utc:e.$u,x:e.$x,$offset:e.$offset})};var S=function(){function d(t){this.$L=D(t.locale,null,!0),this.parse(t)}var $=d.prototype;return $.parse=function(t){this.$d=function(t){var e=t.date,n=t.utc;if(null===e)return new Date(NaN);if(g.u(e))return new Date;if(e instanceof Date)return new Date(e);if("string"==typeof e&&!/Z$/i.test(e)){var r=e.match(h);if(r){var i=r[2]-1||0,s=(r[7]||"0").substring(0,3);return n?new Date(Date.UTC(r[1],i,r[3]||1,r[4]||0,r[5]||0,r[6]||0,s)):new Date(r[1],i,r[3]||1,r[4]||0,r[5]||0,r[6]||0,s)}}return new Date(e)}(t),this.$x=t.x||{},this.init()},$.init=function(){var t=this.$d;this.$y=t.getFullYear(),this.$M=t.getMonth(),this.$D=t.getDate(),this.$W=t.getDay(),this.$H=t.getHours(),this.$m=t.getMinutes(),this.$s=t.getSeconds(),this.$ms=t.getMilliseconds()},$.$utils=function(){return g},$.isValid=function(){return!("Invalid Date"===this.$d.toString())},$.isSame=function(t,e){var n=v(t);return this.startOf(e)<=n&&n<=this.endOf(e)},$.isAfter=function(t,e){return v(t)<this.startOf(e)},$.isBefore=function(t,e){return this.endOf(e)<v(t)},$.$g=function(t,e,n){return g.u(t)?this[e]:this.set(n,t)},$.unix=function(){return Math.floor(this.valueOf()/1e3)},$.valueOf=function(){return this.$d.getTime()},$.startOf=function(t,a){var h=this,c=!!g.u(a)||a,d=g.p(t),$=function(t,e){var n=g.w(h.$u?Date.UTC(h.$y,e,t):new Date(h.$y,e,t),h);return c?n:n.endOf(i)},l=function(t,e){return g.w(h.toDate()[t].apply(h.toDate("s"),(c?[0,0,0,0]:[23,59,59,999]).slice(e)),h)},y=this.$W,M=this.$M,m=this.$D,D="set"+(this.$u?"UTC":"");switch(d){case o:return c?$(1,0):$(31,11);case u:return c?$(1,M):$(0,M+1);case s:var v=this.$locale().weekStart||0,S=(y<v?y+7:y)-v;return $(c?m-S:m+(6-S),M);case i:case f:return l(D+"Hours",0);case r:return l(D+"Minutes",1);case n:return l(D+"Seconds",2);case e:return l(D+"Milliseconds",3);default:return this.clone()}},$.endOf=function(t){return this.startOf(t,!1)},$.$set=function(s,a){var h,c=g.p(s),d="set"+(this.$u?"UTC":""),$=(h={},h[i]=d+"Date",h[f]=d+"Date",h[u]=d+"Month",h[o]=d+"FullYear",h[r]=d+"Hours",h[n]=d+"Minutes",h[e]=d+"Seconds",h[t]=d+"Milliseconds",h)[c],l=c===i?this.$D+(a-this.$W):a;if(c===u||c===o){var y=this.clone().set(f,1);y.$d[$](l),y.init(),this.$d=y.set(f,Math.min(this.$D,y.daysInMonth())).$d}else $&&this.$d[$](l);return this.init(),this},$.set=function(t,e){return this.clone().$set(t,e)},$.get=function(t){return this[g.p(t)]()},$.add=function(t,a){var f,h=this;t=Number(t);var c=g.p(a),d=function(e){var n=v(h);return g.w(n.date(n.date()+Math.round(e*t)),h)};if(c===u)return this.set(u,this.$M+t);if(c===o)return this.set(o,this.$y+t);if(c===i)return d(1);if(c===s)return d(7);var $=(f={},f[n]=6e4,f[r]=36e5,f[e]=1e3,f)[c]||1,l=this.$d.getTime()+t*$;return g.w(l,this)},$.subtract=function(t,e){return this.add(-1*t,e)},$.format=function(t){var e=this;if(!this.isValid())return"Invalid Date";var n=t||"YYYY-MM-DDTHH:mm:ssZ",r=g.z(this),i=this.$locale(),s=this.$H,u=this.$m,a=this.$M,o=i.weekdays,f=i.months,h=function(t,r,i,s){return t&&(t[r]||t(e,n))||i[r].substr(0,s)},d=function(t){return g.s(s%12||12,t,"0")},$=i.meridiem||function(t,e,n){var r=t<12?"AM":"PM";return n?r.toLowerCase():r},l={YY:String(this.$y).slice(-2),YYYY:this.$y,M:a+1,MM:g.s(a+1,2,"0"),MMM:h(i.monthsShort,a,f,3),MMMM:h(f,a),D:this.$D,DD:g.s(this.$D,2,"0"),d:String(this.$W),dd:h(i.weekdaysMin,this.$W,o,2),ddd:h(i.weekdaysShort,this.$W,o,3),dddd:o[this.$W],H:String(s),HH:g.s(s,2,"0"),h:d(1),hh:d(2),a:$(s,u,!0),A:$(s,u,!1),m:String(u),mm:g.s(u,2,"0"),s:String(this.$s),ss:g.s(this.$s,2,"0"),SSS:g.s(this.$ms,3,"0"),Z:r};return n.replace(c,function(t,e){return e||l[t]||r.replace(":","")})},$.utcOffset=function(){return 15*-Math.round(this.$d.getTimezoneOffset()/15)},$.diff=function(t,f,h){var c,d=g.p(f),$=v(t),l=6e4*($.utcOffset()-this.utcOffset()),y=this-$,M=g.m(this,$);return M=(c={},c[o]=M/12,c[u]=M,c[a]=M/3,c[s]=(y-l)/6048e5,c[i]=(y-l)/864e5,c[r]=y/36e5,c[n]=y/6e4,c[e]=y/1e3,c)[d]||y,h?M:g.a(M)},$.daysInMonth=function(){return this.endOf(u).$D},$.$locale=function(){return M[this.$L]},$.locale=function(t,e){if(!t)return this.$L;var n=this.clone(),r=D(t,e,!0);return r&&(n.$L=r),n},$.clone=function(){return g.w(this.$d,this)},$.toDate=function(){return new Date(this.valueOf())},$.toJSON=function(){return this.isValid()?this.toISOString():null},$.toISOString=function(){return this.$d.toISOString()},$.toString=function(){return this.$d.toUTCString()},d}(),p=S.prototype;return v.prototype=p,[["$ms",t],["$s",e],["$m",n],["$H",r],["$W",i],["$M",u],["$y",o],["$D",f]].forEach(function(t){p[t[1]]=function(e){return this.$g(e,t[0],t[1])}}),v.extend=function(t,e){return t(e,S,v),v},v.locale=D,v.isDayjs=m,v.unix=function(t){return v(1e3*t)},v.en=M[y],v.Ls=M,v.p={},v});
 
-;(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    global.moment = factory()
-}(this, (function () { 'use strict';
+},{}],"oxIj":[function(require,module,exports) {
+var define;
+!function(t,s){"object"==typeof exports&&"undefined"!=typeof module?module.exports=s():"function"==typeof define&&define.amd?define(s):t.dayjs_plugin_duration=s()}(this,function(){"use strict";var t,s,n=/^(-|\+)?P(?:([-+]?[0-9,.]*)Y)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)W)?(?:([-+]?[0-9,.]*)D)?(?:T(?:([-+]?[0-9,.]*)H)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)S)?)?$/,i={years:31536e6,months:2592e6,days:864e5,hours:36e5,minutes:6e4,seconds:1e3,milliseconds:1,weeks:6048e5},e=function(t){return t instanceof u},r=function(t,s,n){return new u(t,n,s.$l)},o=function(t){return s.p(t)+"s"},u=function(){function s(t,s,e){var u=this;if(this.$d={},this.$l=e,s)return r(t*i[o(s)],this);if("number"==typeof t)return this.$ms=t,this.parseFromMilliseconds(),this;if("object"==typeof t)return Object.keys(t).forEach(function(s){u.$d[o(s)]=t[s]}),this.calMilliseconds(),this;if("string"==typeof t){var h=t.match(n);if(h)return this.$d.years=h[2],this.$d.months=h[3],this.$d.weeks=h[4],this.$d.days=h[5],this.$d.hours=h[6],this.$d.minutes=h[7],this.$d.seconds=h[8],this.calMilliseconds(),this}return this}var u=s.prototype;return u.calMilliseconds=function(){var t=this;this.$ms=Object.keys(this.$d).reduce(function(s,n){return s+(t.$d[n]||0)*i[n]},0)},u.parseFromMilliseconds=function(){var t=this.$ms;this.$d.years=Math.floor(t/31536e6),t%=31536e6,this.$d.months=Math.floor(t/2592e6),t%=2592e6,this.$d.days=Math.floor(t/864e5),t%=864e5,this.$d.hours=Math.floor(t/36e5),t%=36e5,this.$d.minutes=Math.floor(t/6e4),t%=6e4,this.$d.seconds=Math.floor(t/1e3),t%=1e3,this.$d.milliseconds=t},u.toISOString=function(){var t=this.$d.years?this.$d.years+"Y":"",s=this.$d.months?this.$d.months+"M":"",n=+this.$d.days||0;this.$d.weeks&&(n+=7*this.$d.weeks);var i=n?n+"D":"",e=this.$d.hours?this.$d.hours+"H":"",r=this.$d.minutes?this.$d.minutes+"M":"",o=this.$d.seconds||0;this.$d.milliseconds&&(o+=this.$d.milliseconds/1e3);var u=o?o+"S":"",h="P"+t+s+i+(e||r||u?"T":"")+e+r+u;return"P"===h?"P0D":h},u.toJSON=function(){return this.toISOString()},u.as=function(t){return this.$ms/i[o(t)]},u.get=function(t){var s=this.$ms,n=o(t);return"milliseconds"===n?s%=1e3:s="weeks"===n?Math.floor(s/i[n]):this.$d[n],s},u.add=function(t,s,n){var u;return u=s?t*i[o(s)]:e(t)?t.$ms:r(t,this).$ms,r(this.$ms+u*(n?-1:1),this)},u.subtract=function(t,s){return this.add(t,s,!0)},u.locale=function(t){var s=this.clone();return s.$l=t,s},u.clone=function(){return r(this.$ms,this)},u.humanize=function(s){return t().add(this.$ms,"ms").locale(this.$l).fromNow(!s)},u.milliseconds=function(){return this.get("milliseconds")},u.asMilliseconds=function(){return this.as("milliseconds")},u.seconds=function(){return this.get("seconds")},u.asSeconds=function(){return this.as("seconds")},u.minutes=function(){return this.get("minutes")},u.asMinutes=function(){return this.as("minutes")},u.hours=function(){return this.get("hours")},u.asHours=function(){return this.as("hours")},u.days=function(){return this.get("days")},u.asDays=function(){return this.as("days")},u.weeks=function(){return this.get("weeks")},u.asWeeks=function(){return this.as("weeks")},u.months=function(){return this.get("months")},u.asMonths=function(){return this.as("months")},u.years=function(){return this.get("years")},u.asYears=function(){return this.as("years")},s}();return function(n,i,o){t=o,s=o().$utils(),o.duration=function(t,s){var n=o.locale();return r(t,{$l:n},s)},o.isDuration=e;var u=i.prototype.add,h=i.prototype.subtract;i.prototype.add=function(t,s){return e(t)&&(t=t.asMilliseconds()),u.bind(this)(t,s)},i.prototype.subtract=function(t,s){return e(t)&&(t=t.asMilliseconds()),h.bind(this)(t,s)}}});
 
-    var hookCallback;
-
-    function hooks () {
-        return hookCallback.apply(null, arguments);
-    }
-
-    // This is done to register the method called with moment()
-    // without creating circular dependencies.
-    function setHookCallback (callback) {
-        hookCallback = callback;
-    }
-
-    function isArray(input) {
-        return input instanceof Array || Object.prototype.toString.call(input) === '[object Array]';
-    }
-
-    function isObject(input) {
-        // IE8 will treat undefined and null as object if it wasn't for
-        // input != null
-        return input != null && Object.prototype.toString.call(input) === '[object Object]';
-    }
-
-    function isObjectEmpty(obj) {
-        if (Object.getOwnPropertyNames) {
-            return (Object.getOwnPropertyNames(obj).length === 0);
-        } else {
-            var k;
-            for (k in obj) {
-                if (obj.hasOwnProperty(k)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    function isUndefined(input) {
-        return input === void 0;
-    }
-
-    function isNumber(input) {
-        return typeof input === 'number' || Object.prototype.toString.call(input) === '[object Number]';
-    }
-
-    function isDate(input) {
-        return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
-    }
-
-    function map(arr, fn) {
-        var res = [], i;
-        for (i = 0; i < arr.length; ++i) {
-            res.push(fn(arr[i], i));
-        }
-        return res;
-    }
-
-    function hasOwnProp(a, b) {
-        return Object.prototype.hasOwnProperty.call(a, b);
-    }
-
-    function extend(a, b) {
-        for (var i in b) {
-            if (hasOwnProp(b, i)) {
-                a[i] = b[i];
-            }
-        }
-
-        if (hasOwnProp(b, 'toString')) {
-            a.toString = b.toString;
-        }
-
-        if (hasOwnProp(b, 'valueOf')) {
-            a.valueOf = b.valueOf;
-        }
-
-        return a;
-    }
-
-    function createUTC (input, format, locale, strict) {
-        return createLocalOrUTC(input, format, locale, strict, true).utc();
-    }
-
-    function defaultParsingFlags() {
-        // We need to deep clone this object.
-        return {
-            empty           : false,
-            unusedTokens    : [],
-            unusedInput     : [],
-            overflow        : -2,
-            charsLeftOver   : 0,
-            nullInput       : false,
-            invalidMonth    : null,
-            invalidFormat   : false,
-            userInvalidated : false,
-            iso             : false,
-            parsedDateParts : [],
-            meridiem        : null,
-            rfc2822         : false,
-            weekdayMismatch : false
-        };
-    }
-
-    function getParsingFlags(m) {
-        if (m._pf == null) {
-            m._pf = defaultParsingFlags();
-        }
-        return m._pf;
-    }
-
-    var some;
-    if (Array.prototype.some) {
-        some = Array.prototype.some;
-    } else {
-        some = function (fun) {
-            var t = Object(this);
-            var len = t.length >>> 0;
-
-            for (var i = 0; i < len; i++) {
-                if (i in t && fun.call(this, t[i], i, t)) {
-                    return true;
-                }
-            }
-
-            return false;
-        };
-    }
-
-    function isValid(m) {
-        if (m._isValid == null) {
-            var flags = getParsingFlags(m);
-            var parsedParts = some.call(flags.parsedDateParts, function (i) {
-                return i != null;
-            });
-            var isNowValid = !isNaN(m._d.getTime()) &&
-                flags.overflow < 0 &&
-                !flags.empty &&
-                !flags.invalidMonth &&
-                !flags.invalidWeekday &&
-                !flags.weekdayMismatch &&
-                !flags.nullInput &&
-                !flags.invalidFormat &&
-                !flags.userInvalidated &&
-                (!flags.meridiem || (flags.meridiem && parsedParts));
-
-            if (m._strict) {
-                isNowValid = isNowValid &&
-                    flags.charsLeftOver === 0 &&
-                    flags.unusedTokens.length === 0 &&
-                    flags.bigHour === undefined;
-            }
-
-            if (Object.isFrozen == null || !Object.isFrozen(m)) {
-                m._isValid = isNowValid;
-            }
-            else {
-                return isNowValid;
-            }
-        }
-        return m._isValid;
-    }
-
-    function createInvalid (flags) {
-        var m = createUTC(NaN);
-        if (flags != null) {
-            extend(getParsingFlags(m), flags);
-        }
-        else {
-            getParsingFlags(m).userInvalidated = true;
-        }
-
-        return m;
-    }
-
-    // Plugins that add properties should also add the key here (null value),
-    // so we can properly clone ourselves.
-    var momentProperties = hooks.momentProperties = [];
-
-    function copyConfig(to, from) {
-        var i, prop, val;
-
-        if (!isUndefined(from._isAMomentObject)) {
-            to._isAMomentObject = from._isAMomentObject;
-        }
-        if (!isUndefined(from._i)) {
-            to._i = from._i;
-        }
-        if (!isUndefined(from._f)) {
-            to._f = from._f;
-        }
-        if (!isUndefined(from._l)) {
-            to._l = from._l;
-        }
-        if (!isUndefined(from._strict)) {
-            to._strict = from._strict;
-        }
-        if (!isUndefined(from._tzm)) {
-            to._tzm = from._tzm;
-        }
-        if (!isUndefined(from._isUTC)) {
-            to._isUTC = from._isUTC;
-        }
-        if (!isUndefined(from._offset)) {
-            to._offset = from._offset;
-        }
-        if (!isUndefined(from._pf)) {
-            to._pf = getParsingFlags(from);
-        }
-        if (!isUndefined(from._locale)) {
-            to._locale = from._locale;
-        }
-
-        if (momentProperties.length > 0) {
-            for (i = 0; i < momentProperties.length; i++) {
-                prop = momentProperties[i];
-                val = from[prop];
-                if (!isUndefined(val)) {
-                    to[prop] = val;
-                }
-            }
-        }
-
-        return to;
-    }
-
-    var updateInProgress = false;
-
-    // Moment prototype object
-    function Moment(config) {
-        copyConfig(this, config);
-        this._d = new Date(config._d != null ? config._d.getTime() : NaN);
-        if (!this.isValid()) {
-            this._d = new Date(NaN);
-        }
-        // Prevent infinite loop in case updateOffset creates new moment
-        // objects.
-        if (updateInProgress === false) {
-            updateInProgress = true;
-            hooks.updateOffset(this);
-            updateInProgress = false;
-        }
-    }
-
-    function isMoment (obj) {
-        return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
-    }
-
-    function absFloor (number) {
-        if (number < 0) {
-            // -0 -> 0
-            return Math.ceil(number) || 0;
-        } else {
-            return Math.floor(number);
-        }
-    }
-
-    function toInt(argumentForCoercion) {
-        var coercedNumber = +argumentForCoercion,
-            value = 0;
-
-        if (coercedNumber !== 0 && isFinite(coercedNumber)) {
-            value = absFloor(coercedNumber);
-        }
-
-        return value;
-    }
-
-    // compare two arrays, return the number of differences
-    function compareArrays(array1, array2, dontConvert) {
-        var len = Math.min(array1.length, array2.length),
-            lengthDiff = Math.abs(array1.length - array2.length),
-            diffs = 0,
-            i;
-        for (i = 0; i < len; i++) {
-            if ((dontConvert && array1[i] !== array2[i]) ||
-                (!dontConvert && toInt(array1[i]) !== toInt(array2[i]))) {
-                diffs++;
-            }
-        }
-        return diffs + lengthDiff;
-    }
-
-    function warn(msg) {
-        if (hooks.suppressDeprecationWarnings === false &&
-                (typeof console !==  'undefined') && console.warn) {
-            console.warn('Deprecation warning: ' + msg);
-        }
-    }
-
-    function deprecate(msg, fn) {
-        var firstTime = true;
-
-        return extend(function () {
-            if (hooks.deprecationHandler != null) {
-                hooks.deprecationHandler(null, msg);
-            }
-            if (firstTime) {
-                var args = [];
-                var arg;
-                for (var i = 0; i < arguments.length; i++) {
-                    arg = '';
-                    if (typeof arguments[i] === 'object') {
-                        arg += '\n[' + i + '] ';
-                        for (var key in arguments[0]) {
-                            arg += key + ': ' + arguments[0][key] + ', ';
-                        }
-                        arg = arg.slice(0, -2); // Remove trailing comma and space
-                    } else {
-                        arg = arguments[i];
-                    }
-                    args.push(arg);
-                }
-                warn(msg + '\nArguments: ' + Array.prototype.slice.call(args).join('') + '\n' + (new Error()).stack);
-                firstTime = false;
-            }
-            return fn.apply(this, arguments);
-        }, fn);
-    }
-
-    var deprecations = {};
-
-    function deprecateSimple(name, msg) {
-        if (hooks.deprecationHandler != null) {
-            hooks.deprecationHandler(name, msg);
-        }
-        if (!deprecations[name]) {
-            warn(msg);
-            deprecations[name] = true;
-        }
-    }
-
-    hooks.suppressDeprecationWarnings = false;
-    hooks.deprecationHandler = null;
-
-    function isFunction(input) {
-        return input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
-    }
-
-    function set (config) {
-        var prop, i;
-        for (i in config) {
-            prop = config[i];
-            if (isFunction(prop)) {
-                this[i] = prop;
-            } else {
-                this['_' + i] = prop;
-            }
-        }
-        this._config = config;
-        // Lenient ordinal parsing accepts just a number in addition to
-        // number + (possibly) stuff coming from _dayOfMonthOrdinalParse.
-        // TODO: Remove "ordinalParse" fallback in next major release.
-        this._dayOfMonthOrdinalParseLenient = new RegExp(
-            (this._dayOfMonthOrdinalParse.source || this._ordinalParse.source) +
-                '|' + (/\d{1,2}/).source);
-    }
-
-    function mergeConfigs(parentConfig, childConfig) {
-        var res = extend({}, parentConfig), prop;
-        for (prop in childConfig) {
-            if (hasOwnProp(childConfig, prop)) {
-                if (isObject(parentConfig[prop]) && isObject(childConfig[prop])) {
-                    res[prop] = {};
-                    extend(res[prop], parentConfig[prop]);
-                    extend(res[prop], childConfig[prop]);
-                } else if (childConfig[prop] != null) {
-                    res[prop] = childConfig[prop];
-                } else {
-                    delete res[prop];
-                }
-            }
-        }
-        for (prop in parentConfig) {
-            if (hasOwnProp(parentConfig, prop) &&
-                    !hasOwnProp(childConfig, prop) &&
-                    isObject(parentConfig[prop])) {
-                // make sure changes to properties don't modify parent config
-                res[prop] = extend({}, res[prop]);
-            }
-        }
-        return res;
-    }
-
-    function Locale(config) {
-        if (config != null) {
-            this.set(config);
-        }
-    }
-
-    var keys;
-
-    if (Object.keys) {
-        keys = Object.keys;
-    } else {
-        keys = function (obj) {
-            var i, res = [];
-            for (i in obj) {
-                if (hasOwnProp(obj, i)) {
-                    res.push(i);
-                }
-            }
-            return res;
-        };
-    }
-
-    var defaultCalendar = {
-        sameDay : '[Today at] LT',
-        nextDay : '[Tomorrow at] LT',
-        nextWeek : 'dddd [at] LT',
-        lastDay : '[Yesterday at] LT',
-        lastWeek : '[Last] dddd [at] LT',
-        sameElse : 'L'
-    };
-
-    function calendar (key, mom, now) {
-        var output = this._calendar[key] || this._calendar['sameElse'];
-        return isFunction(output) ? output.call(mom, now) : output;
-    }
-
-    var defaultLongDateFormat = {
-        LTS  : 'h:mm:ss A',
-        LT   : 'h:mm A',
-        L    : 'MM/DD/YYYY',
-        LL   : 'MMMM D, YYYY',
-        LLL  : 'MMMM D, YYYY h:mm A',
-        LLLL : 'dddd, MMMM D, YYYY h:mm A'
-    };
-
-    function longDateFormat (key) {
-        var format = this._longDateFormat[key],
-            formatUpper = this._longDateFormat[key.toUpperCase()];
-
-        if (format || !formatUpper) {
-            return format;
-        }
-
-        this._longDateFormat[key] = formatUpper.replace(/MMMM|MM|DD|dddd/g, function (val) {
-            return val.slice(1);
-        });
-
-        return this._longDateFormat[key];
-    }
-
-    var defaultInvalidDate = 'Invalid date';
-
-    function invalidDate () {
-        return this._invalidDate;
-    }
-
-    var defaultOrdinal = '%d';
-    var defaultDayOfMonthOrdinalParse = /\d{1,2}/;
-
-    function ordinal (number) {
-        return this._ordinal.replace('%d', number);
-    }
-
-    var defaultRelativeTime = {
-        future : 'in %s',
-        past   : '%s ago',
-        s  : 'a few seconds',
-        ss : '%d seconds',
-        m  : 'a minute',
-        mm : '%d minutes',
-        h  : 'an hour',
-        hh : '%d hours',
-        d  : 'a day',
-        dd : '%d days',
-        M  : 'a month',
-        MM : '%d months',
-        y  : 'a year',
-        yy : '%d years'
-    };
-
-    function relativeTime (number, withoutSuffix, string, isFuture) {
-        var output = this._relativeTime[string];
-        return (isFunction(output)) ?
-            output(number, withoutSuffix, string, isFuture) :
-            output.replace(/%d/i, number);
-    }
-
-    function pastFuture (diff, output) {
-        var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
-        return isFunction(format) ? format(output) : format.replace(/%s/i, output);
-    }
-
-    var aliases = {};
-
-    function addUnitAlias (unit, shorthand) {
-        var lowerCase = unit.toLowerCase();
-        aliases[lowerCase] = aliases[lowerCase + 's'] = aliases[shorthand] = unit;
-    }
-
-    function normalizeUnits(units) {
-        return typeof units === 'string' ? aliases[units] || aliases[units.toLowerCase()] : undefined;
-    }
-
-    function normalizeObjectUnits(inputObject) {
-        var normalizedInput = {},
-            normalizedProp,
-            prop;
-
-        for (prop in inputObject) {
-            if (hasOwnProp(inputObject, prop)) {
-                normalizedProp = normalizeUnits(prop);
-                if (normalizedProp) {
-                    normalizedInput[normalizedProp] = inputObject[prop];
-                }
-            }
-        }
-
-        return normalizedInput;
-    }
-
-    var priorities = {};
-
-    function addUnitPriority(unit, priority) {
-        priorities[unit] = priority;
-    }
-
-    function getPrioritizedUnits(unitsObj) {
-        var units = [];
-        for (var u in unitsObj) {
-            units.push({unit: u, priority: priorities[u]});
-        }
-        units.sort(function (a, b) {
-            return a.priority - b.priority;
-        });
-        return units;
-    }
-
-    function zeroFill(number, targetLength, forceSign) {
-        var absNumber = '' + Math.abs(number),
-            zerosToFill = targetLength - absNumber.length,
-            sign = number >= 0;
-        return (sign ? (forceSign ? '+' : '') : '-') +
-            Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
-    }
-
-    var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
-
-    var localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g;
-
-    var formatFunctions = {};
-
-    var formatTokenFunctions = {};
-
-    // token:    'M'
-    // padded:   ['MM', 2]
-    // ordinal:  'Mo'
-    // callback: function () { this.month() + 1 }
-    function addFormatToken (token, padded, ordinal, callback) {
-        var func = callback;
-        if (typeof callback === 'string') {
-            func = function () {
-                return this[callback]();
-            };
-        }
-        if (token) {
-            formatTokenFunctions[token] = func;
-        }
-        if (padded) {
-            formatTokenFunctions[padded[0]] = function () {
-                return zeroFill(func.apply(this, arguments), padded[1], padded[2]);
-            };
-        }
-        if (ordinal) {
-            formatTokenFunctions[ordinal] = function () {
-                return this.localeData().ordinal(func.apply(this, arguments), token);
-            };
-        }
-    }
-
-    function removeFormattingTokens(input) {
-        if (input.match(/\[[\s\S]/)) {
-            return input.replace(/^\[|\]$/g, '');
-        }
-        return input.replace(/\\/g, '');
-    }
-
-    function makeFormatFunction(format) {
-        var array = format.match(formattingTokens), i, length;
-
-        for (i = 0, length = array.length; i < length; i++) {
-            if (formatTokenFunctions[array[i]]) {
-                array[i] = formatTokenFunctions[array[i]];
-            } else {
-                array[i] = removeFormattingTokens(array[i]);
-            }
-        }
-
-        return function (mom) {
-            var output = '', i;
-            for (i = 0; i < length; i++) {
-                output += isFunction(array[i]) ? array[i].call(mom, format) : array[i];
-            }
-            return output;
-        };
-    }
-
-    // format date using native date object
-    function formatMoment(m, format) {
-        if (!m.isValid()) {
-            return m.localeData().invalidDate();
-        }
-
-        format = expandFormat(format, m.localeData());
-        formatFunctions[format] = formatFunctions[format] || makeFormatFunction(format);
-
-        return formatFunctions[format](m);
-    }
-
-    function expandFormat(format, locale) {
-        var i = 5;
-
-        function replaceLongDateFormatTokens(input) {
-            return locale.longDateFormat(input) || input;
-        }
-
-        localFormattingTokens.lastIndex = 0;
-        while (i >= 0 && localFormattingTokens.test(format)) {
-            format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
-            localFormattingTokens.lastIndex = 0;
-            i -= 1;
-        }
-
-        return format;
-    }
-
-    var match1         = /\d/;            //       0 - 9
-    var match2         = /\d\d/;          //      00 - 99
-    var match3         = /\d{3}/;         //     000 - 999
-    var match4         = /\d{4}/;         //    0000 - 9999
-    var match6         = /[+-]?\d{6}/;    // -999999 - 999999
-    var match1to2      = /\d\d?/;         //       0 - 99
-    var match3to4      = /\d\d\d\d?/;     //     999 - 9999
-    var match5to6      = /\d\d\d\d\d\d?/; //   99999 - 999999
-    var match1to3      = /\d{1,3}/;       //       0 - 999
-    var match1to4      = /\d{1,4}/;       //       0 - 9999
-    var match1to6      = /[+-]?\d{1,6}/;  // -999999 - 999999
-
-    var matchUnsigned  = /\d+/;           //       0 - inf
-    var matchSigned    = /[+-]?\d+/;      //    -inf - inf
-
-    var matchOffset    = /Z|[+-]\d\d:?\d\d/gi; // +00:00 -00:00 +0000 -0000 or Z
-    var matchShortOffset = /Z|[+-]\d\d(?::?\d\d)?/gi; // +00 -00 +00:00 -00:00 +0000 -0000 or Z
-
-    var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
-
-    // any word (or two) characters or numbers including two/three word month in arabic.
-    // includes scottish gaelic two word and hyphenated months
-    var matchWord = /[0-9]{0,256}['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFF07\uFF10-\uFFEF]{1,256}|[\u0600-\u06FF\/]{1,256}(\s*?[\u0600-\u06FF]{1,256}){1,2}/i;
-
-    var regexes = {};
-
-    function addRegexToken (token, regex, strictRegex) {
-        regexes[token] = isFunction(regex) ? regex : function (isStrict, localeData) {
-            return (isStrict && strictRegex) ? strictRegex : regex;
-        };
-    }
-
-    function getParseRegexForToken (token, config) {
-        if (!hasOwnProp(regexes, token)) {
-            return new RegExp(unescapeFormat(token));
-        }
-
-        return regexes[token](config._strict, config._locale);
-    }
-
-    // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
-    function unescapeFormat(s) {
-        return regexEscape(s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
-            return p1 || p2 || p3 || p4;
-        }));
-    }
-
-    function regexEscape(s) {
-        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-    }
-
-    var tokens = {};
-
-    function addParseToken (token, callback) {
-        var i, func = callback;
-        if (typeof token === 'string') {
-            token = [token];
-        }
-        if (isNumber(callback)) {
-            func = function (input, array) {
-                array[callback] = toInt(input);
-            };
-        }
-        for (i = 0; i < token.length; i++) {
-            tokens[token[i]] = func;
-        }
-    }
-
-    function addWeekParseToken (token, callback) {
-        addParseToken(token, function (input, array, config, token) {
-            config._w = config._w || {};
-            callback(input, config._w, config, token);
-        });
-    }
-
-    function addTimeToArrayFromToken(token, input, config) {
-        if (input != null && hasOwnProp(tokens, token)) {
-            tokens[token](input, config._a, config, token);
-        }
-    }
-
-    var YEAR = 0;
-    var MONTH = 1;
-    var DATE = 2;
-    var HOUR = 3;
-    var MINUTE = 4;
-    var SECOND = 5;
-    var MILLISECOND = 6;
-    var WEEK = 7;
-    var WEEKDAY = 8;
-
-    // FORMATTING
-
-    addFormatToken('Y', 0, 0, function () {
-        var y = this.year();
-        return y <= 9999 ? '' + y : '+' + y;
-    });
-
-    addFormatToken(0, ['YY', 2], 0, function () {
-        return this.year() % 100;
-    });
-
-    addFormatToken(0, ['YYYY',   4],       0, 'year');
-    addFormatToken(0, ['YYYYY',  5],       0, 'year');
-    addFormatToken(0, ['YYYYYY', 6, true], 0, 'year');
-
-    // ALIASES
-
-    addUnitAlias('year', 'y');
-
-    // PRIORITIES
-
-    addUnitPriority('year', 1);
-
-    // PARSING
-
-    addRegexToken('Y',      matchSigned);
-    addRegexToken('YY',     match1to2, match2);
-    addRegexToken('YYYY',   match1to4, match4);
-    addRegexToken('YYYYY',  match1to6, match6);
-    addRegexToken('YYYYYY', match1to6, match6);
-
-    addParseToken(['YYYYY', 'YYYYYY'], YEAR);
-    addParseToken('YYYY', function (input, array) {
-        array[YEAR] = input.length === 2 ? hooks.parseTwoDigitYear(input) : toInt(input);
-    });
-    addParseToken('YY', function (input, array) {
-        array[YEAR] = hooks.parseTwoDigitYear(input);
-    });
-    addParseToken('Y', function (input, array) {
-        array[YEAR] = parseInt(input, 10);
-    });
-
-    // HELPERS
-
-    function daysInYear(year) {
-        return isLeapYear(year) ? 366 : 365;
-    }
-
-    function isLeapYear(year) {
-        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-    }
-
-    // HOOKS
-
-    hooks.parseTwoDigitYear = function (input) {
-        return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
-    };
-
-    // MOMENTS
-
-    var getSetYear = makeGetSet('FullYear', true);
-
-    function getIsLeapYear () {
-        return isLeapYear(this.year());
-    }
-
-    function makeGetSet (unit, keepTime) {
-        return function (value) {
-            if (value != null) {
-                set$1(this, unit, value);
-                hooks.updateOffset(this, keepTime);
-                return this;
-            } else {
-                return get(this, unit);
-            }
-        };
-    }
-
-    function get (mom, unit) {
-        return mom.isValid() ?
-            mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
-    }
-
-    function set$1 (mom, unit, value) {
-        if (mom.isValid() && !isNaN(value)) {
-            if (unit === 'FullYear' && isLeapYear(mom.year()) && mom.month() === 1 && mom.date() === 29) {
-                mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value, mom.month(), daysInMonth(value, mom.month()));
-            }
-            else {
-                mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
-            }
-        }
-    }
-
-    // MOMENTS
-
-    function stringGet (units) {
-        units = normalizeUnits(units);
-        if (isFunction(this[units])) {
-            return this[units]();
-        }
-        return this;
-    }
-
-
-    function stringSet (units, value) {
-        if (typeof units === 'object') {
-            units = normalizeObjectUnits(units);
-            var prioritized = getPrioritizedUnits(units);
-            for (var i = 0; i < prioritized.length; i++) {
-                this[prioritized[i].unit](units[prioritized[i].unit]);
-            }
-        } else {
-            units = normalizeUnits(units);
-            if (isFunction(this[units])) {
-                return this[units](value);
-            }
-        }
-        return this;
-    }
-
-    function mod(n, x) {
-        return ((n % x) + x) % x;
-    }
-
-    var indexOf;
-
-    if (Array.prototype.indexOf) {
-        indexOf = Array.prototype.indexOf;
-    } else {
-        indexOf = function (o) {
-            // I know
-            var i;
-            for (i = 0; i < this.length; ++i) {
-                if (this[i] === o) {
-                    return i;
-                }
-            }
-            return -1;
-        };
-    }
-
-    function daysInMonth(year, month) {
-        if (isNaN(year) || isNaN(month)) {
-            return NaN;
-        }
-        var modMonth = mod(month, 12);
-        year += (month - modMonth) / 12;
-        return modMonth === 1 ? (isLeapYear(year) ? 29 : 28) : (31 - modMonth % 7 % 2);
-    }
-
-    // FORMATTING
-
-    addFormatToken('M', ['MM', 2], 'Mo', function () {
-        return this.month() + 1;
-    });
-
-    addFormatToken('MMM', 0, 0, function (format) {
-        return this.localeData().monthsShort(this, format);
-    });
-
-    addFormatToken('MMMM', 0, 0, function (format) {
-        return this.localeData().months(this, format);
-    });
-
-    // ALIASES
-
-    addUnitAlias('month', 'M');
-
-    // PRIORITY
-
-    addUnitPriority('month', 8);
-
-    // PARSING
-
-    addRegexToken('M',    match1to2);
-    addRegexToken('MM',   match1to2, match2);
-    addRegexToken('MMM',  function (isStrict, locale) {
-        return locale.monthsShortRegex(isStrict);
-    });
-    addRegexToken('MMMM', function (isStrict, locale) {
-        return locale.monthsRegex(isStrict);
-    });
-
-    addParseToken(['M', 'MM'], function (input, array) {
-        array[MONTH] = toInt(input) - 1;
-    });
-
-    addParseToken(['MMM', 'MMMM'], function (input, array, config, token) {
-        var month = config._locale.monthsParse(input, token, config._strict);
-        // if we didn't find a month name, mark the date as invalid.
-        if (month != null) {
-            array[MONTH] = month;
-        } else {
-            getParsingFlags(config).invalidMonth = input;
-        }
-    });
-
-    // LOCALES
-
-    var MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s)+MMMM?/;
-    var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
-    function localeMonths (m, format) {
-        if (!m) {
-            return isArray(this._months) ? this._months :
-                this._months['standalone'];
-        }
-        return isArray(this._months) ? this._months[m.month()] :
-            this._months[(this._months.isFormat || MONTHS_IN_FORMAT).test(format) ? 'format' : 'standalone'][m.month()];
-    }
-
-    var defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
-    function localeMonthsShort (m, format) {
-        if (!m) {
-            return isArray(this._monthsShort) ? this._monthsShort :
-                this._monthsShort['standalone'];
-        }
-        return isArray(this._monthsShort) ? this._monthsShort[m.month()] :
-            this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
-    }
-
-    function handleStrictParse(monthName, format, strict) {
-        var i, ii, mom, llc = monthName.toLocaleLowerCase();
-        if (!this._monthsParse) {
-            // this is not used
-            this._monthsParse = [];
-            this._longMonthsParse = [];
-            this._shortMonthsParse = [];
-            for (i = 0; i < 12; ++i) {
-                mom = createUTC([2000, i]);
-                this._shortMonthsParse[i] = this.monthsShort(mom, '').toLocaleLowerCase();
-                this._longMonthsParse[i] = this.months(mom, '').toLocaleLowerCase();
-            }
-        }
-
-        if (strict) {
-            if (format === 'MMM') {
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._longMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        } else {
-            if (format === 'MMM') {
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._longMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._longMonthsParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        }
-    }
-
-    function localeMonthsParse (monthName, format, strict) {
-        var i, mom, regex;
-
-        if (this._monthsParseExact) {
-            return handleStrictParse.call(this, monthName, format, strict);
-        }
-
-        if (!this._monthsParse) {
-            this._monthsParse = [];
-            this._longMonthsParse = [];
-            this._shortMonthsParse = [];
-        }
-
-        // TODO: add sorting
-        // Sorting makes sure if one month (or abbr) is a prefix of another
-        // see sorting in computeMonthsParse
-        for (i = 0; i < 12; i++) {
-            // make the regex if we don't have it already
-            mom = createUTC([2000, i]);
-            if (strict && !this._longMonthsParse[i]) {
-                this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
-                this._shortMonthsParse[i] = new RegExp('^' + this.monthsShort(mom, '').replace('.', '') + '$', 'i');
-            }
-            if (!strict && !this._monthsParse[i]) {
-                regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
-                this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
-            }
-            // test the regex
-            if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) {
-                return i;
-            } else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) {
-                return i;
-            } else if (!strict && this._monthsParse[i].test(monthName)) {
-                return i;
-            }
-        }
-    }
-
-    // MOMENTS
-
-    function setMonth (mom, value) {
-        var dayOfMonth;
-
-        if (!mom.isValid()) {
-            // No op
-            return mom;
-        }
-
-        if (typeof value === 'string') {
-            if (/^\d+$/.test(value)) {
-                value = toInt(value);
-            } else {
-                value = mom.localeData().monthsParse(value);
-                // TODO: Another silent failure?
-                if (!isNumber(value)) {
-                    return mom;
-                }
-            }
-        }
-
-        dayOfMonth = Math.min(mom.date(), daysInMonth(mom.year(), value));
-        mom._d['set' + (mom._isUTC ? 'UTC' : '') + 'Month'](value, dayOfMonth);
-        return mom;
-    }
-
-    function getSetMonth (value) {
-        if (value != null) {
-            setMonth(this, value);
-            hooks.updateOffset(this, true);
-            return this;
-        } else {
-            return get(this, 'Month');
-        }
-    }
-
-    function getDaysInMonth () {
-        return daysInMonth(this.year(), this.month());
-    }
-
-    var defaultMonthsShortRegex = matchWord;
-    function monthsShortRegex (isStrict) {
-        if (this._monthsParseExact) {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                computeMonthsParse.call(this);
-            }
-            if (isStrict) {
-                return this._monthsShortStrictRegex;
-            } else {
-                return this._monthsShortRegex;
-            }
-        } else {
-            if (!hasOwnProp(this, '_monthsShortRegex')) {
-                this._monthsShortRegex = defaultMonthsShortRegex;
-            }
-            return this._monthsShortStrictRegex && isStrict ?
-                this._monthsShortStrictRegex : this._monthsShortRegex;
-        }
-    }
-
-    var defaultMonthsRegex = matchWord;
-    function monthsRegex (isStrict) {
-        if (this._monthsParseExact) {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                computeMonthsParse.call(this);
-            }
-            if (isStrict) {
-                return this._monthsStrictRegex;
-            } else {
-                return this._monthsRegex;
-            }
-        } else {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                this._monthsRegex = defaultMonthsRegex;
-            }
-            return this._monthsStrictRegex && isStrict ?
-                this._monthsStrictRegex : this._monthsRegex;
-        }
-    }
-
-    function computeMonthsParse () {
-        function cmpLenRev(a, b) {
-            return b.length - a.length;
-        }
-
-        var shortPieces = [], longPieces = [], mixedPieces = [],
-            i, mom;
-        for (i = 0; i < 12; i++) {
-            // make the regex if we don't have it already
-            mom = createUTC([2000, i]);
-            shortPieces.push(this.monthsShort(mom, ''));
-            longPieces.push(this.months(mom, ''));
-            mixedPieces.push(this.months(mom, ''));
-            mixedPieces.push(this.monthsShort(mom, ''));
-        }
-        // Sorting makes sure if one month (or abbr) is a prefix of another it
-        // will match the longer piece.
-        shortPieces.sort(cmpLenRev);
-        longPieces.sort(cmpLenRev);
-        mixedPieces.sort(cmpLenRev);
-        for (i = 0; i < 12; i++) {
-            shortPieces[i] = regexEscape(shortPieces[i]);
-            longPieces[i] = regexEscape(longPieces[i]);
-        }
-        for (i = 0; i < 24; i++) {
-            mixedPieces[i] = regexEscape(mixedPieces[i]);
-        }
-
-        this._monthsRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
-        this._monthsShortRegex = this._monthsRegex;
-        this._monthsStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
-        this._monthsShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
-    }
-
-    function createDate (y, m, d, h, M, s, ms) {
-        // can't just apply() to create a date:
-        // https://stackoverflow.com/q/181348
-        var date;
-        // the date constructor remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0) {
-            // preserve leap years using a full 400 year cycle, then reset
-            date = new Date(y + 400, m, d, h, M, s, ms);
-            if (isFinite(date.getFullYear())) {
-                date.setFullYear(y);
-            }
-        } else {
-            date = new Date(y, m, d, h, M, s, ms);
-        }
-
-        return date;
-    }
-
-    function createUTCDate (y) {
-        var date;
-        // the Date.UTC function remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0) {
-            var args = Array.prototype.slice.call(arguments);
-            // preserve leap years using a full 400 year cycle, then reset
-            args[0] = y + 400;
-            date = new Date(Date.UTC.apply(null, args));
-            if (isFinite(date.getUTCFullYear())) {
-                date.setUTCFullYear(y);
-            }
-        } else {
-            date = new Date(Date.UTC.apply(null, arguments));
-        }
-
-        return date;
-    }
-
-    // start-of-first-week - start-of-year
-    function firstWeekOffset(year, dow, doy) {
-        var // first-week day -- which january is always in the first week (4 for iso, 1 for other)
-            fwd = 7 + dow - doy,
-            // first-week day local weekday -- which local weekday is fwd
-            fwdlw = (7 + createUTCDate(year, 0, fwd).getUTCDay() - dow) % 7;
-
-        return -fwdlw + fwd - 1;
-    }
-
-    // https://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
-    function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
-        var localWeekday = (7 + weekday - dow) % 7,
-            weekOffset = firstWeekOffset(year, dow, doy),
-            dayOfYear = 1 + 7 * (week - 1) + localWeekday + weekOffset,
-            resYear, resDayOfYear;
-
-        if (dayOfYear <= 0) {
-            resYear = year - 1;
-            resDayOfYear = daysInYear(resYear) + dayOfYear;
-        } else if (dayOfYear > daysInYear(year)) {
-            resYear = year + 1;
-            resDayOfYear = dayOfYear - daysInYear(year);
-        } else {
-            resYear = year;
-            resDayOfYear = dayOfYear;
-        }
-
-        return {
-            year: resYear,
-            dayOfYear: resDayOfYear
-        };
-    }
-
-    function weekOfYear(mom, dow, doy) {
-        var weekOffset = firstWeekOffset(mom.year(), dow, doy),
-            week = Math.floor((mom.dayOfYear() - weekOffset - 1) / 7) + 1,
-            resWeek, resYear;
-
-        if (week < 1) {
-            resYear = mom.year() - 1;
-            resWeek = week + weeksInYear(resYear, dow, doy);
-        } else if (week > weeksInYear(mom.year(), dow, doy)) {
-            resWeek = week - weeksInYear(mom.year(), dow, doy);
-            resYear = mom.year() + 1;
-        } else {
-            resYear = mom.year();
-            resWeek = week;
-        }
-
-        return {
-            week: resWeek,
-            year: resYear
-        };
-    }
-
-    function weeksInYear(year, dow, doy) {
-        var weekOffset = firstWeekOffset(year, dow, doy),
-            weekOffsetNext = firstWeekOffset(year + 1, dow, doy);
-        return (daysInYear(year) - weekOffset + weekOffsetNext) / 7;
-    }
-
-    // FORMATTING
-
-    addFormatToken('w', ['ww', 2], 'wo', 'week');
-    addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
-
-    // ALIASES
-
-    addUnitAlias('week', 'w');
-    addUnitAlias('isoWeek', 'W');
-
-    // PRIORITIES
-
-    addUnitPriority('week', 5);
-    addUnitPriority('isoWeek', 5);
-
-    // PARSING
-
-    addRegexToken('w',  match1to2);
-    addRegexToken('ww', match1to2, match2);
-    addRegexToken('W',  match1to2);
-    addRegexToken('WW', match1to2, match2);
-
-    addWeekParseToken(['w', 'ww', 'W', 'WW'], function (input, week, config, token) {
-        week[token.substr(0, 1)] = toInt(input);
-    });
-
-    // HELPERS
-
-    // LOCALES
-
-    function localeWeek (mom) {
-        return weekOfYear(mom, this._week.dow, this._week.doy).week;
-    }
-
-    var defaultLocaleWeek = {
-        dow : 0, // Sunday is the first day of the week.
-        doy : 6  // The week that contains Jan 6th is the first week of the year.
-    };
-
-    function localeFirstDayOfWeek () {
-        return this._week.dow;
-    }
-
-    function localeFirstDayOfYear () {
-        return this._week.doy;
-    }
-
-    // MOMENTS
-
-    function getSetWeek (input) {
-        var week = this.localeData().week(this);
-        return input == null ? week : this.add((input - week) * 7, 'd');
-    }
-
-    function getSetISOWeek (input) {
-        var week = weekOfYear(this, 1, 4).week;
-        return input == null ? week : this.add((input - week) * 7, 'd');
-    }
-
-    // FORMATTING
-
-    addFormatToken('d', 0, 'do', 'day');
-
-    addFormatToken('dd', 0, 0, function (format) {
-        return this.localeData().weekdaysMin(this, format);
-    });
-
-    addFormatToken('ddd', 0, 0, function (format) {
-        return this.localeData().weekdaysShort(this, format);
-    });
-
-    addFormatToken('dddd', 0, 0, function (format) {
-        return this.localeData().weekdays(this, format);
-    });
-
-    addFormatToken('e', 0, 0, 'weekday');
-    addFormatToken('E', 0, 0, 'isoWeekday');
-
-    // ALIASES
-
-    addUnitAlias('day', 'd');
-    addUnitAlias('weekday', 'e');
-    addUnitAlias('isoWeekday', 'E');
-
-    // PRIORITY
-    addUnitPriority('day', 11);
-    addUnitPriority('weekday', 11);
-    addUnitPriority('isoWeekday', 11);
-
-    // PARSING
-
-    addRegexToken('d',    match1to2);
-    addRegexToken('e',    match1to2);
-    addRegexToken('E',    match1to2);
-    addRegexToken('dd',   function (isStrict, locale) {
-        return locale.weekdaysMinRegex(isStrict);
-    });
-    addRegexToken('ddd',   function (isStrict, locale) {
-        return locale.weekdaysShortRegex(isStrict);
-    });
-    addRegexToken('dddd',   function (isStrict, locale) {
-        return locale.weekdaysRegex(isStrict);
-    });
-
-    addWeekParseToken(['dd', 'ddd', 'dddd'], function (input, week, config, token) {
-        var weekday = config._locale.weekdaysParse(input, token, config._strict);
-        // if we didn't get a weekday name, mark the date as invalid
-        if (weekday != null) {
-            week.d = weekday;
-        } else {
-            getParsingFlags(config).invalidWeekday = input;
-        }
-    });
-
-    addWeekParseToken(['d', 'e', 'E'], function (input, week, config, token) {
-        week[token] = toInt(input);
-    });
-
-    // HELPERS
-
-    function parseWeekday(input, locale) {
-        if (typeof input !== 'string') {
-            return input;
-        }
-
-        if (!isNaN(input)) {
-            return parseInt(input, 10);
-        }
-
-        input = locale.weekdaysParse(input);
-        if (typeof input === 'number') {
-            return input;
-        }
-
-        return null;
-    }
-
-    function parseIsoWeekday(input, locale) {
-        if (typeof input === 'string') {
-            return locale.weekdaysParse(input) % 7 || 7;
-        }
-        return isNaN(input) ? null : input;
-    }
-
-    // LOCALES
-    function shiftWeekdays (ws, n) {
-        return ws.slice(n, 7).concat(ws.slice(0, n));
-    }
-
-    var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
-    function localeWeekdays (m, format) {
-        var weekdays = isArray(this._weekdays) ? this._weekdays :
-            this._weekdays[(m && m !== true && this._weekdays.isFormat.test(format)) ? 'format' : 'standalone'];
-        return (m === true) ? shiftWeekdays(weekdays, this._week.dow)
-            : (m) ? weekdays[m.day()] : weekdays;
-    }
-
-    var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
-    function localeWeekdaysShort (m) {
-        return (m === true) ? shiftWeekdays(this._weekdaysShort, this._week.dow)
-            : (m) ? this._weekdaysShort[m.day()] : this._weekdaysShort;
-    }
-
-    var defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_');
-    function localeWeekdaysMin (m) {
-        return (m === true) ? shiftWeekdays(this._weekdaysMin, this._week.dow)
-            : (m) ? this._weekdaysMin[m.day()] : this._weekdaysMin;
-    }
-
-    function handleStrictParse$1(weekdayName, format, strict) {
-        var i, ii, mom, llc = weekdayName.toLocaleLowerCase();
-        if (!this._weekdaysParse) {
-            this._weekdaysParse = [];
-            this._shortWeekdaysParse = [];
-            this._minWeekdaysParse = [];
-
-            for (i = 0; i < 7; ++i) {
-                mom = createUTC([2000, 1]).day(i);
-                this._minWeekdaysParse[i] = this.weekdaysMin(mom, '').toLocaleLowerCase();
-                this._shortWeekdaysParse[i] = this.weekdaysShort(mom, '').toLocaleLowerCase();
-                this._weekdaysParse[i] = this.weekdays(mom, '').toLocaleLowerCase();
-            }
-        }
-
-        if (strict) {
-            if (format === 'dddd') {
-                ii = indexOf.call(this._weekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else if (format === 'ddd') {
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        } else {
-            if (format === 'dddd') {
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else if (format === 'ddd') {
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        }
-    }
-
-    function localeWeekdaysParse (weekdayName, format, strict) {
-        var i, mom, regex;
-
-        if (this._weekdaysParseExact) {
-            return handleStrictParse$1.call(this, weekdayName, format, strict);
-        }
-
-        if (!this._weekdaysParse) {
-            this._weekdaysParse = [];
-            this._minWeekdaysParse = [];
-            this._shortWeekdaysParse = [];
-            this._fullWeekdaysParse = [];
-        }
-
-        for (i = 0; i < 7; i++) {
-            // make the regex if we don't have it already
-
-            mom = createUTC([2000, 1]).day(i);
-            if (strict && !this._fullWeekdaysParse[i]) {
-                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\\.?') + '$', 'i');
-                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\\.?') + '$', 'i');
-                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\\.?') + '$', 'i');
-            }
-            if (!this._weekdaysParse[i]) {
-                regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
-                this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
-            }
-            // test the regex
-            if (strict && format === 'dddd' && this._fullWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (strict && format === 'ddd' && this._shortWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (strict && format === 'dd' && this._minWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (!strict && this._weekdaysParse[i].test(weekdayName)) {
-                return i;
-            }
-        }
-    }
-
-    // MOMENTS
-
-    function getSetDayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-        var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
-        if (input != null) {
-            input = parseWeekday(input, this.localeData());
-            return this.add(input - day, 'd');
-        } else {
-            return day;
-        }
-    }
-
-    function getSetLocaleDayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-        var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
-        return input == null ? weekday : this.add(input - weekday, 'd');
-    }
-
-    function getSetISODayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-
-        // behaves the same as moment#day except
-        // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
-        // as a setter, sunday should belong to the previous week.
-
-        if (input != null) {
-            var weekday = parseIsoWeekday(input, this.localeData());
-            return this.day(this.day() % 7 ? weekday : weekday - 7);
-        } else {
-            return this.day() || 7;
-        }
-    }
-
-    var defaultWeekdaysRegex = matchWord;
-    function weekdaysRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysStrictRegex;
-            } else {
-                return this._weekdaysRegex;
-            }
-        } else {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                this._weekdaysRegex = defaultWeekdaysRegex;
-            }
-            return this._weekdaysStrictRegex && isStrict ?
-                this._weekdaysStrictRegex : this._weekdaysRegex;
-        }
-    }
-
-    var defaultWeekdaysShortRegex = matchWord;
-    function weekdaysShortRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysShortStrictRegex;
-            } else {
-                return this._weekdaysShortRegex;
-            }
-        } else {
-            if (!hasOwnProp(this, '_weekdaysShortRegex')) {
-                this._weekdaysShortRegex = defaultWeekdaysShortRegex;
-            }
-            return this._weekdaysShortStrictRegex && isStrict ?
-                this._weekdaysShortStrictRegex : this._weekdaysShortRegex;
-        }
-    }
-
-    var defaultWeekdaysMinRegex = matchWord;
-    function weekdaysMinRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysMinStrictRegex;
-            } else {
-                return this._weekdaysMinRegex;
-            }
-        } else {
-            if (!hasOwnProp(this, '_weekdaysMinRegex')) {
-                this._weekdaysMinRegex = defaultWeekdaysMinRegex;
-            }
-            return this._weekdaysMinStrictRegex && isStrict ?
-                this._weekdaysMinStrictRegex : this._weekdaysMinRegex;
-        }
-    }
-
-
-    function computeWeekdaysParse () {
-        function cmpLenRev(a, b) {
-            return b.length - a.length;
-        }
-
-        var minPieces = [], shortPieces = [], longPieces = [], mixedPieces = [],
-            i, mom, minp, shortp, longp;
-        for (i = 0; i < 7; i++) {
-            // make the regex if we don't have it already
-            mom = createUTC([2000, 1]).day(i);
-            minp = this.weekdaysMin(mom, '');
-            shortp = this.weekdaysShort(mom, '');
-            longp = this.weekdays(mom, '');
-            minPieces.push(minp);
-            shortPieces.push(shortp);
-            longPieces.push(longp);
-            mixedPieces.push(minp);
-            mixedPieces.push(shortp);
-            mixedPieces.push(longp);
-        }
-        // Sorting makes sure if one weekday (or abbr) is a prefix of another it
-        // will match the longer piece.
-        minPieces.sort(cmpLenRev);
-        shortPieces.sort(cmpLenRev);
-        longPieces.sort(cmpLenRev);
-        mixedPieces.sort(cmpLenRev);
-        for (i = 0; i < 7; i++) {
-            shortPieces[i] = regexEscape(shortPieces[i]);
-            longPieces[i] = regexEscape(longPieces[i]);
-            mixedPieces[i] = regexEscape(mixedPieces[i]);
-        }
-
-        this._weekdaysRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
-        this._weekdaysShortRegex = this._weekdaysRegex;
-        this._weekdaysMinRegex = this._weekdaysRegex;
-
-        this._weekdaysStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
-        this._weekdaysShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
-        this._weekdaysMinStrictRegex = new RegExp('^(' + minPieces.join('|') + ')', 'i');
-    }
-
-    // FORMATTING
-
-    function hFormat() {
-        return this.hours() % 12 || 12;
-    }
-
-    function kFormat() {
-        return this.hours() || 24;
-    }
-
-    addFormatToken('H', ['HH', 2], 0, 'hour');
-    addFormatToken('h', ['hh', 2], 0, hFormat);
-    addFormatToken('k', ['kk', 2], 0, kFormat);
-
-    addFormatToken('hmm', 0, 0, function () {
-        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2);
-    });
-
-    addFormatToken('hmmss', 0, 0, function () {
-        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2) +
-            zeroFill(this.seconds(), 2);
-    });
-
-    addFormatToken('Hmm', 0, 0, function () {
-        return '' + this.hours() + zeroFill(this.minutes(), 2);
-    });
-
-    addFormatToken('Hmmss', 0, 0, function () {
-        return '' + this.hours() + zeroFill(this.minutes(), 2) +
-            zeroFill(this.seconds(), 2);
-    });
-
-    function meridiem (token, lowercase) {
-        addFormatToken(token, 0, 0, function () {
-            return this.localeData().meridiem(this.hours(), this.minutes(), lowercase);
-        });
-    }
-
-    meridiem('a', true);
-    meridiem('A', false);
-
-    // ALIASES
-
-    addUnitAlias('hour', 'h');
-
-    // PRIORITY
-    addUnitPriority('hour', 13);
-
-    // PARSING
-
-    function matchMeridiem (isStrict, locale) {
-        return locale._meridiemParse;
-    }
-
-    addRegexToken('a',  matchMeridiem);
-    addRegexToken('A',  matchMeridiem);
-    addRegexToken('H',  match1to2);
-    addRegexToken('h',  match1to2);
-    addRegexToken('k',  match1to2);
-    addRegexToken('HH', match1to2, match2);
-    addRegexToken('hh', match1to2, match2);
-    addRegexToken('kk', match1to2, match2);
-
-    addRegexToken('hmm', match3to4);
-    addRegexToken('hmmss', match5to6);
-    addRegexToken('Hmm', match3to4);
-    addRegexToken('Hmmss', match5to6);
-
-    addParseToken(['H', 'HH'], HOUR);
-    addParseToken(['k', 'kk'], function (input, array, config) {
-        var kInput = toInt(input);
-        array[HOUR] = kInput === 24 ? 0 : kInput;
-    });
-    addParseToken(['a', 'A'], function (input, array, config) {
-        config._isPm = config._locale.isPM(input);
-        config._meridiem = input;
-    });
-    addParseToken(['h', 'hh'], function (input, array, config) {
-        array[HOUR] = toInt(input);
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('hmm', function (input, array, config) {
-        var pos = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos));
-        array[MINUTE] = toInt(input.substr(pos));
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('hmmss', function (input, array, config) {
-        var pos1 = input.length - 4;
-        var pos2 = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos1));
-        array[MINUTE] = toInt(input.substr(pos1, 2));
-        array[SECOND] = toInt(input.substr(pos2));
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('Hmm', function (input, array, config) {
-        var pos = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos));
-        array[MINUTE] = toInt(input.substr(pos));
-    });
-    addParseToken('Hmmss', function (input, array, config) {
-        var pos1 = input.length - 4;
-        var pos2 = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos1));
-        array[MINUTE] = toInt(input.substr(pos1, 2));
-        array[SECOND] = toInt(input.substr(pos2));
-    });
-
-    // LOCALES
-
-    function localeIsPM (input) {
-        // IE8 Quirks Mode & IE7 Standards Mode do not allow accessing strings like arrays
-        // Using charAt should be more compatible.
-        return ((input + '').toLowerCase().charAt(0) === 'p');
-    }
-
-    var defaultLocaleMeridiemParse = /[ap]\.?m?\.?/i;
-    function localeMeridiem (hours, minutes, isLower) {
-        if (hours > 11) {
-            return isLower ? 'pm' : 'PM';
-        } else {
-            return isLower ? 'am' : 'AM';
-        }
-    }
-
-
-    // MOMENTS
-
-    // Setting the hour should keep the time, because the user explicitly
-    // specified which hour they want. So trying to maintain the same hour (in
-    // a new timezone) makes sense. Adding/subtracting hours does not follow
-    // this rule.
-    var getSetHour = makeGetSet('Hours', true);
-
-    var baseConfig = {
-        calendar: defaultCalendar,
-        longDateFormat: defaultLongDateFormat,
-        invalidDate: defaultInvalidDate,
-        ordinal: defaultOrdinal,
-        dayOfMonthOrdinalParse: defaultDayOfMonthOrdinalParse,
-        relativeTime: defaultRelativeTime,
-
-        months: defaultLocaleMonths,
-        monthsShort: defaultLocaleMonthsShort,
-
-        week: defaultLocaleWeek,
-
-        weekdays: defaultLocaleWeekdays,
-        weekdaysMin: defaultLocaleWeekdaysMin,
-        weekdaysShort: defaultLocaleWeekdaysShort,
-
-        meridiemParse: defaultLocaleMeridiemParse
-    };
-
-    // internal storage for locale config files
-    var locales = {};
-    var localeFamilies = {};
-    var globalLocale;
-
-    function normalizeLocale(key) {
-        return key ? key.toLowerCase().replace('_', '-') : key;
-    }
-
-    // pick the locale from the array
-    // try ['en-au', 'en-gb'] as 'en-au', 'en-gb', 'en', as in move through the list trying each
-    // substring from most specific to least, but move to the next array item if it's a more specific variant than the current root
-    function chooseLocale(names) {
-        var i = 0, j, next, locale, split;
-
-        while (i < names.length) {
-            split = normalizeLocale(names[i]).split('-');
-            j = split.length;
-            next = normalizeLocale(names[i + 1]);
-            next = next ? next.split('-') : null;
-            while (j > 0) {
-                locale = loadLocale(split.slice(0, j).join('-'));
-                if (locale) {
-                    return locale;
-                }
-                if (next && next.length >= j && compareArrays(split, next, true) >= j - 1) {
-                    //the next array item is better than a shallower substring of this one
-                    break;
-                }
-                j--;
-            }
-            i++;
-        }
-        return globalLocale;
-    }
-
-    function loadLocale(name) {
-        var oldLocale = null;
-        // TODO: Find a better way to register and load all the locales in Node
-        if (!locales[name] && (typeof module !== 'undefined') &&
-                module && module.exports) {
-            try {
-                oldLocale = globalLocale._abbr;
-                var aliasedRequire = require;
-                aliasedRequire('./locale/' + name);
-                getSetGlobalLocale(oldLocale);
-            } catch (e) {}
-        }
-        return locales[name];
-    }
-
-    // This function will load locale and then set the global locale.  If
-    // no arguments are passed in, it will simply return the current global
-    // locale key.
-    function getSetGlobalLocale (key, values) {
-        var data;
-        if (key) {
-            if (isUndefined(values)) {
-                data = getLocale(key);
-            }
-            else {
-                data = defineLocale(key, values);
-            }
-
-            if (data) {
-                // moment.duration._locale = moment._locale = data;
-                globalLocale = data;
-            }
-            else {
-                if ((typeof console !==  'undefined') && console.warn) {
-                    //warn user if arguments are passed but the locale could not be set
-                    console.warn('Locale ' + key +  ' not found. Did you forget to load it?');
-                }
-            }
-        }
-
-        return globalLocale._abbr;
-    }
-
-    function defineLocale (name, config) {
-        if (config !== null) {
-            var locale, parentConfig = baseConfig;
-            config.abbr = name;
-            if (locales[name] != null) {
-                deprecateSimple('defineLocaleOverride',
-                        'use moment.updateLocale(localeName, config) to change ' +
-                        'an existing locale. moment.defineLocale(localeName, ' +
-                        'config) should only be used for creating a new locale ' +
-                        'See http://momentjs.com/guides/#/warnings/define-locale/ for more info.');
-                parentConfig = locales[name]._config;
-            } else if (config.parentLocale != null) {
-                if (locales[config.parentLocale] != null) {
-                    parentConfig = locales[config.parentLocale]._config;
-                } else {
-                    locale = loadLocale(config.parentLocale);
-                    if (locale != null) {
-                        parentConfig = locale._config;
-                    } else {
-                        if (!localeFamilies[config.parentLocale]) {
-                            localeFamilies[config.parentLocale] = [];
-                        }
-                        localeFamilies[config.parentLocale].push({
-                            name: name,
-                            config: config
-                        });
-                        return null;
-                    }
-                }
-            }
-            locales[name] = new Locale(mergeConfigs(parentConfig, config));
-
-            if (localeFamilies[name]) {
-                localeFamilies[name].forEach(function (x) {
-                    defineLocale(x.name, x.config);
-                });
-            }
-
-            // backwards compat for now: also set the locale
-            // make sure we set the locale AFTER all child locales have been
-            // created, so we won't end up with the child locale set.
-            getSetGlobalLocale(name);
-
-
-            return locales[name];
-        } else {
-            // useful for testing
-            delete locales[name];
-            return null;
-        }
-    }
-
-    function updateLocale(name, config) {
-        if (config != null) {
-            var locale, tmpLocale, parentConfig = baseConfig;
-            // MERGE
-            tmpLocale = loadLocale(name);
-            if (tmpLocale != null) {
-                parentConfig = tmpLocale._config;
-            }
-            config = mergeConfigs(parentConfig, config);
-            locale = new Locale(config);
-            locale.parentLocale = locales[name];
-            locales[name] = locale;
-
-            // backwards compat for now: also set the locale
-            getSetGlobalLocale(name);
-        } else {
-            // pass null for config to unupdate, useful for tests
-            if (locales[name] != null) {
-                if (locales[name].parentLocale != null) {
-                    locales[name] = locales[name].parentLocale;
-                } else if (locales[name] != null) {
-                    delete locales[name];
-                }
-            }
-        }
-        return locales[name];
-    }
-
-    // returns locale data
-    function getLocale (key) {
-        var locale;
-
-        if (key && key._locale && key._locale._abbr) {
-            key = key._locale._abbr;
-        }
-
-        if (!key) {
-            return globalLocale;
-        }
-
-        if (!isArray(key)) {
-            //short-circuit everything else
-            locale = loadLocale(key);
-            if (locale) {
-                return locale;
-            }
-            key = [key];
-        }
-
-        return chooseLocale(key);
-    }
-
-    function listLocales() {
-        return keys(locales);
-    }
-
-    function checkOverflow (m) {
-        var overflow;
-        var a = m._a;
-
-        if (a && getParsingFlags(m).overflow === -2) {
-            overflow =
-                a[MONTH]       < 0 || a[MONTH]       > 11  ? MONTH :
-                a[DATE]        < 1 || a[DATE]        > daysInMonth(a[YEAR], a[MONTH]) ? DATE :
-                a[HOUR]        < 0 || a[HOUR]        > 24 || (a[HOUR] === 24 && (a[MINUTE] !== 0 || a[SECOND] !== 0 || a[MILLISECOND] !== 0)) ? HOUR :
-                a[MINUTE]      < 0 || a[MINUTE]      > 59  ? MINUTE :
-                a[SECOND]      < 0 || a[SECOND]      > 59  ? SECOND :
-                a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND :
-                -1;
-
-            if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
-                overflow = DATE;
-            }
-            if (getParsingFlags(m)._overflowWeeks && overflow === -1) {
-                overflow = WEEK;
-            }
-            if (getParsingFlags(m)._overflowWeekday && overflow === -1) {
-                overflow = WEEKDAY;
-            }
-
-            getParsingFlags(m).overflow = overflow;
-        }
-
-        return m;
-    }
-
-    // Pick the first defined of two or three arguments.
-    function defaults(a, b, c) {
-        if (a != null) {
-            return a;
-        }
-        if (b != null) {
-            return b;
-        }
-        return c;
-    }
-
-    function currentDateArray(config) {
-        // hooks is actually the exported moment object
-        var nowValue = new Date(hooks.now());
-        if (config._useUTC) {
-            return [nowValue.getUTCFullYear(), nowValue.getUTCMonth(), nowValue.getUTCDate()];
-        }
-        return [nowValue.getFullYear(), nowValue.getMonth(), nowValue.getDate()];
-    }
-
-    // convert an array to a date.
-    // the array should mirror the parameters below
-    // note: all values past the year are optional and will default to the lowest possible value.
-    // [year, month, day , hour, minute, second, millisecond]
-    function configFromArray (config) {
-        var i, date, input = [], currentDate, expectedWeekday, yearToUse;
-
-        if (config._d) {
-            return;
-        }
-
-        currentDate = currentDateArray(config);
-
-        //compute day of the year from weeks and weekdays
-        if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
-            dayOfYearFromWeekInfo(config);
-        }
-
-        //if the day of the year is set, figure out what it is
-        if (config._dayOfYear != null) {
-            yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
-
-            if (config._dayOfYear > daysInYear(yearToUse) || config._dayOfYear === 0) {
-                getParsingFlags(config)._overflowDayOfYear = true;
-            }
-
-            date = createUTCDate(yearToUse, 0, config._dayOfYear);
-            config._a[MONTH] = date.getUTCMonth();
-            config._a[DATE] = date.getUTCDate();
-        }
-
-        // Default to current date.
-        // * if no year, month, day of month are given, default to today
-        // * if day of month is given, default month and year
-        // * if month is given, default only year
-        // * if year is given, don't default anything
-        for (i = 0; i < 3 && config._a[i] == null; ++i) {
-            config._a[i] = input[i] = currentDate[i];
-        }
-
-        // Zero out whatever was not defaulted, including time
-        for (; i < 7; i++) {
-            config._a[i] = input[i] = (config._a[i] == null) ? (i === 2 ? 1 : 0) : config._a[i];
-        }
-
-        // Check for 24:00:00.000
-        if (config._a[HOUR] === 24 &&
-                config._a[MINUTE] === 0 &&
-                config._a[SECOND] === 0 &&
-                config._a[MILLISECOND] === 0) {
-            config._nextDay = true;
-            config._a[HOUR] = 0;
-        }
-
-        config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
-        expectedWeekday = config._useUTC ? config._d.getUTCDay() : config._d.getDay();
-
-        // Apply timezone offset from input. The actual utcOffset can be changed
-        // with parseZone.
-        if (config._tzm != null) {
-            config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
-        }
-
-        if (config._nextDay) {
-            config._a[HOUR] = 24;
-        }
-
-        // check for mismatching day of week
-        if (config._w && typeof config._w.d !== 'undefined' && config._w.d !== expectedWeekday) {
-            getParsingFlags(config).weekdayMismatch = true;
-        }
-    }
-
-    function dayOfYearFromWeekInfo(config) {
-        var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow;
-
-        w = config._w;
-        if (w.GG != null || w.W != null || w.E != null) {
-            dow = 1;
-            doy = 4;
-
-            // TODO: We need to take the current isoWeekYear, but that depends on
-            // how we interpret now (local, utc, fixed offset). So create
-            // a now version of current config (take local/utc/offset flags, and
-            // create now).
-            weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(createLocal(), 1, 4).year);
-            week = defaults(w.W, 1);
-            weekday = defaults(w.E, 1);
-            if (weekday < 1 || weekday > 7) {
-                weekdayOverflow = true;
-            }
-        } else {
-            dow = config._locale._week.dow;
-            doy = config._locale._week.doy;
-
-            var curWeek = weekOfYear(createLocal(), dow, doy);
-
-            weekYear = defaults(w.gg, config._a[YEAR], curWeek.year);
-
-            // Default to current week.
-            week = defaults(w.w, curWeek.week);
-
-            if (w.d != null) {
-                // weekday -- low day numbers are considered next week
-                weekday = w.d;
-                if (weekday < 0 || weekday > 6) {
-                    weekdayOverflow = true;
-                }
-            } else if (w.e != null) {
-                // local weekday -- counting starts from beginning of week
-                weekday = w.e + dow;
-                if (w.e < 0 || w.e > 6) {
-                    weekdayOverflow = true;
-                }
-            } else {
-                // default to beginning of week
-                weekday = dow;
-            }
-        }
-        if (week < 1 || week > weeksInYear(weekYear, dow, doy)) {
-            getParsingFlags(config)._overflowWeeks = true;
-        } else if (weekdayOverflow != null) {
-            getParsingFlags(config)._overflowWeekday = true;
-        } else {
-            temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
-            config._a[YEAR] = temp.year;
-            config._dayOfYear = temp.dayOfYear;
-        }
-    }
-
-    // iso 8601 regex
-    // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
-    var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
-    var basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
-
-    var tzRegex = /Z|[+-]\d\d(?::?\d\d)?/;
-
-    var isoDates = [
-        ['YYYYYY-MM-DD', /[+-]\d{6}-\d\d-\d\d/],
-        ['YYYY-MM-DD', /\d{4}-\d\d-\d\d/],
-        ['GGGG-[W]WW-E', /\d{4}-W\d\d-\d/],
-        ['GGGG-[W]WW', /\d{4}-W\d\d/, false],
-        ['YYYY-DDD', /\d{4}-\d{3}/],
-        ['YYYY-MM', /\d{4}-\d\d/, false],
-        ['YYYYYYMMDD', /[+-]\d{10}/],
-        ['YYYYMMDD', /\d{8}/],
-        // YYYYMM is NOT allowed by the standard
-        ['GGGG[W]WWE', /\d{4}W\d{3}/],
-        ['GGGG[W]WW', /\d{4}W\d{2}/, false],
-        ['YYYYDDD', /\d{7}/]
-    ];
-
-    // iso time formats and regexes
-    var isoTimes = [
-        ['HH:mm:ss.SSSS', /\d\d:\d\d:\d\d\.\d+/],
-        ['HH:mm:ss,SSSS', /\d\d:\d\d:\d\d,\d+/],
-        ['HH:mm:ss', /\d\d:\d\d:\d\d/],
-        ['HH:mm', /\d\d:\d\d/],
-        ['HHmmss.SSSS', /\d\d\d\d\d\d\.\d+/],
-        ['HHmmss,SSSS', /\d\d\d\d\d\d,\d+/],
-        ['HHmmss', /\d\d\d\d\d\d/],
-        ['HHmm', /\d\d\d\d/],
-        ['HH', /\d\d/]
-    ];
-
-    var aspNetJsonRegex = /^\/?Date\((\-?\d+)/i;
-
-    // date from iso format
-    function configFromISO(config) {
-        var i, l,
-            string = config._i,
-            match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string),
-            allowTime, dateFormat, timeFormat, tzFormat;
-
-        if (match) {
-            getParsingFlags(config).iso = true;
-
-            for (i = 0, l = isoDates.length; i < l; i++) {
-                if (isoDates[i][1].exec(match[1])) {
-                    dateFormat = isoDates[i][0];
-                    allowTime = isoDates[i][2] !== false;
-                    break;
-                }
-            }
-            if (dateFormat == null) {
-                config._isValid = false;
-                return;
-            }
-            if (match[3]) {
-                for (i = 0, l = isoTimes.length; i < l; i++) {
-                    if (isoTimes[i][1].exec(match[3])) {
-                        // match[2] should be 'T' or space
-                        timeFormat = (match[2] || ' ') + isoTimes[i][0];
-                        break;
-                    }
-                }
-                if (timeFormat == null) {
-                    config._isValid = false;
-                    return;
-                }
-            }
-            if (!allowTime && timeFormat != null) {
-                config._isValid = false;
-                return;
-            }
-            if (match[4]) {
-                if (tzRegex.exec(match[4])) {
-                    tzFormat = 'Z';
-                } else {
-                    config._isValid = false;
-                    return;
-                }
-            }
-            config._f = dateFormat + (timeFormat || '') + (tzFormat || '');
-            configFromStringAndFormat(config);
-        } else {
-            config._isValid = false;
-        }
-    }
-
-    // RFC 2822 regex: For details see https://tools.ietf.org/html/rfc2822#section-3.3
-    var rfc2822 = /^(?:(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s)?(\d{1,2})\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(\d{2,4})\s(\d\d):(\d\d)(?::(\d\d))?\s(?:(UT|GMT|[ECMP][SD]T)|([Zz])|([+-]\d{4}))$/;
-
-    function extractFromRFC2822Strings(yearStr, monthStr, dayStr, hourStr, minuteStr, secondStr) {
-        var result = [
-            untruncateYear(yearStr),
-            defaultLocaleMonthsShort.indexOf(monthStr),
-            parseInt(dayStr, 10),
-            parseInt(hourStr, 10),
-            parseInt(minuteStr, 10)
-        ];
-
-        if (secondStr) {
-            result.push(parseInt(secondStr, 10));
-        }
-
-        return result;
-    }
-
-    function untruncateYear(yearStr) {
-        var year = parseInt(yearStr, 10);
-        if (year <= 49) {
-            return 2000 + year;
-        } else if (year <= 999) {
-            return 1900 + year;
-        }
-        return year;
-    }
-
-    function preprocessRFC2822(s) {
-        // Remove comments and folding whitespace and replace multiple-spaces with a single space
-        return s.replace(/\([^)]*\)|[\n\t]/g, ' ').replace(/(\s\s+)/g, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-    }
-
-    function checkWeekday(weekdayStr, parsedInput, config) {
-        if (weekdayStr) {
-            // TODO: Replace the vanilla JS Date object with an indepentent day-of-week check.
-            var weekdayProvided = defaultLocaleWeekdaysShort.indexOf(weekdayStr),
-                weekdayActual = new Date(parsedInput[0], parsedInput[1], parsedInput[2]).getDay();
-            if (weekdayProvided !== weekdayActual) {
-                getParsingFlags(config).weekdayMismatch = true;
-                config._isValid = false;
-                return false;
-            }
-        }
-        return true;
-    }
-
-    var obsOffsets = {
-        UT: 0,
-        GMT: 0,
-        EDT: -4 * 60,
-        EST: -5 * 60,
-        CDT: -5 * 60,
-        CST: -6 * 60,
-        MDT: -6 * 60,
-        MST: -7 * 60,
-        PDT: -7 * 60,
-        PST: -8 * 60
-    };
-
-    function calculateOffset(obsOffset, militaryOffset, numOffset) {
-        if (obsOffset) {
-            return obsOffsets[obsOffset];
-        } else if (militaryOffset) {
-            // the only allowed military tz is Z
-            return 0;
-        } else {
-            var hm = parseInt(numOffset, 10);
-            var m = hm % 100, h = (hm - m) / 100;
-            return h * 60 + m;
-        }
-    }
-
-    // date and time from ref 2822 format
-    function configFromRFC2822(config) {
-        var match = rfc2822.exec(preprocessRFC2822(config._i));
-        if (match) {
-            var parsedArray = extractFromRFC2822Strings(match[4], match[3], match[2], match[5], match[6], match[7]);
-            if (!checkWeekday(match[1], parsedArray, config)) {
-                return;
-            }
-
-            config._a = parsedArray;
-            config._tzm = calculateOffset(match[8], match[9], match[10]);
-
-            config._d = createUTCDate.apply(null, config._a);
-            config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
-
-            getParsingFlags(config).rfc2822 = true;
-        } else {
-            config._isValid = false;
-        }
-    }
-
-    // date from iso format or fallback
-    function configFromString(config) {
-        var matched = aspNetJsonRegex.exec(config._i);
-
-        if (matched !== null) {
-            config._d = new Date(+matched[1]);
-            return;
-        }
-
-        configFromISO(config);
-        if (config._isValid === false) {
-            delete config._isValid;
-        } else {
-            return;
-        }
-
-        configFromRFC2822(config);
-        if (config._isValid === false) {
-            delete config._isValid;
-        } else {
-            return;
-        }
-
-        // Final attempt, use Input Fallback
-        hooks.createFromInputFallback(config);
-    }
-
-    hooks.createFromInputFallback = deprecate(
-        'value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), ' +
-        'which is not reliable across all browsers and versions. Non RFC2822/ISO date formats are ' +
-        'discouraged and will be removed in an upcoming major release. Please refer to ' +
-        'http://momentjs.com/guides/#/warnings/js-date/ for more info.',
-        function (config) {
-            config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
-        }
-    );
-
-    // constant that refers to the ISO standard
-    hooks.ISO_8601 = function () {};
-
-    // constant that refers to the RFC 2822 form
-    hooks.RFC_2822 = function () {};
-
-    // date from string and format string
-    function configFromStringAndFormat(config) {
-        // TODO: Move this to another part of the creation flow to prevent circular deps
-        if (config._f === hooks.ISO_8601) {
-            configFromISO(config);
-            return;
-        }
-        if (config._f === hooks.RFC_2822) {
-            configFromRFC2822(config);
-            return;
-        }
-        config._a = [];
-        getParsingFlags(config).empty = true;
-
-        // This array is used to make a Date, either with `new Date` or `Date.UTC`
-        var string = '' + config._i,
-            i, parsedInput, tokens, token, skipped,
-            stringLength = string.length,
-            totalParsedInputLength = 0;
-
-        tokens = expandFormat(config._f, config._locale).match(formattingTokens) || [];
-
-        for (i = 0; i < tokens.length; i++) {
-            token = tokens[i];
-            parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
-            // console.log('token', token, 'parsedInput', parsedInput,
-            //         'regex', getParseRegexForToken(token, config));
-            if (parsedInput) {
-                skipped = string.substr(0, string.indexOf(parsedInput));
-                if (skipped.length > 0) {
-                    getParsingFlags(config).unusedInput.push(skipped);
-                }
-                string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
-                totalParsedInputLength += parsedInput.length;
-            }
-            // don't parse if it's not a known token
-            if (formatTokenFunctions[token]) {
-                if (parsedInput) {
-                    getParsingFlags(config).empty = false;
-                }
-                else {
-                    getParsingFlags(config).unusedTokens.push(token);
-                }
-                addTimeToArrayFromToken(token, parsedInput, config);
-            }
-            else if (config._strict && !parsedInput) {
-                getParsingFlags(config).unusedTokens.push(token);
-            }
-        }
-
-        // add remaining unparsed input length to the string
-        getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
-        if (string.length > 0) {
-            getParsingFlags(config).unusedInput.push(string);
-        }
-
-        // clear _12h flag if hour is <= 12
-        if (config._a[HOUR] <= 12 &&
-            getParsingFlags(config).bigHour === true &&
-            config._a[HOUR] > 0) {
-            getParsingFlags(config).bigHour = undefined;
-        }
-
-        getParsingFlags(config).parsedDateParts = config._a.slice(0);
-        getParsingFlags(config).meridiem = config._meridiem;
-        // handle meridiem
-        config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
-
-        configFromArray(config);
-        checkOverflow(config);
-    }
-
-
-    function meridiemFixWrap (locale, hour, meridiem) {
-        var isPm;
-
-        if (meridiem == null) {
-            // nothing to do
-            return hour;
-        }
-        if (locale.meridiemHour != null) {
-            return locale.meridiemHour(hour, meridiem);
-        } else if (locale.isPM != null) {
-            // Fallback
-            isPm = locale.isPM(meridiem);
-            if (isPm && hour < 12) {
-                hour += 12;
-            }
-            if (!isPm && hour === 12) {
-                hour = 0;
-            }
-            return hour;
-        } else {
-            // this is not supposed to happen
-            return hour;
-        }
-    }
-
-    // date from string and array of format strings
-    function configFromStringAndArray(config) {
-        var tempConfig,
-            bestMoment,
-
-            scoreToBeat,
-            i,
-            currentScore;
-
-        if (config._f.length === 0) {
-            getParsingFlags(config).invalidFormat = true;
-            config._d = new Date(NaN);
-            return;
-        }
-
-        for (i = 0; i < config._f.length; i++) {
-            currentScore = 0;
-            tempConfig = copyConfig({}, config);
-            if (config._useUTC != null) {
-                tempConfig._useUTC = config._useUTC;
-            }
-            tempConfig._f = config._f[i];
-            configFromStringAndFormat(tempConfig);
-
-            if (!isValid(tempConfig)) {
-                continue;
-            }
-
-            // if there is any input that was not parsed add a penalty for that format
-            currentScore += getParsingFlags(tempConfig).charsLeftOver;
-
-            //or tokens
-            currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
-
-            getParsingFlags(tempConfig).score = currentScore;
-
-            if (scoreToBeat == null || currentScore < scoreToBeat) {
-                scoreToBeat = currentScore;
-                bestMoment = tempConfig;
-            }
-        }
-
-        extend(config, bestMoment || tempConfig);
-    }
-
-    function configFromObject(config) {
-        if (config._d) {
-            return;
-        }
-
-        var i = normalizeObjectUnits(config._i);
-        config._a = map([i.year, i.month, i.day || i.date, i.hour, i.minute, i.second, i.millisecond], function (obj) {
-            return obj && parseInt(obj, 10);
-        });
-
-        configFromArray(config);
-    }
-
-    function createFromConfig (config) {
-        var res = new Moment(checkOverflow(prepareConfig(config)));
-        if (res._nextDay) {
-            // Adding is smart enough around DST
-            res.add(1, 'd');
-            res._nextDay = undefined;
-        }
-
-        return res;
-    }
-
-    function prepareConfig (config) {
-        var input = config._i,
-            format = config._f;
-
-        config._locale = config._locale || getLocale(config._l);
-
-        if (input === null || (format === undefined && input === '')) {
-            return createInvalid({nullInput: true});
-        }
-
-        if (typeof input === 'string') {
-            config._i = input = config._locale.preparse(input);
-        }
-
-        if (isMoment(input)) {
-            return new Moment(checkOverflow(input));
-        } else if (isDate(input)) {
-            config._d = input;
-        } else if (isArray(format)) {
-            configFromStringAndArray(config);
-        } else if (format) {
-            configFromStringAndFormat(config);
-        }  else {
-            configFromInput(config);
-        }
-
-        if (!isValid(config)) {
-            config._d = null;
-        }
-
-        return config;
-    }
-
-    function configFromInput(config) {
-        var input = config._i;
-        if (isUndefined(input)) {
-            config._d = new Date(hooks.now());
-        } else if (isDate(input)) {
-            config._d = new Date(input.valueOf());
-        } else if (typeof input === 'string') {
-            configFromString(config);
-        } else if (isArray(input)) {
-            config._a = map(input.slice(0), function (obj) {
-                return parseInt(obj, 10);
-            });
-            configFromArray(config);
-        } else if (isObject(input)) {
-            configFromObject(config);
-        } else if (isNumber(input)) {
-            // from milliseconds
-            config._d = new Date(input);
-        } else {
-            hooks.createFromInputFallback(config);
-        }
-    }
-
-    function createLocalOrUTC (input, format, locale, strict, isUTC) {
-        var c = {};
-
-        if (locale === true || locale === false) {
-            strict = locale;
-            locale = undefined;
-        }
-
-        if ((isObject(input) && isObjectEmpty(input)) ||
-                (isArray(input) && input.length === 0)) {
-            input = undefined;
-        }
-        // object construction must be done this way.
-        // https://github.com/moment/moment/issues/1423
-        c._isAMomentObject = true;
-        c._useUTC = c._isUTC = isUTC;
-        c._l = locale;
-        c._i = input;
-        c._f = format;
-        c._strict = strict;
-
-        return createFromConfig(c);
-    }
-
-    function createLocal (input, format, locale, strict) {
-        return createLocalOrUTC(input, format, locale, strict, false);
-    }
-
-    var prototypeMin = deprecate(
-        'moment().min is deprecated, use moment.max instead. http://momentjs.com/guides/#/warnings/min-max/',
-        function () {
-            var other = createLocal.apply(null, arguments);
-            if (this.isValid() && other.isValid()) {
-                return other < this ? this : other;
-            } else {
-                return createInvalid();
-            }
-        }
-    );
-
-    var prototypeMax = deprecate(
-        'moment().max is deprecated, use moment.min instead. http://momentjs.com/guides/#/warnings/min-max/',
-        function () {
-            var other = createLocal.apply(null, arguments);
-            if (this.isValid() && other.isValid()) {
-                return other > this ? this : other;
-            } else {
-                return createInvalid();
-            }
-        }
-    );
-
-    // Pick a moment m from moments so that m[fn](other) is true for all
-    // other. This relies on the function fn to be transitive.
-    //
-    // moments should either be an array of moment objects or an array, whose
-    // first element is an array of moment objects.
-    function pickBy(fn, moments) {
-        var res, i;
-        if (moments.length === 1 && isArray(moments[0])) {
-            moments = moments[0];
-        }
-        if (!moments.length) {
-            return createLocal();
-        }
-        res = moments[0];
-        for (i = 1; i < moments.length; ++i) {
-            if (!moments[i].isValid() || moments[i][fn](res)) {
-                res = moments[i];
-            }
-        }
-        return res;
-    }
-
-    // TODO: Use [].sort instead?
-    function min () {
-        var args = [].slice.call(arguments, 0);
-
-        return pickBy('isBefore', args);
-    }
-
-    function max () {
-        var args = [].slice.call(arguments, 0);
-
-        return pickBy('isAfter', args);
-    }
-
-    var now = function () {
-        return Date.now ? Date.now() : +(new Date());
-    };
-
-    var ordering = ['year', 'quarter', 'month', 'week', 'day', 'hour', 'minute', 'second', 'millisecond'];
-
-    function isDurationValid(m) {
-        for (var key in m) {
-            if (!(indexOf.call(ordering, key) !== -1 && (m[key] == null || !isNaN(m[key])))) {
-                return false;
-            }
-        }
-
-        var unitHasDecimal = false;
-        for (var i = 0; i < ordering.length; ++i) {
-            if (m[ordering[i]]) {
-                if (unitHasDecimal) {
-                    return false; // only allow non-integers for smallest unit
-                }
-                if (parseFloat(m[ordering[i]]) !== toInt(m[ordering[i]])) {
-                    unitHasDecimal = true;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    function isValid$1() {
-        return this._isValid;
-    }
-
-    function createInvalid$1() {
-        return createDuration(NaN);
-    }
-
-    function Duration (duration) {
-        var normalizedInput = normalizeObjectUnits(duration),
-            years = normalizedInput.year || 0,
-            quarters = normalizedInput.quarter || 0,
-            months = normalizedInput.month || 0,
-            weeks = normalizedInput.week || normalizedInput.isoWeek || 0,
-            days = normalizedInput.day || 0,
-            hours = normalizedInput.hour || 0,
-            minutes = normalizedInput.minute || 0,
-            seconds = normalizedInput.second || 0,
-            milliseconds = normalizedInput.millisecond || 0;
-
-        this._isValid = isDurationValid(normalizedInput);
-
-        // representation for dateAddRemove
-        this._milliseconds = +milliseconds +
-            seconds * 1e3 + // 1000
-            minutes * 6e4 + // 1000 * 60
-            hours * 1000 * 60 * 60; //using 1000 * 60 * 60 instead of 36e5 to avoid floating point rounding errors https://github.com/moment/moment/issues/2978
-        // Because of dateAddRemove treats 24 hours as different from a
-        // day when working around DST, we need to store them separately
-        this._days = +days +
-            weeks * 7;
-        // It is impossible to translate months into days without knowing
-        // which months you are are talking about, so we have to store
-        // it separately.
-        this._months = +months +
-            quarters * 3 +
-            years * 12;
-
-        this._data = {};
-
-        this._locale = getLocale();
-
-        this._bubble();
-    }
-
-    function isDuration (obj) {
-        return obj instanceof Duration;
-    }
-
-    function absRound (number) {
-        if (number < 0) {
-            return Math.round(-1 * number) * -1;
-        } else {
-            return Math.round(number);
-        }
-    }
-
-    // FORMATTING
-
-    function offset (token, separator) {
-        addFormatToken(token, 0, 0, function () {
-            var offset = this.utcOffset();
-            var sign = '+';
-            if (offset < 0) {
-                offset = -offset;
-                sign = '-';
-            }
-            return sign + zeroFill(~~(offset / 60), 2) + separator + zeroFill(~~(offset) % 60, 2);
-        });
-    }
-
-    offset('Z', ':');
-    offset('ZZ', '');
-
-    // PARSING
-
-    addRegexToken('Z',  matchShortOffset);
-    addRegexToken('ZZ', matchShortOffset);
-    addParseToken(['Z', 'ZZ'], function (input, array, config) {
-        config._useUTC = true;
-        config._tzm = offsetFromString(matchShortOffset, input);
-    });
-
-    // HELPERS
-
-    // timezone chunker
-    // '+10:00' > ['10',  '00']
-    // '-1530'  > ['-15', '30']
-    var chunkOffset = /([\+\-]|\d\d)/gi;
-
-    function offsetFromString(matcher, string) {
-        var matches = (string || '').match(matcher);
-
-        if (matches === null) {
-            return null;
-        }
-
-        var chunk   = matches[matches.length - 1] || [];
-        var parts   = (chunk + '').match(chunkOffset) || ['-', 0, 0];
-        var minutes = +(parts[1] * 60) + toInt(parts[2]);
-
-        return minutes === 0 ?
-          0 :
-          parts[0] === '+' ? minutes : -minutes;
-    }
-
-    // Return a moment from input, that is local/utc/zone equivalent to model.
-    function cloneWithOffset(input, model) {
-        var res, diff;
-        if (model._isUTC) {
-            res = model.clone();
-            diff = (isMoment(input) || isDate(input) ? input.valueOf() : createLocal(input).valueOf()) - res.valueOf();
-            // Use low-level api, because this fn is low-level api.
-            res._d.setTime(res._d.valueOf() + diff);
-            hooks.updateOffset(res, false);
-            return res;
-        } else {
-            return createLocal(input).local();
-        }
-    }
-
-    function getDateOffset (m) {
-        // On Firefox.24 Date#getTimezoneOffset returns a floating point.
-        // https://github.com/moment/moment/pull/1871
-        return -Math.round(m._d.getTimezoneOffset() / 15) * 15;
-    }
-
-    // HOOKS
-
-    // This function will be called whenever a moment is mutated.
-    // It is intended to keep the offset in sync with the timezone.
-    hooks.updateOffset = function () {};
-
-    // MOMENTS
-
-    // keepLocalTime = true means only change the timezone, without
-    // affecting the local hour. So 5:31:26 +0300 --[utcOffset(2, true)]-->
-    // 5:31:26 +0200 It is possible that 5:31:26 doesn't exist with offset
-    // +0200, so we adjust the time as needed, to be valid.
-    //
-    // Keeping the time actually adds/subtracts (one hour)
-    // from the actual represented time. That is why we call updateOffset
-    // a second time. In case it wants us to change the offset again
-    // _changeInProgress == true case, then we have to adjust, because
-    // there is no such time in the given timezone.
-    function getSetOffset (input, keepLocalTime, keepMinutes) {
-        var offset = this._offset || 0,
-            localAdjust;
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-        if (input != null) {
-            if (typeof input === 'string') {
-                input = offsetFromString(matchShortOffset, input);
-                if (input === null) {
-                    return this;
-                }
-            } else if (Math.abs(input) < 16 && !keepMinutes) {
-                input = input * 60;
-            }
-            if (!this._isUTC && keepLocalTime) {
-                localAdjust = getDateOffset(this);
-            }
-            this._offset = input;
-            this._isUTC = true;
-            if (localAdjust != null) {
-                this.add(localAdjust, 'm');
-            }
-            if (offset !== input) {
-                if (!keepLocalTime || this._changeInProgress) {
-                    addSubtract(this, createDuration(input - offset, 'm'), 1, false);
-                } else if (!this._changeInProgress) {
-                    this._changeInProgress = true;
-                    hooks.updateOffset(this, true);
-                    this._changeInProgress = null;
-                }
-            }
-            return this;
-        } else {
-            return this._isUTC ? offset : getDateOffset(this);
-        }
-    }
-
-    function getSetZone (input, keepLocalTime) {
-        if (input != null) {
-            if (typeof input !== 'string') {
-                input = -input;
-            }
-
-            this.utcOffset(input, keepLocalTime);
-
-            return this;
-        } else {
-            return -this.utcOffset();
-        }
-    }
-
-    function setOffsetToUTC (keepLocalTime) {
-        return this.utcOffset(0, keepLocalTime);
-    }
-
-    function setOffsetToLocal (keepLocalTime) {
-        if (this._isUTC) {
-            this.utcOffset(0, keepLocalTime);
-            this._isUTC = false;
-
-            if (keepLocalTime) {
-                this.subtract(getDateOffset(this), 'm');
-            }
-        }
-        return this;
-    }
-
-    function setOffsetToParsedOffset () {
-        if (this._tzm != null) {
-            this.utcOffset(this._tzm, false, true);
-        } else if (typeof this._i === 'string') {
-            var tZone = offsetFromString(matchOffset, this._i);
-            if (tZone != null) {
-                this.utcOffset(tZone);
-            }
-            else {
-                this.utcOffset(0, true);
-            }
-        }
-        return this;
-    }
-
-    function hasAlignedHourOffset (input) {
-        if (!this.isValid()) {
-            return false;
-        }
-        input = input ? createLocal(input).utcOffset() : 0;
-
-        return (this.utcOffset() - input) % 60 === 0;
-    }
-
-    function isDaylightSavingTime () {
-        return (
-            this.utcOffset() > this.clone().month(0).utcOffset() ||
-            this.utcOffset() > this.clone().month(5).utcOffset()
-        );
-    }
-
-    function isDaylightSavingTimeShifted () {
-        if (!isUndefined(this._isDSTShifted)) {
-            return this._isDSTShifted;
-        }
-
-        var c = {};
-
-        copyConfig(c, this);
-        c = prepareConfig(c);
-
-        if (c._a) {
-            var other = c._isUTC ? createUTC(c._a) : createLocal(c._a);
-            this._isDSTShifted = this.isValid() &&
-                compareArrays(c._a, other.toArray()) > 0;
-        } else {
-            this._isDSTShifted = false;
-        }
-
-        return this._isDSTShifted;
-    }
-
-    function isLocal () {
-        return this.isValid() ? !this._isUTC : false;
-    }
-
-    function isUtcOffset () {
-        return this.isValid() ? this._isUTC : false;
-    }
-
-    function isUtc () {
-        return this.isValid() ? this._isUTC && this._offset === 0 : false;
-    }
-
-    // ASP.NET json date format regex
-    var aspNetRegex = /^(\-|\+)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)(\.\d*)?)?$/;
-
-    // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
-    // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
-    // and further modified to allow for strings containing both week and day
-    var isoRegex = /^(-|\+)?P(?:([-+]?[0-9,.]*)Y)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)W)?(?:([-+]?[0-9,.]*)D)?(?:T(?:([-+]?[0-9,.]*)H)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)S)?)?$/;
-
-    function createDuration (input, key) {
-        var duration = input,
-            // matching against regexp is expensive, do it on demand
-            match = null,
-            sign,
-            ret,
-            diffRes;
-
-        if (isDuration(input)) {
-            duration = {
-                ms : input._milliseconds,
-                d  : input._days,
-                M  : input._months
-            };
-        } else if (isNumber(input)) {
-            duration = {};
-            if (key) {
-                duration[key] = input;
-            } else {
-                duration.milliseconds = input;
-            }
-        } else if (!!(match = aspNetRegex.exec(input))) {
-            sign = (match[1] === '-') ? -1 : 1;
-            duration = {
-                y  : 0,
-                d  : toInt(match[DATE])                         * sign,
-                h  : toInt(match[HOUR])                         * sign,
-                m  : toInt(match[MINUTE])                       * sign,
-                s  : toInt(match[SECOND])                       * sign,
-                ms : toInt(absRound(match[MILLISECOND] * 1000)) * sign // the millisecond decimal point is included in the match
-            };
-        } else if (!!(match = isoRegex.exec(input))) {
-            sign = (match[1] === '-') ? -1 : 1;
-            duration = {
-                y : parseIso(match[2], sign),
-                M : parseIso(match[3], sign),
-                w : parseIso(match[4], sign),
-                d : parseIso(match[5], sign),
-                h : parseIso(match[6], sign),
-                m : parseIso(match[7], sign),
-                s : parseIso(match[8], sign)
-            };
-        } else if (duration == null) {// checks for null or undefined
-            duration = {};
-        } else if (typeof duration === 'object' && ('from' in duration || 'to' in duration)) {
-            diffRes = momentsDifference(createLocal(duration.from), createLocal(duration.to));
-
-            duration = {};
-            duration.ms = diffRes.milliseconds;
-            duration.M = diffRes.months;
-        }
-
-        ret = new Duration(duration);
-
-        if (isDuration(input) && hasOwnProp(input, '_locale')) {
-            ret._locale = input._locale;
-        }
-
-        return ret;
-    }
-
-    createDuration.fn = Duration.prototype;
-    createDuration.invalid = createInvalid$1;
-
-    function parseIso (inp, sign) {
-        // We'd normally use ~~inp for this, but unfortunately it also
-        // converts floats to ints.
-        // inp may be undefined, so careful calling replace on it.
-        var res = inp && parseFloat(inp.replace(',', '.'));
-        // apply sign while we're at it
-        return (isNaN(res) ? 0 : res) * sign;
-    }
-
-    function positiveMomentsDifference(base, other) {
-        var res = {};
-
-        res.months = other.month() - base.month() +
-            (other.year() - base.year()) * 12;
-        if (base.clone().add(res.months, 'M').isAfter(other)) {
-            --res.months;
-        }
-
-        res.milliseconds = +other - +(base.clone().add(res.months, 'M'));
-
-        return res;
-    }
-
-    function momentsDifference(base, other) {
-        var res;
-        if (!(base.isValid() && other.isValid())) {
-            return {milliseconds: 0, months: 0};
-        }
-
-        other = cloneWithOffset(other, base);
-        if (base.isBefore(other)) {
-            res = positiveMomentsDifference(base, other);
-        } else {
-            res = positiveMomentsDifference(other, base);
-            res.milliseconds = -res.milliseconds;
-            res.months = -res.months;
-        }
-
-        return res;
-    }
-
-    // TODO: remove 'name' arg after deprecation is removed
-    function createAdder(direction, name) {
-        return function (val, period) {
-            var dur, tmp;
-            //invert the arguments, but complain about it
-            if (period !== null && !isNaN(+period)) {
-                deprecateSimple(name, 'moment().' + name  + '(period, number) is deprecated. Please use moment().' + name + '(number, period). ' +
-                'See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.');
-                tmp = val; val = period; period = tmp;
-            }
-
-            val = typeof val === 'string' ? +val : val;
-            dur = createDuration(val, period);
-            addSubtract(this, dur, direction);
-            return this;
-        };
-    }
-
-    function addSubtract (mom, duration, isAdding, updateOffset) {
-        var milliseconds = duration._milliseconds,
-            days = absRound(duration._days),
-            months = absRound(duration._months);
-
-        if (!mom.isValid()) {
-            // No op
-            return;
-        }
-
-        updateOffset = updateOffset == null ? true : updateOffset;
-
-        if (months) {
-            setMonth(mom, get(mom, 'Month') + months * isAdding);
-        }
-        if (days) {
-            set$1(mom, 'Date', get(mom, 'Date') + days * isAdding);
-        }
-        if (milliseconds) {
-            mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
-        }
-        if (updateOffset) {
-            hooks.updateOffset(mom, days || months);
-        }
-    }
-
-    var add      = createAdder(1, 'add');
-    var subtract = createAdder(-1, 'subtract');
-
-    function getCalendarFormat(myMoment, now) {
-        var diff = myMoment.diff(now, 'days', true);
-        return diff < -6 ? 'sameElse' :
-                diff < -1 ? 'lastWeek' :
-                diff < 0 ? 'lastDay' :
-                diff < 1 ? 'sameDay' :
-                diff < 2 ? 'nextDay' :
-                diff < 7 ? 'nextWeek' : 'sameElse';
-    }
-
-    function calendar$1 (time, formats) {
-        // We want to compare the start of today, vs this.
-        // Getting start-of-today depends on whether we're local/utc/offset or not.
-        var now = time || createLocal(),
-            sod = cloneWithOffset(now, this).startOf('day'),
-            format = hooks.calendarFormat(this, sod) || 'sameElse';
-
-        var output = formats && (isFunction(formats[format]) ? formats[format].call(this, now) : formats[format]);
-
-        return this.format(output || this.localeData().calendar(format, this, createLocal(now)));
-    }
-
-    function clone () {
-        return new Moment(this);
-    }
-
-    function isAfter (input, units) {
-        var localInput = isMoment(input) ? input : createLocal(input);
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(units) || 'millisecond';
-        if (units === 'millisecond') {
-            return this.valueOf() > localInput.valueOf();
-        } else {
-            return localInput.valueOf() < this.clone().startOf(units).valueOf();
-        }
-    }
-
-    function isBefore (input, units) {
-        var localInput = isMoment(input) ? input : createLocal(input);
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(units) || 'millisecond';
-        if (units === 'millisecond') {
-            return this.valueOf() < localInput.valueOf();
-        } else {
-            return this.clone().endOf(units).valueOf() < localInput.valueOf();
-        }
-    }
-
-    function isBetween (from, to, units, inclusivity) {
-        var localFrom = isMoment(from) ? from : createLocal(from),
-            localTo = isMoment(to) ? to : createLocal(to);
-        if (!(this.isValid() && localFrom.isValid() && localTo.isValid())) {
-            return false;
-        }
-        inclusivity = inclusivity || '()';
-        return (inclusivity[0] === '(' ? this.isAfter(localFrom, units) : !this.isBefore(localFrom, units)) &&
-            (inclusivity[1] === ')' ? this.isBefore(localTo, units) : !this.isAfter(localTo, units));
-    }
-
-    function isSame (input, units) {
-        var localInput = isMoment(input) ? input : createLocal(input),
-            inputMs;
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(units) || 'millisecond';
-        if (units === 'millisecond') {
-            return this.valueOf() === localInput.valueOf();
-        } else {
-            inputMs = localInput.valueOf();
-            return this.clone().startOf(units).valueOf() <= inputMs && inputMs <= this.clone().endOf(units).valueOf();
-        }
-    }
-
-    function isSameOrAfter (input, units) {
-        return this.isSame(input, units) || this.isAfter(input, units);
-    }
-
-    function isSameOrBefore (input, units) {
-        return this.isSame(input, units) || this.isBefore(input, units);
-    }
-
-    function diff (input, units, asFloat) {
-        var that,
-            zoneDelta,
-            output;
-
-        if (!this.isValid()) {
-            return NaN;
-        }
-
-        that = cloneWithOffset(input, this);
-
-        if (!that.isValid()) {
-            return NaN;
-        }
-
-        zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4;
-
-        units = normalizeUnits(units);
-
-        switch (units) {
-            case 'year': output = monthDiff(this, that) / 12; break;
-            case 'month': output = monthDiff(this, that); break;
-            case 'quarter': output = monthDiff(this, that) / 3; break;
-            case 'second': output = (this - that) / 1e3; break; // 1000
-            case 'minute': output = (this - that) / 6e4; break; // 1000 * 60
-            case 'hour': output = (this - that) / 36e5; break; // 1000 * 60 * 60
-            case 'day': output = (this - that - zoneDelta) / 864e5; break; // 1000 * 60 * 60 * 24, negate dst
-            case 'week': output = (this - that - zoneDelta) / 6048e5; break; // 1000 * 60 * 60 * 24 * 7, negate dst
-            default: output = this - that;
-        }
-
-        return asFloat ? output : absFloor(output);
-    }
-
-    function monthDiff (a, b) {
-        // difference in months
-        var wholeMonthDiff = ((b.year() - a.year()) * 12) + (b.month() - a.month()),
-            // b is in (anchor - 1 month, anchor + 1 month)
-            anchor = a.clone().add(wholeMonthDiff, 'months'),
-            anchor2, adjust;
-
-        if (b - anchor < 0) {
-            anchor2 = a.clone().add(wholeMonthDiff - 1, 'months');
-            // linear across the month
-            adjust = (b - anchor) / (anchor - anchor2);
-        } else {
-            anchor2 = a.clone().add(wholeMonthDiff + 1, 'months');
-            // linear across the month
-            adjust = (b - anchor) / (anchor2 - anchor);
-        }
-
-        //check for negative zero, return zero if negative zero
-        return -(wholeMonthDiff + adjust) || 0;
-    }
-
-    hooks.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ';
-    hooks.defaultFormatUtc = 'YYYY-MM-DDTHH:mm:ss[Z]';
-
-    function toString () {
-        return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
-    }
-
-    function toISOString(keepOffset) {
-        if (!this.isValid()) {
-            return null;
-        }
-        var utc = keepOffset !== true;
-        var m = utc ? this.clone().utc() : this;
-        if (m.year() < 0 || m.year() > 9999) {
-            return formatMoment(m, utc ? 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]' : 'YYYYYY-MM-DD[T]HH:mm:ss.SSSZ');
-        }
-        if (isFunction(Date.prototype.toISOString)) {
-            // native implementation is ~50x faster, use it when we can
-            if (utc) {
-                return this.toDate().toISOString();
-            } else {
-                return new Date(this.valueOf() + this.utcOffset() * 60 * 1000).toISOString().replace('Z', formatMoment(m, 'Z'));
-            }
-        }
-        return formatMoment(m, utc ? 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]' : 'YYYY-MM-DD[T]HH:mm:ss.SSSZ');
-    }
-
-    /**
-     * Return a human readable representation of a moment that can
-     * also be evaluated to get a new moment which is the same
-     *
-     * @link https://nodejs.org/dist/latest/docs/api/util.html#util_custom_inspect_function_on_objects
-     */
-    function inspect () {
-        if (!this.isValid()) {
-            return 'moment.invalid(/* ' + this._i + ' */)';
-        }
-        var func = 'moment';
-        var zone = '';
-        if (!this.isLocal()) {
-            func = this.utcOffset() === 0 ? 'moment.utc' : 'moment.parseZone';
-            zone = 'Z';
-        }
-        var prefix = '[' + func + '("]';
-        var year = (0 <= this.year() && this.year() <= 9999) ? 'YYYY' : 'YYYYYY';
-        var datetime = '-MM-DD[T]HH:mm:ss.SSS';
-        var suffix = zone + '[")]';
-
-        return this.format(prefix + year + datetime + suffix);
-    }
-
-    function format (inputString) {
-        if (!inputString) {
-            inputString = this.isUtc() ? hooks.defaultFormatUtc : hooks.defaultFormat;
-        }
-        var output = formatMoment(this, inputString);
-        return this.localeData().postformat(output);
-    }
-
-    function from (time, withoutSuffix) {
-        if (this.isValid() &&
-                ((isMoment(time) && time.isValid()) ||
-                 createLocal(time).isValid())) {
-            return createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
-        } else {
-            return this.localeData().invalidDate();
-        }
-    }
-
-    function fromNow (withoutSuffix) {
-        return this.from(createLocal(), withoutSuffix);
-    }
-
-    function to (time, withoutSuffix) {
-        if (this.isValid() &&
-                ((isMoment(time) && time.isValid()) ||
-                 createLocal(time).isValid())) {
-            return createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
-        } else {
-            return this.localeData().invalidDate();
-        }
-    }
-
-    function toNow (withoutSuffix) {
-        return this.to(createLocal(), withoutSuffix);
-    }
-
-    // If passed a locale key, it will set the locale for this
-    // instance.  Otherwise, it will return the locale configuration
-    // variables for this instance.
-    function locale (key) {
-        var newLocaleData;
-
-        if (key === undefined) {
-            return this._locale._abbr;
-        } else {
-            newLocaleData = getLocale(key);
-            if (newLocaleData != null) {
-                this._locale = newLocaleData;
-            }
-            return this;
-        }
-    }
-
-    var lang = deprecate(
-        'moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.',
-        function (key) {
-            if (key === undefined) {
-                return this.localeData();
-            } else {
-                return this.locale(key);
-            }
-        }
-    );
-
-    function localeData () {
-        return this._locale;
-    }
-
-    var MS_PER_SECOND = 1000;
-    var MS_PER_MINUTE = 60 * MS_PER_SECOND;
-    var MS_PER_HOUR = 60 * MS_PER_MINUTE;
-    var MS_PER_400_YEARS = (365 * 400 + 97) * 24 * MS_PER_HOUR;
-
-    // actual modulo - handles negative numbers (for dates before 1970):
-    function mod$1(dividend, divisor) {
-        return (dividend % divisor + divisor) % divisor;
-    }
-
-    function localStartOfDate(y, m, d) {
-        // the date constructor remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0) {
-            // preserve leap years using a full 400 year cycle, then reset
-            return new Date(y + 400, m, d) - MS_PER_400_YEARS;
-        } else {
-            return new Date(y, m, d).valueOf();
-        }
-    }
-
-    function utcStartOfDate(y, m, d) {
-        // Date.UTC remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0) {
-            // preserve leap years using a full 400 year cycle, then reset
-            return Date.UTC(y + 400, m, d) - MS_PER_400_YEARS;
-        } else {
-            return Date.UTC(y, m, d);
-        }
-    }
-
-    function startOf (units) {
-        var time;
-        units = normalizeUnits(units);
-        if (units === undefined || units === 'millisecond' || !this.isValid()) {
-            return this;
-        }
-
-        var startOfDate = this._isUTC ? utcStartOfDate : localStartOfDate;
-
-        switch (units) {
-            case 'year':
-                time = startOfDate(this.year(), 0, 1);
-                break;
-            case 'quarter':
-                time = startOfDate(this.year(), this.month() - this.month() % 3, 1);
-                break;
-            case 'month':
-                time = startOfDate(this.year(), this.month(), 1);
-                break;
-            case 'week':
-                time = startOfDate(this.year(), this.month(), this.date() - this.weekday());
-                break;
-            case 'isoWeek':
-                time = startOfDate(this.year(), this.month(), this.date() - (this.isoWeekday() - 1));
-                break;
-            case 'day':
-            case 'date':
-                time = startOfDate(this.year(), this.month(), this.date());
-                break;
-            case 'hour':
-                time = this._d.valueOf();
-                time -= mod$1(time + (this._isUTC ? 0 : this.utcOffset() * MS_PER_MINUTE), MS_PER_HOUR);
-                break;
-            case 'minute':
-                time = this._d.valueOf();
-                time -= mod$1(time, MS_PER_MINUTE);
-                break;
-            case 'second':
-                time = this._d.valueOf();
-                time -= mod$1(time, MS_PER_SECOND);
-                break;
-        }
-
-        this._d.setTime(time);
-        hooks.updateOffset(this, true);
-        return this;
-    }
-
-    function endOf (units) {
-        var time;
-        units = normalizeUnits(units);
-        if (units === undefined || units === 'millisecond' || !this.isValid()) {
-            return this;
-        }
-
-        var startOfDate = this._isUTC ? utcStartOfDate : localStartOfDate;
-
-        switch (units) {
-            case 'year':
-                time = startOfDate(this.year() + 1, 0, 1) - 1;
-                break;
-            case 'quarter':
-                time = startOfDate(this.year(), this.month() - this.month() % 3 + 3, 1) - 1;
-                break;
-            case 'month':
-                time = startOfDate(this.year(), this.month() + 1, 1) - 1;
-                break;
-            case 'week':
-                time = startOfDate(this.year(), this.month(), this.date() - this.weekday() + 7) - 1;
-                break;
-            case 'isoWeek':
-                time = startOfDate(this.year(), this.month(), this.date() - (this.isoWeekday() - 1) + 7) - 1;
-                break;
-            case 'day':
-            case 'date':
-                time = startOfDate(this.year(), this.month(), this.date() + 1) - 1;
-                break;
-            case 'hour':
-                time = this._d.valueOf();
-                time += MS_PER_HOUR - mod$1(time + (this._isUTC ? 0 : this.utcOffset() * MS_PER_MINUTE), MS_PER_HOUR) - 1;
-                break;
-            case 'minute':
-                time = this._d.valueOf();
-                time += MS_PER_MINUTE - mod$1(time, MS_PER_MINUTE) - 1;
-                break;
-            case 'second':
-                time = this._d.valueOf();
-                time += MS_PER_SECOND - mod$1(time, MS_PER_SECOND) - 1;
-                break;
-        }
-
-        this._d.setTime(time);
-        hooks.updateOffset(this, true);
-        return this;
-    }
-
-    function valueOf () {
-        return this._d.valueOf() - ((this._offset || 0) * 60000);
-    }
-
-    function unix () {
-        return Math.floor(this.valueOf() / 1000);
-    }
-
-    function toDate () {
-        return new Date(this.valueOf());
-    }
-
-    function toArray () {
-        var m = this;
-        return [m.year(), m.month(), m.date(), m.hour(), m.minute(), m.second(), m.millisecond()];
-    }
-
-    function toObject () {
-        var m = this;
-        return {
-            years: m.year(),
-            months: m.month(),
-            date: m.date(),
-            hours: m.hours(),
-            minutes: m.minutes(),
-            seconds: m.seconds(),
-            milliseconds: m.milliseconds()
-        };
-    }
-
-    function toJSON () {
-        // new Date(NaN).toJSON() === null
-        return this.isValid() ? this.toISOString() : null;
-    }
-
-    function isValid$2 () {
-        return isValid(this);
-    }
-
-    function parsingFlags () {
-        return extend({}, getParsingFlags(this));
-    }
-
-    function invalidAt () {
-        return getParsingFlags(this).overflow;
-    }
-
-    function creationData() {
-        return {
-            input: this._i,
-            format: this._f,
-            locale: this._locale,
-            isUTC: this._isUTC,
-            strict: this._strict
-        };
-    }
-
-    // FORMATTING
-
-    addFormatToken(0, ['gg', 2], 0, function () {
-        return this.weekYear() % 100;
-    });
-
-    addFormatToken(0, ['GG', 2], 0, function () {
-        return this.isoWeekYear() % 100;
-    });
-
-    function addWeekYearFormatToken (token, getter) {
-        addFormatToken(0, [token, token.length], 0, getter);
-    }
-
-    addWeekYearFormatToken('gggg',     'weekYear');
-    addWeekYearFormatToken('ggggg',    'weekYear');
-    addWeekYearFormatToken('GGGG',  'isoWeekYear');
-    addWeekYearFormatToken('GGGGG', 'isoWeekYear');
-
-    // ALIASES
-
-    addUnitAlias('weekYear', 'gg');
-    addUnitAlias('isoWeekYear', 'GG');
-
-    // PRIORITY
-
-    addUnitPriority('weekYear', 1);
-    addUnitPriority('isoWeekYear', 1);
-
-
-    // PARSING
-
-    addRegexToken('G',      matchSigned);
-    addRegexToken('g',      matchSigned);
-    addRegexToken('GG',     match1to2, match2);
-    addRegexToken('gg',     match1to2, match2);
-    addRegexToken('GGGG',   match1to4, match4);
-    addRegexToken('gggg',   match1to4, match4);
-    addRegexToken('GGGGG',  match1to6, match6);
-    addRegexToken('ggggg',  match1to6, match6);
-
-    addWeekParseToken(['gggg', 'ggggg', 'GGGG', 'GGGGG'], function (input, week, config, token) {
-        week[token.substr(0, 2)] = toInt(input);
-    });
-
-    addWeekParseToken(['gg', 'GG'], function (input, week, config, token) {
-        week[token] = hooks.parseTwoDigitYear(input);
-    });
-
-    // MOMENTS
-
-    function getSetWeekYear (input) {
-        return getSetWeekYearHelper.call(this,
-                input,
-                this.week(),
-                this.weekday(),
-                this.localeData()._week.dow,
-                this.localeData()._week.doy);
-    }
-
-    function getSetISOWeekYear (input) {
-        return getSetWeekYearHelper.call(this,
-                input, this.isoWeek(), this.isoWeekday(), 1, 4);
-    }
-
-    function getISOWeeksInYear () {
-        return weeksInYear(this.year(), 1, 4);
-    }
-
-    function getWeeksInYear () {
-        var weekInfo = this.localeData()._week;
-        return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
-    }
-
-    function getSetWeekYearHelper(input, week, weekday, dow, doy) {
-        var weeksTarget;
-        if (input == null) {
-            return weekOfYear(this, dow, doy).year;
-        } else {
-            weeksTarget = weeksInYear(input, dow, doy);
-            if (week > weeksTarget) {
-                week = weeksTarget;
-            }
-            return setWeekAll.call(this, input, week, weekday, dow, doy);
-        }
-    }
-
-    function setWeekAll(weekYear, week, weekday, dow, doy) {
-        var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy),
-            date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
-
-        this.year(date.getUTCFullYear());
-        this.month(date.getUTCMonth());
-        this.date(date.getUTCDate());
-        return this;
-    }
-
-    // FORMATTING
-
-    addFormatToken('Q', 0, 'Qo', 'quarter');
-
-    // ALIASES
-
-    addUnitAlias('quarter', 'Q');
-
-    // PRIORITY
-
-    addUnitPriority('quarter', 7);
-
-    // PARSING
-
-    addRegexToken('Q', match1);
-    addParseToken('Q', function (input, array) {
-        array[MONTH] = (toInt(input) - 1) * 3;
-    });
-
-    // MOMENTS
-
-    function getSetQuarter (input) {
-        return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
-    }
-
-    // FORMATTING
-
-    addFormatToken('D', ['DD', 2], 'Do', 'date');
-
-    // ALIASES
-
-    addUnitAlias('date', 'D');
-
-    // PRIORITY
-    addUnitPriority('date', 9);
-
-    // PARSING
-
-    addRegexToken('D',  match1to2);
-    addRegexToken('DD', match1to2, match2);
-    addRegexToken('Do', function (isStrict, locale) {
-        // TODO: Remove "ordinalParse" fallback in next major release.
-        return isStrict ?
-          (locale._dayOfMonthOrdinalParse || locale._ordinalParse) :
-          locale._dayOfMonthOrdinalParseLenient;
-    });
-
-    addParseToken(['D', 'DD'], DATE);
-    addParseToken('Do', function (input, array) {
-        array[DATE] = toInt(input.match(match1to2)[0]);
-    });
-
-    // MOMENTS
-
-    var getSetDayOfMonth = makeGetSet('Date', true);
-
-    // FORMATTING
-
-    addFormatToken('DDD', ['DDDD', 3], 'DDDo', 'dayOfYear');
-
-    // ALIASES
-
-    addUnitAlias('dayOfYear', 'DDD');
-
-    // PRIORITY
-    addUnitPriority('dayOfYear', 4);
-
-    // PARSING
-
-    addRegexToken('DDD',  match1to3);
-    addRegexToken('DDDD', match3);
-    addParseToken(['DDD', 'DDDD'], function (input, array, config) {
-        config._dayOfYear = toInt(input);
-    });
-
-    // HELPERS
-
-    // MOMENTS
-
-    function getSetDayOfYear (input) {
-        var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1;
-        return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
-    }
-
-    // FORMATTING
-
-    addFormatToken('m', ['mm', 2], 0, 'minute');
-
-    // ALIASES
-
-    addUnitAlias('minute', 'm');
-
-    // PRIORITY
-
-    addUnitPriority('minute', 14);
-
-    // PARSING
-
-    addRegexToken('m',  match1to2);
-    addRegexToken('mm', match1to2, match2);
-    addParseToken(['m', 'mm'], MINUTE);
-
-    // MOMENTS
-
-    var getSetMinute = makeGetSet('Minutes', false);
-
-    // FORMATTING
-
-    addFormatToken('s', ['ss', 2], 0, 'second');
-
-    // ALIASES
-
-    addUnitAlias('second', 's');
-
-    // PRIORITY
-
-    addUnitPriority('second', 15);
-
-    // PARSING
-
-    addRegexToken('s',  match1to2);
-    addRegexToken('ss', match1to2, match2);
-    addParseToken(['s', 'ss'], SECOND);
-
-    // MOMENTS
-
-    var getSetSecond = makeGetSet('Seconds', false);
-
-    // FORMATTING
-
-    addFormatToken('S', 0, 0, function () {
-        return ~~(this.millisecond() / 100);
-    });
-
-    addFormatToken(0, ['SS', 2], 0, function () {
-        return ~~(this.millisecond() / 10);
-    });
-
-    addFormatToken(0, ['SSS', 3], 0, 'millisecond');
-    addFormatToken(0, ['SSSS', 4], 0, function () {
-        return this.millisecond() * 10;
-    });
-    addFormatToken(0, ['SSSSS', 5], 0, function () {
-        return this.millisecond() * 100;
-    });
-    addFormatToken(0, ['SSSSSS', 6], 0, function () {
-        return this.millisecond() * 1000;
-    });
-    addFormatToken(0, ['SSSSSSS', 7], 0, function () {
-        return this.millisecond() * 10000;
-    });
-    addFormatToken(0, ['SSSSSSSS', 8], 0, function () {
-        return this.millisecond() * 100000;
-    });
-    addFormatToken(0, ['SSSSSSSSS', 9], 0, function () {
-        return this.millisecond() * 1000000;
-    });
-
-
-    // ALIASES
-
-    addUnitAlias('millisecond', 'ms');
-
-    // PRIORITY
-
-    addUnitPriority('millisecond', 16);
-
-    // PARSING
-
-    addRegexToken('S',    match1to3, match1);
-    addRegexToken('SS',   match1to3, match2);
-    addRegexToken('SSS',  match1to3, match3);
-
-    var token;
-    for (token = 'SSSS'; token.length <= 9; token += 'S') {
-        addRegexToken(token, matchUnsigned);
-    }
-
-    function parseMs(input, array) {
-        array[MILLISECOND] = toInt(('0.' + input) * 1000);
-    }
-
-    for (token = 'S'; token.length <= 9; token += 'S') {
-        addParseToken(token, parseMs);
-    }
-    // MOMENTS
-
-    var getSetMillisecond = makeGetSet('Milliseconds', false);
-
-    // FORMATTING
-
-    addFormatToken('z',  0, 0, 'zoneAbbr');
-    addFormatToken('zz', 0, 0, 'zoneName');
-
-    // MOMENTS
-
-    function getZoneAbbr () {
-        return this._isUTC ? 'UTC' : '';
-    }
-
-    function getZoneName () {
-        return this._isUTC ? 'Coordinated Universal Time' : '';
-    }
-
-    var proto = Moment.prototype;
-
-    proto.add               = add;
-    proto.calendar          = calendar$1;
-    proto.clone             = clone;
-    proto.diff              = diff;
-    proto.endOf             = endOf;
-    proto.format            = format;
-    proto.from              = from;
-    proto.fromNow           = fromNow;
-    proto.to                = to;
-    proto.toNow             = toNow;
-    proto.get               = stringGet;
-    proto.invalidAt         = invalidAt;
-    proto.isAfter           = isAfter;
-    proto.isBefore          = isBefore;
-    proto.isBetween         = isBetween;
-    proto.isSame            = isSame;
-    proto.isSameOrAfter     = isSameOrAfter;
-    proto.isSameOrBefore    = isSameOrBefore;
-    proto.isValid           = isValid$2;
-    proto.lang              = lang;
-    proto.locale            = locale;
-    proto.localeData        = localeData;
-    proto.max               = prototypeMax;
-    proto.min               = prototypeMin;
-    proto.parsingFlags      = parsingFlags;
-    proto.set               = stringSet;
-    proto.startOf           = startOf;
-    proto.subtract          = subtract;
-    proto.toArray           = toArray;
-    proto.toObject          = toObject;
-    proto.toDate            = toDate;
-    proto.toISOString       = toISOString;
-    proto.inspect           = inspect;
-    proto.toJSON            = toJSON;
-    proto.toString          = toString;
-    proto.unix              = unix;
-    proto.valueOf           = valueOf;
-    proto.creationData      = creationData;
-    proto.year       = getSetYear;
-    proto.isLeapYear = getIsLeapYear;
-    proto.weekYear    = getSetWeekYear;
-    proto.isoWeekYear = getSetISOWeekYear;
-    proto.quarter = proto.quarters = getSetQuarter;
-    proto.month       = getSetMonth;
-    proto.daysInMonth = getDaysInMonth;
-    proto.week           = proto.weeks        = getSetWeek;
-    proto.isoWeek        = proto.isoWeeks     = getSetISOWeek;
-    proto.weeksInYear    = getWeeksInYear;
-    proto.isoWeeksInYear = getISOWeeksInYear;
-    proto.date       = getSetDayOfMonth;
-    proto.day        = proto.days             = getSetDayOfWeek;
-    proto.weekday    = getSetLocaleDayOfWeek;
-    proto.isoWeekday = getSetISODayOfWeek;
-    proto.dayOfYear  = getSetDayOfYear;
-    proto.hour = proto.hours = getSetHour;
-    proto.minute = proto.minutes = getSetMinute;
-    proto.second = proto.seconds = getSetSecond;
-    proto.millisecond = proto.milliseconds = getSetMillisecond;
-    proto.utcOffset            = getSetOffset;
-    proto.utc                  = setOffsetToUTC;
-    proto.local                = setOffsetToLocal;
-    proto.parseZone            = setOffsetToParsedOffset;
-    proto.hasAlignedHourOffset = hasAlignedHourOffset;
-    proto.isDST                = isDaylightSavingTime;
-    proto.isLocal              = isLocal;
-    proto.isUtcOffset          = isUtcOffset;
-    proto.isUtc                = isUtc;
-    proto.isUTC                = isUtc;
-    proto.zoneAbbr = getZoneAbbr;
-    proto.zoneName = getZoneName;
-    proto.dates  = deprecate('dates accessor is deprecated. Use date instead.', getSetDayOfMonth);
-    proto.months = deprecate('months accessor is deprecated. Use month instead', getSetMonth);
-    proto.years  = deprecate('years accessor is deprecated. Use year instead', getSetYear);
-    proto.zone   = deprecate('moment().zone is deprecated, use moment().utcOffset instead. http://momentjs.com/guides/#/warnings/zone/', getSetZone);
-    proto.isDSTShifted = deprecate('isDSTShifted is deprecated. See http://momentjs.com/guides/#/warnings/dst-shifted/ for more information', isDaylightSavingTimeShifted);
-
-    function createUnix (input) {
-        return createLocal(input * 1000);
-    }
-
-    function createInZone () {
-        return createLocal.apply(null, arguments).parseZone();
-    }
-
-    function preParsePostFormat (string) {
-        return string;
-    }
-
-    var proto$1 = Locale.prototype;
-
-    proto$1.calendar        = calendar;
-    proto$1.longDateFormat  = longDateFormat;
-    proto$1.invalidDate     = invalidDate;
-    proto$1.ordinal         = ordinal;
-    proto$1.preparse        = preParsePostFormat;
-    proto$1.postformat      = preParsePostFormat;
-    proto$1.relativeTime    = relativeTime;
-    proto$1.pastFuture      = pastFuture;
-    proto$1.set             = set;
-
-    proto$1.months            =        localeMonths;
-    proto$1.monthsShort       =        localeMonthsShort;
-    proto$1.monthsParse       =        localeMonthsParse;
-    proto$1.monthsRegex       = monthsRegex;
-    proto$1.monthsShortRegex  = monthsShortRegex;
-    proto$1.week = localeWeek;
-    proto$1.firstDayOfYear = localeFirstDayOfYear;
-    proto$1.firstDayOfWeek = localeFirstDayOfWeek;
-
-    proto$1.weekdays       =        localeWeekdays;
-    proto$1.weekdaysMin    =        localeWeekdaysMin;
-    proto$1.weekdaysShort  =        localeWeekdaysShort;
-    proto$1.weekdaysParse  =        localeWeekdaysParse;
-
-    proto$1.weekdaysRegex       =        weekdaysRegex;
-    proto$1.weekdaysShortRegex  =        weekdaysShortRegex;
-    proto$1.weekdaysMinRegex    =        weekdaysMinRegex;
-
-    proto$1.isPM = localeIsPM;
-    proto$1.meridiem = localeMeridiem;
-
-    function get$1 (format, index, field, setter) {
-        var locale = getLocale();
-        var utc = createUTC().set(setter, index);
-        return locale[field](utc, format);
-    }
-
-    function listMonthsImpl (format, index, field) {
-        if (isNumber(format)) {
-            index = format;
-            format = undefined;
-        }
-
-        format = format || '';
-
-        if (index != null) {
-            return get$1(format, index, field, 'month');
-        }
-
-        var i;
-        var out = [];
-        for (i = 0; i < 12; i++) {
-            out[i] = get$1(format, i, field, 'month');
-        }
-        return out;
-    }
-
-    // ()
-    // (5)
-    // (fmt, 5)
-    // (fmt)
-    // (true)
-    // (true, 5)
-    // (true, fmt, 5)
-    // (true, fmt)
-    function listWeekdaysImpl (localeSorted, format, index, field) {
-        if (typeof localeSorted === 'boolean') {
-            if (isNumber(format)) {
-                index = format;
-                format = undefined;
-            }
-
-            format = format || '';
-        } else {
-            format = localeSorted;
-            index = format;
-            localeSorted = false;
-
-            if (isNumber(format)) {
-                index = format;
-                format = undefined;
-            }
-
-            format = format || '';
-        }
-
-        var locale = getLocale(),
-            shift = localeSorted ? locale._week.dow : 0;
-
-        if (index != null) {
-            return get$1(format, (index + shift) % 7, field, 'day');
-        }
-
-        var i;
-        var out = [];
-        for (i = 0; i < 7; i++) {
-            out[i] = get$1(format, (i + shift) % 7, field, 'day');
-        }
-        return out;
-    }
-
-    function listMonths (format, index) {
-        return listMonthsImpl(format, index, 'months');
-    }
-
-    function listMonthsShort (format, index) {
-        return listMonthsImpl(format, index, 'monthsShort');
-    }
-
-    function listWeekdays (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdays');
-    }
-
-    function listWeekdaysShort (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysShort');
-    }
-
-    function listWeekdaysMin (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysMin');
-    }
-
-    getSetGlobalLocale('en', {
-        dayOfMonthOrdinalParse: /\d{1,2}(th|st|nd|rd)/,
-        ordinal : function (number) {
-            var b = number % 10,
-                output = (toInt(number % 100 / 10) === 1) ? 'th' :
-                (b === 1) ? 'st' :
-                (b === 2) ? 'nd' :
-                (b === 3) ? 'rd' : 'th';
-            return number + output;
-        }
-    });
-
-    // Side effect imports
-
-    hooks.lang = deprecate('moment.lang is deprecated. Use moment.locale instead.', getSetGlobalLocale);
-    hooks.langData = deprecate('moment.langData is deprecated. Use moment.localeData instead.', getLocale);
-
-    var mathAbs = Math.abs;
-
-    function abs () {
-        var data           = this._data;
-
-        this._milliseconds = mathAbs(this._milliseconds);
-        this._days         = mathAbs(this._days);
-        this._months       = mathAbs(this._months);
-
-        data.milliseconds  = mathAbs(data.milliseconds);
-        data.seconds       = mathAbs(data.seconds);
-        data.minutes       = mathAbs(data.minutes);
-        data.hours         = mathAbs(data.hours);
-        data.months        = mathAbs(data.months);
-        data.years         = mathAbs(data.years);
-
-        return this;
-    }
-
-    function addSubtract$1 (duration, input, value, direction) {
-        var other = createDuration(input, value);
-
-        duration._milliseconds += direction * other._milliseconds;
-        duration._days         += direction * other._days;
-        duration._months       += direction * other._months;
-
-        return duration._bubble();
-    }
-
-    // supports only 2.0-style add(1, 's') or add(duration)
-    function add$1 (input, value) {
-        return addSubtract$1(this, input, value, 1);
-    }
-
-    // supports only 2.0-style subtract(1, 's') or subtract(duration)
-    function subtract$1 (input, value) {
-        return addSubtract$1(this, input, value, -1);
-    }
-
-    function absCeil (number) {
-        if (number < 0) {
-            return Math.floor(number);
-        } else {
-            return Math.ceil(number);
-        }
-    }
-
-    function bubble () {
-        var milliseconds = this._milliseconds;
-        var days         = this._days;
-        var months       = this._months;
-        var data         = this._data;
-        var seconds, minutes, hours, years, monthsFromDays;
-
-        // if we have a mix of positive and negative values, bubble down first
-        // check: https://github.com/moment/moment/issues/2166
-        if (!((milliseconds >= 0 && days >= 0 && months >= 0) ||
-                (milliseconds <= 0 && days <= 0 && months <= 0))) {
-            milliseconds += absCeil(monthsToDays(months) + days) * 864e5;
-            days = 0;
-            months = 0;
-        }
-
-        // The following code bubbles up values, see the tests for
-        // examples of what that means.
-        data.milliseconds = milliseconds % 1000;
-
-        seconds           = absFloor(milliseconds / 1000);
-        data.seconds      = seconds % 60;
-
-        minutes           = absFloor(seconds / 60);
-        data.minutes      = minutes % 60;
-
-        hours             = absFloor(minutes / 60);
-        data.hours        = hours % 24;
-
-        days += absFloor(hours / 24);
-
-        // convert days to months
-        monthsFromDays = absFloor(daysToMonths(days));
-        months += monthsFromDays;
-        days -= absCeil(monthsToDays(monthsFromDays));
-
-        // 12 months -> 1 year
-        years = absFloor(months / 12);
-        months %= 12;
-
-        data.days   = days;
-        data.months = months;
-        data.years  = years;
-
-        return this;
-    }
-
-    function daysToMonths (days) {
-        // 400 years have 146097 days (taking into account leap year rules)
-        // 400 years have 12 months === 4800
-        return days * 4800 / 146097;
-    }
-
-    function monthsToDays (months) {
-        // the reverse of daysToMonths
-        return months * 146097 / 4800;
-    }
-
-    function as (units) {
-        if (!this.isValid()) {
-            return NaN;
-        }
-        var days;
-        var months;
-        var milliseconds = this._milliseconds;
-
-        units = normalizeUnits(units);
-
-        if (units === 'month' || units === 'quarter' || units === 'year') {
-            days = this._days + milliseconds / 864e5;
-            months = this._months + daysToMonths(days);
-            switch (units) {
-                case 'month':   return months;
-                case 'quarter': return months / 3;
-                case 'year':    return months / 12;
-            }
-        } else {
-            // handle milliseconds separately because of floating point math errors (issue #1867)
-            days = this._days + Math.round(monthsToDays(this._months));
-            switch (units) {
-                case 'week'   : return days / 7     + milliseconds / 6048e5;
-                case 'day'    : return days         + milliseconds / 864e5;
-                case 'hour'   : return days * 24    + milliseconds / 36e5;
-                case 'minute' : return days * 1440  + milliseconds / 6e4;
-                case 'second' : return days * 86400 + milliseconds / 1000;
-                // Math.floor prevents floating point math errors here
-                case 'millisecond': return Math.floor(days * 864e5) + milliseconds;
-                default: throw new Error('Unknown unit ' + units);
-            }
-        }
-    }
-
-    // TODO: Use this.as('ms')?
-    function valueOf$1 () {
-        if (!this.isValid()) {
-            return NaN;
-        }
-        return (
-            this._milliseconds +
-            this._days * 864e5 +
-            (this._months % 12) * 2592e6 +
-            toInt(this._months / 12) * 31536e6
-        );
-    }
-
-    function makeAs (alias) {
-        return function () {
-            return this.as(alias);
-        };
-    }
-
-    var asMilliseconds = makeAs('ms');
-    var asSeconds      = makeAs('s');
-    var asMinutes      = makeAs('m');
-    var asHours        = makeAs('h');
-    var asDays         = makeAs('d');
-    var asWeeks        = makeAs('w');
-    var asMonths       = makeAs('M');
-    var asQuarters     = makeAs('Q');
-    var asYears        = makeAs('y');
-
-    function clone$1 () {
-        return createDuration(this);
-    }
-
-    function get$2 (units) {
-        units = normalizeUnits(units);
-        return this.isValid() ? this[units + 's']() : NaN;
-    }
-
-    function makeGetter(name) {
-        return function () {
-            return this.isValid() ? this._data[name] : NaN;
-        };
-    }
-
-    var milliseconds = makeGetter('milliseconds');
-    var seconds      = makeGetter('seconds');
-    var minutes      = makeGetter('minutes');
-    var hours        = makeGetter('hours');
-    var days         = makeGetter('days');
-    var months       = makeGetter('months');
-    var years        = makeGetter('years');
-
-    function weeks () {
-        return absFloor(this.days() / 7);
-    }
-
-    var round = Math.round;
-    var thresholds = {
-        ss: 44,         // a few seconds to seconds
-        s : 45,         // seconds to minute
-        m : 45,         // minutes to hour
-        h : 22,         // hours to day
-        d : 26,         // days to month
-        M : 11          // months to year
-    };
-
-    // helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
-    function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale) {
-        return locale.relativeTime(number || 1, !!withoutSuffix, string, isFuture);
-    }
-
-    function relativeTime$1 (posNegDuration, withoutSuffix, locale) {
-        var duration = createDuration(posNegDuration).abs();
-        var seconds  = round(duration.as('s'));
-        var minutes  = round(duration.as('m'));
-        var hours    = round(duration.as('h'));
-        var days     = round(duration.as('d'));
-        var months   = round(duration.as('M'));
-        var years    = round(duration.as('y'));
-
-        var a = seconds <= thresholds.ss && ['s', seconds]  ||
-                seconds < thresholds.s   && ['ss', seconds] ||
-                minutes <= 1             && ['m']           ||
-                minutes < thresholds.m   && ['mm', minutes] ||
-                hours   <= 1             && ['h']           ||
-                hours   < thresholds.h   && ['hh', hours]   ||
-                days    <= 1             && ['d']           ||
-                days    < thresholds.d   && ['dd', days]    ||
-                months  <= 1             && ['M']           ||
-                months  < thresholds.M   && ['MM', months]  ||
-                years   <= 1             && ['y']           || ['yy', years];
-
-        a[2] = withoutSuffix;
-        a[3] = +posNegDuration > 0;
-        a[4] = locale;
-        return substituteTimeAgo.apply(null, a);
-    }
-
-    // This function allows you to set the rounding function for relative time strings
-    function getSetRelativeTimeRounding (roundingFunction) {
-        if (roundingFunction === undefined) {
-            return round;
-        }
-        if (typeof(roundingFunction) === 'function') {
-            round = roundingFunction;
-            return true;
-        }
-        return false;
-    }
-
-    // This function allows you to set a threshold for relative time strings
-    function getSetRelativeTimeThreshold (threshold, limit) {
-        if (thresholds[threshold] === undefined) {
-            return false;
-        }
-        if (limit === undefined) {
-            return thresholds[threshold];
-        }
-        thresholds[threshold] = limit;
-        if (threshold === 's') {
-            thresholds.ss = limit - 1;
-        }
-        return true;
-    }
-
-    function humanize (withSuffix) {
-        if (!this.isValid()) {
-            return this.localeData().invalidDate();
-        }
-
-        var locale = this.localeData();
-        var output = relativeTime$1(this, !withSuffix, locale);
-
-        if (withSuffix) {
-            output = locale.pastFuture(+this, output);
-        }
-
-        return locale.postformat(output);
-    }
-
-    var abs$1 = Math.abs;
-
-    function sign(x) {
-        return ((x > 0) - (x < 0)) || +x;
-    }
-
-    function toISOString$1() {
-        // for ISO strings we do not use the normal bubbling rules:
-        //  * milliseconds bubble up until they become hours
-        //  * days do not bubble at all
-        //  * months bubble up until they become years
-        // This is because there is no context-free conversion between hours and days
-        // (think of clock changes)
-        // and also not between days and months (28-31 days per month)
-        if (!this.isValid()) {
-            return this.localeData().invalidDate();
-        }
-
-        var seconds = abs$1(this._milliseconds) / 1000;
-        var days         = abs$1(this._days);
-        var months       = abs$1(this._months);
-        var minutes, hours, years;
-
-        // 3600 seconds -> 60 minutes -> 1 hour
-        minutes           = absFloor(seconds / 60);
-        hours             = absFloor(minutes / 60);
-        seconds %= 60;
-        minutes %= 60;
-
-        // 12 months -> 1 year
-        years  = absFloor(months / 12);
-        months %= 12;
-
-
-        // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
-        var Y = years;
-        var M = months;
-        var D = days;
-        var h = hours;
-        var m = minutes;
-        var s = seconds ? seconds.toFixed(3).replace(/\.?0+$/, '') : '';
-        var total = this.asSeconds();
-
-        if (!total) {
-            // this is the same as C#'s (Noda) and python (isodate)...
-            // but not other JS (goog.date)
-            return 'P0D';
-        }
-
-        var totalSign = total < 0 ? '-' : '';
-        var ymSign = sign(this._months) !== sign(total) ? '-' : '';
-        var daysSign = sign(this._days) !== sign(total) ? '-' : '';
-        var hmsSign = sign(this._milliseconds) !== sign(total) ? '-' : '';
-
-        return totalSign + 'P' +
-            (Y ? ymSign + Y + 'Y' : '') +
-            (M ? ymSign + M + 'M' : '') +
-            (D ? daysSign + D + 'D' : '') +
-            ((h || m || s) ? 'T' : '') +
-            (h ? hmsSign + h + 'H' : '') +
-            (m ? hmsSign + m + 'M' : '') +
-            (s ? hmsSign + s + 'S' : '');
-    }
-
-    var proto$2 = Duration.prototype;
-
-    proto$2.isValid        = isValid$1;
-    proto$2.abs            = abs;
-    proto$2.add            = add$1;
-    proto$2.subtract       = subtract$1;
-    proto$2.as             = as;
-    proto$2.asMilliseconds = asMilliseconds;
-    proto$2.asSeconds      = asSeconds;
-    proto$2.asMinutes      = asMinutes;
-    proto$2.asHours        = asHours;
-    proto$2.asDays         = asDays;
-    proto$2.asWeeks        = asWeeks;
-    proto$2.asMonths       = asMonths;
-    proto$2.asQuarters     = asQuarters;
-    proto$2.asYears        = asYears;
-    proto$2.valueOf        = valueOf$1;
-    proto$2._bubble        = bubble;
-    proto$2.clone          = clone$1;
-    proto$2.get            = get$2;
-    proto$2.milliseconds   = milliseconds;
-    proto$2.seconds        = seconds;
-    proto$2.minutes        = minutes;
-    proto$2.hours          = hours;
-    proto$2.days           = days;
-    proto$2.weeks          = weeks;
-    proto$2.months         = months;
-    proto$2.years          = years;
-    proto$2.humanize       = humanize;
-    proto$2.toISOString    = toISOString$1;
-    proto$2.toString       = toISOString$1;
-    proto$2.toJSON         = toISOString$1;
-    proto$2.locale         = locale;
-    proto$2.localeData     = localeData;
-
-    proto$2.toIsoString = deprecate('toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)', toISOString$1);
-    proto$2.lang = lang;
-
-    // Side effect imports
-
-    // FORMATTING
-
-    addFormatToken('X', 0, 0, 'unix');
-    addFormatToken('x', 0, 0, 'valueOf');
-
-    // PARSING
-
-    addRegexToken('x', matchSigned);
-    addRegexToken('X', matchTimestamp);
-    addParseToken('X', function (input, array, config) {
-        config._d = new Date(parseFloat(input, 10) * 1000);
-    });
-    addParseToken('x', function (input, array, config) {
-        config._d = new Date(toInt(input));
-    });
-
-    // Side effect imports
-
-
-    hooks.version = '2.24.0';
-
-    setHookCallback(createLocal);
-
-    hooks.fn                    = proto;
-    hooks.min                   = min;
-    hooks.max                   = max;
-    hooks.now                   = now;
-    hooks.utc                   = createUTC;
-    hooks.unix                  = createUnix;
-    hooks.months                = listMonths;
-    hooks.isDate                = isDate;
-    hooks.locale                = getSetGlobalLocale;
-    hooks.invalid               = createInvalid;
-    hooks.duration              = createDuration;
-    hooks.isMoment              = isMoment;
-    hooks.weekdays              = listWeekdays;
-    hooks.parseZone             = createInZone;
-    hooks.localeData            = getLocale;
-    hooks.isDuration            = isDuration;
-    hooks.monthsShort           = listMonthsShort;
-    hooks.weekdaysMin           = listWeekdaysMin;
-    hooks.defineLocale          = defineLocale;
-    hooks.updateLocale          = updateLocale;
-    hooks.locales               = listLocales;
-    hooks.weekdaysShort         = listWeekdaysShort;
-    hooks.normalizeUnits        = normalizeUnits;
-    hooks.relativeTimeRounding  = getSetRelativeTimeRounding;
-    hooks.relativeTimeThreshold = getSetRelativeTimeThreshold;
-    hooks.calendarFormat        = getCalendarFormat;
-    hooks.prototype             = proto;
-
-    // currently HTML5 input type only supports 24-hour formats
-    hooks.HTML5_FMT = {
-        DATETIME_LOCAL: 'YYYY-MM-DDTHH:mm',             // <input type="datetime-local" />
-        DATETIME_LOCAL_SECONDS: 'YYYY-MM-DDTHH:mm:ss',  // <input type="datetime-local" step="1" />
-        DATETIME_LOCAL_MS: 'YYYY-MM-DDTHH:mm:ss.SSS',   // <input type="datetime-local" step="0.001" />
-        DATE: 'YYYY-MM-DD',                             // <input type="date" />
-        TIME: 'HH:mm',                                  // <input type="time" />
-        TIME_SECONDS: 'HH:mm:ss',                       // <input type="time" step="1" />
-        TIME_MS: 'HH:mm:ss.SSS',                        // <input type="time" step="0.001" />
-        WEEK: 'GGGG-[W]WW',                             // <input type="week" />
-        MONTH: 'YYYY-MM'                                // <input type="month" />
-    };
-
-    return hooks;
-
-})));
-
-},{}],"u+eY":[function(require,module,exports) {
+},{}],"uEYO":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10096,9 +6013,13 @@ exports.TimerElement = void 0;
 
 var _litElement = require("lit-element");
 
-var _moment = _interopRequireDefault(require("moment"));
+var _dayjs = _interopRequireDefault(require("dayjs"));
+
+var _duration = _interopRequireDefault(require("dayjs/plugin/duration"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_dayjs.default.extend(_duration.default);
 
 class TimerElement extends _litElement.LitElement {
   static get properties() {
@@ -10130,9 +6051,9 @@ class TimerElement extends _litElement.LitElement {
 
   set time(val) {
     const oldVal = this.__time;
-    if (!this.dur) this.dur = _moment.default.duration(val);else {
+    if (!this.dur) this.dur = _dayjs.default.duration(val);else {
       let delta = val - oldVal;
-      this.dur.add(delta);
+      this.dur = this.dur.add(delta);
     }
     if (val == 0) this.setAttribute('zero', '');else this.removeAttribute('zero');
     this.__time = val;
@@ -10140,7 +6061,7 @@ class TimerElement extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: inline-flex;
 			--zeroColor: rgba(0,0,0,.5);
@@ -10174,13 +6095,13 @@ class TimerElement extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
 		<unit class="hours" value="${this.hours}">${this.hours}</unit>
 		<span>:</span>
 		<unit class="minutes" value="${this.minutes}">${this.minutes}</unit>
 		<span>:</span>
 		<unit class="seconds" value="${this.seconds}">${this.seconds}</unit>
-		${this.ms ? _litElement.html`<unit class="ms">.${this.milliseconds}</unit>` : ''}
+		${this.ms ? (0, _litElement.html)`<unit class="ms">.${this.milliseconds}</unit>` : ''}
     `;
   }
 
@@ -10241,7 +6162,7 @@ class TimerElement extends _litElement.LitElement {
 
 exports.TimerElement = TimerElement;
 customElements.define('b-timer', TimerElement);
-},{"lit-element":"+bhx","moment":"a2/B"}],"+2dU":[function(require,module,exports) {
+},{"lit-element":"bhxD","dayjs":"dZYI","dayjs/plugin/duration":"oxIj"}],"dUnZ":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10264,7 +6185,7 @@ class EmptyState extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: flex;
             flex-direction: column;
@@ -10313,7 +6234,7 @@ class EmptyState extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <slot>${this.value}</slot>
     `;
   }
@@ -10322,7 +6243,7 @@ class EmptyState extends _litElement.LitElement {
 
 exports.default = EmptyState;
 customElements.define('b-empty-state', EmptyState);
-},{"lit-element":"+bhx"}],"DcCw":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"DcCw":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10351,7 +6272,7 @@ class Label extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             position: relative;
             z-index: 1;
@@ -10399,6 +6320,7 @@ class Label extends _litElement.LitElement {
         :host([sm]) { font-size: .8rem; line-height: .8rem; }
         :host([lg]) { font-size: 1.2rem; line-height: 1.2rem; }
         :host([xl]) { font-size: 1.4rem; line-height: 1.4rem; }
+        :host([xxl]) { font-size: 1.8rem; line-height: 1.8rem; }
 
         :host([outline]) {
             background: none;
@@ -10426,23 +6348,38 @@ class Label extends _litElement.LitElement {
             padding: 0;
         }
 
-        :host([filled="black"]), :host([badge="black"]) { --bgd: #333; }
-        :host([filled="white"]), :host([badge="white"]) { --bgd: #fff; --color: #333; }
+        :host([filled="clear"]), :host([badge="black"]) { --bgd: transparent; --color: inherit; }
+        :host([filled="black"]), :host([badge="black"]) { --bgd: var(--theme-color, #333); }
+        :host([filled="white"]), :host([badge="white"]) { --bgd: var(--theme-bgd, #fff); --color: var(--theme-color, #333); }
         :host([filled="gray"]), :host([badge="gray"]) { --bgd: #ddd; --color: #777; }
+        :host([filled="theme"]), :host([badge="theme"]) { --bgd: var(--theme); }
         :host([filled="blue"]), :host([badge="blue"]) { --bgd: var(--blue); }
         :host([filled="red"]), :host([badge="red"]) { --bgd: var(--red); }
         :host([filled="orange"]), :host([badge="orange"]) { --bgd: var(--orange); }
         :host([filled="green"]), :host([badge="green"]) { --bgd: var(--green); }
         :host([filled="pink"]), :host([badge="pink"]) { --bgd: var(--pink); }
+        :host([filled="purple"]), :host([badge="purple"]) { --bgd: var(--deep-purple); }
+
+        :host([filled="text"]), :host([badge="text"]) { 
+            --bgd: var(--theme-color, #333);
+            --color: var(--theme-bgd, #fff);
+        }
+        :host([filled="accent"]), :host([badge="accent"]) {
+            --bgd: rgba(var(--theme-rgb, 0,0,0), .2);
+            --color: var(--theme-color, #333);
+        }
         
 
+        :host([outline="clear"]) { --bgd: transparent; --color: inherit; }
         :host([outline="black"]) { --bgd: #333; }
         :host([outline="gray"]) { --bgd: #ddd; }
+        :host([outline="theme"]) { --bgd: var(--theme); }
         :host([outline="blue"]) { --bgd: var(--blue); }
         :host([outline="red"]) { --bgd: var(--red); }
         :host([outline="orange"]) { --bgd: var(--orange); }
         :host([outline="green"]) { --bgd: var(--green); }
         :host([outline="pink"]) { --bgd: var(--pink); }
+        :host([outline="purple"]) { --bgd: var(--deep-purple); }
 
         .bgd {
             display: none;
@@ -10508,7 +6445,7 @@ class Label extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <div class="bgd"></div>
         <b-hr></b-hr>
         <slot></slot>
@@ -10520,7 +6457,7 @@ class Label extends _litElement.LitElement {
 
 exports.default = Label;
 customElements.define('b-label', Label);
-},{"lit-element":"+bhx"}],"jV4C":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"jV4C":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10556,7 +6493,7 @@ customElements.define('b-ribbon', class extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             --width: 4em;
             --height: 1em;
@@ -10636,7 +6573,7 @@ customElements.define('b-ribbon', class extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <div class="wrap">
             <div class="ribbon">
                 <div class="inner">
@@ -10652,7 +6589,7 @@ customElements.define('b-ribbon', class extends _litElement.LitElement {
 var _default = customElements.get('b-ribbon');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"IOAQ":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"IOAQ":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10664,7 +6601,7 @@ var _litElement = require("lit-element");
 
 customElements.define('b-hr', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             --bgd: var(--b-hr-bgd, rgba(0,0,0,.1));
 
@@ -10676,6 +6613,10 @@ customElements.define('b-hr', class extends _litElement.LitElement {
             
             /* full width */
             grid-column: 1/-1;
+        }
+
+        :host([thick]) {
+            height: 4px;
         }
 
         :host([short]) {
@@ -10692,12 +6633,17 @@ customElements.define('b-hr', class extends _litElement.LitElement {
             margin: 0 .5em;
             align-self: stretch;
         }
+
+        :host([vert][thick]) {
+            height: auto;
+            width: 4px;
+        }
     `;
   } // dont support slotted content yet
 
 
   render() {
-    return _litElement.html``;
+    return (0, _litElement.html)``;
   }
 
 });
@@ -10705,7 +6651,7 @@ customElements.define('b-hr', class extends _litElement.LitElement {
 var _default = customElements.get('b-hr');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"VANQ":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"VANQ":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10720,7 +6666,7 @@ var _litElement = require("lit-element");
 */
 customElements.define('b-sub', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: inline;
             position:relative;
@@ -10736,7 +6682,7 @@ customElements.define('b-sub', class extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <slot></slot>
     `;
   }
@@ -10746,7 +6692,7 @@ customElements.define('b-sub', class extends _litElement.LitElement {
 var _default = customElements.get('b-sub');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"29Vf":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"VfwF":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10756,9 +6702,27 @@ exports.default = void 0;
 
 var _litElement = require("lit-element");
 
+var _dayjs = _interopRequireDefault(require("dayjs"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 customElements.define('b-ts', class extends _litElement.LitElement {
+  static get properties() {
+    return {
+      format: {
+        type: String
+      }
+    };
+  }
+
+  constructor() {
+    super();
+    this.format = 'relative';
+    this._extraTitle = this.getAttribute('title') || '';
+  }
+
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: inline-block;
             white-space: nowrap;
@@ -10768,7 +6732,7 @@ customElements.define('b-ts', class extends _litElement.LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this._updateInterval = setInterval(this.update.bind(this), 60 * 1000);
+    if (this.format == 'relative') this._updateInterval = setInterval(this.update.bind(this), 60 * 1000);
   }
 
   disconnectedCallback() {
@@ -10781,20 +6745,20 @@ customElements.define('b-ts', class extends _litElement.LitElement {
   }
 
   set date(date) {
+    if (typeof date === 'string') date = (0, _dayjs.default)(date);
     this.__date = date;
-    if (date) this.title = this.date.format('l');
+    if (date) this.title = this._extraTitle + this.date.format('LT l');
     this.requestUpdate();
   }
 
   get displayTime() {
-    if (!this.date) return ''; // TODO: support different formats?
-    // TODO: this is a moment.js format...what if moment not used?
-
-    return this.date.fromNow();
+    if (!this.date) return '';
+    if (this.format == 'relative' && this.date.fromNow) return this.date.fromNow();
+    if (this.format == 'calendar' && this.date.calendarDate) return this.date.calendarDate();else return this.date.format(this.format);
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         ${this.displayTime}
     `;
   }
@@ -10804,7 +6768,7 @@ customElements.define('b-ts', class extends _litElement.LitElement {
 var _default = customElements.get('b-ts');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"Da++":[function(require,module,exports) {
+},{"lit-element":"bhxD","dayjs":"dZYI"}],"DaYz":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10828,7 +6792,10 @@ class AvatarElement extends HTMLElement {
       mode: 'open'
     });
     let temp = document.createElement('template');
-    temp.innerHTML = `<style>
+    let aspectRatio = this.getAttribute('cover') == 'false' ? '' : 'xMinYMin slice';
+    temp.innerHTML =
+    /*html*/
+    `<style>
 			:host {
 				--bgd: ${this.bgd};
 				--bgdDefault: transparent;
@@ -10837,6 +6804,8 @@ class AvatarElement extends HTMLElement {
 			    width: var(--size, 1em);
 			    display: inline-block;
 			    vertical-align: middle;
+				position: relative;
+				border-radius: var(--b-avatar-radius, 50%);
 
 				-webkit-touch-callout: none; /* iOS Safari */
 				-webkit-user-select: none; /* Safari */
@@ -10860,6 +6829,7 @@ class AvatarElement extends HTMLElement {
 			
 			svg text {
 				fill: var(--color);
+				font-size: var(--b-avatar-font-size, 60px);
 			}
 			
 			:host([nobgd]) svg.imgloaded rect {
@@ -10888,9 +6858,12 @@ class AvatarElement extends HTMLElement {
 			
 		<svg class="imgloading" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
             <rect x="0" y="0" width="100%" height="100%" rx="0" ry="0"></rect>
-            <text x="50%" y="50%" font-size="65" dominant-baseline="central" text-anchor="middle">${this.initials}</text>
-			<image xlink:href="" x="0" y="0" width="100%" height="100%" onload="this.parentElement.classList.add('imgloaded')">
-        </svg>`;
+            <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle">${this.initials}</text>
+			<image xlink:href="" x="0" y="0" width="100%" height="100%"
+				preserveAspectRatio="${aspectRatio}"
+				onload="this.parentElement.classList.add('imgloaded')">
+        </svg>
+		<slot></slot>`;
     this.shadowRoot.appendChild(temp.content.cloneNode(true));
     this.img = this.shadowRoot.querySelector('image');
     this.img.addEventListener('error', e => {
@@ -11017,23 +6990,24 @@ var _litElement = require("lit-element");
 
 customElements.define('b-code', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
 
         :host {
-            background: var(--gray-100);
+            background: var(--theme-bgd-accent, #ccc);
             border-radius: 3px;
             color: initial;
             padding: 0 .3em;
         }
 
         code {
-            color: inherit;
+            color: var(--theme-color, inherit);
         }
 
         :host([block]) {
             display: block;
             font-family: monospace;
             padding: 1em;
+            overflow-x: auto;
         }
 
         :host([block]) code {
@@ -11044,11 +7018,11 @@ customElements.define('b-code', class extends _litElement.LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this.innerText = this.innerText.trim();
+    this.textContent = this.textContent.trim();
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <code><slot></slot></code>
     `;
   }
@@ -11058,7 +7032,7 @@ customElements.define('b-code', class extends _litElement.LitElement {
 var _default = customElements.get('b-code');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"bpDM":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"bpDM":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11080,7 +7054,7 @@ customElements.define('b-embed', class Embed extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: block;
             position:relative;
@@ -11105,7 +7079,7 @@ customElements.define('b-embed', class Embed extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <main>
             <iframe src='${this.formattedURL}' 
                     frameborder='0' 
@@ -11135,7 +7109,262 @@ customElements.define('b-embed', class Embed extends _litElement.LitElement {
 var _default = customElements.get('b-embed');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"ZCfn":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"FgfO":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// https://blog.roomanna.com/09-24-2011/dynamically-coloring-a-favicon
+let favicon;
+
+var _default = (color = false, method = "lighten") => {
+  let icon = document.querySelector("link[rel='icon']");
+
+  if (!favicon) {
+    ;
+    favicon = icon.cloneNode();
+  }
+
+  if (!color) {
+    icon.type = favicon.type;
+    icon.href = favicon.href;
+    return;
+  }
+
+  function onImageLoaded() {
+    let canvas = document.createElement("canvas");
+    let size = img.naturalHeight;
+    let radius = size / 2;
+    canvas.width = size;
+    canvas.height = size;
+    let context = canvas.getContext("2d");
+    context.drawImage(img, 0, 0);
+    context.globalCompositeOperation = method;
+    context.fillStyle = color;
+    context.arc(radius, radius, radius, 0, 2 * Math.PI, false);
+    context.fill();
+    icon.type = "image/x-icon";
+    icon.href = canvas.toDataURL();
+  }
+
+  ;
+  var img = document.createElement("img");
+  img.addEventListener("load", onImageLoaded);
+  img.src = favicon.href;
+};
+
+exports.default = _default;
+},{}],"la8o":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.colorScheme = exports.default = void 0;
+
+var _colorizeFavicon = _interopRequireDefault(require("./colorize-favicon"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const UA = navigator.userAgent;
+const device = {
+  get is_ios() {
+    return device.isiOS;
+  },
+
+  // DEPRECATED
+  get is_android() {
+    return device.isAndroid;
+  },
+
+  // DEPRECATED
+  get is_mobile() {
+    return device.isMobile;
+  },
+
+  // DEPRECATED
+  get isWindows() {
+    return /Win/.test(UA);
+  },
+
+  get isMac() {
+    return /Mac/.test(UA);
+  },
+
+  get isLinux() {
+    return /Linux/.test(UA);
+  },
+
+  get minScreenSize() {
+    return window.outerWidth < window.outerHeight ? window.outerWidth : window.outerHeight;
+  },
+
+  get isiOS() {
+    return /iPad|iPhone|iPod/.test(UA) || device.isMac && navigator.standalone !== undefined; // iPadOS 13+
+  },
+
+  get isiPad() {
+    return /iPad/.test(UA) || !device.isiOS && device.isMac && navigator.standalone !== undefined;
+  },
+
+  get isAndroid() {
+    return /android/i.test(UA);
+  },
+
+  get isTouch() {
+    return 'ontouchstart' in window;
+  },
+
+  get isMobile() {
+    return device.isiOS || device.isAndroid;
+  },
+
+  // https://developer.chrome.com/multidevice/user-agent
+  get isiOSChrome() {
+    return /CriOS/.test(UA);
+  },
+
+  get isElectron() {
+    return /Electron/.test(UA);
+  },
+
+  get electronVersion() {
+    let matches = UA.match(/Electron\/([\d\.]+) /);
+    return matches ? matches[1] : 0;
+  },
+
+  get isChromeInstalledApp() {
+    return this.isInstalled && /Chrome/.test(UA);
+  },
+
+  get isInstalled() {
+    return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+  },
+
+  // alias
+  get isStandalone() {
+    return device.isInstalled;
+  },
+
+  applyClasses() {
+    const html = document.documentElement;
+    if (!html) return;
+    html.classList.toggle('mobile', device.isMobile);
+    html.classList.toggle('ios', device.isiOS);
+    html.classList.toggle('electron', device.isElectron);
+    html.classList.toggle('android', device.isAndroid);
+    html.classList.toggle('mac', device.isMac);
+    html.classList.toggle('windows', device.isWindows);
+    html.classList.toggle('installed', device.isInstalled);
+  }
+
+};
+var _default = device; // https://medium.com/@jonas_duri/enable-dark-mode-with-css-variables-and-javascript-today-66cedd3d7845
+
+exports.default = _default;
+const colorScheme = {
+  get isDarkMode() {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  },
+
+  get isLightMode() {
+    return window.matchMedia("(prefers-color-scheme: light)").matches;
+  },
+
+  get isUnset() {
+    return window.matchMedia("(prefers-color-scheme: no-preference)").matches;
+  },
+
+  get isSupported() {
+    return this.isDarkMode || this.isLightMode || this.isUnset;
+  },
+
+  onChange(cb) {
+    // first time, setup watchers
+    if (!this._watchers) {
+      this._watchers = new Map();
+      window.matchMedia("(prefers-color-scheme: dark)").addListener(e => e.matches && this._dispatchChange('dark'));
+      window.matchMedia("(prefers-color-scheme: light)").addListener(e => e.matches && this._dispatchChange('light'));
+    }
+
+    this._watchers.set(cb, cb);
+  },
+
+  _dispatchChange(mode) {
+    this._watchers.forEach(cb => {
+      cb(mode);
+    });
+  },
+
+  apply({
+    colorizeFaviconComposition = ''
+  } = {}) {
+    localStorage.setItem('theme-colorize-icon', colorizeFaviconComposition || localStorage.getItem('theme-colorize-icon') || 'lighten');
+    this.onChange(this.setTheme);
+    this.setTheme();
+    this.setAccent();
+  },
+
+  get theme() {
+    return localStorage.getItem('theme');
+  },
+
+  get accent() {
+    return localStorage.getItem('theme-accent');
+  },
+
+  setTheme(theme) {
+    const html = document.documentElement;
+    let metaThemeColor = document.head.querySelector('meta[name="theme-color"]'); // create the meta theme color if not found
+    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name/theme-color
+
+    if (!metaThemeColor) {
+      metaThemeColor = document.createElement('meta');
+      metaThemeColor.setAttribute('name', 'theme-color');
+      document.head.appendChild(metaThemeColor);
+    }
+
+    html.removeAttribute('light');
+    html.removeAttribute('dark');
+    if (theme === undefined) theme = localStorage.getItem('theme') || 'system';
+    localStorage.setItem('theme', theme);
+    if (theme == 'system') theme = this.isDarkMode ? 'dark' : 'light';
+    html.setAttribute(theme, '');
+    metaThemeColor.content = this.getCssVar('theme-bgd');
+    localStorage.setItem('meta-theme-color', metaThemeColor.content);
+  },
+
+  setAccent(accent) {
+    const html = document.documentElement;
+    let colorizeFaviconComposition = localStorage.getItem('theme-colorize-icon');
+
+    if (accent === undefined) {
+      accent = localStorage.getItem('theme-accent');
+    } else {
+      localStorage.setItem('theme-accent', accent);
+    }
+
+    if (accent) {
+      html.style.setProperty('--theme', `var(--${accent}, #${accent})`);
+      html.style.setProperty('--theme-chosen', `var(--${accent}, #${accent})`);
+      if (colorizeFaviconComposition) (0, _colorizeFavicon.default)(this.getCssVar('theme'), colorizeFaviconComposition);
+    } else {
+      html.style.removeProperty('--theme');
+      html.style.removeProperty('--theme-chosen');
+      (0, _colorizeFavicon.default)(false);
+    }
+  },
+
+  getCssVar(name) {
+    if (name[0] != '-') name = '--' + name;
+    return getComputedStyle(document.body).getPropertyValue(name).trim();
+  }
+
+};
+exports.colorScheme = colorScheme;
+},{"./colorize-favicon":"FgfO"}],"ZCfn":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11144,6 +7373,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _litElement = require("lit-element");
+
+var _device = _interopRequireDefault(require("../../../util/device"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 customElements.define('range-slider', class extends _litElement.LitElement {
   static get properties() {
@@ -11186,13 +7419,13 @@ customElements.define('range-slider', class extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
-            --size: 2px;
-            --thumbSize: 14px;
+            --size: 6px;
+            --thumbSize: 18px;
             --color: var(--fc-theme);
             --thumbColor: var(--color);
-            --bgd: rgba(0,0,0,.4);
+            --bgd: var(--theme-color-accent, rgba(0,0,0,.4));
             --padding: 10px;
 
             display: inline-block;
@@ -11205,6 +7438,7 @@ customElements.define('range-slider', class extends _litElement.LitElement {
             cursor: pointer;
             font-size: .9em;
             user-select: none;
+            --label-rotation: 45deg;
         }
 
         rail, track {
@@ -11231,6 +7465,7 @@ customElements.define('range-slider', class extends _litElement.LitElement {
             top: calc(var(--padding) + (var(--size) / 2));
             background: var(--thumbColor);
             border-radius: var(--thumbSize);
+            box-shadow: 0 0 0 1px var(--theme-bgd, var(--thumb-shadow, #fff)) inset
         }
 
         thumb:before {
@@ -11278,23 +7513,29 @@ customElements.define('range-slider', class extends _litElement.LitElement {
             left: 50%;
             position: absolute;
             transform-origin: bottom left;
-            transform: translate(0%,-9px) rotate(-45deg) scale(0);
+            transform: translate(0%,-4px) rotate(calc(-1 * var(--label-rotation))) scale(0);
             border-radius: 50% 50% 50% 0;
             transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
             
         }
 
-        thumb > div > span {
-            transform: rotate(45deg)
+        :host([label*="bottom"]) thumb > div{
+            bottom: auto;
+            top: calc(0% - 4px);
+            --label-rotation: -135deg;
         }
 
-        :host([label="show"]) thumb > div,
+        thumb > div > span {
+            transform: rotate(var(--label-rotation))
+        }
+
+        :host([label*="show"]) thumb > div,
         thumb:hover > div,
         thumb[active] > div {
-            transform: translate(0%,-9px) rotate(-45deg) scale(1);
+            transform: translate(0%,-4px) rotate(calc(-1 * var(--label-rotation))) scale(1);
         }
 
-        :host([label="none"]) thumb > div {
+        :host([label*="none"]) thumb > div {
             display: none !important;
         }
 
@@ -11357,6 +7598,15 @@ customElements.define('range-slider', class extends _litElement.LitElement {
 
     if (oldMin == this.valMin && oldMax == this.valMax) return;
     this._didChange = true;
+    let setPropOn = this.parentElement && this.parentElement.tagName == 'FORM-CONTROL' ? this.parentElement : this;
+
+    if (this.range) {
+      setPropOn.style.setProperty('--range-slider-min-val', `'${this.valMin}'`);
+      setPropOn.style.setProperty('--range-slider-max-val', `'${this.valMax}'`);
+    } else {
+      setPropOn.style.setProperty('--range-slider-val', `'${this.valMax}'`);
+    }
+
     this.requestUpdate('value', oldVal);
   }
 
@@ -11366,12 +7616,12 @@ customElements.define('range-slider', class extends _litElement.LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('mousedown', this.mouseDown, true);
+    this.addEventListener(_device.default.isMobile ? 'touchstart' : 'mousedown', this.mouseDown, true);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener('mousedown', this.mouseDown, true);
+    this.removeEventListener(_device.default.isMobile ? 'touchstart' : 'mousedown', this.mouseDown, true);
   }
 
   get _len() {
@@ -11383,7 +7633,7 @@ customElements.define('range-slider', class extends _litElement.LitElement {
   }
 
   get _maxLeft() {
-    return this.valMax / this._len * 100;
+    return (this.valMax - this.min) / this._len * 100;
   }
 
   get _trackLength() {
@@ -11407,7 +7657,7 @@ customElements.define('range-slider', class extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <rail></rail>
         <track style="left:${this._minLeft}%; width:${this._trackLength}%"></track>
         <thumb min ?active=${this._active == 'min'} style="left:${this._minLeft}%">
@@ -11417,17 +7667,17 @@ customElements.define('range-slider', class extends _litElement.LitElement {
             <div><span>${this.valMax}</span></div>
         </thumb>
         <div class="labels">
-            <!-- <b-label xs>0 hrs</b-label>
-            <b-label xs>30 hrs</b-label> -->
+            <b-text sm muted><slot name="label:min"></slot></b-text>
+            <b-text sm muted><slot name="label:max"></slot></b-text>
         </div>
     `;
   }
 
   mouseDown(e) {
-    if (e.which !== 1) return; // normal click
+    if (!_device.default.isMobile && e.which !== 1) return; // normal click
 
-    window.addEventListener('mouseup', this.mouseUp, true);
-    window.addEventListener('mousemove', this.mouseMove, true);
+    window.addEventListener(_device.default.isMobile ? 'touchend' : 'mouseup', this.mouseUp, true);
+    window.addEventListener(_device.default.isMobile ? 'touchmove' : 'mousemove', this.mouseMove, true);
     this._mouseDown = true;
     this.mouseMove(e);
   }
@@ -11435,8 +7685,8 @@ customElements.define('range-slider', class extends _litElement.LitElement {
   mouseUp() {
     this._active = null;
     this._mouseDown = false;
-    window.removeEventListener('mouseup', this.mouseUp, true);
-    window.removeEventListener('mousemove', this.mouseMove, true);
+    window.removeEventListener(_device.default.isMobile ? 'touchend' : 'mouseup', this.mouseUp, true);
+    window.removeEventListener(_device.default.isMobile ? 'touchmove' : 'mousemove', this.mouseMove, true);
     this.update();
 
     if (this._didChange) {
@@ -11456,29 +7706,24 @@ customElements.define('range-slider', class extends _litElement.LitElement {
     if (this._active == 'min' && e.pageX < this._lastMousePos && this.atMin) return;
     if (this._active == 'max' && e.pageX > this._lastMousePos && this.atMax) return;
     this._lastMousePos = e.pageX;
+    let rect = this.getBoundingClientRect();
     let offset = {
-      x: this.offsetLeft,
-      y: this.offsetTop
-    };
-    let parent = this.offsetParent;
+      x: rect.x,
+      y: rect.y
+    }; // let mouseX = offset.x < e.pageX ? (e.offsetX + e.srcElement.offsetLeft) : e.pagex
 
-    while (parent) {
-      offset.x += parent.offsetLeft;
-      offset.y += parent.offsetTop;
-      parent = parent.offsetParent;
-    } // let mouseX = offset.x < e.pageX ? (e.offsetX + e.srcElement.offsetLeft) : e.pagex
-
-
-    let mouseX = e.screenX - window.screenX;
+    let eventScreenX = e.touches ? e.touches[0].screenX : e.screenX;
+    let mouseX = eventScreenX - window.screenX;
     let x = mouseX - offset.x;
     let percent = x / this.clientWidth * 100;
-    let val = percent / 100 * this._len;
+    let val = percent / 100 * this._len + this.min;
+    let oldVal = this.value;
     this.value = val;
-    this.dispatchEvent(new CustomEvent('changing', {
+    if (oldVal != this.value) this.dispatchEvent(new CustomEvent('changing', {
       bubbles: true,
       composed: true,
       detail: {
-        value: val
+        value: this.value
       }
     }));
   }
@@ -11488,7 +7733,7 @@ customElements.define('range-slider', class extends _litElement.LitElement {
 var _default = customElements.get('range-slider');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"2z4L":[function(require,module,exports) {
+},{"lit-element":"bhxD","../../../util/device":"la8o"}],"z4Ln":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11579,16 +7824,20 @@ require("./icon");
 
 require("../presenters/form-control/controls/range-slider");
 
-var _moment = _interopRequireDefault(require("moment"));
+var _dayjs = _interopRequireDefault(require("dayjs"));
+
+var _duration = _interopRequireDefault(require("dayjs/plugin/duration"));
 
 var _store = _interopRequireDefault(require("../util/store"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // import Menu from '../presenters/menu'
-// TODO: hook up settings menu
+_dayjs.default.extend(_duration.default); // TODO: hook up settings menu
+
+
 const formatTime = sec => {
-  var dur = _moment.default.duration(sec * 1000);
+  var dur = _dayjs.default.duration(sec * 1000);
 
   var hours = dur.hours();
   var min = hours > 0 ? String(dur.minutes()).padStart(2, '0') : dur.minutes();
@@ -11625,13 +7874,13 @@ customElements.define('b-audio', class extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: block;
             position:relative;
             /* padding: 1em; */
             border: solid 1px rgba(0,0,0,.1);
-            background: #fff;
+            background: var(--theme-bgd, #fff);
             border-radius: var(--radius);
             --radius: 4px;
         }
@@ -11665,7 +7914,7 @@ customElements.define('b-audio', class extends _litElement.LitElement {
             flex-shrink: 0;
             border-radius: 20px;
             /* margin-right: .5em; */
-            background: #eee;
+            background: var(--theme-bgd-accent, #eee);
             /* color: #fff; */
             /* border: solid 2px; */
             transition: color .15s ease-in-out, border-color .15s ease-in-out;
@@ -11690,7 +7939,7 @@ customElements.define('b-audio', class extends _litElement.LitElement {
             min-width: 100px;
             height: 10px;
             border-radius: 5px;
-            background: var(--black);
+            background: var(--theme-color, var(--black));
             outline: none;
             padding: 0;
             margin: 0 .5em;
@@ -11710,8 +7959,8 @@ customElements.define('b-audio', class extends _litElement.LitElement {
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            border: solid 2px #fff;
-            background: var(--black);
+            border: solid 2px var(--theme-bgd, #fff);
+            background: var(--theme-color, var(--black));
             cursor: pointer;
             box-shadow: none;
             margin-top: -4px;
@@ -11736,7 +7985,7 @@ customElements.define('b-audio', class extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <main @mouseenter=${this.onHover} @mouseleave=${this.onHoverLeave}>
             <audio
                 @loadedmetadata=${this.audioLoaded}
@@ -11878,9 +8127,9 @@ customElements.define('b-audio', class extends _litElement.LitElement {
   setProgress() {
     var percent = this.progress.value / this.audio.duration * 100;
     var time = this.progress.value;
-    var color = '#2c3033'; // this.classList.contains('progress-hover') ? '#3498db' : '#2c3033';
-
-    this.progress.style.background = "linear-gradient(to right, " + color + " " + percent + "%, #bbb " + percent + "%)";
+    var color = 'var(--theme-color, #333)';
+    var color2 = 'var(--theme-bgd-accent, #bbb)';
+    this.progress.style.background = `linear-gradient(to right, ${color} ${percent}%, ${color2} ${percent}%)`;
     this.elapsed.innerHTML = formatTime(time);
     this.remaining.innerHTML = this.audio.duration == Infinity ? '' : formatTime(this.audio.duration - time);
   }
@@ -11999,7 +8248,7 @@ customElements.define('b-audio', class extends _litElement.LitElement {
 var _default = customElements.get('b-audio');
 
 exports.default = _default;
-},{"lit-element":"+bhx","./icon":"ncPe","../presenters/form-control/controls/range-slider":"ZCfn","moment":"a2/B","../util/store":"2z4L"}],"/jTP":[function(require,module,exports) {
+},{"lit-element":"bhxD","./icon":"ncPe","../presenters/form-control/controls/range-slider":"ZCfn","dayjs":"dZYI","dayjs/plugin/duration":"oxIj","../util/store":"z4Ln"}],"jTPt":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -12060,7 +8309,99 @@ const unsafeHTML = (0, _litHtml.directive)(value => part => {
   });
 });
 exports.unsafeHTML = unsafeHTML;
-},{"../lib/parts.js":"atl2","../lit-html.js":"SP/d"}],"lo/u":[function(require,module,exports) {
+},{"../lib/parts.js":"atl2","../lit-html.js":"SPDu"}],"RaiV":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.live = void 0;
+
+var _litHtml = require("../lit-html.js");
+
+/**
+ * @license
+ * Copyright (c) 2020 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+
+/**
+ * Checks binding values against live DOM values, instead of previously bound
+ * values, when determining whether to update the value.
+ *
+ * This is useful for cases where the DOM value may change from outside of
+ * lit-html, such as with a binding to an `<input>` element's `value` property,
+ * a content editable elements text, or to a custom element that changes it's
+ * own properties or attributes.
+ *
+ * In these cases if the DOM value changes, but the value set through lit-html
+ * bindings hasn't, lit-html won't know to update the DOM value and will leave
+ * it alone. If this is not what you want—if you want to overwrite the DOM
+ * value with the bound value no matter what—use the `live()` directive:
+ *
+ *     html`<input .value=${live(x)}>`
+ *
+ * `live()` performs a strict equality check agains the live DOM value, and if
+ * the new value is equal to the live value, does nothing. This means that
+ * `live()` should not be used when the binding will cause a type conversion. If
+ * you use `live()` with an attribute binding, make sure that only strings are
+ * passed in, or the binding will update every render.
+ */
+const live = (0, _litHtml.directive)(value => part => {
+  let previousValue;
+
+  if (part instanceof _litHtml.EventPart || part instanceof _litHtml.NodePart) {
+    throw new Error('The `live` directive is not allowed on text or event bindings');
+  }
+
+  if (part instanceof _litHtml.BooleanAttributePart) {
+    checkStrings(part.strings);
+    previousValue = part.element.hasAttribute(part.name); // This is a hack needed because BooleanAttributePart doesn't have a
+    // committer and does its own dirty checking after directives
+
+    part.value = previousValue;
+  } else {
+    const {
+      element,
+      name,
+      strings
+    } = part.committer;
+    checkStrings(strings);
+
+    if (part instanceof _litHtml.PropertyPart) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      previousValue = element[name];
+
+      if (previousValue === value) {
+        return;
+      }
+    } else if (part instanceof _litHtml.AttributePart) {
+      previousValue = element.getAttribute(name);
+    }
+
+    if (previousValue === String(value)) {
+      return;
+    }
+  }
+
+  part.setValue(value);
+});
+exports.live = live;
+
+const checkStrings = strings => {
+  if (strings.length !== 2 || strings[0] !== '' || strings[1] !== '') {
+    throw new Error('`live` bindings can only contain a single expression');
+  }
+};
+},{"../lit-html.js":"SPDu"}],"loUd":[function(require,module,exports) {
 var global = arguments[3];
 "use strict";
 
@@ -14670,133 +11011,6 @@ Popper.placements = placements;
 Popper.Defaults = Defaults;
 var _default = Popper;
 exports.default = _default;
-},{}],"la8o":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.colorScheme = exports.default = void 0;
-const UA = navigator.userAgent;
-const device = {
-  get is_ios() {
-    return device.isiOS;
-  },
-
-  // DEPRECATED
-  get is_android() {
-    return device.isAndroid;
-  },
-
-  // DEPRECATED
-  get is_mobile() {
-    return device.isMobile;
-  },
-
-  // DEPRECATED
-  get isWindows() {
-    return /Win/.test(UA);
-  },
-
-  get isMac() {
-    return /Mac/.test(UA);
-  },
-
-  get isLinux() {
-    return /Linux/.test(UA);
-  },
-
-  get minScreenSize() {
-    return window.outerWidth < window.outerHeight ? window.outerWidth : window.outerHeight;
-  },
-
-  get isiOS() {
-    return /iPad|iPhone|iPod/.test(UA) || device.isMac && navigator.standalone !== undefined; // iPadOS 13+
-  },
-
-  get isiPad() {
-    return /iPad/.test(UA) || !device.isiOS && device.isMac && navigator.standalone !== undefined;
-  },
-
-  get isAndroid() {
-    return /android/i.test(UA);
-  },
-
-  get isTouch() {
-    return 'ontouchstart' in window;
-  },
-
-  get isMobile() {
-    return device.isiOS || device.isAndroid;
-  },
-
-  // https://developer.chrome.com/multidevice/user-agent
-  get isiOSChrome() {
-    return /CriOS/.test(UA);
-  },
-
-  get isElectron() {
-    return /Electron/.test(UA);
-  },
-
-  get electronVersion() {
-    let matches = UA.match(/Electron\/([\d\.]+) /);
-    return matches ? matches[1] : 0;
-  },
-
-  get isChromeInstalledApp() {
-    return this.isInstalled && /Chrome/.test(UA);
-  },
-
-  get isInstalled() {
-    return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
-  },
-
-  // alias
-  get isStandalone() {
-    return device.isInstalled;
-  }
-
-};
-var _default = device; // https://medium.com/@jonas_duri/enable-dark-mode-with-css-variables-and-javascript-today-66cedd3d7845
-
-exports.default = _default;
-const colorScheme = {
-  get isDarkMode() {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  },
-
-  get isLightMode() {
-    return window.matchMedia("(prefers-color-scheme: light)").matches;
-  },
-
-  get isUnset() {
-    return window.matchMedia("(prefers-color-scheme: no-preference)").matches;
-  },
-
-  get isSupported() {
-    return this.isDarkMode || this.isLightMode || this.isUnset;
-  },
-
-  onChange(cb) {
-    // first time, setup watchers
-    if (!this._watchers) {
-      this._watchers = new Map();
-      window.matchMedia("(prefers-color-scheme: dark)").addListener(e => e.matches && this._dispatchChange('dark'));
-      window.matchMedia("(prefers-color-scheme: light)").addListener(e => e.matches && this._dispatchChange('light'));
-    }
-
-    this._watchers.set(cb, cb);
-  },
-
-  _dispatchChange(mode) {
-    this._watchers.forEach(cb => {
-      cb(mode);
-    });
-  }
-
-};
-exports.colorScheme = colorScheme;
 },{}],"r4vn":[function(require,module,exports) {
 
 },{}],"Soyf":[function(require,module,exports) {
@@ -14825,6 +11039,8 @@ const DefaultOpts = {
   closeOnHide: true,
   maxHeight: 'auto',
   maxHeightThreshold: 400,
+  maxWidth: '',
+  width: '',
   flip: true,
   overflowBoundry: 'scrollParent',
   onClose: () => {},
@@ -14871,7 +11087,7 @@ class Popover {
 
     if (!WatchingClicks) {
       WatchingClicks = true;
-      window.addEventListener(_device.default.isMobile ? 'touchend' : 'click', WatchClicks, !_device.default.isMobile);
+      window.addEventListener(_device.default.isMobile ? 'touchend' : 'mousedown', WatchClicks, !_device.default.isMobile);
     }
 
     if (!WatchingKeyboard) {
@@ -14893,15 +11109,8 @@ class Popover {
     }
 
     if (window.Backbone && view instanceof window.Backbone.View) view = view.el;
-
-    if (target instanceof MouseEvent) {
-      target = this.createInvisiblePlaceholderTarget(target);
-    }
-
     this.opts = opts;
-    this.target = target;
     this.view = view;
-    this.target.classList.add('popover-open');
     this.view.classList.add('__view');
     this.el = document.createElement('div');
     this.el.classList.add('popover');
@@ -14913,35 +11122,9 @@ class Popover {
       this.opts.className.split(' ').forEach(className => this.el.classList.add(className));
     }
 
-    this.target.popover = this;
     this.el.popover = this;
-    this.view.popover = this; // set position of the popover using Popper
-
-    this.popper = new _popper.default(target, this.el, {
-      placement: opts.align,
-      removeOnDestroy: true,
-      onCreate: this._onPositionCreate.bind(this),
-      onUpdate: this._onPositionUpdate.bind(this),
-      modifiers: {
-        inner: {
-          enabled: opts.inner || false
-        },
-        offset: {
-          enabled: opts.offset ? true : false,
-          offset: opts.offset
-        },
-        flip: {
-          enabled: opts.flip
-        },
-        preventOverflow: {
-          enabled: opts.preventDefault !== undefined ? opts.preventDefault : true,
-          // FIXME: confusing naming and not sure it works
-          boundariesElement: opts.overflowBoundry || 'scrollParent',
-          // priority: []
-          priority: ['top', 'bottom'].includes(opts.align) ? ['left', 'right'] : ['top', 'bottom']
-        }
-      }
-    }); // watch for the view to add elements so we can adjust position
+    this.view.popover = this;
+    this.positionOver(target); // watch for the view to add elements so we can adjust position
 
     this.mutationObserver = new MutationObserver(this.viewMutated.bind(this));
     this.mutationObserver.observe(this.view, {
@@ -14953,12 +11136,72 @@ class Popover {
     OpenPopovers.push(this);
   }
 
+  positionOver(target) {
+    this.clearTarget();
+    let opts = this.opts;
+    if (!target) return;
+
+    if (target instanceof MouseEvent || target instanceof KeyboardEvent) {
+      target = this.createInvisiblePlaceholderTarget(target);
+    }
+
+    this.target = target;
+    this.target.popover = this;
+    if (this.target._popoverTarget) this.target._popoverTarget.classList.add('popover-open');else this.target.classList.add('popover-open');
+
+    if (!this.popper) {
+      // set position of the popover using Popper
+      this.popper = new _popper.default(target, this.el, {
+        placement: opts.align,
+        removeOnDestroy: true,
+        onCreate: this._onPositionCreate.bind(this),
+        onUpdate: this._onPositionUpdate.bind(this),
+        modifiers: {
+          inner: {
+            enabled: opts.inner || false
+          },
+          offset: {
+            enabled: opts.offset ? true : false,
+            offset: opts.offset
+          },
+          flip: {
+            enabled: opts.flip
+          },
+          preventOverflow: {
+            enabled: opts.preventDefault !== undefined ? opts.preventDefault : true,
+            // FIXME: confusing naming and not sure it works
+            boundariesElement: opts.overflowBoundry || 'scrollParent',
+            // priority: []
+            priority: ['top', 'bottom'].includes(opts.align) ? ['left', 'right'] : ['top', 'bottom']
+          }
+        }
+      });
+    } else {
+      this.popper.reference = target;
+      this.popper.update();
+    }
+  }
+
   createInvisiblePlaceholderTarget(e) {
     let target = document.createElement('div');
+    target._popoverTarget = e._popoverTarget = e._popoverTarget || e.currentTarget;
     target.classList.add('popover-invisible-placeholder');
     target.style.position = 'absolute';
-    target.style.left = e.clientX + 'px';
-    target.style.top = e.clientY + 'px';
+
+    if (e instanceof MouseEvent) {
+      target.style.left = e.clientX + 'px';
+      target.style.top = e.clientY + 'px';
+    } else if (e instanceof KeyboardEvent) {
+      // https://stackoverflow.com/a/16210994/484780
+      let root = e.target.getRootNode(); // shadowRoot or window
+
+      let range = root.getSelection().getRangeAt(0);
+      let rect = range.getBoundingClientRect();
+      target.style.left = rect.x + 'px';
+      target.style.top = rect.y + 'px';
+      target.style.height = rect.height + 'px';
+    }
+
     document.body.appendChild(target);
     return target;
   }
@@ -14994,15 +11237,24 @@ class Popover {
     this._updatePosition();
   }
 
+  clearTarget() {
+    if (!this.target) return;
+    this.target.popover = null;
+
+    if (this.target._popoverTarget) {
+      this.target._popoverTarget.classList.remove('popover-open');
+
+      this.target.remove();
+    } else this.target.classList.remove('popover-open');
+  }
+
   close() {
     if (!this.target.popover) return;
-    this.target.popover = null;
     this.el.popover = null;
     this.view.popover = null;
     this.mutationObserver.disconnect();
     this.popper.destroy();
-    this.target.classList.remove('popover-open');
-    if (this.target.classList.contains('popover-invisible-placeholder')) this.target.remove(); // remove this from the list of open popovers as well as all popovers after it
+    this.clearTarget(); // remove this from the list of open popovers as well as all popovers after it
 
     var indx = OpenPopovers.indexOf(this);
 
@@ -15015,7 +11267,7 @@ class Popover {
 
     if (OpenPopovers.length == 0) {
       WatchingClicks = false;
-      window.removeEventListener(_device.default.isMobile ? 'touchend' : 'click', WatchClicks, true);
+      window.removeEventListener(_device.default.isMobile ? 'touchend' : 'mousedown', WatchClicks, true);
       WatchingKeyboard = false;
       window.removeEventListener('keydown', WatchKeyboard, !_device.default.isMobile);
     }
@@ -15032,21 +11284,28 @@ class Popover {
   }
 
   _onPositionCreate(data) {
-    let arrowH = data.arrowElement.offsetHeight;
-    let top = data.offsets.reference.top;
-    let bottom = data.offsets.reference.bottom;
-    data.instance.modifiers.forEach(m => {
-      if (m.name == 'preventOverflow' && m.boundaries) {
-        let h = (m.boundaries.height || window.innerHeight) - bottom - arrowH * 2;
-        if (bottom > m.boundaries.height / 2) h = top - arrowH * 2;
-        this.maxHeight = h;
-        this.view.style.maxWidth = this.opts.maxWidth || '';
-      }
-    });
+    this._setDimensions(data);
   }
 
   _onPositionUpdate(data) {
     if (data.hide && this.opts.closeOnHide) this._close();
+  }
+
+  _setDimensions(data) {
+    let arrowH = data.arrowElement.offsetHeight;
+    let top = data.offsets.reference.top; // NOTE: bottom of element in relation to top of window
+
+    let bottom = data.offsets.reference.bottom;
+    data.instance.modifiers.forEach(m => {
+      if (m.name == 'preventOverflow' && m.boundaries) {
+        // TODO: needs improvement when alignmen is not bottom-*
+        let h = window.innerHeight - bottom - arrowH * 2;
+        if (bottom > window.innerHeight / 2) h = top - arrowH * 2;
+        this.maxHeight = h;
+        this.view.style.width = this.opts.width || this.view.style.width;
+        this.view.style.maxWidth = this.opts.maxWidth || this.view.style.maxWidth;
+      }
+    });
   }
 
   _onKeydown(e) {
@@ -15054,15 +11313,13 @@ class Popover {
   }
 
   set maxHeight(val) {
-    if (this.opts.maxHeight != 'auto') this.view.style.maxHeight = this.opts.maxHeight;else if (this.opts.maxHeight !== false
-    /*&& this.view.offsetHeight > this.opts.maxHeightThreshold*/
-    ) this.view.style.maxHeight = val;
+    if (this.opts.maxHeight != 'auto') this.view.style.maxHeight = this.opts.maxHeight;else if (this.opts.maxHeight !== false) this.view.style.maxHeight = val + 'px';
   }
 
 }
 
 exports.default = Popover;
-},{"popper.js":"lo/u","../../util/device":"la8o","./style.less":"r4vn"}],"AZEX":[function(require,module,exports) {
+},{"popper.js":"loUd","../../util/device":"la8o","./style.less":"r4vn"}],"AZEX":[function(require,module,exports) {
 var define;
 // Generated by CoffeeScript 1.10.0
 var slice = [].slice;
@@ -15622,7 +11879,12 @@ const config = {
   APP_TITLE: document.title,
   PATH_ROOT: location.pathname,
   PATH_PREFIX: '',
-  clearInvalidPath: true
+  clearInvalidPath: true,
+
+  handleInvalidRoute(state, config) {
+    if (config.clearInvalidPath) state.path = config.PATH_ROOT;
+  }
+
 };
 var _default = config; // normalize path (always begin with prefix and path root)
 
@@ -15726,10 +11988,12 @@ exports.default = void 0;
 
 var _config = _interopRequireWildcard(require("./config"));
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 class HistoryState {
-  constructor(parent, props) {
+  constructor(parent, props = {}) {
     this.parent = parent;
     if (!props.path) props.path = '';
     let [path, query] = props.path.split('?');
@@ -15904,7 +12168,7 @@ class HistoryStates {
 }
 
 exports.default = HistoryStates;
-},{"./history-state":"phBv"}],"38Qe":[function(require,module,exports) {
+},{"./history-state":"phBv"}],"Qeq3":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15918,7 +12182,9 @@ var _historyStates = _interopRequireDefault(require("./history-states"));
 
 var _config = _interopRequireWildcard(require("./config"));
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16010,7 +12276,7 @@ class Router {
       if (route._change(oldStates, newState, dir)) didMatch = true;
     }); // if none of the routes matched, change current state path back to the root
 
-    if (!didMatch && _config.default.clearInvalidPath) this.states.current.path = _config.default.PATH_ROOT;
+    if (!didMatch) _config.default.handleInvalidRoute(this.states.current, _config.default);
   }
 
   add(path, onChange) {
@@ -16069,7 +12335,7 @@ class PanelController extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             position: relative;
             /* z-index: 10; */
@@ -16132,7 +12398,7 @@ class PanelController extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`        
+    return (0, _litElement.html)`        
         <slot></slot>
     `;
   }
@@ -16175,15 +12441,20 @@ class PanelController extends _litElement.LitElement {
     // else
 
     this.panels.forEach(panel => {
-      if (panel.type != 'modal') panel.style.zIndex = i++;
+      if (panel.type != 'modal' && panel.type != 'actionsheet') panel.style.zIndex = 100 + i++;
+      let wasOnTop = panel.onTop;
 
       if (i == this.length) {
-        panel.setAttribute('ontop', ''); // if( updateRoutes && panel.route && !panel.route.isCurrent ){
+        panel.setAttribute('ontop', '');
+        if (!wasOnTop && panel.view) panel.view.didBecomeActive && panel.view.didBecomeActive(); // if( updateRoutes && panel.route && !panel.route.isCurrent ){
         //     console.log(panel.route);
         //     // router.push(panel.route.path)
         // }
       } else {
         panel.removeAttribute('ontop');
+        if (wasOnTop) setTimeout(() => {
+          if (panel.view && panel.view.didBecomeInactive) panel.view.didBecomeInactive();
+        });
       }
     });
     let hostEl = this.getRootNode();
@@ -16274,7 +12545,7 @@ customElements.define('b-panels', PanelController);
 var _default = customElements.get('b-panels');
 
 exports.default = _default;
-},{"lit-element":"+bhx","../menu":"0tCY","../../router":"38Qe","../../util/device":"la8o"}],"ZNP1":[function(require,module,exports) {
+},{"lit-element":"bhxD","../menu":"tCYJ","../../router":"Qeq3","../../util/device":"la8o"}],"ZNP1":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16304,7 +12575,7 @@ class PanelToolbar extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: grid;
             grid-template-columns: 1fr max-content 1fr;
@@ -16318,6 +12589,8 @@ class PanelToolbar extends _litElement.LitElement {
             min-height: 40px;
             grid-column: 1/-1; /* full width */
         }
+
+        :host([hidden]) { display: none; }
 
         /* @media (max-width: 699px) {
             .middle {
@@ -16394,7 +12667,7 @@ class PanelToolbar extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <div class="left">
             <slot name="close-btn">
                 <b-btn outline icon="cancel-1" title="Right+click for quick jump menu"
@@ -16429,7 +12702,7 @@ customElements.define('b-panel-toolbar', PanelToolbar);
 var _default = customElements.get('b-panel-toolbar');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"cmZt":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"cmZt":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16602,14 +12875,15 @@ class Panel extends _litElement.LitElement {
     let defaultOpts = Object.assign({}, PanelDefaults);
 
     if (opts.type == 'modal') {
-      defaultOpts.width = 'auto';
-      defaultOpts.height = 'auto';
+      defaultOpts.width = '';
+      defaultOpts.height = '';
       defaultOpts.anchor = 'center';
+      defaultOpts.animation = 'scale';
     }
 
     if (opts.type == 'actionsheet') {
       defaultOpts.width = '100%';
-      defaultOpts.height = 'auto';
+      defaultOpts.height = '';
       defaultOpts.anchor = 'bottom';
     }
 
@@ -16637,6 +12911,7 @@ class Panel extends _litElement.LitElement {
     if (!this.onTop) return;
     if (this.opts.closeOnEsc && e.key == 'Escape') this.close();
     this.opts.onKeydown && this.opts.onKeydown(e);
+    this.view.onKeydown && this.view.onKeydown(e);
   } // DEPRECATED: hash changed to path
 
 
@@ -16704,12 +12979,14 @@ class Panel extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <div class="backdrop"></div>
-        <main style="width:${this.width}; height:${this.height}">
+        <main style="${this.width ? `width:${this.width};` : ''}${this.height ? `height:${this.height};` : ''}">
             <b-btn icon="cancel-1" pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closeBtn !== true}></b-btn>
             <slot></slot>
-            ${this.html}
+            <div class="inlinehtml">
+                ${this.html}
+            </div>
         </main>
     `;
   }
@@ -16753,6 +13030,16 @@ class Panel extends _litElement.LitElement {
     this.__view = view;
 
     if (this.view) {
+      // already in the DOM, add a placeholder so we can put this view back after closing
+      if (this.view.offsetParent) {
+        this.__viewOriginalPlacement = document.createElement('span');
+
+        this.__viewOriginalPlacement.classList.add('panel-view-placeholder');
+
+        this.__viewOriginalPlacement.style.position = 'absolute';
+        this.view.replaceWith(this.__viewOriginalPlacement);
+      }
+
       this.view.panel = this;
       this.appendChild(this.view);
 
@@ -16810,7 +13097,7 @@ class Panel extends _litElement.LitElement {
     this.__panelController = val;
   }
 
-  async open() {
+  async open(...args) {
     if (this.route && this.route.state.props.controller) this.controller = this.route.state.props.controller; // if no controller set, use the root controller
 
     if (!this.panelController) {
@@ -16829,7 +13116,8 @@ class Panel extends _litElement.LitElement {
       this.setAttribute('open', '');
 
       if (this.view && this.view.onOpen) {
-        this.view.onOpen(this.route.state);
+        if (this.route) args.unshift(this.route.state);
+        this.view.onOpen(...args);
       }
     }, 100);
     return this;
@@ -16860,7 +13148,14 @@ class Panel extends _litElement.LitElement {
 
     this._close();
 
-    if (this.route) this.panelController._updateRoute();
+    if (this.route) this.panelController._updateRoute(); // put the view back to it's original DOM location (if it had one)
+
+    if (this.__viewOriginalPlacement) {
+      this.__viewOriginalPlacement.replaceWith(this.view);
+
+      delete this.__viewOriginalPlacement;
+    }
+
     return this;
   }
 
@@ -16874,7 +13169,7 @@ class Panel extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             pointer-events: initial;
             display: flex;
@@ -16897,17 +13192,21 @@ class Panel extends _litElement.LitElement {
             z-index: 1000; /* always on top */
         }
 
+        :host([type="actionsheet"]) {
+            z-index: 1001 !important;
+        }
+
         :host > main {
+            pointer-events: none;
             position: absolute;
             right: 0;
-            min-width: 300px;
+            min-width: min(80vw, 300px);
             min-height: 1em;
             max-width: var(--max-width, 100%);
             max-height: var(--max-height, 100%);
             overflow: visible;
             display: flex;
             flex-direction: column;
-            height: 100%;
             background: var(--b-panel-bgd, #fff);
             box-shadow: var(--b-panel-shadow, rgba(0,0,0,.2) 0 3px 10px);
             border-radius: var(--radius-top) var(--radius-top) var(--radius-bottom) var(--radius-bottom);
@@ -16921,6 +13220,8 @@ class Panel extends _litElement.LitElement {
 
         :host([type="actionsheet"]) main {
             max-width: var(--b-panel-actionsheet-max-w, 500px);
+            margin-bottom: 0;
+            max-height: var(--b-panel-actionsheet-max-h, 70vh);
             /* --radius: 12px; */
         }
 
@@ -16947,12 +13248,14 @@ class Panel extends _litElement.LitElement {
 
         :host([anchor="right"]) > main {
             transform: translateX(100px);
+            height: 100%;
         }
 
         :host([anchor="left"]) > main {
             right: auto;
             left: 0;
             transform: translateX(-100px);
+            height: 100%;
         }
 
         :host([anchor="center"]) > main,
@@ -17003,6 +13306,7 @@ class Panel extends _litElement.LitElement {
 
         main > slot::slotted(*) {
             width: 100%;
+            pointer-events: all;
             /* display: grid;
             grid-template-rows: auto 1fr; */
         }
@@ -17022,6 +13326,14 @@ class Panel extends _litElement.LitElement {
 
         main > section {
             padding: 1em;
+        }
+
+        .inlinehtml {
+            display: contents;
+        }
+
+        .inlinehtml > * {
+            pointer-events: all;
         }
 
         @media print {
@@ -17119,7 +13431,340 @@ customElements.define('b-panel', Panel);
 var _default = customElements.get('b-panel');
 
 exports.default = _default;
-},{"lit-element":"+bhx","./controller":"R9Fe","../../router":"38Qe","../../router/route":"WZSr","../../util/device":"la8o","./toolbar":"ZNP1","../../elements/btn":"DABr"}],"TZ6L":[function(require,module,exports) {
+},{"lit-element":"bhxD","./controller":"R9Fe","../../router":"Qeq3","../../router/route":"WZSr","../../util/device":"la8o","./toolbar":"ZNP1","../../elements/btn":"DABr"}],"sHUN":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+const NotifControllers = {};
+customElements.define('b-notifs', class extends _litElement.LitElement {
+  // createRenderRoot(){ return this }
+  static get(name = 'main') {
+    if (name == 'main' && !NotifControllers[name]) {
+      let controller = document.createElement('b-notifs');
+      controller.setAttribute('name', 'main');
+      document.body.appendChild(controller);
+      NotifControllers[name] = controller;
+    }
+
+    return NotifControllers[name];
+  }
+
+  get name() {
+    return this.hasAttribute('name') ? this.getAttribute('name') : undefined;
+  }
+
+  constructor() {
+    super();
+
+    if (this.name) {
+      if (NotifControllers[this.name]) console.warn('A `b-notifs` controller already exists with the name: ', this.name);else NotifControllers[this.name] = this;
+    }
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this.name) delete NotifControllers[this.name];
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    if (this.name && !NotifControllers[this.name]) NotifControllers[this.name] = this;
+  }
+
+  static get styles() {
+    return (0, _litElement.css)`
+        :host {
+            display: block;
+            pointer-events: none;
+            
+            overflow: hidden;
+            position:absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 1200;
+            --padding: var(--b-notif-padding, 1em);
+        }
+
+        :host([name="main"]) {
+            position: fixed;
+            top: env(safe-area-inset-top);
+            left: env(safe-area-inset-left);
+            bottom: env(safe-area-inset-bottom);
+            right: env(safe-area-inset-right);
+        }
+
+        @media (max-width:699px), (max-height: 699px) {
+            :host {
+                position: fixed;
+                top: env(safe-area-inset-top);
+                left: env(safe-area-inset-left);
+                bottom: env(safe-area-inset-bottom);
+                right: env(safe-area-inset-right);
+            }
+        }
+
+        slot {
+            position: absolute;
+            display: flex;
+        }
+
+        slot[name="top"],
+        slot[name="bottom"] {
+            width: 100%;
+            align-items: center;
+        }
+
+        slot[name*="top"] {
+            top: 0;
+            flex-direction: column;
+            padding-top: var(--padding);
+        }
+
+        slot[name*="bottom"] {
+            bottom: 0;
+            flex-direction: column-reverse;
+            padding-bottom: var(--padding);
+        }
+
+        slot[name*="left"] {
+            left: 0;
+            padding-left: var(--padding);
+            align-items: flex-start;
+        }
+
+        slot[name*="right"] {
+            right: 0;
+            padding-right: var(--padding);
+            align-items: flex-end;
+        }
+
+        @media (max-width:699px) {
+            slot {
+                padding: 0 !important;
+                position: static !important;
+                --b-notif-width: 100%;
+            }
+
+            .top {
+                position: absolute;
+                top: 0;
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                padding: var(--padding);
+                box-sizing: border-box;
+            }
+
+            .bottom {
+                position: absolute;
+                bottom: 0;
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                padding: var(--padding);
+                box-sizing: border-box;
+            }
+        }
+    `;
+  }
+
+  render() {
+    return (0, _litElement.html)`
+        <div class="bottom">
+            <slot name="bottom-left"></slot>
+            <slot name="bottom"></slot>
+            <slot name="bottom-right"></slot>
+        </div>
+
+        <div class="top">
+            <slot name="top-left"></slot>
+            <slot name="top"></slot>
+            <slot name="top-right"></slot>
+        </div>
+        
+    `;
+  }
+
+});
+
+var _default = customElements.get('b-notifs');
+
+exports.default = _default;
+},{"lit-element":"bhxD"}],"HXsq":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+var _default = (0, _litElement.css)`
+:host {
+    display: block;
+    position:relative;
+    pointer-events: all;
+    width: var(--b-notif-width, 300px);
+    max-width: 100%;
+
+    /* overflow: hidden; */
+
+    transition: 
+        height 300ms cubic-bezier(0.4, 0, 0.2, 1) 300ms,
+        opacity 300ms,
+        transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    opacity: 0;
+    will-change: transform; 
+}
+
+:host([slot*="right"]) { transform: translateX(100%); }
+:host([slot*="left"]) { transform: translateX(-100%); }
+:host([slot="top"]) { transform: translateY(-100%); }
+:host([slot="bottom"]) { transform: translateY(100%); }
+
+:host([animation="grow"]) {
+    transform: scale(.8)
+}
+
+:host([animation="bounce"]) {
+    transform: none;
+}
+
+:host([animation="bounce"].entered) {
+    animation-name: bounce;
+    animation-duration: 700ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation-fill-mode: forwards;
+}
+
+:host([animation="fade"]) {
+    transform: none;
+}
+
+:host([slot*="top"]) {
+    --spacing-bottom: var(--padding);
+}
+
+:host([slot*="bottom"]) {
+    --spacing-top: var(--padding);
+}
+
+:host(.entered) {
+    opacity: 1;
+    transform: none;
+}
+
+:host(.exit) {
+    height: 0 !important;
+}
+
+:host([color="red"]) {
+    --b-notif-color: #fff;
+    --b-notif-bgd: var(--red);
+}
+
+:host([color="blue"]) {
+    --b-notif-color: #fff;
+    --b-notif-bgd: var(--blue);
+}
+
+:host([color="green"]) {
+    --b-notif-color: #fff;
+    --b-notif-bgd: var(--green);
+}
+
+:host([color="orange"]) {
+    --b-notif-color: #222;
+    --b-notif-bgd: var(--orange);
+}
+
+:host([color="amber"]) {
+    --b-notif-color: var(--gray-900);
+    --b-notif-bgd: var(--amber);
+}
+
+main {
+    --radius: var(--b-notif-radius, 4px);
+    border-radius: var(--radius);
+    color: var(--b-notif-color, #fff);
+    background: var(--b-notif-bgd, #333);
+    margin-top: var(--spacing-top, 0);
+    margin-bottom: var(--spacing-bottom, 0);
+
+    box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2),
+                0px 6px 10px 0px rgba(0,0,0,0.14),
+                0px 1px 18px 0px rgba(0,0,0,0.12);
+}
+
+slot {
+    display: block;
+}
+
+
+:host {
+    --b-notif-btn-color: var(--b-notif-color);
+}
+
+:host([color]) {
+    --b-notif-btn-bgd: rgba(255,255,255,.1);
+}
+
+@keyframes bounce {
+  0% { transform: scale(0.8); }
+  14% { transform: scale(1.1); }
+  28% { transform: scale(.9); }
+  42% { transform: scale(1.1); }
+  70% { transform: scale(1); }
+`;
+
+exports.default = _default;
+},{"lit-element":"bhxD"}],"tUj8":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  sticky: {
+    closeOnClick: false,
+    autoClose: false
+  },
+  alert: {},
+  error: {
+    icon: 'attention-circle',
+    color: 'red',
+    animation: 'bounce'
+  },
+  failed: {
+    icon: 'cancel-circled',
+    color: 'red'
+  },
+  success: {
+    icon: 'ok-circled',
+    color: 'green'
+  },
+  info: {
+    icon: 'info-circled',
+    color: 'blue'
+  },
+  warning: {
+    icon: 'attention-1',
+    color: 'orange'
+  }
+};
+exports.default = _default;
+},{}],"TZ6L":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -17181,7 +13826,377 @@ function makeBtn(opts = {}, i) {
 
   return `<b-btn ${text && 'text'} icon="${icon}" color="${color}" class="${className}">${label}</b-btn>`; // return `<span class="btn ${className} ${color} ${icon}">${label}</span>`
 }
-},{}],"HbKK":[function(require,module,exports) {
+},{}],"euwv":[function(require,module,exports) {
+"use strict";
+
+var _litElement = require("lit-element");
+
+_litElement.LitElement.prototype.emitEvent = function (eventName, detail = null) {
+  var event = new CustomEvent(eventName, {
+    bubbles: true,
+    composed: true,
+    detail: detail
+  });
+  this.dispatchEvent(event);
+};
+},{"lit-element":"bhxD"}],"Cw18":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+var _unsafeHtml = require("lit-html/directives/unsafe-html");
+
+var _makeBtn = _interopRequireWildcard(require("../dialog/make-btn"));
+
+require("../../helpers/lit-element/events");
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+customElements.define('b-snackbar', class extends _litElement.LitElement {
+  static get properties() {
+    return {
+      msg: {
+        type: String
+      },
+      btns: {
+        type: Array
+      },
+      icon: {
+        type: String
+      }
+    };
+  }
+
+  static get styles() {
+    return (0, _litElement.css)`
+        :host {
+            padding: var(--b-snackbar-padding, .85em 1em);
+            display: grid;
+            grid-template-columns: auto 1fr max-content;
+            align-items: center;
+        }
+
+        .icon {
+            line-height: 0;
+        }
+
+        .icon > b-icon,
+        .icon > .icon {
+            margin: -.5em 0;
+            margin-right: .75em;
+            --size: 1.2em;
+            vertical-align: middle;
+        }
+
+        .msg {
+            margin: 0.05em 0 -.05em; /* better alignment with icon and btns */
+        }
+
+        .btns {
+            margin-top: -0.05em;
+            margin-right: calc(-.5 * var(--padding));
+            margin-left: calc(-.5 * var(--padding));
+        }
+
+        .btns b-btn {
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: -1em 0;
+            vertical-align: middle;
+        }
+
+        .btns b-btn[color=''] {
+            color: var(--b-notif-btn-color, #fff);
+        }
+
+        :host([color]) .btns b-btn  {
+            color: var(--b-notif-btn-color, #fff);
+        }
+
+        @media (hover){
+            .btns b-btn:hover {
+                --bgdColor: var(--b-notif-btn-bgd, rgba(0,0,0,.05));
+            }
+        }
+    `;
+  }
+
+  render() {
+    return (0, _litElement.html)`
+        <div class="icon">${this.renderIcon()}</div>
+        <div class="msg">${this.msg}</div>
+        <div class="btns" @click=${this.onBtnClick}>
+            ${this.btns.map(btn => this.renderBtn(btn))}
+        </div>
+    `;
+  }
+
+  renderIcon() {
+    if (!this.icon) return '';
+    if (typeof this.icon == 'string') return (0, _litElement.html)`<b-icon name="${this.icon}"></b-icon>`;else return this.icon;
+  }
+
+  renderBtn(btn) {
+    return (0, _litElement.html)`${(0, _unsafeHtml.unsafeHTML)((0, _makeBtn.default)(btn))}`;
+  }
+
+  onBtnClick(e) {
+    e.stopPropagation();
+    let index = Array.from(e.currentTarget.children).indexOf(e.target);
+    let btnData = index > -1 ? this.btns[index] : e.target;
+    if (_makeBtn.cancelBtns.includes(btnData)) btnData = undefined;
+    this.emitEvent('click', btnData);
+  }
+
+});
+
+var _default = customElements.get('b-snackbar');
+
+exports.default = _default;
+},{"lit-element":"bhxD","lit-html/directives/unsafe-html":"jTPt","../dialog/make-btn":"TZ6L","../../helpers/lit-element/events":"euwv"}],"XAiK":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+var _controller = _interopRequireDefault(require("./controller"));
+
+var _device = _interopRequireDefault(require("../../util/device"));
+
+var _style = _interopRequireDefault(require("./style"));
+
+var _types = _interopRequireDefault(require("./types"));
+
+require("./snackbar");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// list of open notifs
+const NOTIFS = new Map();
+window.NOTIFS = NOTIFS;
+customElements.define('b-notif', class extends _litElement.LitElement {
+  static get styles() {
+    return _style.default;
+  }
+
+  static get properties() {
+    return {
+      nid: {
+        type: String,
+        reflect: true
+      },
+      msg: {
+        type: String
+      },
+      btns: {
+        type: Array
+      },
+      icon: {
+        type: String
+      },
+      color: {
+        type: String,
+        reflect: true
+      },
+      width: {
+        type: String
+      },
+      animation: {
+        type: String,
+        reflect: true
+      }
+    };
+  }
+
+  constructor(opts = {}) {
+    super();
+    this.onWindowFocus = this.onWindowFocus.bind(this);
+    this.onWindowBlur = this.onWindowBlur.bind(this);
+
+    let controller = _controller.default.get(opts.controller || 'main');
+
+    this.opts = Object.assign({
+      nid: String(Math.round(Math.random() * 10000)),
+      msg: '',
+      icon: '',
+      btns: [],
+      animation: _device.default.minScreenSize <= 699 ? 'grow' : 'slide',
+      animationForReplace: 'grow',
+      autoClose: 4000,
+      closeOnClick: true,
+      anchor: 'bottom-right',
+
+      //device.minScreenSize <= 699 ? 'bottom' : 'bottom-right',
+      onClose() {},
+
+      onClick() {}
+
+    }, _types.default[opts.type] || {}, controller.defaults || {}, opts);
+    let props = this.constructor.properties;
+
+    for (let key in this.opts) {
+      if (props[key] != undefined) this[key] = this.opts[key];
+    }
+
+    this.slot = this.opts.anchor;
+    this.addEventListener('click', this.onClick, false);
+    this.addEventListener(_device.default.isMobile ? 'touchdown' : 'mouseover', this.onMouseOver);
+    this.addEventListener(_device.default.isMobile ? 'touchend' : 'mouseout', this.onMouseOut);
+
+    if (this.opts.view) {
+      this.appendChild(this.opts.view);
+      this.opts.view.notif = this;
+    }
+
+    let existingNotif = NOTIFS.get(this.nid);
+    NOTIFS.set(this.nid, this);
+
+    if (existingNotif) {
+      existingNotif.replaceWith(this);
+      return;
+    }
+
+    if (controller) controller.appendChild(this);
+  }
+
+  close(btn) {
+    return new Promise(resolve => {
+      this.style.height = this.getBoundingClientRect().height + 'px';
+      this.classList.remove('entered');
+      setTimeout(() => {
+        this.classList.add('exit');
+      }, 100);
+      setTimeout(() => {
+        this.remove();
+        NOTIFS.delete(this.nid);
+        this.opts.onClose(this);
+        if (this.opts.view) delete this.opts.view.notif;
+        resolve(btn);
+      }, 700);
+    });
+  }
+
+  replaceWith(el) {
+    let animation = el.animation; // let's reduce visual animation when replacing
+
+    if (animation == 'slide') {
+      this.animation = this.opts.animationForReplace;
+      el.animation = this.opts.animationForReplace;
+    }
+
+    this.classList.remove('entered'); // setTimeout(()=>{
+
+    super.replaceWith(el);
+    this.opts.onClose(this);
+    if (this.opts.view) delete this.opts.view.notif;
+    setTimeout(() => {
+      el.animation = animation;
+    }, 310); // },310)
+  }
+
+  onClick(btn) {
+    if (btn instanceof MouseEvent || window.TouchEvent && btn instanceof TouchEvent) btn = undefined;
+    if (this.opts.onClick(this, btn) !== false && this.opts.closeOnClick) this.close(btn);
+  }
+
+  onWindowFocus() {
+    this.autoClose(3000);
+  }
+
+  onWindowBlur() {// this.autoClose(false)
+  }
+
+  onMouseOver(e) {
+    e.stopPropagation();
+    this.autoClose(false);
+  }
+
+  onMouseOut(e) {
+    e.stopPropagation();
+    this.autoClose(3000);
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener('blur', this.onWindowBlur);
+    window.addEventListener('focus', this.onWindowFocus);
+    if (this.opts.width) this.style.width = this.opts.width;
+    setTimeout(() => {
+      this.classList.add('entered');
+    }, 100);
+    this.autoClose();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener('blur', this.onWindowBlur);
+    window.removeEventListener('focus', this.onWindowFocus);
+  }
+
+  autoClose(start = true) {
+    clearTimeout(this._autoCloseTimeout);
+    if (!document.hasFocus()) return; // use the `autoClose` delay if no time given OR we've never started the autoClose
+
+    let delay = start === true || !this._autoCloseTimeout ? this.opts.autoClose : start; // requested to stop, or setting turned off
+
+    if (!start || !this.opts.autoClose) return;
+    this._autoCloseTimeout = setTimeout(() => {
+      this.close();
+    }, delay);
+  }
+
+  render() {
+    return (0, _litElement.html)`
+        <main>
+        <slot>
+            <b-snackbar
+                .icon=${this.icon}
+                .msg=${this.msg}
+                .btns=${this.btns}
+                ?color=${!!this.color}
+                @click=${this.onSnackbarClick}></b-snackbar>
+        </slot>
+        </main>
+    `;
+  }
+
+  onSnackbarClick(e) {
+    e.stopPropagation();
+    let data = e.constructor.name == 'CustomEvent' ? e.detail : undefined;
+    this.onClick(data);
+  }
+
+});
+
+var _default = customElements.get('b-notif');
+
+exports.default = _default;
+let notifClass = customElements.get('b-notif');
+
+for (let key in _types.default) {
+  if (!notifClass[key]) notifClass[key] = (msg, opts = {}) => {
+    // string or lit-html
+    if (typeof msg == 'string' || msg.constructor.name == 'TemplateResult') {
+      opts = opts || {};
+      opts.msg = msg;
+    }
+
+    let Notif = customElements.get('b-notif');
+    return new Notif(Object.assign({}, _types.default[key], opts));
+  };
+}
+},{"lit-element":"bhxD","./controller":"sHUN","../../util/device":"la8o","./style":"HXsq","./types":"tUj8","./snackbar":"Cw18"}],"HbKK":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -17195,11 +14210,15 @@ var _device = _interopRequireDefault(require("../../util/device"));
 
 var _panel = _interopRequireDefault(require("../panel"));
 
+var _notif = _interopRequireDefault(require("../notif"));
+
 var _popover = _interopRequireDefault(require("../popover"));
 
 var _makeBtn = _interopRequireWildcard(require("./make-btn"));
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17298,9 +14317,9 @@ class Dialog {
   onKeydown(e) {
     let btnInfo = undefined;
 
-    if (e.code == 'Escape') {
+    if (this.opts.btns && e.code == 'Escape') {
       btnInfo = this.opts.btns.find(btn => _makeBtn.cancelBtns.includes(btn));
-    } else if (e.code == 'Enter') {
+    } else if (this.opts.btns && e.code == 'Enter') {
       btnInfo = this.opts.btns.reverse().find(btn => !_makeBtn.cancelBtns.includes(btn));
     }
 
@@ -17398,19 +14417,20 @@ class Dialog {
   notif(opts) {
     opts = Object.assign({
       autoClose: this.opts.btns ? false : 3000,
-      clickRemoves: !this.opts.btns,
-      onAutoClose: () => {
+      closeOnClick: !this.opts.btns,
+      onClose: () => {
         this.resolve(false);
       }
     }, opts);
-    this.presenter = app.msgs.add(this.el, opts);
+    opts.view = this.el;
+    this.presenter = new _notif.default(opts);
     return this.promise;
   }
 
 }
 
 exports.default = Dialog;
-},{"lit-html":"SP/d","../../util/device":"la8o","../panel":"cmZt","../popover":"Soyf","./make-btn":"TZ6L","./style.less":"r4vn"}],"pos3":[function(require,module,exports) {
+},{"lit-html":"SPDu","../../util/device":"la8o","../panel":"cmZt","../notif":"XAiK","../popover":"Soyf","./make-btn":"TZ6L","./style.less":"r4vn"}],"pos3":[function(require,module,exports) {
 const Dialog = require('./dialog').default;
 
 module.exports = Dialog;
@@ -17485,12 +14505,16 @@ Dialog.prompt = function (opts = {}) {
     type: '',
     multiline: false,
     multiple: false,
-    btns: ['cancel', 'save']
+    btns: ['cancel', 'save'],
+
+    onSubmit(val, control, blur) {}
+
   }, opts);
   if (opts.msg) opts.msg = `<div>${opts.msg}</div>`;
 
   opts.onResolve = function (resp, dialog) {
     let control = dialog.$('form-control');
+    control.removeEventListener('change', onSubmit);
     if (!resp) return opts.btns.length > 2 ? [resp] : resp;
     if (control.isInvalid) throw Error('Invalid data');
     let val = opts.html ? control.value : control.control.textValue || control.value;
@@ -17545,8 +14569,18 @@ Dialog.prompt = function (opts = {}) {
 
   let onSubmit = e => {
     if (['TEXT-FIELD', 'INPUT'].includes(e.target.tagName)) {
-      control.control.blur();
-      control.removeEventListener('change', onSubmit);
+      // if onSubmit given, dont close input...let function do that if 
+      if (opts.onSubmit) {
+        let val = opts.html ? control.value : control.control.textValue || control.value;
+
+        let blur = function () {
+          control.control.blur();
+        };
+
+        opts.onSubmit(val, control, blur);
+      } else {
+        control.control.blur();
+      }
     }
   };
 
@@ -18195,7 +15229,7 @@ exports.default = void 0;
 
 var _litElement = require("lit-element");
 
-const styles = _litElement.css`
+const styles = (0, _litElement.css)`
 
 :host {
 	opacity: 0;
@@ -18301,7 +15335,7 @@ customElements.define('touch-ripple', TouchRippleElement);
 var _default = customElements.get('touch-ripple');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"jNfL":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"jNfL":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18313,7 +15347,7 @@ var _litElement = require("lit-element");
 
 require("./touch-ripple");
 
-const styles = _litElement.css`
+const styles = (0, _litElement.css)`
 
 :host {
 	--size: 1.6em;
@@ -18327,6 +15361,8 @@ const styles = _litElement.css`
 	cursor: pointer;
 	outline: none;
 }
+
+:host([hidden]) { display: none; }
 
 :host([checked]) svg.uncheck,
 :host(:not([checked])) svg.check {
@@ -18521,12 +15557,13 @@ customElements.define('check-box', CheckBoxElement);
 var _default = customElements.get('check-box');
 
 exports.default = _default;
-},{"lit-element":"+bhx","./touch-ripple":"uH6r"}],"h8fl":[function(require,module,exports) {
+},{"lit-element":"bhxD","./touch-ripple":"uH6r"}],"h8fl":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.registerSearchType = registerSearchType;
 exports.default = void 0;
 
 var _litElement = require("lit-element");
@@ -18540,7 +15577,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /*
 	Select Field
 */
-const styles = _litElement.css`
+const SHOW_ALL_RESULTS_THRESHOLD = 100;
+const styles = (0, _litElement.css)`
 
 :host(:not([disabled])) {
 	cursor: pointer;
@@ -18557,6 +15595,7 @@ main > svg {
 	height: 1em;
 	width: 1em;
 	flex-shrink: 0;
+	fill: var(--theme-color-accent, #333);
 }
 
 slot#options {
@@ -18611,6 +15650,14 @@ main input {
 	justify-content: center;
 	align-items: center;
 }`;
+const SearchTypes = new Map(); // search opts should match `Menu.options.search`
+
+function registerSearchType(type, searchOpts = {}) {
+  if (!opts.url) return console.warn(`Cannot register select-field search type: '${type}' - opts.url is required`);
+  if (SearchTypes.get(type)) return console.warn(`select-field search type ${type} already set`);
+  SearchTypes.set(type, Object.assign({// no defaults yet
+  }, searchOpts));
+}
 
 class SelectFieldElement extends HTMLElement {
   constructor() {
@@ -18745,8 +15792,9 @@ class SelectFieldElement extends HTMLElement {
       if (typeof o != 'object') return {
         label: o,
         val: o
-      };
-      return o;
+      };else return Object.assign({}, o, {
+        val: String(o.val)
+      });
     });else if (typeof opts == 'object') {
       let _opts = [];
 
@@ -18839,17 +15887,44 @@ class SelectFieldElement extends HTMLElement {
       jumpNav: this.hasAttribute('jump-nav'),
       // only called when in multiple mode
       onSelect: selected => {
-        this.selected = selected.map(m => m.val);
+        this.selected = Array.isArray(selected) ? selected.map(m => m.val) : selected.val;
       }
     };
-    if (this.getAttribute('search') == 'false') menuOpts.search = false;
+
+    if (this.search && typeof this.search == "object") {
+      if (!this.search.url) console.warn('select-field .search=${} must contain a `url`');else menuOpts.search = this.search;
+    } else if (this.hasAttribute('search')) {
+      let search = this.getAttribute('search'); // use search type or assume a URL was given
+
+      menuOpts.search = SearchTypes.get(search) || {
+        url: search
+      };
+    }
+
+    if (menuOpts.search && this.multiple) {
+      delete menuOpts.search;
+      console.warn('select-field[multiple] does work with `search`');
+    } else if (menuOpts.search) menuOpts.autoSelectFirst = true;
+
+    if (this.getAttribute('search') == 'false') menuOpts.search = false; // change "search.showAll" to false when over 100 results
+    // lots of results are slow to render to DOM
+
+    if (this.options.length > SHOW_ALL_RESULTS_THRESHOLD) {
+      menuOpts.search = Object.assign({
+        showAll: false,
+        placeholder: `Search (${this.options.length} results)`
+      }, menuOpts.search);
+    }
+
     let menu = this.options;
     let popoverOpts = {
       align: this.getAttribute('menu-align') || 'bottom',
       maxHeight: this.getAttribute('menu-max-height') || 'auto',
       maxWidth: this.getAttribute('menu-max-width') || 'none',
       overflowBoundry: this.getAttribute('menu-overflow') ? 'window' : null,
-      adjustForMobile: this.getAttribute('adjust-for-mobile') == 'false' ? false : true
+      adjustForMobile: this.getAttribute('adjust-for-mobile') == 'false' ? false : {
+        type: 'actionsheet'
+      }
     };
     if (!menu || menu.length == 0) menu = [{
       'divider': 'No options available'
@@ -18863,6 +15938,14 @@ class SelectFieldElement extends HTMLElement {
 
     if (val === false) return;
     val = this.multiple ? val : [val];
+
+    if (menuOpts.search && menuOpts.search.url) {
+      let optionVals = this.options.map(o => o.val);
+      val.forEach(v => {
+        if (!optionVals.includes(v.val)) this.__options.push(v);
+      });
+    }
+
     this.selected = val.map(m => m.val);
     var event = new CustomEvent('change', {
       bubbles: true,
@@ -18881,7 +15964,7 @@ customElements.define('select-field', SelectFieldElement);
 var _default = customElements.get('select-field');
 
 exports.default = _default;
-},{"lit-element":"+bhx","../../menu":"0tCY","../../../util/device":"la8o"}],"0tCY":[function(require,module,exports) {
+},{"lit-element":"bhxD","../../menu":"tCYJ","../../../util/device":"la8o"}],"tCYJ":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18893,6 +15976,8 @@ var _litHtml = require("lit-html");
 
 var _unsafeHtml = require("lit-html/directives/unsafe-html");
 
+var _live = require("lit-html/directives/live");
+
 var _popover = _interopRequireDefault(require("../popover"));
 
 var _dialog = _interopRequireDefault(require("../dialog"));
@@ -18901,6 +15986,8 @@ var _panel = _interopRequireDefault(require("../panel"));
 
 var _fuse = _interopRequireDefault(require("fuse.js"));
 
+require("../../elements/hr");
+
 require("../form-control/controls/check-box");
 
 require("../form-control/controls/select-field");
@@ -18908,6 +15995,8 @@ require("../form-control/controls/select-field");
 var _device = _interopRequireDefault(require("../../util/device"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const styles = require('./style.less');
 
 const DefaultOpts = {
   selected: false,
@@ -18937,9 +16026,30 @@ const SearchDefaults = {
   }
 };
 
-const styles = require('./style.less');
-
 class Menu {
+  static handle(selected, handler, args) {
+    if (!selected) return true;
+    if (!args) args = [];else if (!Array.isArray(args)) args = [args];
+
+    if (selected.fn && typeof selected.fn == 'function') {
+      setTimeout(() => {
+        // move to end of call stack
+        selected.fn.apply(handler, args);
+      });
+      return true;
+    }
+
+    if (selected.fn && typeof handler[selected.fn] == 'function') {
+      setTimeout(() => {
+        // move to end of call stack
+        handler[selected.fn].apply(handler, args);
+      });
+      return true;
+    }
+
+    return false; // NOT handled
+  }
+
   constructor(menu = [], opts = {}) {
     this.el = document.createElement('div');
     this.el.classList.add('b-menu');
@@ -18951,17 +16061,33 @@ class Menu {
     this.opts = Object.assign({}, DefaultOpts, opts);
     this.menu = menu;
     if (opts.multiple == undefined && this.opts.selected instanceof Array) this.opts.multiple = true;
-    let selected = this.opts.selected || [];
+    let selected = this.opts.selected !== undefined ? this.opts.selected : [];
     if (Array.isArray(selected)) selected = selected.slice(0); // clone
 
     this.selected = selected;
     if (this.opts.minW) this.el.style.minWidth = this.opts.minW;
     if (this.opts.maxW) this.el.style.maxWidth = this.opts.maxW;
     if (this.opts.width) this.el.style.width = this.opts.width;
+    if (this.opts.matching) this.matching(this.opts.matching);
     this.el.addEventListener('click', this.onClick.bind(this));
-    this.promise = new Promise(resolve => {
+  }
+
+  get promise() {
+    if (!this._promise) this._promise = new Promise(resolve => {
       this._resolve = resolve;
     });
+    return this._promise;
+  }
+
+  set promise(val) {
+    this._promise = val;
+    if (!val) this._resolve = null;
+  }
+
+  updateMenu(menu, selected) {
+    this.menu = menu;
+    if (selected != undefined) this.selected = selected;
+    this.render();
   }
 
   set menu(menu) {
@@ -19112,19 +16238,19 @@ class Menu {
   render() {
     let showJumpNav = this.opts.jumpNav === true || typeof this.opts.jumpNav == 'number' && this.displayMenu.length >= this.opts.jumpNav;
     this._active = this.opts.autoSelectFirst ? 0 : null;
-    (0, _litHtml.render)(_litHtml.html`
+    (0, _litHtml.render)((0, _litHtml.html)`
 
-			${this.searchIsOn ? _litHtml.html`
+			${this.searchIsOn ? (0, _litHtml.html)`
 				<div class="menu-search-bar">
 					<b-icon name="${this.searchIcon}"></b-icon>
 					<b-spinner hidden></b-spinner>
-					<input type="text" placeholder="${this.searchPlaceholder}">
+					<input type="text" placeholder="${this.searchPlaceholder}" value=${this.opts.matching || ''}>
 				</div>
 			` : ''}
 
 			<div class="results">
 				
-				${showJumpNav ? _litHtml.html`
+				${showJumpNav ? (0, _litHtml.html)`
 					<alphabet-jump-nav>
 						<span style="color: red">'alphabet-jump-nav' custom element not loaded</span>
 					</alphabet-jump-nav>` : ''}
@@ -19139,16 +16265,16 @@ class Menu {
   }
 
   renderItem(m, i) {
-    if (m == 'divider' || m.label == 'divider' && m.val == 'divider') return _litHtml.html`<b-hr></b-hr>`;
-    if (m.divider) return _litHtml.html`<div class="menu-divider">${m.divider}</div>`;
-    if (m.text) return _litHtml.html`<div class="menu-text">${m.text}</div>`;
-    if (m.title) return _litHtml.html`<div class="menu-title"><h2>${m.title}</h2></div>`; // capture menu item index for use in resolve (if so desired)
+    if (m == 'divider' || m.label == 'divider' && m.val == 'divider') return (0, _litHtml.html)`<b-hr></b-hr>`;
+    if (m.divider !== undefined) return (0, _litHtml.html)`<div class="menu-divider">${m.divider}</div>`;
+    if (m.text !== undefined) return (0, _litHtml.html)`<div class="menu-text">${m.text}</div>`;
+    if (m.title) return (0, _litHtml.html)`<div class="menu-title"><h2>${m.title}</h2></div>`; // capture menu item index for use in resolve (if so desired)
 
     m.index = i;
     let icon = '';
-    if (m.icon && typeof m.icon == 'string') icon = _litHtml.html`<b-icon name="${m.icon}"></b-icon>`;else if (m.icon) icon = _litHtml.html`<span class="icon">${m.icon}</span>`;
-    let checkbox = this.opts.multiple && !m.clearsAll || m.selected ? _litHtml.html`<check-box ?checked=${m.selected}></check-box>` : '';
-    let menuIcon = m.menu && this.opts.hasMenuIcon ? _litHtml.html`<b-icon class="has-menu" name="${this.opts.hasMenuIcon}"></b-icon>` : '';
+    if (m.icon && typeof m.icon == 'string') icon = (0, _litHtml.html)`<b-icon name="${m.icon}"></b-icon>`;else if (m.icon) icon = (0, _litHtml.html)`<span class="icon">${m.icon}</span>`;
+    let checkbox = this.opts.multiple && !m.clearsAll || m.selected ? (0, _litHtml.html)`<check-box ?checked=${(0, _live.live)(m.selected)}></check-box>` : '';
+    let menuIcon = m.menu && this.opts.hasMenuIcon ? (0, _litHtml.html)`<b-icon class="has-menu" name="${this.opts.hasMenuIcon}"></b-icon>` : '';
 
     if (m.selections) {
       let selections = m.selections;
@@ -19156,7 +16282,7 @@ class Menu {
         label: 'unset',
         val: ''
       }].concat(selections);
-      checkbox = _litHtml.html`<select-field 
+      checkbox = (0, _litHtml.html)`<select-field 
 							.options=${selections} 
 							placeholder="unset"
 							@change=${this.selectOptionsChanged.bind(this)}
@@ -19164,34 +16290,32 @@ class Menu {
 							></select-field>`;
     }
 
-    if (m.attrs && typeof m.attrs == 'object') console.warn('`attrs` unsupported right now'); // TODO: support this some how?
-    // if( m.attrs && typeof m.attrs == 'object' ){
-    // 	for(let key in m.attrs)
-    // 		el.setAttribute(key, m.attrs[key])
-    // }
-
     let extras = '';
 
     if (m.extras) {
-      extras = m.extras.filter(elName => customElements.get(elName)).map(elName => {
-        let el = document.createElement(elName);
-        el.item = m;
-        el.classList.add('menu-item-extra');
-        return el;
+      extras = m.extras.map(elName => {
+        if (typeof elName == 'string' && customElements.get(elName)) {
+          let el = document.createElement(elName);
+          el.item = m;
+          el.classList.add('menu-item-extra');
+          return el;
+        }
+
+        return elName;
       });
     }
 
     let dataTitle = (m.dataTitle || m.label + ' ' + m.description).trim().toLowerCase();
     let label = m.label && m.label.constructor.name == 'TemplateResult' ? m.label : (0, _unsafeHtml.unsafeHTML)(m.label || '');
     let description = m.description && m.description.constructor.name == 'TemplateResult' ? m.description : (0, _unsafeHtml.unsafeHTML)(m.description || '');
-    return _litHtml.html`
+    return (0, _litHtml.html)`
 			<div class="menu-item ${m.className}" val=${m.val} index=${i}
 				data-title=${dataTitle}
 				?active=${this._active == i}
 				?icon-only=${!m.label && !m.description} ?selected=${m.selected}>
 				${checkbox}
 				${icon}
-				${m.view && m.view instanceof HTMLElement ? m.view : _litHtml.html`
+				${m.view && m.view instanceof HTMLElement ? m.view : (0, _litHtml.html)`
 					<span class="mi-content">
 						<div class="mi-label">${label}</div>
 						<div class="mi-description">${description}</div>
@@ -19226,6 +16350,7 @@ class Menu {
 
       if (this.opts.multiple) {
         if (data.clearsAll || this.opts.multiple !== 'always' && !didClickCheckbox) {
+          this.opts.onSelect && this.opts.onSelect([data]);
           return this.resolve([data]);
         }
 
@@ -19245,9 +16370,17 @@ class Menu {
 
         this.opts.onSelect && this.opts.onSelect(this.selected);
       } else {
+        this.opts.onSelect && this.opts.onSelect(data);
         this.resolve(data);
       }
     }
+  }
+
+  clear() {
+    let input = this.el.querySelector('.menu-search-bar input');
+    if (input) input.value = '';
+    this.menu = this.__origMenu;
+    this.render();
   }
 
   async _itemMenu(target, data) {
@@ -19273,14 +16406,34 @@ class Menu {
     if (e.code == 'Escape') {
       this.resolve(false);
       return;
-    }
+    } // if( e.target.tagName == 'INPUT' && ['ArrowLeft', 'ArrowRight'].includes(e.code) )
 
-    if (e.target.tagName == 'INPUT' && ['ArrowLeft', 'ArrowRight'].includes(e.code)) return;
-    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter'].includes(e.code)) return;
+
+    if (['ArrowLeft', 'ArrowRight'].includes(e.code)) return; // stop processing the keypress unless it is one of these
+
+    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Space'].includes(e.code)) return;
+    if (!this.opts.multiple && e.code == 'Space') return;
     let items = this.el.querySelectorAll('.menu-item');
     let activeItem = items[this._active]; // if active item has a menu open, dont perform any actions
 
     if (activeItem && activeItem.classList.contains('popover-open')) return;
+
+    if (this.opts.multiple && e.code == 'Space') {
+      if (activeItem) {
+        activeItem.click();
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      return;
+    }
+
+    if (this.opts.multiple && e.code == 'Enter') {
+      this.resolve(this.selected);
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
 
     if (e.code == 'Enter') {
       if (activeItem) activeItem.click();
@@ -19346,7 +16499,7 @@ class Menu {
             this.fetchResults(val);
           }, 700);
         } else {
-          if (!val) this.__filteredMenu = null;else this.__filteredMenu = this.__fuse.search(val);
+          this.matching(val);
           this.render();
           this.setActiveItem(this.opts.autoSelectFirst ? 0 : null);
         }
@@ -19362,10 +16515,22 @@ class Menu {
     if (li) this.setActiveItem(li);
   }
 
+  matching(val) {
+    if (!val) this.__filteredMenu = null;else this.__filteredMenu = this.__fuse.search(val);
+  }
+
   resolve(data) {
     // if( this.opts.onSelect )
     // 	this.opts.onSelect(data)
-    if (this._resolve) this._resolve(data);
+    let didHandle = false;
+    if (this.opts.handler) didHandle = Menu.handle(data, this.opts.handler, this.opts.handlerArgs);
+
+    if (!didHandle && this._resolve) {
+      this._resolve(data);
+
+      this._resolve = null;
+    }
+
     if (this.presenter) this.presenter.close();
   }
 
@@ -19375,21 +16540,44 @@ class Menu {
       el && this.setActiveItem(el);
     }, 0);
   }
+
+  close() {
+    this.presenter && this.presenter.close();
+    this.presenter = null;
+    this._resolve = null;
+    this.promise = null;
+  }
   /*
   	Presenters
   */
 
 
   popover(target, opts = {}) {
-    if (opts.adjustForMobile && _device.default.isMobile && !_device.default.isiPad) return this.modal(Object.assign({
-      btns: ['cancel', 'done'],
-      anchor: this.searchIsOn ? 'top' : 'center'
-    }, typeof opts.adjustForMobile == 'object' ? opts.adjustForMobile : {}));
+    if (this.__filteredMenu && this.__filteredMenu.length == 0) {
+      this.promise = null;
+      return Promise.resolve(false);
+    }
+
+    if (this.presenter && this.presenter instanceof _popover.default) {
+      this.presenter.positionOver(target);
+      return this.promise;
+    }
+
+    if (opts.adjustForMobile && _device.default.isMobile && !_device.default.isiPad) {
+      let modalOpts = {
+        btns: ['cancel', 'done']
+      };
+      if (this.searchIsOn) modalOpts.anchor = 'top';
+      if (typeof opts.adjustForMobile == 'object') modalOpts = Object.assign(modalOpts, opts.adjustForMobile);
+      return this.modal(modalOpts);
+    }
+
     this.render();
     let onClose = opts.onClose;
 
     opts.onClose = () => {
       onClose && onClose();
+      this.presenter = null;
       if (this.opts.multiple) this.resolve(this.selected);else this.resolve(false);
     };
 
@@ -19413,8 +16601,8 @@ class Menu {
   panel(opts = {}) {
     this.render();
     opts = Object.assign({
-      type: 'modal',
-      animation: 'scale'
+      type: 'modal' // animation: 'scale'
+
     }, opts);
     opts.onKeydown = this.onKeydown.bind(this);
     let onClose = opts.onClose;
@@ -19446,7 +16634,7 @@ class Menu {
 }
 
 exports.default = Menu;
-},{"lit-html":"SP/d","lit-html/directives/unsafe-html":"/jTP","../popover":"Soyf","../dialog":"pos3","../panel":"cmZt","fuse.js":"Wp9p","../form-control/controls/check-box":"jNfL","../form-control/controls/select-field":"h8fl","../../util/device":"la8o","./style.less":"r4vn"}],"7P61":[function(require,module,exports) {
+},{"lit-html":"SPDu","lit-html/directives/unsafe-html":"jTPt","lit-html/directives/live":"RaiV","../popover":"Soyf","../dialog":"pos3","../panel":"cmZt","fuse.js":"Wp9p","../../elements/hr":"IOAQ","../form-control/controls/check-box":"jNfL","../form-control/controls/select-field":"h8fl","../../util/device":"la8o","./style.less":"r4vn"}],"P61z":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19493,7 +16681,7 @@ class TabView {
   }
 
   render(onClick) {
-    return this.canDisplay ? _litHtml.html`
+    return this.canDisplay ? (0, _litHtml.html)`
             <div class="tab-bar-item" ?active=${this.active} .tabView=${this} @click=${onClick}>
                 <slot name="menu:${this.id}">${this.title}</slot>
             </div>
@@ -19565,7 +16753,7 @@ class TabView {
 }
 
 exports.default = TabView;
-},{"lit-html":"SP/d"}],"jVU8":[function(require,module,exports) {
+},{"lit-html":"SPDu"}],"jVU8":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19631,7 +16819,7 @@ class TabViews extends Map {
 }
 
 exports.default = TabViews;
-},{"./view":"7P61"}],"u9vI":[function(require,module,exports) {
+},{"./view":"P61z"}],"u9vI":[function(require,module,exports) {
 /**
  * Checks if `value` is the
  * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
@@ -19682,7 +16870,7 @@ var root = freeGlobal || freeSelf || Function('return this')();
 
 module.exports = root;
 
-},{"./_freeGlobal":"j3D9"}],"0pJf":[function(require,module,exports) {
+},{"./_freeGlobal":"j3D9"}],"pJf5":[function(require,module,exports) {
 var root = require('./_root');
 
 /**
@@ -20140,7 +17328,7 @@ function debounce(func, wait, options) {
 
 module.exports = debounce;
 
-},{"./isObject":"u9vI","./now":"0pJf","./toNumber":"iS0Z"}],"BsQP":[function(require,module,exports) {
+},{"./isObject":"u9vI","./now":"pJf5","./toNumber":"iS0Z"}],"BsQP":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20168,7 +17356,7 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
         reflect: true
       },
       layout: {
-        type: 'String',
+        type: String,
         reflect: true
       },
       singlemenu: {
@@ -20204,7 +17392,7 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
 
           views.push(..._views);
           node.textContent = '';
-        } else if (node.slot || node.nodeName == '#comment') {// ignore views that have a slot name
+        } else if (node.slot || ['#comment', 'SCRIPT', 'STYLE'].includes(node.nodeName)) {// ignore views that have a slot name
         } else if (node.title) {
           views.push(node);
         } else {
@@ -20245,7 +17433,7 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             position: relative;
             display: grid;
@@ -20254,7 +17442,7 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
 
             --menuBgd: none;
             --menuFontSize: 1em;
-            --contentPadding: 2em;
+            --contentPadding: var(--view-gutter);
             --menuItemPadding: .75em 1em;
             --menuItemRadius: 4px;
             --inactiveColor: var(--b-tabs-inactive-color, rgba(0,0,0,.4));
@@ -20262,6 +17450,7 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
             --border-color: var(--b-tabs-border-color, rgba(0, 0, 0, 0.1));
             --contentBgd: none;
             --contentShadow: none;
+            --contentRadius: 0;
         }
 
         .tab-bar {
@@ -20370,6 +17559,7 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
             display: flex;
             background: var(--contentBgd);
             box-shadow: var(--contentShadow);
+            border-radius: var(--contentRadius);
             overflow: var(--overflow, auto);
         }
 
@@ -20456,7 +17646,7 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
   }
 
   renderTabBar() {
-    if (['none', 'false'].includes(this.getAttribute('tab-bar'))) return _litElement.html`<div></div>`;
+    if (['none', 'false'].includes(this.getAttribute('tab-bar'))) return (0, _litElement.html)`<div></div>`;
 
     if (this.getAttribute('tab-bar')) {
       if (!this.__customTabBar) {
@@ -20469,13 +17659,20 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
         this.__customTabBar.onMenuClick = this.menuClick.bind(this);
 
         this.__customTabBar.classList.add('tab-bar');
+
+        this.__customTabBar.innerHTML =
+        /*html*/
+        `
+                    <span slot="menu:before"><slot name="menu:before"></slot></span>
+                    <span slot="menu:after"><slot name="menu:after"></slot></span>
+                `;
       } else {
         this.__customTabBar.update();
       }
 
       return this.__customTabBar;
     } else {
-      return _litElement.html`
+      return (0, _litElement.html)`
             <header class="tab-bar">
                 <slot name="menu:before"></slot>
                 <div class="tab-bar-item single-menu" active @click=${this.popoverMenu}>
@@ -20489,7 +17686,7 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         ${this.renderTabBar()}
         <slot class="content"></slot>
     `;
@@ -20555,7 +17752,7 @@ customElements.define('b-tabs', class extends _litElement.LitElement {
 var _default = customElements.get('b-tabs');
 
 exports.default = _default;
-},{"lit-element":"+bhx","../menu":"0tCY","./views":"jVU8","./view":"7P61","lodash/debounce":"CXfR"}],"ZQnj":[function(require,module,exports) {
+},{"lit-element":"bhxD","../menu":"tCYJ","./views":"jVU8","./view":"P61z","lodash/debounce":"CXfR"}],"ZQnj":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20570,7 +17767,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 class FormHandler extends HTMLElement {
   constructor() {
     super();
-    this.editorsByKey = {}; // bind context to functions
+    this.controlsByKey = {}; // bind context to functions
 
     this.onModelSync = this.onModelSync.bind(this);
     this.onModelChange = this.onModelChange.bind(this);
@@ -20578,8 +17775,8 @@ class FormHandler extends HTMLElement {
     this.onEditorChange = this.onEditorChange.bind(this);
   }
 
-  get noGridArea() {
-    return this.hasAttribute('no-grid-area');
+  get autoGridArea() {
+    return this.hasAttribute('auto-grid-area');
   }
 
   get autoSave() {
@@ -20607,15 +17804,23 @@ class FormHandler extends HTMLElement {
     }, 0);
   }
 
+  get values() {
+    let vals = {};
+    this.controls.forEach(control => {
+      if (control.key) vals[control.key] = control.value;
+    });
+    return vals;
+  }
+
   bindControls() {
     // TODO: change to `controls`?
-    this.editors = Array.from(this.querySelectorAll('form-control[key], check-box[key], radio-group[key], text-field[key], select-field[key]'));
-    this.editors.forEach(el => {
+    this.controls = this.editors = Array.from(this.querySelectorAll('form-control[key], check-box[key], radio-group[key], text-field[key], select-field[key]'));
+    this.controls.forEach(el => {
       let key = el.getAttribute('key');
 
       if (key) {
-        this.editorsByKey[key] = el;
-        if (!this.noGridArea) el.style.gridArea = key;
+        this.controlsByKey[key] = el;
+        if (this.autoGridArea) el.style.gridArea = key;
       }
     });
     if (this.disabled || this.hasAttribute('disabled')) this.disabled = true;
@@ -20633,8 +17838,8 @@ class FormHandler extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.editors = [];
-    this.editorsByKey = {};
+    this.controls = this.editors = [];
+    this.controlsByKey = {};
     this.model = null;
     this.removeEventListener('change', this.onEditorChange);
   }
@@ -20644,18 +17849,16 @@ class FormHandler extends HTMLElement {
   }
 
   set model(model) {
-    if (!model) {
-      if (this.model) {
-        this.model.off('sync', null, this);
-        this.model.off('change', null, this);
-        this.model.off('edited', null, this);
-        delete this._model;
-      }
+    if (model == this.model) return;
 
-      return;
+    if (this.model) {
+      this.model.off('sync', null, this);
+      this.model.off('change', null, this);
+      this.model.off('edited', null, this);
+      delete this._model;
     }
 
-    if (model == this.model) return;
+    if (!model) return;
     this._model = model;
     this.model._editedAttrs = this.model._editedAttrs || {};
     this.model.on('sync', this.onModelSync, this);
@@ -20681,13 +17884,16 @@ class FormHandler extends HTMLElement {
   }
 
   _updateEditors() {
-    if (this.editors && (this.model || this.hasAttribute('store'))) this.editors.forEach(el => {
-      // set the value of each editor based on the value in the model
-      let key = el.getAttribute('key');
-      let val = this.storedValue(key);
-      if (val && val._isAMomentObject) val = val.format(el.control._datePicker ? el.control._datePicker.format : 'MM/DD/YYYY');
-      if (val !== undefined) el.value = val;
-    });
+    if (this.controls && (this.model || this.hasAttribute('store'))) {
+      this.controls.forEach(el => {
+        // set the value of each editor based on the value in the model
+        let key = el.getAttribute('key');
+        let val = this.storedValue(key);
+        if (val && val.format) val = val.format(el.control._datePicker ? el.control._datePicker.format : 'MM/DD/YYYY');
+        if (val !== undefined) el.value = val;
+      });
+      this.setControlIfs();
+    }
   }
 
   onModelSync(m, attrs, opts) {
@@ -20705,9 +17911,10 @@ class FormHandler extends HTMLElement {
   }
 
   onModelEdited(isEdited, editedAttrs) {
-    this.editors.forEach(el => {
+    this.controls.forEach(el => {
       if (editedAttrs[el.key] != undefined && !this.autoSave) el.setAttribute('unsaved', '');else el.removeAttribute('unsaved');
     });
+    if (!isEdited) this.setControlIfs();
   }
 
   onModelChange(m, opts = {}) {
@@ -20718,9 +17925,9 @@ class FormHandler extends HTMLElement {
       } // set the editor with the new value
 
 
-      if (this.editorsByKey[key]) {
-        this.editorsByKey[key].value = m.changed[key];
-        this.editorsByKey[key].removeAttribute('unsaved'); // this causes problems with tracking "editedAttr"
+      if (this.controlsByKey[key]) {
+        this.controlsByKey[key].value = m.changed[key];
+        this.controlsByKey[key].removeAttribute('unsaved'); // this causes problems with tracking "editedAttr"
         // if( m._origAttrs )
         // 	m._origAttrs[key] = m.changed[key]
       }
@@ -20767,12 +17974,45 @@ class FormHandler extends HTMLElement {
           patch: this.patchSave || false
         });
         this.model.trigger('edited', false, changes);
+        this.model.trigger('saved', changes);
       } else {
         this.model.editAttr(changes);
       }
     }
 
+    this.setControlIfs(key);
     this.onChange && this.onChange(changes);
+  }
+
+  setControlIfs(ifKey) {
+    let toggleTypes = Object.keys(toggleIf);
+    this.controls.forEach(control => {
+      toggleTypes.forEach(toggleKey => {
+        // skip controls that dont need testing
+        if (!control[toggleKey]) return;
+        let valid = true;
+
+        if (typeof control[toggleKey] == 'function') {
+          valid = control[toggleKey](this, control);
+        } else {
+          if (ifKey && control[toggleKey][ifKey] === undefined) return;
+
+          for (let key in control[toggleKey]) {
+            let allowedVal = control[toggleKey][key]; // prefer the model, but 
+
+            let val = this.model ? this.model.get(key) : this.get(key).value;
+
+            if (Array.isArray(allowedVal)) {
+              if (!allowedVal.includes(val)) valid = false;
+            } else {
+              if (allowedVal != val) valid = false;
+            }
+          }
+        }
+
+        toggleIf[toggleKey](control, valid);
+      });
+    });
   }
 
   get disabled() {
@@ -20781,20 +18021,20 @@ class FormHandler extends HTMLElement {
 
   set disabled(disabled = false) {
     this.__disabled = disabled === true;
-    this.editors && this.editors.forEach(el => el.disabled = this.__disabled);
+    this.controls && this.controls.forEach(el => el.disabled = this.__disabled);
   }
 
   get isInvalid() {
-    return !!this.editors.find(el => el.isInvalid);
+    return !!this.controls.find(el => el.isInvalid);
   }
 
   focus(index = 0) {
-    this.editors[index] && this.editors[index].focus();
+    this.controls[index] && this.controls[index].focus();
   }
 
   get(key) {
-    if (typeof key == 'number') return this.editors[key];
-    return Array.from(this.editors).find(ed => ed.key == key);
+    if (typeof key == 'number') return this.controls[key];
+    return Array.from(this.controls).find(ed => ed.key == key);
   }
 
 }
@@ -20804,7 +18044,25 @@ customElements.define('form-handler', FormHandler);
 var _default = customElements.get('form-handler');
 
 exports.default = _default;
-},{"../../util/store":"2z4L"}],"Sclr":[function(require,module,exports) {
+const toggleIf = {
+  displayIf(control, valid) {
+    if (valid) control.hidden = false;else control.hidden = true;
+  },
+
+  hideIf(control, valid) {
+    if (valid) control.hidden = true;else control.hidden = false;
+  },
+
+  disableIf(control, valid) {
+    if (valid) control.disabled = true;else control.disabled = false;
+  },
+
+  enableIf(control, valid) {
+    if (valid) control.disabled = false;else control.disabled = true;
+  }
+
+};
+},{"../../util/store":"z4Ln"}],"Sclr":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20814,7 +18072,7 @@ exports.default = void 0;
 
 var _litElement = require("lit-element");
 
-var _default = _litElement.css`
+var _default = (0, _litElement.css)`
 slot#value {
 	display: none;
 }
@@ -21017,6 +18275,7 @@ slot[name="help"] {
 /* remove autofill blue/yellow background */
 ::slotted(input:-webkit-autofill) {
     -webkit-box-shadow:0 0 0 50px var(--bgd) inset;
+	-webkit-text-fill-color: var(--theme-color);
 }
 
 ::slotted(input:-webkit-autofill:focus) {
@@ -21038,13 +18297,13 @@ slot[name="help"] {
 
 :host([material]) {
 	--focusBgd: transparent;
-	padding-top: .25em;
+	/* padding-top: .25em; */
 	--padY: .6em;
-	--borderColor: rgba(0,0,0,.2);
+	--borderColor: var(--fc-border-color, rgba(0,0,0,.2));
 }
 
 :host([material]) main {
-	border-bottom: solid 1px var(--borderColor);
+	border-bottom: solid var(--fc-border-size, 1px) var(--borderColor);
 	padding-top: var(--padY);
 	border-radius: var(--fc-border-radius, 0px);
 }
@@ -21097,6 +18356,7 @@ slot[name="help"] {
 }
 
 :host([material]:not([empty])),
+:host([material][show*="placeholder"]),
 :host([material]:focus-within),
 :host([material][focused]) {
 	--labelFontSize: .7em;
@@ -21104,6 +18364,7 @@ slot[name="help"] {
 
 :host([material]) .control:not([empty]) ~ .label,
 :host([material]:not([empty])) .label,
+:host([material][show*="placeholder"]) .label,
 :host([material]:focus-within) .label,
 :host([material][focused]) .label {
 	color: inherit;
@@ -21120,6 +18381,10 @@ slot[name="help"] {
 :host([material]:not([show*="suffix"])) .suffix {
 	opacity: 0;
 	transition: 120ms;
+}
+
+:host([material][show*="placeholder"]) [name="control"]::slotted(*) {
+	opacity: 1 !important;
 }
 
 /* :host([material]) .control:not([empty]) ~ .prefix,
@@ -21241,7 +18506,7 @@ slot[name="help"] {
 	--padY: .75em;
 	--padX: .75em;
 	--placeholderColor: var(--fc-placeholder-color, rgba(0,0,0,.3));
-	margin: 0 0 .5em 0;
+	/* margin: 0 0 .5em 0; */
 }
 
 :host([material="filled"]) main {
@@ -21249,6 +18514,10 @@ slot[name="help"] {
 	padding-top: 1em;
 	border-radius: var(--fc-border-radius, 4px);
 	background: var(--bgd);
+}
+
+:host([material="filled"][outside]) main {
+	padding-top: 0;
 }
 
 :host([material="filled"].nolabel) main, /* deprecated, use attribute */
@@ -21283,6 +18552,10 @@ slot[name="help"] {
 	width: auto;
 }
 
+:host([material="filled"][outside]) .label {
+	transform: translateY(0%);
+}
+
 :host([material="filled"]) .prefix {
 	padding: var(--padY) var(--padX);
     padding-right: 0;
@@ -21296,12 +18569,22 @@ slot[name="help"] {
 }
 
 :host([material="filled"]:not([empty])) .label,
+:host([material="filled"][show*="placeholder"]) .label,
 :host([material="filled"]:focus-within) .label,
 :host([material="filled"][focused]) .label {
 	background: var(--bgd);
 	padding: 0 .35em;
 	margin-left: var(--padX);
 	transform: translateY(-50%);
+}
+
+:host([material="filled"][outside]:not([empty])) .label,
+:host([material="filled"][outside][show*="placeholder"]) .label,
+:host([material="filled"][outside]:focus-within) .label,
+:host([material="filled"][outside][focused]) .label {
+	transform: translateY(-100%);
+	background: none;
+	margin-left: 0;
 }
 
 :host([material="filled"]:focus-within) main:before,
@@ -21323,7 +18606,7 @@ slot[name="help"] {
 `;
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"299p":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"pZT1":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21338,7 +18621,7 @@ var _default = (el, val) => {
 };
 
 exports.default = _default;
-},{}],"8hx3":[function(require,module,exports) {
+},{}],"hx3P":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21470,7 +18753,7 @@ const onKeyDown = e => {
 
   if ((0, _stopMaxLength.default)(e, e.target, e.target.value)) e.preventDefault();
 };
-},{"./setValueAttrs":"299p","./validatePattern":"8hx3","./stopMaxLength":"h6i7"}],"swB1":[function(require,module,exports) {
+},{"./setValueAttrs":"pZT1","./validatePattern":"hx3P","./stopMaxLength":"h6i7"}],"swB1":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21487,6 +18770,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /*
 	Form Control
 */
+const CONTROLS = '[slot="control"], .control, text-field, rich-text-field, select-field, check-box, radio-group, token-text-field';
+const MIRROR_CONTROL_ATTRS = ['invalid', 'empty', 'no-value', 'falsy', 'focused', 'value'];
+
 class FormControlElement extends HTMLElement {
   constructor() {
     super();
@@ -21528,15 +18814,15 @@ class FormControlElement extends HTMLElement {
     let value = this.$('#value');
     this._val = value.assignedNodes().map(el => el.textContent.trim()).join(' ');
     this._val = this._val.replace(/^\n|\n$/g, '').trim();
-    this.control = this.querySelector('[slot="control"], .control, text-field, rich-text-field, select-field, check-box, radio-group');
+    this.control = this.querySelector(CONTROLS);
 
     if (this.control) {
       this.control.slot = 'control';
       this.mutationObserver = new MutationObserver(mutations => {
         mutations.forEach(m => {
           // mirror these attributes from the control onto the form-control
-          if (['invalid', 'empty', 'no-value', 'falsy', 'focused'].includes(m.attributeName)) {
-            if (this.control.hasAttribute(m.attributeName)) this.setAttribute(m.attributeName, true);else this.removeAttribute(m.attributeName);
+          if (MIRROR_CONTROL_ATTRS.includes(m.attributeName)) {
+            if (this.control.hasAttribute(m.attributeName)) this.setAttribute(m.attributeName, this.control.getAttribute(m.attributeName));else this.removeAttribute(m.attributeName);
           }
         });
       });
@@ -21551,6 +18837,11 @@ class FormControlElement extends HTMLElement {
 
     this.addEventListener('click', this._onClick.bind(this), true);
     this.addEventListener('change', this._onChange);
+    this.$$('slot').forEach(slot => {
+      slot.addEventListener('slotchange', e => {
+        if (slot.assignedNodes().length == 0) slot.setAttribute('hidden', '');else slot.removeAttribute('hidden');
+      });
+    });
   }
 
   _onChange(e) {
@@ -21684,13 +18975,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _moment = _interopRequireDefault(require("moment"));
+var _dayjs = _interopRequireDefault(require("dayjs"));
 
 var _litElement = require("lit-element");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const styles = _litElement.css`
+const styles = (0, _litElement.css)`
 
 :host {
     display: inline-block;
@@ -21761,6 +19052,7 @@ nav > svg {
     padding: .25em;
     margin: -.25em;
 	color: var(--theme-color, #000);
+	fill: currentColor;
     opacity: .4;
     cursor: pointer;
 
@@ -21885,7 +19177,7 @@ class DatePickerElement extends HTMLElement {
   constructor() {
     super();
 
-    let htmlDaysHeader = _moment.default.weekdaysMin().map(str => `<div>${str}</div>`).join("\n");
+    let htmlDaysHeader = _dayjs.default.weekdaysMin().map(str => `<div>${str}</div>`).join("\n");
 
     let startYear = parseInt(this.getAttribute('year-start') || '1900');
     let endYear = parseInt(this.getAttribute('year-end') || '2099');
@@ -21895,7 +19187,7 @@ class DatePickerElement extends HTMLElement {
       years += `<year value="${startYear}">${startYear++}</year>`;
     }
 
-    let months = _moment.default.monthsShort().map((m, i) => `<month value="${i}">${m}</month>`).join("\n");
+    let months = _dayjs.default.monthsShort().map((m, i) => `<month value="${i}">${m}</month>`).join("\n");
 
     this.attachShadow({
       mode: 'open'
@@ -21969,7 +19261,7 @@ class DatePickerElement extends HTMLElement {
   }
 
   _renderMonth() {
-    let start = this._date.weekday();
+    let start = this._date.day();
 
     let numDays = this._date.daysInMonth();
 
@@ -21995,13 +19287,13 @@ class DatePickerElement extends HTMLElement {
   }
 
   nextMonth() {
-    this._date.add('month', 1);
+    this._date = this._date.add(1, 'month');
 
     this._renderMonth();
   }
 
   prevMonth() {
-    this._date.add('month', -1);
+    this._date = this._date.add(-1, 'month');
 
     this._renderMonth();
   }
@@ -22038,7 +19330,7 @@ class DatePickerElement extends HTMLElement {
         this._setDate({
           year: this._date.year(),
           month: this._date.month(),
-          date: val
+          date: parseInt(val)
         });
       }
 
@@ -22050,7 +19342,7 @@ class DatePickerElement extends HTMLElement {
 
       if (val) {
         this._setDate({
-          year: val
+          year: parseInt(val)
         });
 
         this.pickYear(false);
@@ -22065,7 +19357,7 @@ class DatePickerElement extends HTMLElement {
       if (val) {
         this._setDate({
           date: 1,
-          month: val
+          month: parseInt(val)
         });
 
         this.pickMonth(false);
@@ -22092,28 +19384,26 @@ class DatePickerElement extends HTMLElement {
   }
 
   get _lookingAtToday() {
-    this._today = this._today || (0, _moment.default)();
+    this._today = this._today || (0, _dayjs.default)();
     return this._date.year() == this._today.year() && this._date.month() == this._today.month();
   }
 
   get _lookingAtSelectedMonth() {
-    this._today = this._today || (0, _moment.default)();
+    this._today = this._today || (0, _dayjs.default)();
     return this._date.year() == this._dateSelected.year() && this._date.month() == this._dateSelected.month();
   }
 
   _setDate(val) {
     if (val && typeof val == 'object') {
-      this._dateSelected.set(val);
-
-      this._date.set(val);
-
+      this._dateSelected = this._dateSelected.set(val);
+      this._date = this._date.set(val);
       changeEvent(this, val);
     } else {
-      this._date = val ? (0, _moment.default)(val, this.format) : (0, _moment.default)();
+      this._date = val ? (0, _dayjs.default)(val, this.format) : (0, _dayjs.default)();
       this._dateSelected = this._date.clone();
     }
 
-    this._date.set({
+    this._date = this._date.set({
       date: 1
     });
 
@@ -22161,7 +19451,7 @@ customElements.define('date-picker', DatePickerElement);
 var _default = customElements.get('date-picker');
 
 exports.default = _default;
-},{"moment":"a2/B","lit-element":"+bhx"}],"E0RO":[function(require,module,exports) {
+},{"dayjs":"dZYI","lit-element":"bhxD"}],"E0RO":[function(require,module,exports) {
 /*
     HTML Cleaner
 
@@ -22181,6 +19471,14 @@ exports.default = _default;
     htmlCleaner.parser = function(str){ return [document, body] }
     ```
 */
+const DEFAULT_ALLOW_TAGS = ['p', 'br', 'b', 'strong', 'em', 'i', 'ul', 'ol', 'li']; // TODO: move to param
+
+const DEFAULT_ALLOW_STYLES = {
+  fontStyle: ['italic'],
+  fontWeight: ['bold'],
+  textAlign: ['left', 'justify', 'right', 'center']
+};
+
 function parser(str) {
   if (typeof DOMParser === 'undefined') throw Error('DOMParser does not exist');
   var dom = new DOMParser().parseFromString(str, "text/html");
@@ -22193,7 +19491,12 @@ function stripHTML(str) {
   return childNodes.map(node => node.textContent).join(' ');
 }
 
-function clean(str) {
+function clean(str, opts = {}) {
+  opts = Object.assign({
+    keepParent: true,
+    allowTags: DEFAULT_ALLOW_TAGS,
+    allowStyles: DEFAULT_ALLOW_STYLES
+  }, opts);
   var [document, body] = this.parser(str);
   var el = document.createElement('div');
   var p = null;
@@ -22207,10 +19510,10 @@ function clean(str) {
     // top level <br> tags terminate the current <p>
     if (node.nodeName == 'BR') return p = null; // if we have a top level <p>, lets keep it
 
-    if (node.nodeName == 'P') {
+    if (childNodes.length == 1 && node.nodeName == 'P') {
       p = node; // clean all its children
 
-      cleanNode(null, p); // if NOT empty after cleaning, keep it
+      cleanNode(null, p, opts); // if NOT empty after cleaning, keep it
 
       if (p.innerText !== '') el.appendChild(p);
       return; // all other tags
@@ -22222,26 +19525,42 @@ function clean(str) {
       } // cleaning will append to `p`
 
 
-      cleanNode(p, node);
+      cleanNode(p, node, opts);
     }
   });
+  if (opts.keepParent === 'never') el = el.childNodes[0] || el;
+  if (opts.keepParent === false && el.childNodes[0].childNodes.length > 1) el = el.childNodes[0] || el;
   let html = el.innerHTML ? el.innerHTML : Array.from(el.childNodes).map(node => node.toString()).join(''); // remove line breaks as they dont provide anything and can cause problems in csv exports
 
-  html = html.replace(/[\n\r]/g, ' ');
+  html = html.replace(/[\n\r]/g, ' '); // replace non-breaking spaces with normal spaces
+
+  html = html.replace(/&nbsp;/g, ' ');
   return html;
 }
 
-function cleanNode(parent, node) {
-  // remove all attributes known to be a problem
+function cleanNode(parent, node, opts = {}) {
+  opts.allowTags = opts.allowTags != undefined ? opts.allowTags : DEFAULT_ALLOW_TAGS;
+  opts.allowStyles = opts.allowStyles != undefined ? opts.allowStyles : DEFAULT_ALLOW_STYLES; // remove all attributes known to be a problem
+
   if (node.removeAttribute) {
-    let isItalic = node.style && node.style.fontStyle == 'italic';
-    let isBold = node.style && node.style.fontWeight == 'bold';
+    let styles = Object.assign({}, node.style);
     node.removeAttribute('id');
     node.removeAttribute('class');
-    node.removeAttribute('style'); // reapply certain styles // TODO: add option for whether we do this?
+    node.removeAttribute('style');
 
-    if (isItalic && !['I', 'EM'].includes(node.nodeName)) node.style.fontStyle = 'italic';
-    if (isBold && !['B', 'STRONG'].includes(node.nodeName)) node.style.fontWeight = 'bold';
+    for (let styleName in opts.allowStyles) {
+      let allow = opts.allowStyles[styleName];
+
+      if (allow === true && styles[styleName]) {
+        node.style[styleName] = styles[styleName];
+      } else {
+        allow = Array.isArray(allow) ? allow : [allow];
+
+        if (allow.includes(styles[styleName])) {
+          node.style[styleName] = styles[styleName];
+        }
+      }
+    }
   } // if the node is a comment or a known weird tag (word docs have things like <o:p>) remove it
 
 
@@ -22256,7 +19575,7 @@ function cleanNode(parent, node) {
     } // clean all child nodes of this node
 
   let childNodes = node.childNodes ? Array.from(node.childNodes) : [];
-  childNodes.forEach(n => cleanNode(node, n)); // remove any empty nodes (but keep <br> which are always empty)
+  childNodes.forEach(n => cleanNode(node, n, opts)); // remove any empty nodes (but keep <br> which are always empty)
 
   if (node.nodeName != 'BR' && node.innerText == '') return node.remove(); // if( parent && parent.tagName == 'P' ){
 
@@ -22264,9 +19583,13 @@ function cleanNode(parent, node) {
     // keep spans that have styles since they will be bold/italics
     if (node.nodeName == 'SPAN' && node.hasAttribute('style')) {
       parent.appendChild(node); // keep tags we want
-      // TODO: make list of tags an option?
-    } else if (['#text', 'p', 'br', 'b', 'strong', 'em', 'i', 'ul', 'ol', 'li'].includes(node.nodeName.toLowerCase())) {
-      // if( parent.tagName == 'P' )
+    } else if (['#text'].concat(opts.allowTags).includes(node.nodeName.toLowerCase())) {
+      // make sure inline elements dont start with a <br> tag ie <br><i><br> as this will parse to <p><i><br> and break Quill
+      if (['i', 'b', 'strong', 'em'].includes(node.nodeName.toLowerCase())) {
+        if (node.childNodes[0] && node.childNodes[0].nodeName == 'BR') node.childNodes[0].remove();
+      } // if( parent.tagName == 'P' )
+
+
       parent.appendChild(node); // remove tags we dont want, but keep their contents
       // example: <font>we want to keep this text and any <b>good</b> tags</font>
     } else {
@@ -22316,11 +19639,102 @@ var _default = (str = '') => {
 };
 
 exports.default = _default;
+},{}],"dMpr":[function(require,module,exports) {
+// https://jonlabelle.com/snippets/view/javascript/calculate-mean-median-mode-and-range-in-javascript
+module.exports = {
+  round(num, decimals = 2) {
+    if (typeof num == 'string') num = parseFloat(num);
+    let divisor = Math.pow(10, decimals);
+    return Math.round(num * divisor) / divisor;
+  },
+
+  /**
+   * The "median" is the "middle" value in the list of numbers.
+   *
+   * @param {Array} numbers An array of numbers.
+   * @return {Number} The calculated median value from the specified numbers.
+   */
+  median(numbers) {
+    // median of [3, 5, 4, 4, 1, 1, 2, 3] = 3
+    var median = 0,
+        numsLen = numbers.length;
+    numbers.sort();
+
+    if (numsLen % 2 === 0 // is even
+    ) {
+        // average of two middle numbers
+        median = (numbers[numsLen / 2 - 1] + numbers[numsLen / 2]) / 2;
+      } else {
+      // is odd
+      // middle number only
+      median = numbers[(numsLen - 1) / 2];
+    }
+
+    return median;
+  },
+
+  /**
+   * The "mode" is the number that is repeated most often.
+   *
+   * For example, the "mode" of [3, 5, 4, 4, 1, 1, 2, 3] is [1, 3, 4].
+   *
+   * @param {Array} numbers An array of numbers.
+   * @return {Array} The mode of the specified numbers.
+   */
+  mode(numbers) {
+    // as result can be bimodal or multi-modal,
+    // the returned result is provided as an array
+    // mode of [3, 5, 4, 4, 1, 1, 2, 3] = [1, 3, 4]
+    var modes = [],
+        count = [],
+        i,
+        number,
+        maxIndex = 0;
+
+    for (i = 0; i < numbers.length; i += 1) {
+      number = numbers[i];
+      count[number] = (count[number] || 0) + 1;
+
+      if (count[number] > maxIndex) {
+        maxIndex = count[number];
+      }
+    }
+
+    for (i in count) if (count.hasOwnProperty(i)) {
+      if (count[i] === maxIndex) {
+        modes.push(Number(i));
+      }
+    }
+
+    return modes;
+  },
+
+  roundTo(num, ratio = 2) {
+    num = parseFloat(num);
+    if (isNaN(num)) return '';
+    return Math.round(num * ratio) / ratio;
+  },
+
+  prettyDecimal(val = '', ratio = null) {
+    if (ratio != null) val = this.roundTo(val, ratio);
+    val = String(val);
+    val = val.replace(/\.00?$/, '');
+    val = val.replace(/\.25$/, '¼');
+    val = val.replace(/\.50?$/, '½');
+    val = val.replace(/\.75$/, '¾');
+    val = val.replace(/^0*/, ''); // remove leading 0s
+
+    return val;
+  }
+
+};
 },{}],"E8jA":[function(require,module,exports) {
 // ref: http://stackoverflow.com/a/1293163/2343
 // This will parse a delimited string into an array of
 // arrays. The default delimiter is the comma, but this
 // can be overriden in the second argument.
+const mode = require('./math').mode;
+
 module.exports = (strData, {
   strDelimiter = ',',
   hasHeader = true
@@ -22370,6 +19784,21 @@ module.exports = (strData, {
     arrData[arrData.length - 1].push(strMatchedValue);
   }
 
+  let header = [];
+  let footer = [];
+  let foundRow = false;
+  let rowLengths = arrData.map(r => r.length);
+  let rowLength = mode(rowLengths)[0];
+  arrData = arrData.filter(row => {
+    if (row.length < rowLength) {
+      if (row[0] && foundRow) footer.push(row);else if (row[0]) header.push(row);
+      return false;
+    }
+
+    foundRow = true;
+    return true;
+  });
+
   if (hasHeader) {
     let header = arrData.shift();
     arrData = arrData.map(line => {
@@ -22377,12 +19806,14 @@ module.exports = (strData, {
       header.forEach((key, i) => obj[key] = line[i]);
       return obj;
     });
-  } // Return the parsed data.
+  }
 
+  arrData.header = header;
+  arrData.footer = footer; // Return the parsed data.
 
   return arrData;
 };
-},{}],"Zwl6":[function(require,module,exports) {
+},{"./math":"dMpr"}],"Zwl6":[function(require,module,exports) {
 /*
 	Plural - create singular or plural sentence based on number given (all numbers but 1 return plural sentence)
 
@@ -22497,7 +19928,7 @@ function arrayMap(array, iteratee) {
 
 module.exports = arrayMap;
 
-},{}],"p/0c":[function(require,module,exports) {
+},{}],"p0cq":[function(require,module,exports) {
 /**
  * Checks if `value` is classified as an `Array` object.
  *
@@ -22525,7 +19956,7 @@ var isArray = Array.isArray;
 
 module.exports = isArray;
 
-},{}],"3w4y":[function(require,module,exports) {
+},{}],"w4yJ":[function(require,module,exports) {
 var Symbol = require('./_Symbol'),
     arrayMap = require('./_arrayMap'),
     isArray = require('./isArray'),
@@ -22564,7 +19995,7 @@ function baseToString(value) {
 
 module.exports = baseToString;
 
-},{"./_Symbol":"wppe","./_arrayMap":"BblM","./isArray":"p/0c","./isSymbol":"bgO7"}],"A8RV":[function(require,module,exports) {
+},{"./_Symbol":"wppe","./_arrayMap":"BblM","./isArray":"p0cq","./isSymbol":"bgO7"}],"A8RV":[function(require,module,exports) {
 var baseToString = require('./_baseToString');
 
 /**
@@ -22594,7 +20025,7 @@ function toString(value) {
 
 module.exports = toString;
 
-},{"./_baseToString":"3w4y"}],"Chbn":[function(require,module,exports) {
+},{"./_baseToString":"w4yJ"}],"Chbn":[function(require,module,exports) {
 /**
  * The base implementation of `_.slice` without an iteratee call guard.
  *
@@ -22627,7 +20058,7 @@ function baseSlice(array, start, end) {
 
 module.exports = baseSlice;
 
-},{}],"5Kr2":[function(require,module,exports) {
+},{}],"Kr2C":[function(require,module,exports) {
 var baseSlice = require('./_baseSlice');
 
 /**
@@ -22689,7 +20120,7 @@ function asciiToArray(string) {
 
 module.exports = asciiToArray;
 
-},{}],"NN+K":[function(require,module,exports) {
+},{}],"NNKx":[function(require,module,exports) {
 /** Used to compose unicode character classes. */
 var rsAstralRange = '\\ud800-\\udfff',
     rsComboMarksRange = '\\u0300-\\u036f',
@@ -22751,7 +20182,7 @@ function stringToArray(string) {
 
 module.exports = stringToArray;
 
-},{"./_asciiToArray":"ACee","./_hasUnicode":"oxMD","./_unicodeToArray":"NN+K"}],"prUu":[function(require,module,exports) {
+},{"./_asciiToArray":"ACee","./_hasUnicode":"oxMD","./_unicodeToArray":"NNKx"}],"prUu":[function(require,module,exports) {
 var castSlice = require('./_castSlice'),
     hasUnicode = require('./_hasUnicode'),
     stringToArray = require('./_stringToArray'),
@@ -22786,7 +20217,7 @@ function createCaseFirst(methodName) {
 
 module.exports = createCaseFirst;
 
-},{"./_castSlice":"5Kr2","./_hasUnicode":"oxMD","./_stringToArray":"smkV","./toString":"A8RV"}],"SwE8":[function(require,module,exports) {
+},{"./_castSlice":"Kr2C","./_hasUnicode":"oxMD","./_stringToArray":"smkV","./toString":"A8RV"}],"SwE8":[function(require,module,exports) {
 var createCaseFirst = require('./_createCaseFirst');
 
 /**
@@ -22852,7 +20283,7 @@ var _default = str => {
 };
 
 exports.default = _default;
-},{"lodash/capitalize":"NEda"}],"9TuE":[function(require,module,exports) {
+},{"lodash/capitalize":"NEda"}],"TuEj":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22890,6 +20321,10 @@ var _default = (rawData, opts) => {
         val = '"' + val.replace(/"/gi, '""') + '"';
       }
 
+      if (Array.isArray(val)) {
+        val = '[array]';
+      }
+
       return val;
     });
   });
@@ -22920,7 +20355,7 @@ var _default = (ts = 0) => {
 };
 
 exports.default = _default;
-},{}],"+xBz":[function(require,module,exports) {
+},{}],"xBze":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22992,7 +20427,7 @@ var _toCSV = _interopRequireDefault(require("./toCSV"));
 var _wait = _interopRequireDefault(require("./wait"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./htmlCleaner":"E0RO","./normalizeText":"hNKD","./csvToArray":"E8jA","./plural":"Zwl6","./readFile":"MqKw","./titleize":"NUHt","./toCSV":"9TuE","./wait":"DKKB"}],"2ezN":[function(require,module,exports) {
+},{"./htmlCleaner":"E0RO","./normalizeText":"hNKD","./csvToArray":"E8jA","./plural":"Zwl6","./readFile":"MqKw","./titleize":"NUHt","./toCSV":"TuEj","./wait":"DKKB"}],"ezNL":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23002,7 +20437,7 @@ exports.default = void 0;
 
 var _litElement = require("lit-element");
 
-var _moment = _interopRequireDefault(require("moment"));
+var _dayjs = _interopRequireDefault(require("dayjs"));
 
 var _dialog = _interopRequireDefault(require("../../dialog"));
 
@@ -23018,7 +20453,7 @@ var _util = require("../../../util");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const styles = _litElement.css`
+const styles = (0, _litElement.css)`
 :host {
 	display: inline-block;
 	contain: layout;
@@ -23068,6 +20503,10 @@ main {
 	min-height: 1em;
 	line-height: 1.2em;
 	margin: -.1em 0;
+}
+
+.editor p {
+	margin: var(--b-text-field-paragraph-margin, 1em) 0;
 }
 
 .editor p:first-child{ margin-top: 0;}
@@ -23185,13 +20624,13 @@ class TextFieldElement extends HTMLElement {
       this._datePicker.format = this.format;
 
       if (!this._datePicker.isValid) {
-        let date = (0, _moment.default)(this._val);
+        let date = (0, _dayjs.default)(this._val);
         this._val = this._datePicker.value = date.format(this._datePicker.format);
       }
     }
 
     if (this._val) {
-      this._editor.innerHTML = _util.htmlCleaner.clean(this._val);
+      this._editor.innerHTML = _util.htmlCleaner.clean(this._val, this.htmlClean || {});
       this._input.value = this._val;
     }
 
@@ -23293,6 +20732,13 @@ class TextFieldElement extends HTMLElement {
     return Array.from(doc.body.childNodes).map(node => node.nodeValue || node.innerText).join("\n");
   }
 
+  insertText(text) {
+    if (!this.isFocused) this.focus();
+    document.execCommand('insertText', false, text);
+
+    this._updateValue();
+  }
+
   set value(val) {
     this._oldVal = this._val;
 
@@ -23308,7 +20754,7 @@ class TextFieldElement extends HTMLElement {
         this._datePicker.value = val;
 
         if (!this._datePicker.isValid) {
-          let date = (0, _moment.default)(val);
+          let date = (0, _dayjs.default)(val);
           val = this._datePicker.value = date.format(this._datePicker.format);
         }
 
@@ -23339,8 +20785,7 @@ class TextFieldElement extends HTMLElement {
   get currentValue() {
     // retain current empty value
     let emptyVal = this.value === null ? null : '';
-    if (this.isHTML) return this._editor.innerHTML || emptyVal;
-    if (this.input) return this._input.value || emptyVal;else if (this._editor.innerHTML === '<p><br></p>' || this._editor.innerHTML === '<br>') return emptyVal;else return this._editor.innerText || this._editor.innerHTML || emptyVal;
+    if (this.input) return this._input.value || emptyVal;else if (this._editor.innerHTML === '<p><br></p>' || this._editor.innerHTML === '<br>') return emptyVal;else if (this.isHTML) return this._editor.innerHTML || emptyVal;else return this._editor.innerText || this._editor.innerHTML || emptyVal;
   }
 
   set isInvalid(invalid) {
@@ -23395,16 +20840,44 @@ class TextFieldElement extends HTMLElement {
 
     if (this.isHTML && !e.clipboardData.types.includes('text/rtf') && e.clipboardData.types.includes('text/html')) {
       val = e.clipboardData.getData('text/html');
-      val = _util.htmlCleaner.clean(val);
+      val = _util.htmlCleaner.clean(val, this.htmlClean || {});
     } else {
       val = e.clipboardData.getData('text'); // remove excessive line breaks
 
       val = val.replace(/\n{2,}/g, "\n");
+      if (this.isHTML) val = '<p>' + val.split(`\n`).join(`</p>\n<p>`) + '</p>';else val = val.split(`\n`).join(`<br>\n`);
+    }
+
+    let eventDetail = {
+      str: val,
+      extras: []
+    }; // only keep first line, but send extra lines in the event detail
+
+    if (!this.isMultiline) {
+      let lines = [];
+      let div = document.createElement('div');
+      let cleanOpts = Object.assign({
+        keepParent: false,
+        allowTags: ['p', 'b', 'i', 'strong', 'em']
+      }, this.htmlClean || {});
+      div.innerHTML = _util.htmlCleaner.clean(val, cleanOpts);
+      let isInlineText = div.firstChild instanceof Text || !['P', 'DIV'].includes(div.firstChild.tagName);
+      if (cleanOpts.keepParent == 'never' || isInlineText) lines.push(this.isHTML ? div.innerHTML : div.textContent);else for (let child of div.childNodes) {
+        lines.push(this.isHTML ? child.outerHTML || child.textContent : child.textContent);
+      }
+      eventDetail.str = val = lines.shift();
+      eventDetail.extras = lines;
     } // NOTE: using insertHTML (rather than insertText) keeps the browser from
     // converting line breaks to <div> and <br> tags
 
 
     document.execCommand('insertHTML', false, val);
+
+    this._updateValue();
+
+    this.dispatchEvent(new CustomEvent("pasted", {
+      detail: eventDetail
+    }));
   }
 
   get editorEl() {
@@ -23438,7 +20911,13 @@ class TextFieldElement extends HTMLElement {
   _onKeydown(e) {
     let stop = false;
     this.isInvalid = false;
-    if (e.key.length == 1) this.removeAttribute('empty');
+    if (e.key.length == 1) this.removeAttribute('empty'); // make sure to remove trailing <br> when deleting content
+
+    if (e.key == 'Backspace' && this.isHTML) {
+      setTimeout(() => {
+        if (this._editor.innerHTML == '<br>') this._editor.innerHTML = '';
+      });
+    }
 
     if (e.key == 'Backspace' && this.isMultiline && this._editor.innerText.trim() == '') {
       e.preventDefault();
@@ -23463,15 +20942,23 @@ class TextFieldElement extends HTMLElement {
       e.preventDefault();
       e.stopPropagation(); // NOTE: will this be weird to not blur on enter?
 
-      this._onBlur(); // doesn't actually blur, but does the logic like it did
-      // this.blur() // will trigger a change if there is one
-      // Force change event for empty search/ re-search
+      this._updateValue(); // this.blur() // will trigger a change if there is one
 
 
-      if (!this.value) this.dispatchEvent(new Event("change"));
+      let detail = {
+        shiftKey: e.shiftKey,
+        ctrlKey: e.ctrlKey,
+        metaKey: e.metaKey
+      }; // Force change event for empty search/ re-search
+
+      if (!this.value) this.dispatchEvent(new CustomEvent("change", {
+        detail
+      }));
       this.dispatchEvent(new Event("enterkey")); // DEPRECATED
 
-      this.dispatchEvent(new Event("submit")); // I think this makes more sense
+      this.dispatchEvent(new CustomEvent("submit", {
+        detail
+      })); // I think this makes more sense
     }
 
     if (e.key == 'Escape') {
@@ -23481,6 +20968,7 @@ class TextFieldElement extends HTMLElement {
       this.dispatchEvent(new Event("esckey"));
     }
 
+    this._didPressKey = true;
     let val = this.input ? this._input.value : this._editor.innerText;
     stop = (0, _stopMaxLength.default)(e, this, val);
     let delay = this.getAttribute('change-delay');
@@ -23488,7 +20976,7 @@ class TextFieldElement extends HTMLElement {
 
     if (delay !== null) {
       delay = delay || 500;
-      this._changeDelay = setTimeout(this._onBlur.bind(this), delay);
+      this._changeDelay = setTimeout(this._updateValue.bind(this), delay);
     }
 
     if (stop) {
@@ -23499,10 +20987,15 @@ class TextFieldElement extends HTMLElement {
   }
 
   focus() {
-    if (this.input) this._input.focus();else this.select();
+    if (this.input) this._input.focus();else this.select('end');
   }
 
   _onBlur() {
+    if (this._didPressKey) this._updateValue();
+    delete this._didPressKey;
+  }
+
+  _updateValue() {
     let val = this.currentValue;
 
     if (!(0, _validatePattern.default)(this, val)) {
@@ -23549,7 +21042,7 @@ customElements.define('text-field', TextFieldElement);
 var _default = customElements.get('text-field');
 
 exports.default = _default;
-},{"lit-element":"+bhx","moment":"a2/B","../../dialog":"pos3","./date-picker":"VxKk","../util/setValueAttrs":"299p","../util/validatePattern":"8hx3","../util/stopMaxLength":"h6i7","../../../util":"+xBz"}],"d7Am":[function(require,module,exports) {
+},{"lit-element":"bhxD","dayjs":"dZYI","../../dialog":"pos3","./date-picker":"VxKk","../util/setValueAttrs":"pZT1","../util/validatePattern":"hx3P","../util/stopMaxLength":"h6i7","../../../util":"xBze"}],"GLLF":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -23559,12272 +21052,7 @@ exports.default = void 0;
 
 var _litElement = require("lit-element");
 
-var _default = _litElement.css`
-
-rich-text-field {
-	z-index: 1000;
-    --font-size: 1em;
-    --line-height: 1.2em;
-    --font-family: initial;
-    --paragraphSpacing: .75em
-}
-
-rich-text-field textarea.view-source {
-    display: none;
-    width: 100%;
-    height: auto;
-    min-height: 1em;
-    background: #f6f8fa;
-    border: none;
-    box-shadow: none;
-    font-family: monospace;
-    font-size: var(--font-size);
-}
-
-rich-text-field[view-source] textarea.view-source {
-    display: block;
-}
-
-rich-text-field[view-source] main {
-    display: none;
-}
-
-rich-text-field[serif] main {
-    font-family: Garamond;
-    font-size: 1.1em;
-}
-
-rich-text-field main {
-    min-width: 1em;
-    line-height: 1.3em;
-    margin: -.15em 0; /* make up for the line height */
-}
-
-rich-text-field main ul {
-    list-style: disc;
-}
-
-rich-text-field main ul,
-rich-text-field main ol {
-    margin: .5em 0 .5em 1.5em;
-    padding: 0;
-}
-
-rich-text-field .ql-container {
-    outline: none;
-    font-size: var(--font-size);
-    line-height: var(--line-height);
-    font-family: var(--font-family);
-}
-
-rich-text-field .ql-container:not(.ql-disabled) {
-    cursor: text;
-}
-
-rich-text-field .ql-editor {
-    outline: none;
-}
-
-/* rich-text-field .ql-editor.ql-blank > *  {
-    display: none;
-} */
-
-rich-text-field .ql-editor.ql-blank:before {
-    content: attr(data-placeholder);
-    color: rgba(0,0,0,.3);
-    position: absolute;
-}
-
-rich-text-field .ql-editor > p {
-    margin: 0;
-}
-
-rich-text-field .ql-editor > p:not(:last-child) {
-    margin-bottom: var(--paragraphSpacing);
-}
-
-rich-text-field toolbar {
-    font-size: .8em;
-    position: absolute;
-    display: flex;
-    background: #fff;
-    box-shadow: rgba(0,0,0,.1) 0 1px 3px;
-    border-radius: 3px;
-    top: -1em;
-    right: 0;
-    transform: translate(.5em, -50%);
-    user-select: none;
-    visibility: hidden;
-    opacity: 0;
-}
-
-rich-text-field toolbar * {
-    outline: none;
-}
-
-rich-text-field toolbar b-btn.active {
-    --color: var(--blue);
-}
-
-rich-text-field .ql-clipboard {
-    display: none;
-}
-
-form-control.nolabel rich-text-field toolbar {
-	top: 0;
-}
-
-rich-text-field:focus-within toolbar {
-	opacity: 1;
-	visibility: visible;
-}
-`;
-
-exports.default = _default;
-},{"lit-element":"+bhx"}],"CQm3":[function(require,module,exports) {
-var define;
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else if(typeof exports === 'object')
-		exports["Parchment"] = factory();
-	else
-		root["Parchment"] = factory();
-})(typeof self !== 'undefined' ? self : this, function() {
-return /******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
-/******/ })
-/************************************************************************/
-/******/ ([
-/* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var ParchmentError = /** @class */ (function (_super) {
-    __extends(ParchmentError, _super);
-    function ParchmentError(message) {
-        var _this = this;
-        message = '[Parchment] ' + message;
-        _this = _super.call(this, message) || this;
-        _this.message = message;
-        _this.name = _this.constructor.name;
-        return _this;
-    }
-    return ParchmentError;
-}(Error));
-exports.ParchmentError = ParchmentError;
-var attributes = {};
-var classes = {};
-var tags = {};
-var types = {};
-exports.DATA_KEY = '__blot';
-var Scope;
-(function (Scope) {
-    Scope[Scope["TYPE"] = 3] = "TYPE";
-    Scope[Scope["LEVEL"] = 12] = "LEVEL";
-    Scope[Scope["ATTRIBUTE"] = 13] = "ATTRIBUTE";
-    Scope[Scope["BLOT"] = 14] = "BLOT";
-    Scope[Scope["INLINE"] = 7] = "INLINE";
-    Scope[Scope["BLOCK"] = 11] = "BLOCK";
-    Scope[Scope["BLOCK_BLOT"] = 10] = "BLOCK_BLOT";
-    Scope[Scope["INLINE_BLOT"] = 6] = "INLINE_BLOT";
-    Scope[Scope["BLOCK_ATTRIBUTE"] = 9] = "BLOCK_ATTRIBUTE";
-    Scope[Scope["INLINE_ATTRIBUTE"] = 5] = "INLINE_ATTRIBUTE";
-    Scope[Scope["ANY"] = 15] = "ANY";
-})(Scope = exports.Scope || (exports.Scope = {}));
-function create(input, value) {
-    var match = query(input);
-    if (match == null) {
-        throw new ParchmentError("Unable to create " + input + " blot");
-    }
-    var BlotClass = match;
-    var node = 
-    // @ts-ignore
-    input instanceof Node || input['nodeType'] === Node.TEXT_NODE ? input : BlotClass.create(value);
-    return new BlotClass(node, value);
-}
-exports.create = create;
-function find(node, bubble) {
-    if (bubble === void 0) { bubble = false; }
-    if (node == null)
-        return null;
-    // @ts-ignore
-    if (node[exports.DATA_KEY] != null)
-        return node[exports.DATA_KEY].blot;
-    if (bubble)
-        return find(node.parentNode, bubble);
-    return null;
-}
-exports.find = find;
-function query(query, scope) {
-    if (scope === void 0) { scope = Scope.ANY; }
-    var match;
-    if (typeof query === 'string') {
-        match = types[query] || attributes[query];
-        // @ts-ignore
-    }
-    else if (query instanceof Text || query['nodeType'] === Node.TEXT_NODE) {
-        match = types['text'];
-    }
-    else if (typeof query === 'number') {
-        if (query & Scope.LEVEL & Scope.BLOCK) {
-            match = types['block'];
-        }
-        else if (query & Scope.LEVEL & Scope.INLINE) {
-            match = types['inline'];
-        }
-    }
-    else if (query instanceof HTMLElement) {
-        var names = (query.getAttribute('class') || '').split(/\s+/);
-        for (var i in names) {
-            match = classes[names[i]];
-            if (match)
-                break;
-        }
-        match = match || tags[query.tagName];
-    }
-    if (match == null)
-        return null;
-    // @ts-ignore
-    if (scope & Scope.LEVEL & match.scope && scope & Scope.TYPE & match.scope)
-        return match;
-    return null;
-}
-exports.query = query;
-function register() {
-    var Definitions = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        Definitions[_i] = arguments[_i];
-    }
-    if (Definitions.length > 1) {
-        return Definitions.map(function (d) {
-            return register(d);
-        });
-    }
-    var Definition = Definitions[0];
-    if (typeof Definition.blotName !== 'string' && typeof Definition.attrName !== 'string') {
-        throw new ParchmentError('Invalid definition');
-    }
-    else if (Definition.blotName === 'abstract') {
-        throw new ParchmentError('Cannot register abstract class');
-    }
-    types[Definition.blotName || Definition.attrName] = Definition;
-    if (typeof Definition.keyName === 'string') {
-        attributes[Definition.keyName] = Definition;
-    }
-    else {
-        if (Definition.className != null) {
-            classes[Definition.className] = Definition;
-        }
-        if (Definition.tagName != null) {
-            if (Array.isArray(Definition.tagName)) {
-                Definition.tagName = Definition.tagName.map(function (tagName) {
-                    return tagName.toUpperCase();
-                });
-            }
-            else {
-                Definition.tagName = Definition.tagName.toUpperCase();
-            }
-            var tagNames = Array.isArray(Definition.tagName) ? Definition.tagName : [Definition.tagName];
-            tagNames.forEach(function (tag) {
-                if (tags[tag] == null || Definition.className == null) {
-                    tags[tag] = Definition;
-                }
-            });
-        }
-    }
-    return Definition;
-}
-exports.register = register;
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Registry = __webpack_require__(0);
-var Attributor = /** @class */ (function () {
-    function Attributor(attrName, keyName, options) {
-        if (options === void 0) { options = {}; }
-        this.attrName = attrName;
-        this.keyName = keyName;
-        var attributeBit = Registry.Scope.TYPE & Registry.Scope.ATTRIBUTE;
-        if (options.scope != null) {
-            // Ignore type bits, force attribute bit
-            this.scope = (options.scope & Registry.Scope.LEVEL) | attributeBit;
-        }
-        else {
-            this.scope = Registry.Scope.ATTRIBUTE;
-        }
-        if (options.whitelist != null)
-            this.whitelist = options.whitelist;
-    }
-    Attributor.keys = function (node) {
-        return [].map.call(node.attributes, function (item) {
-            return item.name;
-        });
-    };
-    Attributor.prototype.add = function (node, value) {
-        if (!this.canAdd(node, value))
-            return false;
-        node.setAttribute(this.keyName, value);
-        return true;
-    };
-    Attributor.prototype.canAdd = function (node, value) {
-        var match = Registry.query(node, Registry.Scope.BLOT & (this.scope | Registry.Scope.TYPE));
-        if (match == null)
-            return false;
-        if (this.whitelist == null)
-            return true;
-        if (typeof value === 'string') {
-            return this.whitelist.indexOf(value.replace(/["']/g, '')) > -1;
-        }
-        else {
-            return this.whitelist.indexOf(value) > -1;
-        }
-    };
-    Attributor.prototype.remove = function (node) {
-        node.removeAttribute(this.keyName);
-    };
-    Attributor.prototype.value = function (node) {
-        var value = node.getAttribute(this.keyName);
-        if (this.canAdd(node, value) && value) {
-            return value;
-        }
-        return '';
-    };
-    return Attributor;
-}());
-exports.default = Attributor;
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var linked_list_1 = __webpack_require__(11);
-var shadow_1 = __webpack_require__(5);
-var Registry = __webpack_require__(0);
-var ContainerBlot = /** @class */ (function (_super) {
-    __extends(ContainerBlot, _super);
-    function ContainerBlot(domNode) {
-        var _this = _super.call(this, domNode) || this;
-        _this.build();
-        return _this;
-    }
-    ContainerBlot.prototype.appendChild = function (other) {
-        this.insertBefore(other);
-    };
-    ContainerBlot.prototype.attach = function () {
-        _super.prototype.attach.call(this);
-        this.children.forEach(function (child) {
-            child.attach();
-        });
-    };
-    ContainerBlot.prototype.build = function () {
-        var _this = this;
-        this.children = new linked_list_1.default();
-        // Need to be reversed for if DOM nodes already in order
-        [].slice
-            .call(this.domNode.childNodes)
-            .reverse()
-            .forEach(function (node) {
-            try {
-                var child = makeBlot(node);
-                _this.insertBefore(child, _this.children.head || undefined);
-            }
-            catch (err) {
-                if (err instanceof Registry.ParchmentError)
-                    return;
-                else
-                    throw err;
-            }
-        });
-    };
-    ContainerBlot.prototype.deleteAt = function (index, length) {
-        if (index === 0 && length === this.length()) {
-            return this.remove();
-        }
-        this.children.forEachAt(index, length, function (child, offset, length) {
-            child.deleteAt(offset, length);
-        });
-    };
-    ContainerBlot.prototype.descendant = function (criteria, index) {
-        var _a = this.children.find(index), child = _a[0], offset = _a[1];
-        if ((criteria.blotName == null && criteria(child)) ||
-            (criteria.blotName != null && child instanceof criteria)) {
-            return [child, offset];
-        }
-        else if (child instanceof ContainerBlot) {
-            return child.descendant(criteria, offset);
-        }
-        else {
-            return [null, -1];
-        }
-    };
-    ContainerBlot.prototype.descendants = function (criteria, index, length) {
-        if (index === void 0) { index = 0; }
-        if (length === void 0) { length = Number.MAX_VALUE; }
-        var descendants = [];
-        var lengthLeft = length;
-        this.children.forEachAt(index, length, function (child, index, length) {
-            if ((criteria.blotName == null && criteria(child)) ||
-                (criteria.blotName != null && child instanceof criteria)) {
-                descendants.push(child);
-            }
-            if (child instanceof ContainerBlot) {
-                descendants = descendants.concat(child.descendants(criteria, index, lengthLeft));
-            }
-            lengthLeft -= length;
-        });
-        return descendants;
-    };
-    ContainerBlot.prototype.detach = function () {
-        this.children.forEach(function (child) {
-            child.detach();
-        });
-        _super.prototype.detach.call(this);
-    };
-    ContainerBlot.prototype.formatAt = function (index, length, name, value) {
-        this.children.forEachAt(index, length, function (child, offset, length) {
-            child.formatAt(offset, length, name, value);
-        });
-    };
-    ContainerBlot.prototype.insertAt = function (index, value, def) {
-        var _a = this.children.find(index), child = _a[0], offset = _a[1];
-        if (child) {
-            child.insertAt(offset, value, def);
-        }
-        else {
-            var blot = def == null ? Registry.create('text', value) : Registry.create(value, def);
-            this.appendChild(blot);
-        }
-    };
-    ContainerBlot.prototype.insertBefore = function (childBlot, refBlot) {
-        if (this.statics.allowedChildren != null &&
-            !this.statics.allowedChildren.some(function (child) {
-                return childBlot instanceof child;
-            })) {
-            throw new Registry.ParchmentError("Cannot insert " + childBlot.statics.blotName + " into " + this.statics.blotName);
-        }
-        childBlot.insertInto(this, refBlot);
-    };
-    ContainerBlot.prototype.length = function () {
-        return this.children.reduce(function (memo, child) {
-            return memo + child.length();
-        }, 0);
-    };
-    ContainerBlot.prototype.moveChildren = function (targetParent, refNode) {
-        this.children.forEach(function (child) {
-            targetParent.insertBefore(child, refNode);
-        });
-    };
-    ContainerBlot.prototype.optimize = function (context) {
-        _super.prototype.optimize.call(this, context);
-        if (this.children.length === 0) {
-            if (this.statics.defaultChild != null) {
-                var child = Registry.create(this.statics.defaultChild);
-                this.appendChild(child);
-                child.optimize(context);
-            }
-            else {
-                this.remove();
-            }
-        }
-    };
-    ContainerBlot.prototype.path = function (index, inclusive) {
-        if (inclusive === void 0) { inclusive = false; }
-        var _a = this.children.find(index, inclusive), child = _a[0], offset = _a[1];
-        var position = [[this, index]];
-        if (child instanceof ContainerBlot) {
-            return position.concat(child.path(offset, inclusive));
-        }
-        else if (child != null) {
-            position.push([child, offset]);
-        }
-        return position;
-    };
-    ContainerBlot.prototype.removeChild = function (child) {
-        this.children.remove(child);
-    };
-    ContainerBlot.prototype.replace = function (target) {
-        if (target instanceof ContainerBlot) {
-            target.moveChildren(this);
-        }
-        _super.prototype.replace.call(this, target);
-    };
-    ContainerBlot.prototype.split = function (index, force) {
-        if (force === void 0) { force = false; }
-        if (!force) {
-            if (index === 0)
-                return this;
-            if (index === this.length())
-                return this.next;
-        }
-        var after = this.clone();
-        this.parent.insertBefore(after, this.next);
-        this.children.forEachAt(index, this.length(), function (child, offset, length) {
-            child = child.split(offset, force);
-            after.appendChild(child);
-        });
-        return after;
-    };
-    ContainerBlot.prototype.unwrap = function () {
-        this.moveChildren(this.parent, this.next);
-        this.remove();
-    };
-    ContainerBlot.prototype.update = function (mutations, context) {
-        var _this = this;
-        var addedNodes = [];
-        var removedNodes = [];
-        mutations.forEach(function (mutation) {
-            if (mutation.target === _this.domNode && mutation.type === 'childList') {
-                addedNodes.push.apply(addedNodes, mutation.addedNodes);
-                removedNodes.push.apply(removedNodes, mutation.removedNodes);
-            }
-        });
-        removedNodes.forEach(function (node) {
-            // Check node has actually been removed
-            // One exception is Chrome does not immediately remove IFRAMEs
-            // from DOM but MutationRecord is correct in its reported removal
-            if (node.parentNode != null &&
-                // @ts-ignore
-                node.tagName !== 'IFRAME' &&
-                document.body.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_CONTAINED_BY) {
-                return;
-            }
-            var blot = Registry.find(node);
-            if (blot == null)
-                return;
-            if (blot.domNode.parentNode == null || blot.domNode.parentNode === _this.domNode) {
-                blot.detach();
-            }
-        });
-        addedNodes
-            .filter(function (node) {
-            return node.parentNode == _this.domNode;
-        })
-            .sort(function (a, b) {
-            if (a === b)
-                return 0;
-            if (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) {
-                return 1;
-            }
-            return -1;
-        })
-            .forEach(function (node) {
-            var refBlot = null;
-            if (node.nextSibling != null) {
-                refBlot = Registry.find(node.nextSibling);
-            }
-            var blot = makeBlot(node);
-            if (blot.next != refBlot || blot.next == null) {
-                if (blot.parent != null) {
-                    blot.parent.removeChild(_this);
-                }
-                _this.insertBefore(blot, refBlot || undefined);
-            }
-        });
-    };
-    return ContainerBlot;
-}(shadow_1.default));
-function makeBlot(node) {
-    var blot = Registry.find(node);
-    if (blot == null) {
-        try {
-            blot = Registry.create(node);
-        }
-        catch (e) {
-            blot = Registry.create(Registry.Scope.INLINE);
-            [].slice.call(node.childNodes).forEach(function (child) {
-                // @ts-ignore
-                blot.domNode.appendChild(child);
-            });
-            if (node.parentNode) {
-                node.parentNode.replaceChild(blot.domNode, node);
-            }
-            blot.attach();
-        }
-    }
-    return blot;
-}
-exports.default = ContainerBlot;
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var attributor_1 = __webpack_require__(1);
-var store_1 = __webpack_require__(6);
-var container_1 = __webpack_require__(2);
-var Registry = __webpack_require__(0);
-var FormatBlot = /** @class */ (function (_super) {
-    __extends(FormatBlot, _super);
-    function FormatBlot(domNode) {
-        var _this = _super.call(this, domNode) || this;
-        _this.attributes = new store_1.default(_this.domNode);
-        return _this;
-    }
-    FormatBlot.formats = function (domNode) {
-        if (typeof this.tagName === 'string') {
-            return true;
-        }
-        else if (Array.isArray(this.tagName)) {
-            return domNode.tagName.toLowerCase();
-        }
-        return undefined;
-    };
-    FormatBlot.prototype.format = function (name, value) {
-        var format = Registry.query(name);
-        if (format instanceof attributor_1.default) {
-            this.attributes.attribute(format, value);
-        }
-        else if (value) {
-            if (format != null && (name !== this.statics.blotName || this.formats()[name] !== value)) {
-                this.replaceWith(name, value);
-            }
-        }
-    };
-    FormatBlot.prototype.formats = function () {
-        var formats = this.attributes.values();
-        var format = this.statics.formats(this.domNode);
-        if (format != null) {
-            formats[this.statics.blotName] = format;
-        }
-        return formats;
-    };
-    FormatBlot.prototype.replaceWith = function (name, value) {
-        var replacement = _super.prototype.replaceWith.call(this, name, value);
-        this.attributes.copy(replacement);
-        return replacement;
-    };
-    FormatBlot.prototype.update = function (mutations, context) {
-        var _this = this;
-        _super.prototype.update.call(this, mutations, context);
-        if (mutations.some(function (mutation) {
-            return mutation.target === _this.domNode && mutation.type === 'attributes';
-        })) {
-            this.attributes.build();
-        }
-    };
-    FormatBlot.prototype.wrap = function (name, value) {
-        var wrapper = _super.prototype.wrap.call(this, name, value);
-        if (wrapper instanceof FormatBlot && wrapper.statics.scope === this.statics.scope) {
-            this.attributes.move(wrapper);
-        }
-        return wrapper;
-    };
-    return FormatBlot;
-}(container_1.default));
-exports.default = FormatBlot;
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var shadow_1 = __webpack_require__(5);
-var Registry = __webpack_require__(0);
-var LeafBlot = /** @class */ (function (_super) {
-    __extends(LeafBlot, _super);
-    function LeafBlot() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    LeafBlot.value = function (domNode) {
-        return true;
-    };
-    LeafBlot.prototype.index = function (node, offset) {
-        if (this.domNode === node ||
-            this.domNode.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_CONTAINED_BY) {
-            return Math.min(offset, 1);
-        }
-        return -1;
-    };
-    LeafBlot.prototype.position = function (index, inclusive) {
-        var offset = [].indexOf.call(this.parent.domNode.childNodes, this.domNode);
-        if (index > 0)
-            offset += 1;
-        return [this.parent.domNode, offset];
-    };
-    LeafBlot.prototype.value = function () {
-        return _a = {}, _a[this.statics.blotName] = this.statics.value(this.domNode) || true, _a;
-        var _a;
-    };
-    LeafBlot.scope = Registry.Scope.INLINE_BLOT;
-    return LeafBlot;
-}(shadow_1.default));
-exports.default = LeafBlot;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Registry = __webpack_require__(0);
-var ShadowBlot = /** @class */ (function () {
-    function ShadowBlot(domNode) {
-        this.domNode = domNode;
-        // @ts-ignore
-        this.domNode[Registry.DATA_KEY] = { blot: this };
-    }
-    Object.defineProperty(ShadowBlot.prototype, "statics", {
-        // Hack for accessing inherited static methods
-        get: function () {
-            return this.constructor;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ShadowBlot.create = function (value) {
-        if (this.tagName == null) {
-            throw new Registry.ParchmentError('Blot definition missing tagName');
-        }
-        var node;
-        if (Array.isArray(this.tagName)) {
-            if (typeof value === 'string') {
-                value = value.toUpperCase();
-                if (parseInt(value).toString() === value) {
-                    value = parseInt(value);
-                }
-            }
-            if (typeof value === 'number') {
-                node = document.createElement(this.tagName[value - 1]);
-            }
-            else if (this.tagName.indexOf(value) > -1) {
-                node = document.createElement(value);
-            }
-            else {
-                node = document.createElement(this.tagName[0]);
-            }
-        }
-        else {
-            node = document.createElement(this.tagName);
-        }
-        if (this.className) {
-            node.classList.add(this.className);
-        }
-        return node;
-    };
-    ShadowBlot.prototype.attach = function () {
-        if (this.parent != null) {
-            this.scroll = this.parent.scroll;
-        }
-    };
-    ShadowBlot.prototype.clone = function () {
-        var domNode = this.domNode.cloneNode(false);
-        return Registry.create(domNode);
-    };
-    ShadowBlot.prototype.detach = function () {
-        if (this.parent != null)
-            this.parent.removeChild(this);
-        // @ts-ignore
-        delete this.domNode[Registry.DATA_KEY];
-    };
-    ShadowBlot.prototype.deleteAt = function (index, length) {
-        var blot = this.isolate(index, length);
-        blot.remove();
-    };
-    ShadowBlot.prototype.formatAt = function (index, length, name, value) {
-        var blot = this.isolate(index, length);
-        if (Registry.query(name, Registry.Scope.BLOT) != null && value) {
-            blot.wrap(name, value);
-        }
-        else if (Registry.query(name, Registry.Scope.ATTRIBUTE) != null) {
-            var parent_1 = Registry.create(this.statics.scope);
-            blot.wrap(parent_1);
-            parent_1.format(name, value);
-        }
-    };
-    ShadowBlot.prototype.insertAt = function (index, value, def) {
-        var blot = def == null ? Registry.create('text', value) : Registry.create(value, def);
-        var ref = this.split(index);
-        this.parent.insertBefore(blot, ref);
-    };
-    ShadowBlot.prototype.insertInto = function (parentBlot, refBlot) {
-        if (refBlot === void 0) { refBlot = null; }
-        if (this.parent != null) {
-            this.parent.children.remove(this);
-        }
-        var refDomNode = null;
-        parentBlot.children.insertBefore(this, refBlot);
-        if (refBlot != null) {
-            refDomNode = refBlot.domNode;
-        }
-        if (this.domNode.parentNode != parentBlot.domNode ||
-            this.domNode.nextSibling != refDomNode) {
-            parentBlot.domNode.insertBefore(this.domNode, refDomNode);
-        }
-        this.parent = parentBlot;
-        this.attach();
-    };
-    ShadowBlot.prototype.isolate = function (index, length) {
-        var target = this.split(index);
-        target.split(length);
-        return target;
-    };
-    ShadowBlot.prototype.length = function () {
-        return 1;
-    };
-    ShadowBlot.prototype.offset = function (root) {
-        if (root === void 0) { root = this.parent; }
-        if (this.parent == null || this == root)
-            return 0;
-        return this.parent.children.offset(this) + this.parent.offset(root);
-    };
-    ShadowBlot.prototype.optimize = function (context) {
-        // TODO clean up once we use WeakMap
-        // @ts-ignore
-        if (this.domNode[Registry.DATA_KEY] != null) {
-            // @ts-ignore
-            delete this.domNode[Registry.DATA_KEY].mutations;
-        }
-    };
-    ShadowBlot.prototype.remove = function () {
-        if (this.domNode.parentNode != null) {
-            this.domNode.parentNode.removeChild(this.domNode);
-        }
-        this.detach();
-    };
-    ShadowBlot.prototype.replace = function (target) {
-        if (target.parent == null)
-            return;
-        target.parent.insertBefore(this, target.next);
-        target.remove();
-    };
-    ShadowBlot.prototype.replaceWith = function (name, value) {
-        var replacement = typeof name === 'string' ? Registry.create(name, value) : name;
-        replacement.replace(this);
-        return replacement;
-    };
-    ShadowBlot.prototype.split = function (index, force) {
-        return index === 0 ? this : this.next;
-    };
-    ShadowBlot.prototype.update = function (mutations, context) {
-        // Nothing to do by default
-    };
-    ShadowBlot.prototype.wrap = function (name, value) {
-        var wrapper = typeof name === 'string' ? Registry.create(name, value) : name;
-        if (this.parent != null) {
-            this.parent.insertBefore(wrapper, this.next);
-        }
-        wrapper.appendChild(this);
-        return wrapper;
-    };
-    ShadowBlot.blotName = 'abstract';
-    return ShadowBlot;
-}());
-exports.default = ShadowBlot;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var attributor_1 = __webpack_require__(1);
-var class_1 = __webpack_require__(7);
-var style_1 = __webpack_require__(8);
-var Registry = __webpack_require__(0);
-var AttributorStore = /** @class */ (function () {
-    function AttributorStore(domNode) {
-        this.attributes = {};
-        this.domNode = domNode;
-        this.build();
-    }
-    AttributorStore.prototype.attribute = function (attribute, value) {
-        // verb
-        if (value) {
-            if (attribute.add(this.domNode, value)) {
-                if (attribute.value(this.domNode) != null) {
-                    this.attributes[attribute.attrName] = attribute;
-                }
-                else {
-                    delete this.attributes[attribute.attrName];
-                }
-            }
-        }
-        else {
-            attribute.remove(this.domNode);
-            delete this.attributes[attribute.attrName];
-        }
-    };
-    AttributorStore.prototype.build = function () {
-        var _this = this;
-        this.attributes = {};
-        var attributes = attributor_1.default.keys(this.domNode);
-        var classes = class_1.default.keys(this.domNode);
-        var styles = style_1.default.keys(this.domNode);
-        attributes
-            .concat(classes)
-            .concat(styles)
-            .forEach(function (name) {
-            var attr = Registry.query(name, Registry.Scope.ATTRIBUTE);
-            if (attr instanceof attributor_1.default) {
-                _this.attributes[attr.attrName] = attr;
-            }
-        });
-    };
-    AttributorStore.prototype.copy = function (target) {
-        var _this = this;
-        Object.keys(this.attributes).forEach(function (key) {
-            var value = _this.attributes[key].value(_this.domNode);
-            target.format(key, value);
-        });
-    };
-    AttributorStore.prototype.move = function (target) {
-        var _this = this;
-        this.copy(target);
-        Object.keys(this.attributes).forEach(function (key) {
-            _this.attributes[key].remove(_this.domNode);
-        });
-        this.attributes = {};
-    };
-    AttributorStore.prototype.values = function () {
-        var _this = this;
-        return Object.keys(this.attributes).reduce(function (attributes, name) {
-            attributes[name] = _this.attributes[name].value(_this.domNode);
-            return attributes;
-        }, {});
-    };
-    return AttributorStore;
-}());
-exports.default = AttributorStore;
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var attributor_1 = __webpack_require__(1);
-function match(node, prefix) {
-    var className = node.getAttribute('class') || '';
-    return className.split(/\s+/).filter(function (name) {
-        return name.indexOf(prefix + "-") === 0;
-    });
-}
-var ClassAttributor = /** @class */ (function (_super) {
-    __extends(ClassAttributor, _super);
-    function ClassAttributor() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    ClassAttributor.keys = function (node) {
-        return (node.getAttribute('class') || '').split(/\s+/).map(function (name) {
-            return name
-                .split('-')
-                .slice(0, -1)
-                .join('-');
-        });
-    };
-    ClassAttributor.prototype.add = function (node, value) {
-        if (!this.canAdd(node, value))
-            return false;
-        this.remove(node);
-        node.classList.add(this.keyName + "-" + value);
-        return true;
-    };
-    ClassAttributor.prototype.remove = function (node) {
-        var matches = match(node, this.keyName);
-        matches.forEach(function (name) {
-            node.classList.remove(name);
-        });
-        if (node.classList.length === 0) {
-            node.removeAttribute('class');
-        }
-    };
-    ClassAttributor.prototype.value = function (node) {
-        var result = match(node, this.keyName)[0] || '';
-        var value = result.slice(this.keyName.length + 1); // +1 for hyphen
-        return this.canAdd(node, value) ? value : '';
-    };
-    return ClassAttributor;
-}(attributor_1.default));
-exports.default = ClassAttributor;
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var attributor_1 = __webpack_require__(1);
-function camelize(name) {
-    var parts = name.split('-');
-    var rest = parts
-        .slice(1)
-        .map(function (part) {
-        return part[0].toUpperCase() + part.slice(1);
-    })
-        .join('');
-    return parts[0] + rest;
-}
-var StyleAttributor = /** @class */ (function (_super) {
-    __extends(StyleAttributor, _super);
-    function StyleAttributor() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    StyleAttributor.keys = function (node) {
-        return (node.getAttribute('style') || '').split(';').map(function (value) {
-            var arr = value.split(':');
-            return arr[0].trim();
-        });
-    };
-    StyleAttributor.prototype.add = function (node, value) {
-        if (!this.canAdd(node, value))
-            return false;
-        // @ts-ignore
-        node.style[camelize(this.keyName)] = value;
-        return true;
-    };
-    StyleAttributor.prototype.remove = function (node) {
-        // @ts-ignore
-        node.style[camelize(this.keyName)] = '';
-        if (!node.getAttribute('style')) {
-            node.removeAttribute('style');
-        }
-    };
-    StyleAttributor.prototype.value = function (node) {
-        // @ts-ignore
-        var value = node.style[camelize(this.keyName)];
-        return this.canAdd(node, value) ? value : '';
-    };
-    return StyleAttributor;
-}(attributor_1.default));
-exports.default = StyleAttributor;
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(10);
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var container_1 = __webpack_require__(2);
-var format_1 = __webpack_require__(3);
-var leaf_1 = __webpack_require__(4);
-var scroll_1 = __webpack_require__(12);
-var inline_1 = __webpack_require__(13);
-var block_1 = __webpack_require__(14);
-var embed_1 = __webpack_require__(15);
-var text_1 = __webpack_require__(16);
-var attributor_1 = __webpack_require__(1);
-var class_1 = __webpack_require__(7);
-var style_1 = __webpack_require__(8);
-var store_1 = __webpack_require__(6);
-var Registry = __webpack_require__(0);
-var Parchment = {
-    Scope: Registry.Scope,
-    create: Registry.create,
-    find: Registry.find,
-    query: Registry.query,
-    register: Registry.register,
-    Container: container_1.default,
-    Format: format_1.default,
-    Leaf: leaf_1.default,
-    Embed: embed_1.default,
-    Scroll: scroll_1.default,
-    Block: block_1.default,
-    Inline: inline_1.default,
-    Text: text_1.default,
-    Attributor: {
-        Attribute: attributor_1.default,
-        Class: class_1.default,
-        Style: style_1.default,
-        Store: store_1.default,
-    },
-};
-exports.default = Parchment;
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var LinkedList = /** @class */ (function () {
-    function LinkedList() {
-        this.head = this.tail = null;
-        this.length = 0;
-    }
-    LinkedList.prototype.append = function () {
-        var nodes = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            nodes[_i] = arguments[_i];
-        }
-        this.insertBefore(nodes[0], null);
-        if (nodes.length > 1) {
-            this.append.apply(this, nodes.slice(1));
-        }
-    };
-    LinkedList.prototype.contains = function (node) {
-        var cur, next = this.iterator();
-        while ((cur = next())) {
-            if (cur === node)
-                return true;
-        }
-        return false;
-    };
-    LinkedList.prototype.insertBefore = function (node, refNode) {
-        if (!node)
-            return;
-        node.next = refNode;
-        if (refNode != null) {
-            node.prev = refNode.prev;
-            if (refNode.prev != null) {
-                refNode.prev.next = node;
-            }
-            refNode.prev = node;
-            if (refNode === this.head) {
-                this.head = node;
-            }
-        }
-        else if (this.tail != null) {
-            this.tail.next = node;
-            node.prev = this.tail;
-            this.tail = node;
-        }
-        else {
-            node.prev = null;
-            this.head = this.tail = node;
-        }
-        this.length += 1;
-    };
-    LinkedList.prototype.offset = function (target) {
-        var index = 0, cur = this.head;
-        while (cur != null) {
-            if (cur === target)
-                return index;
-            index += cur.length();
-            cur = cur.next;
-        }
-        return -1;
-    };
-    LinkedList.prototype.remove = function (node) {
-        if (!this.contains(node))
-            return;
-        if (node.prev != null)
-            node.prev.next = node.next;
-        if (node.next != null)
-            node.next.prev = node.prev;
-        if (node === this.head)
-            this.head = node.next;
-        if (node === this.tail)
-            this.tail = node.prev;
-        this.length -= 1;
-    };
-    LinkedList.prototype.iterator = function (curNode) {
-        if (curNode === void 0) { curNode = this.head; }
-        // TODO use yield when we can
-        return function () {
-            var ret = curNode;
-            if (curNode != null)
-                curNode = curNode.next;
-            return ret;
-        };
-    };
-    LinkedList.prototype.find = function (index, inclusive) {
-        if (inclusive === void 0) { inclusive = false; }
-        var cur, next = this.iterator();
-        while ((cur = next())) {
-            var length_1 = cur.length();
-            if (index < length_1 ||
-                (inclusive && index === length_1 && (cur.next == null || cur.next.length() !== 0))) {
-                return [cur, index];
-            }
-            index -= length_1;
-        }
-        return [null, 0];
-    };
-    LinkedList.prototype.forEach = function (callback) {
-        var cur, next = this.iterator();
-        while ((cur = next())) {
-            callback(cur);
-        }
-    };
-    LinkedList.prototype.forEachAt = function (index, length, callback) {
-        if (length <= 0)
-            return;
-        var _a = this.find(index), startNode = _a[0], offset = _a[1];
-        var cur, curIndex = index - offset, next = this.iterator(startNode);
-        while ((cur = next()) && curIndex < index + length) {
-            var curLength = cur.length();
-            if (index > curIndex) {
-                callback(cur, index - curIndex, Math.min(length, curIndex + curLength - index));
-            }
-            else {
-                callback(cur, 0, Math.min(curLength, index + length - curIndex));
-            }
-            curIndex += curLength;
-        }
-    };
-    LinkedList.prototype.map = function (callback) {
-        return this.reduce(function (memo, cur) {
-            memo.push(callback(cur));
-            return memo;
-        }, []);
-    };
-    LinkedList.prototype.reduce = function (callback, memo) {
-        var cur, next = this.iterator();
-        while ((cur = next())) {
-            memo = callback(memo, cur);
-        }
-        return memo;
-    };
-    return LinkedList;
-}());
-exports.default = LinkedList;
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var container_1 = __webpack_require__(2);
-var Registry = __webpack_require__(0);
-var OBSERVER_CONFIG = {
-    attributes: true,
-    characterData: true,
-    characterDataOldValue: true,
-    childList: true,
-    subtree: true,
-};
-var MAX_OPTIMIZE_ITERATIONS = 100;
-var ScrollBlot = /** @class */ (function (_super) {
-    __extends(ScrollBlot, _super);
-    function ScrollBlot(node) {
-        var _this = _super.call(this, node) || this;
-        _this.scroll = _this;
-        _this.observer = new MutationObserver(function (mutations) {
-            _this.update(mutations);
-        });
-        _this.observer.observe(_this.domNode, OBSERVER_CONFIG);
-        _this.attach();
-        return _this;
-    }
-    ScrollBlot.prototype.detach = function () {
-        _super.prototype.detach.call(this);
-        this.observer.disconnect();
-    };
-    ScrollBlot.prototype.deleteAt = function (index, length) {
-        this.update();
-        if (index === 0 && length === this.length()) {
-            this.children.forEach(function (child) {
-                child.remove();
-            });
-        }
-        else {
-            _super.prototype.deleteAt.call(this, index, length);
-        }
-    };
-    ScrollBlot.prototype.formatAt = function (index, length, name, value) {
-        this.update();
-        _super.prototype.formatAt.call(this, index, length, name, value);
-    };
-    ScrollBlot.prototype.insertAt = function (index, value, def) {
-        this.update();
-        _super.prototype.insertAt.call(this, index, value, def);
-    };
-    ScrollBlot.prototype.optimize = function (mutations, context) {
-        var _this = this;
-        if (mutations === void 0) { mutations = []; }
-        if (context === void 0) { context = {}; }
-        _super.prototype.optimize.call(this, context);
-        // We must modify mutations directly, cannot make copy and then modify
-        var records = [].slice.call(this.observer.takeRecords());
-        // Array.push currently seems to be implemented by a non-tail recursive function
-        // so we cannot just mutations.push.apply(mutations, this.observer.takeRecords());
-        while (records.length > 0)
-            mutations.push(records.pop());
-        // TODO use WeakMap
-        var mark = function (blot, markParent) {
-            if (markParent === void 0) { markParent = true; }
-            if (blot == null || blot === _this)
-                return;
-            if (blot.domNode.parentNode == null)
-                return;
-            // @ts-ignore
-            if (blot.domNode[Registry.DATA_KEY].mutations == null) {
-                // @ts-ignore
-                blot.domNode[Registry.DATA_KEY].mutations = [];
-            }
-            if (markParent)
-                mark(blot.parent);
-        };
-        var optimize = function (blot) {
-            // Post-order traversal
-            if (
-            // @ts-ignore
-            blot.domNode[Registry.DATA_KEY] == null ||
-                // @ts-ignore
-                blot.domNode[Registry.DATA_KEY].mutations == null) {
-                return;
-            }
-            if (blot instanceof container_1.default) {
-                blot.children.forEach(optimize);
-            }
-            blot.optimize(context);
-        };
-        var remaining = mutations;
-        for (var i = 0; remaining.length > 0; i += 1) {
-            if (i >= MAX_OPTIMIZE_ITERATIONS) {
-                throw new Error('[Parchment] Maximum optimize iterations reached');
-            }
-            remaining.forEach(function (mutation) {
-                var blot = Registry.find(mutation.target, true);
-                if (blot == null)
-                    return;
-                if (blot.domNode === mutation.target) {
-                    if (mutation.type === 'childList') {
-                        mark(Registry.find(mutation.previousSibling, false));
-                        [].forEach.call(mutation.addedNodes, function (node) {
-                            var child = Registry.find(node, false);
-                            mark(child, false);
-                            if (child instanceof container_1.default) {
-                                child.children.forEach(function (grandChild) {
-                                    mark(grandChild, false);
-                                });
-                            }
-                        });
-                    }
-                    else if (mutation.type === 'attributes') {
-                        mark(blot.prev);
-                    }
-                }
-                mark(blot);
-            });
-            this.children.forEach(optimize);
-            remaining = [].slice.call(this.observer.takeRecords());
-            records = remaining.slice();
-            while (records.length > 0)
-                mutations.push(records.pop());
-        }
-    };
-    ScrollBlot.prototype.update = function (mutations, context) {
-        var _this = this;
-        if (context === void 0) { context = {}; }
-        mutations = mutations || this.observer.takeRecords();
-        // TODO use WeakMap
-        mutations
-            .map(function (mutation) {
-            var blot = Registry.find(mutation.target, true);
-            if (blot == null)
-                return null;
-            // @ts-ignore
-            if (blot.domNode[Registry.DATA_KEY].mutations == null) {
-                // @ts-ignore
-                blot.domNode[Registry.DATA_KEY].mutations = [mutation];
-                return blot;
-            }
-            else {
-                // @ts-ignore
-                blot.domNode[Registry.DATA_KEY].mutations.push(mutation);
-                return null;
-            }
-        })
-            .forEach(function (blot) {
-            if (blot == null ||
-                blot === _this ||
-                //@ts-ignore
-                blot.domNode[Registry.DATA_KEY] == null)
-                return;
-            // @ts-ignore
-            blot.update(blot.domNode[Registry.DATA_KEY].mutations || [], context);
-        });
-        // @ts-ignore
-        if (this.domNode[Registry.DATA_KEY].mutations != null) {
-            // @ts-ignore
-            _super.prototype.update.call(this, this.domNode[Registry.DATA_KEY].mutations, context);
-        }
-        this.optimize(mutations, context);
-    };
-    ScrollBlot.blotName = 'scroll';
-    ScrollBlot.defaultChild = 'block';
-    ScrollBlot.scope = Registry.Scope.BLOCK_BLOT;
-    ScrollBlot.tagName = 'DIV';
-    return ScrollBlot;
-}(container_1.default));
-exports.default = ScrollBlot;
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var format_1 = __webpack_require__(3);
-var Registry = __webpack_require__(0);
-// Shallow object comparison
-function isEqual(obj1, obj2) {
-    if (Object.keys(obj1).length !== Object.keys(obj2).length)
-        return false;
-    // @ts-ignore
-    for (var prop in obj1) {
-        // @ts-ignore
-        if (obj1[prop] !== obj2[prop])
-            return false;
-    }
-    return true;
-}
-var InlineBlot = /** @class */ (function (_super) {
-    __extends(InlineBlot, _super);
-    function InlineBlot() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    InlineBlot.formats = function (domNode) {
-        if (domNode.tagName === InlineBlot.tagName)
-            return undefined;
-        return _super.formats.call(this, domNode);
-    };
-    InlineBlot.prototype.format = function (name, value) {
-        var _this = this;
-        if (name === this.statics.blotName && !value) {
-            this.children.forEach(function (child) {
-                if (!(child instanceof format_1.default)) {
-                    child = child.wrap(InlineBlot.blotName, true);
-                }
-                _this.attributes.copy(child);
-            });
-            this.unwrap();
-        }
-        else {
-            _super.prototype.format.call(this, name, value);
-        }
-    };
-    InlineBlot.prototype.formatAt = function (index, length, name, value) {
-        if (this.formats()[name] != null || Registry.query(name, Registry.Scope.ATTRIBUTE)) {
-            var blot = this.isolate(index, length);
-            blot.format(name, value);
-        }
-        else {
-            _super.prototype.formatAt.call(this, index, length, name, value);
-        }
-    };
-    InlineBlot.prototype.optimize = function (context) {
-        _super.prototype.optimize.call(this, context);
-        var formats = this.formats();
-        if (Object.keys(formats).length === 0) {
-            return this.unwrap(); // unformatted span
-        }
-        var next = this.next;
-        if (next instanceof InlineBlot && next.prev === this && isEqual(formats, next.formats())) {
-            next.moveChildren(this);
-            next.remove();
-        }
-    };
-    InlineBlot.blotName = 'inline';
-    InlineBlot.scope = Registry.Scope.INLINE_BLOT;
-    InlineBlot.tagName = 'SPAN';
-    return InlineBlot;
-}(format_1.default));
-exports.default = InlineBlot;
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var format_1 = __webpack_require__(3);
-var Registry = __webpack_require__(0);
-var BlockBlot = /** @class */ (function (_super) {
-    __extends(BlockBlot, _super);
-    function BlockBlot() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    BlockBlot.formats = function (domNode) {
-        var tagName = Registry.query(BlockBlot.blotName).tagName;
-        if (domNode.tagName === tagName)
-            return undefined;
-        return _super.formats.call(this, domNode);
-    };
-    BlockBlot.prototype.format = function (name, value) {
-        if (Registry.query(name, Registry.Scope.BLOCK) == null) {
-            return;
-        }
-        else if (name === this.statics.blotName && !value) {
-            this.replaceWith(BlockBlot.blotName);
-        }
-        else {
-            _super.prototype.format.call(this, name, value);
-        }
-    };
-    BlockBlot.prototype.formatAt = function (index, length, name, value) {
-        if (Registry.query(name, Registry.Scope.BLOCK) != null) {
-            this.format(name, value);
-        }
-        else {
-            _super.prototype.formatAt.call(this, index, length, name, value);
-        }
-    };
-    BlockBlot.prototype.insertAt = function (index, value, def) {
-        if (def == null || Registry.query(value, Registry.Scope.INLINE) != null) {
-            // Insert text or inline
-            _super.prototype.insertAt.call(this, index, value, def);
-        }
-        else {
-            var after = this.split(index);
-            var blot = Registry.create(value, def);
-            after.parent.insertBefore(blot, after);
-        }
-    };
-    BlockBlot.prototype.update = function (mutations, context) {
-        if (navigator.userAgent.match(/Trident/)) {
-            this.build();
-        }
-        else {
-            _super.prototype.update.call(this, mutations, context);
-        }
-    };
-    BlockBlot.blotName = 'block';
-    BlockBlot.scope = Registry.Scope.BLOCK_BLOT;
-    BlockBlot.tagName = 'P';
-    return BlockBlot;
-}(format_1.default));
-exports.default = BlockBlot;
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var leaf_1 = __webpack_require__(4);
-var EmbedBlot = /** @class */ (function (_super) {
-    __extends(EmbedBlot, _super);
-    function EmbedBlot() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    EmbedBlot.formats = function (domNode) {
-        return undefined;
-    };
-    EmbedBlot.prototype.format = function (name, value) {
-        // super.formatAt wraps, which is what we want in general,
-        // but this allows subclasses to overwrite for formats
-        // that just apply to particular embeds
-        _super.prototype.formatAt.call(this, 0, this.length(), name, value);
-    };
-    EmbedBlot.prototype.formatAt = function (index, length, name, value) {
-        if (index === 0 && length === this.length()) {
-            this.format(name, value);
-        }
-        else {
-            _super.prototype.formatAt.call(this, index, length, name, value);
-        }
-    };
-    EmbedBlot.prototype.formats = function () {
-        return this.statics.formats(this.domNode);
-    };
-    return EmbedBlot;
-}(leaf_1.default));
-exports.default = EmbedBlot;
-
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var leaf_1 = __webpack_require__(4);
-var Registry = __webpack_require__(0);
-var TextBlot = /** @class */ (function (_super) {
-    __extends(TextBlot, _super);
-    function TextBlot(node) {
-        var _this = _super.call(this, node) || this;
-        _this.text = _this.statics.value(_this.domNode);
-        return _this;
-    }
-    TextBlot.create = function (value) {
-        return document.createTextNode(value);
-    };
-    TextBlot.value = function (domNode) {
-        var text = domNode.data;
-        // @ts-ignore
-        if (text['normalize'])
-            text = text['normalize']();
-        return text;
-    };
-    TextBlot.prototype.deleteAt = function (index, length) {
-        this.domNode.data = this.text = this.text.slice(0, index) + this.text.slice(index + length);
-    };
-    TextBlot.prototype.index = function (node, offset) {
-        if (this.domNode === node) {
-            return offset;
-        }
-        return -1;
-    };
-    TextBlot.prototype.insertAt = function (index, value, def) {
-        if (def == null) {
-            this.text = this.text.slice(0, index) + value + this.text.slice(index);
-            this.domNode.data = this.text;
-        }
-        else {
-            _super.prototype.insertAt.call(this, index, value, def);
-        }
-    };
-    TextBlot.prototype.length = function () {
-        return this.text.length;
-    };
-    TextBlot.prototype.optimize = function (context) {
-        _super.prototype.optimize.call(this, context);
-        this.text = this.statics.value(this.domNode);
-        if (this.text.length === 0) {
-            this.remove();
-        }
-        else if (this.next instanceof TextBlot && this.next.prev === this) {
-            this.insertAt(this.length(), this.next.value());
-            this.next.remove();
-        }
-    };
-    TextBlot.prototype.position = function (index, inclusive) {
-        if (inclusive === void 0) { inclusive = false; }
-        return [this.domNode, index];
-    };
-    TextBlot.prototype.split = function (index, force) {
-        if (force === void 0) { force = false; }
-        if (!force) {
-            if (index === 0)
-                return this;
-            if (index === this.length())
-                return this.next;
-        }
-        var after = Registry.create(this.domNode.splitText(index));
-        this.parent.insertBefore(after, this.next);
-        this.text = this.statics.value(this.domNode);
-        return after;
-    };
-    TextBlot.prototype.update = function (mutations, context) {
-        var _this = this;
-        if (mutations.some(function (mutation) {
-            return mutation.type === 'characterData' && mutation.target === _this.domNode;
-        })) {
-            this.text = this.statics.value(this.domNode);
-        }
-    };
-    TextBlot.prototype.value = function () {
-        return this.text;
-    };
-    TextBlot.blotName = 'text';
-    TextBlot.scope = Registry.Scope.INLINE_BLOT;
-    return TextBlot;
-}(leaf_1.default));
-exports.default = TextBlot;
-
-
-/***/ })
-/******/ ]);
-});
-
-},{}],"y7Ne":[function(require,module,exports) {
-let elem = document.createElement('div');
-elem.classList.toggle('test-class', false);
-if (elem.classList.contains('test-class')) {
-  let _toggle = DOMTokenList.prototype.toggle;
-  DOMTokenList.prototype.toggle = function(token, force) {
-    if (arguments.length > 1 && !this.contains(token) === !force) {
-      return force;
-    } else {
-      return _toggle.call(this, token);
-    }
-  };
-}
-
-if (!String.prototype.startsWith) {
-  String.prototype.startsWith = function(searchString, position){
-    position = position || 0;
-    return this.substr(position, searchString.length) === searchString;
-  };
-}
-
-if (!String.prototype.endsWith) {
-  String.prototype.endsWith = function(searchString, position) {
-    var subjectString = this.toString();
-    if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
-      position = subjectString.length;
-    }
-    position -= searchString.length;
-    var lastIndex = subjectString.indexOf(searchString, position);
-    return lastIndex !== -1 && lastIndex === position;
-  };
-}
-
-if (!Array.prototype.find) {
-  Object.defineProperty(Array.prototype, "find", {
-    value: function(predicate) {
-      if (this === null) {
-        throw new TypeError('Array.prototype.find called on null or undefined');
-      }
-      if (typeof predicate !== 'function') {
-        throw new TypeError('predicate must be a function');
-      }
-      var list = Object(this);
-      var length = list.length >>> 0;
-      var thisArg = arguments[1];
-      var value;
-
-      for (var i = 0; i < length; i++) {
-        value = list[i];
-        if (predicate.call(thisArg, value, i, list)) {
-          return value;
-        }
-      }
-      return undefined;
-    }
-  });
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-  // Disable resizing in Firefox
-  document.execCommand("enableObjectResizing", false, false);
-  // Disable automatic linkifying in IE11
-  document.execCommand("autoUrlDetect", false, false);
-});
-
-},{}],"jfAY":[function(require,module,exports) {
-/**
- * This library modifies the diff-patch-match library by Neil Fraser
- * by removing the patch and match functionality and certain advanced
- * options in the diff function. The original license is as follows:
- *
- * ===
- *
- * Diff Match and Patch
- *
- * Copyright 2006 Google Inc.
- * http://code.google.com/p/google-diff-match-patch/
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-
-/**
- * The data structure representing a diff is an array of tuples:
- * [[DIFF_DELETE, 'Hello'], [DIFF_INSERT, 'Goodbye'], [DIFF_EQUAL, ' world.']]
- * which means: delete 'Hello', add 'Goodbye' and keep ' world.'
- */
-var DIFF_DELETE = -1;
-var DIFF_INSERT = 1;
-var DIFF_EQUAL = 0;
-
-
-/**
- * Find the differences between two texts.  Simplifies the problem by stripping
- * any common prefix or suffix off the texts before diffing.
- * @param {string} text1 Old string to be diffed.
- * @param {string} text2 New string to be diffed.
- * @param {Int} cursor_pos Expected edit position in text1 (optional)
- * @return {Array} Array of diff tuples.
- */
-function diff_main(text1, text2, cursor_pos) {
-  // Check for equality (speedup).
-  if (text1 == text2) {
-    if (text1) {
-      return [[DIFF_EQUAL, text1]];
-    }
-    return [];
-  }
-
-  // Check cursor_pos within bounds
-  if (cursor_pos < 0 || text1.length < cursor_pos) {
-    cursor_pos = null;
-  }
-
-  // Trim off common prefix (speedup).
-  var commonlength = diff_commonPrefix(text1, text2);
-  var commonprefix = text1.substring(0, commonlength);
-  text1 = text1.substring(commonlength);
-  text2 = text2.substring(commonlength);
-
-  // Trim off common suffix (speedup).
-  commonlength = diff_commonSuffix(text1, text2);
-  var commonsuffix = text1.substring(text1.length - commonlength);
-  text1 = text1.substring(0, text1.length - commonlength);
-  text2 = text2.substring(0, text2.length - commonlength);
-
-  // Compute the diff on the middle block.
-  var diffs = diff_compute_(text1, text2);
-
-  // Restore the prefix and suffix.
-  if (commonprefix) {
-    diffs.unshift([DIFF_EQUAL, commonprefix]);
-  }
-  if (commonsuffix) {
-    diffs.push([DIFF_EQUAL, commonsuffix]);
-  }
-  diff_cleanupMerge(diffs);
-  if (cursor_pos != null) {
-    diffs = fix_cursor(diffs, cursor_pos);
-  }
-  diffs = fix_emoji(diffs);
-  return diffs;
-};
-
-
-/**
- * Find the differences between two texts.  Assumes that the texts do not
- * have any common prefix or suffix.
- * @param {string} text1 Old string to be diffed.
- * @param {string} text2 New string to be diffed.
- * @return {Array} Array of diff tuples.
- */
-function diff_compute_(text1, text2) {
-  var diffs;
-
-  if (!text1) {
-    // Just add some text (speedup).
-    return [[DIFF_INSERT, text2]];
-  }
-
-  if (!text2) {
-    // Just delete some text (speedup).
-    return [[DIFF_DELETE, text1]];
-  }
-
-  var longtext = text1.length > text2.length ? text1 : text2;
-  var shorttext = text1.length > text2.length ? text2 : text1;
-  var i = longtext.indexOf(shorttext);
-  if (i != -1) {
-    // Shorter text is inside the longer text (speedup).
-    diffs = [[DIFF_INSERT, longtext.substring(0, i)],
-             [DIFF_EQUAL, shorttext],
-             [DIFF_INSERT, longtext.substring(i + shorttext.length)]];
-    // Swap insertions for deletions if diff is reversed.
-    if (text1.length > text2.length) {
-      diffs[0][0] = diffs[2][0] = DIFF_DELETE;
-    }
-    return diffs;
-  }
-
-  if (shorttext.length == 1) {
-    // Single character string.
-    // After the previous speedup, the character can't be an equality.
-    return [[DIFF_DELETE, text1], [DIFF_INSERT, text2]];
-  }
-
-  // Check to see if the problem can be split in two.
-  var hm = diff_halfMatch_(text1, text2);
-  if (hm) {
-    // A half-match was found, sort out the return data.
-    var text1_a = hm[0];
-    var text1_b = hm[1];
-    var text2_a = hm[2];
-    var text2_b = hm[3];
-    var mid_common = hm[4];
-    // Send both pairs off for separate processing.
-    var diffs_a = diff_main(text1_a, text2_a);
-    var diffs_b = diff_main(text1_b, text2_b);
-    // Merge the results.
-    return diffs_a.concat([[DIFF_EQUAL, mid_common]], diffs_b);
-  }
-
-  return diff_bisect_(text1, text2);
-};
-
-
-/**
- * Find the 'middle snake' of a diff, split the problem in two
- * and return the recursively constructed diff.
- * See Myers 1986 paper: An O(ND) Difference Algorithm and Its Variations.
- * @param {string} text1 Old string to be diffed.
- * @param {string} text2 New string to be diffed.
- * @return {Array} Array of diff tuples.
- * @private
- */
-function diff_bisect_(text1, text2) {
-  // Cache the text lengths to prevent multiple calls.
-  var text1_length = text1.length;
-  var text2_length = text2.length;
-  var max_d = Math.ceil((text1_length + text2_length) / 2);
-  var v_offset = max_d;
-  var v_length = 2 * max_d;
-  var v1 = new Array(v_length);
-  var v2 = new Array(v_length);
-  // Setting all elements to -1 is faster in Chrome & Firefox than mixing
-  // integers and undefined.
-  for (var x = 0; x < v_length; x++) {
-    v1[x] = -1;
-    v2[x] = -1;
-  }
-  v1[v_offset + 1] = 0;
-  v2[v_offset + 1] = 0;
-  var delta = text1_length - text2_length;
-  // If the total number of characters is odd, then the front path will collide
-  // with the reverse path.
-  var front = (delta % 2 != 0);
-  // Offsets for start and end of k loop.
-  // Prevents mapping of space beyond the grid.
-  var k1start = 0;
-  var k1end = 0;
-  var k2start = 0;
-  var k2end = 0;
-  for (var d = 0; d < max_d; d++) {
-    // Walk the front path one step.
-    for (var k1 = -d + k1start; k1 <= d - k1end; k1 += 2) {
-      var k1_offset = v_offset + k1;
-      var x1;
-      if (k1 == -d || (k1 != d && v1[k1_offset - 1] < v1[k1_offset + 1])) {
-        x1 = v1[k1_offset + 1];
-      } else {
-        x1 = v1[k1_offset - 1] + 1;
-      }
-      var y1 = x1 - k1;
-      while (x1 < text1_length && y1 < text2_length &&
-             text1.charAt(x1) == text2.charAt(y1)) {
-        x1++;
-        y1++;
-      }
-      v1[k1_offset] = x1;
-      if (x1 > text1_length) {
-        // Ran off the right of the graph.
-        k1end += 2;
-      } else if (y1 > text2_length) {
-        // Ran off the bottom of the graph.
-        k1start += 2;
-      } else if (front) {
-        var k2_offset = v_offset + delta - k1;
-        if (k2_offset >= 0 && k2_offset < v_length && v2[k2_offset] != -1) {
-          // Mirror x2 onto top-left coordinate system.
-          var x2 = text1_length - v2[k2_offset];
-          if (x1 >= x2) {
-            // Overlap detected.
-            return diff_bisectSplit_(text1, text2, x1, y1);
-          }
-        }
-      }
-    }
-
-    // Walk the reverse path one step.
-    for (var k2 = -d + k2start; k2 <= d - k2end; k2 += 2) {
-      var k2_offset = v_offset + k2;
-      var x2;
-      if (k2 == -d || (k2 != d && v2[k2_offset - 1] < v2[k2_offset + 1])) {
-        x2 = v2[k2_offset + 1];
-      } else {
-        x2 = v2[k2_offset - 1] + 1;
-      }
-      var y2 = x2 - k2;
-      while (x2 < text1_length && y2 < text2_length &&
-             text1.charAt(text1_length - x2 - 1) ==
-             text2.charAt(text2_length - y2 - 1)) {
-        x2++;
-        y2++;
-      }
-      v2[k2_offset] = x2;
-      if (x2 > text1_length) {
-        // Ran off the left of the graph.
-        k2end += 2;
-      } else if (y2 > text2_length) {
-        // Ran off the top of the graph.
-        k2start += 2;
-      } else if (!front) {
-        var k1_offset = v_offset + delta - k2;
-        if (k1_offset >= 0 && k1_offset < v_length && v1[k1_offset] != -1) {
-          var x1 = v1[k1_offset];
-          var y1 = v_offset + x1 - k1_offset;
-          // Mirror x2 onto top-left coordinate system.
-          x2 = text1_length - x2;
-          if (x1 >= x2) {
-            // Overlap detected.
-            return diff_bisectSplit_(text1, text2, x1, y1);
-          }
-        }
-      }
-    }
-  }
-  // Diff took too long and hit the deadline or
-  // number of diffs equals number of characters, no commonality at all.
-  return [[DIFF_DELETE, text1], [DIFF_INSERT, text2]];
-};
-
-
-/**
- * Given the location of the 'middle snake', split the diff in two parts
- * and recurse.
- * @param {string} text1 Old string to be diffed.
- * @param {string} text2 New string to be diffed.
- * @param {number} x Index of split point in text1.
- * @param {number} y Index of split point in text2.
- * @return {Array} Array of diff tuples.
- */
-function diff_bisectSplit_(text1, text2, x, y) {
-  var text1a = text1.substring(0, x);
-  var text2a = text2.substring(0, y);
-  var text1b = text1.substring(x);
-  var text2b = text2.substring(y);
-
-  // Compute both diffs serially.
-  var diffs = diff_main(text1a, text2a);
-  var diffsb = diff_main(text1b, text2b);
-
-  return diffs.concat(diffsb);
-};
-
-
-/**
- * Determine the common prefix of two strings.
- * @param {string} text1 First string.
- * @param {string} text2 Second string.
- * @return {number} The number of characters common to the start of each
- *     string.
- */
-function diff_commonPrefix(text1, text2) {
-  // Quick check for common null cases.
-  if (!text1 || !text2 || text1.charAt(0) != text2.charAt(0)) {
-    return 0;
-  }
-  // Binary search.
-  // Performance analysis: http://neil.fraser.name/news/2007/10/09/
-  var pointermin = 0;
-  var pointermax = Math.min(text1.length, text2.length);
-  var pointermid = pointermax;
-  var pointerstart = 0;
-  while (pointermin < pointermid) {
-    if (text1.substring(pointerstart, pointermid) ==
-        text2.substring(pointerstart, pointermid)) {
-      pointermin = pointermid;
-      pointerstart = pointermin;
-    } else {
-      pointermax = pointermid;
-    }
-    pointermid = Math.floor((pointermax - pointermin) / 2 + pointermin);
-  }
-  return pointermid;
-};
-
-
-/**
- * Determine the common suffix of two strings.
- * @param {string} text1 First string.
- * @param {string} text2 Second string.
- * @return {number} The number of characters common to the end of each string.
- */
-function diff_commonSuffix(text1, text2) {
-  // Quick check for common null cases.
-  if (!text1 || !text2 ||
-      text1.charAt(text1.length - 1) != text2.charAt(text2.length - 1)) {
-    return 0;
-  }
-  // Binary search.
-  // Performance analysis: http://neil.fraser.name/news/2007/10/09/
-  var pointermin = 0;
-  var pointermax = Math.min(text1.length, text2.length);
-  var pointermid = pointermax;
-  var pointerend = 0;
-  while (pointermin < pointermid) {
-    if (text1.substring(text1.length - pointermid, text1.length - pointerend) ==
-        text2.substring(text2.length - pointermid, text2.length - pointerend)) {
-      pointermin = pointermid;
-      pointerend = pointermin;
-    } else {
-      pointermax = pointermid;
-    }
-    pointermid = Math.floor((pointermax - pointermin) / 2 + pointermin);
-  }
-  return pointermid;
-};
-
-
-/**
- * Do the two texts share a substring which is at least half the length of the
- * longer text?
- * This speedup can produce non-minimal diffs.
- * @param {string} text1 First string.
- * @param {string} text2 Second string.
- * @return {Array.<string>} Five element Array, containing the prefix of
- *     text1, the suffix of text1, the prefix of text2, the suffix of
- *     text2 and the common middle.  Or null if there was no match.
- */
-function diff_halfMatch_(text1, text2) {
-  var longtext = text1.length > text2.length ? text1 : text2;
-  var shorttext = text1.length > text2.length ? text2 : text1;
-  if (longtext.length < 4 || shorttext.length * 2 < longtext.length) {
-    return null;  // Pointless.
-  }
-
-  /**
-   * Does a substring of shorttext exist within longtext such that the substring
-   * is at least half the length of longtext?
-   * Closure, but does not reference any external variables.
-   * @param {string} longtext Longer string.
-   * @param {string} shorttext Shorter string.
-   * @param {number} i Start index of quarter length substring within longtext.
-   * @return {Array.<string>} Five element Array, containing the prefix of
-   *     longtext, the suffix of longtext, the prefix of shorttext, the suffix
-   *     of shorttext and the common middle.  Or null if there was no match.
-   * @private
-   */
-  function diff_halfMatchI_(longtext, shorttext, i) {
-    // Start with a 1/4 length substring at position i as a seed.
-    var seed = longtext.substring(i, i + Math.floor(longtext.length / 4));
-    var j = -1;
-    var best_common = '';
-    var best_longtext_a, best_longtext_b, best_shorttext_a, best_shorttext_b;
-    while ((j = shorttext.indexOf(seed, j + 1)) != -1) {
-      var prefixLength = diff_commonPrefix(longtext.substring(i),
-                                           shorttext.substring(j));
-      var suffixLength = diff_commonSuffix(longtext.substring(0, i),
-                                           shorttext.substring(0, j));
-      if (best_common.length < suffixLength + prefixLength) {
-        best_common = shorttext.substring(j - suffixLength, j) +
-            shorttext.substring(j, j + prefixLength);
-        best_longtext_a = longtext.substring(0, i - suffixLength);
-        best_longtext_b = longtext.substring(i + prefixLength);
-        best_shorttext_a = shorttext.substring(0, j - suffixLength);
-        best_shorttext_b = shorttext.substring(j + prefixLength);
-      }
-    }
-    if (best_common.length * 2 >= longtext.length) {
-      return [best_longtext_a, best_longtext_b,
-              best_shorttext_a, best_shorttext_b, best_common];
-    } else {
-      return null;
-    }
-  }
-
-  // First check if the second quarter is the seed for a half-match.
-  var hm1 = diff_halfMatchI_(longtext, shorttext,
-                             Math.ceil(longtext.length / 4));
-  // Check again based on the third quarter.
-  var hm2 = diff_halfMatchI_(longtext, shorttext,
-                             Math.ceil(longtext.length / 2));
-  var hm;
-  if (!hm1 && !hm2) {
-    return null;
-  } else if (!hm2) {
-    hm = hm1;
-  } else if (!hm1) {
-    hm = hm2;
-  } else {
-    // Both matched.  Select the longest.
-    hm = hm1[4].length > hm2[4].length ? hm1 : hm2;
-  }
-
-  // A half-match was found, sort out the return data.
-  var text1_a, text1_b, text2_a, text2_b;
-  if (text1.length > text2.length) {
-    text1_a = hm[0];
-    text1_b = hm[1];
-    text2_a = hm[2];
-    text2_b = hm[3];
-  } else {
-    text2_a = hm[0];
-    text2_b = hm[1];
-    text1_a = hm[2];
-    text1_b = hm[3];
-  }
-  var mid_common = hm[4];
-  return [text1_a, text1_b, text2_a, text2_b, mid_common];
-};
-
-
-/**
- * Reorder and merge like edit sections.  Merge equalities.
- * Any edit section can move as long as it doesn't cross an equality.
- * @param {Array} diffs Array of diff tuples.
- */
-function diff_cleanupMerge(diffs) {
-  diffs.push([DIFF_EQUAL, '']);  // Add a dummy entry at the end.
-  var pointer = 0;
-  var count_delete = 0;
-  var count_insert = 0;
-  var text_delete = '';
-  var text_insert = '';
-  var commonlength;
-  while (pointer < diffs.length) {
-    switch (diffs[pointer][0]) {
-      case DIFF_INSERT:
-        count_insert++;
-        text_insert += diffs[pointer][1];
-        pointer++;
-        break;
-      case DIFF_DELETE:
-        count_delete++;
-        text_delete += diffs[pointer][1];
-        pointer++;
-        break;
-      case DIFF_EQUAL:
-        // Upon reaching an equality, check for prior redundancies.
-        if (count_delete + count_insert > 1) {
-          if (count_delete !== 0 && count_insert !== 0) {
-            // Factor out any common prefixies.
-            commonlength = diff_commonPrefix(text_insert, text_delete);
-            if (commonlength !== 0) {
-              if ((pointer - count_delete - count_insert) > 0 &&
-                  diffs[pointer - count_delete - count_insert - 1][0] ==
-                  DIFF_EQUAL) {
-                diffs[pointer - count_delete - count_insert - 1][1] +=
-                    text_insert.substring(0, commonlength);
-              } else {
-                diffs.splice(0, 0, [DIFF_EQUAL,
-                                    text_insert.substring(0, commonlength)]);
-                pointer++;
-              }
-              text_insert = text_insert.substring(commonlength);
-              text_delete = text_delete.substring(commonlength);
-            }
-            // Factor out any common suffixies.
-            commonlength = diff_commonSuffix(text_insert, text_delete);
-            if (commonlength !== 0) {
-              diffs[pointer][1] = text_insert.substring(text_insert.length -
-                  commonlength) + diffs[pointer][1];
-              text_insert = text_insert.substring(0, text_insert.length -
-                  commonlength);
-              text_delete = text_delete.substring(0, text_delete.length -
-                  commonlength);
-            }
-          }
-          // Delete the offending records and add the merged ones.
-          if (count_delete === 0) {
-            diffs.splice(pointer - count_insert,
-                count_delete + count_insert, [DIFF_INSERT, text_insert]);
-          } else if (count_insert === 0) {
-            diffs.splice(pointer - count_delete,
-                count_delete + count_insert, [DIFF_DELETE, text_delete]);
-          } else {
-            diffs.splice(pointer - count_delete - count_insert,
-                count_delete + count_insert, [DIFF_DELETE, text_delete],
-                [DIFF_INSERT, text_insert]);
-          }
-          pointer = pointer - count_delete - count_insert +
-                    (count_delete ? 1 : 0) + (count_insert ? 1 : 0) + 1;
-        } else if (pointer !== 0 && diffs[pointer - 1][0] == DIFF_EQUAL) {
-          // Merge this equality with the previous one.
-          diffs[pointer - 1][1] += diffs[pointer][1];
-          diffs.splice(pointer, 1);
-        } else {
-          pointer++;
-        }
-        count_insert = 0;
-        count_delete = 0;
-        text_delete = '';
-        text_insert = '';
-        break;
-    }
-  }
-  if (diffs[diffs.length - 1][1] === '') {
-    diffs.pop();  // Remove the dummy entry at the end.
-  }
-
-  // Second pass: look for single edits surrounded on both sides by equalities
-  // which can be shifted sideways to eliminate an equality.
-  // e.g: A<ins>BA</ins>C -> <ins>AB</ins>AC
-  var changes = false;
-  pointer = 1;
-  // Intentionally ignore the first and last element (don't need checking).
-  while (pointer < diffs.length - 1) {
-    if (diffs[pointer - 1][0] == DIFF_EQUAL &&
-        diffs[pointer + 1][0] == DIFF_EQUAL) {
-      // This is a single edit surrounded by equalities.
-      if (diffs[pointer][1].substring(diffs[pointer][1].length -
-          diffs[pointer - 1][1].length) == diffs[pointer - 1][1]) {
-        // Shift the edit over the previous equality.
-        diffs[pointer][1] = diffs[pointer - 1][1] +
-            diffs[pointer][1].substring(0, diffs[pointer][1].length -
-                                        diffs[pointer - 1][1].length);
-        diffs[pointer + 1][1] = diffs[pointer - 1][1] + diffs[pointer + 1][1];
-        diffs.splice(pointer - 1, 1);
-        changes = true;
-      } else if (diffs[pointer][1].substring(0, diffs[pointer + 1][1].length) ==
-          diffs[pointer + 1][1]) {
-        // Shift the edit over the next equality.
-        diffs[pointer - 1][1] += diffs[pointer + 1][1];
-        diffs[pointer][1] =
-            diffs[pointer][1].substring(diffs[pointer + 1][1].length) +
-            diffs[pointer + 1][1];
-        diffs.splice(pointer + 1, 1);
-        changes = true;
-      }
-    }
-    pointer++;
-  }
-  // If shifts were made, the diff needs reordering and another shift sweep.
-  if (changes) {
-    diff_cleanupMerge(diffs);
-  }
-};
-
-
-var diff = diff_main;
-diff.INSERT = DIFF_INSERT;
-diff.DELETE = DIFF_DELETE;
-diff.EQUAL = DIFF_EQUAL;
-
-module.exports = diff;
-
-/*
- * Modify a diff such that the cursor position points to the start of a change:
- * E.g.
- *   cursor_normalize_diff([[DIFF_EQUAL, 'abc']], 1)
- *     => [1, [[DIFF_EQUAL, 'a'], [DIFF_EQUAL, 'bc']]]
- *   cursor_normalize_diff([[DIFF_INSERT, 'new'], [DIFF_DELETE, 'xyz']], 2)
- *     => [2, [[DIFF_INSERT, 'new'], [DIFF_DELETE, 'xy'], [DIFF_DELETE, 'z']]]
- *
- * @param {Array} diffs Array of diff tuples
- * @param {Int} cursor_pos Suggested edit position. Must not be out of bounds!
- * @return {Array} A tuple [cursor location in the modified diff, modified diff]
- */
-function cursor_normalize_diff (diffs, cursor_pos) {
-  if (cursor_pos === 0) {
-    return [DIFF_EQUAL, diffs];
-  }
-  for (var current_pos = 0, i = 0; i < diffs.length; i++) {
-    var d = diffs[i];
-    if (d[0] === DIFF_DELETE || d[0] === DIFF_EQUAL) {
-      var next_pos = current_pos + d[1].length;
-      if (cursor_pos === next_pos) {
-        return [i + 1, diffs];
-      } else if (cursor_pos < next_pos) {
-        // copy to prevent side effects
-        diffs = diffs.slice();
-        // split d into two diff changes
-        var split_pos = cursor_pos - current_pos;
-        var d_left = [d[0], d[1].slice(0, split_pos)];
-        var d_right = [d[0], d[1].slice(split_pos)];
-        diffs.splice(i, 1, d_left, d_right);
-        return [i + 1, diffs];
-      } else {
-        current_pos = next_pos;
-      }
-    }
-  }
-  throw new Error('cursor_pos is out of bounds!')
-}
-
-/*
- * Modify a diff such that the edit position is "shifted" to the proposed edit location (cursor_position).
- *
- * Case 1)
- *   Check if a naive shift is possible:
- *     [0, X], [ 1, Y] -> [ 1, Y], [0, X]    (if X + Y === Y + X)
- *     [0, X], [-1, Y] -> [-1, Y], [0, X]    (if X + Y === Y + X) - holds same result
- * Case 2)
- *   Check if the following shifts are possible:
- *     [0, 'pre'], [ 1, 'prefix'] -> [ 1, 'pre'], [0, 'pre'], [ 1, 'fix']
- *     [0, 'pre'], [-1, 'prefix'] -> [-1, 'pre'], [0, 'pre'], [-1, 'fix']
- *         ^            ^
- *         d          d_next
- *
- * @param {Array} diffs Array of diff tuples
- * @param {Int} cursor_pos Suggested edit position. Must not be out of bounds!
- * @return {Array} Array of diff tuples
- */
-function fix_cursor (diffs, cursor_pos) {
-  var norm = cursor_normalize_diff(diffs, cursor_pos);
-  var ndiffs = norm[1];
-  var cursor_pointer = norm[0];
-  var d = ndiffs[cursor_pointer];
-  var d_next = ndiffs[cursor_pointer + 1];
-
-  if (d == null) {
-    // Text was deleted from end of original string,
-    // cursor is now out of bounds in new string
-    return diffs;
-  } else if (d[0] !== DIFF_EQUAL) {
-    // A modification happened at the cursor location.
-    // This is the expected outcome, so we can return the original diff.
-    return diffs;
-  } else {
-    if (d_next != null && d[1] + d_next[1] === d_next[1] + d[1]) {
-      // Case 1)
-      // It is possible to perform a naive shift
-      ndiffs.splice(cursor_pointer, 2, d_next, d)
-      return merge_tuples(ndiffs, cursor_pointer, 2)
-    } else if (d_next != null && d_next[1].indexOf(d[1]) === 0) {
-      // Case 2)
-      // d[1] is a prefix of d_next[1]
-      // We can assume that d_next[0] !== 0, since d[0] === 0
-      // Shift edit locations..
-      ndiffs.splice(cursor_pointer, 2, [d_next[0], d[1]], [0, d[1]]);
-      var suffix = d_next[1].slice(d[1].length);
-      if (suffix.length > 0) {
-        ndiffs.splice(cursor_pointer + 2, 0, [d_next[0], suffix]);
-      }
-      return merge_tuples(ndiffs, cursor_pointer, 3)
-    } else {
-      // Not possible to perform any modification
-      return diffs;
-    }
-  }
-}
-
-/*
- * Check diff did not split surrogate pairs.
- * Ex. [0, '\uD83D'], [-1, '\uDC36'], [1, '\uDC2F'] -> [-1, '\uD83D\uDC36'], [1, '\uD83D\uDC2F']
- *     '\uD83D\uDC36' === '🐶', '\uD83D\uDC2F' === '🐯'
- *
- * @param {Array} diffs Array of diff tuples
- * @return {Array} Array of diff tuples
- */
-function fix_emoji (diffs) {
-  var compact = false;
-  var starts_with_pair_end = function(str) {
-    return str.charCodeAt(0) >= 0xDC00 && str.charCodeAt(0) <= 0xDFFF;
-  }
-  var ends_with_pair_start = function(str) {
-    return str.charCodeAt(str.length-1) >= 0xD800 && str.charCodeAt(str.length-1) <= 0xDBFF;
-  }
-  for (var i = 2; i < diffs.length; i += 1) {
-    if (diffs[i-2][0] === DIFF_EQUAL && ends_with_pair_start(diffs[i-2][1]) &&
-        diffs[i-1][0] === DIFF_DELETE && starts_with_pair_end(diffs[i-1][1]) &&
-        diffs[i][0] === DIFF_INSERT && starts_with_pair_end(diffs[i][1])) {
-      compact = true;
-
-      diffs[i-1][1] = diffs[i-2][1].slice(-1) + diffs[i-1][1];
-      diffs[i][1] = diffs[i-2][1].slice(-1) + diffs[i][1];
-
-      diffs[i-2][1] = diffs[i-2][1].slice(0, -1);
-    }
-  }
-  if (!compact) {
-    return diffs;
-  }
-  var fixed_diffs = [];
-  for (var i = 0; i < diffs.length; i += 1) {
-    if (diffs[i][1].length > 0) {
-      fixed_diffs.push(diffs[i]);
-    }
-  }
-  return fixed_diffs;
-}
-
-/*
- * Try to merge tuples with their neigbors in a given range.
- * E.g. [0, 'a'], [0, 'b'] -> [0, 'ab']
- *
- * @param {Array} diffs Array of diff tuples.
- * @param {Int} start Position of the first element to merge (diffs[start] is also merged with diffs[start - 1]).
- * @param {Int} length Number of consecutive elements to check.
- * @return {Array} Array of merged diff tuples.
- */
-function merge_tuples (diffs, start, length) {
-  // Check from (start-1) to (start+length).
-  for (var i = start + length - 1; i >= 0 && i >= start - 1; i--) {
-    if (i + 1 < diffs.length) {
-      var left_d = diffs[i];
-      var right_d = diffs[i+1];
-      if (left_d[0] === right_d[1]) {
-        diffs.splice(i, 2, [left_d[0], left_d[1] + right_d[1]]);
-      }
-    }
-  }
-  return diffs;
-}
-
-},{}],"uTT0":[function(require,module,exports) {
-'use strict';
-
-var toStr = Object.prototype.toString;
-
-module.exports = function isArguments(value) {
-  var str = toStr.call(value);
-  var isArgs = str === '[object Arguments]';
-
-  if (!isArgs) {
-    isArgs = str !== '[object Array]' && value !== null && typeof value === 'object' && typeof value.length === 'number' && value.length >= 0 && toStr.call(value.callee) === '[object Function]';
-  }
-
-  return isArgs;
-};
-},{}],"orz+":[function(require,module,exports) {
-'use strict';
-
-var keysShim;
-
-if (!Object.keys) {
-  // modified from https://github.com/es-shims/es5-shim
-  var has = Object.prototype.hasOwnProperty;
-  var toStr = Object.prototype.toString;
-
-  var isArgs = require('./isArguments'); // eslint-disable-line global-require
-
-
-  var isEnumerable = Object.prototype.propertyIsEnumerable;
-  var hasDontEnumBug = !isEnumerable.call({
-    toString: null
-  }, 'toString');
-  var hasProtoEnumBug = isEnumerable.call(function () {}, 'prototype');
-  var dontEnums = ['toString', 'toLocaleString', 'valueOf', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'constructor'];
-
-  var equalsConstructorPrototype = function (o) {
-    var ctor = o.constructor;
-    return ctor && ctor.prototype === o;
-  };
-
-  var excludedKeys = {
-    $applicationCache: true,
-    $console: true,
-    $external: true,
-    $frame: true,
-    $frameElement: true,
-    $frames: true,
-    $innerHeight: true,
-    $innerWidth: true,
-    $onmozfullscreenchange: true,
-    $onmozfullscreenerror: true,
-    $outerHeight: true,
-    $outerWidth: true,
-    $pageXOffset: true,
-    $pageYOffset: true,
-    $parent: true,
-    $scrollLeft: true,
-    $scrollTop: true,
-    $scrollX: true,
-    $scrollY: true,
-    $self: true,
-    $webkitIndexedDB: true,
-    $webkitStorageInfo: true,
-    $window: true
-  };
-
-  var hasAutomationEqualityBug = function () {
-    /* global window */
-    if (typeof window === 'undefined') {
-      return false;
-    }
-
-    for (var k in window) {
-      try {
-        if (!excludedKeys['$' + k] && has.call(window, k) && window[k] !== null && typeof window[k] === 'object') {
-          try {
-            equalsConstructorPrototype(window[k]);
-          } catch (e) {
-            return true;
-          }
-        }
-      } catch (e) {
-        return true;
-      }
-    }
-
-    return false;
-  }();
-
-  var equalsConstructorPrototypeIfNotBuggy = function (o) {
-    /* global window */
-    if (typeof window === 'undefined' || !hasAutomationEqualityBug) {
-      return equalsConstructorPrototype(o);
-    }
-
-    try {
-      return equalsConstructorPrototype(o);
-    } catch (e) {
-      return false;
-    }
-  };
-
-  keysShim = function keys(object) {
-    var isObject = object !== null && typeof object === 'object';
-    var isFunction = toStr.call(object) === '[object Function]';
-    var isArguments = isArgs(object);
-    var isString = isObject && toStr.call(object) === '[object String]';
-    var theKeys = [];
-
-    if (!isObject && !isFunction && !isArguments) {
-      throw new TypeError('Object.keys called on a non-object');
-    }
-
-    var skipProto = hasProtoEnumBug && isFunction;
-
-    if (isString && object.length > 0 && !has.call(object, 0)) {
-      for (var i = 0; i < object.length; ++i) {
-        theKeys.push(String(i));
-      }
-    }
-
-    if (isArguments && object.length > 0) {
-      for (var j = 0; j < object.length; ++j) {
-        theKeys.push(String(j));
-      }
-    } else {
-      for (var name in object) {
-        if (!(skipProto && name === 'prototype') && has.call(object, name)) {
-          theKeys.push(String(name));
-        }
-      }
-    }
-
-    if (hasDontEnumBug) {
-      var skipConstructor = equalsConstructorPrototypeIfNotBuggy(object);
-
-      for (var k = 0; k < dontEnums.length; ++k) {
-        if (!(skipConstructor && dontEnums[k] === 'constructor') && has.call(object, dontEnums[k])) {
-          theKeys.push(dontEnums[k]);
-        }
-      }
-    }
-
-    return theKeys;
-  };
-}
-
-module.exports = keysShim;
-},{"./isArguments":"uTT0"}],"ywQn":[function(require,module,exports) {
-'use strict';
-
-var slice = Array.prototype.slice;
-
-var isArgs = require('./isArguments');
-
-var origKeys = Object.keys;
-var keysShim = origKeys ? function keys(o) {
-  return origKeys(o);
-} : require('./implementation');
-var originalKeys = Object.keys;
-
-keysShim.shim = function shimObjectKeys() {
-  if (Object.keys) {
-    var keysWorksWithArguments = function () {
-      // Safari 5.0 bug
-      var args = Object.keys(arguments);
-      return args && args.length === arguments.length;
-    }(1, 2);
-
-    if (!keysWorksWithArguments) {
-      Object.keys = function keys(object) {
-        // eslint-disable-line func-name-matching
-        if (isArgs(object)) {
-          return originalKeys(slice.call(object));
-        }
-
-        return originalKeys(object);
-      };
-    }
-  } else {
-    Object.keys = keysShim;
-  }
-
-  return Object.keys || keysShim;
-};
-
-module.exports = keysShim;
-},{"./isArguments":"uTT0","./implementation":"orz+"}],"6ord":[function(require,module,exports) {
-'use strict';
-
-var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
-var toStr = Object.prototype.toString;
-
-var isStandardArguments = function isArguments(value) {
-  if (hasToStringTag && value && typeof value === 'object' && Symbol.toStringTag in value) {
-    return false;
-  }
-
-  return toStr.call(value) === '[object Arguments]';
-};
-
-var isLegacyArguments = function isArguments(value) {
-  if (isStandardArguments(value)) {
-    return true;
-  }
-
-  return value !== null && typeof value === 'object' && typeof value.length === 'number' && value.length >= 0 && toStr.call(value) !== '[object Array]' && toStr.call(value.callee) === '[object Function]';
-};
-
-var supportsStandardArguments = function () {
-  return isStandardArguments(arguments);
-}();
-
-isStandardArguments.isLegacyArguments = isLegacyArguments; // for tests
-
-module.exports = supportsStandardArguments ? isStandardArguments : isLegacyArguments;
-},{}],"VxKF":[function(require,module,exports) {
-'use strict';
-
-var keys = require('object-keys');
-
-var hasSymbols = typeof Symbol === 'function' && typeof Symbol('foo') === 'symbol';
-var toStr = Object.prototype.toString;
-var concat = Array.prototype.concat;
-var origDefineProperty = Object.defineProperty;
-
-var isFunction = function (fn) {
-  return typeof fn === 'function' && toStr.call(fn) === '[object Function]';
-};
-
-var arePropertyDescriptorsSupported = function () {
-  var obj = {};
-
-  try {
-    origDefineProperty(obj, 'x', {
-      enumerable: false,
-      value: obj
-    }); // eslint-disable-next-line no-unused-vars, no-restricted-syntax
-
-    for (var _ in obj) {
-      // jscs:ignore disallowUnusedVariables
-      return false;
-    }
-
-    return obj.x === obj;
-  } catch (e) {
-    /* this is IE 8. */
-    return false;
-  }
-};
-
-var supportsDescriptors = origDefineProperty && arePropertyDescriptorsSupported();
-
-var defineProperty = function (object, name, value, predicate) {
-  if (name in object && (!isFunction(predicate) || !predicate())) {
-    return;
-  }
-
-  if (supportsDescriptors) {
-    origDefineProperty(object, name, {
-      configurable: true,
-      enumerable: false,
-      value: value,
-      writable: true
-    });
-  } else {
-    object[name] = value;
-  }
-};
-
-var defineProperties = function (object, map) {
-  var predicates = arguments.length > 2 ? arguments[2] : {};
-  var props = keys(map);
-
-  if (hasSymbols) {
-    props = concat.call(props, Object.getOwnPropertySymbols(map));
-  }
-
-  for (var i = 0; i < props.length; i += 1) {
-    defineProperty(object, props[i], map[props[i]], predicates[props[i]]);
-  }
-};
-
-defineProperties.supportsDescriptors = !!supportsDescriptors;
-module.exports = defineProperties;
-},{"object-keys":"ywQn"}],"B6/o":[function(require,module,exports) {
-'use strict';
-
-/* eslint no-invalid-this: 1 */
-
-var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
-var slice = Array.prototype.slice;
-var toStr = Object.prototype.toString;
-var funcType = '[object Function]';
-
-module.exports = function bind(that) {
-    var target = this;
-    if (typeof target !== 'function' || toStr.call(target) !== funcType) {
-        throw new TypeError(ERROR_MESSAGE + target);
-    }
-    var args = slice.call(arguments, 1);
-
-    var bound;
-    var binder = function () {
-        if (this instanceof bound) {
-            var result = target.apply(
-                this,
-                args.concat(slice.call(arguments))
-            );
-            if (Object(result) === result) {
-                return result;
-            }
-            return this;
-        } else {
-            return target.apply(
-                that,
-                args.concat(slice.call(arguments))
-            );
-        }
-    };
-
-    var boundLength = Math.max(0, target.length - args.length);
-    var boundArgs = [];
-    for (var i = 0; i < boundLength; i++) {
-        boundArgs.push('$' + i);
-    }
-
-    bound = Function('binder', 'return function (' + boundArgs.join(',') + '){ return binder.apply(this,arguments); }')(binder);
-
-    if (target.prototype) {
-        var Empty = function Empty() {};
-        Empty.prototype = target.prototype;
-        bound.prototype = new Empty();
-        Empty.prototype = null;
-    }
-
-    return bound;
-};
-
-},{}],"58Ti":[function(require,module,exports) {
-'use strict';
-
-var implementation = require('./implementation');
-
-module.exports = Function.prototype.bind || implementation;
-
-},{"./implementation":"B6/o"}],"jYt2":[function(require,module,exports) {
-'use strict';
-/* eslint complexity: [2, 18], max-statements: [2, 33] */
-
-module.exports = function hasSymbols() {
-  if (typeof Symbol !== 'function' || typeof Object.getOwnPropertySymbols !== 'function') {
-    return false;
-  }
-
-  if (typeof Symbol.iterator === 'symbol') {
-    return true;
-  }
-
-  var obj = {};
-  var sym = Symbol('test');
-  var symObj = Object(sym);
-
-  if (typeof sym === 'string') {
-    return false;
-  }
-
-  if (Object.prototype.toString.call(sym) !== '[object Symbol]') {
-    return false;
-  }
-
-  if (Object.prototype.toString.call(symObj) !== '[object Symbol]') {
-    return false;
-  } // temp disabled per https://github.com/ljharb/object.assign/issues/17
-  // if (sym instanceof Symbol) { return false; }
-  // temp disabled per https://github.com/WebReflection/get-own-property-symbols/issues/4
-  // if (!(symObj instanceof Symbol)) { return false; }
-  // if (typeof Symbol.prototype.toString !== 'function') { return false; }
-  // if (String(sym) !== Symbol.prototype.toString.call(sym)) { return false; }
-
-
-  var symVal = 42;
-  obj[sym] = symVal;
-
-  for (sym in obj) {
-    return false;
-  } // eslint-disable-line no-restricted-syntax
-
-
-  if (typeof Object.keys === 'function' && Object.keys(obj).length !== 0) {
-    return false;
-  }
-
-  if (typeof Object.getOwnPropertyNames === 'function' && Object.getOwnPropertyNames(obj).length !== 0) {
-    return false;
-  }
-
-  var syms = Object.getOwnPropertySymbols(obj);
-
-  if (syms.length !== 1 || syms[0] !== sym) {
-    return false;
-  }
-
-  if (!Object.prototype.propertyIsEnumerable.call(obj, sym)) {
-    return false;
-  }
-
-  if (typeof Object.getOwnPropertyDescriptor === 'function') {
-    var descriptor = Object.getOwnPropertyDescriptor(obj, sym);
-
-    if (descriptor.value !== symVal || descriptor.enumerable !== true) {
-      return false;
-    }
-  }
-
-  return true;
-};
-},{}],"NS5K":[function(require,module,exports) {
-var global = arguments[3];
-'use strict';
-
-var origSymbol = global.Symbol;
-
-var hasSymbolSham = require('./shams');
-
-module.exports = function hasNativeSymbols() {
-  if (typeof origSymbol !== 'function') {
-    return false;
-  }
-
-  if (typeof Symbol !== 'function') {
-    return false;
-  }
-
-  if (typeof origSymbol('foo') !== 'symbol') {
-    return false;
-  }
-
-  if (typeof Symbol('bar') !== 'symbol') {
-    return false;
-  }
-
-  return hasSymbolSham();
-};
-},{"./shams":"jYt2"}],"LENn":[function(require,module,exports) {
-'use strict';
-/* globals
-	Atomics,
-	SharedArrayBuffer,
-*/
-
-var undefined;
-var $TypeError = TypeError;
-var $gOPD = Object.getOwnPropertyDescriptor;
-
-if ($gOPD) {
-  try {
-    $gOPD({}, '');
-  } catch (e) {
-    $gOPD = null; // this is IE 8, which has a broken gOPD
-  }
-}
-
-var throwTypeError = function () {
-  throw new $TypeError();
-};
-
-var ThrowTypeError = $gOPD ? function () {
-  try {
-    // eslint-disable-next-line no-unused-expressions, no-caller, no-restricted-properties
-    arguments.callee; // IE 8 does not throw here
-
-    return throwTypeError;
-  } catch (calleeThrows) {
-    try {
-      // IE 8 throws on Object.getOwnPropertyDescriptor(arguments, '')
-      return $gOPD(arguments, 'callee').get;
-    } catch (gOPDthrows) {
-      return throwTypeError;
-    }
-  }
-}() : throwTypeError;
-
-var hasSymbols = require('has-symbols')();
-
-var getProto = Object.getPrototypeOf || function (x) {
-  return x.__proto__;
-}; // eslint-disable-line no-proto
-
-
-var generator; // = function * () {};
-
-var generatorFunction = generator ? getProto(generator) : undefined;
-var asyncFn; // async function() {};
-
-var asyncFunction = asyncFn ? asyncFn.constructor : undefined;
-var asyncGen; // async function * () {};
-
-var asyncGenFunction = asyncGen ? getProto(asyncGen) : undefined;
-var asyncGenIterator = asyncGen ? asyncGen() : undefined;
-var TypedArray = typeof Uint8Array === 'undefined' ? undefined : getProto(Uint8Array);
-var INTRINSICS = {
-  '%Array%': Array,
-  '%ArrayBuffer%': typeof ArrayBuffer === 'undefined' ? undefined : ArrayBuffer,
-  '%ArrayBufferPrototype%': typeof ArrayBuffer === 'undefined' ? undefined : ArrayBuffer.prototype,
-  '%ArrayIteratorPrototype%': hasSymbols ? getProto([][Symbol.iterator]()) : undefined,
-  '%ArrayPrototype%': Array.prototype,
-  '%ArrayProto_entries%': Array.prototype.entries,
-  '%ArrayProto_forEach%': Array.prototype.forEach,
-  '%ArrayProto_keys%': Array.prototype.keys,
-  '%ArrayProto_values%': Array.prototype.values,
-  '%AsyncFromSyncIteratorPrototype%': undefined,
-  '%AsyncFunction%': asyncFunction,
-  '%AsyncFunctionPrototype%': asyncFunction ? asyncFunction.prototype : undefined,
-  '%AsyncGenerator%': asyncGen ? getProto(asyncGenIterator) : undefined,
-  '%AsyncGeneratorFunction%': asyncGenFunction,
-  '%AsyncGeneratorPrototype%': asyncGenFunction ? asyncGenFunction.prototype : undefined,
-  '%AsyncIteratorPrototype%': asyncGenIterator && hasSymbols && Symbol.asyncIterator ? asyncGenIterator[Symbol.asyncIterator]() : undefined,
-  '%Atomics%': typeof Atomics === 'undefined' ? undefined : Atomics,
-  '%Boolean%': Boolean,
-  '%BooleanPrototype%': Boolean.prototype,
-  '%DataView%': typeof DataView === 'undefined' ? undefined : DataView,
-  '%DataViewPrototype%': typeof DataView === 'undefined' ? undefined : DataView.prototype,
-  '%Date%': Date,
-  '%DatePrototype%': Date.prototype,
-  '%decodeURI%': decodeURI,
-  '%decodeURIComponent%': decodeURIComponent,
-  '%encodeURI%': encodeURI,
-  '%encodeURIComponent%': encodeURIComponent,
-  '%Error%': Error,
-  '%ErrorPrototype%': Error.prototype,
-  '%eval%': eval,
-  // eslint-disable-line no-eval
-  '%EvalError%': EvalError,
-  '%EvalErrorPrototype%': EvalError.prototype,
-  '%Float32Array%': typeof Float32Array === 'undefined' ? undefined : Float32Array,
-  '%Float32ArrayPrototype%': typeof Float32Array === 'undefined' ? undefined : Float32Array.prototype,
-  '%Float64Array%': typeof Float64Array === 'undefined' ? undefined : Float64Array,
-  '%Float64ArrayPrototype%': typeof Float64Array === 'undefined' ? undefined : Float64Array.prototype,
-  '%Function%': Function,
-  '%FunctionPrototype%': Function.prototype,
-  '%Generator%': generator ? getProto(generator()) : undefined,
-  '%GeneratorFunction%': generatorFunction,
-  '%GeneratorPrototype%': generatorFunction ? generatorFunction.prototype : undefined,
-  '%Int8Array%': typeof Int8Array === 'undefined' ? undefined : Int8Array,
-  '%Int8ArrayPrototype%': typeof Int8Array === 'undefined' ? undefined : Int8Array.prototype,
-  '%Int16Array%': typeof Int16Array === 'undefined' ? undefined : Int16Array,
-  '%Int16ArrayPrototype%': typeof Int16Array === 'undefined' ? undefined : Int8Array.prototype,
-  '%Int32Array%': typeof Int32Array === 'undefined' ? undefined : Int32Array,
-  '%Int32ArrayPrototype%': typeof Int32Array === 'undefined' ? undefined : Int32Array.prototype,
-  '%isFinite%': isFinite,
-  '%isNaN%': isNaN,
-  '%IteratorPrototype%': hasSymbols ? getProto(getProto([][Symbol.iterator]())) : undefined,
-  '%JSON%': typeof JSON === 'object' ? JSON : undefined,
-  '%JSONParse%': typeof JSON === 'object' ? JSON.parse : undefined,
-  '%Map%': typeof Map === 'undefined' ? undefined : Map,
-  '%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols ? undefined : getProto(new Map()[Symbol.iterator]()),
-  '%MapPrototype%': typeof Map === 'undefined' ? undefined : Map.prototype,
-  '%Math%': Math,
-  '%Number%': Number,
-  '%NumberPrototype%': Number.prototype,
-  '%Object%': Object,
-  '%ObjectPrototype%': Object.prototype,
-  '%ObjProto_toString%': Object.prototype.toString,
-  '%ObjProto_valueOf%': Object.prototype.valueOf,
-  '%parseFloat%': parseFloat,
-  '%parseInt%': parseInt,
-  '%Promise%': typeof Promise === 'undefined' ? undefined : Promise,
-  '%PromisePrototype%': typeof Promise === 'undefined' ? undefined : Promise.prototype,
-  '%PromiseProto_then%': typeof Promise === 'undefined' ? undefined : Promise.prototype.then,
-  '%Promise_all%': typeof Promise === 'undefined' ? undefined : Promise.all,
-  '%Promise_reject%': typeof Promise === 'undefined' ? undefined : Promise.reject,
-  '%Promise_resolve%': typeof Promise === 'undefined' ? undefined : Promise.resolve,
-  '%Proxy%': typeof Proxy === 'undefined' ? undefined : Proxy,
-  '%RangeError%': RangeError,
-  '%RangeErrorPrototype%': RangeError.prototype,
-  '%ReferenceError%': ReferenceError,
-  '%ReferenceErrorPrototype%': ReferenceError.prototype,
-  '%Reflect%': typeof Reflect === 'undefined' ? undefined : Reflect,
-  '%RegExp%': RegExp,
-  '%RegExpPrototype%': RegExp.prototype,
-  '%Set%': typeof Set === 'undefined' ? undefined : Set,
-  '%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols ? undefined : getProto(new Set()[Symbol.iterator]()),
-  '%SetPrototype%': typeof Set === 'undefined' ? undefined : Set.prototype,
-  '%SharedArrayBuffer%': typeof SharedArrayBuffer === 'undefined' ? undefined : SharedArrayBuffer,
-  '%SharedArrayBufferPrototype%': typeof SharedArrayBuffer === 'undefined' ? undefined : SharedArrayBuffer.prototype,
-  '%String%': String,
-  '%StringIteratorPrototype%': hasSymbols ? getProto(''[Symbol.iterator]()) : undefined,
-  '%StringPrototype%': String.prototype,
-  '%Symbol%': hasSymbols ? Symbol : undefined,
-  '%SymbolPrototype%': hasSymbols ? Symbol.prototype : undefined,
-  '%SyntaxError%': SyntaxError,
-  '%SyntaxErrorPrototype%': SyntaxError.prototype,
-  '%ThrowTypeError%': ThrowTypeError,
-  '%TypedArray%': TypedArray,
-  '%TypedArrayPrototype%': TypedArray ? TypedArray.prototype : undefined,
-  '%TypeError%': $TypeError,
-  '%TypeErrorPrototype%': $TypeError.prototype,
-  '%Uint8Array%': typeof Uint8Array === 'undefined' ? undefined : Uint8Array,
-  '%Uint8ArrayPrototype%': typeof Uint8Array === 'undefined' ? undefined : Uint8Array.prototype,
-  '%Uint8ClampedArray%': typeof Uint8ClampedArray === 'undefined' ? undefined : Uint8ClampedArray,
-  '%Uint8ClampedArrayPrototype%': typeof Uint8ClampedArray === 'undefined' ? undefined : Uint8ClampedArray.prototype,
-  '%Uint16Array%': typeof Uint16Array === 'undefined' ? undefined : Uint16Array,
-  '%Uint16ArrayPrototype%': typeof Uint16Array === 'undefined' ? undefined : Uint16Array.prototype,
-  '%Uint32Array%': typeof Uint32Array === 'undefined' ? undefined : Uint32Array,
-  '%Uint32ArrayPrototype%': typeof Uint32Array === 'undefined' ? undefined : Uint32Array.prototype,
-  '%URIError%': URIError,
-  '%URIErrorPrototype%': URIError.prototype,
-  '%WeakMap%': typeof WeakMap === 'undefined' ? undefined : WeakMap,
-  '%WeakMapPrototype%': typeof WeakMap === 'undefined' ? undefined : WeakMap.prototype,
-  '%WeakSet%': typeof WeakSet === 'undefined' ? undefined : WeakSet,
-  '%WeakSetPrototype%': typeof WeakSet === 'undefined' ? undefined : WeakSet.prototype
-};
-
-var bind = require('function-bind');
-
-var $replace = bind.call(Function.call, String.prototype.replace);
-/* adapted from https://github.com/lodash/lodash/blob/4.17.15/dist/lodash.js#L6735-L6744 */
-
-var rePropName = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g;
-var reEscapeChar = /\\(\\)?/g;
-/** Used to match backslashes in property paths. */
-
-var stringToPath = function stringToPath(string) {
-  var result = [];
-  $replace(string, rePropName, function (match, number, quote, subString) {
-    result[result.length] = quote ? $replace(subString, reEscapeChar, '$1') : number || match;
-  });
-  return result;
-};
-/* end adaptation */
-
-
-var getBaseIntrinsic = function getBaseIntrinsic(name, allowMissing) {
-  if (!(name in INTRINSICS)) {
-    throw new SyntaxError('intrinsic ' + name + ' does not exist!');
-  } // istanbul ignore if // hopefully this is impossible to test :-)
-
-
-  if (typeof INTRINSICS[name] === 'undefined' && !allowMissing) {
-    throw new $TypeError('intrinsic ' + name + ' exists, but is not available. Please file an issue!');
-  }
-
-  return INTRINSICS[name];
-};
-
-module.exports = function GetIntrinsic(name, allowMissing) {
-  if (typeof name !== 'string' || name.length === 0) {
-    throw new TypeError('intrinsic name must be a non-empty string');
-  }
-
-  if (arguments.length > 1 && typeof allowMissing !== 'boolean') {
-    throw new TypeError('"allowMissing" argument must be a boolean');
-  }
-
-  var parts = stringToPath(name);
-  var value = getBaseIntrinsic('%' + (parts.length > 0 ? parts[0] : '') + '%', allowMissing);
-
-  for (var i = 1; i < parts.length; i += 1) {
-    if (value != null) {
-      if ($gOPD && i + 1 >= parts.length) {
-        var desc = $gOPD(value, parts[i]);
-
-        if (!allowMissing && !(parts[i] in value)) {
-          throw new $TypeError('base intrinsic for ' + name + ' exists, but the property is not available.');
-        }
-
-        value = desc ? desc.get || desc.value : value[parts[i]];
-      } else {
-        value = value[parts[i]];
-      }
-    }
-  }
-
-  return value;
-};
-},{"has-symbols":"NS5K","function-bind":"58Ti"}],"I+tp":[function(require,module,exports) {
-'use strict';
-
-var bind = require('function-bind');
-
-var GetIntrinsic = require('../GetIntrinsic');
-
-var $Function = GetIntrinsic('%Function%');
-var $apply = $Function.apply;
-var $call = $Function.call;
-
-module.exports = function callBind() {
-  return bind.apply($call, arguments);
-};
-
-module.exports.apply = function applyBind() {
-  return bind.apply($apply, arguments);
-};
-},{"function-bind":"58Ti","../GetIntrinsic":"LENn"}],"4md/":[function(require,module,exports) {
-'use strict';
-
-var numberIsNaN = function (value) {
-  return value !== value;
-};
-
-module.exports = function is(a, b) {
-  if (a === 0 && b === 0) {
-    return 1 / a === 1 / b;
-  }
-
-  if (a === b) {
-    return true;
-  }
-
-  if (numberIsNaN(a) && numberIsNaN(b)) {
-    return true;
-  }
-
-  return false;
-};
-},{}],"TyWm":[function(require,module,exports) {
-'use strict';
-
-var implementation = require('./implementation');
-
-module.exports = function getPolyfill() {
-  return typeof Object.is === 'function' ? Object.is : implementation;
-};
-},{"./implementation":"4md/"}],"Fi9R":[function(require,module,exports) {
-
-'use strict';
-
-var getPolyfill = require('./polyfill');
-
-var define = require('define-properties');
-
-module.exports = function shimObjectIs() {
-  var polyfill = getPolyfill();
-  define(Object, {
-    is: polyfill
-  }, {
-    is: function testObjectIs() {
-      return Object.is !== polyfill;
-    }
-  });
-  return polyfill;
-};
-},{"./polyfill":"TyWm","define-properties":"VxKF"}],"2pTr":[function(require,module,exports) {
-
-'use strict';
-
-var define = require('define-properties');
-
-var callBind = require('es-abstract/helpers/callBind');
-
-var implementation = require('./implementation');
-
-var getPolyfill = require('./polyfill');
-
-var shim = require('./shim');
-
-var polyfill = callBind(getPolyfill(), Object);
-define(polyfill, {
-  getPolyfill: getPolyfill,
-  implementation: implementation,
-  shim: shim
-});
-module.exports = polyfill;
-},{"define-properties":"VxKF","es-abstract/helpers/callBind":"I+tp","./implementation":"4md/","./polyfill":"TyWm","./shim":"Fi9R"}],"ar57":[function(require,module,exports) {
-'use strict';
-
-var bind = require('function-bind');
-
-module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
-},{"function-bind":"58Ti"}],"DhUb":[function(require,module,exports) {
-'use strict';
-
-var has = require('has');
-
-var regexExec = RegExp.prototype.exec;
-var gOPD = Object.getOwnPropertyDescriptor;
-
-var tryRegexExecCall = function tryRegexExec(value) {
-  try {
-    var lastIndex = value.lastIndex;
-    value.lastIndex = 0; // eslint-disable-line no-param-reassign
-
-    regexExec.call(value);
-    return true;
-  } catch (e) {
-    return false;
-  } finally {
-    value.lastIndex = lastIndex; // eslint-disable-line no-param-reassign
-  }
-};
-
-var toStr = Object.prototype.toString;
-var regexClass = '[object RegExp]';
-var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
-
-module.exports = function isRegex(value) {
-  if (!value || typeof value !== 'object') {
-    return false;
-  }
-
-  if (!hasToStringTag) {
-    return toStr.call(value) === regexClass;
-  }
-
-  var descriptor = gOPD(value, 'lastIndex');
-  var hasLastIndexDataProperty = descriptor && has(descriptor, 'value');
-
-  if (!hasLastIndexDataProperty) {
-    return false;
-  }
-
-  return tryRegexExecCall(value);
-};
-},{"has":"ar57"}],"1Hmk":[function(require,module,exports) {
-'use strict';
-
-var $Object = Object;
-var $TypeError = TypeError;
-
-module.exports = function flags() {
-  if (this != null && this !== $Object(this)) {
-    throw new $TypeError('RegExp.prototype.flags getter called on non-object');
-  }
-
-  var result = '';
-
-  if (this.global) {
-    result += 'g';
-  }
-
-  if (this.ignoreCase) {
-    result += 'i';
-  }
-
-  if (this.multiline) {
-    result += 'm';
-  }
-
-  if (this.dotAll) {
-    result += 's';
-  }
-
-  if (this.unicode) {
-    result += 'u';
-  }
-
-  if (this.sticky) {
-    result += 'y';
-  }
-
-  return result;
-};
-},{}],"YWiL":[function(require,module,exports) {
-'use strict';
-
-var implementation = require('./implementation');
-
-var supportsDescriptors = require('define-properties').supportsDescriptors;
-
-var $gOPD = Object.getOwnPropertyDescriptor;
-var $TypeError = TypeError;
-
-module.exports = function getPolyfill() {
-  if (!supportsDescriptors) {
-    throw new $TypeError('RegExp.prototype.flags requires a true ES5 environment that supports property descriptors');
-  }
-
-  if (/a/mig.flags === 'gim') {
-    var descriptor = $gOPD(RegExp.prototype, 'flags');
-
-    if (descriptor && typeof descriptor.get === 'function' && typeof /a/.dotAll === 'boolean') {
-      return descriptor.get;
-    }
-  }
-
-  return implementation;
-};
-},{"./implementation":"1Hmk","define-properties":"VxKF"}],"Kszl":[function(require,module,exports) {
-'use strict';
-
-var supportsDescriptors = require('define-properties').supportsDescriptors;
-
-var getPolyfill = require('./polyfill');
-
-var gOPD = Object.getOwnPropertyDescriptor;
-var defineProperty = Object.defineProperty;
-var TypeErr = TypeError;
-var getProto = Object.getPrototypeOf;
-var regex = /a/;
-
-module.exports = function shimFlags() {
-  if (!supportsDescriptors || !getProto) {
-    throw new TypeErr('RegExp.prototype.flags requires a true ES5 environment that supports property descriptors');
-  }
-
-  var polyfill = getPolyfill();
-  var proto = getProto(regex);
-  var descriptor = gOPD(proto, 'flags');
-
-  if (!descriptor || descriptor.get !== polyfill) {
-    defineProperty(proto, 'flags', {
-      configurable: true,
-      enumerable: false,
-      get: polyfill
-    });
-  }
-
-  return polyfill;
-};
-},{"define-properties":"VxKF","./polyfill":"YWiL"}],"DbQ/":[function(require,module,exports) {
-
-'use strict';
-
-var define = require('define-properties');
-
-var callBind = require('es-abstract/helpers/callBind');
-
-var implementation = require('./implementation');
-
-var getPolyfill = require('./polyfill');
-
-var shim = require('./shim');
-
-var flagsBound = callBind(implementation);
-define(flagsBound, {
-  getPolyfill: getPolyfill,
-  implementation: implementation,
-  shim: shim
-});
-module.exports = flagsBound;
-},{"define-properties":"VxKF","es-abstract/helpers/callBind":"I+tp","./implementation":"1Hmk","./polyfill":"YWiL","./shim":"Kszl"}],"NyUK":[function(require,module,exports) {
-'use strict';
-
-var getDay = Date.prototype.getDay;
-
-var tryDateObject = function tryDateGetDayCall(value) {
-  try {
-    getDay.call(value);
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-
-var toStr = Object.prototype.toString;
-var dateClass = '[object Date]';
-var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
-
-module.exports = function isDateObject(value) {
-  if (typeof value !== 'object' || value === null) {
-    return false;
-  }
-
-  return hasToStringTag ? tryDateObject(value) : toStr.call(value) === dateClass;
-};
-},{}],"koiw":[function(require,module,exports) {
-var objectKeys = require('object-keys');
-var isArguments = require('is-arguments');
-var is = require('object-is');
-var isRegex = require('is-regex');
-var flags = require('regexp.prototype.flags');
-var isDate = require('is-date-object');
-
-var getTime = Date.prototype.getTime;
-
-function deepEqual(actual, expected, options) {
-  var opts = options || {};
-
-  // 7.1. All identical values are equivalent, as determined by ===.
-  if (opts.strict ? is(actual, expected) : actual === expected) {
-    return true;
-  }
-
-  // 7.3. Other pairs that do not both pass typeof value == 'object', equivalence is determined by ==.
-  if (!actual || !expected || (typeof actual !== 'object' && typeof expected !== 'object')) {
-    return opts.strict ? is(actual, expected) : actual == expected;
-  }
-
-  /*
-   * 7.4. For all other Object pairs, including Array objects, equivalence is
-   * determined by having the same number of owned properties (as verified
-   * with Object.prototype.hasOwnProperty.call), the same set of keys
-   * (although not necessarily the same order), equivalent values for every
-   * corresponding key, and an identical 'prototype' property. Note: this
-   * accounts for both named and indexed properties on Arrays.
-   */
-  // eslint-disable-next-line no-use-before-define
-  return objEquiv(actual, expected, opts);
-}
-
-function isUndefinedOrNull(value) {
-  return value === null || value === undefined;
-}
-
-function isBuffer(x) {
-  if (!x || typeof x !== 'object' || typeof x.length !== 'number') {
-    return false;
-  }
-  if (typeof x.copy !== 'function' || typeof x.slice !== 'function') {
-    return false;
-  }
-  if (x.length > 0 && typeof x[0] !== 'number') {
-    return false;
-  }
-  return true;
-}
-
-function objEquiv(a, b, opts) {
-  /* eslint max-statements: [2, 50] */
-  var i, key;
-  if (typeof a !== typeof b) { return false; }
-  if (isUndefinedOrNull(a) || isUndefinedOrNull(b)) { return false; }
-
-  // an identical 'prototype' property.
-  if (a.prototype !== b.prototype) { return false; }
-
-  if (isArguments(a) !== isArguments(b)) { return false; }
-
-  var aIsRegex = isRegex(a);
-  var bIsRegex = isRegex(b);
-  if (aIsRegex !== bIsRegex) { return false; }
-  if (aIsRegex || bIsRegex) {
-    return a.source === b.source && flags(a) === flags(b);
-  }
-
-  if (isDate(a) && isDate(b)) {
-    return getTime.call(a) === getTime.call(b);
-  }
-
-  var aIsBuffer = isBuffer(a);
-  var bIsBuffer = isBuffer(b);
-  if (aIsBuffer !== bIsBuffer) { return false; }
-  if (aIsBuffer || bIsBuffer) { // && would work too, because both are true or both false here
-    if (a.length !== b.length) { return false; }
-    for (i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) { return false; }
-    }
-    return true;
-  }
-
-  if (typeof a !== typeof b) { return false; }
-
-  try {
-    var ka = objectKeys(a);
-    var kb = objectKeys(b);
-  } catch (e) { // happens when one is a string literal and the other isn't
-    return false;
-  }
-  // having the same number of owned properties (keys incorporates hasOwnProperty)
-  if (ka.length !== kb.length) { return false; }
-
-  // the same set of keys (although not necessarily the same order),
-  ka.sort();
-  kb.sort();
-  // ~~~cheap key test
-  for (i = ka.length - 1; i >= 0; i--) {
-    if (ka[i] != kb[i]) { return false; }
-  }
-  // equivalent values for every corresponding key, and ~~~possibly expensive deep test
-  for (i = ka.length - 1; i >= 0; i--) {
-    key = ka[i];
-    if (!deepEqual(a[key], b[key], opts)) { return false; }
-  }
-
-  return true;
-}
-
-module.exports = deepEqual;
-
-},{"object-keys":"ywQn","is-arguments":"6ord","object-is":"2pTr","is-regex":"DhUb","regexp.prototype.flags":"DbQ/","is-date-object":"NyUK"}],"dgPI":[function(require,module,exports) {
-'use strict';
-
-var hasOwn = Object.prototype.hasOwnProperty;
-var toStr = Object.prototype.toString;
-var defineProperty = Object.defineProperty;
-var gOPD = Object.getOwnPropertyDescriptor;
-
-var isArray = function isArray(arr) {
-	if (typeof Array.isArray === 'function') {
-		return Array.isArray(arr);
-	}
-
-	return toStr.call(arr) === '[object Array]';
-};
-
-var isPlainObject = function isPlainObject(obj) {
-	if (!obj || toStr.call(obj) !== '[object Object]') {
-		return false;
-	}
-
-	var hasOwnConstructor = hasOwn.call(obj, 'constructor');
-	var hasIsPrototypeOf = obj.constructor && obj.constructor.prototype && hasOwn.call(obj.constructor.prototype, 'isPrototypeOf');
-	// Not own constructor property must be Object
-	if (obj.constructor && !hasOwnConstructor && !hasIsPrototypeOf) {
-		return false;
-	}
-
-	// Own properties are enumerated firstly, so to speed up,
-	// if last one is own, then all properties are own.
-	var key;
-	for (key in obj) { /**/ }
-
-	return typeof key === 'undefined' || hasOwn.call(obj, key);
-};
-
-// If name is '__proto__', and Object.defineProperty is available, define __proto__ as an own property on target
-var setProperty = function setProperty(target, options) {
-	if (defineProperty && options.name === '__proto__') {
-		defineProperty(target, options.name, {
-			enumerable: true,
-			configurable: true,
-			value: options.newValue,
-			writable: true
-		});
-	} else {
-		target[options.name] = options.newValue;
-	}
-};
-
-// Return undefined instead of __proto__ if '__proto__' is not an own property
-var getProperty = function getProperty(obj, name) {
-	if (name === '__proto__') {
-		if (!hasOwn.call(obj, name)) {
-			return void 0;
-		} else if (gOPD) {
-			// In early versions of node, obj['__proto__'] is buggy when obj has
-			// __proto__ as an own property. Object.getOwnPropertyDescriptor() works.
-			return gOPD(obj, name).value;
-		}
-	}
-
-	return obj[name];
-};
-
-module.exports = function extend() {
-	var options, name, src, copy, copyIsArray, clone;
-	var target = arguments[0];
-	var i = 1;
-	var length = arguments.length;
-	var deep = false;
-
-	// Handle a deep copy situation
-	if (typeof target === 'boolean') {
-		deep = target;
-		target = arguments[1] || {};
-		// skip the boolean and the target
-		i = 2;
-	}
-	if (target == null || (typeof target !== 'object' && typeof target !== 'function')) {
-		target = {};
-	}
-
-	for (; i < length; ++i) {
-		options = arguments[i];
-		// Only deal with non-null/undefined values
-		if (options != null) {
-			// Extend the base object
-			for (name in options) {
-				src = getProperty(target, name);
-				copy = getProperty(options, name);
-
-				// Prevent never-ending loop
-				if (target !== copy) {
-					// Recurse if we're merging plain objects or arrays
-					if (deep && copy && (isPlainObject(copy) || (copyIsArray = isArray(copy)))) {
-						if (copyIsArray) {
-							copyIsArray = false;
-							clone = src && isArray(src) ? src : [];
-						} else {
-							clone = src && isPlainObject(src) ? src : {};
-						}
-
-						// Never move original objects, clone them
-						setProperty(target, { name: name, newValue: extend(deep, clone, copy) });
-
-					// Don't bring in undefined values
-					} else if (typeof copy !== 'undefined') {
-						setProperty(target, { name: name, newValue: copy });
-					}
-				}
-			}
-		}
-	}
-
-	// Return the modified object
-	return target;
-};
-
-},{}],"Eba4":[function(require,module,exports) {
-var equal = require('deep-equal');
-
-var extend = require('extend');
-
-var lib = {
-  attributes: {
-    compose: function (a, b, keepNull) {
-      if (typeof a !== 'object') a = {};
-      if (typeof b !== 'object') b = {};
-      var attributes = extend(true, {}, b);
-
-      if (!keepNull) {
-        attributes = Object.keys(attributes).reduce(function (copy, key) {
-          if (attributes[key] != null) {
-            copy[key] = attributes[key];
-          }
-
-          return copy;
-        }, {});
-      }
-
-      for (var key in a) {
-        if (a[key] !== undefined && b[key] === undefined) {
-          attributes[key] = a[key];
-        }
-      }
-
-      return Object.keys(attributes).length > 0 ? attributes : undefined;
-    },
-    diff: function (a, b) {
-      if (typeof a !== 'object') a = {};
-      if (typeof b !== 'object') b = {};
-      var attributes = Object.keys(a).concat(Object.keys(b)).reduce(function (attributes, key) {
-        if (!equal(a[key], b[key])) {
-          attributes[key] = b[key] === undefined ? null : b[key];
-        }
-
-        return attributes;
-      }, {});
-      return Object.keys(attributes).length > 0 ? attributes : undefined;
-    },
-    transform: function (a, b, priority) {
-      if (typeof a !== 'object') return b;
-      if (typeof b !== 'object') return undefined;
-      if (!priority) return b; // b simply overwrites us without priority
-
-      var attributes = Object.keys(b).reduce(function (attributes, key) {
-        if (a[key] === undefined) attributes[key] = b[key]; // null is a valid value
-
-        return attributes;
-      }, {});
-      return Object.keys(attributes).length > 0 ? attributes : undefined;
-    }
-  },
-  iterator: function (ops) {
-    return new Iterator(ops);
-  },
-  length: function (op) {
-    if (typeof op['delete'] === 'number') {
-      return op['delete'];
-    } else if (typeof op.retain === 'number') {
-      return op.retain;
-    } else {
-      return typeof op.insert === 'string' ? op.insert.length : 1;
-    }
-  }
-};
-
-function Iterator(ops) {
-  this.ops = ops;
-  this.index = 0;
-  this.offset = 0;
-}
-
-;
-
-Iterator.prototype.hasNext = function () {
-  return this.peekLength() < Infinity;
-};
-
-Iterator.prototype.next = function (length) {
-  if (!length) length = Infinity;
-  var nextOp = this.ops[this.index];
-
-  if (nextOp) {
-    var offset = this.offset;
-    var opLength = lib.length(nextOp);
-
-    if (length >= opLength - offset) {
-      length = opLength - offset;
-      this.index += 1;
-      this.offset = 0;
-    } else {
-      this.offset += length;
-    }
-
-    if (typeof nextOp['delete'] === 'number') {
-      return {
-        'delete': length
-      };
-    } else {
-      var retOp = {};
-
-      if (nextOp.attributes) {
-        retOp.attributes = nextOp.attributes;
-      }
-
-      if (typeof nextOp.retain === 'number') {
-        retOp.retain = length;
-      } else if (typeof nextOp.insert === 'string') {
-        retOp.insert = nextOp.insert.substr(offset, length);
-      } else {
-        // offset should === 0, length should === 1
-        retOp.insert = nextOp.insert;
-      }
-
-      return retOp;
-    }
-  } else {
-    return {
-      retain: Infinity
-    };
-  }
-};
-
-Iterator.prototype.peek = function () {
-  return this.ops[this.index];
-};
-
-Iterator.prototype.peekLength = function () {
-  if (this.ops[this.index]) {
-    // Should never return 0 if our index is being managed correctly
-    return lib.length(this.ops[this.index]) - this.offset;
-  } else {
-    return Infinity;
-  }
-};
-
-Iterator.prototype.peekType = function () {
-  if (this.ops[this.index]) {
-    if (typeof this.ops[this.index]['delete'] === 'number') {
-      return 'delete';
-    } else if (typeof this.ops[this.index].retain === 'number') {
-      return 'retain';
-    } else {
-      return 'insert';
-    }
-  }
-
-  return 'retain';
-};
-
-Iterator.prototype.rest = function () {
-  if (!this.hasNext()) {
-    return [];
-  } else if (this.offset === 0) {
-    return this.ops.slice(this.index);
-  } else {
-    var offset = this.offset;
-    var index = this.index;
-    var next = this.next();
-    var rest = this.ops.slice(this.index);
-    this.offset = offset;
-    this.index = index;
-    return [next].concat(rest);
-  }
-};
-
-module.exports = lib;
-},{"deep-equal":"koiw","extend":"dgPI"}],"BYft":[function(require,module,exports) {
-var diff = require('fast-diff');
-
-var equal = require('deep-equal');
-
-var extend = require('extend');
-
-var op = require('./op');
-
-var NULL_CHARACTER = String.fromCharCode(0); // Placeholder char for embed in diff()
-
-var Delta = function (ops) {
-  // Assume we are given a well formed ops
-  if (Array.isArray(ops)) {
-    this.ops = ops;
-  } else if (ops != null && Array.isArray(ops.ops)) {
-    this.ops = ops.ops;
-  } else {
-    this.ops = [];
-  }
-};
-
-Delta.prototype.insert = function (text, attributes) {
-  var newOp = {};
-  if (text.length === 0) return this;
-  newOp.insert = text;
-
-  if (attributes != null && typeof attributes === 'object' && Object.keys(attributes).length > 0) {
-    newOp.attributes = attributes;
-  }
-
-  return this.push(newOp);
-};
-
-Delta.prototype['delete'] = function (length) {
-  if (length <= 0) return this;
-  return this.push({
-    'delete': length
-  });
-};
-
-Delta.prototype.retain = function (length, attributes) {
-  if (length <= 0) return this;
-  var newOp = {
-    retain: length
-  };
-
-  if (attributes != null && typeof attributes === 'object' && Object.keys(attributes).length > 0) {
-    newOp.attributes = attributes;
-  }
-
-  return this.push(newOp);
-};
-
-Delta.prototype.push = function (newOp) {
-  var index = this.ops.length;
-  var lastOp = this.ops[index - 1];
-  newOp = extend(true, {}, newOp);
-
-  if (typeof lastOp === 'object') {
-    if (typeof newOp['delete'] === 'number' && typeof lastOp['delete'] === 'number') {
-      this.ops[index - 1] = {
-        'delete': lastOp['delete'] + newOp['delete']
-      };
-      return this;
-    } // Since it does not matter if we insert before or after deleting at the same index,
-    // always prefer to insert first
-
-
-    if (typeof lastOp['delete'] === 'number' && newOp.insert != null) {
-      index -= 1;
-      lastOp = this.ops[index - 1];
-
-      if (typeof lastOp !== 'object') {
-        this.ops.unshift(newOp);
-        return this;
-      }
-    }
-
-    if (equal(newOp.attributes, lastOp.attributes)) {
-      if (typeof newOp.insert === 'string' && typeof lastOp.insert === 'string') {
-        this.ops[index - 1] = {
-          insert: lastOp.insert + newOp.insert
-        };
-        if (typeof newOp.attributes === 'object') this.ops[index - 1].attributes = newOp.attributes;
-        return this;
-      } else if (typeof newOp.retain === 'number' && typeof lastOp.retain === 'number') {
-        this.ops[index - 1] = {
-          retain: lastOp.retain + newOp.retain
-        };
-        if (typeof newOp.attributes === 'object') this.ops[index - 1].attributes = newOp.attributes;
-        return this;
-      }
-    }
-  }
-
-  if (index === this.ops.length) {
-    this.ops.push(newOp);
-  } else {
-    this.ops.splice(index, 0, newOp);
-  }
-
-  return this;
-};
-
-Delta.prototype.chop = function () {
-  var lastOp = this.ops[this.ops.length - 1];
-
-  if (lastOp && lastOp.retain && !lastOp.attributes) {
-    this.ops.pop();
-  }
-
-  return this;
-};
-
-Delta.prototype.filter = function (predicate) {
-  return this.ops.filter(predicate);
-};
-
-Delta.prototype.forEach = function (predicate) {
-  this.ops.forEach(predicate);
-};
-
-Delta.prototype.map = function (predicate) {
-  return this.ops.map(predicate);
-};
-
-Delta.prototype.partition = function (predicate) {
-  var passed = [],
-      failed = [];
-  this.forEach(function (op) {
-    var target = predicate(op) ? passed : failed;
-    target.push(op);
-  });
-  return [passed, failed];
-};
-
-Delta.prototype.reduce = function (predicate, initial) {
-  return this.ops.reduce(predicate, initial);
-};
-
-Delta.prototype.changeLength = function () {
-  return this.reduce(function (length, elem) {
-    if (elem.insert) {
-      return length + op.length(elem);
-    } else if (elem.delete) {
-      return length - elem.delete;
-    }
-
-    return length;
-  }, 0);
-};
-
-Delta.prototype.length = function () {
-  return this.reduce(function (length, elem) {
-    return length + op.length(elem);
-  }, 0);
-};
-
-Delta.prototype.slice = function (start, end) {
-  start = start || 0;
-  if (typeof end !== 'number') end = Infinity;
-  var ops = [];
-  var iter = op.iterator(this.ops);
-  var index = 0;
-
-  while (index < end && iter.hasNext()) {
-    var nextOp;
-
-    if (index < start) {
-      nextOp = iter.next(start - index);
-    } else {
-      nextOp = iter.next(end - index);
-      ops.push(nextOp);
-    }
-
-    index += op.length(nextOp);
-  }
-
-  return new Delta(ops);
-};
-
-Delta.prototype.compose = function (other) {
-  var thisIter = op.iterator(this.ops);
-  var otherIter = op.iterator(other.ops);
-  var ops = [];
-  var firstOther = otherIter.peek();
-
-  if (firstOther != null && typeof firstOther.retain === 'number' && firstOther.attributes == null) {
-    var firstLeft = firstOther.retain;
-
-    while (thisIter.peekType() === 'insert' && thisIter.peekLength() <= firstLeft) {
-      firstLeft -= thisIter.peekLength();
-      ops.push(thisIter.next());
-    }
-
-    if (firstOther.retain - firstLeft > 0) {
-      otherIter.next(firstOther.retain - firstLeft);
-    }
-  }
-
-  var delta = new Delta(ops);
-
-  while (thisIter.hasNext() || otherIter.hasNext()) {
-    if (otherIter.peekType() === 'insert') {
-      delta.push(otherIter.next());
-    } else if (thisIter.peekType() === 'delete') {
-      delta.push(thisIter.next());
-    } else {
-      var length = Math.min(thisIter.peekLength(), otherIter.peekLength());
-      var thisOp = thisIter.next(length);
-      var otherOp = otherIter.next(length);
-
-      if (typeof otherOp.retain === 'number') {
-        var newOp = {};
-
-        if (typeof thisOp.retain === 'number') {
-          newOp.retain = length;
-        } else {
-          newOp.insert = thisOp.insert;
-        } // Preserve null when composing with a retain, otherwise remove it for inserts
-
-
-        var attributes = op.attributes.compose(thisOp.attributes, otherOp.attributes, typeof thisOp.retain === 'number');
-        if (attributes) newOp.attributes = attributes;
-        delta.push(newOp); // Optimization if rest of other is just retain
-
-        if (!otherIter.hasNext() && equal(delta.ops[delta.ops.length - 1], newOp)) {
-          var rest = new Delta(thisIter.rest());
-          return delta.concat(rest).chop();
-        } // Other op should be delete, we could be an insert or retain
-        // Insert + delete cancels out
-
-      } else if (typeof otherOp['delete'] === 'number' && typeof thisOp.retain === 'number') {
-        delta.push(otherOp);
-      }
-    }
-  }
-
-  return delta.chop();
-};
-
-Delta.prototype.concat = function (other) {
-  var delta = new Delta(this.ops.slice());
-
-  if (other.ops.length > 0) {
-    delta.push(other.ops[0]);
-    delta.ops = delta.ops.concat(other.ops.slice(1));
-  }
-
-  return delta;
-};
-
-Delta.prototype.diff = function (other, index) {
-  if (this.ops === other.ops) {
-    return new Delta();
-  }
-
-  var strings = [this, other].map(function (delta) {
-    return delta.map(function (op) {
-      if (op.insert != null) {
-        return typeof op.insert === 'string' ? op.insert : NULL_CHARACTER;
-      }
-
-      var prep = delta === other ? 'on' : 'with';
-      throw new Error('diff() called ' + prep + ' non-document');
-    }).join('');
-  });
-  var delta = new Delta();
-  var diffResult = diff(strings[0], strings[1], index);
-  var thisIter = op.iterator(this.ops);
-  var otherIter = op.iterator(other.ops);
-  diffResult.forEach(function (component) {
-    var length = component[1].length;
-
-    while (length > 0) {
-      var opLength = 0;
-
-      switch (component[0]) {
-        case diff.INSERT:
-          opLength = Math.min(otherIter.peekLength(), length);
-          delta.push(otherIter.next(opLength));
-          break;
-
-        case diff.DELETE:
-          opLength = Math.min(length, thisIter.peekLength());
-          thisIter.next(opLength);
-          delta['delete'](opLength);
-          break;
-
-        case diff.EQUAL:
-          opLength = Math.min(thisIter.peekLength(), otherIter.peekLength(), length);
-          var thisOp = thisIter.next(opLength);
-          var otherOp = otherIter.next(opLength);
-
-          if (equal(thisOp.insert, otherOp.insert)) {
-            delta.retain(opLength, op.attributes.diff(thisOp.attributes, otherOp.attributes));
-          } else {
-            delta.push(otherOp)['delete'](opLength);
-          }
-
-          break;
-      }
-
-      length -= opLength;
-    }
-  });
-  return delta.chop();
-};
-
-Delta.prototype.eachLine = function (predicate, newline) {
-  newline = newline || '\n';
-  var iter = op.iterator(this.ops);
-  var line = new Delta();
-  var i = 0;
-
-  while (iter.hasNext()) {
-    if (iter.peekType() !== 'insert') return;
-    var thisOp = iter.peek();
-    var start = op.length(thisOp) - iter.peekLength();
-    var index = typeof thisOp.insert === 'string' ? thisOp.insert.indexOf(newline, start) - start : -1;
-
-    if (index < 0) {
-      line.push(iter.next());
-    } else if (index > 0) {
-      line.push(iter.next(index));
-    } else {
-      if (predicate(line, iter.next(1).attributes || {}, i) === false) {
-        return;
-      }
-
-      i += 1;
-      line = new Delta();
-    }
-  }
-
-  if (line.length() > 0) {
-    predicate(line, {}, i);
-  }
-};
-
-Delta.prototype.transform = function (other, priority) {
-  priority = !!priority;
-
-  if (typeof other === 'number') {
-    return this.transformPosition(other, priority);
-  }
-
-  var thisIter = op.iterator(this.ops);
-  var otherIter = op.iterator(other.ops);
-  var delta = new Delta();
-
-  while (thisIter.hasNext() || otherIter.hasNext()) {
-    if (thisIter.peekType() === 'insert' && (priority || otherIter.peekType() !== 'insert')) {
-      delta.retain(op.length(thisIter.next()));
-    } else if (otherIter.peekType() === 'insert') {
-      delta.push(otherIter.next());
-    } else {
-      var length = Math.min(thisIter.peekLength(), otherIter.peekLength());
-      var thisOp = thisIter.next(length);
-      var otherOp = otherIter.next(length);
-
-      if (thisOp['delete']) {
-        // Our delete either makes their delete redundant or removes their retain
-        continue;
-      } else if (otherOp['delete']) {
-        delta.push(otherOp);
-      } else {
-        // We retain either their retain or insert
-        delta.retain(length, op.attributes.transform(thisOp.attributes, otherOp.attributes, priority));
-      }
-    }
-  }
-
-  return delta.chop();
-};
-
-Delta.prototype.transformPosition = function (index, priority) {
-  priority = !!priority;
-  var thisIter = op.iterator(this.ops);
-  var offset = 0;
-
-  while (thisIter.hasNext() && offset <= index) {
-    var length = thisIter.peekLength();
-    var nextType = thisIter.peekType();
-    thisIter.next();
-
-    if (nextType === 'delete') {
-      index -= Math.min(length, index - offset);
-      continue;
-    } else if (nextType === 'insert' && (offset < index || !priority)) {
-      index += length;
-    }
-
-    offset += length;
-  }
-
-  return index;
-};
-
-module.exports = Delta;
-},{"fast-diff":"jfAY","deep-equal":"koiw","extend":"dgPI","./op":"Eba4"}],"WpVR":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class Break extends _parchment.default.Embed {
-  static value() {
-    return undefined;
-  }
-
-  insertInto(parent, ref) {
-    if (parent.children.length === 0) {
-      super.insertInto(parent, ref);
-    } else {
-      this.remove();
-    }
-  }
-
-  length() {
-    return 0;
-  }
-
-  value() {
-    return '';
-  }
-
-}
-
-Break.blotName = 'break';
-Break.tagName = 'BR';
-var _default = Break;
-exports.default = _default;
-},{"parchment":"CQm3"}],"E/MK":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class TextBlot extends _parchment.default.Text {}
-
-var _default = TextBlot;
-exports.default = _default;
-},{"parchment":"CQm3"}],"xisp":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _text = _interopRequireDefault(require("./text"));
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class Inline extends _parchment.default.Inline {
-  static compare(self, other) {
-    let selfIndex = Inline.order.indexOf(self);
-    let otherIndex = Inline.order.indexOf(other);
-
-    if (selfIndex >= 0 || otherIndex >= 0) {
-      return selfIndex - otherIndex;
-    } else if (self === other) {
-      return 0;
-    } else if (self < other) {
-      return -1;
-    } else {
-      return 1;
-    }
-  }
-
-  formatAt(index, length, name, value) {
-    if (Inline.compare(this.statics.blotName, name) < 0 && _parchment.default.query(name, _parchment.default.Scope.BLOT)) {
-      let blot = this.isolate(index, length);
-
-      if (value) {
-        blot.wrap(name, value);
-      }
-    } else {
-      super.formatAt(index, length, name, value);
-    }
-  }
-
-  optimize(context) {
-    super.optimize(context);
-
-    if (this.parent instanceof Inline && Inline.compare(this.statics.blotName, this.parent.statics.blotName) > 0) {
-      let parent = this.parent.isolate(this.offset(), this.length());
-      this.moveChildren(parent);
-      parent.wrap(this);
-    }
-  }
-
-}
-
-Inline.allowedChildren = [Inline, _parchment.default.Embed, _text.default]; // Lower index means deeper in the DOM tree, since not found (-1) is for embeds
-
-Inline.order = ['cursor', 'inline', // Must be lower
-'underline', 'strike', 'italic', 'bold', 'script', 'link', 'code' // Must be higher
-];
-var _default = Inline;
-exports.default = _default;
-},{"./text":"E/MK","parchment":"CQm3"}],"ehqu":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.bubbleFormats = bubbleFormats;
-exports.default = exports.BlockEmbed = void 0;
-
-var _extend = _interopRequireDefault(require("extend"));
-
-var _quillDelta = _interopRequireDefault(require("quill-delta"));
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _break = _interopRequireDefault(require("./break"));
-
-var _inline = _interopRequireDefault(require("./inline"));
-
-var _text = _interopRequireDefault(require("./text"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const NEWLINE_LENGTH = 1;
-
-class BlockEmbed extends _parchment.default.Embed {
-  attach() {
-    super.attach();
-    this.attributes = new _parchment.default.Attributor.Store(this.domNode);
-  }
-
-  delta() {
-    return new _quillDelta.default().insert(this.value(), (0, _extend.default)(this.formats(), this.attributes.values()));
-  }
-
-  format(name, value) {
-    let attribute = _parchment.default.query(name, _parchment.default.Scope.BLOCK_ATTRIBUTE);
-
-    if (attribute != null) {
-      this.attributes.attribute(attribute, value);
-    }
-  }
-
-  formatAt(index, length, name, value) {
-    this.format(name, value);
-  }
-
-  insertAt(index, value, def) {
-    if (typeof value === 'string' && value.endsWith('\n')) {
-      let block = _parchment.default.create(Block.blotName);
-
-      this.parent.insertBefore(block, index === 0 ? this : this.next);
-      block.insertAt(0, value.slice(0, -1));
-    } else {
-      super.insertAt(index, value, def);
-    }
-  }
-
-}
-
-exports.BlockEmbed = BlockEmbed;
-BlockEmbed.scope = _parchment.default.Scope.BLOCK_BLOT; // It is important for cursor behavior BlockEmbeds use tags that are block level elements
-
-class Block extends _parchment.default.Block {
-  constructor(domNode) {
-    super(domNode);
-    this.cache = {};
-  }
-
-  delta() {
-    if (this.cache.delta == null) {
-      this.cache.delta = this.descendants(_parchment.default.Leaf).reduce((delta, leaf) => {
-        if (leaf.length() === 0) {
-          return delta;
-        } else {
-          return delta.insert(leaf.value(), bubbleFormats(leaf));
-        }
-      }, new _quillDelta.default()).insert('\n', bubbleFormats(this));
-    }
-
-    return this.cache.delta;
-  }
-
-  deleteAt(index, length) {
-    super.deleteAt(index, length);
-    this.cache = {};
-  }
-
-  formatAt(index, length, name, value) {
-    if (length <= 0) return;
-
-    if (_parchment.default.query(name, _parchment.default.Scope.BLOCK)) {
-      if (index + length === this.length()) {
-        this.format(name, value);
-      }
-    } else {
-      super.formatAt(index, Math.min(length, this.length() - index - 1), name, value);
-    }
-
-    this.cache = {};
-  }
-
-  insertAt(index, value, def) {
-    if (def != null) return super.insertAt(index, value, def);
-    if (value.length === 0) return;
-    let lines = value.split('\n');
-    let text = lines.shift();
-
-    if (text.length > 0) {
-      if (index < this.length() - 1 || this.children.tail == null) {
-        super.insertAt(Math.min(index, this.length() - 1), text);
-      } else {
-        this.children.tail.insertAt(this.children.tail.length(), text);
-      }
-
-      this.cache = {};
-    }
-
-    let block = this;
-    lines.reduce(function (index, line) {
-      block = block.split(index, true);
-      block.insertAt(0, line);
-      return line.length;
-    }, index + text.length);
-  }
-
-  insertBefore(blot, ref) {
-    let head = this.children.head;
-    super.insertBefore(blot, ref);
-
-    if (head instanceof _break.default) {
-      head.remove();
-    }
-
-    this.cache = {};
-  }
-
-  length() {
-    if (this.cache.length == null) {
-      this.cache.length = super.length() + NEWLINE_LENGTH;
-    }
-
-    return this.cache.length;
-  }
-
-  moveChildren(target, ref) {
-    super.moveChildren(target, ref);
-    this.cache = {};
-  }
-
-  optimize(context) {
-    super.optimize(context);
-    this.cache = {};
-  }
-
-  path(index) {
-    return super.path(index, true);
-  }
-
-  removeChild(child) {
-    super.removeChild(child);
-    this.cache = {};
-  }
-
-  split(index, force = false) {
-    if (force && (index === 0 || index >= this.length() - NEWLINE_LENGTH)) {
-      let clone = this.clone();
-
-      if (index === 0) {
-        this.parent.insertBefore(clone, this);
-        return this;
-      } else {
-        this.parent.insertBefore(clone, this.next);
-        return clone;
-      }
-    } else {
-      let next = super.split(index, force);
-      this.cache = {};
-      return next;
-    }
-  }
-
-}
-
-exports.default = Block;
-Block.blotName = 'block';
-Block.tagName = 'P';
-Block.defaultChild = 'break';
-Block.allowedChildren = [_inline.default, _parchment.default.Embed, _text.default];
-
-function bubbleFormats(blot, formats = {}) {
-  if (blot == null) return formats;
-
-  if (typeof blot.formats === 'function') {
-    formats = (0, _extend.default)(formats, blot.formats());
-  }
-
-  if (blot.parent == null || blot.parent.blotName == 'scroll' || blot.parent.statics.scope !== blot.statics.scope) {
-    return formats;
-  }
-
-  return bubbleFormats(blot.parent, formats);
-}
-},{"extend":"dgPI","quill-delta":"BYft","parchment":"CQm3","./break":"WpVR","./inline":"xisp","./text":"E/MK"}],"DdcE":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = exports.Code = void 0;
-
-var _quillDelta = _interopRequireDefault(require("quill-delta"));
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _block = _interopRequireDefault(require("../blots/block"));
-
-var _inline = _interopRequireDefault(require("../blots/inline"));
-
-var _text = _interopRequireDefault(require("../blots/text"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class Code extends _inline.default {}
-
-exports.Code = Code;
-Code.blotName = 'code';
-Code.tagName = 'CODE';
-
-class CodeBlock extends _block.default {
-  static create(value) {
-    let domNode = super.create(value);
-    domNode.setAttribute('spellcheck', false);
-    return domNode;
-  }
-
-  static formats() {
-    return true;
-  }
-
-  delta() {
-    let text = this.domNode.textContent;
-
-    if (text.endsWith('\n')) {
-      // Should always be true
-      text = text.slice(0, -1);
-    }
-
-    return text.split('\n').reduce((delta, frag) => {
-      return delta.insert(frag).insert('\n', this.formats());
-    }, new _quillDelta.default());
-  }
-
-  format(name, value) {
-    if (name === this.statics.blotName && value) return;
-    let [text] = this.descendant(_text.default, this.length() - 1);
-
-    if (text != null) {
-      text.deleteAt(text.length() - 1, 1);
-    }
-
-    super.format(name, value);
-  }
-
-  formatAt(index, length, name, value) {
-    if (length === 0) return;
-
-    if (_parchment.default.query(name, _parchment.default.Scope.BLOCK) == null || name === this.statics.blotName && value === this.statics.formats(this.domNode)) {
-      return;
-    }
-
-    let nextNewline = this.newlineIndex(index);
-    if (nextNewline < 0 || nextNewline >= index + length) return;
-    let prevNewline = this.newlineIndex(index, true) + 1;
-    let isolateLength = nextNewline - prevNewline + 1;
-    let blot = this.isolate(prevNewline, isolateLength);
-    let next = blot.next;
-    blot.format(name, value);
-
-    if (next instanceof CodeBlock) {
-      next.formatAt(0, index - prevNewline + length - isolateLength, name, value);
-    }
-  }
-
-  insertAt(index, value, def) {
-    if (def != null) return;
-    let [text, offset] = this.descendant(_text.default, index);
-    text.insertAt(offset, value);
-  }
-
-  length() {
-    let length = this.domNode.textContent.length;
-
-    if (!this.domNode.textContent.endsWith('\n')) {
-      return length + 1;
-    }
-
-    return length;
-  }
-
-  newlineIndex(searchIndex, reverse = false) {
-    if (!reverse) {
-      let offset = this.domNode.textContent.slice(searchIndex).indexOf('\n');
-      return offset > -1 ? searchIndex + offset : -1;
-    } else {
-      return this.domNode.textContent.slice(0, searchIndex).lastIndexOf('\n');
-    }
-  }
-
-  optimize(context) {
-    if (!this.domNode.textContent.endsWith('\n')) {
-      this.appendChild(_parchment.default.create('text', '\n'));
-    }
-
-    super.optimize(context);
-    let next = this.next;
-
-    if (next != null && next.prev === this && next.statics.blotName === this.statics.blotName && this.statics.formats(this.domNode) === next.statics.formats(next.domNode)) {
-      next.optimize(context);
-      next.moveChildren(this);
-      next.remove();
-    }
-  }
-
-  replace(target) {
-    super.replace(target);
-    [].slice.call(this.domNode.querySelectorAll('*')).forEach(function (node) {
-      let blot = _parchment.default.find(node);
-
-      if (blot == null) {
-        node.parentNode.removeChild(node);
-      } else if (blot instanceof _parchment.default.Embed) {
-        blot.remove();
-      } else {
-        blot.unwrap();
-      }
-    });
-  }
-
-}
-
-exports.default = CodeBlock;
-CodeBlock.blotName = 'code-block';
-CodeBlock.tagName = 'PRE';
-CodeBlock.TAB = '  ';
-},{"quill-delta":"BYft","parchment":"CQm3","../blots/block":"ehqu","../blots/inline":"xisp","../blots/text":"E/MK"}],"ffqL":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _text = _interopRequireDefault(require("./text"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class Cursor extends _parchment.default.Embed {
-  static value() {
-    return undefined;
-  }
-
-  constructor(domNode, selection) {
-    super(domNode);
-    this.selection = selection;
-    this.textNode = document.createTextNode(Cursor.CONTENTS);
-    this.domNode.appendChild(this.textNode);
-    this._length = 0;
-  }
-
-  detach() {
-    // super.detach() will also clear domNode.__blot
-    if (this.parent != null) this.parent.removeChild(this);
-  }
-
-  format(name, value) {
-    if (this._length !== 0) {
-      return super.format(name, value);
-    }
-
-    let target = this,
-        index = 0;
-
-    while (target != null && target.statics.scope !== _parchment.default.Scope.BLOCK_BLOT) {
-      index += target.offset(target.parent);
-      target = target.parent;
-    }
-
-    if (target != null) {
-      this._length = Cursor.CONTENTS.length;
-      target.optimize();
-      target.formatAt(index, Cursor.CONTENTS.length, name, value);
-      this._length = 0;
-    }
-  }
-
-  index(node, offset) {
-    if (node === this.textNode) return 0;
-    return super.index(node, offset);
-  }
-
-  length() {
-    return this._length;
-  }
-
-  position() {
-    return [this.textNode, this.textNode.data.length];
-  }
-
-  remove() {
-    super.remove();
-    this.parent = null;
-  }
-
-  restore() {
-    if (this.selection.composing || this.parent == null) return;
-    let textNode = this.textNode;
-    let range = this.selection.getNativeRange();
-    let restoreText, start, end;
-
-    if (range != null && range.start.node === textNode && range.end.node === textNode) {
-      [restoreText, start, end] = [textNode, range.start.offset, range.end.offset];
-    } // Link format will insert text outside of anchor tag
-
-
-    while (this.domNode.lastChild != null && this.domNode.lastChild !== this.textNode) {
-      this.domNode.parentNode.insertBefore(this.domNode.lastChild, this.domNode);
-    }
-
-    if (this.textNode.data !== Cursor.CONTENTS) {
-      let text = this.textNode.data.split(Cursor.CONTENTS).join('');
-
-      if (this.next instanceof _text.default) {
-        restoreText = this.next.domNode;
-        this.next.insertAt(0, text);
-        this.textNode.data = Cursor.CONTENTS;
-      } else {
-        this.textNode.data = text;
-        this.parent.insertBefore(_parchment.default.create(this.textNode), this);
-        this.textNode = document.createTextNode(Cursor.CONTENTS);
-        this.domNode.appendChild(this.textNode);
-      }
-    }
-
-    this.remove();
-
-    if (start != null) {
-      [start, end] = [start, end].map(function (offset) {
-        return Math.max(0, Math.min(restoreText.data.length, offset - 1));
-      });
-      return {
-        startNode: restoreText,
-        startOffset: start,
-        endNode: restoreText,
-        endOffset: end
-      };
-    }
-  }
-
-  update(mutations, context) {
-    if (mutations.some(mutation => {
-      return mutation.type === 'characterData' && mutation.target === this.textNode;
-    })) {
-      let range = this.restore();
-      if (range) context.range = range;
-    }
-  }
-
-  value() {
-    return '';
-  }
-
-}
-
-Cursor.blotName = 'cursor';
-Cursor.className = 'ql-cursor';
-Cursor.tagName = 'span';
-Cursor.CONTENTS = "\uFEFF"; // Zero width no break space
-
-var _default = Cursor;
-exports.default = _default;
-},{"parchment":"CQm3","./text":"E/MK"}],"prL8":[function(require,module,exports) {
-'use strict'
-
-exports.byteLength = byteLength
-exports.toByteArray = toByteArray
-exports.fromByteArray = fromByteArray
-
-var lookup = []
-var revLookup = []
-var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
-
-var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-for (var i = 0, len = code.length; i < len; ++i) {
-  lookup[i] = code[i]
-  revLookup[code.charCodeAt(i)] = i
-}
-
-// Support decoding URL-safe base64 strings, as Node.js does.
-// See: https://en.wikipedia.org/wiki/Base64#URL_applications
-revLookup['-'.charCodeAt(0)] = 62
-revLookup['_'.charCodeAt(0)] = 63
-
-function getLens (b64) {
-  var len = b64.length
-
-  if (len % 4 > 0) {
-    throw new Error('Invalid string. Length must be a multiple of 4')
-  }
-
-  // Trim off extra bytes after placeholder bytes are found
-  // See: https://github.com/beatgammit/base64-js/issues/42
-  var validLen = b64.indexOf('=')
-  if (validLen === -1) validLen = len
-
-  var placeHoldersLen = validLen === len
-    ? 0
-    : 4 - (validLen % 4)
-
-  return [validLen, placeHoldersLen]
-}
-
-// base64 is 4/3 + up to two characters of the original data
-function byteLength (b64) {
-  var lens = getLens(b64)
-  var validLen = lens[0]
-  var placeHoldersLen = lens[1]
-  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
-}
-
-function _byteLength (b64, validLen, placeHoldersLen) {
-  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
-}
-
-function toByteArray (b64) {
-  var tmp
-  var lens = getLens(b64)
-  var validLen = lens[0]
-  var placeHoldersLen = lens[1]
-
-  var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen))
-
-  var curByte = 0
-
-  // if there are placeholders, only get up to the last complete 4 chars
-  var len = placeHoldersLen > 0
-    ? validLen - 4
-    : validLen
-
-  for (var i = 0; i < len; i += 4) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 18) |
-      (revLookup[b64.charCodeAt(i + 1)] << 12) |
-      (revLookup[b64.charCodeAt(i + 2)] << 6) |
-      revLookup[b64.charCodeAt(i + 3)]
-    arr[curByte++] = (tmp >> 16) & 0xFF
-    arr[curByte++] = (tmp >> 8) & 0xFF
-    arr[curByte++] = tmp & 0xFF
-  }
-
-  if (placeHoldersLen === 2) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 2) |
-      (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[curByte++] = tmp & 0xFF
-  }
-
-  if (placeHoldersLen === 1) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 10) |
-      (revLookup[b64.charCodeAt(i + 1)] << 4) |
-      (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[curByte++] = (tmp >> 8) & 0xFF
-    arr[curByte++] = tmp & 0xFF
-  }
-
-  return arr
-}
-
-function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] +
-    lookup[num >> 12 & 0x3F] +
-    lookup[num >> 6 & 0x3F] +
-    lookup[num & 0x3F]
-}
-
-function encodeChunk (uint8, start, end) {
-  var tmp
-  var output = []
-  for (var i = start; i < end; i += 3) {
-    tmp =
-      ((uint8[i] << 16) & 0xFF0000) +
-      ((uint8[i + 1] << 8) & 0xFF00) +
-      (uint8[i + 2] & 0xFF)
-    output.push(tripletToBase64(tmp))
-  }
-  return output.join('')
-}
-
-function fromByteArray (uint8) {
-  var tmp
-  var len = uint8.length
-  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
-  var parts = []
-  var maxChunkLength = 16383 // must be multiple of 3
-
-  // go through the array every three bytes, we'll deal with trailing stuff later
-  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(
-      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
-    ))
-  }
-
-  // pad the end with zeros, but make sure to not forget the extra bytes
-  if (extraBytes === 1) {
-    tmp = uint8[len - 1]
-    parts.push(
-      lookup[tmp >> 2] +
-      lookup[(tmp << 4) & 0x3F] +
-      '=='
-    )
-  } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + uint8[len - 1]
-    parts.push(
-      lookup[tmp >> 10] +
-      lookup[(tmp >> 4) & 0x3F] +
-      lookup[(tmp << 2) & 0x3F] +
-      '='
-    )
-  }
-
-  return parts.join('')
-}
-
-},{}],"iism":[function(require,module,exports) {
-exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m
-  var eLen = (nBytes * 8) - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var nBits = -7
-  var i = isLE ? (nBytes - 1) : 0
-  var d = isLE ? -1 : 1
-  var s = buffer[offset + i]
-
-  i += d
-
-  e = s & ((1 << (-nBits)) - 1)
-  s >>= (-nBits)
-  nBits += eLen
-  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
-
-  m = e & ((1 << (-nBits)) - 1)
-  e >>= (-nBits)
-  nBits += mLen
-  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
-
-  if (e === 0) {
-    e = 1 - eBias
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity)
-  } else {
-    m = m + Math.pow(2, mLen)
-    e = e - eBias
-  }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-}
-
-exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c
-  var eLen = (nBytes * 8) - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-  var i = isLE ? 0 : (nBytes - 1)
-  var d = isLE ? 1 : -1
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-  value = Math.abs(value)
-
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0
-    e = eMax
-  } else {
-    e = Math.floor(Math.log(value) / Math.LN2)
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--
-      c *= 2
-    }
-    if (e + eBias >= 1) {
-      value += rt / c
-    } else {
-      value += rt * Math.pow(2, 1 - eBias)
-    }
-    if (value * c >= 2) {
-      e++
-      c /= 2
-    }
-
-    if (e + eBias >= eMax) {
-      m = 0
-      e = eMax
-    } else if (e + eBias >= 1) {
-      m = ((value * c) - 1) * Math.pow(2, mLen)
-      e = e + eBias
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-      e = 0
-    }
-  }
-
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-  e = (e << mLen) | m
-  eLen += mLen
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-  buffer[offset + i - d] |= s * 128
-}
-
-},{}],"2BOv":[function(require,module,exports) {
-var toString = {}.toString;
-
-module.exports = Array.isArray || function (arr) {
-  return toString.call(arr) == '[object Array]';
-};
-
-},{}],"XyCw":[function(require,module,exports) {
-
-var global = arguments[3];
-/*!
- * The buffer module from node.js, for the browser.
- *
- * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
- * @license  MIT
- */
-/* eslint-disable no-proto */
-
-'use strict'
-
-var base64 = require('base64-js')
-var ieee754 = require('ieee754')
-var isArray = require('isarray')
-
-exports.Buffer = Buffer
-exports.SlowBuffer = SlowBuffer
-exports.INSPECT_MAX_BYTES = 50
-
-/**
- * If `Buffer.TYPED_ARRAY_SUPPORT`:
- *   === true    Use Uint8Array implementation (fastest)
- *   === false   Use Object implementation (most compatible, even IE6)
- *
- * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,
- * Opera 11.6+, iOS 4.2+.
- *
- * Due to various browser bugs, sometimes the Object implementation will be used even
- * when the browser supports typed arrays.
- *
- * Note:
- *
- *   - Firefox 4-29 lacks support for adding new properties to `Uint8Array` instances,
- *     See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.
- *
- *   - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.
- *
- *   - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
- *     incorrect length in some situations.
-
- * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
- * get the Object implementation, which is slower but behaves correctly.
- */
-Buffer.TYPED_ARRAY_SUPPORT = global.TYPED_ARRAY_SUPPORT !== undefined
-  ? global.TYPED_ARRAY_SUPPORT
-  : typedArraySupport()
-
-/*
- * Export kMaxLength after typed array support is determined.
- */
-exports.kMaxLength = kMaxLength()
-
-function typedArraySupport () {
-  try {
-    var arr = new Uint8Array(1)
-    arr.__proto__ = {__proto__: Uint8Array.prototype, foo: function () { return 42 }}
-    return arr.foo() === 42 && // typed array instances can be augmented
-        typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
-        arr.subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
-  } catch (e) {
-    return false
-  }
-}
-
-function kMaxLength () {
-  return Buffer.TYPED_ARRAY_SUPPORT
-    ? 0x7fffffff
-    : 0x3fffffff
-}
-
-function createBuffer (that, length) {
-  if (kMaxLength() < length) {
-    throw new RangeError('Invalid typed array length')
-  }
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    // Return an augmented `Uint8Array` instance, for best performance
-    that = new Uint8Array(length)
-    that.__proto__ = Buffer.prototype
-  } else {
-    // Fallback: Return an object instance of the Buffer class
-    if (that === null) {
-      that = new Buffer(length)
-    }
-    that.length = length
-  }
-
-  return that
-}
-
-/**
- * The Buffer constructor returns instances of `Uint8Array` that have their
- * prototype changed to `Buffer.prototype`. Furthermore, `Buffer` is a subclass of
- * `Uint8Array`, so the returned instances will have all the node `Buffer` methods
- * and the `Uint8Array` methods. Square bracket notation works as expected -- it
- * returns a single octet.
- *
- * The `Uint8Array` prototype remains unmodified.
- */
-
-function Buffer (arg, encodingOrOffset, length) {
-  if (!Buffer.TYPED_ARRAY_SUPPORT && !(this instanceof Buffer)) {
-    return new Buffer(arg, encodingOrOffset, length)
-  }
-
-  // Common case.
-  if (typeof arg === 'number') {
-    if (typeof encodingOrOffset === 'string') {
-      throw new Error(
-        'If encoding is specified then the first argument must be a string'
-      )
-    }
-    return allocUnsafe(this, arg)
-  }
-  return from(this, arg, encodingOrOffset, length)
-}
-
-Buffer.poolSize = 8192 // not used by this implementation
-
-// TODO: Legacy, not needed anymore. Remove in next major version.
-Buffer._augment = function (arr) {
-  arr.__proto__ = Buffer.prototype
-  return arr
-}
-
-function from (that, value, encodingOrOffset, length) {
-  if (typeof value === 'number') {
-    throw new TypeError('"value" argument must not be a number')
-  }
-
-  if (typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) {
-    return fromArrayBuffer(that, value, encodingOrOffset, length)
-  }
-
-  if (typeof value === 'string') {
-    return fromString(that, value, encodingOrOffset)
-  }
-
-  return fromObject(that, value)
-}
-
-/**
- * Functionally equivalent to Buffer(arg, encoding) but throws a TypeError
- * if value is a number.
- * Buffer.from(str[, encoding])
- * Buffer.from(array)
- * Buffer.from(buffer)
- * Buffer.from(arrayBuffer[, byteOffset[, length]])
- **/
-Buffer.from = function (value, encodingOrOffset, length) {
-  return from(null, value, encodingOrOffset, length)
-}
-
-if (Buffer.TYPED_ARRAY_SUPPORT) {
-  Buffer.prototype.__proto__ = Uint8Array.prototype
-  Buffer.__proto__ = Uint8Array
-  if (typeof Symbol !== 'undefined' && Symbol.species &&
-      Buffer[Symbol.species] === Buffer) {
-    // Fix subarray() in ES2016. See: https://github.com/feross/buffer/pull/97
-    Object.defineProperty(Buffer, Symbol.species, {
-      value: null,
-      configurable: true
-    })
-  }
-}
-
-function assertSize (size) {
-  if (typeof size !== 'number') {
-    throw new TypeError('"size" argument must be a number')
-  } else if (size < 0) {
-    throw new RangeError('"size" argument must not be negative')
-  }
-}
-
-function alloc (that, size, fill, encoding) {
-  assertSize(size)
-  if (size <= 0) {
-    return createBuffer(that, size)
-  }
-  if (fill !== undefined) {
-    // Only pay attention to encoding if it's a string. This
-    // prevents accidentally sending in a number that would
-    // be interpretted as a start offset.
-    return typeof encoding === 'string'
-      ? createBuffer(that, size).fill(fill, encoding)
-      : createBuffer(that, size).fill(fill)
-  }
-  return createBuffer(that, size)
-}
-
-/**
- * Creates a new filled Buffer instance.
- * alloc(size[, fill[, encoding]])
- **/
-Buffer.alloc = function (size, fill, encoding) {
-  return alloc(null, size, fill, encoding)
-}
-
-function allocUnsafe (that, size) {
-  assertSize(size)
-  that = createBuffer(that, size < 0 ? 0 : checked(size) | 0)
-  if (!Buffer.TYPED_ARRAY_SUPPORT) {
-    for (var i = 0; i < size; ++i) {
-      that[i] = 0
-    }
-  }
-  return that
-}
-
-/**
- * Equivalent to Buffer(num), by default creates a non-zero-filled Buffer instance.
- * */
-Buffer.allocUnsafe = function (size) {
-  return allocUnsafe(null, size)
-}
-/**
- * Equivalent to SlowBuffer(num), by default creates a non-zero-filled Buffer instance.
- */
-Buffer.allocUnsafeSlow = function (size) {
-  return allocUnsafe(null, size)
-}
-
-function fromString (that, string, encoding) {
-  if (typeof encoding !== 'string' || encoding === '') {
-    encoding = 'utf8'
-  }
-
-  if (!Buffer.isEncoding(encoding)) {
-    throw new TypeError('"encoding" must be a valid string encoding')
-  }
-
-  var length = byteLength(string, encoding) | 0
-  that = createBuffer(that, length)
-
-  var actual = that.write(string, encoding)
-
-  if (actual !== length) {
-    // Writing a hex string, for example, that contains invalid characters will
-    // cause everything after the first invalid character to be ignored. (e.g.
-    // 'abxxcd' will be treated as 'ab')
-    that = that.slice(0, actual)
-  }
-
-  return that
-}
-
-function fromArrayLike (that, array) {
-  var length = array.length < 0 ? 0 : checked(array.length) | 0
-  that = createBuffer(that, length)
-  for (var i = 0; i < length; i += 1) {
-    that[i] = array[i] & 255
-  }
-  return that
-}
-
-function fromArrayBuffer (that, array, byteOffset, length) {
-  array.byteLength // this throws if `array` is not a valid ArrayBuffer
-
-  if (byteOffset < 0 || array.byteLength < byteOffset) {
-    throw new RangeError('\'offset\' is out of bounds')
-  }
-
-  if (array.byteLength < byteOffset + (length || 0)) {
-    throw new RangeError('\'length\' is out of bounds')
-  }
-
-  if (byteOffset === undefined && length === undefined) {
-    array = new Uint8Array(array)
-  } else if (length === undefined) {
-    array = new Uint8Array(array, byteOffset)
-  } else {
-    array = new Uint8Array(array, byteOffset, length)
-  }
-
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    // Return an augmented `Uint8Array` instance, for best performance
-    that = array
-    that.__proto__ = Buffer.prototype
-  } else {
-    // Fallback: Return an object instance of the Buffer class
-    that = fromArrayLike(that, array)
-  }
-  return that
-}
-
-function fromObject (that, obj) {
-  if (Buffer.isBuffer(obj)) {
-    var len = checked(obj.length) | 0
-    that = createBuffer(that, len)
-
-    if (that.length === 0) {
-      return that
-    }
-
-    obj.copy(that, 0, 0, len)
-    return that
-  }
-
-  if (obj) {
-    if ((typeof ArrayBuffer !== 'undefined' &&
-        obj.buffer instanceof ArrayBuffer) || 'length' in obj) {
-      if (typeof obj.length !== 'number' || isnan(obj.length)) {
-        return createBuffer(that, 0)
-      }
-      return fromArrayLike(that, obj)
-    }
-
-    if (obj.type === 'Buffer' && isArray(obj.data)) {
-      return fromArrayLike(that, obj.data)
-    }
-  }
-
-  throw new TypeError('First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.')
-}
-
-function checked (length) {
-  // Note: cannot use `length < kMaxLength()` here because that fails when
-  // length is NaN (which is otherwise coerced to zero.)
-  if (length >= kMaxLength()) {
-    throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
-                         'size: 0x' + kMaxLength().toString(16) + ' bytes')
-  }
-  return length | 0
-}
-
-function SlowBuffer (length) {
-  if (+length != length) { // eslint-disable-line eqeqeq
-    length = 0
-  }
-  return Buffer.alloc(+length)
-}
-
-Buffer.isBuffer = function isBuffer (b) {
-  return !!(b != null && b._isBuffer)
-}
-
-Buffer.compare = function compare (a, b) {
-  if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {
-    throw new TypeError('Arguments must be Buffers')
-  }
-
-  if (a === b) return 0
-
-  var x = a.length
-  var y = b.length
-
-  for (var i = 0, len = Math.min(x, y); i < len; ++i) {
-    if (a[i] !== b[i]) {
-      x = a[i]
-      y = b[i]
-      break
-    }
-  }
-
-  if (x < y) return -1
-  if (y < x) return 1
-  return 0
-}
-
-Buffer.isEncoding = function isEncoding (encoding) {
-  switch (String(encoding).toLowerCase()) {
-    case 'hex':
-    case 'utf8':
-    case 'utf-8':
-    case 'ascii':
-    case 'latin1':
-    case 'binary':
-    case 'base64':
-    case 'ucs2':
-    case 'ucs-2':
-    case 'utf16le':
-    case 'utf-16le':
-      return true
-    default:
-      return false
-  }
-}
-
-Buffer.concat = function concat (list, length) {
-  if (!isArray(list)) {
-    throw new TypeError('"list" argument must be an Array of Buffers')
-  }
-
-  if (list.length === 0) {
-    return Buffer.alloc(0)
-  }
-
-  var i
-  if (length === undefined) {
-    length = 0
-    for (i = 0; i < list.length; ++i) {
-      length += list[i].length
-    }
-  }
-
-  var buffer = Buffer.allocUnsafe(length)
-  var pos = 0
-  for (i = 0; i < list.length; ++i) {
-    var buf = list[i]
-    if (!Buffer.isBuffer(buf)) {
-      throw new TypeError('"list" argument must be an Array of Buffers')
-    }
-    buf.copy(buffer, pos)
-    pos += buf.length
-  }
-  return buffer
-}
-
-function byteLength (string, encoding) {
-  if (Buffer.isBuffer(string)) {
-    return string.length
-  }
-  if (typeof ArrayBuffer !== 'undefined' && typeof ArrayBuffer.isView === 'function' &&
-      (ArrayBuffer.isView(string) || string instanceof ArrayBuffer)) {
-    return string.byteLength
-  }
-  if (typeof string !== 'string') {
-    string = '' + string
-  }
-
-  var len = string.length
-  if (len === 0) return 0
-
-  // Use a for loop to avoid recursion
-  var loweredCase = false
-  for (;;) {
-    switch (encoding) {
-      case 'ascii':
-      case 'latin1':
-      case 'binary':
-        return len
-      case 'utf8':
-      case 'utf-8':
-      case undefined:
-        return utf8ToBytes(string).length
-      case 'ucs2':
-      case 'ucs-2':
-      case 'utf16le':
-      case 'utf-16le':
-        return len * 2
-      case 'hex':
-        return len >>> 1
-      case 'base64':
-        return base64ToBytes(string).length
-      default:
-        if (loweredCase) return utf8ToBytes(string).length // assume utf8
-        encoding = ('' + encoding).toLowerCase()
-        loweredCase = true
-    }
-  }
-}
-Buffer.byteLength = byteLength
-
-function slowToString (encoding, start, end) {
-  var loweredCase = false
-
-  // No need to verify that "this.length <= MAX_UINT32" since it's a read-only
-  // property of a typed array.
-
-  // This behaves neither like String nor Uint8Array in that we set start/end
-  // to their upper/lower bounds if the value passed is out of range.
-  // undefined is handled specially as per ECMA-262 6th Edition,
-  // Section 13.3.3.7 Runtime Semantics: KeyedBindingInitialization.
-  if (start === undefined || start < 0) {
-    start = 0
-  }
-  // Return early if start > this.length. Done here to prevent potential uint32
-  // coercion fail below.
-  if (start > this.length) {
-    return ''
-  }
-
-  if (end === undefined || end > this.length) {
-    end = this.length
-  }
-
-  if (end <= 0) {
-    return ''
-  }
-
-  // Force coersion to uint32. This will also coerce falsey/NaN values to 0.
-  end >>>= 0
-  start >>>= 0
-
-  if (end <= start) {
-    return ''
-  }
-
-  if (!encoding) encoding = 'utf8'
-
-  while (true) {
-    switch (encoding) {
-      case 'hex':
-        return hexSlice(this, start, end)
-
-      case 'utf8':
-      case 'utf-8':
-        return utf8Slice(this, start, end)
-
-      case 'ascii':
-        return asciiSlice(this, start, end)
-
-      case 'latin1':
-      case 'binary':
-        return latin1Slice(this, start, end)
-
-      case 'base64':
-        return base64Slice(this, start, end)
-
-      case 'ucs2':
-      case 'ucs-2':
-      case 'utf16le':
-      case 'utf-16le':
-        return utf16leSlice(this, start, end)
-
-      default:
-        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
-        encoding = (encoding + '').toLowerCase()
-        loweredCase = true
-    }
-  }
-}
-
-// The property is used by `Buffer.isBuffer` and `is-buffer` (in Safari 5-7) to detect
-// Buffer instances.
-Buffer.prototype._isBuffer = true
-
-function swap (b, n, m) {
-  var i = b[n]
-  b[n] = b[m]
-  b[m] = i
-}
-
-Buffer.prototype.swap16 = function swap16 () {
-  var len = this.length
-  if (len % 2 !== 0) {
-    throw new RangeError('Buffer size must be a multiple of 16-bits')
-  }
-  for (var i = 0; i < len; i += 2) {
-    swap(this, i, i + 1)
-  }
-  return this
-}
-
-Buffer.prototype.swap32 = function swap32 () {
-  var len = this.length
-  if (len % 4 !== 0) {
-    throw new RangeError('Buffer size must be a multiple of 32-bits')
-  }
-  for (var i = 0; i < len; i += 4) {
-    swap(this, i, i + 3)
-    swap(this, i + 1, i + 2)
-  }
-  return this
-}
-
-Buffer.prototype.swap64 = function swap64 () {
-  var len = this.length
-  if (len % 8 !== 0) {
-    throw new RangeError('Buffer size must be a multiple of 64-bits')
-  }
-  for (var i = 0; i < len; i += 8) {
-    swap(this, i, i + 7)
-    swap(this, i + 1, i + 6)
-    swap(this, i + 2, i + 5)
-    swap(this, i + 3, i + 4)
-  }
-  return this
-}
-
-Buffer.prototype.toString = function toString () {
-  var length = this.length | 0
-  if (length === 0) return ''
-  if (arguments.length === 0) return utf8Slice(this, 0, length)
-  return slowToString.apply(this, arguments)
-}
-
-Buffer.prototype.equals = function equals (b) {
-  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
-  if (this === b) return true
-  return Buffer.compare(this, b) === 0
-}
-
-Buffer.prototype.inspect = function inspect () {
-  var str = ''
-  var max = exports.INSPECT_MAX_BYTES
-  if (this.length > 0) {
-    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ')
-    if (this.length > max) str += ' ... '
-  }
-  return '<Buffer ' + str + '>'
-}
-
-Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
-  if (!Buffer.isBuffer(target)) {
-    throw new TypeError('Argument must be a Buffer')
-  }
-
-  if (start === undefined) {
-    start = 0
-  }
-  if (end === undefined) {
-    end = target ? target.length : 0
-  }
-  if (thisStart === undefined) {
-    thisStart = 0
-  }
-  if (thisEnd === undefined) {
-    thisEnd = this.length
-  }
-
-  if (start < 0 || end > target.length || thisStart < 0 || thisEnd > this.length) {
-    throw new RangeError('out of range index')
-  }
-
-  if (thisStart >= thisEnd && start >= end) {
-    return 0
-  }
-  if (thisStart >= thisEnd) {
-    return -1
-  }
-  if (start >= end) {
-    return 1
-  }
-
-  start >>>= 0
-  end >>>= 0
-  thisStart >>>= 0
-  thisEnd >>>= 0
-
-  if (this === target) return 0
-
-  var x = thisEnd - thisStart
-  var y = end - start
-  var len = Math.min(x, y)
-
-  var thisCopy = this.slice(thisStart, thisEnd)
-  var targetCopy = target.slice(start, end)
-
-  for (var i = 0; i < len; ++i) {
-    if (thisCopy[i] !== targetCopy[i]) {
-      x = thisCopy[i]
-      y = targetCopy[i]
-      break
-    }
-  }
-
-  if (x < y) return -1
-  if (y < x) return 1
-  return 0
-}
-
-// Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,
-// OR the last index of `val` in `buffer` at offset <= `byteOffset`.
-//
-// Arguments:
-// - buffer - a Buffer to search
-// - val - a string, Buffer, or number
-// - byteOffset - an index into `buffer`; will be clamped to an int32
-// - encoding - an optional encoding, relevant is val is a string
-// - dir - true for indexOf, false for lastIndexOf
-function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
-  // Empty buffer means no match
-  if (buffer.length === 0) return -1
-
-  // Normalize byteOffset
-  if (typeof byteOffset === 'string') {
-    encoding = byteOffset
-    byteOffset = 0
-  } else if (byteOffset > 0x7fffffff) {
-    byteOffset = 0x7fffffff
-  } else if (byteOffset < -0x80000000) {
-    byteOffset = -0x80000000
-  }
-  byteOffset = +byteOffset  // Coerce to Number.
-  if (isNaN(byteOffset)) {
-    // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
-    byteOffset = dir ? 0 : (buffer.length - 1)
-  }
-
-  // Normalize byteOffset: negative offsets start from the end of the buffer
-  if (byteOffset < 0) byteOffset = buffer.length + byteOffset
-  if (byteOffset >= buffer.length) {
-    if (dir) return -1
-    else byteOffset = buffer.length - 1
-  } else if (byteOffset < 0) {
-    if (dir) byteOffset = 0
-    else return -1
-  }
-
-  // Normalize val
-  if (typeof val === 'string') {
-    val = Buffer.from(val, encoding)
-  }
-
-  // Finally, search either indexOf (if dir is true) or lastIndexOf
-  if (Buffer.isBuffer(val)) {
-    // Special case: looking for empty string/buffer always fails
-    if (val.length === 0) {
-      return -1
-    }
-    return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
-  } else if (typeof val === 'number') {
-    val = val & 0xFF // Search for a byte value [0-255]
-    if (Buffer.TYPED_ARRAY_SUPPORT &&
-        typeof Uint8Array.prototype.indexOf === 'function') {
-      if (dir) {
-        return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
-      } else {
-        return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
-      }
-    }
-    return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
-  }
-
-  throw new TypeError('val must be string, number or Buffer')
-}
-
-function arrayIndexOf (arr, val, byteOffset, encoding, dir) {
-  var indexSize = 1
-  var arrLength = arr.length
-  var valLength = val.length
-
-  if (encoding !== undefined) {
-    encoding = String(encoding).toLowerCase()
-    if (encoding === 'ucs2' || encoding === 'ucs-2' ||
-        encoding === 'utf16le' || encoding === 'utf-16le') {
-      if (arr.length < 2 || val.length < 2) {
-        return -1
-      }
-      indexSize = 2
-      arrLength /= 2
-      valLength /= 2
-      byteOffset /= 2
-    }
-  }
-
-  function read (buf, i) {
-    if (indexSize === 1) {
-      return buf[i]
-    } else {
-      return buf.readUInt16BE(i * indexSize)
-    }
-  }
-
-  var i
-  if (dir) {
-    var foundIndex = -1
-    for (i = byteOffset; i < arrLength; i++) {
-      if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
-        if (foundIndex === -1) foundIndex = i
-        if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
-      } else {
-        if (foundIndex !== -1) i -= i - foundIndex
-        foundIndex = -1
-      }
-    }
-  } else {
-    if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength
-    for (i = byteOffset; i >= 0; i--) {
-      var found = true
-      for (var j = 0; j < valLength; j++) {
-        if (read(arr, i + j) !== read(val, j)) {
-          found = false
-          break
-        }
-      }
-      if (found) return i
-    }
-  }
-
-  return -1
-}
-
-Buffer.prototype.includes = function includes (val, byteOffset, encoding) {
-  return this.indexOf(val, byteOffset, encoding) !== -1
-}
-
-Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
-  return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
-}
-
-Buffer.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
-  return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
-}
-
-function hexWrite (buf, string, offset, length) {
-  offset = Number(offset) || 0
-  var remaining = buf.length - offset
-  if (!length) {
-    length = remaining
-  } else {
-    length = Number(length)
-    if (length > remaining) {
-      length = remaining
-    }
-  }
-
-  // must be an even number of digits
-  var strLen = string.length
-  if (strLen % 2 !== 0) throw new TypeError('Invalid hex string')
-
-  if (length > strLen / 2) {
-    length = strLen / 2
-  }
-  for (var i = 0; i < length; ++i) {
-    var parsed = parseInt(string.substr(i * 2, 2), 16)
-    if (isNaN(parsed)) return i
-    buf[offset + i] = parsed
-  }
-  return i
-}
-
-function utf8Write (buf, string, offset, length) {
-  return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
-}
-
-function asciiWrite (buf, string, offset, length) {
-  return blitBuffer(asciiToBytes(string), buf, offset, length)
-}
-
-function latin1Write (buf, string, offset, length) {
-  return asciiWrite(buf, string, offset, length)
-}
-
-function base64Write (buf, string, offset, length) {
-  return blitBuffer(base64ToBytes(string), buf, offset, length)
-}
-
-function ucs2Write (buf, string, offset, length) {
-  return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
-}
-
-Buffer.prototype.write = function write (string, offset, length, encoding) {
-  // Buffer#write(string)
-  if (offset === undefined) {
-    encoding = 'utf8'
-    length = this.length
-    offset = 0
-  // Buffer#write(string, encoding)
-  } else if (length === undefined && typeof offset === 'string') {
-    encoding = offset
-    length = this.length
-    offset = 0
-  // Buffer#write(string, offset[, length][, encoding])
-  } else if (isFinite(offset)) {
-    offset = offset | 0
-    if (isFinite(length)) {
-      length = length | 0
-      if (encoding === undefined) encoding = 'utf8'
-    } else {
-      encoding = length
-      length = undefined
-    }
-  // legacy write(string, encoding, offset, length) - remove in v0.13
-  } else {
-    throw new Error(
-      'Buffer.write(string, encoding, offset[, length]) is no longer supported'
-    )
-  }
-
-  var remaining = this.length - offset
-  if (length === undefined || length > remaining) length = remaining
-
-  if ((string.length > 0 && (length < 0 || offset < 0)) || offset > this.length) {
-    throw new RangeError('Attempt to write outside buffer bounds')
-  }
-
-  if (!encoding) encoding = 'utf8'
-
-  var loweredCase = false
-  for (;;) {
-    switch (encoding) {
-      case 'hex':
-        return hexWrite(this, string, offset, length)
-
-      case 'utf8':
-      case 'utf-8':
-        return utf8Write(this, string, offset, length)
-
-      case 'ascii':
-        return asciiWrite(this, string, offset, length)
-
-      case 'latin1':
-      case 'binary':
-        return latin1Write(this, string, offset, length)
-
-      case 'base64':
-        // Warning: maxLength not taken into account in base64Write
-        return base64Write(this, string, offset, length)
-
-      case 'ucs2':
-      case 'ucs-2':
-      case 'utf16le':
-      case 'utf-16le':
-        return ucs2Write(this, string, offset, length)
-
-      default:
-        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
-        encoding = ('' + encoding).toLowerCase()
-        loweredCase = true
-    }
-  }
-}
-
-Buffer.prototype.toJSON = function toJSON () {
-  return {
-    type: 'Buffer',
-    data: Array.prototype.slice.call(this._arr || this, 0)
-  }
-}
-
-function base64Slice (buf, start, end) {
-  if (start === 0 && end === buf.length) {
-    return base64.fromByteArray(buf)
-  } else {
-    return base64.fromByteArray(buf.slice(start, end))
-  }
-}
-
-function utf8Slice (buf, start, end) {
-  end = Math.min(buf.length, end)
-  var res = []
-
-  var i = start
-  while (i < end) {
-    var firstByte = buf[i]
-    var codePoint = null
-    var bytesPerSequence = (firstByte > 0xEF) ? 4
-      : (firstByte > 0xDF) ? 3
-      : (firstByte > 0xBF) ? 2
-      : 1
-
-    if (i + bytesPerSequence <= end) {
-      var secondByte, thirdByte, fourthByte, tempCodePoint
-
-      switch (bytesPerSequence) {
-        case 1:
-          if (firstByte < 0x80) {
-            codePoint = firstByte
-          }
-          break
-        case 2:
-          secondByte = buf[i + 1]
-          if ((secondByte & 0xC0) === 0x80) {
-            tempCodePoint = (firstByte & 0x1F) << 0x6 | (secondByte & 0x3F)
-            if (tempCodePoint > 0x7F) {
-              codePoint = tempCodePoint
-            }
-          }
-          break
-        case 3:
-          secondByte = buf[i + 1]
-          thirdByte = buf[i + 2]
-          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80) {
-            tempCodePoint = (firstByte & 0xF) << 0xC | (secondByte & 0x3F) << 0x6 | (thirdByte & 0x3F)
-            if (tempCodePoint > 0x7FF && (tempCodePoint < 0xD800 || tempCodePoint > 0xDFFF)) {
-              codePoint = tempCodePoint
-            }
-          }
-          break
-        case 4:
-          secondByte = buf[i + 1]
-          thirdByte = buf[i + 2]
-          fourthByte = buf[i + 3]
-          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80 && (fourthByte & 0xC0) === 0x80) {
-            tempCodePoint = (firstByte & 0xF) << 0x12 | (secondByte & 0x3F) << 0xC | (thirdByte & 0x3F) << 0x6 | (fourthByte & 0x3F)
-            if (tempCodePoint > 0xFFFF && tempCodePoint < 0x110000) {
-              codePoint = tempCodePoint
-            }
-          }
-      }
-    }
-
-    if (codePoint === null) {
-      // we did not generate a valid codePoint so insert a
-      // replacement char (U+FFFD) and advance only 1 byte
-      codePoint = 0xFFFD
-      bytesPerSequence = 1
-    } else if (codePoint > 0xFFFF) {
-      // encode to utf16 (surrogate pair dance)
-      codePoint -= 0x10000
-      res.push(codePoint >>> 10 & 0x3FF | 0xD800)
-      codePoint = 0xDC00 | codePoint & 0x3FF
-    }
-
-    res.push(codePoint)
-    i += bytesPerSequence
-  }
-
-  return decodeCodePointsArray(res)
-}
-
-// Based on http://stackoverflow.com/a/22747272/680742, the browser with
-// the lowest limit is Chrome, with 0x10000 args.
-// We go 1 magnitude less, for safety
-var MAX_ARGUMENTS_LENGTH = 0x1000
-
-function decodeCodePointsArray (codePoints) {
-  var len = codePoints.length
-  if (len <= MAX_ARGUMENTS_LENGTH) {
-    return String.fromCharCode.apply(String, codePoints) // avoid extra slice()
-  }
-
-  // Decode in chunks to avoid "call stack size exceeded".
-  var res = ''
-  var i = 0
-  while (i < len) {
-    res += String.fromCharCode.apply(
-      String,
-      codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH)
-    )
-  }
-  return res
-}
-
-function asciiSlice (buf, start, end) {
-  var ret = ''
-  end = Math.min(buf.length, end)
-
-  for (var i = start; i < end; ++i) {
-    ret += String.fromCharCode(buf[i] & 0x7F)
-  }
-  return ret
-}
-
-function latin1Slice (buf, start, end) {
-  var ret = ''
-  end = Math.min(buf.length, end)
-
-  for (var i = start; i < end; ++i) {
-    ret += String.fromCharCode(buf[i])
-  }
-  return ret
-}
-
-function hexSlice (buf, start, end) {
-  var len = buf.length
-
-  if (!start || start < 0) start = 0
-  if (!end || end < 0 || end > len) end = len
-
-  var out = ''
-  for (var i = start; i < end; ++i) {
-    out += toHex(buf[i])
-  }
-  return out
-}
-
-function utf16leSlice (buf, start, end) {
-  var bytes = buf.slice(start, end)
-  var res = ''
-  for (var i = 0; i < bytes.length; i += 2) {
-    res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256)
-  }
-  return res
-}
-
-Buffer.prototype.slice = function slice (start, end) {
-  var len = this.length
-  start = ~~start
-  end = end === undefined ? len : ~~end
-
-  if (start < 0) {
-    start += len
-    if (start < 0) start = 0
-  } else if (start > len) {
-    start = len
-  }
-
-  if (end < 0) {
-    end += len
-    if (end < 0) end = 0
-  } else if (end > len) {
-    end = len
-  }
-
-  if (end < start) end = start
-
-  var newBuf
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    newBuf = this.subarray(start, end)
-    newBuf.__proto__ = Buffer.prototype
-  } else {
-    var sliceLen = end - start
-    newBuf = new Buffer(sliceLen, undefined)
-    for (var i = 0; i < sliceLen; ++i) {
-      newBuf[i] = this[i + start]
-    }
-  }
-
-  return newBuf
-}
-
-/*
- * Need to make sure that buffer isn't trying to write out of bounds.
- */
-function checkOffset (offset, ext, length) {
-  if ((offset % 1) !== 0 || offset < 0) throw new RangeError('offset is not uint')
-  if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length')
-}
-
-Buffer.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
-  offset = offset | 0
-  byteLength = byteLength | 0
-  if (!noAssert) checkOffset(offset, byteLength, this.length)
-
-  var val = this[offset]
-  var mul = 1
-  var i = 0
-  while (++i < byteLength && (mul *= 0x100)) {
-    val += this[offset + i] * mul
-  }
-
-  return val
-}
-
-Buffer.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
-  offset = offset | 0
-  byteLength = byteLength | 0
-  if (!noAssert) {
-    checkOffset(offset, byteLength, this.length)
-  }
-
-  var val = this[offset + --byteLength]
-  var mul = 1
-  while (byteLength > 0 && (mul *= 0x100)) {
-    val += this[offset + --byteLength] * mul
-  }
-
-  return val
-}
-
-Buffer.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 1, this.length)
-  return this[offset]
-}
-
-Buffer.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 2, this.length)
-  return this[offset] | (this[offset + 1] << 8)
-}
-
-Buffer.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 2, this.length)
-  return (this[offset] << 8) | this[offset + 1]
-}
-
-Buffer.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 4, this.length)
-
-  return ((this[offset]) |
-      (this[offset + 1] << 8) |
-      (this[offset + 2] << 16)) +
-      (this[offset + 3] * 0x1000000)
-}
-
-Buffer.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 4, this.length)
-
-  return (this[offset] * 0x1000000) +
-    ((this[offset + 1] << 16) |
-    (this[offset + 2] << 8) |
-    this[offset + 3])
-}
-
-Buffer.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
-  offset = offset | 0
-  byteLength = byteLength | 0
-  if (!noAssert) checkOffset(offset, byteLength, this.length)
-
-  var val = this[offset]
-  var mul = 1
-  var i = 0
-  while (++i < byteLength && (mul *= 0x100)) {
-    val += this[offset + i] * mul
-  }
-  mul *= 0x80
-
-  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
-
-  return val
-}
-
-Buffer.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
-  offset = offset | 0
-  byteLength = byteLength | 0
-  if (!noAssert) checkOffset(offset, byteLength, this.length)
-
-  var i = byteLength
-  var mul = 1
-  var val = this[offset + --i]
-  while (i > 0 && (mul *= 0x100)) {
-    val += this[offset + --i] * mul
-  }
-  mul *= 0x80
-
-  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
-
-  return val
-}
-
-Buffer.prototype.readInt8 = function readInt8 (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 1, this.length)
-  if (!(this[offset] & 0x80)) return (this[offset])
-  return ((0xff - this[offset] + 1) * -1)
-}
-
-Buffer.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 2, this.length)
-  var val = this[offset] | (this[offset + 1] << 8)
-  return (val & 0x8000) ? val | 0xFFFF0000 : val
-}
-
-Buffer.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 2, this.length)
-  var val = this[offset + 1] | (this[offset] << 8)
-  return (val & 0x8000) ? val | 0xFFFF0000 : val
-}
-
-Buffer.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 4, this.length)
-
-  return (this[offset]) |
-    (this[offset + 1] << 8) |
-    (this[offset + 2] << 16) |
-    (this[offset + 3] << 24)
-}
-
-Buffer.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 4, this.length)
-
-  return (this[offset] << 24) |
-    (this[offset + 1] << 16) |
-    (this[offset + 2] << 8) |
-    (this[offset + 3])
-}
-
-Buffer.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 4, this.length)
-  return ieee754.read(this, offset, true, 23, 4)
-}
-
-Buffer.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 4, this.length)
-  return ieee754.read(this, offset, false, 23, 4)
-}
-
-Buffer.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 8, this.length)
-  return ieee754.read(this, offset, true, 52, 8)
-}
-
-Buffer.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 8, this.length)
-  return ieee754.read(this, offset, false, 52, 8)
-}
-
-function checkInt (buf, value, offset, ext, max, min) {
-  if (!Buffer.isBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance')
-  if (value > max || value < min) throw new RangeError('"value" argument is out of bounds')
-  if (offset + ext > buf.length) throw new RangeError('Index out of range')
-}
-
-Buffer.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
-  value = +value
-  offset = offset | 0
-  byteLength = byteLength | 0
-  if (!noAssert) {
-    var maxBytes = Math.pow(2, 8 * byteLength) - 1
-    checkInt(this, value, offset, byteLength, maxBytes, 0)
-  }
-
-  var mul = 1
-  var i = 0
-  this[offset] = value & 0xFF
-  while (++i < byteLength && (mul *= 0x100)) {
-    this[offset + i] = (value / mul) & 0xFF
-  }
-
-  return offset + byteLength
-}
-
-Buffer.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
-  value = +value
-  offset = offset | 0
-  byteLength = byteLength | 0
-  if (!noAssert) {
-    var maxBytes = Math.pow(2, 8 * byteLength) - 1
-    checkInt(this, value, offset, byteLength, maxBytes, 0)
-  }
-
-  var i = byteLength - 1
-  var mul = 1
-  this[offset + i] = value & 0xFF
-  while (--i >= 0 && (mul *= 0x100)) {
-    this[offset + i] = (value / mul) & 0xFF
-  }
-
-  return offset + byteLength
-}
-
-Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0)
-  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
-  this[offset] = (value & 0xff)
-  return offset + 1
-}
-
-function objectWriteUInt16 (buf, value, offset, littleEndian) {
-  if (value < 0) value = 0xffff + value + 1
-  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; ++i) {
-    buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
-      (littleEndian ? i : 1 - i) * 8
-  }
-}
-
-Buffer.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value & 0xff)
-    this[offset + 1] = (value >>> 8)
-  } else {
-    objectWriteUInt16(this, value, offset, true)
-  }
-  return offset + 2
-}
-
-Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value >>> 8)
-    this[offset + 1] = (value & 0xff)
-  } else {
-    objectWriteUInt16(this, value, offset, false)
-  }
-  return offset + 2
-}
-
-function objectWriteUInt32 (buf, value, offset, littleEndian) {
-  if (value < 0) value = 0xffffffff + value + 1
-  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; ++i) {
-    buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff
-  }
-}
-
-Buffer.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset + 3] = (value >>> 24)
-    this[offset + 2] = (value >>> 16)
-    this[offset + 1] = (value >>> 8)
-    this[offset] = (value & 0xff)
-  } else {
-    objectWriteUInt32(this, value, offset, true)
-  }
-  return offset + 4
-}
-
-Buffer.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value >>> 24)
-    this[offset + 1] = (value >>> 16)
-    this[offset + 2] = (value >>> 8)
-    this[offset + 3] = (value & 0xff)
-  } else {
-    objectWriteUInt32(this, value, offset, false)
-  }
-  return offset + 4
-}
-
-Buffer.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) {
-    var limit = Math.pow(2, 8 * byteLength - 1)
-
-    checkInt(this, value, offset, byteLength, limit - 1, -limit)
-  }
-
-  var i = 0
-  var mul = 1
-  var sub = 0
-  this[offset] = value & 0xFF
-  while (++i < byteLength && (mul *= 0x100)) {
-    if (value < 0 && sub === 0 && this[offset + i - 1] !== 0) {
-      sub = 1
-    }
-    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
-  }
-
-  return offset + byteLength
-}
-
-Buffer.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) {
-    var limit = Math.pow(2, 8 * byteLength - 1)
-
-    checkInt(this, value, offset, byteLength, limit - 1, -limit)
-  }
-
-  var i = byteLength - 1
-  var mul = 1
-  var sub = 0
-  this[offset + i] = value & 0xFF
-  while (--i >= 0 && (mul *= 0x100)) {
-    if (value < 0 && sub === 0 && this[offset + i + 1] !== 0) {
-      sub = 1
-    }
-    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
-  }
-
-  return offset + byteLength
-}
-
-Buffer.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80)
-  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
-  if (value < 0) value = 0xff + value + 1
-  this[offset] = (value & 0xff)
-  return offset + 1
-}
-
-Buffer.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value & 0xff)
-    this[offset + 1] = (value >>> 8)
-  } else {
-    objectWriteUInt16(this, value, offset, true)
-  }
-  return offset + 2
-}
-
-Buffer.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value >>> 8)
-    this[offset + 1] = (value & 0xff)
-  } else {
-    objectWriteUInt16(this, value, offset, false)
-  }
-  return offset + 2
-}
-
-Buffer.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value & 0xff)
-    this[offset + 1] = (value >>> 8)
-    this[offset + 2] = (value >>> 16)
-    this[offset + 3] = (value >>> 24)
-  } else {
-    objectWriteUInt32(this, value, offset, true)
-  }
-  return offset + 4
-}
-
-Buffer.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
-  if (value < 0) value = 0xffffffff + value + 1
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value >>> 24)
-    this[offset + 1] = (value >>> 16)
-    this[offset + 2] = (value >>> 8)
-    this[offset + 3] = (value & 0xff)
-  } else {
-    objectWriteUInt32(this, value, offset, false)
-  }
-  return offset + 4
-}
-
-function checkIEEE754 (buf, value, offset, ext, max, min) {
-  if (offset + ext > buf.length) throw new RangeError('Index out of range')
-  if (offset < 0) throw new RangeError('Index out of range')
-}
-
-function writeFloat (buf, value, offset, littleEndian, noAssert) {
-  if (!noAssert) {
-    checkIEEE754(buf, value, offset, 4, 3.4028234663852886e+38, -3.4028234663852886e+38)
-  }
-  ieee754.write(buf, value, offset, littleEndian, 23, 4)
-  return offset + 4
-}
-
-Buffer.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
-  return writeFloat(this, value, offset, true, noAssert)
-}
-
-Buffer.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
-  return writeFloat(this, value, offset, false, noAssert)
-}
-
-function writeDouble (buf, value, offset, littleEndian, noAssert) {
-  if (!noAssert) {
-    checkIEEE754(buf, value, offset, 8, 1.7976931348623157E+308, -1.7976931348623157E+308)
-  }
-  ieee754.write(buf, value, offset, littleEndian, 52, 8)
-  return offset + 8
-}
-
-Buffer.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
-  return writeDouble(this, value, offset, true, noAssert)
-}
-
-Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
-  return writeDouble(this, value, offset, false, noAssert)
-}
-
-// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
-Buffer.prototype.copy = function copy (target, targetStart, start, end) {
-  if (!start) start = 0
-  if (!end && end !== 0) end = this.length
-  if (targetStart >= target.length) targetStart = target.length
-  if (!targetStart) targetStart = 0
-  if (end > 0 && end < start) end = start
-
-  // Copy 0 bytes; we're done
-  if (end === start) return 0
-  if (target.length === 0 || this.length === 0) return 0
-
-  // Fatal error conditions
-  if (targetStart < 0) {
-    throw new RangeError('targetStart out of bounds')
-  }
-  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
-  if (end < 0) throw new RangeError('sourceEnd out of bounds')
-
-  // Are we oob?
-  if (end > this.length) end = this.length
-  if (target.length - targetStart < end - start) {
-    end = target.length - targetStart + start
-  }
-
-  var len = end - start
-  var i
-
-  if (this === target && start < targetStart && targetStart < end) {
-    // descending copy from end
-    for (i = len - 1; i >= 0; --i) {
-      target[i + targetStart] = this[i + start]
-    }
-  } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
-    // ascending copy from start
-    for (i = 0; i < len; ++i) {
-      target[i + targetStart] = this[i + start]
-    }
-  } else {
-    Uint8Array.prototype.set.call(
-      target,
-      this.subarray(start, start + len),
-      targetStart
-    )
-  }
-
-  return len
-}
-
-// Usage:
-//    buffer.fill(number[, offset[, end]])
-//    buffer.fill(buffer[, offset[, end]])
-//    buffer.fill(string[, offset[, end]][, encoding])
-Buffer.prototype.fill = function fill (val, start, end, encoding) {
-  // Handle string cases:
-  if (typeof val === 'string') {
-    if (typeof start === 'string') {
-      encoding = start
-      start = 0
-      end = this.length
-    } else if (typeof end === 'string') {
-      encoding = end
-      end = this.length
-    }
-    if (val.length === 1) {
-      var code = val.charCodeAt(0)
-      if (code < 256) {
-        val = code
-      }
-    }
-    if (encoding !== undefined && typeof encoding !== 'string') {
-      throw new TypeError('encoding must be a string')
-    }
-    if (typeof encoding === 'string' && !Buffer.isEncoding(encoding)) {
-      throw new TypeError('Unknown encoding: ' + encoding)
-    }
-  } else if (typeof val === 'number') {
-    val = val & 255
-  }
-
-  // Invalid ranges are not set to a default, so can range check early.
-  if (start < 0 || this.length < start || this.length < end) {
-    throw new RangeError('Out of range index')
-  }
-
-  if (end <= start) {
-    return this
-  }
-
-  start = start >>> 0
-  end = end === undefined ? this.length : end >>> 0
-
-  if (!val) val = 0
-
-  var i
-  if (typeof val === 'number') {
-    for (i = start; i < end; ++i) {
-      this[i] = val
-    }
-  } else {
-    var bytes = Buffer.isBuffer(val)
-      ? val
-      : utf8ToBytes(new Buffer(val, encoding).toString())
-    var len = bytes.length
-    for (i = 0; i < end - start; ++i) {
-      this[i + start] = bytes[i % len]
-    }
-  }
-
-  return this
-}
-
-// HELPER FUNCTIONS
-// ================
-
-var INVALID_BASE64_RE = /[^+\/0-9A-Za-z-_]/g
-
-function base64clean (str) {
-  // Node strips out invalid characters like \n and \t from the string, base64-js does not
-  str = stringtrim(str).replace(INVALID_BASE64_RE, '')
-  // Node converts strings with length < 2 to ''
-  if (str.length < 2) return ''
-  // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
-  while (str.length % 4 !== 0) {
-    str = str + '='
-  }
-  return str
-}
-
-function stringtrim (str) {
-  if (str.trim) return str.trim()
-  return str.replace(/^\s+|\s+$/g, '')
-}
-
-function toHex (n) {
-  if (n < 16) return '0' + n.toString(16)
-  return n.toString(16)
-}
-
-function utf8ToBytes (string, units) {
-  units = units || Infinity
-  var codePoint
-  var length = string.length
-  var leadSurrogate = null
-  var bytes = []
-
-  for (var i = 0; i < length; ++i) {
-    codePoint = string.charCodeAt(i)
-
-    // is surrogate component
-    if (codePoint > 0xD7FF && codePoint < 0xE000) {
-      // last char was a lead
-      if (!leadSurrogate) {
-        // no lead yet
-        if (codePoint > 0xDBFF) {
-          // unexpected trail
-          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
-          continue
-        } else if (i + 1 === length) {
-          // unpaired lead
-          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
-          continue
-        }
-
-        // valid lead
-        leadSurrogate = codePoint
-
-        continue
-      }
-
-      // 2 leads in a row
-      if (codePoint < 0xDC00) {
-        if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
-        leadSurrogate = codePoint
-        continue
-      }
-
-      // valid surrogate pair
-      codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000
-    } else if (leadSurrogate) {
-      // valid bmp char, but last char was a lead
-      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
-    }
-
-    leadSurrogate = null
-
-    // encode utf8
-    if (codePoint < 0x80) {
-      if ((units -= 1) < 0) break
-      bytes.push(codePoint)
-    } else if (codePoint < 0x800) {
-      if ((units -= 2) < 0) break
-      bytes.push(
-        codePoint >> 0x6 | 0xC0,
-        codePoint & 0x3F | 0x80
-      )
-    } else if (codePoint < 0x10000) {
-      if ((units -= 3) < 0) break
-      bytes.push(
-        codePoint >> 0xC | 0xE0,
-        codePoint >> 0x6 & 0x3F | 0x80,
-        codePoint & 0x3F | 0x80
-      )
-    } else if (codePoint < 0x110000) {
-      if ((units -= 4) < 0) break
-      bytes.push(
-        codePoint >> 0x12 | 0xF0,
-        codePoint >> 0xC & 0x3F | 0x80,
-        codePoint >> 0x6 & 0x3F | 0x80,
-        codePoint & 0x3F | 0x80
-      )
-    } else {
-      throw new Error('Invalid code point')
-    }
-  }
-
-  return bytes
-}
-
-function asciiToBytes (str) {
-  var byteArray = []
-  for (var i = 0; i < str.length; ++i) {
-    // Node's code seems to be doing this and not & 0x7F..
-    byteArray.push(str.charCodeAt(i) & 0xFF)
-  }
-  return byteArray
-}
-
-function utf16leToBytes (str, units) {
-  var c, hi, lo
-  var byteArray = []
-  for (var i = 0; i < str.length; ++i) {
-    if ((units -= 2) < 0) break
-
-    c = str.charCodeAt(i)
-    hi = c >> 8
-    lo = c % 256
-    byteArray.push(lo)
-    byteArray.push(hi)
-  }
-
-  return byteArray
-}
-
-function base64ToBytes (str) {
-  return base64.toByteArray(base64clean(str))
-}
-
-function blitBuffer (src, dst, offset, length) {
-  for (var i = 0; i < length; ++i) {
-    if ((i + offset >= dst.length) || (i >= src.length)) break
-    dst[i + offset] = src[i]
-  }
-  return i
-}
-
-function isnan (val) {
-  return val !== val // eslint-disable-line no-self-compare
-}
-
-},{"base64-js":"prL8","ieee754":"iism","isarray":"2BOv","buffer":"XyCw"}],"nTXV":[function(require,module,exports) {
-var Buffer = require("buffer").Buffer;
-var clone = function () {
-  'use strict';
-
-  function _instanceof(obj, type) {
-    return type != null && obj instanceof type;
-  }
-
-  var nativeMap;
-
-  try {
-    nativeMap = Map;
-  } catch (_) {
-    // maybe a reference error because no `Map`. Give it a dummy value that no
-    // value will ever be an instanceof.
-    nativeMap = function () {};
-  }
-
-  var nativeSet;
-
-  try {
-    nativeSet = Set;
-  } catch (_) {
-    nativeSet = function () {};
-  }
-
-  var nativePromise;
-
-  try {
-    nativePromise = Promise;
-  } catch (_) {
-    nativePromise = function () {};
-  }
-  /**
-   * Clones (copies) an Object using deep copying.
-   *
-   * This function supports circular references by default, but if you are certain
-   * there are no circular references in your object, you can save some CPU time
-   * by calling clone(obj, false).
-   *
-   * Caution: if `circular` is false and `parent` contains circular references,
-   * your program may enter an infinite loop and crash.
-   *
-   * @param `parent` - the object to be cloned
-   * @param `circular` - set to true if the object to be cloned may contain
-   *    circular references. (optional - true by default)
-   * @param `depth` - set to a number if the object is only to be cloned to
-   *    a particular depth. (optional - defaults to Infinity)
-   * @param `prototype` - sets the prototype to be used when cloning an object.
-   *    (optional - defaults to parent prototype).
-   * @param `includeNonEnumerable` - set to true if the non-enumerable properties
-   *    should be cloned as well. Non-enumerable properties on the prototype
-   *    chain will be ignored. (optional - false by default)
-  */
-
-
-  function clone(parent, circular, depth, prototype, includeNonEnumerable) {
-    if (typeof circular === 'object') {
-      depth = circular.depth;
-      prototype = circular.prototype;
-      includeNonEnumerable = circular.includeNonEnumerable;
-      circular = circular.circular;
-    } // maintain two arrays for circular references, where corresponding parents
-    // and children have the same index
-
-
-    var allParents = [];
-    var allChildren = [];
-    var useBuffer = typeof Buffer != 'undefined';
-    if (typeof circular == 'undefined') circular = true;
-    if (typeof depth == 'undefined') depth = Infinity; // recurse this function so we don't reset allParents and allChildren
-
-    function _clone(parent, depth) {
-      // cloning null always returns null
-      if (parent === null) return null;
-      if (depth === 0) return parent;
-      var child;
-      var proto;
-
-      if (typeof parent != 'object') {
-        return parent;
-      }
-
-      if (_instanceof(parent, nativeMap)) {
-        child = new nativeMap();
-      } else if (_instanceof(parent, nativeSet)) {
-        child = new nativeSet();
-      } else if (_instanceof(parent, nativePromise)) {
-        child = new nativePromise(function (resolve, reject) {
-          parent.then(function (value) {
-            resolve(_clone(value, depth - 1));
-          }, function (err) {
-            reject(_clone(err, depth - 1));
-          });
-        });
-      } else if (clone.__isArray(parent)) {
-        child = [];
-      } else if (clone.__isRegExp(parent)) {
-        child = new RegExp(parent.source, __getRegExpFlags(parent));
-        if (parent.lastIndex) child.lastIndex = parent.lastIndex;
-      } else if (clone.__isDate(parent)) {
-        child = new Date(parent.getTime());
-      } else if (useBuffer && Buffer.isBuffer(parent)) {
-        if (Buffer.allocUnsafe) {
-          // Node.js >= 4.5.0
-          child = Buffer.allocUnsafe(parent.length);
-        } else {
-          // Older Node.js versions
-          child = new Buffer(parent.length);
-        }
-
-        parent.copy(child);
-        return child;
-      } else if (_instanceof(parent, Error)) {
-        child = Object.create(parent);
-      } else {
-        if (typeof prototype == 'undefined') {
-          proto = Object.getPrototypeOf(parent);
-          child = Object.create(proto);
-        } else {
-          child = Object.create(prototype);
-          proto = prototype;
-        }
-      }
-
-      if (circular) {
-        var index = allParents.indexOf(parent);
-
-        if (index != -1) {
-          return allChildren[index];
-        }
-
-        allParents.push(parent);
-        allChildren.push(child);
-      }
-
-      if (_instanceof(parent, nativeMap)) {
-        parent.forEach(function (value, key) {
-          var keyChild = _clone(key, depth - 1);
-
-          var valueChild = _clone(value, depth - 1);
-
-          child.set(keyChild, valueChild);
-        });
-      }
-
-      if (_instanceof(parent, nativeSet)) {
-        parent.forEach(function (value) {
-          var entryChild = _clone(value, depth - 1);
-
-          child.add(entryChild);
-        });
-      }
-
-      for (var i in parent) {
-        var attrs;
-
-        if (proto) {
-          attrs = Object.getOwnPropertyDescriptor(proto, i);
-        }
-
-        if (attrs && attrs.set == null) {
-          continue;
-        }
-
-        child[i] = _clone(parent[i], depth - 1);
-      }
-
-      if (Object.getOwnPropertySymbols) {
-        var symbols = Object.getOwnPropertySymbols(parent);
-
-        for (var i = 0; i < symbols.length; i++) {
-          // Don't need to worry about cloning a symbol because it is a primitive,
-          // like a number or string.
-          var symbol = symbols[i];
-          var descriptor = Object.getOwnPropertyDescriptor(parent, symbol);
-
-          if (descriptor && !descriptor.enumerable && !includeNonEnumerable) {
-            continue;
-          }
-
-          child[symbol] = _clone(parent[symbol], depth - 1);
-
-          if (!descriptor.enumerable) {
-            Object.defineProperty(child, symbol, {
-              enumerable: false
-            });
-          }
-        }
-      }
-
-      if (includeNonEnumerable) {
-        var allPropertyNames = Object.getOwnPropertyNames(parent);
-
-        for (var i = 0; i < allPropertyNames.length; i++) {
-          var propertyName = allPropertyNames[i];
-          var descriptor = Object.getOwnPropertyDescriptor(parent, propertyName);
-
-          if (descriptor && descriptor.enumerable) {
-            continue;
-          }
-
-          child[propertyName] = _clone(parent[propertyName], depth - 1);
-          Object.defineProperty(child, propertyName, {
-            enumerable: false
-          });
-        }
-      }
-
-      return child;
-    }
-
-    return _clone(parent, depth);
-  }
-  /**
-   * Simple flat clone using prototype, accepts only objects, usefull for property
-   * override on FLAT configuration object (no nested props).
-   *
-   * USE WITH CAUTION! This may not behave as you wish if you do not know how this
-   * works.
-   */
-
-
-  clone.clonePrototype = function clonePrototype(parent) {
-    if (parent === null) return null;
-
-    var c = function () {};
-
-    c.prototype = parent;
-    return new c();
-  }; // private utility functions
-
-
-  function __objToStr(o) {
-    return Object.prototype.toString.call(o);
-  }
-
-  clone.__objToStr = __objToStr;
-
-  function __isDate(o) {
-    return typeof o === 'object' && __objToStr(o) === '[object Date]';
-  }
-
-  clone.__isDate = __isDate;
-
-  function __isArray(o) {
-    return typeof o === 'object' && __objToStr(o) === '[object Array]';
-  }
-
-  clone.__isArray = __isArray;
-
-  function __isRegExp(o) {
-    return typeof o === 'object' && __objToStr(o) === '[object RegExp]';
-  }
-
-  clone.__isRegExp = __isRegExp;
-
-  function __getRegExpFlags(re) {
-    var flags = '';
-    if (re.global) flags += 'g';
-    if (re.ignoreCase) flags += 'i';
-    if (re.multiline) flags += 'm';
-    return flags;
-  }
-
-  clone.__getRegExpFlags = __getRegExpFlags;
-  return clone;
-}();
-
-if (typeof module === 'object' && module.exports) {
-  module.exports = clone;
-}
-},{"buffer":"XyCw"}],"tTqF":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _quillDelta = _interopRequireDefault(require("quill-delta"));
-
-var _op = _interopRequireDefault(require("quill-delta/lib/op"));
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _code = _interopRequireDefault(require("../formats/code"));
-
-var _cursor = _interopRequireDefault(require("../blots/cursor"));
-
-var _block = _interopRequireWildcard(require("../blots/block"));
-
-var _break = _interopRequireDefault(require("../blots/break"));
-
-var _clone = _interopRequireDefault(require("clone"));
-
-var _deepEqual = _interopRequireDefault(require("deep-equal"));
-
-var _extend = _interopRequireDefault(require("extend"));
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const ASCII = /^[ -~]*$/;
-
-class Editor {
-  constructor(scroll) {
-    this.scroll = scroll;
-    this.delta = this.getDelta();
-  }
-
-  applyDelta(delta) {
-    let consumeNextNewline = false;
-    this.scroll.update();
-    let scrollLength = this.scroll.length();
-    this.scroll.batchStart();
-    delta = normalizeDelta(delta);
-    delta.reduce((index, op) => {
-      let length = op.retain || op.delete || op.insert.length || 1;
-      let attributes = op.attributes || {};
-
-      if (op.insert != null) {
-        if (typeof op.insert === 'string') {
-          let text = op.insert;
-
-          if (text.endsWith('\n') && consumeNextNewline) {
-            consumeNextNewline = false;
-            text = text.slice(0, -1);
-          }
-
-          if (index >= scrollLength && !text.endsWith('\n')) {
-            consumeNextNewline = true;
-          }
-
-          this.scroll.insertAt(index, text);
-          let [line, offset] = this.scroll.line(index);
-          let formats = (0, _extend.default)({}, (0, _block.bubbleFormats)(line));
-
-          if (line instanceof _block.default) {
-            let [leaf] = line.descendant(_parchment.default.Leaf, offset);
-            formats = (0, _extend.default)(formats, (0, _block.bubbleFormats)(leaf));
-          }
-
-          attributes = _op.default.attributes.diff(formats, attributes) || {};
-        } else if (typeof op.insert === 'object') {
-          let key = Object.keys(op.insert)[0]; // There should only be one key
-
-          if (key == null) return index;
-          this.scroll.insertAt(index, key, op.insert[key]);
-        }
-
-        scrollLength += length;
-      }
-
-      Object.keys(attributes).forEach(name => {
-        this.scroll.formatAt(index, length, name, attributes[name]);
-      });
-      return index + length;
-    }, 0);
-    delta.reduce((index, op) => {
-      if (typeof op.delete === 'number') {
-        this.scroll.deleteAt(index, op.delete);
-        return index;
-      }
-
-      return index + (op.retain || op.insert.length || 1);
-    }, 0);
-    this.scroll.batchEnd();
-    return this.update(delta);
-  }
-
-  deleteText(index, length) {
-    this.scroll.deleteAt(index, length);
-    return this.update(new _quillDelta.default().retain(index).delete(length));
-  }
-
-  formatLine(index, length, formats = {}) {
-    this.scroll.update();
-    Object.keys(formats).forEach(format => {
-      if (this.scroll.whitelist != null && !this.scroll.whitelist[format]) return;
-      let lines = this.scroll.lines(index, Math.max(length, 1));
-      let lengthRemaining = length;
-      lines.forEach(line => {
-        let lineLength = line.length();
-
-        if (!(line instanceof _code.default)) {
-          line.format(format, formats[format]);
-        } else {
-          let codeIndex = index - line.offset(this.scroll);
-          let codeLength = line.newlineIndex(codeIndex + lengthRemaining) - codeIndex + 1;
-          line.formatAt(codeIndex, codeLength, format, formats[format]);
-        }
-
-        lengthRemaining -= lineLength;
-      });
-    });
-    this.scroll.optimize();
-    return this.update(new _quillDelta.default().retain(index).retain(length, (0, _clone.default)(formats)));
-  }
-
-  formatText(index, length, formats = {}) {
-    Object.keys(formats).forEach(format => {
-      this.scroll.formatAt(index, length, format, formats[format]);
-    });
-    return this.update(new _quillDelta.default().retain(index).retain(length, (0, _clone.default)(formats)));
-  }
-
-  getContents(index, length) {
-    return this.delta.slice(index, index + length);
-  }
-
-  getDelta() {
-    return this.scroll.lines().reduce((delta, line) => {
-      return delta.concat(line.delta());
-    }, new _quillDelta.default());
-  }
-
-  getFormat(index, length = 0) {
-    let lines = [],
-        leaves = [];
-
-    if (length === 0) {
-      this.scroll.path(index).forEach(function (path) {
-        let [blot] = path;
-
-        if (blot instanceof _block.default) {
-          lines.push(blot);
-        } else if (blot instanceof _parchment.default.Leaf) {
-          leaves.push(blot);
-        }
-      });
-    } else {
-      lines = this.scroll.lines(index, length);
-      leaves = this.scroll.descendants(_parchment.default.Leaf, index, length);
-    }
-
-    let formatsArr = [lines, leaves].map(function (blots) {
-      if (blots.length === 0) return {};
-      let formats = (0, _block.bubbleFormats)(blots.shift());
-
-      while (Object.keys(formats).length > 0) {
-        let blot = blots.shift();
-        if (blot == null) return formats;
-        formats = combineFormats((0, _block.bubbleFormats)(blot), formats);
-      }
-
-      return formats;
-    });
-    return _extend.default.apply(_extend.default, formatsArr);
-  }
-
-  getText(index, length) {
-    return this.getContents(index, length).filter(function (op) {
-      return typeof op.insert === 'string';
-    }).map(function (op) {
-      return op.insert;
-    }).join('');
-  }
-
-  insertEmbed(index, embed, value) {
-    this.scroll.insertAt(index, embed, value);
-    return this.update(new _quillDelta.default().retain(index).insert({
-      [embed]: value
-    }));
-  }
-
-  insertText(index, text, formats = {}) {
-    text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-    this.scroll.insertAt(index, text);
-    Object.keys(formats).forEach(format => {
-      this.scroll.formatAt(index, text.length, format, formats[format]);
-    });
-    return this.update(new _quillDelta.default().retain(index).insert(text, (0, _clone.default)(formats)));
-  }
-
-  isBlank() {
-    if (this.scroll.children.length == 0) return true;
-    if (this.scroll.children.length > 1) return false;
-    let block = this.scroll.children.head;
-    if (block.statics.blotName !== _block.default.blotName) return false;
-    if (block.children.length > 1) return false;
-    return block.children.head instanceof _break.default;
-  }
-
-  removeFormat(index, length) {
-    let text = this.getText(index, length);
-    let [line, offset] = this.scroll.line(index + length);
-    let suffixLength = 0,
-        suffix = new _quillDelta.default();
-
-    if (line != null) {
-      if (!(line instanceof _code.default)) {
-        suffixLength = line.length() - offset;
-      } else {
-        suffixLength = line.newlineIndex(offset) - offset + 1;
-      }
-
-      suffix = line.delta().slice(offset, offset + suffixLength - 1).insert('\n');
-    }
-
-    let contents = this.getContents(index, length + suffixLength);
-    let diff = contents.diff(new _quillDelta.default().insert(text).concat(suffix));
-    let delta = new _quillDelta.default().retain(index).concat(diff);
-    return this.applyDelta(delta);
-  }
-
-  update(change, mutations = [], cursorIndex = undefined) {
-    let oldDelta = this.delta;
-
-    if (mutations.length === 1 && mutations[0].type === 'characterData' && mutations[0].target.data.match(ASCII) && _parchment.default.find(mutations[0].target)) {
-      // Optimization for character changes
-      let textBlot = _parchment.default.find(mutations[0].target);
-
-      let formats = (0, _block.bubbleFormats)(textBlot);
-      let index = textBlot.offset(this.scroll);
-      let oldValue = mutations[0].oldValue.replace(_cursor.default.CONTENTS, '');
-      let oldText = new _quillDelta.default().insert(oldValue);
-      let newText = new _quillDelta.default().insert(textBlot.value());
-      let diffDelta = new _quillDelta.default().retain(index).concat(oldText.diff(newText, cursorIndex));
-      change = diffDelta.reduce(function (delta, op) {
-        if (op.insert) {
-          return delta.insert(op.insert, formats);
-        } else {
-          return delta.push(op);
-        }
-      }, new _quillDelta.default());
-      this.delta = oldDelta.compose(change);
-    } else {
-      this.delta = this.getDelta();
-
-      if (!change || !(0, _deepEqual.default)(oldDelta.compose(change), this.delta)) {
-        change = oldDelta.diff(this.delta, cursorIndex);
-      }
-    }
-
-    return change;
-  }
-
-}
-
-function combineFormats(formats, combined) {
-  return Object.keys(combined).reduce(function (merged, name) {
-    if (formats[name] == null) return merged;
-
-    if (combined[name] === formats[name]) {
-      merged[name] = combined[name];
-    } else if (Array.isArray(combined[name])) {
-      if (combined[name].indexOf(formats[name]) < 0) {
-        merged[name] = combined[name].concat([formats[name]]);
-      }
-    } else {
-      merged[name] = [combined[name], formats[name]];
-    }
-
-    return merged;
-  }, {});
-}
-
-function normalizeDelta(delta) {
-  return delta.reduce(function (delta, op) {
-    if (op.insert === 1) {
-      let attributes = (0, _clone.default)(op.attributes);
-      delete attributes['image'];
-      return delta.insert({
-        image: op.attributes.image
-      }, attributes);
-    }
-
-    if (op.attributes != null && (op.attributes.list === true || op.attributes.bullet === true)) {
-      op = (0, _clone.default)(op);
-
-      if (op.attributes.list) {
-        op.attributes.list = 'ordered';
-      } else {
-        op.attributes.list = 'bullet';
-        delete op.attributes.bullet;
-      }
-    }
-
-    if (typeof op.insert === 'string') {
-      let text = op.insert.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-      return delta.insert(text, op.attributes);
-    }
-
-    return delta.push(op);
-  }, new _quillDelta.default());
-}
-
-var _default = Editor;
-exports.default = _default;
-},{"quill-delta":"BYft","quill-delta/lib/op":"Eba4","parchment":"CQm3","../formats/code":"DdcE","../blots/cursor":"ffqL","../blots/block":"ehqu","../blots/break":"WpVR","clone":"nTXV","deep-equal":"koiw","extend":"dgPI"}],"2JJl":[function(require,module,exports) {
-'use strict';
-
-var has = Object.prototype.hasOwnProperty
-  , prefix = '~';
-
-/**
- * Constructor to create a storage for our `EE` objects.
- * An `Events` instance is a plain object whose properties are event names.
- *
- * @constructor
- * @api private
- */
-function Events() {}
-
-//
-// We try to not inherit from `Object.prototype`. In some engines creating an
-// instance in this way is faster than calling `Object.create(null)` directly.
-// If `Object.create(null)` is not supported we prefix the event names with a
-// character to make sure that the built-in object properties are not
-// overridden or used as an attack vector.
-//
-if (Object.create) {
-  Events.prototype = Object.create(null);
-
-  //
-  // This hack is needed because the `__proto__` property is still inherited in
-  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
-  //
-  if (!new Events().__proto__) prefix = false;
-}
-
-/**
- * Representation of a single event listener.
- *
- * @param {Function} fn The listener function.
- * @param {Mixed} context The context to invoke the listener with.
- * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
- * @constructor
- * @api private
- */
-function EE(fn, context, once) {
-  this.fn = fn;
-  this.context = context;
-  this.once = once || false;
-}
-
-/**
- * Minimal `EventEmitter` interface that is molded against the Node.js
- * `EventEmitter` interface.
- *
- * @constructor
- * @api public
- */
-function EventEmitter() {
-  this._events = new Events();
-  this._eventsCount = 0;
-}
-
-/**
- * Return an array listing the events for which the emitter has registered
- * listeners.
- *
- * @returns {Array}
- * @api public
- */
-EventEmitter.prototype.eventNames = function eventNames() {
-  var names = []
-    , events
-    , name;
-
-  if (this._eventsCount === 0) return names;
-
-  for (name in (events = this._events)) {
-    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
-  }
-
-  if (Object.getOwnPropertySymbols) {
-    return names.concat(Object.getOwnPropertySymbols(events));
-  }
-
-  return names;
-};
-
-/**
- * Return the listeners registered for a given event.
- *
- * @param {String|Symbol} event The event name.
- * @param {Boolean} exists Only check if there are listeners.
- * @returns {Array|Boolean}
- * @api public
- */
-EventEmitter.prototype.listeners = function listeners(event, exists) {
-  var evt = prefix ? prefix + event : event
-    , available = this._events[evt];
-
-  if (exists) return !!available;
-  if (!available) return [];
-  if (available.fn) return [available.fn];
-
-  for (var i = 0, l = available.length, ee = new Array(l); i < l; i++) {
-    ee[i] = available[i].fn;
-  }
-
-  return ee;
-};
-
-/**
- * Calls each of the listeners registered for a given event.
- *
- * @param {String|Symbol} event The event name.
- * @returns {Boolean} `true` if the event had listeners, else `false`.
- * @api public
- */
-EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
-  var evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) return false;
-
-  var listeners = this._events[evt]
-    , len = arguments.length
-    , args
-    , i;
-
-  if (listeners.fn) {
-    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
-
-    switch (len) {
-      case 1: return listeners.fn.call(listeners.context), true;
-      case 2: return listeners.fn.call(listeners.context, a1), true;
-      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
-      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
-      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
-      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
-    }
-
-    for (i = 1, args = new Array(len -1); i < len; i++) {
-      args[i - 1] = arguments[i];
-    }
-
-    listeners.fn.apply(listeners.context, args);
-  } else {
-    var length = listeners.length
-      , j;
-
-    for (i = 0; i < length; i++) {
-      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
-
-      switch (len) {
-        case 1: listeners[i].fn.call(listeners[i].context); break;
-        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
-        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
-        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
-        default:
-          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
-            args[j - 1] = arguments[j];
-          }
-
-          listeners[i].fn.apply(listeners[i].context, args);
-      }
-    }
-  }
-
-  return true;
-};
-
-/**
- * Add a listener for a given event.
- *
- * @param {String|Symbol} event The event name.
- * @param {Function} fn The listener function.
- * @param {Mixed} [context=this] The context to invoke the listener with.
- * @returns {EventEmitter} `this`.
- * @api public
- */
-EventEmitter.prototype.on = function on(event, fn, context) {
-  var listener = new EE(fn, context || this)
-    , evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) this._events[evt] = listener, this._eventsCount++;
-  else if (!this._events[evt].fn) this._events[evt].push(listener);
-  else this._events[evt] = [this._events[evt], listener];
-
-  return this;
-};
-
-/**
- * Add a one-time listener for a given event.
- *
- * @param {String|Symbol} event The event name.
- * @param {Function} fn The listener function.
- * @param {Mixed} [context=this] The context to invoke the listener with.
- * @returns {EventEmitter} `this`.
- * @api public
- */
-EventEmitter.prototype.once = function once(event, fn, context) {
-  var listener = new EE(fn, context || this, true)
-    , evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) this._events[evt] = listener, this._eventsCount++;
-  else if (!this._events[evt].fn) this._events[evt].push(listener);
-  else this._events[evt] = [this._events[evt], listener];
-
-  return this;
-};
-
-/**
- * Remove the listeners of a given event.
- *
- * @param {String|Symbol} event The event name.
- * @param {Function} fn Only remove the listeners that match this function.
- * @param {Mixed} context Only remove the listeners that have this context.
- * @param {Boolean} once Only remove one-time listeners.
- * @returns {EventEmitter} `this`.
- * @api public
- */
-EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
-  var evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) return this;
-  if (!fn) {
-    if (--this._eventsCount === 0) this._events = new Events();
-    else delete this._events[evt];
-    return this;
-  }
-
-  var listeners = this._events[evt];
-
-  if (listeners.fn) {
-    if (
-         listeners.fn === fn
-      && (!once || listeners.once)
-      && (!context || listeners.context === context)
-    ) {
-      if (--this._eventsCount === 0) this._events = new Events();
-      else delete this._events[evt];
-    }
-  } else {
-    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
-      if (
-           listeners[i].fn !== fn
-        || (once && !listeners[i].once)
-        || (context && listeners[i].context !== context)
-      ) {
-        events.push(listeners[i]);
-      }
-    }
-
-    //
-    // Reset the array, or remove it completely if we have no more listeners.
-    //
-    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
-    else if (--this._eventsCount === 0) this._events = new Events();
-    else delete this._events[evt];
-  }
-
-  return this;
-};
-
-/**
- * Remove all listeners, or those of the specified event.
- *
- * @param {String|Symbol} [event] The event name.
- * @returns {EventEmitter} `this`.
- * @api public
- */
-EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
-  var evt;
-
-  if (event) {
-    evt = prefix ? prefix + event : event;
-    if (this._events[evt]) {
-      if (--this._eventsCount === 0) this._events = new Events();
-      else delete this._events[evt];
-    }
-  } else {
-    this._events = new Events();
-    this._eventsCount = 0;
-  }
-
-  return this;
-};
-
-//
-// Alias methods names because people roll like that.
-//
-EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
-EventEmitter.prototype.addListener = EventEmitter.prototype.on;
-
-//
-// This function doesn't apply anymore.
-//
-EventEmitter.prototype.setMaxListeners = function setMaxListeners() {
-  return this;
-};
-
-//
-// Expose the prefix.
-//
-EventEmitter.prefixed = prefix;
-
-//
-// Allow `EventEmitter` to be imported as module namespace.
-//
-EventEmitter.EventEmitter = EventEmitter;
-
-//
-// Expose the module.
-//
-if ('undefined' !== typeof module) {
-  module.exports = EventEmitter;
-}
-
-},{}],"X7fV":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-let levels = ['error', 'warn', 'log', 'info'];
-let level = 'warn';
-
-function debug(method, ...args) {
-  if (levels.indexOf(method) <= levels.indexOf(level)) {
-    console[method](...args); // eslint-disable-line no-console
-  }
-}
-
-function namespace(ns) {
-  return levels.reduce(function (logger, method) {
-    logger[method] = debug.bind(console, method, ns);
-    return logger;
-  }, {});
-}
-
-debug.level = namespace.level = function (newLevel) {
-  level = newLevel;
-};
-
-var _default = namespace;
-exports.default = _default;
-},{}],"WV+H":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getRange = getRange;
-exports.internalGetShadowSelection = internalGetShadowSelection;
-exports.SHADOW_SELECTIONCHANGE = void 0;
-
-/**
- * Copyright 2018 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-// NOTE: copied from https://github.com/GoogleChromeLabs/shadow-selection-polyfill
-const SHADOW_SELECTIONCHANGE = '-shadow-selectionchange';
-exports.SHADOW_SELECTIONCHANGE = SHADOW_SELECTIONCHANGE;
-const hasShadow = 'attachShadow' in Element.prototype && 'getRootNode' in Element.prototype;
-const hasSelection = !!(hasShadow && document.createElement('div').attachShadow({
-  mode: 'open'
-}).getSelection);
-const hasShady = window.ShadyDOM && window.ShadyDOM.inUse;
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-const useDocument = !hasShadow || hasShady || !hasSelection && !isSafari;
-const validNodeTypes = [Node.ELEMENT_NODE, Node.TEXT_NODE, Node.DOCUMENT_FRAGMENT_NODE];
-
-function isValidNode(node) {
-  return validNodeTypes.includes(node.nodeType);
-}
-
-function findNode(s, parentNode, isLeft) {
-  const nodes = parentNode.childNodes || parentNode.children;
-
-  if (!nodes) {
-    return parentNode; // found it, probably text
-  }
-
-  for (let i = 0; i < nodes.length; ++i) {
-    const j = isLeft ? i : nodes.length - 1 - i;
-    const childNode = nodes[j];
-
-    if (!isValidNode(childNode)) {
-      continue; // eslint-disable-line no-continue
-    }
-
-    if (s.containsNode(childNode, true)) {
-      if (s.containsNode(childNode, false)) {
-        return childNode;
-      }
-
-      return findNode(s, childNode, isLeft);
-    }
-  }
-
-  return parentNode;
-}
-/**
- * @param {function(!Event)} fn to add to selectionchange internals
- */
-
-
-const addInternalListener = (() => {
-  if (hasSelection || useDocument) {
-    // getSelection exists or document API can be used
-    document.addEventListener('selectionchange', () => {
-      document.dispatchEvent(new CustomEvent(SHADOW_SELECTIONCHANGE));
-    });
-    return () => {};
-  }
-
-  let withinInternals = false;
-  const handlers = [];
-  document.addEventListener('selectionchange', ev => {
-    if (withinInternals) {
-      return;
-    }
-
-    document.dispatchEvent(new CustomEvent(SHADOW_SELECTIONCHANGE));
-    withinInternals = true;
-    window.setTimeout(() => {
-      withinInternals = false;
-    }, 2); // FIXME: should be > 1 to prevent infinite Selection.update() loop
-
-    handlers.forEach(fn => fn(ev));
-  });
-  return fn => handlers.push(fn);
-})();
-
-let wasCaret = false;
-let resolveTask = null;
-addInternalListener(() => {
-  const s = window.getSelection();
-
-  if (s.type === 'Caret') {
-    wasCaret = true;
-  } else if (wasCaret && !resolveTask) {
-    resolveTask = Promise.resolve(true).then(() => {
-      wasCaret = false;
-      resolveTask = null;
-    });
-  }
-});
-/**
- * @param {!Selection} s the window selection to use
- * @param {!Node} node the node to walk from
- * @param {boolean} walkForward should this walk in natural direction
- * @return {boolean} whether the selection contains the following node (even partially)
- */
-
-function containsNextElement(s, node, walkForward) {
-  const start = node;
-
-  while (node = walkFromNode(node, walkForward)) {
-    // eslint-disable-line no-cond-assign
-    // walking (left) can contain our own parent, which we don't want
-    if (!node.contains(start)) {
-      break;
-    }
-  }
-
-  if (!node) {
-    return false;
-  } // we look for Element as .containsNode says true for _every_ text node, and we only care about
-  // elements themselves
-
-
-  return node instanceof Element && s.containsNode(node, true);
-}
-/**
- * @param {!Selection} s the window selection to use
- * @param {!Node} leftNode the left node
- * @param {!Node} rightNode the right node
- * @return {boolean|undefined} whether this has natural direction
- */
-
-
-function getSelectionDirection(s, leftNode, rightNode) {
-  if (s.type !== 'Range') {
-    return undefined; // no direction
-  }
-
-  const measure = () => s.toString().length;
-
-  const initialSize = measure();
-
-  if (initialSize === 1 && wasCaret && leftNode === rightNode) {
-    // nb. We need to reset a single selection as Safari _always_ tells us the cursor was dragged
-    // left to right (maybe RTL on those devices).
-    // To be fair, Chrome has the same bug.
-    s.extend(leftNode, 0);
-    s.collapseToEnd();
-    return undefined;
-  }
-
-  let updatedSize; // Try extending forward and seeing what happens.
-
-  s.modify('extend', 'forward', 'character');
-  updatedSize = measure();
-
-  if (updatedSize > initialSize || containsNextElement(s, rightNode, true)) {
-    s.modify('extend', 'backward', 'character');
-    return true;
-  } else if (updatedSize < initialSize || !s.containsNode(leftNode)) {
-    s.modify('extend', 'backward', 'character');
-    return false;
-  } // Maybe we were at the end of something. Extend backwards.
-  // TODO(samthor): We seem to be able to get away without the 'backwards' case.
-
-
-  s.modify('extend', 'backward', 'character');
-  updatedSize = measure();
-
-  if (updatedSize > initialSize || containsNextElement(s, leftNode, false)) {
-    s.modify('extend', 'forward', 'character');
-    return false;
-  } else if (updatedSize < initialSize || !s.containsNode(rightNode)) {
-    s.modify('extend', 'forward', 'character');
-    return true;
-  } // This is likely a select-all.
-
-
-  return undefined;
-}
-/**
- * Returns the next valid node (element or text). This is needed as Safari doesn't support
- * TreeWalker inside Shadow DOM. Don't escape shadow roots.
- *
- * @param {!Node} node to start from
- * @param {boolean} walkForward should this walk in natural direction
- * @return {Node} node found, if any
- */
-
-
-function walkFromNode(node, walkForward) {
-  if (!walkForward) {
-    return node.previousSibling || node.parentNode || null;
-  }
-
-  while (node) {
-    if (node.nextSibling) {
-      return node.nextSibling;
-    }
-
-    node = node.parentNode;
-  }
-
-  return null;
-}
-/**
- * @param {!Node} node to check for initial space
- * @return {number} count of initial space
- */
-
-
-function initialSpace(node) {
-  if (node.nodeType !== Node.TEXT_NODE) {
-    return 0;
-  }
-
-  return /^\s*/.exec(node.textContent)[0].length;
-}
-/**
- * @param {!Node} node to check for trailing space
- * @return {number} count of ignored trailing space
- */
-
-
-function ignoredTrailingSpace(node) {
-  if (node.nodeType !== Node.TEXT_NODE) {
-    return 0;
-  }
-
-  const trailingSpaceCount = /\s*$/.exec(node.textContent)[0].length;
-
-  if (!trailingSpaceCount) {
-    return 0;
-  }
-
-  return trailingSpaceCount - 1; // always allow single last
-}
-
-const cachedRange = new Map();
-
-function getRange(root) {
-  if (hasSelection || useDocument) {
-    const s = (useDocument ? document : root).getSelection();
-    return s.rangeCount ? s.getRangeAt(0) : null;
-  }
-
-  const thisFrame = cachedRange.get(root);
-
-  if (thisFrame) {
-    return thisFrame;
-  }
-
-  const result = internalGetShadowSelection(root);
-  cachedRange.set(root, result.range);
-  window.setTimeout(() => {
-    cachedRange.delete(root);
-  }, 0);
-  return result.range;
-}
-
-const fakeSelectionNode = document.createTextNode('');
-
-function internalGetShadowSelection(root) {
-  const range = document.createRange();
-  const s = window.getSelection();
-
-  if (!s.containsNode(root.host, true)) {
-    return {
-      range: null,
-      mode: 'none'
-    };
-  } // TODO: inserting fake nodes isn't ideal, but containsNode doesn't work on nearby adjacent
-  // text nodes (in fact it returns true for all text nodes on the page?!).
-  // insert a fake 'before' node to see if it's selected
-
-
-  root.insertBefore(fakeSelectionNode, root.childNodes[0]);
-  const includesBeforeRoot = s.containsNode(fakeSelectionNode);
-  fakeSelectionNode.remove();
-
-  if (includesBeforeRoot) {
-    return {
-      range: null,
-      mode: 'outside-before'
-    };
-  } // insert a fake 'after' node to see if it's selected
-
-
-  root.appendChild(fakeSelectionNode);
-  const includesAfterRoot = s.containsNode(fakeSelectionNode);
-  fakeSelectionNode.remove();
-
-  if (includesAfterRoot) {
-    return {
-      range: null,
-      mode: 'outside-after'
-    };
-  }
-
-  const measure = () => s.toString().length;
-
-  if (!(s.type === 'Caret' || s.type === 'Range')) {
-    throw new TypeError('unexpected type: ' + s.type);
-  }
-
-  const leftNode = findNode(s, root, true);
-  let rightNode;
-  let isNaturalDirection;
-
-  if (s.type === 'Range') {
-    rightNode = findNode(s, root, false); // get right node here _before_ getSelectionDirection
-
-    isNaturalDirection = getSelectionDirection(s, leftNode, rightNode); // isNaturalDirection means "going right"
-  }
-
-  if (s.type === 'Caret') {
-    // we might transition to being a caret, so don't check initial value
-    s.extend(leftNode, 0);
-    const at = measure();
-    s.collapseToEnd();
-    range.setStart(leftNode, at);
-    range.setEnd(leftNode, at);
-    return {
-      range,
-      mode: 'caret'
-    };
-  } else if (isNaturalDirection === undefined) {
-    if (s.type !== 'Range') {
-      throw new TypeError('unexpected type: ' + s.type);
-    } // This occurs when we can't move because we can't extend left or right to measure the
-    // direction we're moving in. Good news though: we don't need to _change_ the selection
-    // to measure it, so just return immediately.
-
-
-    range.setStart(leftNode, 0);
-    range.setEnd(rightNode, rightNode.length);
-    return {
-      range,
-      mode: 'all'
-    };
-  }
-
-  const size = measure();
-  let offsetLeft, offsetRight; // only one newline/space char is cared about
-
-  const validRightLength = rightNode.length - ignoredTrailingSpace(rightNode);
-
-  if (isNaturalDirection) {
-    // walk in the opposite direction first
-    s.extend(leftNode, 0);
-    offsetLeft = measure() + initialSpace(leftNode); // measure doesn't include initial space
-    // then in our actual direction
-
-    s.extend(rightNode, validRightLength);
-    offsetRight = validRightLength - (measure() - size); // then revert to the original position
-
-    s.extend(rightNode, offsetRight);
-  } else {
-    // walk in the opposite direction first
-    s.extend(rightNode, validRightLength);
-    offsetRight = validRightLength - measure(); // then in our actual direction
-
-    s.extend(leftNode, 0);
-    offsetLeft = measure() - size + initialSpace(leftNode); // doesn't include initial space
-    // then revert to the original position
-
-    s.extend(leftNode, offsetLeft);
-  }
-
-  range.setStart(leftNode, offsetLeft);
-  range.setEnd(rightNode, offsetRight);
-  return {
-    mode: isNaturalDirection ? 'right' : 'left',
-    range
-  };
-}
-},{}],"GJzd":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _eventemitter = _interopRequireDefault(require("eventemitter3"));
-
-var _logger = _interopRequireDefault(require("./logger"));
-
-var _shadowSelectionPolyfill = require("./shadow-selection-polyfill");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-let debug = (0, _logger.default)('quill:events');
-const EVENTS = [_shadowSelectionPolyfill.SHADOW_SELECTIONCHANGE, 'mousedown', 'mouseup', 'click'];
-const EMITTERS = [];
-const supportsRootNode = 'getRootNode' in document;
-EVENTS.forEach(function (eventName) {
-  document.addEventListener(eventName, (...args) => {
-    EMITTERS.forEach(em => {
-      em.handleDOM(...args);
-    });
-  });
-});
-
-class Emitter extends _eventemitter.default {
-  constructor() {
-    super();
-    this.listeners = {};
-    EMITTERS.push(this);
-    this.on('error', debug.error);
-  }
-
-  emit() {
-    debug.log.apply(debug, arguments);
-    super.emit.apply(this, arguments);
-  }
-
-  handleDOM(event, ...args) {
-    const target = event.composedPath ? event.composedPath()[0] : event.target;
-
-    const containsNode = (node, target) => {
-      if (!supportsRootNode || target.getRootNode() === document) {
-        return node.contains(target);
-      }
-
-      while (!node.contains(target)) {
-        const root = target.getRootNode();
-
-        if (!root || !root.host) {
-          return false;
-        }
-
-        target = root.host;
-      }
-
-      return true;
-    };
-
-    (this.listeners[event.type] || []).forEach(function ({
-      node,
-      handler
-    }) {
-      if (target === node || containsNode(node, target)) {
-        handler(event, ...args);
-      }
-    });
-  }
-
-  listenDOM(eventName, node, handler) {
-    if (!this.listeners[eventName]) {
-      this.listeners[eventName] = [];
-    }
-
-    this.listeners[eventName].push({
-      node,
-      handler
-    });
-  }
-
-}
-
-Emitter.events = {
-  EDITOR_CHANGE: 'editor-change',
-  SCROLL_BEFORE_UPDATE: 'scroll-before-update',
-  SCROLL_OPTIMIZE: 'scroll-optimize',
-  SCROLL_UPDATE: 'scroll-update',
-  SELECTION_CHANGE: 'selection-change',
-  TEXT_CHANGE: 'text-change'
-};
-Emitter.sources = {
-  API: 'api',
-  SILENT: 'silent',
-  USER: 'user'
-};
-var _default = Emitter;
-exports.default = _default;
-},{"eventemitter3":"2JJl","./logger":"X7fV","./shadow-selection-polyfill":"WV+H"}],"+ntk":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-class Module {
-  constructor(quill, options = {}) {
-    this.quill = quill;
-    this.options = options;
-  }
-
-}
-
-Module.DEFAULTS = {};
-var _default = Module;
-exports.default = _default;
-},{}],"owE4":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = exports.Range = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _clone = _interopRequireDefault(require("clone"));
-
-var _deepEqual = _interopRequireDefault(require("deep-equal"));
-
-var _emitter = _interopRequireDefault(require("./emitter"));
-
-var _logger = _interopRequireDefault(require("./logger"));
-
-var _shadowSelectionPolyfill = require("./shadow-selection-polyfill");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-let debug = (0, _logger.default)('quill:selection');
-
-class Range {
-  constructor(index, length = 0) {
-    this.index = index;
-    this.length = length;
-  }
-
-}
-
-exports.Range = Range;
-
-class Selection {
-  constructor(scroll, emitter) {
-    this.emitter = emitter;
-    this.scroll = scroll;
-    this.composing = false;
-    this.mouseDown = false;
-    this.root = this.scroll.domNode;
-    this.rootDocument = this.root.getRootNode ? this.root.getRootNode() : document;
-    this.cursor = _parchment.default.create('cursor', this); // savedRange is last non-null range
-
-    this.lastRange = this.savedRange = new Range(0, 0);
-    this.handleComposition();
-    this.handleDragging();
-    this.emitter.listenDOM(_shadowSelectionPolyfill.SHADOW_SELECTIONCHANGE, document, () => {
-      if (!this.mouseDown) {
-        setTimeout(this.update.bind(this, _emitter.default.sources.USER), 1);
-      }
-    });
-    this.emitter.on(_emitter.default.events.EDITOR_CHANGE, (type, delta) => {
-      if (type === _emitter.default.events.TEXT_CHANGE && delta.length() > 0) {
-        this.update(_emitter.default.sources.SILENT);
-      }
-    });
-    this.emitter.on(_emitter.default.events.SCROLL_BEFORE_UPDATE, () => {
-      if (!this.hasFocus()) return;
-      let native = this.getNativeRange();
-      if (native == null) return;
-      if (native.start.node === this.cursor.textNode) return; // cursor.restore() will handle
-      // TODO unclear if this has negative side effects
-
-      this.emitter.once(_emitter.default.events.SCROLL_UPDATE, () => {
-        try {
-          this.setNativeRange(native.start.node, native.start.offset, native.end.node, native.end.offset);
-        } catch (ignored) {}
-      });
-    });
-    this.emitter.on(_emitter.default.events.SCROLL_OPTIMIZE, (mutations, context) => {
-      if (context.range) {
-        const {
-          startNode,
-          startOffset,
-          endNode,
-          endOffset
-        } = context.range;
-        this.setNativeRange(startNode, startOffset, endNode, endOffset);
-      }
-    });
-    this.update(_emitter.default.sources.SILENT);
-  }
-
-  handleComposition() {
-    this.root.addEventListener('compositionstart', () => {
-      this.composing = true;
-    });
-    this.root.addEventListener('compositionend', () => {
-      this.composing = false;
-
-      if (this.cursor.parent) {
-        const range = this.cursor.restore();
-        if (!range) return;
-        setTimeout(() => {
-          this.setNativeRange(range.startNode, range.startOffset, range.endNode, range.endOffset);
-        }, 1);
-      }
-    });
-  }
-
-  handleDragging() {
-    this.emitter.listenDOM('mousedown', document.body, () => {
-      this.mouseDown = true;
-    });
-    this.emitter.listenDOM('mouseup', document.body, () => {
-      this.mouseDown = false;
-      this.update(_emitter.default.sources.USER);
-    });
-  }
-
-  focus() {
-    if (this.hasFocus()) return;
-    this.root.focus();
-    this.setRange(this.savedRange);
-  }
-
-  format(format, value) {
-    if (this.scroll.whitelist != null && !this.scroll.whitelist[format]) return;
-    this.scroll.update();
-    let nativeRange = this.getNativeRange();
-    if (nativeRange == null || !nativeRange.native.collapsed || _parchment.default.query(format, _parchment.default.Scope.BLOCK)) return;
-
-    if (nativeRange.start.node !== this.cursor.textNode) {
-      let blot = _parchment.default.find(nativeRange.start.node, false);
-
-      if (blot == null) return; // TODO Give blot ability to not split
-
-      if (blot instanceof _parchment.default.Leaf) {
-        let after = blot.split(nativeRange.start.offset);
-        blot.parent.insertBefore(this.cursor, after);
-      } else {
-        blot.insertBefore(this.cursor, nativeRange.start.node); // Should never happen
-      }
-
-      this.cursor.attach();
-    }
-
-    this.cursor.format(format, value);
-    this.scroll.optimize();
-    this.setNativeRange(this.cursor.textNode, this.cursor.textNode.data.length);
-    this.update();
-  }
-
-  getBounds(index, length = 0) {
-    let scrollLength = this.scroll.length();
-    index = Math.min(index, scrollLength - 1);
-    length = Math.min(index + length, scrollLength - 1) - index;
-    let node,
-        [leaf, offset] = this.scroll.leaf(index);
-    if (leaf == null) return null;
-    [node, offset] = leaf.position(offset, true);
-    let range = document.createRange();
-
-    if (length > 0) {
-      range.setStart(node, offset);
-      [leaf, offset] = this.scroll.leaf(index + length);
-      if (leaf == null) return null;
-      [node, offset] = leaf.position(offset, true);
-      range.setEnd(node, offset);
-      return range.getBoundingClientRect();
-    } else {
-      let side = 'left';
-      let rect;
-
-      if (node instanceof Text) {
-        if (offset < node.data.length) {
-          range.setStart(node, offset);
-          range.setEnd(node, offset + 1);
-        } else {
-          range.setStart(node, offset - 1);
-          range.setEnd(node, offset);
-          side = 'right';
-        }
-
-        rect = range.getBoundingClientRect();
-      } else {
-        rect = leaf.domNode.getBoundingClientRect();
-        if (offset > 0) side = 'right';
-      }
-
-      return {
-        bottom: rect.top + rect.height,
-        height: rect.height,
-        left: rect[side],
-        right: rect[side],
-        top: rect.top,
-        width: 0
-      };
-    }
-  }
-
-  getNativeRange() {
-    let nativeRange = (0, _shadowSelectionPolyfill.getRange)(this.rootDocument);
-    if (nativeRange == null) return null;
-    let range = this.normalizeNative(nativeRange);
-    debug.info('getNativeRange', range);
-    return range;
-  }
-
-  getRange() {
-    let normalized = this.getNativeRange();
-    if (normalized == null) return [null, null];
-    let range = this.normalizedToRange(normalized);
-    return [range, normalized];
-  }
-
-  hasFocus() {
-    return this.rootDocument.activeElement === this.root;
-  }
-
-  normalizedToRange(range) {
-    let positions = [[range.start.node, range.start.offset]];
-
-    if (!range.native.collapsed) {
-      positions.push([range.end.node, range.end.offset]);
-    }
-
-    let indexes = positions.map(position => {
-      let [node, offset] = position;
-
-      let blot = _parchment.default.find(node, true);
-
-      let index = blot.offset(this.scroll);
-
-      if (offset === 0) {
-        return index;
-      } else if (blot instanceof _parchment.default.Container) {
-        return index + blot.length();
-      } else {
-        return index + blot.index(node, offset);
-      }
-    });
-    let end = Math.min(Math.max(...indexes), this.scroll.length() - 1);
-    let start = Math.min(end, ...indexes);
-    return new Range(start, end - start);
-  }
-
-  normalizeNative(nativeRange) {
-    if (!contains(this.root, nativeRange.startContainer) || !nativeRange.collapsed && !contains(this.root, nativeRange.endContainer)) {
-      return null;
-    }
-
-    let range = {
-      start: {
-        node: nativeRange.startContainer,
-        offset: nativeRange.startOffset
-      },
-      end: {
-        node: nativeRange.endContainer,
-        offset: nativeRange.endOffset
-      },
-      native: nativeRange
-    };
-    [range.start, range.end].forEach(function (position) {
-      let node = position.node,
-          offset = position.offset;
-
-      while (!(node instanceof Text) && node.childNodes.length > 0) {
-        if (node.childNodes.length > offset) {
-          node = node.childNodes[offset];
-          offset = 0;
-        } else if (node.childNodes.length === offset) {
-          node = node.lastChild;
-          offset = node instanceof Text ? node.data.length : node.childNodes.length + 1;
-        } else {
-          break;
-        }
-      }
-
-      position.node = node, position.offset = offset;
-    });
-    return range;
-  }
-
-  rangeToNative(range) {
-    let indexes = range.collapsed ? [range.index] : [range.index, range.index + range.length];
-    let args = [];
-    let scrollLength = this.scroll.length();
-    indexes.forEach((index, i) => {
-      index = Math.min(scrollLength - 1, index);
-      let node,
-          [leaf, offset] = this.scroll.leaf(index);
-      [node, offset] = leaf.position(offset, i !== 0);
-      args.push(node, offset);
-    });
-
-    if (args.length < 2) {
-      args = args.concat(args);
-    }
-
-    return args;
-  }
-
-  scrollIntoView(scrollingContainer) {
-    let range = this.lastRange;
-    if (range == null) return;
-    let bounds = this.getBounds(range.index, range.length);
-    if (bounds == null) return;
-    let limit = this.scroll.length() - 1;
-    let [first] = this.scroll.line(Math.min(range.index, limit));
-    let last = first;
-
-    if (range.length > 0) {
-      [last] = this.scroll.line(Math.min(range.index + range.length, limit));
-    }
-
-    if (first == null || last == null) return;
-    let scrollBounds = scrollingContainer.getBoundingClientRect();
-
-    if (bounds.top < scrollBounds.top) {
-      scrollingContainer.scrollTop -= scrollBounds.top - bounds.top;
-    } else if (bounds.bottom > scrollBounds.bottom) {
-      scrollingContainer.scrollTop += bounds.bottom - scrollBounds.bottom;
-    }
-  }
-
-  setNativeRange(startNode, startOffset, endNode = startNode, endOffset = startOffset, force = false) {
-    debug.info('setNativeRange', startNode, startOffset, endNode, endOffset);
-
-    if (startNode != null && (this.root.parentNode == null || startNode.parentNode == null || endNode.parentNode == null)) {
-      return;
-    }
-
-    let selection = typeof this.rootDocument.getSelection === 'function' ? this.rootDocument.getSelection() : document.getSelection();
-    if (selection == null) return;
-
-    if (startNode != null) {
-      if (!this.hasFocus()) this.root.focus();
-      let native = (this.getNativeRange() || {}).native;
-
-      if (native == null || force || startNode !== native.startContainer || startOffset !== native.startOffset || endNode !== native.endContainer || endOffset !== native.endOffset) {
-        if (startNode.tagName == "BR") {
-          startOffset = [].indexOf.call(startNode.parentNode.childNodes, startNode);
-          startNode = startNode.parentNode;
-        }
-
-        if (endNode.tagName == "BR") {
-          endOffset = [].indexOf.call(endNode.parentNode.childNodes, endNode);
-          endNode = endNode.parentNode;
-        }
-
-        let range = document.createRange();
-        range.setStart(startNode, startOffset);
-        range.setEnd(endNode, endOffset);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-    } else {
-      selection.removeAllRanges();
-      this.root.blur();
-      document.body.focus(); // root.blur() not enough on IE11+Travis+SauceLabs (but not local VMs)
-    }
-  }
-
-  setRange(range, force = false, source = _emitter.default.sources.API) {
-    if (typeof force === 'string') {
-      source = force;
-      force = false;
-    }
-
-    debug.info('setRange', range);
-
-    if (range != null) {
-      let args = this.rangeToNative(range);
-      this.setNativeRange(...args, force);
-    } else {
-      this.setNativeRange(null);
-    }
-
-    this.update(source);
-  }
-
-  update(source = _emitter.default.sources.USER) {
-    let oldRange = this.lastRange;
-    let [lastRange, nativeRange] = this.getRange();
-    this.lastRange = lastRange;
-
-    if (this.lastRange != null) {
-      this.savedRange = this.lastRange;
-    }
-
-    if (!(0, _deepEqual.default)(oldRange, this.lastRange)) {
-      if (!this.composing && nativeRange != null && nativeRange.native.collapsed && nativeRange.start.node !== this.cursor.textNode) {
-        this.cursor.restore();
-      }
-
-      let args = [_emitter.default.events.SELECTION_CHANGE, (0, _clone.default)(this.lastRange), (0, _clone.default)(oldRange), source];
-      this.emitter.emit(_emitter.default.events.EDITOR_CHANGE, ...args);
-
-      if (source !== _emitter.default.sources.SILENT) {
-        this.emitter.emit(...args);
-      }
-    }
-  }
-
-}
-
-exports.default = Selection;
-
-function contains(parent, descendant) {
-  try {
-    // Firefox inserts inaccessible nodes around video elements
-    descendant.parentNode;
-  } catch (e) {
-    return false;
-  } // IE11 has bug with Text nodes
-  // https://connect.microsoft.com/IE/feedback/details/780874/node-contains-is-incorrect
-
-
-  if (descendant instanceof Text) {
-    descendant = descendant.parentNode;
-  }
-
-  return parent.contains(descendant);
-}
-},{"parchment":"CQm3","clone":"nTXV","deep-equal":"koiw","./emitter":"GJzd","./logger":"X7fV","./shadow-selection-polyfill":"WV+H"}],"ks5f":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-class Theme {
-  constructor(quill, options) {
-    this.quill = quill;
-    this.options = options;
-    this.modules = {};
-  }
-
-  init() {
-    Object.keys(this.options.modules).forEach(name => {
-      if (this.modules[name] == null) {
-        this.addModule(name);
-      }
-    });
-  }
-
-  addModule(name) {
-    let moduleClass = this.quill.constructor.import(`modules/${name}`);
-    this.modules[name] = new moduleClass(this.quill, this.options.modules[name] || {});
-    return this.modules[name];
-  }
-
-}
-
-Theme.DEFAULTS = {
-  modules: {}
-};
-Theme.themes = {
-  'default': Theme
-};
-var _default = Theme;
-exports.default = _default;
-},{}],"karo":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.expandConfig = expandConfig;
-exports.overload = overload;
-exports.default = void 0;
-
-require("./polyfill");
-
-var _quillDelta = _interopRequireDefault(require("quill-delta"));
-
-var _editor = _interopRequireDefault(require("./editor"));
-
-var _emitter = _interopRequireDefault(require("./emitter"));
-
-var _module = _interopRequireDefault(require("./module"));
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _selection = _interopRequireWildcard(require("./selection"));
-
-var _extend = _interopRequireDefault(require("extend"));
-
-var _logger = _interopRequireDefault(require("./logger"));
-
-var _theme = _interopRequireDefault(require("./theme"));
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-let debug = (0, _logger.default)('quill');
-
-class Quill {
-  static debug(limit) {
-    if (limit === true) {
-      limit = 'log';
-    }
-
-    _logger.default.level(limit);
-  }
-
-  static find(node) {
-    return node.__quill || _parchment.default.find(node);
-  }
-
-  static import(name) {
-    if (this.imports[name] == null) {
-      debug.error(`Cannot import ${name}. Are you sure it was registered?`);
-    }
-
-    return this.imports[name];
-  }
-
-  static register(path, target, overwrite = false) {
-    if (typeof path !== 'string') {
-      let name = path.attrName || path.blotName;
-
-      if (typeof name === 'string') {
-        // register(Blot | Attributor, overwrite)
-        this.register('formats/' + name, path, target);
-      } else {
-        Object.keys(path).forEach(key => {
-          this.register(key, path[key], target);
-        });
-      }
-    } else {
-      if (this.imports[path] != null && !overwrite) {
-        debug.warn(`Overwriting ${path} with`, target);
-      }
-
-      this.imports[path] = target;
-
-      if ((path.startsWith('blots/') || path.startsWith('formats/')) && target.blotName !== 'abstract') {
-        _parchment.default.register(target);
-      } else if (path.startsWith('modules') && typeof target.register === 'function') {
-        target.register();
-      }
-    }
-  }
-
-  constructor(container, options = {}) {
-    this.options = expandConfig(container, options);
-    this.container = this.options.container;
-
-    if (this.container == null) {
-      return debug.error('Invalid Quill container', container);
-    }
-
-    if (this.options.debug) {
-      Quill.debug(this.options.debug);
-    }
-
-    let html = this.container.innerHTML.trim();
-    this.container.classList.add('ql-container');
-    this.container.innerHTML = '';
-    this.container.__quill = this;
-    this.root = this.addContainer('ql-editor');
-    this.root.classList.add('ql-blank');
-    this.root.setAttribute('data-gramm', false);
-    this.scrollingContainer = this.options.scrollingContainer || this.root;
-    this.emitter = new _emitter.default();
-    this.scroll = _parchment.default.create(this.root, {
-      emitter: this.emitter,
-      whitelist: this.options.formats
-    });
-    this.editor = new _editor.default(this.scroll);
-    this.selection = new _selection.default(this.scroll, this.emitter);
-    this.theme = new this.options.theme(this, this.options);
-    this.keyboard = this.theme.addModule('keyboard');
-    this.clipboard = this.theme.addModule('clipboard');
-    this.history = this.theme.addModule('history');
-    this.theme.init();
-    this.emitter.on(_emitter.default.events.EDITOR_CHANGE, type => {
-      if (type === _emitter.default.events.TEXT_CHANGE) {
-        this.root.classList.toggle('ql-blank', this.editor.isBlank());
-      }
-    });
-    this.emitter.on(_emitter.default.events.SCROLL_UPDATE, (source, mutations) => {
-      let range = this.selection.lastRange;
-      let index = range && range.length === 0 ? range.index : undefined;
-      modify.call(this, () => {
-        return this.editor.update(null, mutations, index);
-      }, source);
-    });
-    let contents = this.clipboard.convert(`<div class='ql-editor' style="white-space: normal;">${html}<p><br></p></div>`);
-    this.setContents(contents);
-    this.history.clear();
-
-    if (this.options.placeholder) {
-      this.root.setAttribute('data-placeholder', this.options.placeholder);
-    }
-
-    if (this.options.readOnly) {
-      this.disable();
-    }
-  }
-
-  addContainer(container, refNode = null) {
-    if (typeof container === 'string') {
-      let className = container;
-      container = document.createElement('div');
-      container.classList.add(className);
-    }
-
-    this.container.insertBefore(container, refNode);
-    return container;
-  }
-
-  blur() {
-    this.selection.setRange(null);
-  }
-
-  deleteText(index, length, source) {
-    [index, length,, source] = overload(index, length, source);
-    return modify.call(this, () => {
-      return this.editor.deleteText(index, length);
-    }, source, index, -1 * length);
-  }
-
-  disable() {
-    this.enable(false);
-  }
-
-  enable(enabled = true) {
-    this.scroll.enable(enabled);
-    this.container.classList.toggle('ql-disabled', !enabled);
-  }
-
-  focus() {
-    let scrollTop = this.scrollingContainer.scrollTop;
-    this.selection.focus();
-    this.scrollingContainer.scrollTop = scrollTop;
-    this.scrollIntoView();
-  }
-
-  format(name, value, source = _emitter.default.sources.API) {
-    return modify.call(this, () => {
-      let range = this.getSelection(true);
-      let change = new _quillDelta.default();
-
-      if (range == null) {
-        return change;
-      } else if (_parchment.default.query(name, _parchment.default.Scope.BLOCK)) {
-        change = this.editor.formatLine(range.index, range.length, {
-          [name]: value
-        });
-      } else if (range.length === 0) {
-        this.selection.format(name, value);
-        return change;
-      } else {
-        change = this.editor.formatText(range.index, range.length, {
-          [name]: value
-        });
-      }
-
-      this.setSelection(range, _emitter.default.sources.SILENT);
-      return change;
-    }, source);
-  }
-
-  formatLine(index, length, name, value, source) {
-    let formats;
-    [index, length, formats, source] = overload(index, length, name, value, source);
-    return modify.call(this, () => {
-      return this.editor.formatLine(index, length, formats);
-    }, source, index, 0);
-  }
-
-  formatText(index, length, name, value, source) {
-    let formats;
-    [index, length, formats, source] = overload(index, length, name, value, source);
-    return modify.call(this, () => {
-      return this.editor.formatText(index, length, formats);
-    }, source, index, 0);
-  }
-
-  getBounds(index, length = 0) {
-    let bounds;
-
-    if (typeof index === 'number') {
-      bounds = this.selection.getBounds(index, length);
-    } else {
-      bounds = this.selection.getBounds(index.index, index.length);
-    }
-
-    let containerBounds = this.container.getBoundingClientRect();
-    return {
-      bottom: bounds.bottom - containerBounds.top,
-      height: bounds.height,
-      left: bounds.left - containerBounds.left,
-      right: bounds.right - containerBounds.left,
-      top: bounds.top - containerBounds.top,
-      width: bounds.width
-    };
-  }
-
-  getContents(index = 0, length = this.getLength() - index) {
-    [index, length] = overload(index, length);
-    return this.editor.getContents(index, length);
-  }
-
-  getFormat(index = this.getSelection(true), length = 0) {
-    if (typeof index === 'number') {
-      return this.editor.getFormat(index, length);
-    } else {
-      return this.editor.getFormat(index.index, index.length);
-    }
-  }
-
-  getIndex(blot) {
-    return blot.offset(this.scroll);
-  }
-
-  getLength() {
-    return this.scroll.length();
-  }
-
-  getLeaf(index) {
-    return this.scroll.leaf(index);
-  }
-
-  getLine(index) {
-    return this.scroll.line(index);
-  }
-
-  getLines(index = 0, length = Number.MAX_VALUE) {
-    if (typeof index !== 'number') {
-      return this.scroll.lines(index.index, index.length);
-    } else {
-      return this.scroll.lines(index, length);
-    }
-  }
-
-  getModule(name) {
-    return this.theme.modules[name];
-  }
-
-  getSelection(focus = false) {
-    if (focus) this.focus();
-    this.update(); // Make sure we access getRange with editor in consistent state
-
-    return this.selection.getRange()[0];
-  }
-
-  getText(index = 0, length = this.getLength() - index) {
-    [index, length] = overload(index, length);
-    return this.editor.getText(index, length);
-  }
-
-  hasFocus() {
-    return this.selection.hasFocus();
-  }
-
-  insertEmbed(index, embed, value, source = Quill.sources.API) {
-    return modify.call(this, () => {
-      return this.editor.insertEmbed(index, embed, value);
-    }, source, index);
-  }
-
-  insertText(index, text, name, value, source) {
-    let formats;
-    [index,, formats, source] = overload(index, 0, name, value, source);
-    return modify.call(this, () => {
-      return this.editor.insertText(index, text, formats);
-    }, source, index, text.length);
-  }
-
-  isEnabled() {
-    return !this.container.classList.contains('ql-disabled');
-  }
-
-  off() {
-    return this.emitter.off.apply(this.emitter, arguments);
-  }
-
-  on() {
-    return this.emitter.on.apply(this.emitter, arguments);
-  }
-
-  once() {
-    return this.emitter.once.apply(this.emitter, arguments);
-  }
-
-  pasteHTML(index, html, source) {
-    this.clipboard.dangerouslyPasteHTML(index, html, source);
-  }
-
-  removeFormat(index, length, source) {
-    [index, length,, source] = overload(index, length, source);
-    return modify.call(this, () => {
-      return this.editor.removeFormat(index, length);
-    }, source, index);
-  }
-
-  scrollIntoView() {
-    this.selection.scrollIntoView(this.scrollingContainer);
-  }
-
-  setContents(delta, source = _emitter.default.sources.API) {
-    return modify.call(this, () => {
-      delta = new _quillDelta.default(delta);
-      let length = this.getLength();
-      let deleted = this.editor.deleteText(0, length);
-      let applied = this.editor.applyDelta(delta);
-      let lastOp = applied.ops[applied.ops.length - 1];
-
-      if (lastOp != null && typeof lastOp.insert === 'string' && lastOp.insert[lastOp.insert.length - 1] === '\n') {
-        this.editor.deleteText(this.getLength() - 1, 1);
-        applied.delete(1);
-      }
-
-      let ret = deleted.compose(applied);
-      return ret;
-    }, source);
-  }
-
-  setSelection(index, length, source) {
-    if (index == null) {
-      this.selection.setRange(null, length || Quill.sources.API);
-    } else {
-      [index, length,, source] = overload(index, length, source);
-      this.selection.setRange(new _selection.Range(index, length), source);
-
-      if (source !== _emitter.default.sources.SILENT) {
-        this.selection.scrollIntoView(this.scrollingContainer);
-      }
-    }
-  }
-
-  setText(text, source = _emitter.default.sources.API) {
-    let delta = new _quillDelta.default().insert(text);
-    return this.setContents(delta, source);
-  }
-
-  update(source = _emitter.default.sources.USER) {
-    let change = this.scroll.update(source); // Will update selection before selection.update() does if text changes
-
-    this.selection.update(source);
-    return change;
-  }
-
-  updateContents(delta, source = _emitter.default.sources.API) {
-    return modify.call(this, () => {
-      delta = new _quillDelta.default(delta);
-      return this.editor.applyDelta(delta, source);
-    }, source, true);
-  }
-
-}
-
-exports.default = Quill;
-Quill.DEFAULTS = {
-  bounds: null,
-  formats: null,
-  modules: {},
-  placeholder: '',
-  readOnly: false,
-  scrollingContainer: null,
-  strict: true,
-  theme: 'default'
-};
-Quill.events = _emitter.default.events;
-Quill.sources = _emitter.default.sources; // eslint-disable-next-line no-undef
-
-Quill.version = typeof QUILL_VERSION === 'undefined' ? 'dev' : QUILL_VERSION;
-Quill.imports = {
-  'delta': _quillDelta.default,
-  'parchment': _parchment.default,
-  'core/module': _module.default,
-  'core/theme': _theme.default
-};
-
-function expandConfig(container, userConfig) {
-  userConfig = (0, _extend.default)(true, {
-    container: container,
-    modules: {
-      clipboard: true,
-      keyboard: true,
-      history: true
-    }
-  }, userConfig);
-
-  if (!userConfig.theme || userConfig.theme === Quill.DEFAULTS.theme) {
-    userConfig.theme = _theme.default;
-  } else {
-    userConfig.theme = Quill.import(`themes/${userConfig.theme}`);
-
-    if (userConfig.theme == null) {
-      throw new Error(`Invalid theme ${userConfig.theme}. Did you register it?`);
-    }
-  }
-
-  let themeConfig = (0, _extend.default)(true, {}, userConfig.theme.DEFAULTS);
-  [themeConfig, userConfig].forEach(function (config) {
-    config.modules = config.modules || {};
-    Object.keys(config.modules).forEach(function (module) {
-      if (config.modules[module] === true) {
-        config.modules[module] = {};
-      }
-    });
-  });
-  let moduleNames = Object.keys(themeConfig.modules).concat(Object.keys(userConfig.modules));
-  let moduleConfig = moduleNames.reduce(function (config, name) {
-    let moduleClass = Quill.import(`modules/${name}`);
-
-    if (moduleClass == null) {
-      debug.error(`Cannot load ${name} module. Are you sure you registered it?`);
-    } else {
-      config[name] = moduleClass.DEFAULTS || {};
-    }
-
-    return config;
-  }, {}); // Special case toolbar shorthand
-
-  if (userConfig.modules != null && userConfig.modules.toolbar && userConfig.modules.toolbar.constructor !== Object) {
-    userConfig.modules.toolbar = {
-      container: userConfig.modules.toolbar
-    };
-  }
-
-  userConfig = (0, _extend.default)(true, {}, Quill.DEFAULTS, {
-    modules: moduleConfig
-  }, themeConfig, userConfig);
-  ['bounds', 'container', 'scrollingContainer'].forEach(function (key) {
-    if (typeof userConfig[key] === 'string') {
-      userConfig[key] = document.querySelector(userConfig[key]);
-    }
-  });
-  userConfig.modules = Object.keys(userConfig.modules).reduce(function (config, name) {
-    if (userConfig.modules[name]) {
-      config[name] = userConfig.modules[name];
-    }
-
-    return config;
-  }, {});
-  return userConfig;
-} // Handle selection preservation and TEXT_CHANGE emission
-// common to modification APIs
-
-
-function modify(modifier, source, index, shift) {
-  if (this.options.strict && !this.isEnabled() && source === _emitter.default.sources.USER) {
-    return new _quillDelta.default();
-  }
-
-  let range = index == null ? null : this.getSelection();
-  let oldDelta = this.editor.delta;
-  let change = modifier();
-
-  if (range != null) {
-    if (index === true) index = range.index;
-
-    if (shift == null) {
-      range = shiftRange(range, change, source);
-    } else if (shift !== 0) {
-      range = shiftRange(range, index, shift, source);
-    }
-
-    this.setSelection(range, _emitter.default.sources.SILENT);
-  }
-
-  if (change.length() > 0) {
-    let args = [_emitter.default.events.TEXT_CHANGE, change, oldDelta, source];
-    this.emitter.emit(_emitter.default.events.EDITOR_CHANGE, ...args);
-
-    if (source !== _emitter.default.sources.SILENT) {
-      this.emitter.emit(...args);
-    }
-  }
-
-  return change;
-}
-
-function overload(index, length, name, value, source) {
-  let formats = {};
-
-  if (typeof index.index === 'number' && typeof index.length === 'number') {
-    // Allow for throwaway end (used by insertText/insertEmbed)
-    if (typeof length !== 'number') {
-      source = value, value = name, name = length, length = index.length, index = index.index;
-    } else {
-      length = index.length, index = index.index;
-    }
-  } else if (typeof length !== 'number') {
-    source = value, value = name, name = length, length = 0;
-  } // Handle format being object, two format name/value strings or excluded
-
-
-  if (typeof name === 'object') {
-    formats = name;
-    source = value;
-  } else if (typeof name === 'string') {
-    if (value != null) {
-      formats[name] = value;
-    } else {
-      source = name;
-    }
-  } // Handle optional source
-
-
-  source = source || _emitter.default.sources.API;
-  return [index, length, formats, source];
-}
-
-function shiftRange(range, index, length, source) {
-  if (range == null) return null;
-  let start, end;
-
-  if (index instanceof _quillDelta.default) {
-    [start, end] = [range.index, range.index + range.length].map(function (pos) {
-      return index.transformPosition(pos, source !== _emitter.default.sources.USER);
-    });
-  } else {
-    [start, end] = [range.index, range.index + range.length].map(function (pos) {
-      if (pos < index || pos === index && source === _emitter.default.sources.USER) return pos;
-
-      if (length >= 0) {
-        return pos + length;
-      } else {
-        return Math.max(index, pos + length);
-      }
-    });
-  }
-
-  return new _selection.Range(start, end - start);
-}
-},{"./polyfill":"y7Ne","quill-delta":"BYft","./editor":"tTqF","./emitter":"GJzd","./module":"+ntk","parchment":"CQm3","./selection":"owE4","extend":"dgPI","./logger":"X7fV","./theme":"ks5f"}],"6tnf":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _block = _interopRequireWildcard(require("./block"));
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class Container extends _parchment.default.Container {}
-
-Container.allowedChildren = [_block.default, _block.BlockEmbed, Container];
-var _default = Container;
-exports.default = _default;
-},{"parchment":"CQm3","./block":"ehqu"}],"UVAQ":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _text = _interopRequireDefault(require("./text"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const GUARD_TEXT = "\uFEFF";
-
-class Embed extends _parchment.default.Embed {
-  constructor(node) {
-    super(node);
-    this.contentNode = document.createElement('span');
-    this.contentNode.setAttribute('contenteditable', false);
-    [].slice.call(this.domNode.childNodes).forEach(childNode => {
-      this.contentNode.appendChild(childNode);
-    });
-    this.leftGuard = document.createTextNode(GUARD_TEXT);
-    this.rightGuard = document.createTextNode(GUARD_TEXT);
-    this.domNode.appendChild(this.leftGuard);
-    this.domNode.appendChild(this.contentNode);
-    this.domNode.appendChild(this.rightGuard);
-  }
-
-  index(node, offset) {
-    if (node === this.leftGuard) return 0;
-    if (node === this.rightGuard) return 1;
-    return super.index(node, offset);
-  }
-
-  restore(node) {
-    let range, textNode;
-    let text = node.data.split(GUARD_TEXT).join('');
-
-    if (node === this.leftGuard) {
-      if (this.prev instanceof _text.default) {
-        let prevLength = this.prev.length();
-        this.prev.insertAt(prevLength, text);
-        range = {
-          startNode: this.prev.domNode,
-          startOffset: prevLength + text.length
-        };
-      } else {
-        textNode = document.createTextNode(text);
-        this.parent.insertBefore(_parchment.default.create(textNode), this);
-        range = {
-          startNode: textNode,
-          startOffset: text.length
-        };
-      }
-    } else if (node === this.rightGuard) {
-      if (this.next instanceof _text.default) {
-        this.next.insertAt(0, text);
-        range = {
-          startNode: this.next.domNode,
-          startOffset: text.length
-        };
-      } else {
-        textNode = document.createTextNode(text);
-        this.parent.insertBefore(_parchment.default.create(textNode), this.next);
-        range = {
-          startNode: textNode,
-          startOffset: text.length
-        };
-      }
-    }
-
-    node.data = GUARD_TEXT;
-    return range;
-  }
-
-  update(mutations, context) {
-    mutations.forEach(mutation => {
-      if (mutation.type === 'characterData' && (mutation.target === this.leftGuard || mutation.target === this.rightGuard)) {
-        let range = this.restore(mutation.target);
-        if (range) context.range = range;
-      }
-    });
-  }
-
-}
-
-var _default = Embed;
-exports.default = _default;
-},{"parchment":"CQm3","./text":"E/MK"}],"FLS8":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _emitter = _interopRequireDefault(require("../core/emitter"));
-
-var _block = _interopRequireWildcard(require("./block"));
-
-var _break = _interopRequireDefault(require("./break"));
-
-var _code = _interopRequireDefault(require("../formats/code"));
-
-var _container = _interopRequireDefault(require("./container"));
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function isLine(blot) {
-  return blot instanceof _block.default || blot instanceof _block.BlockEmbed;
-}
-
-class Scroll extends _parchment.default.Scroll {
-  constructor(domNode, config) {
-    super(domNode);
-    this.emitter = config.emitter;
-
-    if (Array.isArray(config.whitelist)) {
-      this.whitelist = config.whitelist.reduce(function (whitelist, format) {
-        whitelist[format] = true;
-        return whitelist;
-      }, {});
-    } // Some reason fixes composition issues with character languages in Windows/Chrome, Safari
-
-
-    this.domNode.addEventListener('DOMNodeInserted', function () {});
-    this.optimize();
-    this.enable();
-  }
-
-  batchStart() {
-    this.batch = true;
-  }
-
-  batchEnd() {
-    this.batch = false;
-    this.optimize();
-  }
-
-  deleteAt(index, length) {
-    let [first, offset] = this.line(index);
-    let [last] = this.line(index + length);
-    super.deleteAt(index, length);
-
-    if (last != null && first !== last && offset > 0) {
-      if (first instanceof _block.BlockEmbed || last instanceof _block.BlockEmbed) {
-        this.optimize();
-        return;
-      }
-
-      if (first instanceof _code.default) {
-        let newlineIndex = first.newlineIndex(first.length(), true);
-
-        if (newlineIndex > -1) {
-          first = first.split(newlineIndex + 1);
-
-          if (first === last) {
-            this.optimize();
-            return;
-          }
-        }
-      } else if (last instanceof _code.default) {
-        let newlineIndex = last.newlineIndex(0);
-
-        if (newlineIndex > -1) {
-          last.split(newlineIndex + 1);
-        }
-      }
-
-      let ref = last.children.head instanceof _break.default ? null : last.children.head;
-      first.moveChildren(last, ref);
-      first.remove();
-    }
-
-    this.optimize();
-  }
-
-  enable(enabled = true) {
-    this.domNode.setAttribute('contenteditable', enabled);
-  }
-
-  formatAt(index, length, format, value) {
-    if (this.whitelist != null && !this.whitelist[format]) return;
-    super.formatAt(index, length, format, value);
-    this.optimize();
-  }
-
-  insertAt(index, value, def) {
-    if (def != null && this.whitelist != null && !this.whitelist[value]) return;
-
-    if (index >= this.length()) {
-      if (def == null || _parchment.default.query(value, _parchment.default.Scope.BLOCK) == null) {
-        let blot = _parchment.default.create(this.statics.defaultChild);
-
-        this.appendChild(blot);
-
-        if (def == null && value.endsWith('\n')) {
-          value = value.slice(0, -1);
-        }
-
-        blot.insertAt(0, value, def);
-      } else {
-        let embed = _parchment.default.create(value, def);
-
-        this.appendChild(embed);
-      }
-    } else {
-      super.insertAt(index, value, def);
-    }
-
-    this.optimize();
-  }
-
-  insertBefore(blot, ref) {
-    if (blot.statics.scope === _parchment.default.Scope.INLINE_BLOT) {
-      let wrapper = _parchment.default.create(this.statics.defaultChild);
-
-      wrapper.appendChild(blot);
-      blot = wrapper;
-    }
-
-    super.insertBefore(blot, ref);
-  }
-
-  leaf(index) {
-    return this.path(index).pop() || [null, -1];
-  }
-
-  line(index) {
-    if (index === this.length()) {
-      return this.line(index - 1);
-    }
-
-    return this.descendant(isLine, index);
-  }
-
-  lines(index = 0, length = Number.MAX_VALUE) {
-    let getLines = (blot, index, length) => {
-      let lines = [],
-          lengthLeft = length;
-      blot.children.forEachAt(index, length, function (child, index, length) {
-        if (isLine(child)) {
-          lines.push(child);
-        } else if (child instanceof _parchment.default.Container) {
-          lines = lines.concat(getLines(child, index, lengthLeft));
-        }
-
-        lengthLeft -= length;
-      });
-      return lines;
-    };
-
-    return getLines(this, index, length);
-  }
-
-  optimize(mutations = [], context = {}) {
-    if (this.batch === true) return;
-    super.optimize(mutations, context);
-
-    if (mutations.length > 0) {
-      this.emitter.emit(_emitter.default.events.SCROLL_OPTIMIZE, mutations, context);
-    }
-  }
-
-  path(index) {
-    return super.path(index).slice(1); // Exclude self
-  }
-
-  update(mutations) {
-    if (this.batch === true) return;
-    let source = _emitter.default.sources.USER;
-
-    if (typeof mutations === 'string') {
-      source = mutations;
-    }
-
-    if (!Array.isArray(mutations)) {
-      mutations = this.observer.takeRecords();
-    }
-
-    if (mutations.length > 0) {
-      this.emitter.emit(_emitter.default.events.SCROLL_BEFORE_UPDATE, source, mutations);
-    }
-
-    super.update(mutations.concat([])); // pass copy
-
-    if (mutations.length > 0) {
-      this.emitter.emit(_emitter.default.events.SCROLL_UPDATE, source, mutations);
-    }
-  }
-
-}
-
-Scroll.blotName = 'scroll';
-Scroll.className = 'ql-editor';
-Scroll.tagName = 'DIV';
-Scroll.defaultChild = 'block';
-Scroll.allowedChildren = [_block.default, _block.BlockEmbed, _container.default];
-var _default = Scroll;
-exports.default = _default;
-},{"parchment":"CQm3","../core/emitter":"GJzd","./block":"ehqu","./break":"WpVR","../formats/code":"DdcE","./container":"6tnf"}],"y5y/":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.AlignStyle = exports.AlignClass = exports.AlignAttribute = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-let config = {
-  scope: _parchment.default.Scope.BLOCK,
-  whitelist: ['right', 'center', 'justify']
-};
-let AlignAttribute = new _parchment.default.Attributor.Attribute('align', 'align', config);
-exports.AlignAttribute = AlignAttribute;
-let AlignClass = new _parchment.default.Attributor.Class('align', 'ql-align', config);
-exports.AlignClass = AlignClass;
-let AlignStyle = new _parchment.default.Attributor.Style('align', 'text-align', config);
-exports.AlignStyle = AlignStyle;
-},{"parchment":"CQm3"}],"Wxff":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ColorStyle = exports.ColorClass = exports.ColorAttributor = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class ColorAttributor extends _parchment.default.Attributor.Style {
-  value(domNode) {
-    let value = super.value(domNode);
-    if (!value.startsWith('rgb(')) return value;
-    value = value.replace(/^[^\d]+/, '').replace(/[^\d]+$/, '');
-    return '#' + value.split(',').map(function (component) {
-      return ('00' + parseInt(component).toString(16)).slice(-2);
-    }).join('');
-  }
-
-}
-
-exports.ColorAttributor = ColorAttributor;
-let ColorClass = new _parchment.default.Attributor.Class('color', 'ql-color', {
-  scope: _parchment.default.Scope.INLINE
-});
-exports.ColorClass = ColorClass;
-let ColorStyle = new ColorAttributor('color', 'color', {
-  scope: _parchment.default.Scope.INLINE
-});
-exports.ColorStyle = ColorStyle;
-},{"parchment":"CQm3"}],"ioe5":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.BackgroundStyle = exports.BackgroundClass = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _color = require("./color");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-let BackgroundClass = new _parchment.default.Attributor.Class('background', 'ql-bg', {
-  scope: _parchment.default.Scope.INLINE
-});
-exports.BackgroundClass = BackgroundClass;
-let BackgroundStyle = new _color.ColorAttributor('background', 'background-color', {
-  scope: _parchment.default.Scope.INLINE
-});
-exports.BackgroundStyle = BackgroundStyle;
-},{"parchment":"CQm3","./color":"Wxff"}],"kk7L":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DirectionStyle = exports.DirectionClass = exports.DirectionAttribute = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-let config = {
-  scope: _parchment.default.Scope.BLOCK,
-  whitelist: ['rtl']
-};
-let DirectionAttribute = new _parchment.default.Attributor.Attribute('direction', 'dir', config);
-exports.DirectionAttribute = DirectionAttribute;
-let DirectionClass = new _parchment.default.Attributor.Class('direction', 'ql-direction', config);
-exports.DirectionClass = DirectionClass;
-let DirectionStyle = new _parchment.default.Attributor.Style('direction', 'direction', config);
-exports.DirectionStyle = DirectionStyle;
-},{"parchment":"CQm3"}],"VBCP":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.FontClass = exports.FontStyle = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-let config = {
-  scope: _parchment.default.Scope.INLINE,
-  whitelist: ['serif', 'monospace']
-};
-let FontClass = new _parchment.default.Attributor.Class('font', 'ql-font', config);
-exports.FontClass = FontClass;
-
-class FontStyleAttributor extends _parchment.default.Attributor.Style {
-  value(node) {
-    return super.value(node).replace(/["']/g, '');
-  }
-
-}
-
-let FontStyle = new FontStyleAttributor('font', 'font-family', config);
-exports.FontStyle = FontStyle;
-},{"parchment":"CQm3"}],"TDsq":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SizeStyle = exports.SizeClass = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-let SizeClass = new _parchment.default.Attributor.Class('size', 'ql-size', {
-  scope: _parchment.default.Scope.INLINE,
-  whitelist: ['small', 'large', 'huge']
-});
-exports.SizeClass = SizeClass;
-let SizeStyle = new _parchment.default.Attributor.Style('size', 'font-size', {
-  scope: _parchment.default.Scope.INLINE,
-  whitelist: ['10px', '18px', '32px']
-});
-exports.SizeStyle = SizeStyle;
-},{"parchment":"CQm3"}],"tAeH":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.matchAttributor = matchAttributor;
-exports.matchBlot = matchBlot;
-exports.matchNewline = matchNewline;
-exports.matchSpacing = matchSpacing;
-exports.matchText = matchText;
-exports.default = void 0;
-
-var _extend = _interopRequireDefault(require("extend"));
-
-var _quillDelta = _interopRequireDefault(require("quill-delta"));
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _quill = _interopRequireDefault(require("../core/quill"));
-
-var _logger = _interopRequireDefault(require("../core/logger"));
-
-var _module = _interopRequireDefault(require("../core/module"));
-
-var _align = require("../formats/align");
-
-var _background = require("../formats/background");
-
-var _code = _interopRequireDefault(require("../formats/code"));
-
-var _color = require("../formats/color");
-
-var _direction = require("../formats/direction");
-
-var _font = require("../formats/font");
-
-var _size = require("../formats/size");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-let debug = (0, _logger.default)('quill:clipboard');
-const DOM_KEY = '__ql-matcher';
-const CLIPBOARD_CONFIG = [[Node.TEXT_NODE, matchText], [Node.TEXT_NODE, matchNewline], ['br', matchBreak], [Node.ELEMENT_NODE, matchNewline], [Node.ELEMENT_NODE, matchBlot], [Node.ELEMENT_NODE, matchSpacing], [Node.ELEMENT_NODE, matchAttributor], [Node.ELEMENT_NODE, matchStyles], ['li', matchIndent], ['b', matchAlias.bind(matchAlias, 'bold')], ['i', matchAlias.bind(matchAlias, 'italic')], ['style', matchIgnore]];
-const ATTRIBUTE_ATTRIBUTORS = [_align.AlignAttribute, _direction.DirectionAttribute].reduce(function (memo, attr) {
-  memo[attr.keyName] = attr;
-  return memo;
-}, {});
-const STYLE_ATTRIBUTORS = [_align.AlignStyle, _background.BackgroundStyle, _color.ColorStyle, _direction.DirectionStyle, _font.FontStyle, _size.SizeStyle].reduce(function (memo, attr) {
-  memo[attr.keyName] = attr;
-  return memo;
-}, {});
-
-class Clipboard extends _module.default {
-  constructor(quill, options) {
-    super(quill, options);
-    this.quill.root.addEventListener('paste', this.onPaste.bind(this));
-    this.container = this.quill.addContainer('ql-clipboard');
-    this.container.setAttribute('contenteditable', true);
-    this.container.setAttribute('tabindex', -1);
-    this.matchers = [];
-    CLIPBOARD_CONFIG.concat(this.options.matchers).forEach(([selector, matcher]) => {
-      if (!options.matchVisual && matcher === matchSpacing) return;
-      this.addMatcher(selector, matcher);
-    });
-  }
-
-  addMatcher(selector, matcher) {
-    this.matchers.push([selector, matcher]);
-  }
-
-  convert(html) {
-    if (typeof html === 'string') {
-      this.container.innerHTML = html.replace(/\>\r?\n +\</g, '><'); // Remove spaces between tags
-
-      return this.convert();
-    }
-
-    const formats = this.quill.getFormat(this.quill.selection.savedRange.index);
-
-    if (formats[_code.default.blotName]) {
-      const text = this.container.innerText;
-      this.container.innerHTML = '';
-      return new _quillDelta.default().insert(text, {
-        [_code.default.blotName]: formats[_code.default.blotName]
-      });
-    }
-
-    let [elementMatchers, textMatchers] = this.prepareMatching();
-    let delta = traverse(this.container, elementMatchers, textMatchers); // Remove trailing newline
-
-    if (deltaEndsWith(delta, '\n') && delta.ops[delta.ops.length - 1].attributes == null) {
-      delta = delta.compose(new _quillDelta.default().retain(delta.length() - 1).delete(1));
-    }
-
-    debug.log('convert', this.container.innerHTML, delta);
-    this.container.innerHTML = '';
-    return delta;
-  }
-
-  dangerouslyPasteHTML(index, html, source = _quill.default.sources.API) {
-    if (typeof index === 'string') {
-      this.quill.setContents(this.convert(index), html);
-      this.quill.setSelection(0, _quill.default.sources.SILENT);
-    } else {
-      let paste = this.convert(html);
-      this.quill.updateContents(new _quillDelta.default().retain(index).concat(paste), source);
-      this.quill.setSelection(index + paste.length(), _quill.default.sources.SILENT);
-    }
-  }
-
-  onPaste(e) {
-    if (e.defaultPrevented || !this.quill.isEnabled()) return;
-    let range = this.quill.getSelection();
-    let delta = new _quillDelta.default().retain(range.index);
-    let scrollTop = this.quill.scrollingContainer.scrollTop;
-    this.container.focus();
-    this.quill.selection.update(_quill.default.sources.SILENT);
-    setTimeout(() => {
-      delta = delta.concat(this.convert()).delete(range.length);
-      this.quill.updateContents(delta, _quill.default.sources.USER); // range.length contributes to delta.length()
-
-      this.quill.setSelection(delta.length() - range.length, _quill.default.sources.SILENT);
-      this.quill.scrollingContainer.scrollTop = scrollTop;
-      this.quill.focus();
-    }, 1);
-  }
-
-  prepareMatching() {
-    let elementMatchers = [],
-        textMatchers = [];
-    this.matchers.forEach(pair => {
-      let [selector, matcher] = pair;
-
-      switch (selector) {
-        case Node.TEXT_NODE:
-          textMatchers.push(matcher);
-          break;
-
-        case Node.ELEMENT_NODE:
-          elementMatchers.push(matcher);
-          break;
-
-        default:
-          [].forEach.call(this.container.querySelectorAll(selector), node => {
-            // TODO use weakmap
-            node[DOM_KEY] = node[DOM_KEY] || [];
-            node[DOM_KEY].push(matcher);
-          });
-          break;
-      }
-    });
-    return [elementMatchers, textMatchers];
-  }
-
-}
-
-exports.default = Clipboard;
-Clipboard.DEFAULTS = {
-  matchers: [],
-  matchVisual: true
-};
-
-function applyFormat(delta, format, value) {
-  if (typeof format === 'object') {
-    return Object.keys(format).reduce(function (delta, key) {
-      return applyFormat(delta, key, format[key]);
-    }, delta);
-  } else {
-    return delta.reduce(function (delta, op) {
-      if (op.attributes && op.attributes[format]) {
-        return delta.push(op);
-      } else {
-        return delta.insert(op.insert, (0, _extend.default)({}, {
-          [format]: value
-        }, op.attributes));
-      }
-    }, new _quillDelta.default());
-  }
-}
-
-function computeStyle(node) {
-  if (node.nodeType !== Node.ELEMENT_NODE) return {};
-  const DOM_KEY = '__ql-computed-style';
-  return node[DOM_KEY] || (node[DOM_KEY] = window.getComputedStyle(node));
-}
-
-function deltaEndsWith(delta, text) {
-  let endText = "";
-
-  for (let i = delta.ops.length - 1; i >= 0 && endText.length < text.length; --i) {
-    let op = delta.ops[i];
-    if (typeof op.insert !== 'string') break;
-    endText = op.insert + endText;
-  }
-
-  return endText.slice(-1 * text.length) === text;
-}
-
-function isLine(node) {
-  if (node.childNodes.length === 0) return false; // Exclude embed blocks
-
-  let style = computeStyle(node);
-  return ['block', 'list-item'].indexOf(style.display) > -1;
-}
-
-function traverse(node, elementMatchers, textMatchers) {
-  // Post-order
-  if (node.nodeType === node.TEXT_NODE) {
-    return textMatchers.reduce(function (delta, matcher) {
-      return matcher(node, delta);
-    }, new _quillDelta.default());
-  } else if (node.nodeType === node.ELEMENT_NODE) {
-    return [].reduce.call(node.childNodes || [], (delta, childNode) => {
-      let childrenDelta = traverse(childNode, elementMatchers, textMatchers);
-
-      if (childNode.nodeType === node.ELEMENT_NODE) {
-        childrenDelta = elementMatchers.reduce(function (childrenDelta, matcher) {
-          return matcher(childNode, childrenDelta);
-        }, childrenDelta);
-        childrenDelta = (childNode[DOM_KEY] || []).reduce(function (childrenDelta, matcher) {
-          return matcher(childNode, childrenDelta);
-        }, childrenDelta);
-      }
-
-      return delta.concat(childrenDelta);
-    }, new _quillDelta.default());
-  } else {
-    return new _quillDelta.default();
-  }
-}
-
-function matchAlias(format, node, delta) {
-  return applyFormat(delta, format, true);
-}
-
-function matchAttributor(node, delta) {
-  let attributes = _parchment.default.Attributor.Attribute.keys(node);
-
-  let classes = _parchment.default.Attributor.Class.keys(node);
-
-  let styles = _parchment.default.Attributor.Style.keys(node);
-
-  let formats = {};
-  attributes.concat(classes).concat(styles).forEach(name => {
-    let attr = _parchment.default.query(name, _parchment.default.Scope.ATTRIBUTE);
-
-    if (attr != null) {
-      formats[attr.attrName] = attr.value(node);
-      if (formats[attr.attrName]) return;
-    }
-
-    attr = ATTRIBUTE_ATTRIBUTORS[name];
-
-    if (attr != null && (attr.attrName === name || attr.keyName === name)) {
-      formats[attr.attrName] = attr.value(node) || undefined;
-    }
-
-    attr = STYLE_ATTRIBUTORS[name];
-
-    if (attr != null && (attr.attrName === name || attr.keyName === name)) {
-      attr = STYLE_ATTRIBUTORS[name];
-      formats[attr.attrName] = attr.value(node) || undefined;
-    }
-  });
-
-  if (Object.keys(formats).length > 0) {
-    delta = applyFormat(delta, formats);
-  }
-
-  return delta;
-}
-
-function matchBlot(node, delta) {
-  let match = _parchment.default.query(node);
-
-  if (match == null) return delta;
-
-  if (match.prototype instanceof _parchment.default.Embed) {
-    let embed = {};
-    let value = match.value(node);
-
-    if (value != null) {
-      embed[match.blotName] = value;
-      delta = new _quillDelta.default().insert(embed, match.formats(node));
-    }
-  } else if (typeof match.formats === 'function') {
-    delta = applyFormat(delta, match.blotName, match.formats(node));
-  }
-
-  return delta;
-}
-
-function matchBreak(node, delta) {
-  if (!deltaEndsWith(delta, '\n')) {
-    delta.insert('\n');
-  }
-
-  return delta;
-}
-
-function matchIgnore() {
-  return new _quillDelta.default();
-}
-
-function matchIndent(node, delta) {
-  let match = _parchment.default.query(node);
-
-  if (match == null || match.blotName !== 'list-item' || !deltaEndsWith(delta, '\n')) {
-    return delta;
-  }
-
-  let indent = -1,
-      parent = node.parentNode;
-
-  while (!parent.classList.contains('ql-clipboard')) {
-    if ((_parchment.default.query(parent) || {}).blotName === 'list') {
-      indent += 1;
-    }
-
-    parent = parent.parentNode;
-  }
-
-  if (indent <= 0) return delta;
-  return delta.compose(new _quillDelta.default().retain(delta.length() - 1).retain(1, {
-    indent: indent
-  }));
-}
-
-function matchNewline(node, delta) {
-  if (!deltaEndsWith(delta, '\n')) {
-    if (isLine(node) || delta.length() > 0 && node.nextSibling && isLine(node.nextSibling)) {
-      delta.insert('\n');
-    }
-  }
-
-  return delta;
-}
-
-function matchSpacing(node, delta) {
-  if (isLine(node) && node.nextElementSibling != null && !deltaEndsWith(delta, '\n\n')) {
-    let nodeHeight = node.offsetHeight + parseFloat(computeStyle(node).marginTop) + parseFloat(computeStyle(node).marginBottom);
-
-    if (node.nextElementSibling.offsetTop > node.offsetTop + nodeHeight * 1.5) {
-      delta.insert('\n');
-    }
-  }
-
-  return delta;
-}
-
-function matchStyles(node, delta) {
-  let formats = {};
-  let style = node.style || {};
-
-  if (style.fontStyle && computeStyle(node).fontStyle === 'italic') {
-    formats.italic = true;
-  }
-
-  if (style.fontWeight && (computeStyle(node).fontWeight.startsWith('bold') || parseInt(computeStyle(node).fontWeight) >= 700)) {
-    formats.bold = true;
-  }
-
-  if (Object.keys(formats).length > 0) {
-    delta = applyFormat(delta, formats);
-  }
-
-  if (parseFloat(style.textIndent || 0) > 0) {
-    // Could be 0.5in
-    delta = new _quillDelta.default().insert('\t').concat(delta);
-  }
-
-  return delta;
-}
-
-function matchText(node, delta) {
-  let text = node.data; // Word represents empty line with <o:p>&nbsp;</o:p>
-
-  if (node.parentNode.tagName === 'O:P') {
-    return delta.insert(text.trim());
-  }
-
-  if (text.trim().length === 0 && node.parentNode.classList.contains('ql-clipboard')) {
-    return delta;
-  }
-
-  if (!computeStyle(node.parentNode).whiteSpace.startsWith('pre')) {
-    // eslint-disable-next-line func-style
-    let replacer = function (collapse, match) {
-      match = match.replace(/[^\u00a0]/g, ''); // \u00a0 is nbsp;
-
-      return match.length < 1 && collapse ? ' ' : match;
-    };
-
-    text = text.replace(/\r\n/g, ' ').replace(/\n/g, ' ');
-    text = text.replace(/\s\s+/g, replacer.bind(replacer, true)); // collapse whitespace
-
-    if (node.previousSibling == null && isLine(node.parentNode) || node.previousSibling != null && isLine(node.previousSibling)) {
-      text = text.replace(/^\s+/, replacer.bind(replacer, false));
-    }
-
-    if (node.nextSibling == null && isLine(node.parentNode) || node.nextSibling != null && isLine(node.nextSibling)) {
-      text = text.replace(/\s+$/, replacer.bind(replacer, false));
-    }
-  }
-
-  return delta.insert(text);
-}
-},{"extend":"dgPI","quill-delta":"BYft","parchment":"CQm3","../core/quill":"karo","../core/logger":"X7fV","../core/module":"+ntk","../formats/align":"y5y/","../formats/background":"ioe5","../formats/code":"DdcE","../formats/color":"Wxff","../formats/direction":"kk7L","../formats/font":"VBCP","../formats/size":"TDsq"}],"p1wc":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getLastChangeIndex = getLastChangeIndex;
-exports.default = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _quill = _interopRequireDefault(require("../core/quill"));
-
-var _module = _interopRequireDefault(require("../core/module"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class History extends _module.default {
-  constructor(quill, options) {
-    super(quill, options);
-    this.lastRecorded = 0;
-    this.ignoreChange = false;
-    this.clear();
-    this.quill.on(_quill.default.events.EDITOR_CHANGE, (eventName, delta, oldDelta, source) => {
-      if (eventName !== _quill.default.events.TEXT_CHANGE || this.ignoreChange) return;
-
-      if (!this.options.userOnly || source === _quill.default.sources.USER) {
-        this.record(delta, oldDelta);
-      } else {
-        this.transform(delta);
-      }
-    });
-    this.quill.keyboard.addBinding({
-      key: 'Z',
-      shortKey: true
-    }, this.undo.bind(this));
-    this.quill.keyboard.addBinding({
-      key: 'Z',
-      shortKey: true,
-      shiftKey: true
-    }, this.redo.bind(this));
-
-    if (/Win/i.test(navigator.platform)) {
-      this.quill.keyboard.addBinding({
-        key: 'Y',
-        shortKey: true
-      }, this.redo.bind(this));
-    }
-  }
-
-  change(source, dest) {
-    if (this.stack[source].length === 0) return;
-    let delta = this.stack[source].pop();
-    this.stack[dest].push(delta);
-    this.lastRecorded = 0;
-    this.ignoreChange = true;
-    this.quill.updateContents(delta[source], _quill.default.sources.USER);
-    this.ignoreChange = false;
-    let index = getLastChangeIndex(delta[source]);
-    this.quill.setSelection(index);
-  }
-
-  clear() {
-    this.stack = {
-      undo: [],
-      redo: []
-    };
-  }
-
-  cutoff() {
-    this.lastRecorded = 0;
-  }
-
-  record(changeDelta, oldDelta) {
-    if (changeDelta.ops.length === 0) return;
-    this.stack.redo = [];
-    let undoDelta = this.quill.getContents().diff(oldDelta);
-    let timestamp = Date.now();
-
-    if (this.lastRecorded + this.options.delay > timestamp && this.stack.undo.length > 0) {
-      let delta = this.stack.undo.pop();
-      undoDelta = undoDelta.compose(delta.undo);
-      changeDelta = delta.redo.compose(changeDelta);
-    } else {
-      this.lastRecorded = timestamp;
-    }
-
-    this.stack.undo.push({
-      redo: changeDelta,
-      undo: undoDelta
-    });
-
-    if (this.stack.undo.length > this.options.maxStack) {
-      this.stack.undo.shift();
-    }
-  }
-
-  redo() {
-    this.change('redo', 'undo');
-  }
-
-  transform(delta) {
-    this.stack.undo.forEach(function (change) {
-      change.undo = delta.transform(change.undo, true);
-      change.redo = delta.transform(change.redo, true);
-    });
-    this.stack.redo.forEach(function (change) {
-      change.undo = delta.transform(change.undo, true);
-      change.redo = delta.transform(change.redo, true);
-    });
-  }
-
-  undo() {
-    this.change('undo', 'redo');
-  }
-
-}
-
-exports.default = History;
-History.DEFAULTS = {
-  delay: 1000,
-  maxStack: 100,
-  userOnly: false
-};
-
-function endsWithNewlineChange(delta) {
-  let lastOp = delta.ops[delta.ops.length - 1];
-  if (lastOp == null) return false;
-
-  if (lastOp.insert != null) {
-    return typeof lastOp.insert === 'string' && lastOp.insert.endsWith('\n');
-  }
-
-  if (lastOp.attributes != null) {
-    return Object.keys(lastOp.attributes).some(function (attr) {
-      return _parchment.default.query(attr, _parchment.default.Scope.BLOCK) != null;
-    });
-  }
-
-  return false;
-}
-
-function getLastChangeIndex(delta) {
-  let deleteLength = delta.reduce(function (length, op) {
-    length += op.delete || 0;
-    return length;
-  }, 0);
-  let changeIndex = delta.length() - deleteLength;
-
-  if (endsWithNewlineChange(delta)) {
-    changeIndex -= 1;
-  }
-
-  return changeIndex;
-}
-},{"parchment":"CQm3","../core/quill":"karo","../core/module":"+ntk"}],"fCAC":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SHORTKEY = exports.default = void 0;
-
-var _clone = _interopRequireDefault(require("clone"));
-
-var _deepEqual = _interopRequireDefault(require("deep-equal"));
-
-var _extend = _interopRequireDefault(require("extend"));
-
-var _quillDelta = _interopRequireDefault(require("quill-delta"));
-
-var _op = _interopRequireDefault(require("quill-delta/lib/op"));
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _quill = _interopRequireDefault(require("../core/quill"));
-
-var _logger = _interopRequireDefault(require("../core/logger"));
-
-var _module = _interopRequireDefault(require("../core/module"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-let debug = (0, _logger.default)('quill:keyboard');
-const SHORTKEY = /Mac/i.test(navigator.platform) ? 'metaKey' : 'ctrlKey';
-exports.SHORTKEY = SHORTKEY;
-
-class Keyboard extends _module.default {
-  static match(evt, binding) {
-    binding = normalize(binding);
-
-    if (['altKey', 'ctrlKey', 'metaKey', 'shiftKey'].some(function (key) {
-      return !!binding[key] !== evt[key] && binding[key] !== null;
-    })) {
-      return false;
-    }
-
-    return binding.key === (evt.which || evt.keyCode);
-  }
-
-  constructor(quill, options) {
-    super(quill, options);
-    this.bindings = {};
-    Object.keys(this.options.bindings).forEach(name => {
-      if (name === 'list autofill' && quill.scroll.whitelist != null && !quill.scroll.whitelist['list']) {
-        return;
-      }
-
-      if (this.options.bindings[name]) {
-        this.addBinding(this.options.bindings[name]);
-      }
-    });
-    this.addBinding({
-      key: Keyboard.keys.ENTER,
-      shiftKey: null
-    }, handleEnter);
-    this.addBinding({
-      key: Keyboard.keys.ENTER,
-      metaKey: null,
-      ctrlKey: null,
-      altKey: null
-    }, function () {});
-
-    if (/Firefox/i.test(navigator.userAgent)) {
-      // Need to handle delete and backspace for Firefox in the general case #1171
-      this.addBinding({
-        key: Keyboard.keys.BACKSPACE
-      }, {
-        collapsed: true
-      }, handleBackspace);
-      this.addBinding({
-        key: Keyboard.keys.DELETE
-      }, {
-        collapsed: true
-      }, handleDelete);
-    } else {
-      this.addBinding({
-        key: Keyboard.keys.BACKSPACE
-      }, {
-        collapsed: true,
-        prefix: /^.?$/
-      }, handleBackspace);
-      this.addBinding({
-        key: Keyboard.keys.DELETE
-      }, {
-        collapsed: true,
-        suffix: /^.?$/
-      }, handleDelete);
-    }
-
-    this.addBinding({
-      key: Keyboard.keys.BACKSPACE
-    }, {
-      collapsed: false
-    }, handleDeleteRange);
-    this.addBinding({
-      key: Keyboard.keys.DELETE
-    }, {
-      collapsed: false
-    }, handleDeleteRange);
-    this.addBinding({
-      key: Keyboard.keys.BACKSPACE,
-      altKey: null,
-      ctrlKey: null,
-      metaKey: null,
-      shiftKey: null
-    }, {
-      collapsed: true,
-      offset: 0
-    }, handleBackspace);
-    this.listen();
-  }
-
-  addBinding(key, context = {}, handler = {}) {
-    let binding = normalize(key);
-
-    if (binding == null || binding.key == null) {
-      return debug.warn('Attempted to add invalid keyboard binding', binding);
-    }
-
-    if (typeof context === 'function') {
-      context = {
-        handler: context
-      };
-    }
-
-    if (typeof handler === 'function') {
-      handler = {
-        handler: handler
-      };
-    }
-
-    binding = (0, _extend.default)(binding, context, handler);
-    this.bindings[binding.key] = this.bindings[binding.key] || [];
-    this.bindings[binding.key].push(binding);
-  }
-
-  listen() {
-    this.quill.root.addEventListener('keydown', evt => {
-      if (evt.defaultPrevented) return;
-      let which = evt.which || evt.keyCode;
-      let bindings = (this.bindings[which] || []).filter(function (binding) {
-        return Keyboard.match(evt, binding);
-      });
-      if (bindings.length === 0) return;
-      let range = this.quill.getSelection();
-      if (range == null || !this.quill.hasFocus()) return;
-      let [line, offset] = this.quill.getLine(range.index);
-      let [leafStart, offsetStart] = this.quill.getLeaf(range.index);
-      let [leafEnd, offsetEnd] = range.length === 0 ? [leafStart, offsetStart] : this.quill.getLeaf(range.index + range.length);
-      let prefixText = leafStart instanceof _parchment.default.Text ? leafStart.value().slice(0, offsetStart) : '';
-      let suffixText = leafEnd instanceof _parchment.default.Text ? leafEnd.value().slice(offsetEnd) : '';
-      let curContext = {
-        collapsed: range.length === 0,
-        empty: range.length === 0 && line.length() <= 1,
-        format: this.quill.getFormat(range),
-        offset: offset,
-        prefix: prefixText,
-        suffix: suffixText
-      };
-      let prevented = bindings.some(binding => {
-        if (binding.collapsed != null && binding.collapsed !== curContext.collapsed) return false;
-        if (binding.empty != null && binding.empty !== curContext.empty) return false;
-        if (binding.offset != null && binding.offset !== curContext.offset) return false;
-
-        if (Array.isArray(binding.format)) {
-          // any format is present
-          if (binding.format.every(function (name) {
-            return curContext.format[name] == null;
-          })) {
-            return false;
-          }
-        } else if (typeof binding.format === 'object') {
-          // all formats must match
-          if (!Object.keys(binding.format).every(function (name) {
-            if (binding.format[name] === true) return curContext.format[name] != null;
-            if (binding.format[name] === false) return curContext.format[name] == null;
-            return (0, _deepEqual.default)(binding.format[name], curContext.format[name]);
-          })) {
-            return false;
-          }
-        }
-
-        if (binding.prefix != null && !binding.prefix.test(curContext.prefix)) return false;
-        if (binding.suffix != null && !binding.suffix.test(curContext.suffix)) return false;
-        return binding.handler.call(this, range, curContext) !== true;
-      });
-
-      if (prevented) {
-        evt.preventDefault();
-      }
-    });
-  }
-
-}
-
-exports.default = Keyboard;
-Keyboard.keys = {
-  BACKSPACE: 8,
-  TAB: 9,
-  ENTER: 13,
-  ESCAPE: 27,
-  LEFT: 37,
-  UP: 38,
-  RIGHT: 39,
-  DOWN: 40,
-  DELETE: 46
-};
-Keyboard.DEFAULTS = {
-  bindings: {
-    'bold': makeFormatHandler('bold'),
-    'italic': makeFormatHandler('italic'),
-    'underline': makeFormatHandler('underline'),
-    'indent': {
-      // highlight tab or tab at beginning of list, indent or blockquote
-      key: Keyboard.keys.TAB,
-      format: ['blockquote', 'indent', 'list'],
-      handler: function (range, context) {
-        if (context.collapsed && context.offset !== 0) return true;
-        this.quill.format('indent', '+1', _quill.default.sources.USER);
-      }
-    },
-    'outdent': {
-      key: Keyboard.keys.TAB,
-      shiftKey: true,
-      format: ['blockquote', 'indent', 'list'],
-      // highlight tab or tab at beginning of list, indent or blockquote
-      handler: function (range, context) {
-        if (context.collapsed && context.offset !== 0) return true;
-        this.quill.format('indent', '-1', _quill.default.sources.USER);
-      }
-    },
-    'outdent backspace': {
-      key: Keyboard.keys.BACKSPACE,
-      collapsed: true,
-      shiftKey: null,
-      metaKey: null,
-      ctrlKey: null,
-      altKey: null,
-      format: ['indent', 'list'],
-      offset: 0,
-      handler: function (range, context) {
-        if (context.format.indent != null) {
-          this.quill.format('indent', '-1', _quill.default.sources.USER);
-        } else if (context.format.list != null) {
-          this.quill.format('list', false, _quill.default.sources.USER);
-        }
-      }
-    },
-    'indent code-block': makeCodeBlockHandler(true),
-    'outdent code-block': makeCodeBlockHandler(false),
-    'remove tab': {
-      key: Keyboard.keys.TAB,
-      shiftKey: true,
-      collapsed: true,
-      prefix: /\t$/,
-      handler: function (range) {
-        this.quill.deleteText(range.index - 1, 1, _quill.default.sources.USER);
-      }
-    },
-    'tab': {
-      key: Keyboard.keys.TAB,
-      handler: function (range) {
-        this.quill.history.cutoff();
-        let delta = new _quillDelta.default().retain(range.index).delete(range.length).insert('\t');
-        this.quill.updateContents(delta, _quill.default.sources.USER);
-        this.quill.history.cutoff();
-        this.quill.setSelection(range.index + 1, _quill.default.sources.SILENT);
-      }
-    },
-    'list empty enter': {
-      key: Keyboard.keys.ENTER,
-      collapsed: true,
-      format: ['list'],
-      empty: true,
-      handler: function (range, context) {
-        this.quill.format('list', false, _quill.default.sources.USER);
-
-        if (context.format.indent) {
-          this.quill.format('indent', false, _quill.default.sources.USER);
-        }
-      }
-    },
-    'checklist enter': {
-      key: Keyboard.keys.ENTER,
-      collapsed: true,
-      format: {
-        list: 'checked'
-      },
-      handler: function (range) {
-        let [line, offset] = this.quill.getLine(range.index);
-        let formats = (0, _extend.default)({}, line.formats(), {
-          list: 'checked'
-        });
-        let delta = new _quillDelta.default().retain(range.index).insert('\n', formats).retain(line.length() - offset - 1).retain(1, {
-          list: 'unchecked'
-        });
-        this.quill.updateContents(delta, _quill.default.sources.USER);
-        this.quill.setSelection(range.index + 1, _quill.default.sources.SILENT);
-        this.quill.scrollIntoView();
-      }
-    },
-    'header enter': {
-      key: Keyboard.keys.ENTER,
-      collapsed: true,
-      format: ['header'],
-      suffix: /^$/,
-      handler: function (range, context) {
-        let [line, offset] = this.quill.getLine(range.index);
-        let delta = new _quillDelta.default().retain(range.index).insert('\n', context.format).retain(line.length() - offset - 1).retain(1, {
-          header: null
-        });
-        this.quill.updateContents(delta, _quill.default.sources.USER);
-        this.quill.setSelection(range.index + 1, _quill.default.sources.SILENT);
-        this.quill.scrollIntoView();
-      }
-    },
-    'list autofill': {
-      key: ' ',
-      collapsed: true,
-      format: {
-        list: false
-      },
-      prefix: /^\s*?(\d+\.|-|\*|\[ ?\]|\[x\])$/,
-      handler: function (range, context) {
-        let length = context.prefix.length;
-        let [line, offset] = this.quill.getLine(range.index);
-        if (offset > length) return true;
-        let value;
-
-        switch (context.prefix.trim()) {
-          case '[]':
-          case '[ ]':
-            value = 'unchecked';
-            break;
-
-          case '[x]':
-            value = 'checked';
-            break;
-
-          case '-':
-          case '*':
-            value = 'bullet';
-            break;
-
-          default:
-            value = 'ordered';
-        }
-
-        this.quill.insertText(range.index, ' ', _quill.default.sources.USER);
-        this.quill.history.cutoff();
-        let delta = new _quillDelta.default().retain(range.index - offset).delete(length + 1).retain(line.length() - 2 - offset).retain(1, {
-          list: value
-        });
-        this.quill.updateContents(delta, _quill.default.sources.USER);
-        this.quill.history.cutoff();
-        this.quill.setSelection(range.index - length, _quill.default.sources.SILENT);
-      }
-    },
-    'code exit': {
-      key: Keyboard.keys.ENTER,
-      collapsed: true,
-      format: ['code-block'],
-      prefix: /\n\n$/,
-      suffix: /^\s+$/,
-      handler: function (range) {
-        const [line, offset] = this.quill.getLine(range.index);
-        const delta = new _quillDelta.default().retain(range.index + line.length() - offset - 2).retain(1, {
-          'code-block': null
-        }).delete(1);
-        this.quill.updateContents(delta, _quill.default.sources.USER);
-      }
-    },
-    'embed left': makeEmbedArrowHandler(Keyboard.keys.LEFT, false),
-    'embed left shift': makeEmbedArrowHandler(Keyboard.keys.LEFT, true),
-    'embed right': makeEmbedArrowHandler(Keyboard.keys.RIGHT, false),
-    'embed right shift': makeEmbedArrowHandler(Keyboard.keys.RIGHT, true)
-  }
-};
-
-function makeEmbedArrowHandler(key, shiftKey) {
-  const where = key === Keyboard.keys.LEFT ? 'prefix' : 'suffix';
-  return {
-    key,
-    shiftKey,
-    altKey: null,
-    [where]: /^$/,
-    handler: function (range) {
-      let index = range.index;
-
-      if (key === Keyboard.keys.RIGHT) {
-        index += range.length + 1;
-      }
-
-      const [leaf] = this.quill.getLeaf(index);
-      if (!(leaf instanceof _parchment.default.Embed)) return true;
-
-      if (key === Keyboard.keys.LEFT) {
-        if (shiftKey) {
-          this.quill.setSelection(range.index - 1, range.length + 1, _quill.default.sources.USER);
-        } else {
-          this.quill.setSelection(range.index - 1, _quill.default.sources.USER);
-        }
-      } else {
-        if (shiftKey) {
-          this.quill.setSelection(range.index, range.length + 1, _quill.default.sources.USER);
-        } else {
-          this.quill.setSelection(range.index + range.length + 1, _quill.default.sources.USER);
-        }
-      }
-
-      return false;
-    }
-  };
-}
-
-function handleBackspace(range, context) {
-  if (range.index === 0 || this.quill.getLength() <= 1) return;
-  let [line] = this.quill.getLine(range.index);
-  let formats = {};
-
-  if (context.offset === 0) {
-    let [prev] = this.quill.getLine(range.index - 1);
-
-    if (prev != null && prev.length() > 1) {
-      let curFormats = line.formats();
-      let prevFormats = this.quill.getFormat(range.index - 1, 1);
-      formats = _op.default.attributes.diff(curFormats, prevFormats) || {};
-    }
-  } // Check for astral symbols
-
-
-  let length = /[\uD800-\uDBFF][\uDC00-\uDFFF]$/.test(context.prefix) ? 2 : 1;
-  this.quill.deleteText(range.index - length, length, _quill.default.sources.USER);
-
-  if (Object.keys(formats).length > 0) {
-    this.quill.formatLine(range.index - length, length, formats, _quill.default.sources.USER);
-  }
-
-  this.quill.focus();
-}
-
-function handleDelete(range, context) {
-  // Check for astral symbols
-  let length = /^[\uD800-\uDBFF][\uDC00-\uDFFF]/.test(context.suffix) ? 2 : 1;
-  if (range.index >= this.quill.getLength() - length) return;
-  let formats = {},
-      nextLength = 0;
-  let [line] = this.quill.getLine(range.index);
-
-  if (context.offset >= line.length() - 1) {
-    let [next] = this.quill.getLine(range.index + 1);
-
-    if (next) {
-      let curFormats = line.formats();
-      let nextFormats = this.quill.getFormat(range.index, 1);
-      formats = _op.default.attributes.diff(curFormats, nextFormats) || {};
-      nextLength = next.length();
-    }
-  }
-
-  this.quill.deleteText(range.index, length, _quill.default.sources.USER);
-
-  if (Object.keys(formats).length > 0) {
-    this.quill.formatLine(range.index + nextLength - 1, length, formats, _quill.default.sources.USER);
-  }
-}
-
-function handleDeleteRange(range) {
-  let lines = this.quill.getLines(range);
-  let formats = {};
-
-  if (lines.length > 1) {
-    let firstFormats = lines[0].formats();
-    let lastFormats = lines[lines.length - 1].formats();
-    formats = _op.default.attributes.diff(lastFormats, firstFormats) || {};
-  }
-
-  this.quill.deleteText(range, _quill.default.sources.USER);
-
-  if (Object.keys(formats).length > 0) {
-    this.quill.formatLine(range.index, 1, formats, _quill.default.sources.USER);
-  }
-
-  this.quill.setSelection(range.index, _quill.default.sources.SILENT);
-  this.quill.focus();
-}
-
-function handleEnter(range, context) {
-  if (range.length > 0) {
-    this.quill.scroll.deleteAt(range.index, range.length); // So we do not trigger text-change
-  }
-
-  let lineFormats = Object.keys(context.format).reduce(function (lineFormats, format) {
-    if (_parchment.default.query(format, _parchment.default.Scope.BLOCK) && !Array.isArray(context.format[format])) {
-      lineFormats[format] = context.format[format];
-    }
-
-    return lineFormats;
-  }, {});
-  this.quill.insertText(range.index, '\n', lineFormats, _quill.default.sources.USER); // Earlier scroll.deleteAt might have messed up our selection,
-  // so insertText's built in selection preservation is not reliable
-
-  this.quill.setSelection(range.index + 1, _quill.default.sources.SILENT);
-  this.quill.focus();
-  Object.keys(context.format).forEach(name => {
-    if (lineFormats[name] != null) return;
-    if (Array.isArray(context.format[name])) return;
-    if (name === 'link') return;
-    this.quill.format(name, context.format[name], _quill.default.sources.USER);
-  });
-}
-
-function makeCodeBlockHandler(indent) {
-  return {
-    key: Keyboard.keys.TAB,
-    shiftKey: !indent,
-    format: {
-      'code-block': true
-    },
-    handler: function (range) {
-      let CodeBlock = _parchment.default.query('code-block');
-
-      let index = range.index,
-          length = range.length;
-      let [block, offset] = this.quill.scroll.descendant(CodeBlock, index);
-      if (block == null) return;
-      let scrollIndex = this.quill.getIndex(block);
-      let start = block.newlineIndex(offset, true) + 1;
-      let end = block.newlineIndex(scrollIndex + offset + length);
-      let lines = block.domNode.textContent.slice(start, end).split('\n');
-      offset = 0;
-      lines.forEach((line, i) => {
-        if (indent) {
-          block.insertAt(start + offset, CodeBlock.TAB);
-          offset += CodeBlock.TAB.length;
-
-          if (i === 0) {
-            index += CodeBlock.TAB.length;
-          } else {
-            length += CodeBlock.TAB.length;
-          }
-        } else if (line.startsWith(CodeBlock.TAB)) {
-          block.deleteAt(start + offset, CodeBlock.TAB.length);
-          offset -= CodeBlock.TAB.length;
-
-          if (i === 0) {
-            index -= CodeBlock.TAB.length;
-          } else {
-            length -= CodeBlock.TAB.length;
-          }
-        }
-
-        offset += line.length + 1;
-      });
-      this.quill.update(_quill.default.sources.USER);
-      this.quill.setSelection(index, length, _quill.default.sources.SILENT);
-    }
-  };
-}
-
-function makeFormatHandler(format) {
-  return {
-    key: format[0].toUpperCase(),
-    shortKey: true,
-    handler: function (range, context) {
-      this.quill.format(format, !context.format[format], _quill.default.sources.USER);
-    }
-  };
-}
-
-function normalize(binding) {
-  if (typeof binding === 'string' || typeof binding === 'number') {
-    return normalize({
-      key: binding
-    });
-  }
-
-  if (typeof binding === 'object') {
-    binding = (0, _clone.default)(binding, false);
-  }
-
-  if (typeof binding.key === 'string') {
-    if (Keyboard.keys[binding.key.toUpperCase()] != null) {
-      binding.key = Keyboard.keys[binding.key.toUpperCase()];
-    } else if (binding.key.length === 1) {
-      binding.key = binding.key.toUpperCase().charCodeAt(0);
-    } else {
-      return null;
-    }
-  }
-
-  if (binding.shortKey) {
-    binding[SHORTKEY] = binding.shortKey;
-    delete binding.shortKey;
-  }
-
-  return binding;
-}
-},{"clone":"nTXV","deep-equal":"koiw","extend":"dgPI","quill-delta":"BYft","quill-delta/lib/op":"Eba4","parchment":"CQm3","../core/quill":"karo","../core/logger":"X7fV","../core/module":"+ntk"}],"qOpY":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _quill = _interopRequireDefault(require("./core/quill"));
-
-var _block = _interopRequireWildcard(require("./blots/block"));
-
-var _break = _interopRequireDefault(require("./blots/break"));
-
-var _container = _interopRequireDefault(require("./blots/container"));
-
-var _cursor = _interopRequireDefault(require("./blots/cursor"));
-
-var _embed = _interopRequireDefault(require("./blots/embed"));
-
-var _inline = _interopRequireDefault(require("./blots/inline"));
-
-var _scroll = _interopRequireDefault(require("./blots/scroll"));
-
-var _text = _interopRequireDefault(require("./blots/text"));
-
-var _clipboard = _interopRequireDefault(require("./modules/clipboard"));
-
-var _history = _interopRequireDefault(require("./modules/history"));
-
-var _keyboard = _interopRequireDefault(require("./modules/keyboard"));
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_quill.default.register({
-  'blots/block': _block.default,
-  'blots/block/embed': _block.BlockEmbed,
-  'blots/break': _break.default,
-  'blots/container': _container.default,
-  'blots/cursor': _cursor.default,
-  'blots/embed': _embed.default,
-  'blots/inline': _inline.default,
-  'blots/scroll': _scroll.default,
-  'blots/text': _text.default,
-  'modules/clipboard': _clipboard.default,
-  'modules/history': _history.default,
-  'modules/keyboard': _keyboard.default
-});
-
-_parchment.default.register(_block.default, _break.default, _cursor.default, _inline.default, _scroll.default, _text.default);
-
-var _default = _quill.default;
-exports.default = _default;
-},{"parchment":"CQm3","./core/quill":"karo","./blots/block":"ehqu","./blots/break":"WpVR","./blots/container":"6tnf","./blots/cursor":"ffqL","./blots/embed":"UVAQ","./blots/inline":"xisp","./blots/scroll":"FLS8","./blots/text":"E/MK","./modules/clipboard":"tAeH","./modules/history":"p1wc","./modules/keyboard":"fCAC"}],"5/Uj":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.addControls = addControls;
-exports.default = void 0;
-
-var _quillDelta = _interopRequireDefault(require("quill-delta"));
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _quill = _interopRequireDefault(require("../core/quill"));
-
-var _logger = _interopRequireDefault(require("../core/logger"));
-
-var _module = _interopRequireDefault(require("../core/module"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const supportsRootNode = 'getRootNode' in document;
-let debug = (0, _logger.default)('quill:toolbar');
-
-class Toolbar extends _module.default {
-  constructor(quill, options) {
-    super(quill, options);
-
-    if (Array.isArray(this.options.container)) {
-      let container = document.createElement('div');
-      addControls(container, this.options.container);
-      quill.container.parentNode.insertBefore(container, quill.container);
-      this.container = container;
-    } else if (typeof this.options.container === 'string') {
-      const rootDocument = supportsRootNode ? quill.container.getRootNode() : document;
-      this.container = rootDocument.querySelector(this.options.container);
-    } else {
-      this.container = this.options.container;
-    }
-
-    if (!(this.container instanceof HTMLElement)) {
-      return debug.error('Container required for toolbar', this.options);
-    }
-
-    this.container.classList.add('ql-toolbar');
-    this.controls = [];
-    this.handlers = {};
-    Object.keys(this.options.handlers).forEach(format => {
-      this.addHandler(format, this.options.handlers[format]);
-    });
-    [].forEach.call(this.container.querySelectorAll('button, select'), input => {
-      this.attach(input);
-    });
-    this.quill.on(_quill.default.events.EDITOR_CHANGE, (type, range) => {
-      if (type === _quill.default.events.SELECTION_CHANGE) {
-        this.update(range);
-      }
-    });
-    this.quill.on(_quill.default.events.SCROLL_OPTIMIZE, () => {
-      let [range] = this.quill.selection.getRange(); // quill.getSelection triggers update
-
-      this.update(range);
-    });
-  }
-
-  addHandler(format, handler) {
-    this.handlers[format] = handler;
-  }
-
-  attach(input) {
-    let format = [].find.call(input.classList, className => {
-      return className.indexOf('ql-') === 0;
-    });
-    if (!format) return;
-    format = format.slice('ql-'.length);
-
-    if (input.tagName === 'BUTTON') {
-      input.setAttribute('type', 'button');
-    }
-
-    if (this.handlers[format] == null) {
-      if (this.quill.scroll.whitelist != null && this.quill.scroll.whitelist[format] == null) {
-        debug.warn('ignoring attaching to disabled format', format, input);
-        return;
-      }
-
-      if (_parchment.default.query(format) == null) {
-        debug.warn('ignoring attaching to nonexistent format', format, input);
-        return;
-      }
-    }
-
-    let eventName = input.tagName === 'SELECT' ? 'change' : 'click';
-    input.addEventListener(eventName, e => {
-      let value;
-
-      if (input.tagName === 'SELECT') {
-        if (input.selectedIndex < 0) return;
-        let selected = input.options[input.selectedIndex];
-
-        if (selected.hasAttribute('selected')) {
-          value = false;
-        } else {
-          value = selected.value || false;
-        }
-      } else {
-        if (input.classList.contains('ql-active')) {
-          value = false;
-        } else {
-          value = input.value || !input.hasAttribute('value');
-        }
-
-        e.preventDefault();
-      }
-
-      this.quill.focus();
-      let [range] = this.quill.selection.getRange();
-
-      if (this.handlers[format] != null) {
-        this.handlers[format].call(this, value);
-      } else if (_parchment.default.query(format).prototype instanceof _parchment.default.Embed) {
-        value = prompt(`Enter ${format}`);
-        if (!value) return;
-        this.quill.updateContents(new _quillDelta.default().retain(range.index).delete(range.length).insert({
-          [format]: value
-        }), _quill.default.sources.USER);
-      } else {
-        this.quill.format(format, value, _quill.default.sources.USER);
-      }
-
-      this.update(range);
-    }); // TODO use weakmap
-
-    this.controls.push([format, input]);
-  }
-
-  update(range) {
-    let formats = range == null ? {} : this.quill.getFormat(range);
-    this.controls.forEach(function (pair) {
-      let [format, input] = pair;
-
-      if (input.tagName === 'SELECT') {
-        let option;
-
-        if (range == null) {
-          option = null;
-        } else if (formats[format] == null) {
-          option = input.querySelector('option[selected]');
-        } else if (!Array.isArray(formats[format])) {
-          let value = formats[format];
-
-          if (typeof value === 'string') {
-            value = value.replace(/\"/g, '\\"');
-          }
-
-          option = input.querySelector(`option[value="${value}"]`);
-        }
-
-        if (option == null) {
-          input.value = ''; // TODO make configurable?
-
-          input.selectedIndex = -1;
-        } else {
-          option.selected = true;
-        }
-      } else {
-        if (range == null) {
-          input.classList.remove('ql-active');
-        } else if (input.hasAttribute('value')) {
-          // both being null should match (default values)
-          // '1' should match with 1 (headers)
-          let isActive = formats[format] === input.getAttribute('value') || formats[format] != null && formats[format].toString() === input.getAttribute('value') || formats[format] == null && !input.getAttribute('value');
-          input.classList.toggle('ql-active', isActive);
-        } else {
-          input.classList.toggle('ql-active', formats[format] != null);
-        }
-      }
-    });
-  }
-
-}
-
-exports.default = Toolbar;
-Toolbar.DEFAULTS = {};
-
-function addButton(container, format, value) {
-  let input = document.createElement('button');
-  input.setAttribute('type', 'button');
-  input.classList.add('ql-' + format);
-
-  if (value != null) {
-    input.value = value;
-  }
-
-  container.appendChild(input);
-}
-
-function addControls(container, groups) {
-  if (!Array.isArray(groups[0])) {
-    groups = [groups];
-  }
-
-  groups.forEach(function (controls) {
-    let group = document.createElement('span');
-    group.classList.add('ql-formats');
-    controls.forEach(function (control) {
-      if (typeof control === 'string') {
-        addButton(group, control);
-      } else {
-        let format = Object.keys(control)[0];
-        let value = control[format];
-
-        if (Array.isArray(value)) {
-          addSelect(group, format, value);
-        } else {
-          addButton(group, format, value);
-        }
-      }
-    });
-    container.appendChild(group);
-  });
-}
-
-function addSelect(container, format, values) {
-  let input = document.createElement('select');
-  input.classList.add('ql-' + format);
-  values.forEach(function (value) {
-    let option = document.createElement('option');
-
-    if (value !== false) {
-      option.setAttribute('value', value);
-    } else {
-      option.setAttribute('selected', 'selected');
-    }
-
-    input.appendChild(option);
-  });
-  container.appendChild(input);
-}
-
-Toolbar.DEFAULTS = {
-  container: null,
-  handlers: {
-    clean: function () {
-      let range = this.quill.getSelection();
-      if (range == null) return;
-
-      if (range.length == 0) {
-        let formats = this.quill.getFormat();
-        Object.keys(formats).forEach(name => {
-          // Clean functionality in existing apps only clean inline formats
-          if (_parchment.default.query(name, _parchment.default.Scope.INLINE) != null) {
-            this.quill.format(name, false);
-          }
-        });
-      } else {
-        this.quill.removeFormat(range, _quill.default.sources.USER);
-      }
-    },
-    direction: function (value) {
-      let align = this.quill.getFormat()['align'];
-
-      if (value === 'rtl' && align == null) {
-        this.quill.format('align', 'right', _quill.default.sources.USER);
-      } else if (!value && align === 'right') {
-        this.quill.format('align', false, _quill.default.sources.USER);
-      }
-
-      this.quill.format('direction', value, _quill.default.sources.USER);
-    },
-    indent: function (value) {
-      let range = this.quill.getSelection();
-      let formats = this.quill.getFormat(range);
-      let indent = parseInt(formats.indent || 0);
-
-      if (value === '+1' || value === '-1') {
-        let modifier = value === '+1' ? 1 : -1;
-        if (formats.direction === 'rtl') modifier *= -1;
-        this.quill.format('indent', indent + modifier, _quill.default.sources.USER);
-      }
-    },
-    link: function (value) {
-      if (value === true) {
-        value = prompt('Enter link URL:');
-      }
-
-      this.quill.format('link', value, _quill.default.sources.USER);
-    },
-    list: function (value) {
-      let range = this.quill.getSelection();
-      let formats = this.quill.getFormat(range);
-
-      if (value === 'check') {
-        if (formats['list'] === 'checked' || formats['list'] === 'unchecked') {
-          this.quill.format('list', false, _quill.default.sources.USER);
-        } else {
-          this.quill.format('list', 'unchecked', _quill.default.sources.USER);
-        }
-      } else {
-        this.quill.format('list', value, _quill.default.sources.USER);
-      }
-    }
-  }
-};
-},{"quill-delta":"BYft","parchment":"CQm3","../core/quill":"karo","../core/logger":"X7fV","../core/module":"+ntk"}],"BIiT":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _inline = _interopRequireDefault(require("../blots/inline"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class Bold extends _inline.default {
-  static create() {
-    return super.create();
-  }
-
-  static formats() {
-    return true;
-  }
-
-  optimize(context) {
-    super.optimize(context);
-
-    if (this.domNode.tagName !== this.statics.tagName[0]) {
-      this.replaceWith(this.statics.blotName);
-    }
-  }
-
-}
-
-Bold.blotName = 'bold';
-Bold.tagName = ['STRONG', 'B'];
-var _default = Bold;
-exports.default = _default;
-},{"../blots/inline":"xisp"}],"4WGr":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _bold = _interopRequireDefault(require("./bold"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class Italic extends _bold.default {}
-
-Italic.blotName = 'italic';
-Italic.tagName = ['EM', 'I'];
-var _default = Italic;
-exports.default = _default;
-},{"./bold":"BIiT"}],"ao6/":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = exports.ListItem = void 0;
-
-var _parchment = _interopRequireDefault(require("parchment"));
-
-var _block = _interopRequireDefault(require("../blots/block"));
-
-var _container = _interopRequireDefault(require("../blots/container"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class ListItem extends _block.default {
-  static formats(domNode) {
-    return domNode.tagName === this.tagName ? undefined : super.formats(domNode);
-  }
-
-  format(name, value) {
-    if (name === List.blotName && !value) {
-      this.replaceWith(_parchment.default.create(this.statics.scope));
-    } else {
-      super.format(name, value);
-    }
-  }
-
-  remove() {
-    if (this.prev == null && this.next == null) {
-      this.parent.remove();
-    } else {
-      super.remove();
-    }
-  }
-
-  replaceWith(name, value) {
-    this.parent.isolate(this.offset(this.parent), this.length());
-
-    if (name === this.parent.statics.blotName) {
-      this.parent.replaceWith(name, value);
-      return this;
-    } else {
-      this.parent.unwrap();
-      return super.replaceWith(name, value);
-    }
-  }
-
-}
-
-exports.ListItem = ListItem;
-ListItem.blotName = 'list-item';
-ListItem.tagName = 'LI';
-
-class List extends _container.default {
-  static create(value) {
-    let tagName = value === 'ordered' ? 'OL' : 'UL';
-    let node = super.create(tagName);
-
-    if (value === 'checked' || value === 'unchecked') {
-      node.setAttribute('data-checked', value === 'checked');
-    }
-
-    return node;
-  }
-
-  static formats(domNode) {
-    if (domNode.tagName === 'OL') return 'ordered';
-
-    if (domNode.tagName === 'UL') {
-      if (domNode.hasAttribute('data-checked')) {
-        return domNode.getAttribute('data-checked') === 'true' ? 'checked' : 'unchecked';
-      } else {
-        return 'bullet';
-      }
-    }
-
-    return undefined;
-  }
-
-  constructor(domNode) {
-    super(domNode);
-
-    const listEventHandler = e => {
-      if (e.target.parentNode !== domNode) return;
-      let format = this.statics.formats(domNode);
-
-      let blot = _parchment.default.find(e.target);
-
-      if (format === 'checked') {
-        blot.format('list', 'unchecked');
-      } else if (format === 'unchecked') {
-        blot.format('list', 'checked');
-      }
-    };
-
-    domNode.addEventListener('touchstart', listEventHandler);
-    domNode.addEventListener('mousedown', listEventHandler);
-  }
-
-  format(name, value) {
-    if (this.children.length > 0) {
-      this.children.tail.format(name, value);
-    }
-  }
-
-  formats() {
-    // We don't inherit from FormatBlot
-    return {
-      [this.statics.blotName]: this.statics.formats(this.domNode)
-    };
-  }
-
-  insertBefore(blot, ref) {
-    if (blot instanceof ListItem) {
-      super.insertBefore(blot, ref);
-    } else {
-      let index = ref == null ? this.length() : ref.offset(this);
-      let after = this.split(index);
-      after.parent.insertBefore(blot, after);
-    }
-  }
-
-  optimize(context) {
-    super.optimize(context);
-    let next = this.next;
-
-    if (next != null && next.prev === this && next.statics.blotName === this.statics.blotName && next.domNode.tagName === this.domNode.tagName && next.domNode.getAttribute('data-checked') === this.domNode.getAttribute('data-checked')) {
-      next.moveChildren(this);
-      next.remove();
-    }
-  }
-
-  replace(target) {
-    if (target.statics.blotName !== this.statics.blotName) {
-      let item = _parchment.default.create(this.statics.defaultChild);
-
-      target.moveChildren(item);
-      this.appendChild(item);
-    }
-
-    super.replace(target);
-  }
-
-}
-
-exports.default = List;
-List.blotName = 'list';
-List.scope = _parchment.default.Scope.BLOCK_BLOT;
-List.tagName = ['OL', 'UL'];
-List.defaultChild = 'list-item';
-List.allowedChildren = [ListItem];
-},{"parchment":"CQm3","../blots/block":"ehqu","../blots/container":"6tnf"}],"t5Za":[function(require,module,exports) {
-"use strict";
-
-var _core = _interopRequireDefault(require("quill/core"));
-
-var _clipboard = _interopRequireDefault(require("quill/modules/clipboard"));
-
-var _util = require("../../../../util");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const Delta = _core.default.import('delta'); // helpful: https://github.com/quilljs/quill/issues/1184#issuecomment-403657128
-
-
-class BUIClipboard extends _clipboard.default {
-  onPaste(e) {
-    e.preventDefault();
-    const dirtyHtml = e.clipboardData.getData('text/html');
-    this.insertHTML(dirtyHtml, true);
-  }
-
-  insertHTML(html, clean = true) {
-    const range = this.quill.getSelection();
-    html = _util.htmlCleaner.clean(html);
-    html = (0, _util.normalizeText)(html); // delete any contents the user has selected
-
-    const delta = new Delta().retain(range.index).delete(range.length);
-    this.quill.updateContents(delta, 'silent');
-    this.quill.setSelection(range.index, 0, 'silent'); // paste the cleaned html
-
-    this.dangerouslyPasteHTML(range.index, html, 'user');
-  }
-
-}
-
-_core.default.debug('error');
-
-_core.default.register({
-  'modules/clipboard': BUIClipboard
-});
-},{"quill/core":"qOpY","quill/modules/clipboard":"tAeH","../../../../util":"+xBz"}],"IkMa":[function(require,module,exports) {
-"use strict";
-
-var _core = _interopRequireDefault(require("quill/core"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const BlockEmbed = _core.default.import('blots/block/embed'); // https://quilljs.com/guides/cloning-medium-with-parchment/#dividers
-
-
-class DividerBlot extends BlockEmbed {}
-
-DividerBlot.blotName = 'divider';
-DividerBlot.tagName = 'hr';
-
-_core.default.register(DividerBlot);
-},{"quill/core":"qOpY"}],"ZpO7":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.lineBreakMatcher = lineBreakMatcher;
-exports.keyboardLinebreak = void 0;
-
-var _core = _interopRequireDefault(require("quill/core"));
-
-var _break = _interopRequireDefault(require("quill/blots/break"));
-
-var _embed = _interopRequireDefault(require("quill/blots/embed"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// https://codepen.io/mackermedia/pen/gmNwZP
-const Delta = _core.default.import('delta');
-
-class SmartBreak extends _break.default {
-  length() {
-    return 1;
-  }
-
-  value() {
-    return '\n';
-  }
-
-  insertInto(parent, ref) {
-    _embed.default.prototype.insertInto.call(this, parent, ref);
-  }
-
-}
-
-SmartBreak.blotName = 'break';
-SmartBreak.tagName = 'BR';
-
-_core.default.register(SmartBreak, true);
-
-function lineBreakMatcher() {
-  var newDelta = new Delta();
-  newDelta.insert({
-    'break': ''
-  });
-  return newDelta;
-}
-
-const keyboardLinebreak = {
-  key: 13,
-  shiftKey: true,
-  handler: function (range) {
-    let currentLeaf = this.quill.getLeaf(range.index)[0];
-    let nextLeaf = this.quill.getLeaf(range.index + 1)[0];
-    this.quill.insertEmbed(range.index, 'break', true, 'user'); // Insert a second break if:
-    // At the end of the editor, OR next leaf has a different parent (<p>)
-
-    if (nextLeaf === null || currentLeaf.parent !== nextLeaf.parent) {
-      this.quill.insertEmbed(range.index, 'break', true, 'user');
-    } // Now that we've inserted a line break, move the cursor forward
-
-
-    this.quill.setSelection(range.index + 1, 'use'); // Quill.sources.SILENT
-  }
-};
-exports.keyboardLinebreak = keyboardLinebreak;
-},{"quill/core":"qOpY","quill/blots/break":"WpVR","quill/blots/embed":"UVAQ"}],"COD5":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-Object.defineProperty(exports, "Quill", {
-  enumerable: true,
-  get: function () {
-    return _core.default;
-  }
-});
-Object.defineProperty(exports, "lineBreakMatcher", {
-  enumerable: true,
-  get: function () {
-    return _break.lineBreakMatcher;
-  }
-});
-Object.defineProperty(exports, "keyboardLinebreak", {
-  enumerable: true,
-  get: function () {
-    return _break.keyboardLinebreak;
-  }
-});
-
-var _core = _interopRequireDefault(require("quill/core"));
-
-var _toolbar = _interopRequireDefault(require("quill/modules/toolbar"));
-
-var _bold = _interopRequireDefault(require("quill/formats/bold"));
-
-var _italic = _interopRequireDefault(require("quill/formats/italic"));
-
-var _list = _interopRequireWildcard(require("quill/formats/list"));
-
-require("./clipboard");
-
-require("./divider");
-
-var _break = require("./break");
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// import Header from 'quill/formats/header';
-// import Blockquote from 'quill/formats/blockquote';
-// custom modules
-_core.default.register({
-  'modules/toolbar': _toolbar.default,
-  'formats/bold': _bold.default,
-  'formats/italic': _italic.default,
-  //   'formats/header': Header,
-  //   'formats/blockquote': Blockquote,
-  'formats/list': _list.default,
-  'formats/list-item': _list.ListItem
-});
-},{"quill/core":"qOpY","quill/modules/toolbar":"5/Uj","quill/formats/bold":"BIiT","quill/formats/italic":"4WGr","quill/formats/list":"ao6/","./clipboard":"t5Za","./divider":"IkMa","./break":"ZpO7"}],"k1zW":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _litHtml = require("lit-html");
-
-var _unsafeHtml = require("lit-html/directives/unsafe-html.js");
-
-var _util = require("../../../../util");
-
-var _menu = _interopRequireDefault(require("../../../menu"));
-
-var _style = _interopRequireDefault(require("./style"));
-
-var _quill = require("./quill");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class RichTextField extends HTMLElement {
-  connectedCallback() {
-    if (!this.__firstUpdated) {
-      this.__firstUpdated = true;
-      this.firstUpdated();
-    }
-
-    let root = this.getRootNode();
-
-    if (root && root instanceof ShadowRoot) {// console.warn('<rich-text-field> does not work properly in the shadow dom')
-    }
-
-    this.setStateAttributes();
-  }
-
-  get disabled() {
-    return this.__disabled || false;
-  }
-
-  set disabled(val) {
-    this.__disabled = Boolean(val);
-    if (this.quill) this.__disabled ? this.quill.disable() : this.quill.enable();
-  } // TODO: add an opt out feature?
-
-
-  normalizeText(str) {
-    return (0, _util.normalizeText)(str);
-  }
-
-  get value() {
-    return this.quill ? this.normalizeText(this.quill.root.innerHTML) : this.__value;
-  }
-
-  set value(html) {
-    html = html || ''; // NOTE: okay to always do this here? its the same as in copy/paste above
-
-    html = _util.htmlCleaner.clean(html);
-    html = this.normalizeText(html);
-    this.__value = html;
-    if (!this.quill) return; // NOTE: we hide the "contenteditable" so that the browser does not "focus"
-    // on the element (which can cause views to scroll to the last focused editor)
-    // see https://github.com/quilljs/quill/issues/2156 and https://github.com/quilljs/quill/issues/2415
-
-    this.quill.root.hidden = true;
-    this.__settingValue = true;
-    this.quill.root.innerHTML = '';
-    this.quill.clipboard.dangerouslyPasteHTML(0, html, 'silent'); // silent or something different?
-
-    this.__settingValue = false;
-    this.blur(); // this.quill.root.innerHTML = html
-
-    this.setStateAttributes();
-    this.quill.root.hidden = false;
-    this.setStateAttributes();
-  }
-
-  get dbValue() {
-    return this.isEmpty ? '' : this.value;
-  }
-
-  html() {
-    return _litHtml.html`
-        <style>${_style.default.cssText}</style>
-        <textarea class="view-source"></textarea>
-        <main class="ql-editor">${this.__value ? (0, _unsafeHtml.unsafeHTML)(this.__value) : ''}</main>
-        <toolbar>
-            <b-btn tabindex=0 format="bold" text @click=${this.format} icon="bold"></b-btn>
-            <b-btn tabindex=0 format="italic" text @click=${this.format} icon="italic"></b-btn>
-            <b-btn tabindex=0 format="list" value="ordered" text @click=${this.format} icon="list-numbered"></b-btn>
-            <b-btn tabindex=0 format="list" value="bullet" text @click=${this.format} icon="list2"></b-btn>
-            <!-- <b-btn tabindex=0 @click=${this.insertDivider} text icon="minus"></b-btn> -->
-            <b-btn tabindex=0 @click=${this.insertSpecial} text icon="quote-right"></b-btn>
-            <!-- <b-btn tabindex=0 @click=${this.toggleSource} text icon="code" title="Toggle source code"></b-btn> -->
-        </toolbar>
-    `;
-  }
-
-  toggleSource() {
-    let src = this.querySelector('textarea.view-source');
-    let main = this.querySelector('main');
-
-    if (this.hasAttribute('view-source')) {
-      this.removeAttribute('view-source');
-      src.style.height = 0; // this.value = src.value
-
-      src.value = '';
-    } else {
-      src.style.height = main.offsetHeight;
-      this.setAttribute('view-source', '');
-      src.value = this.value;
-    }
-  }
-
-  async insertDivider(e) {
-    // this.insertHTML('<hr>', false)
-    var range = this.quill.getSelection(true);
-    console.log(range);
-
-    if (range) {
-      // insert the <hr> where the cursor is
-      this.quill.insertText(range.index, '\n', _quill.Quill.sources.USER);
-      this.quill.insertEmbed(range.index + 1, 'divider', true, _quill.Quill.sources.USER);
-      this.quill.setSelection(range.index + 2, _quill.Quill.sources.SILENT); // focus after divider
-    }
-  }
-
-  async insertSpecial(e) {
-    let menu = [{
-      label: '“ Quote Left',
-      val: "“"
-    }, {
-      label: '” Quote Right',
-      val: "”"
-    }, {
-      label: '‘ Single Quote Left',
-      val: "‘"
-    }, {
-      label: '’ Single Quote Right',
-      val: "’"
-    }, {
-      label: '— Em-Dash',
-      val: "—"
-    }, {
-      label: '— En-Dash',
-      val: "–"
-    }, {
-      label: '… Ellipsis',
-      val: "…"
-    }];
-    let selected = await new _menu.default(menu).popover(e.target, {
-      align: 'bottom-end'
-    });
-
-    if (selected) {
-      this.insertText(selected.val);
-    }
-  }
-
-  insertText(str) {
-    this.quill.focus();
-    let range = this.quill.getSelection();
-    this.quill.insertText(range.index, str, 'user');
-    this.quill.setSelection(range.index + str.length, 'silent');
-  }
-
-  insertHTML(html, clean = true) {
-    this.quill.clipboard.insertHTML(html, clean);
-  }
-
-  focus() {
-    this.quill.focus();
-  }
-
-  blur() {
-    this.quill.blur();
-  }
-
-  selectAll() {
-    this.quill.setSelection(0, this.quill.getText().length);
-  }
-
-  format(e) {
-    e.preventDefault();
-    let btn = e.currentTarget;
-    let format = btn.getAttribute('format');
-    let val = btn.getAttribute('value') || true;
-    if (btn.classList.contains('active')) val = false; // console.log(format, val);
-
-    this.quill.format(format, val);
-  }
-
-  render() {
-    (0, _litHtml.render)(this.html(), this, {
-      eventContext: this
-    });
-  }
-
-  firstUpdated() {
-    this.render();
-    this.main = this.querySelector('main');
-    this.toolbar = this.querySelector('toolbar');
-    this.quill = new _quill.Quill(this.main, {
-      formats: ['bold', 'italic', 'list', 'break'],
-      // , 'divider'
-      placeholder: this.getAttribute('placeholder') || '',
-      modules: {
-        clipboard: {
-          matchers: [['BR', _quill.lineBreakMatcher]]
-        },
-        keyboard: {
-          bindings: {
-            linebreak: _quill.keyboardLinebreak
-          }
-        }
-      }
-    }); // https://codepen.io/mackermedia/pen/gmNwZP
-
-    var length = this.quill.getLength();
-    var text = this.quill.getText(length - 2, 2); // Remove extraneous new lines
-
-    if (text === '\n\n') {
-      this.quill.deleteText(this.quill.getLength() - 2, 2);
-    }
-
-    if (this.disabled) this.disabled = this.disabled;
-    this.quill.root.addEventListener('focus', this._onFocus.bind(this));
-    this.quill.root.addEventListener('blur', this._onBlur.bind(this));
-    this.quill.on(_quill.Quill.events.EDITOR_CHANGE, (type, range) => {
-      if (type === _quill.Quill.events.SELECTION_CHANGE) {
-        this.updateToolbar(range);
-      }
-
-      if (type === _quill.Quill.events.TEXT_CHANGE && !this.__settingValue) {
-        this.dispatchEvent(new Event('text-change'));
-      }
-    }, this);
-    this.quill.on(_quill.Quill.events.SCROLL_OPTIMIZE, () => {
-      let [range] = this.quill.selection.getRange(); // quill.getSelection triggers update
-
-      this.updateToolbar(range);
-    }, this);
-  }
-
-  get characterCount() {
-    return this.quill ? this.quill.root.innerText.length : 0;
-  }
-
-  _onFocus() {
-    if (this.__settingValue) return;
-
-    if (!this._blurDelay) {
-      this._origVal = this.value;
-    }
-
-    clearTimeout(this._blurDelay);
-    this._blurDelay = null;
-  }
-
-  _onBlur() {
-    if (this.__settingValue) return;
-
-    if (!this._blurDelay) {
-      this._blurDelay = setTimeout(() => {
-        this._onBlur();
-
-        this._blurDelay = null;
-      }, 100);
-      return;
-    }
-
-    if (this._cleaningFromBlur) return;
-    this._cleaningFromBlur = true; // not "empty" but effectively is empty, so make it so
-
-    if (!this.isEmpty && this.quill.root.innerText.trim() == '') {
-      this.value = '';
-      this.blur();
-    }
-
-    this.setStateAttributes();
-    let val = this.value;
-    this._cleaningFromBlur = false;
-
-    if (this._origVal != val) {
-      var event = new CustomEvent('change', {
-        bubbles: true,
-        composed: true,
-        detail: {
-          value: val,
-          oldVal: this._origVal
-        }
-      });
-      this.dispatchEvent(event);
-    }
-  }
-
-  get isEmpty() {
-    return !this.value || this.value === '<p><br></p>';
-  }
-
-  setStateAttributes() {
-    if (this.isEmpty) this.setAttribute('empty', '');else this.removeAttribute('empty');
-  }
-
-  updateToolbar(range) {
-    let formats = range == null ? {} : this.quill.getFormat(range); // console.log(formats);
-
-    this.toolbar.querySelectorAll('[format]').forEach(el => {
-      let format = el.getAttribute('format');
-      if (formats[format] && (el.value == undefined || el.value == formats[format])) el.classList.add('active');else el.classList.remove('active');
-    });
-  }
-
-}
-
-customElements.define('rich-text-field', RichTextField);
-
-var _default = customElements.get('rich-text-field');
-
-exports.default = _default;
-},{"lit-html":"SP/d","lit-html/directives/unsafe-html.js":"/jTP","../../../../util":"+xBz","../../../menu":"0tCY","./style":"d7Am","./quill":"COD5"}],"GLLF":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _litElement = require("lit-element");
-
-const styles = _litElement.css`
+const styles = (0, _litElement.css)`
 
 :host {
 	--size: 1.6em;
@@ -35947,7 +21175,7 @@ customElements.define('radio-btn', RadioBtnElement);
 var _default = customElements.get('radio-btn');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"mCnW":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"mCnW":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36025,7 +21253,7 @@ class RadioGroupElement extends HTMLElement {
   }
 
   set value(val) {
-    this.radios.forEach(el => {
+    (this.radios || []).forEach(el => {
       if (el.value == val) el.active = true;else el.active = false;
     });
     this.setAttribute('value', val);
@@ -36056,8 +21284,6 @@ require("./form-control");
 
 require("./controls/text-field");
 
-require("./controls/rich-text-field");
-
 require("./controls/select-field");
 
 require("./controls/check-box");
@@ -36069,7 +21295,7 @@ require("./controls/radio-group");
 require("./controls/touch-ripple");
 
 require("./controls/range-slider");
-},{"./form-handler":"ZQnj","./form-control":"swB1","./controls/text-field":"2ezN","./controls/rich-text-field":"k1zW","./controls/select-field":"h8fl","./controls/check-box":"jNfL","./controls/radio-btn":"GLLF","./controls/radio-group":"mCnW","./controls/touch-ripple":"uH6r","./controls/range-slider":"ZCfn"}],"Wr69":[function(require,module,exports) {
+},{"./form-handler":"ZQnj","./form-control":"swB1","./controls/text-field":"ezNL","./controls/select-field":"h8fl","./controls/check-box":"jNfL","./controls/radio-btn":"GLLF","./controls/radio-group":"mCnW","./controls/touch-ripple":"uH6r","./controls/range-slider":"ZCfn"}],"Wr69":[function(require,module,exports) {
 
 /**
  * Expose `Emitter`.
@@ -36289,7 +21515,7 @@ class DataSource {
 
   async refilter() {
     this.lastFiltered = 0;
-    this._rawData = this.coll.models || this.coll;
+    this._rawData = this.coll && this.coll.models || this.coll || [];
     this._filteredData = this._rawData;
     this.data = this._rawData;
     await this.applyFilters();
@@ -36348,23 +21574,30 @@ class DataSource {
         data.perPage = this.perPage;
       }
 
-      if (this.filters) data.filters = this.filters.value();
+      if (this.filters) data.filters = this.filters.toPostData();
       if (this.sorts) data.sorts = this.sorts.value;
       await this.coll.fetchSync({
-        data: data
+        data: data,
+        merge: true,
+        // for Backone 0.9.10/0.9.9, 'update' is needed to register change events on the model, rather than mass "reset" (see line 815 in backbone source)
+        update: true
       });
     }
   }
 
   fetch(pageAt) {
-    return this._fetching = new Promise(async resolve => {
+    return this._fetching = new Promise(async (resolve, reject) => {
       if (pageAt == 0 && this._rawData.length == 0 || this._pageFetched != pageAt && this._rawData.length == pageAt && this.opts.fetch == 'more') {
         this._pageFetched = pageAt;
-        if (this.opts.fetch) await this._fetchFromServer(pageAt);
+        if (this.opts.fetch) await this._fetchFromServer(pageAt).catch(err => {
+          reject(err);
+        });
         await this.refilter();
-      }
+      } // why was I doing this? it doesn't work when data is filtered
+      // if( this._rawData.length > pageAt )
+      //     this.emit('change:count', this._rawData.length)
 
-      if (this._rawData.length > pageAt) this.emit('change:count', this._rawData.length);
+
       if (this._filtering) await this._filtering;
       if (this._sorting) await this._sorting;
       this.hasFetched = true;
@@ -36385,6 +21618,10 @@ class DataSource {
       this.data = await this.filters.filterByTerm(this._filteredData);
       resolve(this.data);
       this.lastFiltered = new Date().getTime();
+      clearTimeout(this._applyFiltersEventEmit);
+      this._applyFiltersEventEmit = setTimeout(() => {
+        this.emit('changed');
+      }, 500);
     }).finally(_ => delete this._filtering);
   }
 
@@ -36410,13 +21647,13 @@ exports.default = void 0;
 
 var _litElement = require("lit-element");
 
-var _moment = _interopRequireDefault(require("moment"));
+var _dayjs = _interopRequireDefault(require("dayjs"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 customElements.define('b-list-filter-view-date', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: grid;
             position:relative;
@@ -36454,7 +21691,9 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
         .controls {
             padding: .25em .5em;
             /* font-size: 1.4em; */
-            display: flex;
+            /* display: flex; */
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
             /* flex-direction: column; */
         }
@@ -36478,6 +21717,15 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
     `;
   }
 
+  constructor(opts = {}) {
+    super();
+    this.opts = Object.assign({
+      defaultLabel: '-',
+      presets: true // TODO: support custom presets?
+
+    }, opts);
+  }
+
   firstUpdated() {
     this.editors = this.shadowRoot.querySelectorAll('form-control');
     let value = this.filter.value;
@@ -36485,7 +21733,7 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
 
         <b-btn text md @click=${this.clearDates}>Clear</b-btn>
         <b-hr></b-hr>
@@ -36502,6 +21750,7 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
             </form-control>
         </div>
 
+        ${this.opts.presets !== false ? (0, _litElement.html)`
         <b-label sm divider>Presets</b-label>
         <footer>
             <b-btn text md @click=${this.usePreset}>Today</b-btn>
@@ -36510,6 +21759,7 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
             <b-btn text md @click=${this.usePreset}>This Month</b-btn>
             <b-btn text md @click=${this.usePreset}>This Year</b-btn>
         </footer>
+        ` : ''}
     `;
   }
 
@@ -36531,7 +21781,7 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
     if (!val || val.length == 0) val = [null, null];
     if (typeof val == 'string') val = [val, val];
     if (val.length == 0) val = [val[0], val[0]];
-    this.editors.forEach((el, i) => {
+    if (this.editors) this.editors.forEach((el, i) => {
       el.value = val[i] || null;
     });
   }
@@ -36543,16 +21793,16 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
 
   get label() {
     let val = this.value;
-    if (!val) return '–';
+    if (!val) return this.opts.defaultLabel;
     let [d1, d2] = val;
-    let m = (0, _moment.default)().startOf('day');
-    let m1 = (0, _moment.default)(d1);
-    let m2 = (0, _moment.default)(d2);
+    let m = (0, _dayjs.default)().startOf('day');
+    let m1 = (0, _dayjs.default)(d1);
+    let m2 = (0, _dayjs.default)(d2);
     let thisYear = m1.year() == m.year() && m2.year() == m2.year();
     let sameYear = m1.year() == m2.year(); // single day selected
 
     if (d1 == d2) {
-      let m1 = (0, _moment.default)(d1);
+      let m1 = (0, _dayjs.default)(d1);
       if (m.isSame(m1)) return 'Today';
       let diffDays = m.diff(m1, 'days');
       if (diffDays == 1) return 'Yesterday';
@@ -36593,7 +21843,7 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
   usePreset(e) {
     let preset = e.target.innerText;
     let values = [];
-    let date = (0, _moment.default)();
+    let date = (0, _dayjs.default)();
     let format = 'YYYY-MM-DD';
 
     switch (preset) {
@@ -36602,8 +21852,7 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
         break;
 
       case 'Yesterday':
-        date.subtract('1', 'day');
-        values = [date.format(format)];
+        values = [date.subtract('1', 'day').format(format)];
         break;
 
       case '30 Days':
@@ -36628,7 +21877,7 @@ customElements.define('b-list-filter-view-date', class extends _litElement.LitEl
 var _default = customElements.get('b-list-filter-view-date');
 
 exports.default = _default;
-},{"lit-element":"+bhx","moment":"a2/B"}],"7J1Y":[function(require,module,exports) {
+},{"lit-element":"bhxD","dayjs":"dZYI"}],"J1Yi":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36638,13 +21887,9 @@ exports.default = void 0;
 
 var _litElement = require("lit-element");
 
-var _moment = _interopRequireDefault(require("moment"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 customElements.define('b-list-filter-view-input', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: grid;
             position:relative;
@@ -36667,6 +21912,11 @@ customElements.define('b-list-filter-view-input', class extends _litElement.LitE
     `;
   }
 
+  constructor(opts) {
+    super();
+    this.opts = opts;
+  }
+
   firstUpdated() {
     this.input = this.shadowRoot.querySelector('form-control');
     let value = this.filter.value;
@@ -36674,8 +21924,8 @@ customElements.define('b-list-filter-view-input', class extends _litElement.LitE
   }
 
   render() {
-    return _litElement.html`
-        <form-control material="filled" style="width:${(this.get('width'), '200px')}">
+    return (0, _litElement.html)`
+        <form-control material="filled">
             <text-field reset-invalid placeholder="${this.get('placeholder')}" @enterkey=${this.onEnter}></text-field>
             <span slot="help">${this.get('helpText')}</span>
             <b-btn slot="suffix" class="cancel" icon="cancel-circled" text @click=${this.clearValue}></b-btn>
@@ -36684,7 +21934,9 @@ customElements.define('b-list-filter-view-input', class extends _litElement.LitE
   }
 
   get(key, defaultVal = '') {
-    let val = this.filter.attrs[key];
+    let val = this.opts[key]; // legacy - should use viewOpts now
+
+    if (val == undefined) val = this.filter.attrs[key];
     return val != undefined ? val : defaultVal;
   }
 
@@ -36722,7 +21974,7 @@ customElements.define('b-list-filter-view-input', class extends _litElement.LitE
 var _default = customElements.get('b-list-filter-view-input');
 
 exports.default = _default;
-},{"lit-element":"+bhx","moment":"a2/B"}],"vufV":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"vufV":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36734,7 +21986,7 @@ var _litElement = require("lit-element");
 
 customElements.define('b-list-filter-view-slider', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: grid;
             position:relative;
@@ -36763,7 +22015,7 @@ customElements.define('b-list-filter-view-slider', class extends _litElement.Lit
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         
         <b-btn text @click=${this.clearVal}>Clear</b-btn>
 
@@ -36814,7 +22066,168 @@ customElements.define('b-list-filter-view-slider', class extends _litElement.Lit
 var _default = customElements.get('b-list-filter-view-slider');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"HGW8":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"cUXh":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _litElement = require("lit-element");
+
+var _menu = _interopRequireDefault(require("../../../menu"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+customElements.define('b-list-filter-view-search', class extends _litElement.LitElement {
+  static get styles() {
+    return (0, _litElement.css)`
+        :host {
+            display: block;
+            position:relative;
+            width: 200px;
+            /* min-height: 300px; */
+            max-height: 70vh;
+        }
+    `;
+  }
+
+  constructor(opts = {}) {
+    super();
+    this.opts = opts;
+  }
+
+  render() {
+    return (0, _litElement.html)`
+        <slot></slot>
+    `;
+  }
+
+  onKeydown(e) {
+    if (e.key == 'Escape') {
+      this.value = this.filter.value;
+      this.close();
+      return;
+    }
+
+    this.menu.onKeydown.call(this.menu, e);
+  }
+
+  onSelect(item) {
+    this._values.push(item);
+
+    this.value = this._values;
+    this.menu.clear();
+    this.focus();
+  }
+
+  onDeselect(items) {
+    if (items.length == 1 && items[0].val == '') items = [];
+    this.value = items;
+    if (items.length == 0) this.close();else this.focus();
+  }
+
+  get menuForValues() {
+    let menu = [];
+
+    let selected = this._values.map(d => d.val);
+
+    if (this._values.length > 0) {
+      menu.push({
+        label: 'Any',
+        val: '',
+        clearsAll: true
+      }, 'divider');
+      menu.push(...this._values.map(d => {
+        d.selected = true;
+        return d;
+      }));
+    }
+
+    return [menu, selected];
+  }
+
+  firstUpdated() {
+    this._values = this.filter.value || [];
+    let [menu, selected] = this.menuForValues;
+    this.valueMenu = new _menu.default(menu, {
+      multiple: 'always',
+      selected: selected,
+      onSelect: this.onDeselect.bind(this)
+    });
+    this.appendChild(this.valueMenu.el);
+    this.valueMenu.render();
+    this.menu = new _menu.default([], {
+      typeDelay: 200,
+      autoSelectFirst: true,
+      onSelect: this.onSelect.bind(this),
+      search: {
+        url: this.opts.url,
+        placeholder: this.opts.placeholder || 'Search',
+        parse: this.opts.parseResult
+      }
+    });
+    this.appendChild(this.menu.el);
+    this.menu.render();
+  }
+
+  didClose() {
+    this.menu && this.menu.clear();
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.focus();
+  }
+
+  focus() {
+    setTimeout(() => {
+      if (this.menu) this.menu.focusSearch();
+    }, 100);
+  }
+
+  get value() {
+    if (!this._values) return this.filter.value;
+    return this._values.map(d => {
+      return {
+        label: d.label,
+        val: d.val
+      };
+    });
+  }
+
+  set value(val) {
+    this._values = (val || []).map(o => Object.assign({}, o));
+
+    if (this.valueMenu) {
+      let [menu, selected] = this.menuForValues;
+      this.valueMenu.updateMenu(menu, selected);
+    }
+  }
+
+  get label() {
+    let val = this.value;
+    if (!val || val.length == 0) return '–';
+    return val.map(d => d.label).join(', ');
+  } // OPTIONAL
+
+
+  get defaultVal() {
+    // when the filters are cleared/reset, what value should be the default?
+    return null;
+  }
+
+  filterBy(model, val, key) {
+    return this.value.find(d => d.val == model.get(key));
+  }
+
+});
+
+var _default = customElements.get('b-list-filter-view-search');
+
+exports.default = _default;
+},{"lit-element":"bhxD","../../../menu":"tCYJ"}],"HGW8":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36840,14 +22253,19 @@ var _filterViewInput = _interopRequireDefault(require("../toolbar/filter-view-in
 
 var _filterViewSlider = _interopRequireDefault(require("../toolbar/filter-view-slider"));
 
+var _search = _interopRequireDefault(require("../toolbar/filter-view/search"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import FilterViewToken from '../toolbar/filter-view/token'
 const CustomViews = {
   'date': _filterViewDate.default,
   'input': _filterViewInput.default,
-  'slider': _filterViewSlider.default // do NOT include 0 or false as unset values
+  'slider': _filterViewSlider.default,
+  'search': _search.default // 'token': FilterViewToken
 
-};
+}; // do NOT include 0 or false as unset values
+
 const unsetValues = [undefined, null, ''];
 
 const defaultSearch = model => {
@@ -36869,11 +22287,11 @@ class Filters extends Map {
     return 'b-list:' + this.key + ':filters';
   }
 
-  reset() {
+  reset(values = {}) {
     this.queuing = false;
     let resetData = {};
     this.map(filter => {
-      resetData[filter.key] = filter.defaultVal;
+      resetData[filter.key] = values[filter.key] !== undefined ? values[filter.key] : filter.defaultVal;
     });
     this.value(resetData);
   }
@@ -36884,6 +22302,11 @@ class Filters extends Map {
       if (filter.isActive) active.push(`${filter.label}: ${filter.valueLabel}`);
     });
     return active.join(' | ');
+  } // alias that makes more sense when working programically
+
+
+  update(filters) {
+    this.value(filters);
   }
 
   value(key, val) {
@@ -36920,8 +22343,8 @@ class Filters extends Map {
         // emit a change on each filter
         didChange.forEach(k => {
           let filter = this.get(k);
-          if (filter.isCustomView) filter.customView.value = val;
-          filter.emit('change', val);
+          if (filter.isCustomView) filter.customView.value = this.value(k);
+          filter.emit('change', this.value(k));
         });
         if (this.queuing) this.queuedChanges = changes;else this.emit('change', changes);
       } // GETTING
@@ -36929,6 +22352,21 @@ class Filters extends Map {
     } else {
       return key ? this.__value[key] : this.__value;
     }
+  }
+
+  toPostData() {
+    let value = this.value();
+    let data = {};
+
+    for (let key in value) {
+      let d = value[key]; // only send "values" from the `search` filter view
+
+      if (Array.isArray(d)) data[key] = d.map(item => {
+        return item.val != undefined ? item.val : item;
+      });else data[key] = d;
+    }
+
+    return data;
   }
 
   get queuing() {
@@ -36989,9 +22427,9 @@ class Filters extends Map {
 
   set searchOptions(opts) {
     if (opts === false) this.__searchOptions = {
-      data: false // turns search off
+      data: false
+    }; // turns search off
 
-    };
     if (typeof opts == 'object') this.__searchOptions = opts;
   }
 
@@ -37009,7 +22447,7 @@ class Filters extends Map {
   }
 
   get showSearch() {
-    return typeof this.searchOptions.data == 'function';
+    return !!this.searchOptions.data;
   }
 
   filterByTerm(data) {
@@ -37019,7 +22457,7 @@ class Filters extends Map {
       data.forEach(m => {
         m.searchMatches = {};
       });
-      if (!this.term || !searchOptions.data || this.term.length < searchOptions.minMatchCharLength) return resolve(data);
+      if (!this.term || !searchOptions.data || searchOptions.data === 'db' || this.term.length < searchOptions.minMatchCharLength) return resolve(data);
       data.forEach(m => {
         m._fuseSearch = searchOptions.data(m); // no search option keys set yet, so set them automatically
 
@@ -37080,13 +22518,12 @@ class Filter {
   get values() {
     // TODO: implement "context" for function?
     let values = this.attrs.values;
-    values = typeof values == 'function' ? values.call(this.parent.list) : values;
+    values = typeof values == 'function' ? values.call(this.parent.list, this) : values;
     values = values.map(v => {
       if (typeof v == 'string' && !['divider'].includes(v)) v = {
         label: v,
-        val: v // make "unset" values uniform
-
-      };
+        val: v
+      }; // make "unset" values uniform
 
       if (typeof v == 'object' && unsetValues.includes(v.val)) {
         v.val = null;
@@ -37223,8 +22660,7 @@ class Filter {
 
       if (View) {
         View.prototype.close = function () {
-          this.popover._close(); // to trigger onClose
-
+          this.popover && this.popover._close(); // to trigger onClose
         };
 
         this._customView = new View(this.attrs.viewOpts || {});
@@ -37245,12 +22681,19 @@ class Filter {
       // with larger datasets, a user can feel it lag for a split second
       setTimeout(() => {
         this.value = this.customView.value;
+        this.customView.didClose && this.customView.didClose();
       });
     }; // TODO: support `adjustForMobile`
 
 
     new _popover.default(el, this.customView, {
-      onClose: onClose
+      width: this.attrs.width || null,
+      onClose: onClose,
+      onKeydown: (...args) => {
+        if (this.customView.onKeydown) {
+          this.customView.onKeydown(...args);
+        }
+      }
     });
   }
 
@@ -37271,7 +22714,7 @@ class Filter {
 exports.Filter = Filter;
 (0, _componentEmitter.default)(Filters.prototype);
 (0, _componentEmitter.default)(Filter.prototype);
-},{"../../menu":"0tCY","../../dialog":"pos3","../../popover":"Soyf","../../../util/titleize":"NUHt","fuse.js":"Wp9p","component-emitter":"Wr69","../toolbar/filter-view-date":"YNHW","../toolbar/filter-view-input":"7J1Y","../toolbar/filter-view-slider":"vufV"}],"4sAK":[function(require,module,exports) {
+},{"../../menu":"tCYJ","../../dialog":"pos3","../../popover":"Soyf","../../../util/titleize":"NUHt","fuse.js":"Wp9p","component-emitter":"Wr69","../toolbar/filter-view-date":"YNHW","../toolbar/filter-view-input":"J1Yi","../toolbar/filter-view-slider":"vufV","../toolbar/filter-view/search":"cUXh"}],"sAKI":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37350,6 +22793,7 @@ class Sorts extends Map {
 
     for (let key in sorts) {
       let sort = new Sort(key, sorts[key]);
+      sort.sorts = this;
       sort.selected = this.value[key];
       this.set(key, sort);
     }
@@ -37386,14 +22830,15 @@ class Sorts extends Map {
       };
     });
     menu.push({
-      text: _litElement.html`Sorts will be applied in the order they are chosen.`
+      text: (0, _litElement.html)`Sorts will be applied in the order they are chosen.`
     });
     let selected = await new _menu.default(menu, {
       className: 'b-list-sort-menu',
       multiple: true,
       selected: Object.keys(oldVal)
     }).popover(el, {
-      adjustForMobile: true
+      adjustForMobile: true,
+      maxHeight: '50vh'
     });
     if (selected === false) return; // reformat selected values to what we need
 
@@ -37459,7 +22904,7 @@ class Sort {
   }
 
 }
-},{"lit-element":"+bhx","../../menu":"0tCY","../../../util/titleize":"NUHt","../../../util/device":"la8o","component-emitter":"Wr69"}],"ZTm8":[function(require,module,exports) {
+},{"lit-element":"bhxD","../../menu":"tCYJ","../../../util/titleize":"NUHt","../../../util/device":"la8o","component-emitter":"Wr69"}],"ZTm8":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37521,7 +22966,7 @@ var _litElement = require("lit-element");
 
 customElements.define('b-list-sort-btn', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: block
         }
@@ -37578,13 +23023,13 @@ customElements.define('b-list-sort-btn', class extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <b-btn text class="sorts" @click=${this.sortMenu}>
             <main>
                 <b-label xs>Sort</b-label>
 
                 <div>
-                    ${this.sorts.active.map(sort => _litElement.html`
+                    ${this.sorts.active.map(sort => (0, _litElement.html)`
                         <span class="sort" .sort=${sort}>
                             <b-icon name="${sort.isDesc ? 'sort-alt-down' : 'sort-alt-up'}"></b-icon> ${sort.label}
                         </span>
@@ -37625,14 +23070,14 @@ customElements.define('b-list-sort-btn', class extends _litElement.LitElement {
 var _default = customElements.get('b-list-sort-btn');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"pUXj":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"pUXj":[function(require,module,exports) {
 "use strict";
 
 var _litElement = require("lit-element");
 
 customElements.define('b-list-sort-dir-btn', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: block
         }
@@ -37655,7 +23100,7 @@ customElements.define('b-list-sort-dir-btn', class extends _litElement.LitElemen
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <b-btn clear icon="${this.item.desc ? 'sort-alt-down' : 'sort-alt-up'}" @click=${this.onClick}></b-btn>
     `;
   }
@@ -37667,7 +23112,7 @@ customElements.define('b-list-sort-dir-btn', class extends _litElement.LitElemen
   }
 
 });
-},{"lit-element":"+bhx"}],"7zIY":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"zIYl":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37679,7 +23124,7 @@ var _litElement = require("lit-element");
 
 customElements.define('b-list-filter-btn', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: inline-block;
         }
@@ -37718,12 +23163,12 @@ customElements.define('b-list-filter-btn', class extends _litElement.LitElement 
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <b-btn text ?active=${this.filter.isActive} @click=${this.showMenu}>
             <main>
                 <b-label xs>${this.filter.label}</b-label>
                 <div>
-                    ${this.filter.icon ? _litElement.html`<b-icon name="${this.filter.icon}"></b-icon>` : ''}
+                    ${this.filter.icon ? (0, _litElement.html)`<b-icon name="${this.filter.icon}"></b-icon>` : ''}
                     ${this.filter.valueLabel}
                 </div>
             </main>
@@ -37751,7 +23196,7 @@ customElements.define('b-list-filter-btn', class extends _litElement.LitElement 
 var _default = customElements.get('b-list-filter-btn');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"x6cT":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"x6cT":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37782,7 +23227,7 @@ customElements.define('b-list-filters', class extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: flex;
             align-items: center;
@@ -37809,11 +23254,11 @@ customElements.define('b-list-filters', class extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" text
             @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
         
-        ${this.filters.map(filter => _litElement.html`
+        ${this.filters.map(filter => (0, _litElement.html)`
             <b-list-filter-btn ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
         `)}
         
@@ -37860,7 +23305,7 @@ customElements.define('b-list-filters', class extends _litElement.LitElement {
 var _default = customElements.get('b-list-filters');
 
 exports.default = _default;
-},{"lit-element":"+bhx","./filter-btn":"7zIY"}],"XQL9":[function(require,module,exports) {
+},{"lit-element":"bhxD","./filter-btn":"zIYl"}],"XQL9":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37929,7 +23374,7 @@ customElements.define('b-list-search-bar', class extends _litElement.LitElement 
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: block
         }
@@ -37971,7 +23416,7 @@ customElements.define('b-list-search-bar', class extends _litElement.LitElement 
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <form-control>
             <text-field placeholder="${this.placeholder}" bubble-keypress single-line></text-field>
             <b-icon @click=${this.focus} name="search" slot="prefix"></b-icon>
@@ -37993,7 +23438,7 @@ customElements.define('b-list-search-bar', class extends _litElement.LitElement 
 var _default = customElements.get('b-list-search-bar');
 
 exports.default = _default;
-},{"lit-element":"+bhx","../../form-control/form-control":"swB1","../../form-control/controls/text-field":"2ezN"}],"iwaU":[function(require,module,exports) {
+},{"lit-element":"bhxD","../../form-control/form-control":"swB1","../../form-control/controls/text-field":"ezNL"}],"iwaU":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38032,7 +23477,7 @@ customElements.define('b-list-toolbar', class extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: flex;
             align-items: center;
@@ -38098,18 +23543,18 @@ customElements.define('b-list-toolbar', class extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <slot name="before"></slot>
 
         <div class="count">${this.count}</div>
 
         <div class="scroller">
 
-            ${!this.sorts ? '' : _litElement.html`
+            ${!this.sorts ? '' : (0, _litElement.html)`
                 <b-list-sort-btn .sorts=${this.sorts}></b-list-sort-btn>
             `}
             
-            ${!this.filters ? '' : _litElement.html`
+            ${!this.filters ? '' : (0, _litElement.html)`
                 <b-list-filters .filters=${this.filters}></b-list-filters>
             `}
 
@@ -38117,11 +23562,11 @@ customElements.define('b-list-toolbar', class extends _litElement.LitElement {
         
         <div class="after">
 
-            ${!this.filters || !this.filters.showSearch ? '' : _litElement.html`
+            ${!this.filters || !this.filters.showSearch ? '' : (0, _litElement.html)`
             <b-list-search-bar @keydown=${this.onKeyDown} placeholder=${this.filters.searchOptions.placeholder}></b-list-search-bar>
             `}
 
-            ${!this.layouts ? '' : _litElement.html`
+            ${!this.layouts ? '' : (0, _litElement.html)`
                 <b-list-layout-btn .layouts=${this.layouts} pill text></b-list-layout-btn>
             `}
 
@@ -38162,14 +23607,14 @@ customElements.define('b-list-toolbar', class extends _litElement.LitElement {
 var _default = customElements.get('b-list-toolbar');
 
 exports.default = _default;
-},{"lit-element":"+bhx","../../popover":"Soyf","./sort-btn":"FOqU","./sort-dir-btn":"pUXj","./filters-view":"x6cT","./layout-btn":"XQL9","./search":"uCjH"}],"55xA":[function(require,module,exports) {
+},{"lit-element":"bhxD","../../popover":"Soyf","./sort-btn":"FOqU","./sort-dir-btn":"pUXj","./filters-view":"x6cT","./layout-btn":"XQL9","./search":"uCjH"}],"xA0J":[function(require,module,exports) {
 "use strict";
 
 var _litElement = require("lit-element");
 
 customElements.define('b-list-selection-bar', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: block;
             position:absolute;
@@ -38179,7 +23624,7 @@ customElements.define('b-list-selection-bar', class extends _litElement.LitEleme
             height: 100%;
             width: 100%;
             box-sizing: border-box;
-            background: var(--theme-bgd); /* FIXME: */
+            background: var(--theme-bgd, #fff);
 
             display: flex;
             justify-content: space-between;
@@ -38226,8 +23671,8 @@ customElements.define('b-list-selection-bar', class extends _litElement.LitEleme
   }
 
   render() {
-    return _litElement.html`
-        ${this.selection ? _litElement.html`
+    return (0, _litElement.html)`
+        ${this.selection ? (0, _litElement.html)`
 
             <div>
                 <b-btn class="cancel-btn" icon="cancel-1" @click=${this.end} outline></b-btn>
@@ -38251,7 +23696,7 @@ customElements.define('b-list-selection-bar', class extends _litElement.LitEleme
   }
 
 });
-},{"lit-element":"+bhx"}],"2zwr":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"zwrR":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38321,10 +23766,20 @@ customElements.define('b-infinite-list', class extends _litElement.LitElement {
     if (this._fetching) return;
     let pageAt = this.pageAt;
     this._fetching = true;
-    let models = await this.dataSource.fetch(pageAt);
-    this.addContent(models, {
-      clear: clear
-    });
+    this._fetchFailed = false;
+
+    try {
+      let models = await this.dataSource.fetch(pageAt);
+      this.addContent(models, {
+        clear: clear
+      });
+    } catch (err) {
+      this._fetchFailed = err;
+      this.addContent([], {
+        clear: clear
+      });
+    }
+
     this._fetching = null;
 
     if (pageAt == 0) {
@@ -38336,6 +23791,8 @@ customElements.define('b-infinite-list', class extends _litElement.LitElement {
         composed: true
       }));
     }
+
+    if (this._fetchFailed) throw this._fetchFailed;
   } // get emptyElement(){return this.getAttribute('empty') || 'b-empty-state'}
 
 
@@ -38347,7 +23804,12 @@ customElements.define('b-infinite-list', class extends _litElement.LitElement {
 
     if (this.pageAt == 0) {
       let emptyView = this.empty && this.empty();
-      if (emptyView) this.appendChild(emptyView);
+
+      if (emptyView) {
+        emptyView.fetchFailed = this._fetchFailed;
+        this.appendChild(emptyView);
+      }
+
       return;
     }
 
@@ -38380,7 +23842,7 @@ customElements.define('b-infinite-list', class extends _litElement.LitElement {
 var _default = customElements.get('b-infinite-list');
 
 exports.default = _default;
-},{"lit-element":"+bhx","../../elements/empty-state":"+2dU"}],"yvN8":[function(require,module,exports) {
+},{"lit-element":"bhxD","../../elements/empty-state":"dUnZ"}],"yvN8":[function(require,module,exports) {
 "use strict";
 
 var _litElement = require("lit-element");
@@ -38403,7 +23865,7 @@ _litElement.LitElement.prototype.$$ = function (query) {
 _litElement.LitElement.prototype.$$all = function (query) {
   return this.shadowRoot ? this.shadowRoot.querySelectorAll(query) : this.querySelectorAll(query);
 };
-},{"lit-element":"+bhx"}],"a+R3":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"aR3g":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38415,7 +23877,7 @@ var _componentEmitter = _interopRequireDefault(require("component-emitter"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const isTouch = 'ontouchstart' in window;
+const isTouch = ('ontouchstart' in window);
 
 class ResultMap extends Map {
   get models() {
@@ -38474,6 +23936,7 @@ class Selection {
   begin(e) {
     if (this.isOn) return;
     this.__on = true;
+    this.list.setAttribute('selection-on', '');
     this.bindEvents(e); // select the item that triggered the selection
 
     if (e) {
@@ -38488,6 +23951,7 @@ class Selection {
 
   end() {
     this.__on = false;
+    this.list.removeAttribute('selection-on');
     this.unbindEvents();
     let {
       items
@@ -38687,7 +24151,9 @@ class Selection {
       } // mouse event
 
     } else {
-      let item = e.relatedTarget && e.relatedTarget.tagName == this.itemTagName ? e.relatedTarget : e;
+      // hmm....why relatedTarget? it doesn't work right
+      // let item = e.relatedTarget && e.relatedTarget.tagName == this.itemTagName ? e.relatedTarget : e
+      let item = e;
       this.select(item, this._startItem);
     }
   }
@@ -38767,9 +24233,10 @@ customElements.define('b-list', class extends _litElement.LitElement {
   }
 
   set coll(coll) {
-    let didChange = !!this.__coll && this.__coll != coll;
+    let didChange = this.__collHasBeenSetOnce && this.__coll != coll;
     this.__coll = coll;
-    this.dataSource.coll = coll; // I think this is ok to do here
+    this.dataSource.coll = coll;
+    this.__collHasBeenSetOnce = true; // I think this is ok to do here
 
     if (didChange) this.shouldFetchData ? this.refresh() : this.reload();
   }
@@ -38852,21 +24319,24 @@ customElements.define('b-list', class extends _litElement.LitElement {
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: grid;
-            grid-template-rows: auto auto 1fr;
+            grid-template-rows: auto auto 1fr auto;
             overflow: hidden;
             flex: 1;
             position: relative;
+            z-index: 10;
         }
 
-        slot[name="header"] {
+        slot[name="header"],
+        slot[name="footer"] {
             display: block;
             overflow-x: auto;
         }
 
-        slot[name="header"]::-webkit-scrollbar {
+        slot[name="header"]::-webkit-scrollbar,
+        slot[name="footer"]::-webkit-scrollbar {
             display: none;
             width: 0 !important;
             height: 0 !important;
@@ -38894,18 +24364,28 @@ customElements.define('b-list', class extends _litElement.LitElement {
             -webkit-overflow-scrolling: touch;
         }
 
-        b-infinite-list > [selected] {
-            position: relative;
+        b-infinite-list[selection-on] {
+            user-select: none;
         }
 
-        b-infinite-list > [selected]:before {
+        b-infinite-list > [isselected] {
+            position: relative;
+            z-index: 0;
+        }
+
+        b-infinite-list > [isselected]:before {
             position: absolute;
             content: '';
-            border: solid 1.4em #E3F2FD;
-            border-left-width: 2em;
+            background: var(--theme, #2196F3);
+            opacity: .1;
+            /* border: solid 1.4em #E3F2FD;
+            border-left-width: 2em; */
+            top: 0;
+            left: 0;
             height: 100%;
             width: 100%;
             box-sizing: border-box;
+            z-index: -1;
         }
 
         contract-draft-row { /* FIXME: remove? */
@@ -38934,7 +24414,7 @@ customElements.define('b-list', class extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
 
         <style>${this.customStyles || ''}</style>
         
@@ -38965,6 +24445,7 @@ customElements.define('b-list', class extends _litElement.LitElement {
             fetch-on-load=${this.listOptions && this.listOptions.fetchOnLoad}
             layout="${this.layout}"
         ></b-infinite-list>
+        <slot name="footer"></slot>
     `;
   }
 
@@ -39037,7 +24518,8 @@ customElements.define('b-list', class extends _litElement.LitElement {
   createEmptyElement() {
     this.emptyView = this.emptyView || document.createElement(this.emptyElement);
     this.emptyView.list = this;
-    this.emptyView.dataSource = this.dataSource;
+    this.emptyView.dataSource = this.dataSource; // this.emptyView.innerHTML = '<slot name="empty"></slot>'
+
     let term = this.dataSource.filters && this.dataSource.filters.term;
     this.emptyView.value = term ? `No results for “${term}”` : this.getAttribute('placeholder') || 'No results';
     this.emptyView.requestUpdate();
@@ -39063,17 +24545,29 @@ customElements.define('b-list', class extends _litElement.LitElement {
     // defer to end of callstack to let infinite list view render and begin fetching
     setTimeout(async () => {
       this.spinner.show = true;
-      this.toolbar.count = await this.dataSource.length();
+
+      try {
+        this.toolbar.count = await this.dataSource.length();
+      } catch (err) {}
+
       this.spinner.show = false;
     });
     this.header = this.$$('[name="header"]').assignedNodes()[0];
-    if (this.header) this.list.addEventListener('scroll', e => {
-      this.header.scrollLeft = e.currentTarget.scrollLeft;
+    this.footer = this.$$('[name="footer"]').assignedNodes()[0];
+    if (this.header || this.footer) this.list.addEventListener('scroll', e => {
+      if (this.header) this.header.scrollLeft = e.currentTarget.scrollLeft;
+      if (this.footer) this.footer.scrollLeft = e.currentTarget.scrollLeft;
       if (e.currentTarget.scrollLeft == 0) this.removeAttribute('scrolled-x');else this.setAttribute('scrolled-x', '');
     }); // TODO: unbind on disconnect?
 
-    this.selection = new _selection.default(this.list, this.rowElement, {
+    this.selection = new _selection.default(this.list, this.rowElement, Object.assign({
       toolbar: this.shadowRoot.querySelector('b-list-selection-bar')
+    }, this.selectionOptions || {}));
+    this.selection.on('begin', () => {
+      this.setAttribute('selection-on', '');
+    });
+    this.selection.on('end', () => {
+      this.removeAttribute('selection-on');
     });
     this.addEventListener('selection:begin', e => {
       e.stopPropagation();
@@ -39083,13 +24577,19 @@ customElements.define('b-list', class extends _litElement.LitElement {
 
   async refresh() {
     this.spinner.show = true;
-    this.dataSource.reset();
-    this.list.reset();
-    this.toolbar.count = await this.dataSource.length();
+
+    try {
+      this.selection.end();
+      this.dataSource.reset();
+      this.list.reset();
+      this.toolbar.count = await this.dataSource.length();
+    } catch (err) {}
+
     this.spinner.show = false;
   }
 
   async reload() {
+    this.selection.end();
     this.dataSource.refilter();
     this.list.reset(this.shouldFetchData);
     this.toolbar.count = await this.dataSource.length();
@@ -39140,20 +24640,126 @@ customElements.define('b-list', class extends _litElement.LitElement {
 var _default = customElements.get('b-list');
 
 exports.default = _default;
-},{"lit-element":"+bhx","./data/source":"zXhY","./data/filters":"HGW8","./data/sorts":"4sAK","./data/layouts":"ZTm8","./toolbar":"iwaU","./toolbar/selection-bar":"55xA","./infinite-list":"2zwr","../../elements/spinner-overlay":"eyVY","../../helpers/lit-element/selectors":"yvN8","../selection":"a+R3"}],"euwv":[function(require,module,exports) {
-"use strict";
+},{"lit-element":"bhxD","./data/source":"zXhY","./data/filters":"HGW8","./data/sorts":"sAKI","./data/layouts":"ZTm8","./toolbar":"iwaU","./toolbar/selection-bar":"xA0J","./infinite-list":"zwrR","../../elements/spinner-overlay":"eyVY","../../helpers/lit-element/selectors":"yvN8","../selection":"aR3g"}],"Qy1v":[function(require,module,exports) {
+var define;
+!function(r,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):r.dayjs_plugin_relativeTime=t()}(this,function(){"use strict";return function(r,t,e){r=r||{};var n=t.prototype,o={future:"in %s",past:"%s ago",s:"a few seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"};e.en.relativeTime=o;var d=function(t,n,d,i){for(var u,a,s,f=d.$locale().relativeTime||o,l=r.thresholds||[{l:"s",r:44,d:"second"},{l:"m",r:89},{l:"mm",r:44,d:"minute"},{l:"h",r:89},{l:"hh",r:21,d:"hour"},{l:"d",r:35},{l:"dd",r:25,d:"day"},{l:"M",r:45},{l:"MM",r:10,d:"month"},{l:"y",r:17},{l:"yy",d:"year"}],h=l.length,m=0;m<h;m+=1){var c=l[m];c.d&&(u=i?e(t).diff(d,c.d,!0):d.diff(t,c.d,!0));var y=(r.rounding||Math.round)(Math.abs(u));if(s=u>0,y<=c.r||!c.r){y<=1&&m>0&&(c=l[m-1]);var p=f[c.l];a="string"==typeof p?p.replace("%d",y):p(y,n,c.l,s);break}}return n?a:(s?f.future:f.past).replace("%s",a)};n.to=function(r,t){return d(r,t,this,!0)},n.from=function(r,t){return d(r,t,this)};var i=function(r){return r.$u?e.utc():e()};n.toNow=function(r){return this.to(i(this),r)},n.fromNow=function(r){return this.from(i(this),r)}}});
 
-var _litElement = require("lit-element");
+},{}],"Agap":[function(require,module,exports) {
+var define;
+!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):e.dayjs_plugin_localizedFormat=t()}(this,function(){"use strict";var e={LTS:"h:mm:ss A",LT:"h:mm A",L:"MM/DD/YYYY",LL:"MMMM D, YYYY",LLL:"MMMM D, YYYY h:mm A",LLLL:"dddd, MMMM D, YYYY h:mm A"};return function(t,n,o){var r=n.prototype,M=r.format;o.en.formats=e,r.format=function(t){void 0===t&&(t="YYYY-MM-DDTHH:mm:ssZ");var n=this.$locale().formats,o=function(t,n){return t.replace(/(\[[^\]]+])|(LTS?|l{1,4}|L{1,4})/g,function(t,o,r){var M=r&&r.toUpperCase();return o||n[r]||e[r]||n[M].replace(/(\[[^\]]+])|(MMMM|MM|DD|dddd)/g,function(e,t,n){return t||n.slice(1)})})}(t,void 0===n?{}:n);return M.call(this,o)}}});
 
-_litElement.LitElement.prototype.emitEvent = function (eventName, detail = null) {
-  var event = new CustomEvent(eventName, {
-    bubbles: true,
-    composed: true,
-    detail: detail
-  });
-  this.dispatchEvent(event);
+},{}],"B5kD":[function(require,module,exports) {
+var define;
+!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):e.dayjs_plugin_calendar=t()}(this,function(){"use strict";return function(e,t,a){var n="h:mm A",d={lastDay:"[Yesterday at] "+n,sameDay:"[Today at] "+n,nextDay:"[Tomorrow at] "+n,nextWeek:"dddd [at] "+n,lastWeek:"[Last] dddd [at] "+n,sameElse:"MM/DD/YYYY"};t.prototype.calendar=function(e,t){var n=t||this.$locale().calendar||d,s=a(e||void 0).startOf("d"),o=this.diff(s,"d",!0),i=o<-6?"sameElse":o<-1?"lastWeek":o<0?"lastDay":o<1?"sameDay":o<2?"nextDay":o<7?"nextWeek":"sameElse",f=n[i]||d[i];return"function"==typeof f?f.call(this,a()):this.format(f)}}});
+
+},{}],"yPwf":[function(require,module,exports) {
+/*
+    Adds Day.js plugins that matches Blackstone's use of moment.js
+
+    - Also changes 'Invalid Date' in .format() to empty string
+    - adds dayjs.months()
+    - adds dayjs.weekdays()
+    - supports hash of changes in `.set()`
+*/
+var dayjs = require('dayjs');
+
+var relativeTime = require('dayjs/plugin/relativeTime');
+
+dayjs.extend(relativeTime);
+
+var localizedFormat = require('dayjs/plugin/localizedFormat');
+
+dayjs.extend(localizedFormat);
+
+var calendar = require('dayjs/plugin/calendar');
+
+dayjs.extend(calendar);
+
+dayjs.prototype.calendarDate = function (formats = {}) {
+  formats = Object.assign({
+    lastDay: '[Yesterday]',
+    sameDay: '[Today]',
+    nextDay: '[Tomorrow]',
+    lastWeek: '[last] dddd',
+    nextWeek: 'dddd',
+    sameElse: 'l'
+  }, formats);
+  return this.calendar(null, formats);
 };
-},{"lit-element":"+bhx"}],"tqEd":[function(require,module,exports) {
+
+const DayJsFormat = dayjs.prototype.format;
+
+dayjs.prototype.format = function (...args) {
+  // https://github.com/iamkun/dayjs/blob/dev/src/index.js#L252
+  if (!this.isValid()) return '';
+  return DayJsFormat.call(this, ...args);
+}; // let `.set` handle hash of changes
+
+
+const DayJsSet = dayjs.prototype.set;
+
+dayjs.prototype.set = function (...args) {
+  if (args.length == 1 && typeof args[0] == 'object') {
+    let date = this;
+
+    for (let unit in args[0]) {
+      date = DayJsSet.call(date, unit, args[0][unit]);
+    }
+
+    return date;
+  }
+
+  return DayJsSet.call(this, ...args);
+};
+
+const MONTH_NAMES = {};
+
+dayjs.months = function (format = "MMMM") {
+  // cached
+  if (MONTH_NAMES[format]) return MONTH_NAMES[format];
+  let d = dayjs();
+  let months = [];
+  let i = 0;
+
+  while (i < 12) {
+    months.push(d.set('month', i++).format(format));
+  }
+
+  MONTH_NAMES[format] = months;
+  return months;
+};
+
+dayjs.monthsShort = function () {
+  return dayjs.months('MMM');
+};
+
+const WEEKDAY_NAMES = {};
+
+dayjs.weekdays = function (format = "dddd") {
+  // cached
+  if (WEEKDAY_NAMES[format]) return WEEKDAY_NAMES[format];
+  let d = dayjs();
+  let days = [];
+  let i = 0;
+
+  while (i < 7) {
+    days.push(d.set('day', i++).format(format));
+  }
+
+  WEEKDAY_NAMES[format] = days;
+  return days;
+};
+
+dayjs.weekdaysShort = function () {
+  return dayjs.weekdays('ddd');
+};
+
+dayjs.weekdaysMin = function () {
+  return dayjs.weekdays('dd');
+};
+
+module.exports = dayjs;
+},{"dayjs":"dZYI","dayjs/plugin/relativeTime":"Qy1v","dayjs/plugin/localizedFormat":"Agap","dayjs/plugin/calendar":"B5kD"}],"tqEd":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39165,7 +24771,7 @@ var _litElement = require("lit-element");
 
 customElements.define('b-cal-day', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: grid;
             grid-template-rows: auto 1fr;
@@ -39208,7 +24814,7 @@ customElements.define('b-cal-day', class extends _litElement.LitElement {
   }
 
   get isWeekend() {
-    return [0, 6].includes(this.date.weekday());
+    return [0, 6].includes(this.date.day());
   }
 
   get isToday() {
@@ -39216,7 +24822,7 @@ customElements.define('b-cal-day', class extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
 
         <header>
             <div class="date">
@@ -39259,7 +24865,7 @@ customElements.define('b-cal-day', class extends _litElement.LitElement {
 var _default = customElements.get('b-cal-day');
 
 exports.default = _default;
-},{"lit-element":"+bhx"}],"YTQF":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"YTQF":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39273,7 +24879,9 @@ require("../../elements/btn-group");
 
 require("../../helpers/lit-element/events");
 
-var _moment = _interopRequireDefault(require("moment"));
+require("../../helpers/day-js");
+
+var _dayjs = _interopRequireDefault(require("dayjs"));
 
 require("./day");
 
@@ -39282,13 +24890,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 customElements.define('b-cal', class extends _litElement.LitElement {
   constructor() {
     super();
-    this.weekdays = _moment.default.weekdaysMin();
+    this.weekdays = _dayjs.default.weekdaysMin();
     this.days = new Array(7 * 6).fill('');
-    this.date = this._date || this.getAttribute('date') || (0, _moment.default)();
+    this.date = this._date || this.getAttribute('date') || (0, _dayjs.default)();
   }
 
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             /* height: 100%; */
             display: grid;
@@ -39369,11 +24977,11 @@ customElements.define('b-cal', class extends _litElement.LitElement {
   set date(val) {
     let oldDate = this._date && this._date.clone();
 
-    if (val instanceof _moment.default) {
+    if (val instanceof _dayjs.default) {
       this._date = val;
       this._dateSelected = this._date.clone();
     } else if (typeof val == 'string') {
-      this._date = (0, _moment.default)(val);
+      this._date = (0, _dayjs.default)(val);
       this._dateSelected = this._date.clone();
     } else if (val && typeof val == 'object') {
       this._dateSelected.set(val);
@@ -39397,7 +25005,7 @@ customElements.define('b-cal', class extends _litElement.LitElement {
   }
 
   _loadDays() {
-    let start = this._date.weekday();
+    let start = this._date.day();
 
     let numDays = this._date.daysInMonth();
 
@@ -39411,22 +25019,22 @@ customElements.define('b-cal', class extends _litElement.LitElement {
   }
 
   nextMonth() {
-    this.date = this._date.clone().add('month', 1);
+    this.date = this._date.clone().add(1, 'month');
     this.update();
   }
 
   prevMonth() {
-    this.date = this._date.clone().add('month', -1);
+    this.date = this._date.clone().add(-1, 'month');
     this.update();
   }
 
   goToToday() {
-    this.date = (0, _moment.default)();
+    this.date = (0, _dayjs.default)();
     this.update();
   }
 
   render() {
-    return _litElement.html`
+    return (0, _litElement.html)`
         <header>
             <div class="title">
                 <h1>${this.date.format('MMMM YYYY')}</h1>
@@ -39442,17 +25050,17 @@ customElements.define('b-cal', class extends _litElement.LitElement {
                 <slot name="after-nav"></slot>
             </div>
 
-            <div class="weekdays">${this.weekdays.map((str, i) => _litElement.html`
-                ${i == 0 || i == 6 ? _litElement.html`
+            <div class="weekdays">${this.weekdays.map((str, i) => (0, _litElement.html)`
+                ${i == 0 || i == 6 ? (0, _litElement.html)`
                     <div @click=${this.toggleCollapseWeekend}>${str}</div>
-                ` : _litElement.html`
+                ` : (0, _litElement.html)`
                     <div>${str}</div>
                 `}
             `)}</div>
 
         </header>
         <main>
-        ${this.days.map(date => _litElement.html`
+        ${this.days.map(date => (0, _litElement.html)`
             <b-cal-day .caldate=${this._date} .date=${date}>
                 <slot name="${date.format('YYYY-MM-DD')}"></slot>
             </b-cal-day>
@@ -39470,14 +25078,14 @@ customElements.define('b-cal', class extends _litElement.LitElement {
 var _default = customElements.get('b-cal');
 
 exports.default = _default;
-},{"lit-element":"+bhx","../../elements/btn-group":"0pV6","../../helpers/lit-element/events":"euwv","moment":"a2/B","./day":"tqEd"}],"TMO9":[function(require,module,exports) {
+},{"lit-element":"bhxD","../../elements/btn-group":"pV6C","../../helpers/lit-element/events":"euwv","../../helpers/day-js":"yPwf","dayjs":"dZYI","./day":"tqEd"}],"TMO9":[function(require,module,exports) {
 "use strict";
 
 var _litElement = require("lit-element");
 
 customElements.define('b-list-of-colors', class extends _litElement.LitElement {
   static get styles() {
-    return _litElement.css`
+    return (0, _litElement.css)`
         :host {
             display: grid;
             --grids: 1fr 1fr 1fr 1fr;
@@ -39569,12 +25177,12 @@ customElements.define('b-list-of-colors', class extends _litElement.LitElement {
   }
 
   render() {
-    return _litElement.html`
-        ${this.colors.map(g => _litElement.html`
+    return (0, _litElement.html)`
+        ${this.colors.map(g => (0, _litElement.html)`
             <div group="${g.name}">
                 <h3>${g.name}</h3>
                 <div class="colors">
-                ${g.colors.map(c => _litElement.html`
+                ${g.colors.map(c => (0, _litElement.html)`
                     <div num=${c.num} key="${c.key}" class="color" style="background-color: var(--${c.key});">
                         <div>${c.key}</div>
                         <!-- <b-sub>${c.num ? c.color : ''}</b-sub> -->
@@ -39587,7 +25195,7 @@ customElements.define('b-list-of-colors', class extends _litElement.LitElement {
   }
 
 });
-},{"lit-element":"+bhx"}],"u6Cc":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"u6Cc":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39599,30 +25207,30 @@ exports.fileIconLabels = exports.fileIconColors = void 0;
 var _litElement = require("lit-element");
 
 const fileIconColors = {
-  pdf: _litElement.css`:host([ext="pdf"]){ --bgd: #b40808; }`,
-  js: _litElement.css` :host([ext="js"]){ --bgd: #f8dc3d; --color: #333;}`,
-  json: _litElement.css`:host([ext="json"]){ --bgd: #f8dc3d; --color: #333;}`,
-  video: _litElement.css`:host([ext="mp4"]){ --bgd: var(--red);}`,
-  html: _litElement.css`:host([ext="html"]){ --bgd: #e54c21}`,
-  xml: _litElement.css`:host([ext="xml"]){ --bgd: #f26524}`,
-  onix: _litElement.css`:host([ext="onix"]){ --bgd: #626a7f;}`,
-  zip: _litElement.css`:host([ext="zip"]){ --bgd: var(--gray-600);}`,
-  jpg: _litElement.css`:host([ext="jpg"]){ --bgd: var(--blue); }`,
-  jpeg: _litElement.css`:host([ext="jpeg"]){ --bgd: var(--blue); }`,
-  png: _litElement.css`:host([ext="png"]){ --bgd: var(--blue); }`,
-  gif: _litElement.css`:host([ext="gif"]){ --bgd: var(--blue); }`,
-  wav: _litElement.css`:host([ext="wav"]){ --bgd: var(--deep-purple); }`,
-  mp3: _litElement.css`:host([ext="mp3"]){ --bgd: var(--deep-purple); }`,
-  flac: _litElement.css`:host([ext="flac"]){ --bgd: var(--deep-purple); }`,
-  m4a: _litElement.css`:host([ext="m4a"]){ --bgd: var(--deep-purple); }`,
+  pdf: (0, _litElement.css)`:host([ext="pdf"]){ --bgd: #b40808; }`,
+  js: (0, _litElement.css)` :host([ext="js"]){ --bgd: #f8dc3d; --color: #333;}`,
+  json: (0, _litElement.css)`:host([ext="json"]){ --bgd: #f8dc3d; --color: #333;}`,
+  video: (0, _litElement.css)`:host([ext="mp4"]){ --bgd: var(--red);}`,
+  html: (0, _litElement.css)`:host([ext="html"]){ --bgd: #e54c21}`,
+  xml: (0, _litElement.css)`:host([ext="xml"]){ --bgd: #f26524}`,
+  onix: (0, _litElement.css)`:host([ext="onix"]){ --bgd: #626a7f;}`,
+  zip: (0, _litElement.css)`:host([ext="zip"]){ --bgd: var(--gray-600);}`,
+  jpg: (0, _litElement.css)`:host([ext="jpg"]){ --bgd: var(--blue); }`,
+  jpeg: (0, _litElement.css)`:host([ext="jpeg"]){ --bgd: var(--blue); }`,
+  png: (0, _litElement.css)`:host([ext="png"]){ --bgd: var(--blue); }`,
+  gif: (0, _litElement.css)`:host([ext="gif"]){ --bgd: var(--blue); }`,
+  wav: (0, _litElement.css)`:host([ext="wav"]){ --bgd: var(--deep-purple); }`,
+  mp3: (0, _litElement.css)`:host([ext="mp3"]){ --bgd: var(--deep-purple); }`,
+  flac: (0, _litElement.css)`:host([ext="flac"]){ --bgd: var(--deep-purple); }`,
+  m4a: (0, _litElement.css)`:host([ext="m4a"]){ --bgd: var(--deep-purple); }`,
   // Microsoft
-  word: _litElement.css`
+  word: (0, _litElement.css)`
         :host([ext="doc"]),
         :host([ext="docx"]) {
             --bgd: #0f52b7;
         }
     `,
-  excel: _litElement.css`
+  excel: (0, _litElement.css)`
         :host([ext="xls"]),
         :host([ext="xlsx"]),
         :host([ext="xlsm"]) {
@@ -39630,7 +25238,7 @@ const fileIconColors = {
         }
     `,
   // Adobe
-  psd: _litElement.css`
+  psd: (0, _litElement.css)`
         :host([ext="psd"]) {
             --bgd: #011c24;
             --color: #00c8ff;
@@ -39638,7 +25246,7 @@ const fileIconColors = {
             --border-color: var(--color);
         }
     `,
-  indd: _litElement.css`
+  indd: (0, _litElement.css)`
         :host([ext="indd"]),
         :host([ext="idml"]) {
             --bgd: #2a020b;
@@ -39647,7 +25255,7 @@ const fileIconColors = {
             --border-color: var(--color);
         }
     `,
-  icml: _litElement.css`
+  icml: (0, _litElement.css)`
         :host([ext="icml"]) {
             --bgd: #2a0c2a;
             --color: #eb72eb;
@@ -39655,7 +25263,7 @@ const fileIconColors = {
             --border-color: var(--color);
         }
     `,
-  ai: _litElement.css`
+  ai: (0, _litElement.css)`
         :host([ext="ai"]),
         :host([ext="ait"]) {
             --bgd: #251300;
@@ -39664,7 +25272,7 @@ const fileIconColors = {
             --border-color: var(--color);
         }
     `,
-  pdf: _litElement.css`
+  pdf: (0, _litElement.css)`
         :host([ext="pdf"]) {
             --bgd: #2f1208;
             --color: #fff;
@@ -39675,18 +25283,18 @@ const fileIconColors = {
 };
 exports.fileIconColors = fileIconColors;
 const fileIconLabels = {
-  'json': _litElement.html`<span>{ }</span>`,
-  'mp4': _litElement.html`<b-icon name="videocam"></b-icon>`,
-  'mp3': ext => _litElement.html`<b-icon name="music"></b-icon><sub>${ext}</sub>`,
-  'wav': ext => _litElement.html`<b-icon name="music"></b-icon><sub>${ext}</sub>`,
-  'flac': ext => _litElement.html`<b-icon name="music"></b-icon><sub>${ext}</sub>`,
-  'html': ext => _litElement.html`<b-icon name="code"></b-icon><sub>${ext}</sub>`,
-  'xml': ext => _litElement.html`<b-icon name="code"></b-icon><sub>${ext}</sub>`,
-  'onix': ext => _litElement.html`<b-icon name="code"></b-icon><sub>${ext}</sub>`,
-  'dpl': _litElement.html`<b-icon name="cd"></b-icon>`,
-  'iso': _litElement.html`<b-icon name="cd"></b-icon>`,
-  'zip': _litElement.html`<b-icon name="file-archive"></b-icon>`,
-  'epub': ext => _litElement.html`<b-icon name="book-open"></b-icon><sub>${ext}</sub>`
+  'json': (0, _litElement.html)`<span>{ }</span>`,
+  'mp4': (0, _litElement.html)`<b-icon name="videocam"></b-icon>`,
+  'mp3': ext => (0, _litElement.html)`<b-icon name="music"></b-icon><sub>${ext}</sub>`,
+  'wav': ext => (0, _litElement.html)`<b-icon name="music"></b-icon><sub>${ext}</sub>`,
+  'flac': ext => (0, _litElement.html)`<b-icon name="music"></b-icon><sub>${ext}</sub>`,
+  'html': ext => (0, _litElement.html)`<b-icon name="code"></b-icon><sub>${ext}</sub>`,
+  'xml': ext => (0, _litElement.html)`<b-icon name="code"></b-icon><sub>${ext}</sub>`,
+  'onix': ext => (0, _litElement.html)`<b-icon name="code"></b-icon><sub>${ext}</sub>`,
+  'dpl': (0, _litElement.html)`<b-icon name="cd"></b-icon>`,
+  'iso': (0, _litElement.html)`<b-icon name="cd"></b-icon>`,
+  'zip': (0, _litElement.html)`<b-icon name="file-archive"></b-icon>`,
+  'epub': ext => (0, _litElement.html)`<b-icon name="book-open"></b-icon><sub>${ext}</sub>`
 };
 exports.fileIconLabels = fileIconLabels;
 
@@ -39704,7 +25312,7 @@ function _default(customColors = {}, customLabels = {}) {
     }
 
     static get styles() {
-      return [_litElement.css`
+      return [(0, _litElement.css)`
         :host {
             display: inline-block;
             position:relative;
@@ -39777,7 +25385,7 @@ function _default(customColors = {}, customLabels = {}) {
     }
 
     render() {
-      return _litElement.html`
+      return (0, _litElement.html)`
         <main>
             <div class="dogear"></div>
             <slot name="label">
@@ -39796,689 +25404,7 @@ function _default(customColors = {}, customLabels = {}) {
 
   });
 }
-},{"lit-element":"+bhx"}],"sHUN":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _litElement = require("lit-element");
-
-const NotifControllers = {};
-customElements.define('b-notifs', class extends _litElement.LitElement {
-  // createRenderRoot(){ return this }
-  static get(name = 'main') {
-    if (name == 'main' && !NotifControllers[name]) {
-      let controller = document.createElement('b-notifs');
-      controller.setAttribute('name', 'main');
-      document.body.appendChild(controller);
-      NotifControllers[name] = controller;
-    }
-
-    return NotifControllers[name];
-  }
-
-  get name() {
-    return this.hasAttribute('name') ? this.getAttribute('name') : undefined;
-  }
-
-  constructor() {
-    super();
-
-    if (this.name) {
-      if (NotifControllers[this.name]) console.warn('A `b-notifs` controller already exists with the name: ', this.name);else NotifControllers[this.name] = this;
-    }
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    if (this.name) delete NotifControllers[this.name];
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    if (this.name && !NotifControllers[this.name]) NotifControllers[this.name] = this;
-  }
-
-  static get styles() {
-    return _litElement.css`
-        :host {
-            display: block;
-            pointer-events: none;
-            
-            overflow: hidden;
-            position:absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            z-index: 1200;
-            --padding: var(--b-notif-padding, 1em);
-        }
-
-        :host([name="main"]) {
-            position: fixed;
-            top: env(safe-area-inset-top);
-            left: env(safe-area-inset-left);
-            bottom: env(safe-area-inset-bottom);
-            right: env(safe-area-inset-right);
-        }
-
-        @media (max-width:699px), (max-height: 699px) {
-            :host {
-                position: fixed;
-                top: env(safe-area-inset-top);
-                left: env(safe-area-inset-left);
-                bottom: env(safe-area-inset-bottom);
-                right: env(safe-area-inset-right);
-            }
-        }
-
-        slot {
-            position: absolute;
-            display: flex;
-        }
-
-        slot[name="top"],
-        slot[name="bottom"] {
-            width: 100%;
-            align-items: center;
-        }
-
-        slot[name*="top"] {
-            top: 0;
-            flex-direction: column;
-            padding-top: var(--padding);
-        }
-
-        slot[name*="bottom"] {
-            bottom: 0;
-            flex-direction: column-reverse;
-            padding-bottom: var(--padding);
-        }
-
-        slot[name*="left"] {
-            left: 0;
-            padding-left: var(--padding);
-            align-items: flex-start;
-        }
-
-        slot[name*="right"] {
-            right: 0;
-            padding-right: var(--padding);
-            align-items: flex-end;
-        }
-
-        @media (max-width:699px) {
-            slot {
-                padding: 0 !important;
-                position: static !important;
-                --b-notif-width: 100%;
-            }
-
-            .top {
-                position: absolute;
-                top: 0;
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                padding: var(--padding);
-                box-sizing: border-box;
-            }
-
-            .bottom {
-                position: absolute;
-                bottom: 0;
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                padding: var(--padding);
-                box-sizing: border-box;
-            }
-        }
-    `;
-  }
-
-  render() {
-    return _litElement.html`
-        <div class="bottom">
-            <slot name="bottom-left"></slot>
-            <slot name="bottom"></slot>
-            <slot name="bottom-right"></slot>
-        </div>
-
-        <div class="top">
-            <slot name="top-left"></slot>
-            <slot name="top"></slot>
-            <slot name="top-right"></slot>
-        </div>
-        
-    `;
-  }
-
-});
-
-var _default = customElements.get('b-notifs');
-
-exports.default = _default;
-},{"lit-element":"+bhx"}],"HXsq":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _litElement = require("lit-element");
-
-var _default = _litElement.css`
-:host {
-    display: block;
-    position:relative;
-    pointer-events: all;
-    width: var(--b-notif-width, 300px);
-    max-width: 100%;
-
-    /* overflow: hidden; */
-
-    transition: 
-        height 300ms cubic-bezier(0.4, 0, 0.2, 1) 300ms,
-        opacity 300ms,
-        transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
-
-    opacity: 0;
-    will-change: transform; 
-}
-
-:host([slot*="right"]) { transform: translateX(100%); }
-:host([slot*="left"]) { transform: translateX(-100%); }
-:host([slot="top"]) { transform: translateY(-100%); }
-:host([slot="bottom"]) { transform: translateY(100%); }
-
-:host([animation="grow"]) {
-    transform: scale(.8)
-}
-
-:host([animation="bounce"]) {
-    transform: none;
-}
-
-:host([animation="bounce"].entered) {
-    animation-name: bounce;
-    animation-duration: 700ms;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    animation-fill-mode: forwards;
-}
-
-:host([animation="fade"]) {
-    transform: none;
-}
-
-:host([slot*="top"]) {
-    --spacing-bottom: var(--padding);
-}
-
-:host([slot*="bottom"]) {
-    --spacing-top: var(--padding);
-}
-
-:host(.entered) {
-    opacity: 1;
-    transform: none;
-}
-
-:host(.exit) {
-    height: 0 !important;
-}
-
-:host([color="red"]) {
-    --b-notif-color: #fff;
-    --b-notif-bgd: var(--red);
-}
-
-:host([color="blue"]) {
-    --b-notif-color: #fff;
-    --b-notif-bgd: var(--blue);
-}
-
-:host([color="green"]) {
-    --b-notif-color: #fff;
-    --b-notif-bgd: var(--green);
-}
-
-:host([color="orange"]) {
-    --b-notif-color: #fff;
-    --b-notif-bgd: var(--orange);
-}
-
-:host([color="amber"]) {
-    --b-notif-color: var(--gray-900);
-    --b-notif-bgd: var(--amber);
-}
-
-main {
-    border-radius: var(--b-notif-radius, 4px);
-    color: var(--b-notif-color, #fff);
-    background: var(--b-notif-bgd, #333);
-    margin-top: var(--spacing-top, 0);
-    margin-bottom: var(--spacing-bottom, 0);
-
-    box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2),
-                0px 6px 10px 0px rgba(0,0,0,0.14),
-                0px 1px 18px 0px rgba(0,0,0,0.12);
-}
-
-slot {
-    display: block;
-}
-
-
-:host {
-    --b-notif-btn-color: var(--b-notif-color);
-}
-
-:host([color]) {
-    --b-notif-btn-bgd: rgba(255,255,255,.1);
-}
-
-@keyframes bounce {
-  0% { transform: scale(0.8); }
-  14% { transform: scale(1.1); }
-  28% { transform: scale(.9); }
-  42% { transform: scale(1.1); }
-  70% { transform: scale(1); }
-`;
-
-exports.default = _default;
-},{"lit-element":"+bhx"}],"tUj8":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
-  alert: {},
-  error: {
-    icon: 'attention-circle',
-    color: 'red',
-    animation: 'bounce'
-  },
-  failed: {
-    icon: 'cancel-circled',
-    color: 'red'
-  },
-  success: {
-    icon: 'ok-circled',
-    color: 'green'
-  },
-  info: {
-    icon: 'info-circled',
-    color: 'blue'
-  },
-  warning: {
-    icon: 'attention-1',
-    color: 'orange'
-  }
-};
-exports.default = _default;
-},{}],"Cw//":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _litElement = require("lit-element");
-
-var _unsafeHtml = require("lit-html/directives/unsafe-html");
-
-var _makeBtn = _interopRequireWildcard(require("../dialog/make-btn"));
-
-require("../../helpers/lit-element/events");
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-customElements.define('b-snackbar', class extends _litElement.LitElement {
-  static get properties() {
-    return {
-      msg: {
-        type: String
-      },
-      btns: {
-        type: Array
-      },
-      icon: {
-        type: String
-      }
-    };
-  }
-
-  static get styles() {
-    return _litElement.css`
-        :host {
-            padding: var(--b-snackbar-padding, .85em 1em);
-            display: grid;
-            grid-template-columns: auto 1fr max-content;
-            align-items: center;
-        }
-
-        .icon {
-            line-height: 0;
-        }
-
-        .icon > b-icon,
-        .icon > .icon {
-            margin: -.5em 0;
-            margin-right: .75em;
-            --size: 1.2em;
-            vertical-align: middle;
-        }
-
-        .msg {
-            margin: 0.05em 0 -.05em; /* better alignment with icon and btns */
-        }
-
-        .btns {
-            margin-top: -0.05em;
-            margin-right: calc(-.5 * var(--padding));
-            margin-left: calc(-.5 * var(--padding));
-        }
-
-        .btns b-btn {
-            font-weight: bold;
-            text-transform: uppercase;
-            margin: -1em 0;
-            vertical-align: middle;
-        }
-
-        .btns b-btn[color=''] {
-            color: var(--b-notif-btn-color, #fff);
-        }
-
-        :host([color]) .btns b-btn  {
-            color: var(--b-notif-btn-color, #fff);
-        }
-
-        @media (hover){
-            .btns b-btn:hover {
-                --bgdColor: var(--b-notif-btn-bgd, rgba(0,0,0,.05));
-            }
-        }
-    `;
-  }
-
-  render() {
-    return _litElement.html`
-        <div class="icon">${this.renderIcon()}</div>
-        <div class="msg">${this.msg}</div>
-        <div class="btns" @click=${this.onBtnClick}>
-            ${this.btns.map(btn => this.renderBtn(btn))}
-        </div>
-    `;
-  }
-
-  renderIcon() {
-    if (!this.icon) return '';
-    if (typeof this.icon == 'string') return _litElement.html`<b-icon name="${this.icon}"></b-icon>`;else return this.icon;
-  }
-
-  renderBtn(btn) {
-    return _litElement.html`${(0, _unsafeHtml.unsafeHTML)((0, _makeBtn.default)(btn))}`;
-  }
-
-  onBtnClick(e) {
-    e.stopPropagation();
-    let index = Array.from(e.currentTarget.children).indexOf(e.target);
-    let btnData = index > -1 ? this.btns[index] : e.target;
-    if (_makeBtn.cancelBtns.includes(btnData)) btnData = undefined;
-    this.emitEvent('click', btnData);
-  }
-
-});
-
-var _default = customElements.get('b-snackbar');
-
-exports.default = _default;
-},{"lit-element":"+bhx","lit-html/directives/unsafe-html":"/jTP","../dialog/make-btn":"TZ6L","../../helpers/lit-element/events":"euwv"}],"XAiK":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _litElement = require("lit-element");
-
-var _controller = _interopRequireDefault(require("./controller"));
-
-var _device = _interopRequireDefault(require("../../util/device"));
-
-var _style = _interopRequireDefault(require("./style"));
-
-var _types = _interopRequireDefault(require("./types"));
-
-require("./snackbar");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// list of open notifs
-const NOTIFS = new Map();
-window.NOTIFS = NOTIFS;
-customElements.define('b-notif', class extends _litElement.LitElement {
-  static get styles() {
-    return _style.default;
-  }
-
-  static get properties() {
-    return {
-      nid: {
-        type: String,
-        reflect: true
-      },
-      msg: {
-        type: String
-      },
-      btns: {
-        type: Array
-      },
-      icon: {
-        type: String
-      },
-      color: {
-        type: String,
-        reflect: true
-      },
-      width: {
-        type: String
-      },
-      animation: {
-        type: String,
-        reflect: true
-      }
-    };
-  }
-
-  constructor(opts = {}) {
-    super();
-    this.onWindowFocus = this.onWindowFocus.bind(this);
-    this.onWindowBlur = this.onWindowBlur.bind(this);
-
-    let controller = _controller.default.get(opts.controller || 'main');
-
-    this.opts = Object.assign({
-      nid: String(Math.round(Math.random() * 10000)),
-      msg: '',
-      icon: '',
-      btns: [],
-      animation: _device.default.minScreenSize <= 699 ? 'grow' : 'slide',
-      animationForReplace: 'grow',
-      autoClose: 4000,
-      closeOnClick: true,
-      anchor: 'bottom-right',
-
-      //device.minScreenSize <= 699 ? 'bottom' : 'bottom-right',
-      onClose() {},
-
-      onClick() {}
-
-    }, _types.default[opts.type] || {}, controller.defaults || {}, opts);
-    let props = this.constructor.properties;
-
-    for (let key in this.opts) {
-      if (props[key] != undefined) this[key] = this.opts[key];
-    }
-
-    this.slot = this.opts.anchor;
-    this.addEventListener('click', this.onClick, false);
-    this.addEventListener(_device.default.isMobile ? 'touchdown' : 'mouseover', this.onMouseOver);
-    this.addEventListener(_device.default.isMobile ? 'touchend' : 'mouseout', this.onMouseOut);
-
-    if (this.opts.view) {
-      this.appendChild(this.opts.view);
-      this.opts.view.notif = this;
-    }
-
-    let existingNotif = NOTIFS.get(this.nid);
-    NOTIFS.set(this.nid, this);
-
-    if (existingNotif) {
-      existingNotif.replaceWith(this);
-      return;
-    }
-
-    if (controller) controller.appendChild(this);
-  }
-
-  close(btn) {
-    return new Promise(resolve => {
-      this.style.height = this.getBoundingClientRect().height + 'px';
-      this.classList.remove('entered');
-      setTimeout(() => {
-        this.classList.add('exit');
-      }, 100);
-      setTimeout(() => {
-        this.remove();
-        NOTIFS.delete(this.nid);
-        this.opts.onClose(this);
-        if (this.opts.view) delete this.opts.view.notif;
-        resolve(btn);
-      }, 700);
-    });
-  }
-
-  replaceWith(el) {
-    let animation = el.animation; // let's reduce visual animation when replacing
-
-    if (animation == 'slide') {
-      this.animation = this.opts.animationForReplace;
-      el.animation = this.opts.animationForReplace;
-    }
-
-    this.classList.remove('entered'); // setTimeout(()=>{
-
-    super.replaceWith(el);
-    this.opts.onClose(this);
-    if (this.opts.view) delete this.opts.view.notif;
-    setTimeout(() => {
-      el.animation = animation;
-    }, 310); // },310)
-  }
-
-  onClick(btn) {
-    if (btn instanceof MouseEvent || window.TouchEvent && btn instanceof TouchEvent) btn = undefined;
-    if (this.opts.onClick(this, btn) !== false && this.opts.closeOnClick) this.close(btn);
-  }
-
-  onWindowFocus() {
-    this.autoClose(3000);
-  }
-
-  onWindowBlur() {// this.autoClose(false)
-  }
-
-  onMouseOver(e) {
-    e.stopPropagation();
-    this.autoClose(false);
-  }
-
-  onMouseOut(e) {
-    e.stopPropagation();
-    this.autoClose(3000);
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener('blur', this.onWindowBlur);
-    window.addEventListener('focus', this.onWindowFocus);
-    if (this.opts.width) this.style.width = this.opts.width;
-    setTimeout(() => {
-      this.classList.add('entered');
-    }, 100);
-    this.autoClose();
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    window.removeEventListener('blur', this.onWindowBlur);
-    window.removeEventListener('focus', this.onWindowFocus);
-  }
-
-  autoClose(start = true) {
-    clearTimeout(this._autoCloseTimeout);
-    if (!document.hasFocus()) return; // use the `autoClose` delay if no time given OR we've never started the autoClose
-
-    let delay = start === true || !this._autoCloseTimeout ? this.opts.autoClose : start; // requested to stop, or setting turned off
-
-    if (!start || !this.opts.autoClose) return;
-    this._autoCloseTimeout = setTimeout(() => {
-      this.close();
-    }, delay);
-  }
-
-  render() {
-    return _litElement.html`
-        <main>
-        <slot>
-            <b-snackbar
-                .icon=${this.icon}
-                .msg=${this.msg}
-                .btns=${this.btns}
-                ?color=${!!this.color}
-                @click=${this.onSnackbarClick}></b-snackbar>
-        </slot>
-        </main>
-    `;
-  }
-
-  onSnackbarClick(e) {
-    e.stopPropagation();
-    let data = e.constructor.name == 'CustomEvent' ? e.detail : undefined;
-    this.onClick(data);
-  }
-
-});
-
-var _default = customElements.get('b-notif');
-
-exports.default = _default;
-let notifClass = customElements.get('b-notif');
-
-for (let key in _types.default) {
-  if (!notifClass[key]) notifClass[key] = (msg, opts = {}) => {
-    if (typeof msg == 'string') {
-      opts = opts || {};
-      opts.msg = msg;
-    }
-
-    let Notif = customElements.get('b-notif');
-    return new Notif(Object.assign({}, _types.default[key], opts));
-  };
-}
-},{"lit-element":"+bhx","./controller":"sHUN","../../util/device":"la8o","./style":"HXsq","./types":"tUj8","./snackbar":"Cw//"}],"gE6T":[function(require,module,exports) {
+},{"lit-element":"bhxD"}],"gE6T":[function(require,module,exports) {
 "use strict";
 
 require("../elements/icon");
@@ -40591,7 +25517,7 @@ history.replaceState = (f => function replaceState() {
 window.addEventListener('popstate', function () {
   convertComments();
 });
-},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/btn-group":"0pV6","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/text":"yukA","../elements/grid":"BALQ","../elements/carousel":"inC5","../elements/timer":"u+eY","../elements/empty-state":"+2dU","../elements/label":"DcCw","../elements/ribbon":"jV4C","../elements/hr":"IOAQ","../elements/sub":"VANQ","../elements/ts":"29Vf","../elements/avatar":"Da++","../elements/code":"v5wz","../elements/embed":"bpDM","../elements/audio":"EIVk","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../presenters/cal":"YTQF","../helpers/colors-list":"TMO9","../styles/colors.less":"r4vn","../elements/file-icon":"u6Cc","../presenters/dialog":"pos3","../presenters/menu":"0tCY","../presenters/notif":"XAiK"}],"I+C3":[function(require,module,exports) {
+},{"../elements/icon":"ncPe","../elements/btn":"DABr","../elements/btn-group":"pV6C","../elements/spinner":"EnCN","../elements/spinner-overlay":"eyVY","../elements/uploader":"aYTp","../elements/paper":"Yy3A","../elements/text":"yukA","../elements/grid":"BALQ","../elements/carousel":"inC5","../elements/timer":"uEYO","../elements/empty-state":"dUnZ","../elements/label":"DcCw","../elements/ribbon":"jV4C","../elements/hr":"IOAQ","../elements/sub":"VANQ","../elements/ts":"VfwF","../elements/avatar":"DaYz","../elements/code":"v5wz","../elements/embed":"bpDM","../elements/audio":"EIVk","../presenters/tabs":"BsQP","../presenters/form-control":"wbVn","../presenters/list":"tkaB","../presenters/cal":"YTQF","../helpers/colors-list":"TMO9","../styles/colors.less":"r4vn","../elements/file-icon":"u6Cc","../presenters/dialog":"pos3","../presenters/menu":"tCYJ","../presenters/notif":"XAiK"}],"FheM":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -40607,7 +25533,7 @@ function getBundleURL() {
   try {
     throw new Error();
   } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g);
+    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
 
     if (matches) {
       return getBaseURL(matches[0]);
@@ -40618,12 +25544,12 @@ function getBundleURL() {
 }
 
 function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp):\/\/.+)\/[^/]+$/, '$1') + '/';
+  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
 }
 
 exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
-},{}],"/1fi":[function(require,module,exports) {
+},{}],"TUK3":[function(require,module,exports) {
 var getBundleURL = require('./bundle-url').getBundleURL;
 
 function loadBundlesLazy(bundles) {
@@ -40706,13 +25632,13 @@ LazyPromise.prototype.catch = function (onError) {
   if (this.promise === null) this.promise = new Promise(this.executor);
   return this.promise.catch(onError);
 };
-},{"./bundle-url":"I+C3"}],"PzH6":[function(require,module,exports) {
+},{"./bundle-url":"FheM"}],"A3BY":[function(require,module,exports) {
 module.exports = function loadHTMLBundle(bundle) {
   return fetch(bundle).then(function (res) {
     return res.text();
   });
 };
 },{}],0:[function(require,module,exports) {
-var b=require("/1fi");b.register("html",require("PzH6"));b.load([["icons.svg.99a755f0.html","pxeq"]]).then(function(){require("gE6T");});
+var b=require("TUK3");b.register("html",require("A3BY"));b.load([["icons.svg.10aef11a.html","pxeq"]]).then(function(){require("gE6T");});
 },{}]},{},[0], null)
-//# sourceMappingURL=/bui.map
+//# sourceMappingURL=/bui.js.map

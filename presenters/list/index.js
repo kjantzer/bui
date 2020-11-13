@@ -174,6 +174,15 @@ customElements.define('b-list', class extends LitElement {
         contract-draft-row:not(:last-child) {
             border-bottom: solid 1px rgba(0,0,0,.1);
         }
+        
+        [part="empty-view"] {
+            grid-column: 1/-1;
+            grid-row: 1/-1;
+        }
+
+        [part="divider"] {
+            grid-column: 1/-1;
+        }
 
         /* .queuing-overlay {
             display: none;
@@ -202,14 +211,14 @@ customElements.define('b-list', class extends LitElement {
         </slot>
         
         <b-list-toolbar .filters=${this.filters} .sorts=${this.sorts} .layouts=${this.layouts}
-            @filter-term-changed=${this.onFilterTermChange}>
+            @filter-term-changed=${this.onFilterTermChange} part="toolbar">
             <slot name="toolbar:before" slot="before"></slot>
             <slot name="toolbar:after" slot="after"></slot>
             <slot name="toolbar:refresh" slot="refresh-btn">
                 <b-btn text pill icon="arrows-ccw" @click=${this.refresh}></b-btn>
             </slot>
             <!-- <b-label slot="after" class="queuing-label">Queuing filters, release to apply</b-label> -->
-            <b-list-selection-bar>
+            <b-list-selection-bar part="selectionbar">
                 <slot name="actions:left" slot="left"></slot>
                 <slot name="actions:right" slot="right"></slot>
             </b-list-selection-bar>
@@ -217,6 +226,7 @@ customElements.define('b-list', class extends LitElement {
 
         <slot name="header"></slot>
         <b-infinite-list
+            part="list"
             .empty="${this.createEmptyElement}"
             .row="${this.createRow}"
             .divider=${this.createDivider}
@@ -290,12 +300,14 @@ customElements.define('b-list', class extends LitElement {
             row = new row()
             row.model = model
             row.list = this
+            row.part = 'row'
             return row
         }
     }
 
     createEmptyElement(){
         this.emptyView = this.emptyView || document.createElement(this.emptyElement)
+        this.emptyView.part = 'empty-view'
         this.emptyView.list = this
         this.emptyView.dataSource = this.dataSource
         
@@ -315,6 +327,7 @@ customElements.define('b-list', class extends LitElement {
 
         if( divider && divider.shouldDisplay && divider.shouldDisplay(prevModel, model, this) ){
             divider = new divider(prevModel, model, this)
+            divider.part = 'divider'
             divider.list = this
             divider.model = model
             divider.prevModel = prevModel
