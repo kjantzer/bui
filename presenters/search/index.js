@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import Menu from '../menu'
-import '../form/form-control'
+import '../form/control'
 import '../form/controls/text-field'
 import '../../elements/btn'
 import '../../elements/spinner'

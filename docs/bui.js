@@ -18761,7 +18761,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _formControlCss = _interopRequireDefault(require("./form-control.css.js"));
+var _formControlCss = _interopRequireDefault(require("./control.css.js"));
 
 var _nativeInputHelper = _interopRequireDefault(require("./util/nativeInputHelper"));
 
@@ -18967,7 +18967,7 @@ customElements.define('form-control', FormControlElement);
 var _default = customElements.get('form-control');
 
 exports.default = _default;
-},{"./form-control.css.js":"Sclr","./util/nativeInputHelper":"wYzd"}],"VxKk":[function(require,module,exports) {
+},{"./control.css.js":"Sclr","./util/nativeInputHelper":"wYzd"}],"VxKk":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21278,9 +21278,9 @@ exports.default = _default;
 },{}],"wbVn":[function(require,module,exports) {
 "use strict";
 
-require("./form-handler");
+require("./handler");
 
-require("./form-control");
+require("./control");
 
 require("./controls/text-field");
 
@@ -21295,7 +21295,7 @@ require("./controls/radio-group");
 require("./controls/touch-ripple");
 
 require("./controls/range-slider");
-},{"./form-handler":"ZQnj","./form-control":"swB1","./controls/text-field":"ezNL","./controls/select-field":"h8fl","./controls/check-box":"jNfL","./controls/radio-btn":"GLLF","./controls/radio-group":"mCnW","./controls/touch-ripple":"uH6r","./controls/range-slider":"ZCfn"}],"Wr69":[function(require,module,exports) {
+},{"./handler":"ZQnj","./control":"swB1","./controls/text-field":"ezNL","./controls/select-field":"h8fl","./controls/check-box":"jNfL","./controls/radio-btn":"GLLF","./controls/radio-group":"mCnW","./controls/touch-ripple":"uH6r","./controls/range-slider":"ZCfn"}],"Wr69":[function(require,module,exports) {
 
 /**
  * Expose `Emitter`.
@@ -23355,7 +23355,7 @@ exports.default = void 0;
 
 var _litElement = require("lit-element");
 
-require("../../form/form-control");
+require("../../form/control");
 
 require("../../form/controls/text-field");
 
@@ -23438,7 +23438,7 @@ customElements.define('b-list-search-bar', class extends _litElement.LitElement 
 var _default = customElements.get('b-list-search-bar');
 
 exports.default = _default;
-},{"lit-element":"bhxD","../../form/form-control":"swB1","../../form/controls/text-field":"ezNL"}],"iwaU":[function(require,module,exports) {
+},{"lit-element":"bhxD","../../form/control":"swB1","../../form/controls/text-field":"ezNL"}],"iwaU":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

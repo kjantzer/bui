@@ -1,8 +1,8 @@
 /*
 	Form Controls
 */
-import './form-handler'
-import './form-control'
+import './handler'
+import './control'
 import './controls/text-field'
 import './controls/select-field'
 import './controls/check-box'

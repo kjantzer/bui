@@ -2,7 +2,7 @@
 	Form Control
 */
 
-import styles from './form-control.css.js'
+import styles from './control.css.js'
 import nativeInputHelper from './util/nativeInputHelper'
 
 const CONTROLS = '[slot="control"], .control, text-field, rich-text-field, select-field, check-box, radio-group, token-text-field'
