@@ -6,8 +6,8 @@ import Dialog from '../dialog'
 import Panel from '../panel'
 import Fuse from 'fuse.js'
 import '../../elements/hr'
-import '../form-control/controls/check-box'
-import '../form-control/controls/select-field'
+import '../form/controls/check-box'
+import '../form/controls/select-field'
 import device from '../../util/device';
 
 const styles = require('./style.less')

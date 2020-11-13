@@ -4,7 +4,7 @@
     * [Elements](/elements/README.md)
     * [Icons](./icons.md)
     * [Dialog](/presenters/dialog/README.md)
-    * [Form Control](/presenters/form-control/README.md)
+    * [Form Control](/presenters/form/README.md)
     * [List](/presenters/list/README.md)
     * [Menu](/presenters/menu/README.md)
     * [Panel](/presenters/panel/README.md)

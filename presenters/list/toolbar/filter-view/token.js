@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import Label from '../../../../elements/label'
-import '../../../form-control/controls/token-text-field'
+import '../../../form/controls/token-text-field'
 
 customElements.define('b-list-filter-view-tokens', class extends LitElement{
 

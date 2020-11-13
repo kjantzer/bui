@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
 // import Menu from '../presenters/menu'
 import './icon'
-import '../presenters/form-control/controls/range-slider'
+import '../presenters/form/controls/range-slider'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import store from '../util/store'

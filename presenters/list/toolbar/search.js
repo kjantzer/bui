@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
-import '../../form-control/form-control'
-import '../../form-control/controls/text-field'
+import '../../form/form-control'
+import '../../form/controls/text-field'
 
 customElements.define('b-list-search-bar', class extends LitElement{
 
