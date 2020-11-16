@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs from '../../../helpers/day-js';
 import {css} from 'lit-element'
 
 const styles = css`
