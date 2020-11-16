@@ -20,6 +20,31 @@ customElements.define('b-btn-group', class extends LitElement{
             border-radius: 0 var(--radius) var(--radius) 0;
             border-left: solid 1px rgba(0,0,0,.2);
         }
+
+        ::slotted(b-btn:not(:first-of-type)[clear]) {
+            border-left: solid 1px rgba(0,0,0,.1);
+        }
+
+
+        :host([vert]) {
+            flex-direction: column;
+        }
+
+        :host([vert]) ::slotted(b-btn:first-of-type:not(:last-of-type)){
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        :host([vert]) ::slotted(b-btn:not(:first-of-type):not(:last-of-type)){
+            border-radius: 0;
+            border-top: solid 1px rgba(0,0,0,.2);
+            border-left: none;
+        }
+
+        :host([vert]) ::slotted(b-btn:last-of-type:not(:first-of-type)){
+            border-radius: 0 0 var(--radius) var(--radius);
+            border-top: solid 1px rgba(0,0,0,.2);
+            border-left: none;
+        }
     `}
 
     render(){return html`
