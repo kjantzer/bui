@@ -105,7 +105,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
     render(){return html`
 
-        <slot name="menu:before"></slot>
+        <!-- <slot name="menu:before"></slot> -->
 
         ${this.views.map(v=>html`
             ${v.canDisplay&&(!device.isMobile||v.id!='emails')?html`
@@ -123,7 +123,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             </b-btn>
         `:''}
 
-        <slot name="menu:after"></slot>
+        <!-- <slot name="menu:after"></slot> -->
     `}
 
     get shouldShowSearch(){
