@@ -4,10 +4,10 @@ import docs from 'bui/presenters/form/README.md'
 // must be deliberately imported
 import 'bui/presenters/form/controls/rich-text-field'
 
-customElements.define('demo-presenter-form-control', class extends LitElement{
+customElements.define('demo-presenter-form', class extends LitElement{
 
-    static get title(){ return 'Form Control' }
-    static get id(){ return 'form-control' }
+    static get title(){ return 'Form' }
+    static get id(){ return 'form' }
 
     static get styles(){return css`
         :host {
@@ -32,7 +32,7 @@ customElements.define('demo-presenter-form-control', class extends LitElement{
 
 
         <b-paper>
-            <b-h1>Form Control</b-h1>
+            <b-h1>Form</b-h1>
             <br>
 
         <b-grid cols=3 cols-mobile=1>
@@ -148,4 +148,4 @@ customElements.define('demo-presenter-form-control', class extends LitElement{
 
 })
 
-export default customElements.get('demo-presenter-form-control')
+export default customElements.get('demo-presenter-form')

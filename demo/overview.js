@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit-element'
 import 'bui/elements/headers'
 import 'bui/elements/hr'
 import docs from 'bui/README.md'
+import './setup'
 
 let docsStr = docs
 let trimIndex = docsStr.search('## Installation')
@@ -22,10 +23,10 @@ customElements.define('demo-overview', class extends LitElement{
 
     static get styles(){return css`
         :host {
-            display: block;
+            display: grid;
             position:relative;
             height: 100%;
-            overflow: auto;
+            overflow: hidden;
         }
 
         .bgd {
@@ -62,8 +63,8 @@ customElements.define('demo-overview', class extends LitElement{
             color: white;
             text-align: center;
             font-size: 1.4em;
-            padding-top: var(--view-gutter);
-            padding-bottom: 6%;
+            /* padding-top: var(--view-gutter); */
+            padding-bottom: 3%;
         }
 
         bui-logo {
@@ -87,6 +88,16 @@ customElements.define('demo-overview', class extends LitElement{
             color: var(--theme);
             text-decoration: none;
         }
+
+        b-tabs > * {
+            min-width: 0;
+        }
+
+        b-tabs::part(tab-bar) {
+            color: white;
+            --inactiveColor: rgba(255,255,255,.4);
+            --border-color: rgba(255,255,255,.1);
+        }
     `}
 
     render(){return html`
@@ -96,27 +107,34 @@ customElements.define('demo-overview', class extends LitElement{
         <div class="bgd"></div>
         
 
-        <main>
+        <b-tabs key="demo-overview">
+            <div title="About">
+            <main>
 
-            <header>
+                <header>
 
-                <bui-logo></bui-logo>
-                
-                <b-text xl align="center" block>
-                    Blackstone <b-text bold>UI</b-text>
-                </b-text>
+                    <bui-logo></bui-logo>
+                    
+                    <b-text xl align="center" block>
+                        Blackstone <b-text bold>UI</b-text>
+                    </b-text>
 
-                <p><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">Web components</a> for creating applications – built by Blackstone Publishing using <a href="https://lit-html.polymer-project.org">lit-html</a> and <a href="https://lit-element.polymer-project.org">lit-element</a></p>
+                    <p><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">Web components</a> for creating applications – built by Blackstone Publishing using <a href="https://lit-html.polymer-project.org">lit-html</a> and <a href="https://lit-element.polymer-project.org">lit-element</a></p>
 
-            </header>
+                </header>
 
-            <b-paper overshadow>
+                <b-paper overshadow>
 
-                <demo-markdown-docs notoc .docs=${docsStr}></demo-markdown-docs>
+                    <demo-markdown-docs notoc .docs=${docsStr}></demo-markdown-docs>
 
-            </b-paper>
+                </b-paper>
 
-        </main>
+            </main>
+            </div>
+
+            demo-setup
+
+        </b-tabs>
     `}
 
 })

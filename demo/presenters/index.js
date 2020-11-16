@@ -40,7 +40,7 @@ customElements.define('demo-presenters', class extends LitElement{
     render(){return html`
         <b-tabs-router path="presenters/" key="presenters" layout="left" >
 
-            demo-presenter-form-control
+            demo-presenter-form
             demo-presenter-dialog
             demo-presenter-menu
             demo-presenter-panel
