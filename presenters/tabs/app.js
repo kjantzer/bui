@@ -56,11 +56,11 @@ customElements.define('b-app', class extends LitElement {
             display: flex;
             flex-direction: column;
             position:relative;
-            color: var(--theme-color);
+            color: var(--theme-text);
             min-width: 0;
             overflow: auto;
             -webkit-overflow-scrolling: touch;
-            --b-sub-color: var(--theme-color-accent);
+            --b-sub-color: var(--theme-text-accent);
             --list-toolbar-shadow: 0 0 0 1px var(--theme-bgd-accent);
         }
 

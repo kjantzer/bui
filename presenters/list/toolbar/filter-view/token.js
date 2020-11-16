@@ -153,7 +153,7 @@ customElements.define('b-list-filter-view-token', class extends Label{
         
         :host([data-type="operator"]) {
             --bgd: var(--theme-bgd);
-            --color: var(--theme-color);
+            --color: var(--theme-text);
         }
         
         :host([data-type="field"]) { 

@@ -35,7 +35,7 @@ customElements.define('b-cal', class extends LitElement{
             top: 0;
             z-index: 10;
             background: var(--b-cal-header-bgd, var(--theme-bgd, #fff));
-            border-bottom: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
+            border-bottom: solid 1px rgba(var(--theme-text-rgb, 0,0,0), .1);
             display: grid;
             grid-template-columns: max-content max-content;
             justify-content: space-between;
@@ -78,8 +78,8 @@ customElements.define('b-cal', class extends LitElement{
         }
 
         b-cal-day {
-            border-right: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
-            border-bottom: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
+            border-right: solid 1px rgba(var(--theme-text-rgb, 0,0,0), .1);
+            border-bottom: solid 1px rgba(var(--theme-text-rgb, 0,0,0), .1);
             flex-shrink: 0;
             min-width: 0;
         }

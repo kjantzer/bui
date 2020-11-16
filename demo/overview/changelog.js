@@ -1,9 +1,9 @@
 import { LitElement, html, css } from 'lit-element'
-import docs from '../../docs/setup.md'
+import docs from '../../CHANGELOG.md'
 
-customElements.define('demo-setup', class extends LitElement{
+customElements.define('demo-changelog', class extends LitElement{
 
-    static get title(){ return 'Setup' }
+    static get title(){ return 'Changelog' }
 
     static get styles(){return css`
         :host {
@@ -15,6 +15,10 @@ customElements.define('demo-setup', class extends LitElement{
             margin: var(--view-gutter, 2em) auto;
             /* width: 900px; */
             max-width: calc(100% - (var(--view-gutter, 2em)*2));
+        }
+
+        b-paper {
+            min-height: 70vh;
         }
         
     `}
@@ -34,4 +38,4 @@ customElements.define('demo-setup', class extends LitElement{
 
 })
 
-export default customElements.get('demo-setup')
+export default customElements.get('demo-changelog')

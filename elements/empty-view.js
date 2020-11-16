@@ -13,11 +13,11 @@ customElements.define('b-empty-view', class extends EmptyState {
 
         h1 {
             font-weight: normal;
-            color: var(--theme-color, #111);
+            color: var(--theme-text, #111);
         }
 
         div {
-            color: var(--theme-color-accent, #999);
+            color: var(--theme-text-accent, #999);
             width: 400px;
             max-width: 90%;
         }

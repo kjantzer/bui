@@ -34,7 +34,7 @@ customElements.define('range-slider', class extends LitElement{
             --thumbSize: 18px;
             --color: var(--fc-theme);
             --thumbColor: var(--color);
-            --bgd: var(--theme-color-accent, rgba(0,0,0,.4));
+            --bgd: var(--theme-text-accent, rgba(0,0,0,.4));
             --padding: 10px;
 
             display: inline-block;

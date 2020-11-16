@@ -12,7 +12,7 @@ customElements.define('b-code', class extends LitElement{
         }
 
         code {
-            color: var(--theme-color, inherit);
+            color: var(--theme-text, inherit);
         }
 
         :host([block]) {

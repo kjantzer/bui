@@ -2,7 +2,8 @@ import { LitElement, html, css } from 'lit-element'
 import 'bui/elements/headers'
 import 'bui/elements/hr'
 import docs from 'bui/README.md'
-import './setup'
+import './overview/setup'
+import './overview/changelog'
 
 let docsStr = docs
 let trimIndex = docsStr.search('## Installation')
@@ -133,6 +134,7 @@ customElements.define('demo-overview', class extends LitElement{
             </div>
 
             demo-setup
+            demo-changelog
 
         </b-tabs>
     `}

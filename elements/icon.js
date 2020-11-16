@@ -203,7 +203,7 @@ export class IconList extends LitElement {
 		}
 
 		small {
-			color: var(--theme-color-accent);
+			color: var(--theme-text-accent);
 		}
 
 		@media (max-width: 550px) {

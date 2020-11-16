@@ -22,7 +22,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
         }
 
         b-btn {
-            color: var(--theme-color);
+            color: var(--theme-text);
             text-align: center;
             display: flex;
             align-content: center;
@@ -45,11 +45,11 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
         b-btn[active] {
             --b-btn-stacked-icon-opacity: 1;
-            color: var(--b-app-tab-bar-active-color, var(--theme-color));
+            color: var(--b-app-tab-bar-active-color, var(--theme-text));
             /* top border */
             /* box-shadow: black 1px 6px 0px -2px inset; */
             border-radius: 0;
-            /* --bgdColor: rgba(var(--theme-rgb),.1); */
+            /* --bgdColor: rgba(var(--theme-text-rgb),.1); */
         }
         
         b-btn[active] span {
@@ -57,7 +57,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
         }
         
         b-btn:not([active]):hover {
-            --hoverBgdColor: rgba(var(--theme-rgb),.01);
+            --hoverBgdColor: rgba(var(--theme-text-rgb),.01);
         }
 
         [icon="search"] {
@@ -85,7 +85,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
             b-btn[active] {
                 /* left border */
-                box-shadow: var(--b-app-tab-bar-active-color, var(--theme-chosen, var(--theme-color))) 6px 1px 0px -2px inset;
+                box-shadow: var(--b-app-tab-bar-active-color, var(--theme-chosen, var(--theme-text))) 6px 1px 0px -2px inset;
                 /* border-top-left-radius: 0;
                 border-bottom-left-radius: 0; */
             }

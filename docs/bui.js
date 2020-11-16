@@ -4355,7 +4355,7 @@ class IconList extends _litElement.LitElement {
 		}
 
 		small {
-			color: var(--theme-color-accent);
+			color: var(--theme-text-accent);
 		}
 
 		@media (max-width: 550px) {
@@ -5702,7 +5702,7 @@ customElements.define('b-text', class extends _litElement.LitElement {
         :host([xl]) { font-size: 1.7em; line-height: 1.1em; }
         :host([xxl]) { font-size: 2em; line-height: 1.1em; }
 
-        :host([tone="muted"]), :host([muted]) { color: rgba(var(--theme-rgb, 0,0,0),.4); }
+        :host([tone="muted"]), :host([muted]) { color: rgba(var(--theme-text-rgb, 0,0,0),.4); }
         :host([tone="theme"]) { color: var(--theme); }
         :host([tone="critical"]) { color: var(--b-text-tone-critical, var(--red-A400, red)); }
         :host([tone="warning"]) { color: var(--b-text-tone-warning, var(--orange, orange)); }
@@ -6349,8 +6349,8 @@ class Label extends _litElement.LitElement {
         }
 
         :host([filled="clear"]), :host([badge="black"]) { --bgd: transparent; --color: inherit; }
-        :host([filled="black"]), :host([badge="black"]) { --bgd: var(--theme-color, #333); }
-        :host([filled="white"]), :host([badge="white"]) { --bgd: var(--theme-bgd, #fff); --color: var(--theme-color, #333); }
+        :host([filled="black"]), :host([badge="black"]) { --bgd: var(--theme-text, #333); }
+        :host([filled="white"]), :host([badge="white"]) { --bgd: var(--theme-bgd, #fff); --color: var(--theme-text, #333); }
         :host([filled="gray"]), :host([badge="gray"]) { --bgd: #ddd; --color: #777; }
         :host([filled="theme"]), :host([badge="theme"]) { --bgd: var(--theme); }
         :host([filled="blue"]), :host([badge="blue"]) { --bgd: var(--blue); }
@@ -6361,12 +6361,12 @@ class Label extends _litElement.LitElement {
         :host([filled="purple"]), :host([badge="purple"]) { --bgd: var(--deep-purple); }
 
         :host([filled="text"]), :host([badge="text"]) { 
-            --bgd: var(--theme-color, #333);
+            --bgd: var(--theme-text, #333);
             --color: var(--theme-bgd, #fff);
         }
         :host([filled="accent"]), :host([badge="accent"]) {
-            --bgd: rgba(var(--theme-rgb, 0,0,0), .2);
-            --color: var(--theme-color, #333);
+            --bgd: rgba(var(--theme-text-rgb, 0,0,0), .2);
+            --color: var(--theme-text, #333);
         }
         
 
@@ -7000,7 +7000,7 @@ customElements.define('b-code', class extends _litElement.LitElement {
         }
 
         code {
-            color: var(--theme-color, inherit);
+            color: var(--theme-text, inherit);
         }
 
         :host([block]) {
@@ -7425,7 +7425,7 @@ customElements.define('range-slider', class extends _litElement.LitElement {
             --thumbSize: 18px;
             --color: var(--fc-theme);
             --thumbColor: var(--color);
-            --bgd: var(--theme-color-accent, rgba(0,0,0,.4));
+            --bgd: var(--theme-text-accent, rgba(0,0,0,.4));
             --padding: 10px;
 
             display: inline-block;
@@ -7939,7 +7939,7 @@ customElements.define('b-audio', class extends _litElement.LitElement {
             min-width: 100px;
             height: 10px;
             border-radius: 5px;
-            background: var(--theme-color, var(--black));
+            background: var(--theme-text, var(--black));
             outline: none;
             padding: 0;
             margin: 0 .5em;
@@ -7960,7 +7960,7 @@ customElements.define('b-audio', class extends _litElement.LitElement {
             height: 18px;
             border-radius: 50%;
             border: solid 2px var(--theme-bgd, #fff);
-            background: var(--theme-color, var(--black));
+            background: var(--theme-text, var(--black));
             cursor: pointer;
             box-shadow: none;
             margin-top: -4px;
@@ -8127,7 +8127,7 @@ customElements.define('b-audio', class extends _litElement.LitElement {
   setProgress() {
     var percent = this.progress.value / this.audio.duration * 100;
     var time = this.progress.value;
-    var color = 'var(--theme-color, #333)';
+    var color = 'var(--theme-text, #333)';
     var color2 = 'var(--theme-bgd-accent, #bbb)';
     this.progress.style.background = `linear-gradient(to right, ${color} ${percent}%, ${color2} ${percent}%)`;
     this.elapsed.innerHTML = formatTime(time);
@@ -15595,7 +15595,7 @@ main > svg {
 	height: 1em;
 	width: 1em;
 	flex-shrink: 0;
-	fill: var(--theme-color-accent, #333);
+	fill: var(--theme-text-accent, #333);
 }
 
 slot#options {
@@ -18275,7 +18275,7 @@ slot[name="help"] {
 /* remove autofill blue/yellow background */
 ::slotted(input:-webkit-autofill) {
     -webkit-box-shadow:0 0 0 50px var(--bgd) inset;
-	-webkit-text-fill-color: var(--theme-color);
+	-webkit-text-fill-color: var(--theme-text);
 }
 
 ::slotted(input:-webkit-autofill:focus) {
@@ -19051,7 +19051,7 @@ nav > svg {
     height: 1.4em;
     padding: .25em;
     margin: -.25em;
-	color: var(--theme-color, #000);
+	color: var(--theme-text, #000);
 	fill: currentColor;
     opacity: .4;
     cursor: pointer;
@@ -19080,7 +19080,7 @@ main.pick-month section > *{
 }
 
 section header {
-    color: var(--theme-color-accent, rgba(0,0,0,.3));
+    color: var(--theme-text-accent, rgba(0,0,0,.3));
     margin: 1em 0;
     font-size: .7em;
 }
@@ -23409,7 +23409,7 @@ customElements.define('b-list-search-bar', class extends _litElement.LitElement 
         }
 
         b-icon {
-            color: var(--theme-color,#444);
+            color: var(--theme-text,#444);
             margin-right: .5em;
         }
     `;
@@ -24798,7 +24798,7 @@ customElements.define('b-cal-day', class extends _litElement.LitElement {
         }
 
         :host([overflow]) .date {
-            color: var(--theme-color-accent, #999);
+            color: var(--theme-text-accent, #999);
             padding: 0 .35em;
         }
 
@@ -24915,7 +24915,7 @@ customElements.define('b-cal', class extends _litElement.LitElement {
             top: 0;
             z-index: 10;
             background: var(--b-cal-header-bgd, var(--theme-bgd, #fff));
-            border-bottom: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
+            border-bottom: solid 1px rgba(var(--theme-text-rgb, 0,0,0), .1);
             display: grid;
             grid-template-columns: max-content max-content;
             justify-content: space-between;
@@ -24958,8 +24958,8 @@ customElements.define('b-cal', class extends _litElement.LitElement {
         }
 
         b-cal-day {
-            border-right: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
-            border-bottom: solid 1px rgba(var(--theme-rgb, 0,0,0), .1);
+            border-right: solid 1px rgba(var(--theme-text-rgb, 0,0,0), .1);
+            border-bottom: solid 1px rgba(var(--theme-text-rgb, 0,0,0), .1);
             flex-shrink: 0;
             min-width: 0;
         }

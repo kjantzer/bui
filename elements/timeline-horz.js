@@ -57,14 +57,14 @@ customElements.define('b-timeline-horz', class extends LitElement{
             width: 1.6em;
             border-radius: 1em;
             background: var(--b-timeline-bubble-bgd, var(--theme-bgd-accent, #e5e5e5));
-            color: var(--theme-color-accent, #e5e5e5);
+            color: var(--theme-text-accent, #e5e5e5);
             transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
         }
         
 
         .bubble b-icon {
             font-size: 1.6em;
-            color: var(--theme-color);
+            color: var(--theme-text);
         }
 
         slot[name="bubble"]::slotted(b-icon) {

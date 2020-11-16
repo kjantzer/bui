@@ -71,7 +71,7 @@ nav > svg {
     height: 1.4em;
     padding: .25em;
     margin: -.25em;
-	color: var(--theme-color, #000);
+	color: var(--theme-text, #000);
 	fill: currentColor;
     opacity: .4;
     cursor: pointer;
@@ -100,7 +100,7 @@ main.pick-month section > *{
 }
 
 section header {
-    color: var(--theme-color-accent, rgba(0,0,0,.3));
+    color: var(--theme-text-accent, rgba(0,0,0,.3));
     margin: 1em 0;
     font-size: .7em;
 }

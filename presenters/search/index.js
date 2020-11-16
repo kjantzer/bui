@@ -112,7 +112,7 @@ customElements.define('b-search', class extends LitElement{
             width: 100%;
             --radius: 30px;
             --bgd: var(--theme-bgd);
-            --placeholderColor: rgba(var(--theme-rgb),.4);
+            --placeholderColor: rgba(var(--theme-text-rgb),.4);
             --padY: .5em;
             margin: 0;
             padding: 0;

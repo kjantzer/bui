@@ -19,9 +19,9 @@ const previewHtml = /*html*/`
         --theme-bgd: var(--dark);
         --theme-bgd-accent: var(--dark-black);
         --theme-bgd-rgb: 0,0,0;
-        --theme-rgb: 255,255,255;
-        --theme-color: rgba(var(--theme-rgb), 1);
-        --theme-color-accent: rgba(var(--theme-rgb),.4);
+        --theme-text-rgb: 255,255,255;
+        --theme-text: rgba(var(--theme-text-rgb), 1);
+        --theme-text-accent: rgba(var(--theme-text-rgb),.4);
     }
 
 
@@ -29,7 +29,7 @@ const previewHtml = /*html*/`
          :root {
             --theme-bgd: white;
             --theme-bgd-accent: #eee;
-            --theme-rgb: 34,34,34;
+            --theme-text-rgb: 34,34,34;
             --theme-bgd-rgb: 255,255,255;
         }
     }
@@ -38,7 +38,7 @@ const previewHtml = /*html*/`
         background: var(--theme-bgd);
         font-family: sans-serif;
         text-align: center;
-        color: var(--theme-color);
+        color: var(--theme-text);
     }
     svg {
         width: 500px;
@@ -125,7 +125,7 @@ customElements.define('b-previewer', class extends LitElement{
         }
 
         b-panel-toolbar {
-            color:  var(--theme-color);
+            color:  var(--theme-text);
             pointer-events: all;
         }
 
@@ -134,7 +134,7 @@ customElements.define('b-previewer', class extends LitElement{
         }
 
         b-panel-toolbar b-btn {
-            --bgdColor: var(--theme-color);
+            --bgdColor: var(--theme-text);
             color:  var(--theme-bgd);
         }
 
@@ -142,7 +142,7 @@ customElements.define('b-previewer', class extends LitElement{
             background: var(--theme-bgd);
             padding: .25em 1em;
             border-radius: 2em;
-            color: var(--theme-color);
+            color: var(--theme-text);
         }
 
         b-file-icon {

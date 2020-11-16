@@ -68,7 +68,7 @@ customElements.define('token-text-field', class extends LitElement{
             height: 1px !important;
             min-height: 0 !important;
             margin: .15em 0 0;
-            border-top: dashed 1px rgba(var(--theme-rgb), .15);
+            border-top: dashed 1px rgba(var(--theme-text-rgb), .15);
         }
 
         .token {

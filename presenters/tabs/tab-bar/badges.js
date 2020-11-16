@@ -19,7 +19,7 @@ customElements.define('b-tab-bar-badges', class extends LitElement{
         b-btn:not([active]) {
             --bgdColor: none;
             --borderColor: transparent;
-            color: var(--theme-color);
+            color: var(--theme-text);
         }
 
     `}

@@ -170,7 +170,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             border-radius: 0;
             padding-top: 0;
             padding-bottom: 0;
-            color: rgba(var(--theme-rgb), .7);
+            color: rgba(var(--theme-text-rgb), .7);
         }
 
         h2 {
@@ -197,7 +197,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
         .toc [level] {
             margin-left: 1.25em;
             padding: .25em 0;
-            color: rgba(var(--theme-rgb), .7);
+            color: rgba(var(--theme-text-rgb), .7);
         }
 
         .toc [level]:hover {

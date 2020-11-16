@@ -89,7 +89,7 @@ rich-text-field toolbar {
     position: absolute;
     display: flex;
     background: var(--theme-bgd-accent2, #f5f5f5);
-    color: var(--theme-color, #000);
+    color: var(--theme-text, #000);
     /* box-shadow: rgba(0,0,0,.1) 0 1px 3px; */
     border-radius: 3px;
     top: -1em;

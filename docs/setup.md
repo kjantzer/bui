@@ -69,8 +69,8 @@ Creates css vars for list of [material colors](https://material.io/design/color)
 Sets css vars for to support the dark/light mode, accent, and text colors.
 
 - `--theme` - accent color
-- `--theme-color` - text color
-- `--theme-color-accent`
+- `--theme-text` - text color
+- `--theme-text-accent`
 - `--theme-bgd` - background
 - `--theme-bgd-accent`
 - `--theme-bgd-accent2`
@@ -91,6 +91,12 @@ This makes some styling assumptions for a Progressive Web App (PWA)
 // import your styles from above
 import 'style.less'
 
+// if your gonna use the router, import and set the config now
+import router from 'bui/router'
+router.config({
+    root: '/',
+})
+
 import device, {colorScheme} from 'bui/util/device'
 
 // import all the lit-element helpers 
@@ -98,6 +104,8 @@ import 'bui/helpers/lit-element'
 
 // updates global window.open to better support installed PWA
 import 'bui/util/window.open'
+
+import App from './app.js'
 
 window.addEventListener('DOMContentLoaded', e=>{
     
@@ -107,5 +115,94 @@ window.addEventListener('DOMContentLoaded', e=>{
     // Sets the theme, accent, and colorizes the favicon (based on accent)
     // will also set handler to update theme when dark/light mode changed via system
     colorScheme.apply()
+
+    // initialze your main app view
+    document.appendChild(new App())
 })
 ```
+
+```js
+// app.js
+
+// NOTE: the tabs/app presenter will call `router.start()`
+import AppView from 'bui/presenters/tabs/app'
+
+customElements.define('my-app', class extends App{
+
+    get views(){return `
+        my-view
+        my-second-view
+    `}
+
+})
+
+
+```
+
+## PWA
+
+https://web.dev/progressive-web-apps/
+
+### Web Manifest
+
+```html
+<link rel="manifest" href="/manifest.webmanifest">
+```
+```json
+// manifest.webmanifest
+{
+  "short_name": "App",
+  "name": "My PWA App",
+  "display": "standalone",
+  "theme_color": "#fff",
+  "background_color": "#fff",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "icons/192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
+```
+
+### Service Worker
+A service worker allows you to cache files and http requests, letting your app work offline. It is also a requirement for your app to be "installable"
+
+```js
+window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').then(registration=>{
+        console.log('ServiceWorker registered:', registration.scope);
+    }, err=>{
+        console.log('ServiceWorker registration failed: ', err);
+    });
+});
+```
+
+### Mobile
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
+
+<meta name="apple-mobile-web-app-title" content="My App" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<link rel="apple-touch-icon" href="/icons/192.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+```
+
+Android [maskable](https://web.dev/maskable-icon/) icons: https://maskable.app/
+
+### Splashscreens
+iOS (and Android?) can show a splash screen when opening your installed PWA
+
+Use this link to create the sizes and get the html code: https://appsco.pe/developer/splash-screens
+

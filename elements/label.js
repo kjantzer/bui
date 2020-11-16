@@ -44,7 +44,7 @@ export default class Label extends LitElement {
         :host([outline]) {
             /* --bgd: #aaa;
             --color: #fff; */
-            --bgd: rgba(var(--theme-rgb, 0,0,0), .5);
+            --bgd: rgba(var(--theme-text-rgb, 0,0,0), .5);
             --color: var(--theme-bgd, #fff);
 
             padding: 0.15em 0.3em 0.1em;
@@ -93,18 +93,18 @@ export default class Label extends LitElement {
         }
         
         :host([filled="black"]), :host([badge="black"]) { 
-            --bgd: var(--theme-color, #333);
+            --bgd: var(--theme-text, #333);
             --color: var(--theme-bgd, #fff)
         }
         
         :host([filled="white"]), :host([badge="white"]) {
             --bgd: var(--theme-bgd, #fff);
-            --color: var(--theme-color, #333);
+            --color: var(--theme-text, #333);
         }
 
         :host([filled="gray"]), :host([badge="gray"]) {
-            --bgd: rgba(var(--theme-rgb, 0,0,0), .15);
-            --color: rgba(var(--theme-rgb, 0,0,0), .5);
+            --bgd: rgba(var(--theme-text-rgb, 0,0,0), .15);
+            --color: rgba(var(--theme-text-rgb, 0,0,0), .5);
         }
 
         :host([filled="theme"]), :host([badge="theme"]) { --bgd: var(--theme); }
@@ -116,18 +116,18 @@ export default class Label extends LitElement {
         :host([filled="purple"]), :host([badge="purple"]) { --bgd: var(--deep-purple); }
 
         :host([filled="text"]), :host([badge="text"]) { 
-            --bgd: var(--theme-color, #333);
+            --bgd: var(--theme-text, #333);
             --color: var(--theme-bgd, #fff);
         }
         :host([filled="accent"]), :host([badge="accent"]) {
-            --bgd: rgba(var(--theme-rgb, 0,0,0), .2);
-            --color: var(--theme-color, #333);
+            --bgd: rgba(var(--theme-text-rgb, 0,0,0), .2);
+            --color: var(--theme-text, #333);
         }
         
 
         :host([outline="clear"]) { --bgd: transparent; --color: inherit; }
-        :host([outline="black"]) { --bgd: var(--theme-color,#333); }
-        :host([outline="gray"]) { --bgd: var(--theme-color-accent, #ddd); }
+        :host([outline="black"]) { --bgd: var(--theme-text,#333); }
+        :host([outline="gray"]) { --bgd: var(--theme-text-accent, #ddd); }
         :host([outline="theme"]) { --bgd: var(--theme); }
         :host([outline="blue"]) { --bgd: var(--blue); }
         :host([outline="red"]) { --bgd: var(--red); }

@@ -102,7 +102,7 @@ customElements.define('b-audio', class extends LitElement {
             min-width: 100px;
             height: 10px;
             border-radius: 5px;
-            background: var(--theme-color, var(--black));
+            background: var(--theme-text, var(--black));
             outline: none;
             padding: 0;
             margin: 0 .5em;
@@ -123,7 +123,7 @@ customElements.define('b-audio', class extends LitElement {
             height: 18px;
             border-radius: 50%;
             border: solid 2px var(--theme-bgd, #fff);
-            background: var(--theme-color, var(--black));
+            background: var(--theme-text, var(--black));
             cursor: pointer;
             box-shadow: none;
             margin-top: -4px;
@@ -295,7 +295,7 @@ customElements.define('b-audio', class extends LitElement {
 
         var percent = this.progress.value / this.audio.duration * 100;
         var time = this.progress.value
-        var color = 'var(--theme-color, #333)'
+        var color = 'var(--theme-text, #333)'
         var color2 = 'var(--theme-bgd-accent, #bbb)'
         
         this.progress.style.background = `linear-gradient(to right, ${color} ${percent}%, ${color2} ${percent}%)`

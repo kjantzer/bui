@@ -48,7 +48,7 @@ customElements.define('b-list-search-bar', class extends LitElement{
         }
 
         b-icon {
-            color: var(--theme-color,#444);
+            color: var(--theme-text,#444);
             margin-right: .5em;
         }
     `}

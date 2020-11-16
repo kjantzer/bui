@@ -34,7 +34,7 @@
 }
 .popover.tooltip {
   pointer-events: none;
-  --bgd: var(--theme-color, #222);
+  --bgd: var(--theme-text, #222);
   color: var(--theme-bgd, #fff);
 }
 .popover.tooltip div.__view {
@@ -142,7 +142,7 @@
 .dialog {
   border-radius: var(--radius);
   background: var(--theme-bgd);
-  color: var(--theme-color);
+  color: var(--theme-text);
   max-width: 100%;
   min-height: 1em;
   display: grid;
@@ -208,7 +208,7 @@
 }
 .dialog .d-msg:not(:empty) form-control {
   text-align: left;
-  color: var(--theme-color, #222);
+  color: var(--theme-text, #222);
   width: 100%;
   margin-top: 0.5em;
 }

@@ -8,7 +8,7 @@ customElements.define('bui-logo', class extends LitElement{
             font-size: var(--size, 2em);
             height: .7em;
             align-items: center;
-            color: var(--theme-color);
+            color: var(--theme-text);
             user-select: none;
         }
 

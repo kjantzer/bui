@@ -29,7 +29,7 @@ customElements.define('b-cal-day', class extends LitElement{
         }
 
         :host([overflow]) .date {
-            color: var(--theme-color-accent, #999);
+            color: var(--theme-text-accent, #999);
             padding: 0 .35em;
         }
 
