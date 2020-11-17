@@ -30,6 +30,9 @@ import 'bui/helpers/day-js'
 import buttons from './elements/buttons'
 import text from './elements/text'
 import specialty, {styles as specialtyStyles} from './elements/specialty'
+import iconDocs from '../docs/icons.md'
+
+import elementDocs, {allDocs} from './elements/docs'
 
 defineFileIcon()
 
@@ -322,24 +325,46 @@ customElements.define('demo-elements', class extends LitElement{
 
 
             <section title="Icons">
-                <h1>Icons</h1>
-                <b-icon-list cols="3"></b-icon-list>
 
+                <b-paper>
+                <b-h1>Icons</b-h1>
+
+                <demo-markdown-docs notoc .docs=${iconDocs}></demo-markdown-docs>
+
+                <h3>All Available BUI Icons</h3>
+                <b-icon-list cols="4"></b-icon-list>
+                </b-paper>
 
                 <br><br>
-                <h1>File Icon</h1>
-                <b-file-icon ext="pdf" style="--size:4em"></b-file-icon>
-                <b-file-icon ext="docx" style="--size:4em"></b-file-icon>
-                <b-file-icon ext="xlsx" style="--size:4em"></b-file-icon>
-                <b-file-icon ext="psd" style="--size:4em"></b-file-icon>
-                <b-file-icon ext="indd" style="--size:4em"></b-file-icon>
-                <b-file-icon ext="ai" style="--size:4em"></b-file-icon>
-                <b-file-icon ext="mp3" style="--size:4em"></b-file-icon>
-                <b-file-icon ext="mp4" style="--size:4em"></b-file-icon>
-                <b-file-icon ext="html" style="--size:4em"></b-file-icon>
-                <b-file-icon ext="xml" style="--size:4em"></b-file-icon>
-                <b-file-icon ext="zip" style="--size:4em"></b-file-icon>
+
+                <b-paper>
+                    <b-h1>File Icon</b-h1>
+                    <b-file-icon ext="pdf" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="docx" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="xlsx" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="psd" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="indd" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="ai" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="mp3" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="mp4" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="html" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="xml" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="zip" style="--size:4em"></b-file-icon>
+
+                    <br><br>
+                    <demo-markdown-docs notoc .docs=${elementDocs['file-icon']}></demo-markdown-docs>
+                </b-paper>
             </section>
+
+            <section title="Docs">
+
+                <b-paper>
+                <b-h1>Element Docs</b-h1>
+
+                <demo-markdown-docs .docs=${allDocs}></demo-markdown-docs>
+                </b-paper>
+            </section>
+            
 
         </b-tabs-router>
     `}

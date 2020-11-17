@@ -1,9 +1,12 @@
 import { html } from 'lit-element'
+import docs from './docs'
 
 export default html`
 <section title="Buttons">
 <b-paper>
     <b-h1>Buttons</b-h1>
+
+    <demo-markdown-docs .docs=${docs.btn}></demo-markdown-docs>
 
     <b-grid cols=2 cols-mobile=1>
     

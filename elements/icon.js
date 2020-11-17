@@ -3,58 +3,51 @@
 */
 import { LitElement, html, css } from 'lit-element';
 
-const svgDef = require('./icons.svg.html');
+const SVG_ICONS = new Map()
 
-class SvgIcons {
+function registerIcon(name, icon, {prefix='icon-'}={}){
 
-	get prefix(){ return 'icon-'}
+	let d = document.createElement('div')
+	d.innerHTML = icon
+	icon = d.firstElementChild
 
-	get svgDefElement() {
-
-		if( !this.__svgDefElement ){
-			let div = document.createElement('div')
-			div.innerHTML = svgDef
-			this.__svgDefElement = div.firstChild
-			// remove all the <title> tags so they dont show as "tooltips" when hovering
-			this.__svgDefElement.querySelectorAll('title').forEach(el=>el.remove())
-			div = null
-		}
-
-		return this.__svgDefElement
+	// if no name, get it from the icon attribute
+	if( !name ){
+		name = icon.id || icon.name || ''
+		name = name.replace(prefix, '')
 	}
 
-	get names(){
-		return Array.from(this.svgDefElement.querySelectorAll('symbol')).map(el=>el.id.replace(this.prefix, '')).sort()
-	}
+	if( !name )
+		return console.warn('Icons must have a name')
 
-	get(name){
+	if( SVG_ICONS.get(name) )
+		return console.warn('There is already an icon registered with that name' )
 
-		let symbol = this.svgDefElement.querySelector(`#${this.prefix}${name}`)
-		let svg = null
-
-		if( symbol ){
-
-			let div = document.createElement('div')
-			div.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg">${symbol.innerHTML}</svg>`
-			svg = div.firstChild
-
-			// copy attributes
-			Array.from(symbol.attributes).forEach(attr=>{
-				svg.setAttribute(attr.name, attr.value)
-			})
-		}
-		
-		return svg
-	}
+	SVG_ICONS.set(name, icon)
 }
 
-export const svgIcons = new SvgIcons()
+let hasWarnedNoIcons = false
+function warnNoIcons(){
+	if( hasWarnedNoIcons ) return
+	hasWarnedNoIcons = true
+	console.warn('No icons have been registered. Do so with `IconElement.register()` – Or import `bui/elements/icons/_all`')
+}
 
-export class IconElement extends HTMLElement {
+export default class IconElement extends HTMLElement {
+
+	static register(...icons){
+		icons.forEach(icon=>{
+			let name = ''
+
+			if( Array.isArray(icon) )
+				[name, icon] = icon
+				
+			registerIcon(name, icon)
+		})
+	}
 
 	// not ideal...
-	get styles(){
-		return `
+	get styles(){return /*css*/`
 		:host {
 			display: inline-flex;
 			vertical-align: middle;
@@ -108,8 +101,7 @@ export class IconElement extends HTMLElement {
 		:host([name="arrows-ccw"][spin]) svg {
 			animation: 1600ms rotate360CCW infinite linear;
 		}
-		`
-	}
+	`}
 
 	constructor(){
 		super()
@@ -126,14 +118,17 @@ export class IconElement extends HTMLElement {
 
 	_setSVG(){
 
+		if( SVG_ICONS.size == 0 )
+			warnNoIcons()
+
 		if( this._svg )
 			this._svg.remove()
 
-		this._svg = svgIcons.get(this.name)
+		this._svg = SVG_ICONS.get(this.name)
 		
 		if( this._svg ){
 			this.removeAttribute('invalid')
-			this.shadowRoot.appendChild(this._svg)
+			this.shadowRoot.appendChild(this._svg.cloneNode(true))
 		}else{
 			this.setAttribute('invalid', '')
 		}
@@ -214,7 +209,7 @@ export class IconList extends LitElement {
 	`}
 
 	render(){return html`
-		${svgIcons.names.map(name=>html`
+		${Array.from(SVG_ICONS.keys()).map(name=>html`
 			<div>
 				<b-icon name=${name}></b-icon> <small>${name}</small>
 			</div>
