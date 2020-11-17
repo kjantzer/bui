@@ -78,6 +78,17 @@ module.exports = (strData, {strDelimiter=',', hasHeader=true}={})=>{
     }
 
 
+    let comments = []
+
+    // filter out comments
+    arrData = arrData.filter(row=>{
+        if( row && row[0][0] == '#' ){
+            comments.push(row)
+            return false
+        }
+        return true
+    })
+
     let header = []
     let footer = []
     let foundRow = false
@@ -85,6 +96,7 @@ module.exports = (strData, {strDelimiter=',', hasHeader=true}={})=>{
     let rowLength = mode(rowLengths)[0]
 
     arrData = arrData.filter(row=>{
+
         if( row.length < rowLength ){
 
             if( row[0] && foundRow )
@@ -108,6 +120,7 @@ module.exports = (strData, {strDelimiter=',', hasHeader=true}={})=>{
         })
     }
 
+    arrData.comments = comments.join(`\n`)
     arrData.header = header
     arrData.footer = footer
 
