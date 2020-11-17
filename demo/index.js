@@ -5,6 +5,7 @@ router.config({
     prefix: '#/'
 })
 
+import '../elements/icons/_all'
 import './markdown-docs'
 
 import './header'

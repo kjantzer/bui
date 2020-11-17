@@ -16,7 +16,7 @@
         "build-docs": "./node_modules/.bin/docpress build",
         "build-pages": "npm run build && npm run build-docs-script && npm run build-docs",
         "publish-pages": "cd ./public && git add -A && git commit -m 'publish docs' && git push origin HEAD:gh-pages",
-        "build-and-publish-pages": "npm run build-pages && npm run publish-pages"
+        "build-and-publish-pages": "npm run build && npm run publish-pages"
     },
     "keywords": [
         "custom elements",
