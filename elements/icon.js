@@ -124,11 +124,12 @@ export default class IconElement extends HTMLElement {
 		if( this._svg )
 			this._svg.remove()
 
-		this._svg = SVG_ICONS.get(this.name)
+		let svg = SVG_ICONS.get(this.name)
 		
-		if( this._svg ){
+		if( svg ){
+			this._svg = svg.cloneNode(true)
 			this.removeAttribute('invalid')
-			this.shadowRoot.appendChild(this._svg.cloneNode(true))
+			this.shadowRoot.appendChild(this._svg)
 		}else{
 			this.setAttribute('invalid', '')
 		}
