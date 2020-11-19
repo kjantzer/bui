@@ -49,7 +49,7 @@ customElements.define('b-ts', class extends LitElement{
         if( !this.date ) return ''
         
         if( this.format == 'relative' && this.date.fromNow )
-            return this.date.fromNow()
+            return this.date.isValid() ? this.date.fromNow() : ''
         if( this.format == 'calendar' && this.date.calendarDate )
             return this.date.calendarDate()
         else
