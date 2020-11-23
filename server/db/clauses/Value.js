@@ -1,7 +1,7 @@
 const Clause = require('./Clause')
 
 const AllowedOperators = [
-    '!=', '>', '>=', '<', '<=', '='
+    '!=', '>', '>=', '<', '<=', '=', 'NOT'
 ]
 
 /*
@@ -11,14 +11,23 @@ module.exports = class Value extends Clause {
 
     constructor(oper, value){
         super()
-        this.value = value
-        this.oper = oper
+
+        if( value === undefined ){
+            this.value = oper
+            this.oper = Array.isArray(this.value) ? '' : '='
+        }else{
+            this.value = value
+            this.oper = oper.toUpperCase()
+        }
 
         if( !AllowedOperators.includes(oper) )
             throw new Error('Invalid operator: '+oper)
     }
 
     toSqlString(db, key){
-        return `${key} ${this.oper} ${db.escape(this.value)}`
+        if( Array.isArray(this.value) )
+            return `${key} ${this.oper} IN(${db.escape(this.value)})`
+        else
+            return `${key} ${this.oper} ${db.escape(this.value)}`
     }
 }
