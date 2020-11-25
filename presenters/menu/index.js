@@ -290,11 +290,18 @@ export default class Menu {
 		if( this._fetchingTerm !== term )
 			return
 
+		let menu = []
+
 		// parse the search results to fit the expected "menu" structure
 		if( Array.isArray(resp) )
-			this.menu = resp.map(row=>this.searchParse(row)) 
+			menu = resp.map(row=>this.searchParse(row)) 
 		else
-			this.menu = []
+			menu = []
+
+		if( this.opts.search.extendResults )
+			this.opts.search.extendResults.call(this, menu, term)
+
+		this.menu = menu
 
 		this._fetchingTerm = null
 		this.searchSpinner.hidden = true
@@ -684,10 +691,16 @@ export default class Menu {
 	}
 
 	matching(val){
+		let menu = null
 		if( !val )
-			this.__filteredMenu = null
+			return menu = null
 		else
-			this.__filteredMenu = this.__fuse.search(val)
+			menu = this.__fuse.search(val)
+
+		if( this.opts.search && this.opts.search.extendResults )
+			this.opts.search.extendResults.call(this, menu, val)
+
+		this.__filteredMenu = menu
 	}
 	
 	resolve(data){

@@ -110,6 +110,13 @@ search: {
             label: row.label,
             val: row.val
         }
+    },
+
+    // optional
+    extendResults(menu, term){
+        if( menu.length == 0 ){
+            menu.push({label: `Create: ${term}`, val: term, type: 'create'})
+        }
     }
 }
 ```
