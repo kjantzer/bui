@@ -70,7 +70,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         super()
         
         this.opts = Object.assign({
-            defaultLabel: '-',
+            defaultLabel: '–',
             presets: true // TODO: support custom presets?
         }, opts)
     }
