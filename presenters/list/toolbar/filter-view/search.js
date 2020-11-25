@@ -84,6 +84,20 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
         this.valueMenu.render()
 
 
+        let extendResults = this.opts.extendResults
+
+        if( this.opts.allowFuzzy )
+            extendResults = function(menu, term){
+                menu.unshift({
+                    label: term,
+                    description: 'Fuzzy match',
+                    val: term
+                },'divider')
+
+                if( this.opts.extendResults )
+                    this.opts.extendResults.call(this, menu, term)
+            }
+
         this.menu = new Menu([], {
             typeDelay: 200,
             autoSelectFirst: true,
@@ -91,7 +105,8 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
             search: {
                 url: this.opts.url,
                 placeholder: this.opts.placeholder || 'Search',
-                parse: this.opts.parseResult
+                parse: this.opts.parseResult,
+                extendResults
             }
         })
 

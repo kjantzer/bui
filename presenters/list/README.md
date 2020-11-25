@@ -162,7 +162,9 @@ const filters = {
                 return {label: row.name, val: row.id}
             },
             // optional
-            placeholder: 'Search'
+            placeholder: 'Search',
+            allowFuzzy: false,
+            extendResults(menu, term){}
         }
     }
 }
