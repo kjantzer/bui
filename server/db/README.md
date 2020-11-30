@@ -104,7 +104,7 @@ db.query(`SELECT * FROM table_name WHERE ${clause}`, values)
 - `Group(clauses, operator)` defaults to `AND` operator
 - `Value(operator, val)`
 - `Like(val)`
-- `Between(start, end)`
+- `Between(start, end, {addHours:false})`
 - `FullText(val)`
 - `FindInSet(val)`
 
