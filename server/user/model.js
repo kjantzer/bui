@@ -155,8 +155,8 @@ module.exports = class User extends Model {
         let {currentPW, newPW} = this.req.body
 
         // if NOT the logged in user, then only a temp password can be set
-        let isTemp = this.id != this.req.user.id
-        let isResetting = !isTemp || this.req.user.hasTempPassword
+        let doSetTemp = this.id != this.req.user.id
+        let isResetting = !doSetTemp && !this.req.user.hasTempPassword
 
         if( currentPW == newPW )
             throw new Error('same password')
@@ -164,13 +164,13 @@ module.exports = class User extends Model {
         if( !newPW || newPW.length < MIN_PW_LEN )
             throw new Error('too short')
 
-        if( !isTemp && isResetting && !await user.verifyPassword(currentPW) )
+        if( !doSetTemp && isResetting && !await user.verifyPassword(currentPW) )
             throw new Error('invalid current password')
 
         let newPWHash = await this.constructor.encryptPassword(newPW)
         
         user.req = this.req
-        return this.saveNewPassword(user, newPWHash, isTemp)
+        return this.saveNewPassword(user, newPWHash, doSetTemp)
     }
 
     static async encryptPassword(pw){
