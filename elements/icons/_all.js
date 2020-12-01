@@ -1,6 +1,8 @@
 
 import Icon from '../icon'
 
+export default Icon
+
 Icon.register(
     ['address', require('./address.svg.html')],
 	['alert', require('./alert.svg.html')],
