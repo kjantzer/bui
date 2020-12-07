@@ -148,7 +148,11 @@ module.exports = class DB {
         return [cols, vals]
     }
 
-    get NOW(){ return {toSqlString:()=>'NOW()'}; }
+    get NOW(){ return {
+        toJSON(){ return new Date().getTime() },
+        toString(){ return new Date().getTime() },
+        toSqlString:()=>'NOW()'
+    }}
 
     // DEPRECATED
     parseWhere(where={}){
