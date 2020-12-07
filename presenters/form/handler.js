@@ -134,8 +134,14 @@ class FormHandler extends HTMLElement {
 				let key = el.getAttribute('key')
 				let val = this.storedValue(key)
 
-				if( val && val.format )
-					val = val.format(el.control._datePicker?el.control._datePicker.format:'MM/DD/YYYY')
+				// dayjs/moment.js object would have .format()
+				if( val && val.format ){
+
+					if( el.tagName == 'CHECK-BOX' )
+						val = val.isValid()
+					else
+						val = val.format(el.control._datePicker?el.control._datePicker.format:'MM/DD/YYYY')
+				}
 
 				if( val !== undefined )
 					el.value = val
