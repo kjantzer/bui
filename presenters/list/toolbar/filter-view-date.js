@@ -86,6 +86,8 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
 
     render(){return html`
 
+        <div>${this.opts.header||''}</div>
+
         <b-btn text md @click=${this.clearDates}>Clear</b-btn>
         <b-hr></b-hr>
 
@@ -111,6 +113,8 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             <b-btn text md @click=${this.usePreset}>This Year</b-btn>
         </footer>
         `:''}
+
+        <div>${this.opts.footer||''}</div>
     `}
 
     get value(){
