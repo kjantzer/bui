@@ -136,7 +136,9 @@ export default class Filters extends Map {
             // only send "values" from the `search` filter view
             if( Array.isArray(d) )
                 data[key] = d.map(item=>{
-                    return item.val != undefined ? item.val : item
+                    return item.val != undefined && item.selection == undefined 
+                            ? item.val
+                            : item
                 })
             else
                 data[key] = d
