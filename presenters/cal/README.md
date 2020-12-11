@@ -37,3 +37,6 @@ import 'bui/presenters/cal'
 - `after-title`
 - `before-nav`
 - `after-nav`
+
+## TODO
+- refactor to use [lit-virtualizer](https://www.npmjs.com/package/lit-virtualizer)
