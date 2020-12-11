@@ -1,4 +1,5 @@
 import Emitter from 'component-emitter'
+import dayjs from 'dayjs'
 
 export default function dateRange(start, end, {
     min=false,
@@ -7,8 +8,8 @@ export default function dateRange(start, end, {
     active='start'
 }={}){
     
-    start = start.startOf('day')
-    end = end.startOf('day')
+    start = dayjs(start).startOf('day')
+    end = dayjs(end).startOf('day')
 
     // https://javascript.info/proxy
     return new Proxy(Emitter({start, end, min, max, active}),{
@@ -25,7 +26,7 @@ export default function dateRange(start, end, {
 
         set(obj, prop, value){
 
-            if( !['start', 'end', 'min', 'max', 'active'].includes(prop) ){
+            if( !['start', 'end', 'min', 'max', 'active', 'range'].includes(prop) ){
                 obj[prop] = value
                 return true
             }
@@ -47,18 +48,30 @@ export default function dateRange(start, end, {
                 }
             }
 
-            value = dayjs(value)
-            
-            if( !value instanceof dayjs || !value.isValid() )
-                throw new Error(`Invalid ${prop}`)
+            if( prop == 'range' ){
+
+                if( !Array.isArray(value) )
+                    throw new Error('Invalid range:', value)
+                
+                let start = validateDate(obj, value[0])
+                let end = validateDate(obj, value[1])
+
+                if( start.isAfter(end, 'day') ){
+                    obj.start = end
+                    obj.end = start
+                }else{
+                    obj.start = start
+                    obj.end = end
+                }
+
+                obj.emit('change', 'range', [obj.start, obj.end])
+
+                return true
+            }
 
             let propChanged = prop
 
-            // make sure the value is within min/max
-            if( obj.min && value.isBefore(obj.min) )
-                value = obj.min.clone()
-            if( obj.max && value.isAfter(obj.max) )
-                value = obj.max.clone()
+            value = validateDate(obj, value)
 
             // range disabled, set both start/end to same value
             if( !range ){
@@ -71,13 +84,13 @@ export default function dateRange(start, end, {
             // make sure start/end values stay in order
             }else{
                 
-                if( prop == 'start' && value.isAfter(obj.end) ){
+                if( prop == 'start' && value.isAfter(obj.end, 'day') ){
                     let _value = obj.end
                     obj.end = value
                     propChanged = 'end'
                     value = _value
                 }
-                if( prop == 'end' && value.isBefore(obj.start) ){
+                if( prop == 'end' && value.isBefore(obj.start, 'day') ){
                     let _value = obj.start
                     obj.start = value
                     propChanged = 'start'
@@ -108,4 +121,20 @@ export default function dateRange(start, end, {
             return prop >= target.start.unix() && prop <= target.end.unix()
         }
     })
+}
+
+function validateDate(obj, value){
+    
+    value = dayjs(value)
+            
+    if( !value instanceof dayjs || !value.isValid() )
+        throw new Error(`Invalid date`)
+
+    // make sure the value is within min/max
+    if( obj.min && value.isBefore(obj.min, 'day') )
+        value = obj.min.clone()
+    if( obj.max && value.isAfter(obj.max, 'day') )
+        value = obj.max.clone()
+
+    return value
 }

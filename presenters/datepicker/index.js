@@ -1,112 +1,95 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html } from 'lit-element'
 import {live} from 'lit-html/directives/live'
 import 'lit-virtualizer'
 import dayjs from 'dayjs'
+import styles from './styles'
 import './month'
-
-window.dayjs = dayjs
-
+import './presets'
 import daterange from './daterange'
-
 
 customElements.define('b-datepicker', class extends LitElement{
 
-    static get styles(){return css`
-        :host {
-            display: inline-block;
-            position:relative;
-            /* height: 300px; */
-            /* min-width: 240px; */
-            /* padding: 0 .5em; */
-            --gap: .25em;
-            --pad: .5em;
-            --size: 2em;
-            --font-size: calc(.4 * var(--size));
-        }
-
-        lit-virtualizer {
-            width: 270px;
-            width: calc((7 * var(--size)) + (2 * var(--pad)) + (6 * var(--gap)));
-            height: 340px;
-            box-sizing: border-box;
-            padding: 0 var(--pad);
-        }
-
-        lit-virtualizer::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* Hide scrollbar for IE, Edge and Firefox */
-        lit-virtualizer {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-        }
-
-        /* div {
-            background: #ddd; 
-            border-bottom: solid 1px black;
-            height: 100%;
-            width: 100%;
-        } */
-
-        header {
-            padding: 1em .5em;
-            /* border-bottom: solid 1px var(--theme-bgd-accent); */
-        }
-
-        header input {
-            border: none;
-            font-size: 1em;
-            width: 6em;
-            outline: none;
-        }
-
-        :host([active="start"]) header input:first-of-type {
-            color: var(--theme);
-        }
-
-        :host([active="end"]) header input:last-of-type {
-            color: var(--theme);
-        }
-
-        .day-header {
-            display: grid;
-            grid-template-columns: repeat(7, var(--size));
-            /* grid-auto-rows: 2em; */
-            gap: var(--gap);
-            text-align: center;
-            border-bottom: solid 2px var(--theme-bgd-accent);
-            padding: 0 var(--pad);
-        }
-
-        .day-header > div {
-            font-size: var(--font-size);
-            font-weight: bold;
-
-        }
-    `}
+    static get styles(){return styles}
 
     static get properties(){return {
-        // min: {type: Object},
-        // max: {type: Object},
+        value: {type: String},
+        min: {type: String},
+        max: {type: String},
         range: {type: Boolean, reflect: true},
-        active: {type: String, reflect: true}
+        active: {type: String, reflect: true},
+        presets: {type: Array}
     }}
     
-    constructor(){
+    constructor({
+        range = true,
+        value = new Date(),
+        min = '1975-01-01',
+        max = '2099-12-31',
+        presets = [],
+    }={}){
         super()
 
-        this.range = true
+        this.range = range
+        this.value = value
+        this.min = min
+        this.max = max
         this.active = 'start'
+        this.presets = range ? presets : false
 
+        this.onSelectedRangeChange.bind(this)
         this.daysHeader = dayjs.weekdaysMin()
 
-        let min = dayjs('2019-02-01')
-        let max = dayjs('2021-12-15')
+        this.applyMonths()
+    }
+
+    set value(val){
         
-        this.selectedRange = daterange(dayjs(), dayjs(), {min, max, range:this.range})
-        this.selectedRange.on('change', this.onSelectedRangeChange.bind(this))
-        
+        if( !Array.isArray(val) ){
+            
+            if( typeof val == 'string' )
+                val = val.split(',')
+            else
+                val = [val, val]
+
+            val[1] = val[1] || val[0]
+        }
+
+        if( this.selectedRange ){
+            this.selectedRange.range = val
+        }else{
+            this._value = val
+        }
+    }
+    
+    get value(){
+        if( this.range )
+            return {start: this.selectedRange.start, end: this.selectedRange.end}
+        else
+            return this.selectedRange.start
+    }
+
+    // shouldUpdate(changedProperties){
+
+    //     if( changedProperties.min )
+    //         this.selectedRange.min = changedProperties.min
+    //     if( changedProperties.max )
+    //         this.selectedRange.max = changedProperties.max
+
+    //     return true
+    // }
+
+    applyMonths(){
+
+        let min = dayjs(this.min).startOf('day')
+        let max = dayjs(this.max).endOf('day')
+
+        if( !this.selectedRange ){
+
+            let [start, end] = this._value
+            delete this._value
+            this.selectedRange = daterange(start, end, {min, max, range:this.range})
+        }
+
         this.months = []
         while( min.isBefore(max) ){
             
@@ -117,9 +100,6 @@ customElements.define('b-datepicker', class extends LitElement{
 
             min = min.add(1, 'month')
         }
-
-        // TEMP
-        window.selectedRange = this.selectedRange
     }
 
     firstUpdated(){
@@ -129,9 +109,12 @@ customElements.define('b-datepicker', class extends LitElement{
         setTimeout(() => {
             this.scrollToDate('start')
         }, 1);
+
+        this.selectedRange.on('change', this.onSelectedRangeChange.bind(this))
     }
 
     scrollToDate(date='start', location='center'){
+
         if( ['start', 'end'].includes(date) ) 
             date = this.selectedRange[date]
             
@@ -142,8 +125,16 @@ customElements.define('b-datepicker', class extends LitElement{
     }
 
     render(){return html`
-        <header>
-            <input type="text" placeholder="Start date" .key=${'start'}
+
+        <b-datepicker-presets
+            part="presets"
+            .presets=${this.presets}
+            @preset-selected=${this.onPresetSelected}
+        ></b-datepicker-presets>
+
+        <header part="header">
+
+            <input part="input" type="text" placeholder="Start date" .key=${'start'}
                 .value=${live(this.selectedRange.start.format('MMM D, YYYY'))}
                 @focus=${this.dateInputFocused}
                 @change=${this.dateInputChange} >
@@ -152,7 +143,7 @@ customElements.define('b-datepicker', class extends LitElement{
             
             <b-text muted>–</b-text>
 
-            <input type="text" placeholder="End date" .key=${'end'}
+            <input part="input" type="text" placeholder="End date" .key=${'end'}
                 .value=${live(this.selectedRange.end.format('MMM D, YYYY'))}
                 @focus=${this.dateInputFocused}
                 @change=${this.dateInputChange} >
@@ -160,11 +151,12 @@ customElements.define('b-datepicker', class extends LitElement{
             `:''}
         </header>
 
-        <div class="day-header">${this.daysHeader.map(day=>html`
+        <div part="months-header" class="day-header">${this.daysHeader.map(day=>html`
             <div>${day}</div>
         `)}</div>
         
         <lit-virtualizer
+            part="months"
             .items=${this.months}
             .renderItem=${this.renderMonth.bind(this)}
             @date-selected=${this.onDateSelected}
@@ -185,10 +177,25 @@ customElements.define('b-datepicker', class extends LitElement{
         this.update()
     }
 
+    onPresetSelected(e){
+        let {start, end} = e.detail
+        this.selectedRange.range = [start, end]
+        this.selectedRange.active = 'end'
+        setTimeout(()=>{
+            this.scrollToDate('end')
+        },100)
+    }
+
     /* calendar */
     onDateSelected(e){
-        let {date} = e.detail
-        this.selectedRange[this.selectedRange.active] = date
+        let {date, month} = e.detail
+        
+        if( date )
+            this.selectedRange[this.selectedRange.active] = date
+
+        if( month ){
+            this.selectedRange.range = [month.startOf('month'), month.endOf('month')]
+        }
     }
 
     /* input */
@@ -199,13 +206,12 @@ customElements.define('b-datepicker', class extends LitElement{
 
     dateInputChange(e){
         let {key, value} = e.target
-        console.log(key, value);
 
         try {
             this.selectedRange[key] = value
+            this.scrollToDate(key)
 
         }catch(err){
-            console.log('could not set:', err);
             this.update()
         }
     }

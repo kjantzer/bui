@@ -59,8 +59,12 @@ customElements.define('b-datepicker-month', class extends LitElement{
             color: var(--color)
         }
 
-        .day:not([num=""]):not(.active):hover {
-            background: var(--theme-bgd-accent);
+        .day:not([num=""]):not(.active):not(.disabled):hover {
+            background: var(--theme-bgd-accent, #ddd);
+        }
+
+        .day.disabled {
+            color: var(--theme-text-accent, #aaa);
         }
 
         .day.active {
@@ -212,8 +216,8 @@ customElements.define('b-datepicker-month', class extends LitElement{
 
         if( !el || el.classList.contains('disabled') ) return
 
-        // if( el.classList.contains('select-month') )
-        //     return this.emitEvent('date-selected', {month:this.date})
+        if( el.classList.contains('select-month') )
+            return this.emitEvent('date-selected', {month:this.date})
         
         let day = el.getAttribute('num')
         let date = this.date.set('date', day)
