@@ -34,7 +34,7 @@ npm install https://github.com/kjantzer/bui.git --save
 
 ## Overview
 
-Web components (or custom elements) allow us to encapsalate
+Web components (or custom elements) allow us to encapsulate
 logic, designs, and features in html elements. Along with custom
 elements, various "presenters" (or views) have been created
 for all the ways an app needs to display data
