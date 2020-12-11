@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import dayjs from 'dayjs'
+import '../../elements/btn'
 
 export const Presets = {
     'today': { label: 'Today', value:d=>d },
@@ -15,10 +16,10 @@ export const Presets = {
     '90 days': { label: 'Last 90 Days', start:d=>d.add(-89, 'day') },
     '120 days': { label: 'Last 120 Days', start:d=>d.add(-119, 'day') },
 
-    'this year': {label: 'This year (Jan–Now)', start:d=>d.startOf('year')},
-    'year': {label: 'This year', start:d=>d.startOf('year'), end:d=>d.endOf('year')},
+    'this year': { label: 'This year (Jan–Now)', start:d=>d.startOf('year') },
+    'year': { label: 'This year', start:d=>d.startOf('year'), end:d=>d.endOf('year') },
     
-    'last year': {label: 'Last year', 
+    'last year': { label: 'Last year', 
         start:d=>d.startOf('year').add(-1, 'year'), 
         end:(d,start)=>start.endOf('year')
     }
@@ -31,6 +32,7 @@ customElements.define('b-datepicker-presets', class extends LitElement{
             display: block;
             position:relative;
             overflow-y: auto;
+            font-size: .9rem;
         }
 
         :host::-webkit-scrollbar {
@@ -45,6 +47,7 @@ customElements.define('b-datepicker-presets', class extends LitElement{
         b-btn {
             font-weight: normal;
             display: block;
+            font-size: inherit;
         }
 
         b-btn > div {

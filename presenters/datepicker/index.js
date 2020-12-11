@@ -49,13 +49,14 @@ customElements.define('b-datepicker', class extends LitElement{
             if( typeof val == 'string' )
                 val = val.split(',')
             else
-                val = [val, val]
+                val = [val.start||val, val.end||val]
 
             val[1] = val[1] || val[0]
         }
 
         if( this.selectedRange ){
             this.selectedRange.range = val
+            this.scrollToDate(this.selectedRange.active)
         }else{
             this._value = val
         }
@@ -67,16 +68,6 @@ customElements.define('b-datepicker', class extends LitElement{
         else
             return this.selectedRange.start
     }
-
-    // shouldUpdate(changedProperties){
-
-    //     if( changedProperties.min )
-    //         this.selectedRange.min = changedProperties.min
-    //     if( changedProperties.max )
-    //         this.selectedRange.max = changedProperties.max
-
-    //     return true
-    // }
 
     applyMonths(){
 

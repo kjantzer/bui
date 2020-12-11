@@ -21,9 +21,30 @@ export default css`
         width: 170px;
     }
 
+    @media (max-width: 699px){
+
+        :host {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto auto 1fr auto;
+            height: 400px;
+        }
+
+        b-datepicker-presets {
+            width: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-row: 4;
+            height: 100px;
+            border-right: none;
+            border-top: solid 1px var(--theme-bgd-accent, #ddd);
+            font-size: .8em;
+        }
+    }
+
     b-datepicker-presets[hidden] {
         padding: 0;
         width: 0;
+        height: 0;
     }
 
     lit-virtualizer {
@@ -59,7 +80,7 @@ export default css`
     header input {
         border: none;
         font-size: 1em;
-        width: 6em;
+        width: 6.5em;
         outline: none;
         background: none;
         color: inherit;

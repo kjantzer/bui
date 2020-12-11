@@ -187,7 +187,7 @@ customElements.define('b-datepicker-month', class extends LitElement{
 
     render(){return html`
 
-        <b-text muted sm block ucase class="label">
+        <b-text bold sm block ucase class="label">
             <b-text link class="select-month">${this.date.format('MMM YYYY')}</b-text>
         </b-text>
 
