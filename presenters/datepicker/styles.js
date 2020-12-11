@@ -4,7 +4,7 @@ export default css`
     :host {
         display: inline-grid;
         grid-template-columns: auto 1fr;
-        grid-template-rows: auto auto 1fr;
+        grid-template-rows: auto auto 1fr auto;
         position:relative;
         --gap: .25em;
         --pad: .5em;
@@ -25,7 +25,7 @@ export default css`
 
         :host {
             grid-template-columns: 1fr;
-            grid-template-rows: auto auto 1fr auto;
+            grid-template-rows: auto auto 1fr auto auto;
             height: 400px;
         }
 
@@ -45,6 +45,13 @@ export default css`
         padding: 0;
         width: 0;
         height: 0;
+    }
+
+    footer {
+        grid-column: 1/-1;
+        border-top: solid 1px var(--theme-bgd-accent, #ddd);
+        padding: var(--gap);
+        text-align: right;
     }
 
     lit-virtualizer {

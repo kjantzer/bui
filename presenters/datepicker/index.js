@@ -43,6 +43,8 @@ customElements.define('b-datepicker', class extends LitElement{
     }
 
     set value(val){
+
+        if( !val ) return
         
         if( !Array.isArray(val) ){
             
@@ -76,7 +78,7 @@ customElements.define('b-datepicker', class extends LitElement{
 
         if( !this.selectedRange ){
 
-            let [start, end] = this._value
+            let [start, end] = this._value||[]
             delete this._value
             this.selectedRange = daterange(start, end, {min, max, range:this.range})
         }
@@ -105,6 +107,8 @@ customElements.define('b-datepicker', class extends LitElement{
     }
 
     scrollToDate(date='start', location='center'){
+
+        if( !this.monthsList ) return
 
         if( ['start', 'end'].includes(date) ) 
             date = this.selectedRange[date]
@@ -152,6 +156,11 @@ customElements.define('b-datepicker', class extends LitElement{
             .renderItem=${this.renderMonth.bind(this)}
             @date-selected=${this.onDateSelected}
         ></lit-virtualizer>
+
+        <footer>
+            <b-btn clear @click=${this.cancelDate}>Cancel</b-btn>
+            <b-btn clear color="theme" @click=${this.applyDate}>Apply</b-btn>
+        </footer>
     `}
 
     renderMonth(date){return html`
@@ -160,6 +169,16 @@ customElements.define('b-datepicker', class extends LitElement{
             .selectedRange=${this.selectedRange}
         ></b-datepicker-month>
     `}
+
+    cancelDate(){
+        this.emitEvent('cancel')
+        this.emitEvent('done', {action: 'cancel'})
+    }
+
+    applyDate(){
+        this.emitEvent('apply', this.value)
+        this.emitEvent('done', {action: 'apply', value: this.value})
+    }
 
     onSelectedRangeChange(prop, val){
         if( prop == 'active' )

@@ -93,6 +93,11 @@ let presets = [
 - `--size` - size of each day
 - `--font-size` - for months
 
+## Events
+- `apply` - e.detail returns value
+- `cancel` 
+- `done` e.detail returns {action, value} (action is 'apply' or 'cancel')
+
 ## Dependencies
 - [dayjs](https://www.npmjs.com/package/dayjs)
 - [lit-virtualizer](https://www.npmjs.com/package/lit-virtualizer)
