@@ -29,6 +29,7 @@ new Popover(target, datepicker, {
 
 ## Properties
 - `.value` - returns `date` or `{start, end}` (depending on range setting)
+- `.label` - a human readable version of value
 
 ## Presets
 
@@ -65,7 +66,9 @@ let presets = [
     {
         label: '3 days ago',
         value:d=>d.add(-3, 'days')
-    },{
+    },
+    'divider',
+    {
         label: 'Last 14 days',
         description: 'Including today'
         start:d=>d.add(-14, 'day')
@@ -73,7 +76,9 @@ let presets = [
         label: 'Two weeks ago',
         start:d=>d.startOf('week').add(-14, 'day'),
         end: (d, start)=>start.add(7, 'day')
-    },{
+    },
+    {divider: 'Future'},
+    {
         label: 'Next 7 days',
         end:d=>d.add(7, 'day')
     }

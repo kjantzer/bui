@@ -16,6 +16,9 @@ export default function dateRange(start, end, {
 
         get(target, prop) {
 
+            if( prop == 'label' )
+                return label(target.start, target.end)
+
             if( prop == 'toString' )
                 return function(){
                     return `${this.start.format('l')} – ${this.end.format('l')}`
@@ -137,4 +140,67 @@ function validateDate(obj, value){
         value = obj.max.clone()
 
     return value
+}
+
+export function label(start, end){
+
+    let m = dayjs().startOf('day')
+    let m1 = dayjs(start)
+    let m2 = dayjs(end)
+    let thisYear = m1.year() == m.year() && m2.year() == m2.year()
+    let sameYear = m1.year() == m2.year()
+
+    // single day selected
+    if( m1.isSame(m2, 'day') ){
+
+        if( m.isSame(m1, 'day') )
+            return 'Today'
+
+        let diffDays = m.diff(m1, 'days')
+
+        if( diffDays == 1 )
+            return 'Yesterday'
+
+        if( diffDays > 1 && diffDays <= 14 )
+            return diffDays+' days ago'
+
+        // leave off the year since it's this year
+        if( thisYear )
+            return m1.format('MMM D')
+
+        return m1.format('M/D/YY')
+    }
+
+    // month range (beginning of one month to end of another month)
+    if( m1.date() == 1 && m2.date() == m2.clone().endOf('month').date() ){
+
+        let month1 = m1.format('MMM')
+        let month2 = m2.format('MMM')
+        
+        if( month1 == month2 && sameYear ){
+
+            if( month1 == m.format('MMM') && thisYear )
+                return 'This Month'
+            
+            if( thisYear )
+                return month1
+
+            return month1+' ‘'+m1.format('YY')
+        }
+
+        if( thisYear && sameYear && m1.month() == 0 && m2.month() == 11)
+            return 'This Year'
+        else if( thisYear && sameYear )
+            return month1+' - '+month2
+        else if( sameYear )
+            return month1+' - '+month2+' '+m2.format('YYYY')
+        else
+            return month1+' ‘'+m1.format('YY')+' - '+month2+' ‘'+m2.format('YY')
+    }
+
+    // leave off the year since it's this year
+    if( thisYear )
+        return m1.format('MMM D')+' - '+m2.format('MMM D')
+
+    return m1.format('M/D/YY')+' - '+m2.format('M/D/YY')
 }

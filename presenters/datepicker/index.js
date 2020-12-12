@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import styles from './styles'
 import './month'
 import './presets'
-import daterange from './daterange'
+import daterange, {label} from './daterange'
 
 customElements.define('b-datepicker', class extends LitElement{
 
@@ -71,6 +71,10 @@ customElements.define('b-datepicker', class extends LitElement{
             return this.selectedRange.start
     }
 
+    get label(){
+        return this.selectedRange.label
+    }
+
     applyMonths(){
 
         let min = dayjs(this.min).startOf('day')
@@ -96,14 +100,16 @@ customElements.define('b-datepicker', class extends LitElement{
     }
 
     firstUpdated(){
-
         this.monthsList = this.$$('lit-virtualizer')
+        this.selectedRange.on('change', this.onSelectedRangeChange.bind(this))
+    }
 
+    connectedCallback(){
+        super.connectedCallback()
+        
         setTimeout(() => {
             this.scrollToDate('start')
         }, 1);
-
-        this.selectedRange.on('change', this.onSelectedRangeChange.bind(this))
     }
 
     scrollToDate(date='start', location='center'){

@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
 import dayjs from 'dayjs'
 import '../../elements/btn'
+import '../../elements/hr'
 
 export const Presets = {
     'today': { label: 'Today', value:d=>d },
@@ -56,6 +57,10 @@ customElements.define('b-datepicker-presets', class extends LitElement{
             line-height: 1em;
             color: var(--theme-text-accent, #aaa);
         }
+
+        .divider {
+            margin-left: .5em;
+        }
     `}
 
     set presets(val){
@@ -88,10 +93,21 @@ customElements.define('b-datepicker-presets', class extends LitElement{
     render(){return html`
         ${this.presets&&this.presets.map(preset=>html`
 
-            <b-btn clear .preset=${preset} @click=${this.onClick} icon=${preset.icon||''}>
-                ${preset.label}
-                <div>${preset.description||''}</div>
-            </b-btn>
+            ${preset=='divider'||preset.divider?html`
+                
+                <b-hr pad="xs"></b-hr>
+                ${preset.divider?html`
+                    <div class="divider">
+                        <b-text muted sm bold>${preset.divider}</b-text>
+                    </div>
+                `:''}
+
+            `:html`
+                <b-btn clear .preset=${preset} @click=${this.onClick} icon=${preset.icon||''}>
+                    ${preset.label}
+                    <div>${preset.description||''}</div>
+                </b-btn>
+            `}
 
         `)}
     `}
@@ -116,6 +132,10 @@ function formatPreset(p){
 
     // support presets
     if( typeof p == 'string' ){
+
+        if( p == 'divider')
+            return p
+
         let preset = Presets[p.toLowerCase()]
         if( !preset )
             throw new Error('Invalid preset:', p)
