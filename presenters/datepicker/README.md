@@ -90,7 +90,7 @@ let presets = [
 - `input`
 - `months-header`
 - `months`
-- `presets
+- `presets`
 
 ## Styles
 - `--pad` - padding around each secion (header, months)
