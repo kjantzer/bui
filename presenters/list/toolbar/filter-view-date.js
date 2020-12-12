@@ -45,7 +45,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             this.datepicker.addEventListener('done', e=>{
 
                 if( e.detail.action == 'apply')
-                    this.__value = e.detail.value
+                    this.__value = [e.detail.value.start, e.detail.value.end]
                 else
                     this.datepicker.value = this.__value || new Date()
 
