@@ -16,12 +16,16 @@ customElements.define('b-datepicker', class extends LitElement{
         min: {type: String},
         max: {type: String},
         range: {type: Boolean, reflect: true},
+        inputs: {type: Boolean, reflect: true},
+        btns: {type: Boolean, reflect: true},
         active: {type: String, reflect: true},
         presets: {type: Array}
     }}
     
     constructor({
         range = true,
+        inputs = true,
+        btns= true,
         value = new Date(),
         min = '1975-01-01',
         max = '2099-12-31',
@@ -30,6 +34,8 @@ customElements.define('b-datepicker', class extends LitElement{
         super()
 
         this.range = range
+        this.inputs = inputs
+        this.btns = btns
         this.value = value
         this.min = min
         this.max = max
@@ -210,7 +216,10 @@ customElements.define('b-datepicker', class extends LitElement{
             this.selectedRange[this.selectedRange.active] = date
 
         if( month ){
-            this.selectedRange.range = [month.startOf('month'), month.endOf('month')]
+            if( this.range )
+                this.selectedRange.range = [month.startOf('month'), month.endOf('month')]
+            else
+                e.stopPropagation()
         }
     }
 

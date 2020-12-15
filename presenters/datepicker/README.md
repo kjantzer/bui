@@ -14,6 +14,8 @@ let datepicker = new Datepicker({
     // value: [startDate, endDate], // range of dates
     // value: '2021-01-01,2021-01-15' // range of date strings
     range: true, // select range of dates or single date
+    inputs: true, // show start/end inputs 
+    btns: true, // show "cancel" "apply" btns
     min: '1975-01-01', // default
     max: '2099-12-31', // default
     presets: [], // empty array means use all default presets
@@ -102,6 +104,9 @@ let presets = [
 - `apply` - e.detail returns value
 - `cancel` 
 - `done` e.detail returns {action, value} (action is 'apply' or 'cancel')
+- `date-selected` e.detail returns {date}
+
+> NOTE: apply, cancel, and done will **not** fire if `btns:false`
 
 ## Dependencies
 - [dayjs](https://www.npmjs.com/package/dayjs)

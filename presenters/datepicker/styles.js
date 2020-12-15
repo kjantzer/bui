@@ -13,6 +13,18 @@ export default css`
         user-select: none;
         height: 320px;
     }
+    
+    :host(:not([inputs])) header {
+        height: .25em;
+        padding: 0;
+        visibility: hidden;
+    }
+
+    :host(:not([btns])) footer {
+        height: 0;
+        padding: 0;
+        visibility: hidden;
+    }
 
     b-datepicker-presets {
         grid-row: span 3;
