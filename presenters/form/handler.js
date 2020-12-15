@@ -139,8 +139,6 @@ class FormHandler extends HTMLElement {
 
 					if( el.tagName == 'CHECK-BOX' )
 						val = val.isValid()
-					else
-						val = val.format(el.control._datePicker?el.control._datePicker.format:'MM/DD/YYYY')
 				}
 
 				if( val !== undefined )
@@ -235,7 +233,7 @@ class FormHandler extends HTMLElement {
 
 		// ugh, this is hacky and should be solved a better way
 		if( el.control && el.control.type=='date' && val ){
-			changes[key] = el.control._datePicker.formatted('YYYY-MM-DD')
+			changes[key] = el.dbValue
 		}
 
 		this.store(changes)
