@@ -1,5 +1,8 @@
 # Changelog
 
+## 2020-12-14
+- REMOVAL: `date-picker` element removed. Internally it was only used by `text-field` and has been completely replaced by `Datepicker`
+
 ## 2020-11-17
 - BREAKING: icons no longer included by default. Must be registered or import `_all`
 
