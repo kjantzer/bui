@@ -1,11 +1,10 @@
 import {css} from 'lit-element'
-import dayjs from 'dayjs'
-import Dialog from '../../dialog'
-import './date-picker'
+import Popover from '../../popover'
+import Datepicker from '../../datepicker'
 import setValueAttrs from '../util/setValueAttrs'
 import validatePattern from '../util/validatePattern'
 import stopMaxLength from '../util/stopMaxLength'
-import {normalizeText, htmlCleaner} from '../../../util'
+import {htmlCleaner} from '../../../util'
 
 const styles = css`
 :host {
@@ -180,14 +179,12 @@ class TextFieldElement extends HTMLElement {
 		this._input = this.$('.input')
 
 		if( this.type == 'date' ){
-			this._datePicker = document.createElement('date-picker')
-			this._datePicker.value = this.value
-			this._datePicker.format = this.format
-
-			if( !this._datePicker.isValid ){
-				let date = dayjs(this._val)
-				this._val = this._datePicker.value = date.format(this._datePicker.format)
-			}
+			this._datePicker = new Datepicker({
+				value: this.value,
+				range: false,
+				inputs: false,
+				btns: false
+			})
 		}
 		
 		if( this._val ){
@@ -281,18 +278,16 @@ class TextFieldElement extends HTMLElement {
 				if( val === 'Invalid date' )
 					val = null
 
-				this._datePicker.value = val
-	
-				if( !this._datePicker.isValid ){
-					let date = dayjs(val)
-					val = this._datePicker.value = date.format(this._datePicker.format)
-				}
-
-				if( !this._datePicker.isValid ){
-					val = this._val
+				try {
 					this._datePicker.value = val
-				}
 
+					if( val )
+						val = this._datePicker.value.format(this.format)
+
+				// if failed to set datepicker value, the val is invalid, reset to previous value
+				}catch(err){
+					val = this._oldVal
+				}
 			}
 
 
@@ -317,7 +312,7 @@ class TextFieldElement extends HTMLElement {
 
 	get dbValue(){
 		if( this._datePicker )
-			return this.value ? this._datePicker.formatted('YYYY-MM-DD') : this.value
+			return this.value ? this._datePicker.value.format('YYYY-MM-DD') : this.value
 		return this.value
 	}
 
@@ -380,17 +375,28 @@ class TextFieldElement extends HTMLElement {
 	}
 
 	async pickDate(){
-		this._datePicker.value = this.value
-		let picker = new Dialog({view: this._datePicker, btns: ['cancel', 'ok']})
 
-		if( await picker.popover(this.$('.calendar'), {
-			align: 'left', 
+		// make sure date picker has latest value
+		this._datePicker.value = this.value
+
+		let apply = function(e){
+			p&&p.close();
+			this._changeValue(e.detail.date)
+		}.bind(this)
+
+		// apply the value once a date is selected
+		this._datePicker.addEventListener('date-selected', apply, {once: true})
+
+		let p = new Popover(this.$('.calendar'), this._datePicker, {
+			align: 'bottom-end', 
 			overflowBoundry: 'window',
 			maxHeight: false, 
-			adjustForMobile: true})
-		){
-			this._changeValue(picker.$('date-picker').value)
-		}
+			adjustForMobile: true,
+			// NOTE: not called when p.close() is called
+			onClose:()=>{
+				this._datePicker.removeEventListener('date-selected', apply)
+			}
+		})
 	}
 	
 	_onPaste(e){
