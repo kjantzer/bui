@@ -13,6 +13,7 @@ import './popover'
 import './dialog'
 import './menu'
 import './list'
+import './virtual-scroller'
 import './previewer'
 import './datepicker'
 import dayjs from 'dayjs'
@@ -50,6 +51,7 @@ customElements.define('demo-presenters', class extends LitElement{
             demo-presenter-notif
             demo-presenter-tabs
             demo-presenter-list
+            dmeo-presenter-virtual-scroller
             demo-presenter-datepicker
 
             <b-cal title="Calendar">
