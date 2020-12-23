@@ -259,8 +259,7 @@ customElements.define('token-text-field', class extends LitElement{
 
     onKeydown(e){
 
-        // backspace
-        if( e.which == 8 ){
+        if( e.key == 'Backspace' ){
             this.deleteTokenIfSelected();
         }
         
@@ -323,6 +322,11 @@ customElements.define('token-text-field', class extends LitElement{
 
         if( ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Escape'].includes(e.key) ) return
 
+        if( this._didJustDeleteToken ){
+            delete this._didJustDeleteToken
+            return
+        }
+
         let [word, text] = this.currentWord()
 
         autoComplete(e, word, this.tokens, Object.assign(this.options.autoComplete, {
@@ -353,15 +357,21 @@ customElements.define('token-text-field', class extends LitElement{
     tokenIsSelected(){
         var s = this.shadowRoot.getSelection();
         var r = s.getRangeAt(0);
-        
-        return r.startContainer.classList && r.startContainer.classList.contains('token') 
-        && r.endContainer.classList && r.endContainer.classList.contains('token') ? r.startContainer : false
+
+        let startToken = this.getToken(r.startContainer)
+        let endToken = this.getToken(r.endContainer)
+
+        if( startToken && startToken == endToken )
+            return startToken
+
+        return false
     }
     
     deleteTokenIfSelected(){
         var token;
         if( token = this.tokenIsSelected() ){
             
+            this._didJustDeleteToken = true
             this.history.mark()
             setTimeout(function(){
                 token.remove();
@@ -453,13 +463,22 @@ customElements.define('token-text-field', class extends LitElement{
         }
     }
 
-    onContextmenu(e){
-        let token = null
+    getToken(target){
 
-        if( e.target.tagName == 'SPAN' && e.target.parentElement.classList.contains('token') )
-            token = e.target.parentElement
-        else if( e.target.classList.contains('token') )
-            token = e.target
+        if( target.nodeName == '#text' )
+            target = target.parentElement
+        
+        if( target && target.tagName == 'SPAN' )
+            target = target.parentElement
+
+        if( target && target.classList.contains('token') )
+            return target
+        
+        return null
+    }
+
+    onContextmenu(e){
+        let token = this.getToken(e.target)
 
         if( token && !this.disabled ){
             e.stopPropagation()
@@ -472,11 +491,9 @@ customElements.define('token-text-field', class extends LitElement{
 
         if( this.disabled ) return
 
-        if( e.target.tagName == 'SPAN' && e.target.parentElement.classList.contains('token') )
-            this.onTokenClick(e.target.parentElement)
-
-        else if( e.target.classList.contains('token') )
-            this.onTokenClick(e.target)
+        let token = this.getToken(e.target)
+        if( token )
+            this.onTokenClick(token)
 
         this.history.markAfterDelay()
     }
