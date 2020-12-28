@@ -2,6 +2,10 @@ import colorizeFavicon from './colorize-favicon'
 
 const UA = navigator.userAgent
 
+export const HandheldScanners = [
+    /Build\/MRA58K/i // the android scanners Blackstone uses in production/warehouse
+]
+
 const device = {
 
     get is_ios(){ return device.isiOS}, // DEPRECATED
@@ -35,6 +39,10 @@ const device = {
     
     get isMobile(){
         return device.isiOS || device.isAndroid
+    },
+
+    get isHandheldScanner(){
+        return !!HandheldScanners.find(patt=>patt.test(UA))
     },
 
     // https://developer.chrome.com/multidevice/user-agent
