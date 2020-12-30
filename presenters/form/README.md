@@ -180,12 +180,13 @@ Creates a select field that uses `Menu` and `Popover` to display options.
 #### Attributes
 
 - `multiple`
+- `summarize` - to be used with `multiple`
 - `placeholder`
 - `show-empty` - by default, the selected empty value will NOT be shown
-- `chip` - show selected values as "chips"
 - `menu-max-height`
 - `menu-align`
 - `no-arrow`
+- `chip` - show selected values as "chips"
 
 ```html
 <form-control material="filled" label="Select an option">
@@ -198,6 +199,8 @@ Creates a select field that uses `Menu` and `Popover` to display options.
 	</select-field>
 </form-control>
 ```
+
+##### `options`
 
 The select-field options can also be set programmatically
 
@@ -213,6 +216,28 @@ let selectOptions = [
 html`<form-control material="filled" label="Select an option">
 	<select-field show-empty .options=${selectOptions}></select-field>
 </form-control>`
+```
+
+##### `summarize`
+When using `multiple`, adding `summarize` attribute will display the number of selected items rather than the label of all items. Most useful when the number of selected items is large.
+
+```html
+/* ex: `3 items` */
+<select-field multiple summarize="items"></select-field>
+```
+
+#### Parts
+- `value`
+
+```css
+/* example */
+select-field::part(value) {
+	color: red;
+}
+
+select-field::part(value):after {
+	content: ' • '
+}
 ```
 
 ## `<check-box>`

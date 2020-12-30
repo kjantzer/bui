@@ -5,7 +5,7 @@ import {css} from 'lit-element'
 import Menu from '../../menu'
 import device from '../../../util/device';
 
-const SHOW_ALL_RESULTS_THRESHOLD = 100
+const SHOW_ALL_RESULTS_THRESHOLD = 200
 
 const styles = css`
 
@@ -280,9 +280,17 @@ class SelectFieldElement extends HTMLElement {
 			this._selected.push(m.val)
 			
 			if(m.val || this.showEmpty)
-				labels += `<span value="${m.val}">${m.label}</span>`
+				labels += `<span part="value" value="${m.val}">${m.label}</span>`
 				
 		})
+
+		if( this.hasAttribute('summarize') ){
+			let summarize = this.getAttribute('summarize')
+			if( selected.length > 0 )
+				labels = `<span part="value">${selected.length} ${summarize||'item[s]'}</span>`
+			else
+				labels = ''
+		}
 		
 		this._value.innerHTML = labels
 
