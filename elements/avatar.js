@@ -144,7 +144,7 @@ class AvatarElement extends HTMLElement {
 				color = BgdColors[ num % BgdColors.length ]
 			}
 		}
-		return color
+		return color || `var(--theme-text)`
 	}
 	
 	set bgd(color){
@@ -154,7 +154,7 @@ class AvatarElement extends HTMLElement {
 	}
 	
 	get color(){
-		return this.getAttr('color' ,'#fff')
+		return this.getAttr('color' ,'var(--theme-bgd, #fff)')
 	}
 	
 	set color(color){
