@@ -72,6 +72,7 @@ module.exports = class MyModel extends Model {
         orderBy: '',
         limit: '',
         jsonFields: [] // will parse and encode on find/update/create
+        csvFields: [] // ex: `1,2,3` => ['1', '2', '3']
     }}
 
     // alter the where clause

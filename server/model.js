@@ -42,12 +42,12 @@ module.exports = class Model {
     }
 
     findParseRow(row, index, resultCount){
-        this.decodeJsonFields(row)
+        this.decodeFields(row)
         return row
     }
 
     validateUpdate(attrs){
-        this.encodeJsonFields(attrs)
+        this.encodeFields(attrs)
         return attrs
     }
 
@@ -75,7 +75,7 @@ module.exports = class Model {
             this[key] = attrs[key]
         }
 
-        this.decodeJsonFields(attrs)
+        this.decodeFields(attrs)
     }
 
     get config(){ return {} }
@@ -138,6 +138,37 @@ module.exports = class Model {
 
 // =================================================
 //  Deafult CRUD method implementations
+
+    encodeFields(attrs){
+        this.encodeJsonFields(attrs)
+        this.encodeCsvFields(attrs)
+    }
+    
+    decodeFields(attrs){
+        this.decodeJsonFields(attrs)
+        this.decodeCsvFields(attrs)
+    }
+
+    encodeCsvFields(attrs){
+        if( this.config.csvFields && Array.isArray(this.config.csvFields) ){
+            this.config.csvFields.forEach(fieldName=>{
+                if( attrs[fieldName] != undefined )
+                    attrs[fieldName] = attrs[fieldName] ? attrs[fieldName].join(',') : null
+            })
+        }
+    }
+
+    decodeCsvFields(attrs){
+        if( this.config.csvFields && Array.isArray(this.config.csvFields) ){
+            this.config.csvFields.forEach(fieldName=>{
+                
+                if( attrs[fieldName] == undefined ) return
+
+                if( attrs[fieldName] && typeof attrs[fieldName] == 'string' )
+                    attrs[fieldName] = attrs[fieldName].split(',')
+            })
+        }
+    }
 
     encodeJsonFields(attrs){
         if( this.config.jsonFields && Array.isArray(this.config.jsonFields) ){
@@ -229,7 +260,7 @@ module.exports = class Model {
 
         if( !this.config.table ) throw Error('missing config.table')
 
-        this.encodeJsonFields(attrs)
+        this.encodeFields(attrs)
         await this.beforeAdd(attrs)
 
         if( !attrs || Object.keys(attrs).length == 0 )
@@ -267,7 +298,7 @@ module.exports = class Model {
 
         if( result.affectedRows > 0 ){
             
-            this.decodeJsonFields(attrs)
+            this.decodeFields(attrs)
 
             this.afterUpdate(attrs)
 
