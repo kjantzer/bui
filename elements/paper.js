@@ -92,7 +92,7 @@ export class PaperElement extends LitElement {
         }
 
         :host([color="gray"]) {
-            --bgd: #EEEEEE;
+            --bgd: var(--theme-bgd-accent, #EEEEEE);
             --bgdAccent: #BDBDBD;
             color: #212121;
         }
