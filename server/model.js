@@ -166,6 +166,8 @@ module.exports = class Model {
 
                 if( attrs[fieldName] && typeof attrs[fieldName] == 'string' )
                     attrs[fieldName] = attrs[fieldName].split(',')
+                else if( !attrs[fieldName] )
+                    attrs[fieldName] = []
             })
         }
     }
