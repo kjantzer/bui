@@ -7,6 +7,10 @@ customElements.define('b-btn-group', class extends LitElement{
             display: inline-flex;
         }
 
+        :host([hidden]) {
+            display: none;
+        }
+
         ::slotted(b-btn:first-of-type:not(:last-of-type)){
             border-radius: var(--radius) 0 0 var(--radius);
         }
