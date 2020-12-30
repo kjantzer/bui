@@ -32,6 +32,7 @@ customElements.define('b-text', class extends LitElement{
         }
 
         :host([bold]) { font-weight: bold; }
+        :host([xbold]) { font-weight: 900; }
         :host([italic]) { font-style: italic; }
 
         :host([capitalize]) { text-transform: capitalize; }
