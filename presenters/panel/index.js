@@ -313,7 +313,7 @@ export class Panel extends LitElement {
         if( this.view ){
 
             // already in the DOM, add a placeholder so we can put this view back after closing
-            if( this.view.offsetParent ){
+            if( this.view.parentElement ){
                 this.__viewOriginalPlacement = document.createElement('span')
                 this.__viewOriginalPlacement.classList.add('panel-view-placeholder')
                 this.__viewOriginalPlacement.style.position = 'absolute'
