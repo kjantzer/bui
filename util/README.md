@@ -137,6 +137,22 @@ let mySetting = store('my-setting')
 store('my-setting', null)
 ```
 
+There is also a `create` method that removes the need for passing the `key` each time
+
+```js
+const cache = store.create('my-cache-key')
+cache('some value')
+console.log(cache()) // "some value"
+cache(null) // clears the stored value
+```
+
+`localStorage` is the default export, but `sessionStore` is also available:
+
+```js
+import {sessionStore} from 'bui/util/store'
+sessionStore('setting-key', 'some value')
+```
+
 ## `sum`
 Wrapper around `Array.reduce` for summing the values in an array.
 Will automatically be added to the prototype of Array

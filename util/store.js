@@ -34,6 +34,15 @@ export const sessionStore = (key, val)=>{
 
 export default localStore
 
+// creates special "store" function that doesn't need the key each time
+localStore.create = key=>{
+	return (val)=>{ return localStore(key, val)}
+}
+
+sessionStore.create = key=>{
+	return (val)=>{return sessionStore(key, val)}
+}
+
 export function forceStorageEventsLocally(){
 
 	let setItem = window.localStorage.setItem
