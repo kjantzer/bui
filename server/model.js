@@ -121,17 +121,21 @@ module.exports = class Model {
     }
 
     // NOTE: does't appear to be used anywhere....
+    // but seems useful...not sure reason for fn?
     orderBy(fn){
         let sorts = this.sorts
         let orderBy = []
-        for(let key in sorts ){
+
+        sorts.forEach((sortOpts,key)=>{
+        // for(let key in sorts ){
             
-            let sortOpts = sorts[key]
+            // let sortOpts = sorts[key]
             let desc = sortOpts.desc ? 'DESC' : 'ASC'
 
             if( !fn || fn(key, sortOpts) === undefined )
-                orderBy.push(`${this.db.escape(key)} ${desc}`)
-        }
+                orderBy.push(`${this.db.escapeId(key)} ${desc}`)
+        // }
+        })
 
         return orderBy.length > 0 ? 'ORDER BY '+orderBy.join(', ') : ''
     }
