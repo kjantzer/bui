@@ -92,7 +92,7 @@ customElements.define('b-tabs', class extends LitElement {
 
             --menuBgd: none;
             --menuFontSize: 1em;
-            --contentPadding: var(--view-gutter);
+            --contentPadding: var(--view-gutter, 2em);
             --menuItemPadding: .75em 1em;
             --menuItemRadius: 4px;
             --inactiveColor: var(--b-tabs-inactive-color, rgba(0,0,0,.4));
