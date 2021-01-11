@@ -18,7 +18,8 @@
     }
     ```
 */
-Object.defineProperty(window.MouseEvent.prototype, 'model', {
+
+const model = {
 
     set: function(val){
         this.__model = val
@@ -32,9 +33,12 @@ Object.defineProperty(window.MouseEvent.prototype, 'model', {
         return this.__model
     }
 
-})
+}
 
-Object.defineProperty(window.MouseEvent.prototype, 'modelTarget', {
+Object.defineProperty(window.MouseEvent.prototype, 'model', model)
+Object.defineProperty(window.CustomEvent.prototype, 'model', model)
+
+const modelTarget = {
 
     set: function(val){
         this.__modelTarget = val
@@ -49,7 +53,10 @@ Object.defineProperty(window.MouseEvent.prototype, 'modelTarget', {
        return this.__modelTarget
     }
 
-})
+}
+
+Object.defineProperty(window.MouseEvent.prototype, 'modelTarget', modelTarget)
+Object.defineProperty(window.CustomEvent.prototype, 'modelTarget', modelTarget)
 
 // try to get model by traversing up parents of target until a model is found
 function getEventTargetModel(){
