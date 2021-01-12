@@ -75,7 +75,7 @@ Dialog.prompt = function(opts={}){
 		multiline: false,
 		multiple: false,
 		btns: ['cancel', 'save'],
-		onSubmit(val, control, blur){}
+		//onSubmit(val, control, blur){}
 	}, opts)
 	
 	if( opts.msg )
