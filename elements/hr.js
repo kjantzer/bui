@@ -21,7 +21,7 @@ customElements.define('b-hr', class extends LitElement{
         }
 
         :host([short]) {
-            width: 180px;
+            width: min(180px, 30%);
             max-width: 100%;
         }
 
