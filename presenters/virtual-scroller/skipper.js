@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
-import {throttle} from 'underscore'
+import throttle from 'lodash/throttle'
 
 const LETTERS = ['#'].concat(Array
 	.apply(null, {length: 26})
