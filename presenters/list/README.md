@@ -426,6 +426,8 @@ Certain [parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) can be 
 - `row`
 - `divider`
 - `empty-view`
+- `header-slot`
+- `footer-slot`
 
 
 ```css

@@ -224,7 +224,7 @@ customElements.define('b-list', class extends LitElement {
             </b-list-selection-bar>
         </b-list-toolbar>
 
-        <slot name="header"></slot>
+        <slot name="header" part="header-slot"></slot>
         <b-infinite-list
             part="list"
             .empty="${this.createEmptyElement}"
@@ -234,7 +234,7 @@ customElements.define('b-list', class extends LitElement {
             fetch-on-load=${(this.listOptions&&this.listOptions.fetchOnLoad)}
             layout="${this.layout}"
         ></b-infinite-list>
-        <slot name="footer"></slot>
+        <slot name="footer" part="footer-slot"></slot>
     `}
 
     connectedCallback(){
