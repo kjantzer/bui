@@ -125,6 +125,30 @@ You can disable a tab bar menu from showing by adding`tab-bar="none"` attribute
 <b-tabs tab-bar="none"></b-tabs>
 ```
 
+## Tab Bar Variations
+There are are a few built-in tab bar variations. Once imported, you can use by specifying the `tab-bar` attribute
+
+#### Badges
+A simplified tab bar that displays tabs as text buttons with the active one being a colored badge
+```js
+import 'bui/tabs/tab-bar/badges'
+
+let view = html`
+    <b-list tab-bar="b-tab-bar-badges"></b-list>
+`
+```
+
+#### Manila
+Mimics manila folder tabs (or browser tabs)
+
+```js
+import 'bui/tabs/tab-bar/manila'
+
+let view = html`
+    <b-list tab-bar="b-tab-bar-manila"></b-list>
+`
+```
+
 ## Custom Tab Bar
 You can choose to implement your own tab bar menu by specificying the custom element in
 a `tab-bar` attribute. The custom tab bar will have inherit styles to support the 
