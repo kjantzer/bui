@@ -28,6 +28,9 @@ customElements.define('b-audio', class extends LitElement {
         // currentTime: {type: Number},
     }}
 
+    // supporr subclassing
+    get audioElement(){ return 'audio' }
+
     constructor(src='', {
         autoplay = false
     }={}){
@@ -146,41 +149,48 @@ customElements.define('b-audio', class extends LitElement {
         }
     `}
 
+    renderAudioTag(){
+
+        if( this.audio ) return this.audio
+
+        let audio = document.createElement(this.audioElement)
+
+        audio.addEventListener('loadedmetadata', this.audioLoaded.bind(this))
+        audio.addEventListener('timeupdate', this.audioTimeChange.bind(this))
+        audio.addEventListener('ended', this.pause.bind(this))
+        audio.addEventListener('error', this.audioLoadError.bind(this))
+
+        return this.audio = audio
+    }
+
     render(){ return html`
         <main @mouseenter=${this.onHover} @mouseleave=${this.onHoverLeave}>
-            <audio
-                @loadedmetadata=${this.audioLoaded}
-                @timeupdate=${this.audioTimeChange}
-                @ended=${this.pause}
-                @error=${this.audioLoadError}
-            ></audio>
+
+            ${this.renderAudioTag()}
+
             <span class="btn-play icon-play" @click=${this.playPause}>
                 <b-icon name=${this.playing?'pause':'play'}></b-icon>
             </span>
-            <span class="elapsed time">00:00</span>
-            <input type="range" value="0" disabled
+            
+            <span part="time-elapsed" class="elapsed time">00:00</span>
+            
+            <input part="progress" type="range" value="0" disabled
                 @input=${this.progressSliderChanging}
                 @change=${this.progressSliderChangingDone}
                 class="progress"/>
-            <span class="remaining time">00:00</span>
+
+            <span part="time-remaining" class="remaining time">00:00</span>
             <!-- <b-btn clear icon="dot-3" class="settings" @click=${this.viewSettings}></b-btn> -->
         </main>
     `}
 
-    // events: {
-    //     'mouseenter': 'onHover',
-    //     'mouseleave': 'onHoverLeave',
-    //     'mouseenter .progress': 'progressHover',
-    //     'mouseleave .progress': 'progressHoverLeave',
-    //     'input .progress': 'progressSliderChanging',
-    //     'change .progress': 'progressSliderChangingDone',
-    //     'click .btn-settings': 'viewSettings',
-    //     'click .btn-play': 'playPause'
-    // },
+    disconnectedCallback(){
+        super.disconnectedCallback()
+        this.pause()
+    }
 
     firstUpdated(){
 
-        this.audio = this.shadowRoot.querySelector('audio')
         this.progress = this.shadowRoot.querySelector('.progress')
         this.elapsed = this.shadowRoot.querySelector('.elapsed')
         this.remaining = this.shadowRoot.querySelector('.remaining')
@@ -266,7 +276,7 @@ customElements.define('b-audio', class extends LitElement {
     Playing <audio> time has changed
 */
     audioTimeChange(){
-        
+
         // update the progress slider unless currently seeking
         if( !this.seeking )
             this.progress.value = this.audio.currentTime
