@@ -25,6 +25,7 @@ customElements.define('b-audio', class extends LitElement {
         src: {type: String, reflect: true},
         autoplay: {type: Boolean, reflect: true},
         playing: {type: Boolean, reflect: true},
+        status: {type: String, reflect: true},
         // currentTime: {type: Number},
     }}
 
@@ -49,6 +50,9 @@ customElements.define('b-audio', class extends LitElement {
             background: var(--theme-bgd, #fff);
             border-radius: var(--radius);
             --radius: 4px;
+
+            --b-audio-progress: var(--theme-text, #333);
+            --b-audio-progress-bgd: var(--theme-bgd-accent, #bbb);
         }
 
         main {
@@ -100,11 +104,11 @@ customElements.define('b-audio', class extends LitElement {
             color: var(--blue);
         }
 
-        input[type=range] {
+        [part="progress"] {
             -webkit-appearance: none;
             min-width: 100px;
             height: 10px;
-            border-radius: 5px;
+            border-radius: var(--b-audio-progress-radius, 1em);
             background: var(--theme-text, var(--black));
             outline: none;
             padding: 0;
@@ -113,17 +117,17 @@ customElements.define('b-audio', class extends LitElement {
             box-shadow: none;
         }
 
-        input[type=range]::-webkit-slider-runnable-track {
+        [part="progress"]::-webkit-slider-runnable-track {
             border: none;
             height: 100%;
         }
 
-        input[type=range]::-webkit-slider-thumb {
+        [part="progress"]::-webkit-slider-thumb {
             display: none;
             -webkit-appearance: none;
             appearance: none;
-            width: 18px;
-            height: 18px;
+            width: var(--b-audio-progress-thumb-size, 18px);
+            height: var(--b-audio-progress-thumb-size, 18px);
             border-radius: 50%;
             border: solid 2px var(--theme-bgd, #fff);
             background: var(--theme-text, var(--black));
@@ -132,15 +136,15 @@ customElements.define('b-audio', class extends LitElement {
             margin-top: -4px;
         }
 
-        input[type=range]::-webkit-slider-thumb:hover {
+        [part="progress"]::-webkit-slider-thumb:hover {
             background: var(--blue);
         }
 
-        input[type=range]:active::-webkit-slider-thumb {
+        [part="progress"]:active::-webkit-slider-thumb {
             background: var(--blue);
         }
 
-        input[type=range]:hover::-webkit-slider-thumb {
+        [part="progress"]:hover::-webkit-slider-thumb {
             display: block;
         }
 
@@ -149,9 +153,9 @@ customElements.define('b-audio', class extends LitElement {
         }
     `}
 
-    renderAudioTag(){
+    get audio(){
 
-        if( this.audio ) return this.audio
+        if( this._audio ) return this._audio
 
         let audio = document.createElement(this.audioElement)
 
@@ -160,13 +164,13 @@ customElements.define('b-audio', class extends LitElement {
         audio.addEventListener('ended', this.pause.bind(this))
         audio.addEventListener('error', this.audioLoadError.bind(this))
 
-        return this.audio = audio
+        return this._audio = audio
     }
 
     render(){ return html`
-        <main @mouseenter=${this.onHover} @mouseleave=${this.onHoverLeave}>
+        <main>
 
-            ${this.renderAudioTag()}
+            ${this.audio}
 
             <span class="btn-play icon-play" @click=${this.playPause}>
                 <b-icon name=${this.playing?'pause':'play'}></b-icon>
@@ -187,6 +191,7 @@ customElements.define('b-audio', class extends LitElement {
     disconnectedCallback(){
         super.disconnectedCallback()
         this.pause()
+        this.onHoverLeave()
     }
 
     firstUpdated(){
@@ -195,13 +200,29 @@ customElements.define('b-audio', class extends LitElement {
         this.elapsed = this.shadowRoot.querySelector('.elapsed')
         this.remaining = this.shadowRoot.querySelector('.remaining')
 
-        this.loadAudio(this.src)
+        this.addEventListener('mouseenter', this.onHover)
+        this.addEventListener('mouseleave', this.onHoverLeave)
+
+        // this.loadAudio(this.src)
+    }
+
+    set src(val){
+        let oldVal = this.src
+        this.__src = val
+
+        setTimeout(()=>{
+            this.loadAudio(this.src)
+        })
+    
+        this.requestUpdate('src', oldVal)
     }
     
-    get status(){ return this.getAttribute('status') }
-    set status(val){
-        this.setAttribute('status', val)
-    }
+    get src(){ return this.__src}
+    
+    // get status(){ return this.getAttribute('status') }
+    // set status(val){
+    //     this.setAttribute('status', val)
+    // }
 
     playPause(){
         this.audio.paused ? this.play() : this.pause()
@@ -244,6 +265,7 @@ customElements.define('b-audio', class extends LitElement {
     }
     
     loadAudio(src){
+        this._loaded = false
         this.status = 'loading'
         this.audio.src = src
     }
@@ -278,10 +300,11 @@ customElements.define('b-audio', class extends LitElement {
     audioTimeChange(){
 
         // update the progress slider unless currently seeking
-        if( !this.seeking )
+        if( !this.seeking && this.progress )
             this.progress.value = this.audio.currentTime
             
-        this.setProgress();
+        if( this.progress )
+            this.setProgress();
 
         // reached end of clip, stop
         if( this.clip && this.audio.currentTime >= this.clip[1] ){
@@ -305,8 +328,8 @@ customElements.define('b-audio', class extends LitElement {
 
         var percent = this.progress.value / this.audio.duration * 100;
         var time = this.progress.value
-        var color = 'var(--theme-text, #333)'
-        var color2 = 'var(--theme-bgd-accent, #bbb)'
+        var color = 'var(--b-audio-progress, #333)'
+        var color2 = 'var(--b-audio-progress-bgd, #bbb)'
         
         this.progress.style.background = `linear-gradient(to right, ${color} ${percent}%, ${color2} ${percent}%)`
 
