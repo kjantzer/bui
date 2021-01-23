@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-
+// https://brumm.af/shadows
 export class PaperElement extends LitElement {
 
     static get properties() { return {

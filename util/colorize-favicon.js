@@ -6,6 +6,8 @@ export default (color=false, method="lighten")=>{
 
     let icon = document.querySelector("link[rel='icon']")
 
+    if( !icon ) return
+
     if( !favicon ){;
         favicon = icon.cloneNode()
     }

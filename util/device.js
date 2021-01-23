@@ -183,7 +183,7 @@ export const colorScheme = {
     getCssVar(name){
         if( name[0] != '-' )
             name = '--'+name
-        return getComputedStyle(document.body).getPropertyValue(name).trim()
+        return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
     }
     
 }
