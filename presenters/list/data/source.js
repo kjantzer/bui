@@ -98,10 +98,6 @@ export default class DataSource {
                 await this.refilter()
             }
 
-            // why was I doing this? it doesn't work when data is filtered
-            // if( this._rawData.length > pageAt )
-            //     this.emit('change:count', this._rawData.length)
-
             if( this._filtering )
                 await this._filtering
 

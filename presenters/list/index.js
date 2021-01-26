@@ -91,8 +91,8 @@ customElements.define('b-list', class extends LitElement {
     get dataSource(){
         if( !this.__dataSource ){
             this.__dataSource = new DataSource(this.listOptions)
-            this.__dataSource.on('change:count', count=>{
-                this.toolbar.count = count
+            this.__dataSource.on('changed', async ()=>{
+                this.toolbar.count = await this.__dataSource.length()
             })
         }
         return this.__dataSource
