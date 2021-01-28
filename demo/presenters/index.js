@@ -14,6 +14,7 @@ import './dialog'
 import './menu'
 import './list'
 import './virtual-scroller'
+import './search-popup'
 import './previewer'
 import './datepicker'
 import dayjs from 'dayjs'
@@ -53,6 +54,7 @@ customElements.define('demo-presenters', class extends LitElement{
             demo-presenter-list
             dmeo-presenter-virtual-scroller
             demo-presenter-datepicker
+            demo-presenter-search-popup
 
             <b-cal title="Calendar">
                 <div class="cal-event" style="font-size: .8em; line-height: 1em;">
