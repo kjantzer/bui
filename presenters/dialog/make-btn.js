@@ -4,10 +4,11 @@ const btnPresets = {
 	'cancel': {label: 'Cancel'},
 	'no': {label: 'No'},
 	'done': {label: 'Done'},
-	'ok': {label: 'Okay', color: 'primary'},
-	'yes': {label: 'Yes', color: 'primary'},
-	'save': {label: 'Save', color: 'primary'},
-	'create': {label: 'Create', color: 'primary'},
+	'apply': {label: 'Apply', color: 'theme'},
+	'ok': {label: 'Okay', color: 'theme'},
+	'yes': {label: 'Yes', color: 'theme'},
+	'save': {label: 'Save', color: 'theme'},
+	'create': {label: 'Create', color: 'theme'},
 	'delete': {label: 'Delete', color: 'red'}
 }
 
