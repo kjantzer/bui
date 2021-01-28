@@ -752,7 +752,7 @@ export default class Menu {
 		}
 
 		if( opts.adjustForMobile && device.isMobile && !device.isiPad ){
-			let modalOpts = {btns: ['cancel','done']}
+			let modalOpts = {btns: ['cancel','apply']}
 
 			if( this.searchIsOn )
 				modalOpts.anchor = 'top'
@@ -818,10 +818,10 @@ export default class Menu {
 			
 			this.presenter = null
 			
-			if( this.opts.multiple )
-				this.resolve(this.selected)
-			else
-				this.resolve(false)
+			// if( this.opts.multiple )
+			// 	this.resolve(this.selected)
+			// else
+			// 	this.resolve(false)
 		}
 		
 
@@ -836,7 +836,11 @@ export default class Menu {
 
 		// if dialog btn clicked, take action
 		dialog.promise.then(btn=>{
-			if( btn )
+
+			if( btn == 'apply' && this.opts.multiple )
+				this.resolve(this.selected)
+
+			else if( btn )
 				this.resolve(btn)
 				// this.presenter.close()
 			else
