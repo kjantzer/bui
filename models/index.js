@@ -107,6 +107,11 @@ export class Collection {
         this.trigger('add', args)
     }
 
+    reset(models=[]){
+        this.models = models
+        this.trigger('reset', this.models)
+    }
+
     async fetchSync(params={}){ return this.fetch(params) } // TEMP alias to match older Backbone change
 
     async fetch(params={}){
