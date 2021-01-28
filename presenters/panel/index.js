@@ -494,7 +494,7 @@ export class Panel extends LitElement {
             display: flex;
             flex-direction: column;
             background: var(--b-panel-bgd, #fff);
-            box-shadow: var(--b-panel-shadow, rgba(0,0,0,.2) 0 3px 10px);
+            box-shadow: var(--b-panel-shadow, var(--theme-shadow, rgba(0,0,0,.2)) 0 3px 10px);
             border-radius: var(--radius-top) var(--radius-top) var(--radius-bottom) var(--radius-bottom);
             transition: ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
         }
