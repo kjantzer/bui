@@ -22,7 +22,7 @@ slot[name="after"]{
 	display: inline-block;
 	vertical-align: top;
 	--placeholderColor: var(--fc-placeholder-color, rgba(0,0,0,.3));
-	--selectionBgd: #FFECB3;
+	--selectionBgd: var(--fc-selection-bgd, #FFECB3);
 	--focusBgd: #FFF8E1;
 	--focusColor: var(--fc-theme);
 	 --bgd:var(--fc-bgd, #fff);
