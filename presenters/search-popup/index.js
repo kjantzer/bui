@@ -3,6 +3,7 @@ import Panel from '../panel'
 import Notif from '../notif'
 import '../../helpers/lit-element/shared'
 import device from '../../util/device'
+import mobileAsyncFocus from '../../util/mobileAsyncFocus'
 import './result'
 import './empty-view'
 import Coll from './models'
@@ -10,6 +11,14 @@ import Coll from './models'
 export default class extends LitElement{
 
     open(){
+
+        /* 
+            We will focus the input "onOpen", but iOS (and maybe android?)
+            wont focus and open keyboard async (after the tap is over)
+        */
+        if( device.isiOS )
+            mobileAsyncFocus(this)
+
         this.panel = this.panel || new Panel(this, {
             title: 'Search',
             anchor: device.isMobile ? 'top': 'center',
