@@ -6,13 +6,14 @@ customElements.define('b-code', class extends LitElement{
 
         :host {
             background: var(--theme-bgd-accent, #ccc);
+            color: var(--theme-text, inherit);
             border-radius: 3px;
             color: initial;
             padding: 0 .3em;
         }
 
         code {
-            color: var(--theme-text, inherit);
+            color: inherit;
         }
 
         :host([block]) {
