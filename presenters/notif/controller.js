@@ -69,7 +69,7 @@ customElements.define('b-notifs', class extends LitElement{
         }
 
         @media (max-width:699px), (max-height: 699px) {
-            :host {
+            :host([name="main"]) {
                 position: fixed;
                 top: env(safe-area-inset-top);
                 left: env(safe-area-inset-left);
