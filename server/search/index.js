@@ -134,6 +134,22 @@ class SearchAPI {
 
         return res
     }
+
+    get filters(){
+        try {
+            let filters = this.req.query.filters
+
+            if( filters && typeof filters == 'string')
+                return JSON.parse(filters)
+            else if( filters )
+                return filters
+            else
+                return {}
+        }catch(err){
+            console.log('Malformed filters:', this.req.query.filters);
+            return {}
+        }
+    }
 }
 
 
