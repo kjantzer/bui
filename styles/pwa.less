@@ -60,3 +60,10 @@ b-panel {
     --b-menu-input-font-size: 1em;
     --b-menu-input-padding: .5em;
 }
+
+:root:not(.mobile) b-panel[type="search-popup"] {
+    --radius: 1em;
+    position: fixed;
+    z-index: 2000 !important;
+    top: 0;
+}
