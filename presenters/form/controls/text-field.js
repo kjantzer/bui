@@ -275,7 +275,7 @@ class TextFieldElement extends HTMLElement {
 
 			if( this.type == 'date' ){
 				
-				if( val === 'Invalid date' )
+				if( val === 'Invalid date' || val === '0000-00-00' || val === '0000-00-00 00:00:00')
 					val = null
 
 				try {
