@@ -50,6 +50,7 @@ customElements.define('token-text-field', class extends LitElement{
         :host(:not([disabled])) ::selection,
         :host(:not([disabled])) main ::selection {
             background: var(--selectionBgd, #FFF8E1);
+            color: var(--selectionColor, #333);
         }
 
         main {

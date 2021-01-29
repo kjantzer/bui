@@ -19,6 +19,7 @@ const styles = css`
 
 :host(:not([disabled])) main ::selection {
 	background: var(--selectionBgd, #FFF8E1);
+	color: var(--selectionColor, #333);
 }
 
 main {
