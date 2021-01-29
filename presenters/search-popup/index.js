@@ -8,6 +8,19 @@ import './result'
 import './empty-view'
 import Coll from './models'
 
+export const filters = {
+    search: {data: null},
+    auto_open: {
+        values: [
+            {label: 'Yes', val:''},
+            {label: 'No', val: false},
+            {text: 'Should single results be opened?'}
+        ],
+        // no filtering, this filter is used as a search "setting"
+        filterBy(m, val, key){ return true}
+    }
+}
+
 export default class extends LitElement{
 
     open(){
@@ -51,9 +64,7 @@ export default class extends LitElement{
 
         this.emptyView = 'b-search-popup-empty-results'
         this.resultView = 'b-search-popup-row'
-        this.filters = {
-            search: {data: null}
-        }
+        this.filters = filters
     }
 
     get coll(){
@@ -264,7 +275,8 @@ export default class extends LitElement{
         
         if( !active ) return
         let metaKey = e && (e.metaKey || e.ctrlKey)
-        this.goTo(active.model, metaKey)
+        if( this.goTo(active.model, metaKey) !== false )
+            this.close()
     }
 
     goToResult(e){
@@ -274,6 +286,7 @@ export default class extends LitElement{
 
     goTo(selected, metaKey){
         Notif.alert('Cannot open yet')
+        return false
     }
 
     enlarge(){
@@ -319,7 +332,12 @@ export default class extends LitElement{
     }
        
     
-    get shouldAutoOpen(){ return true }
+    get shouldAutoOpen(){
+        if( this.list.filters && this.list.filters.get('auto_open') )
+            return this.list.filters.get('auto_open').value !== false
+        
+        return true
+    }
 
     static bindShortcut(key='k'){
 
