@@ -137,6 +137,7 @@ export class PaperElement extends LitElement {
             color: var(--b-paper-postit-color, inherit);
             --bgd: var(--b-paper-postit-bgd, #FFF8E1);
             --bgdAccent: var(--b-paper-postit-bgd-accent, var(--orange));
+            --theme-text-rgb: 0,0,0;
         }
 
         :host([color="info"]) {
