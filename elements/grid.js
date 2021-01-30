@@ -69,6 +69,15 @@ customElements.define('b-grid', class extends LitElement{
         ::slotted([colspan="4"]) { grid-column: span 4; }
         ::slotted([colspan="5"]) { grid-column: span 5; }
         ::slotted([colspan="6"]) { grid-column: span 6; }
+
+        @media (max-width:699px){
+            ::slotted([colspan-mobile]) { grid-column: 1/-1; }
+            ::slotted([colspan-mobile="2"]) { grid-column: span 2; }
+            ::slotted([colspan-mobile="3"]) { grid-column: span 3; }
+            ::slotted([colspan-mobile="4"]) { grid-column: span 4; }
+            ::slotted([colspan-mobile="5"]) { grid-column: span 5; }
+            ::slotted([colspan-mobile="6"]) { grid-column: span 6; }
+        }
     `}
 
     render(){return html`
