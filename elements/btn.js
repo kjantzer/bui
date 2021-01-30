@@ -86,6 +86,8 @@ export default class BtnElement extends LitElement {
             /*padding-bottom: .3em;*/ /* remove descender line to make it look more centered*/
             text-overflow: ellipsis;
             border: var(--borderStyle) var(--borderWidth) var(--borderColor);
+            min-width: 0;
+            /* word-break: break-all; */
             /* transition: 120ms; */
         }
 
@@ -172,6 +174,7 @@ export default class BtnElement extends LitElement {
 
         :host([stacked]) slot {
             font-size: .6em;
+            line-height: 1em;
         }
 
         :host([stacked]) slot::slotted(*) {
@@ -351,12 +354,12 @@ export default class BtnElement extends LitElement {
     `}
 
     render(){ return html`
-        <div class="hover"></div>
-        <main>
+        <div class="hover" part="hover"></div>
+        <main part="main">
             <span>
                 <b-spinner></b-spinner>
                 <slot name="icon">
-                    ${this.icon?html`<b-icon name="${this.icon}"></b-icon>`:''}
+                    ${this.icon?html`<b-icon part="icon" name="${this.icon}"></b-icon>`:''}
                 </slot>
             </span>
             <slot></slot>
