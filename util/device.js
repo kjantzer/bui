@@ -20,6 +20,8 @@ const device = {
         return window.outerWidth < window.outerHeight ? window.outerWidth : window.outerHeight;
     },
 
+    get isSmallDevice(){ return this.minScreenSize <= 699 },
+
     get isiOS(){
         return /iPad|iPhone|iPod/.test(UA)
         || (device.isMac && navigator.standalone !== undefined ) // iPadOS 13+
