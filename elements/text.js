@@ -111,7 +111,7 @@ customElements.define('b-text', class extends LitElement{
     onClick(){
         let href = this.getAttribute('href')
         if( href ){
-            if( href.match(/@/) ) href = 'mailto:'+href
+            if( !href.match(/^mailto/) && href.match(/@/) ) href = 'mailto:'+href
             window.open(href)
         }
     }
