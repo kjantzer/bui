@@ -471,17 +471,24 @@ class TextFieldElement extends HTMLElement {
 
 		let el = this.editorEl,
 		    s = window.getSelection(),
-		    r = document.createRange();
+		    r = document.createRange(),
+			end = el.childNodes.length;
 		
 		if( range == 'start' ){
 			r.setStart(el, 0);
 			r.setEnd(el, 0);
 		}else if( range == 'end' ){
-			r.setStart(el, el.childNodes.length);
-			r.setEnd(el, el.childNodes.length);
+			r.setStart(el, end);
+			r.setEnd(el, end);
 		}else{
 			r.selectNodeContents(el);
 		}
+
+		if( range.start )
+			r.setStart(el, range.start);
+
+		if( range.end )
+			r.setEnd(el, range.end=='end'?end:range.end);
 		
 		s.removeAllRanges();
 		s.addRange(r);
