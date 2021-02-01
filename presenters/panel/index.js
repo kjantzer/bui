@@ -43,8 +43,8 @@ class RegisteredPanels {
             if( !opts.shortcuts&&!opts.shortcut ) return
 
             // use title/icon on the view if it gives it
-            if( view.title ) opts.title = view.title
-            if( view.icon ) opts.icon = view.icon
+            if( !opts.title && view.title ) opts.title = view.title
+            if( !opts.icon && view.icon ) opts.icon = view.icon
 
             if( opts.shortcuts === true || opts.shortcut === true ){
                 shortcuts.push({
