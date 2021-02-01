@@ -27,7 +27,10 @@ export function shortcuts(){
 
 export default class extends LitElement{
 
-    open(){
+    open({
+        term='',
+        fromShortcut= null
+    }={}){
 
         /* 
             We will focus the input "onOpen", but iOS (and maybe android?)
@@ -46,6 +49,13 @@ export default class extends LitElement{
         })
 
         this.panel.open()
+
+        if( fromShortcut && this.shortcutsTrigger
+        && fromShortcut == this.shortcutsTrigger ){
+            this.term = this.shortcutsTrigger
+        }else if( term ){
+            this.term = term
+        }
     }
 
     static get properties(){ return {
@@ -212,7 +222,12 @@ export default class extends LitElement{
 
     focus(){
         this.fc.focus()
-        this.fc.control.select()
+
+        // do not select the shortcut trigger (this way the user can begin typing a shortcut)
+        if( this.shortcuts && this._term == this.shortcutsTrigger )
+            this.fc.control.select({start:1})
+        else
+            this.fc.control.select()
     }
 
     blur(){
@@ -233,6 +248,12 @@ export default class extends LitElement{
 
     onOpen(){
         this.focus()
+    }
+
+    set term(val){
+        if( !this.fc ) return console.warn('not ready')
+        this.fc.value = val
+        this._search(val)
     }
 
     onPaste(e){
@@ -348,13 +369,14 @@ export default class extends LitElement{
         }))
 
         this.list.term = this._term.slice(1) // remove leading "trigger"
+        
+        if( !this.list.term )
+            this.list.reload()
+
         setTimeout(()=>{
             this._selectResult('first')
         })
     }
-
-
-
 
 
     async fetchResults(){
@@ -392,7 +414,9 @@ export default class extends LitElement{
         window.addEventListener('keydown', e=>{
             if( shouldOpen(e) ){
                 e.preventDefault()
-                this.shared.open()
+                this.shared.open({
+                    fromShortcut: e.key
+                })
             }
         })
 

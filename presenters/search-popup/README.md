@@ -44,9 +44,16 @@ customElements.define('my-search-result', class extends SearchPopupResult{
     `}
 
 })
+```
 
-// later: open shared search instance
-customElements.get('my-search').shared.open()
+## Open
+When opening search, you can use `.shared` to open a single shared instance of search (rather than create each time)
+
+```js
+import search from 'my-search'
+
+search.shared.open()
+search.shared.open({term:'search term'})
 ```
 
 ## Keyboard Binding
@@ -58,11 +65,10 @@ customElements.get('my-search').bindShortcut()
 
 // or use custom key
 customElements.get('my-search').bindShortcut('f')
-customElements.get('my-search').bindShortcut(['k', 'f']) // multiple
+customElements.get('my-search').bindShortcut(['k', 'o']) // multiple
 customElements.get('my-search').bindShortcut(e=>{
     return e.key == 'f' && (e.ctrlKey||e.metaKey) && e.shiftKey
 })
-
 ```
 
 ## Go To
@@ -127,4 +133,13 @@ customElements.defineShared('my-search', class extends SearchPopup{
         ])
     }
 })
+```
+
+#### Opening to shortcuts
+If `bindShortcut` was given a key matching `shortcutsTrigger`, search will open prefilled with shortcuts
+
+```js
+// ctrl+k = normal search
+// ctl+/ = shortcuts mode
+customElements.get('my-search').bindShortcut(['k', '/'])
 ```

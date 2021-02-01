@@ -62,6 +62,11 @@ customElements.define('b-search-popup-empty-results', class extends LitElement{
                         <b-label filled="black">alt</b-label> 
                         + <b-label filled="black"><b-icon name="up"></b-icon></b-label> to toggle enlarge
                     </div>
+
+                    <div colspan>
+                        Start with <b-label filled="black">&nbsp;/&nbsp;</b-label> 
+                        for shortcuts
+                    </div>
                     
                 </b-grid>
 
