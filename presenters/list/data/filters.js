@@ -443,6 +443,7 @@ export class Filter {
         }).popover(el, {
             overflowBoundry: this.attrs.overflowBoundry || 'scrollParent',
             maxHeight: this.attrs.maxHeight || '60vh',
+            align: this.attrs.align || 'bottom',
             adjustForMobile: true
         })
 
@@ -501,6 +502,10 @@ export class Filter {
         // TODO: support `adjustForMobile`
         new Popover(el, this.customView, {
             width: this.attrs.width||null,
+            maxHeight: this.attrs.maxHeight || '60vh',
+            align: this.attrs.align || 'bottom',
+            // adjustForMobile: true
+
             onClose: onClose,
             onKeydown: (...args)=>{
                 if( this.customView.onKeydown ){
