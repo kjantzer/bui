@@ -205,7 +205,7 @@ export default class Filters extends Map {
     }
 
     set searchOptions(opts){
-        if( opts === false )
+        if( opts === false || opts === null )
             this.__searchOptions = {data:false} // turns search off
 
         if( typeof opts == 'object' )
@@ -226,7 +226,7 @@ export default class Filters extends Map {
     }
 
     get showSearch(){
-        return !!this.searchOptions.data
+        return !!this.searchOptions.data && this.searchOptions.hideIcon!==true
     }
 
     filterByTerm(data){

@@ -116,9 +116,13 @@ customElements.define('b-list-toolbar', class extends LitElement{
         </div>
     `}
 
-    // not used, testing idea
-    openOver(el, opts){
-        new Popover(el, this, opts)
+    set term(term){
+        let termInput = this.shadowRoot.querySelector('b-list-search-bar')
+
+        if( termInput )
+            termInput.value = term
+
+        this._termChanged(term)
     }
 
     onKeyDown(e){
@@ -127,22 +131,22 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
         clearTimeout(this._keydownTimeout)
         this._keydownTimeout = setTimeout(_=>{
-
-            let term = target.value
-
-            if( term == this.filters.term ) return
-
-            this.filters.term = term
-
-            this.dispatchEvent(new CustomEvent('filter-term-changed', {
-                bubbles: true,
-                composed: true,
-                detail: {
-                    term: term
-                }
-            }))
-
+            this._termChanged(target.value)
         }, ts)
+    }
+
+    _termChanged(term){
+        if( term == this.filters.term ) return
+
+        this.filters.term = term
+
+        this.dispatchEvent(new CustomEvent('filter-term-changed', {
+            bubbles: true,
+            composed: true,
+            detail: {
+                term: term
+            }
+        }))
     }
 
 })

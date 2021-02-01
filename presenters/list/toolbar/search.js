@@ -69,6 +69,11 @@ customElements.define('b-list-search-bar', class extends LitElement{
         return this.textField.currentValue
     }
 
+    set value(val){
+        this.textField = this.textField || this.shadowRoot.querySelector('text-field')
+        this.textField.value = val
+    }
+
 })
 
 export default customElements.get('b-list-search-bar')

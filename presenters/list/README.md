@@ -109,8 +109,32 @@ const filters = {
 ### Search
 Search options are specified as part of filters (see above).
 
+#### Options
+```js
+search: {
+    data(m){
+        // return a hash of attributes to be searched
+        return {
+            title: m.get('title'),
+            tags: m.get('tags') // value can be an array of strings
+        }
+    },
+    // optional
+    hideIcon: false,
+    placeholder: 'Search',
+    delay: 500 // how long of delay in user typing to begin searching?
+    //...specify other fuse.js options
+}
+```
+
+##### `hideIcon: true`
+Somes you may wish to hide the search icon/input but keep the "term search" functionality.
+You can do this by setting `hideIcon: true`
+
+You can then programmatically search by term using `list.term = 'some value'`
+
 **Tips**  
-- You can hide the search bar by adding: `search:false`. Search is on by default and will use defautl settings
+- You can hide the search bar by adding: `search:false`. Search is on by default and will use default settings
 - `row.model.searchMatches` - when the search bar is actively searching, row models will have 
 a `searchMatches` property they can check to see why they are being displayed
 
@@ -489,6 +513,9 @@ list.addEventListener('content-changed', e=>{})
 ```
 
 ## Methods
+
+`list.term = 'value'`
+Programatically search/filter by term
 
 `list.refresh()`  
 clears the list and fetches new data

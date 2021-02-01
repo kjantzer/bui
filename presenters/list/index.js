@@ -409,7 +409,11 @@ customElements.define('b-list', class extends LitElement {
         return this.dataSource.hasFetched || this.listOptions&&this.listOptions.fetchOnLoad
     }
 
-    async onFilterTermChange(changes){
+    set term(term){
+        this.toolbar.term = term
+    }
+
+    async onFilterTermChange(){
 
         // TODO: probably need an opt in feature
         if( this.listOptions && this.listOptions.fetch == 'more' ){
