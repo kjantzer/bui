@@ -28,6 +28,48 @@ class RegisteredPanels {
         this.register = new Map()
     }
 
+    get shortcuts(){
+
+        let shortcuts = []
+
+        this.register.forEach(reg=>{
+
+            let {view, route, opts} = reg
+
+            view = customElements.get(view)
+            opts = Object.assign({}, opts)
+
+            if( !view ) return
+            if( !opts.shortcuts&&!opts.shortcut ) return
+
+            // use title/icon on the view if it gives it
+            if( view.title ) opts.title = view.title
+            if( view.icon ) opts.icon = view.icon
+
+            if( opts.shortcuts === true || opts.shortcut === true ){
+                shortcuts.push({
+                    title: opts.title,
+                    icon: opts.icon||'',
+                    url: route.rootPath
+                })
+            }
+
+            if( opts.shortcuts && Array.isArray(opts.shortcuts) )
+            opts.shortcuts.forEach(s=>{
+
+                shortcuts.push(Object.assign({}, opts, {
+                    description: '',
+                    url: route.makePath(s.args||{})
+                }, s))
+
+            })
+
+        })
+
+        return shortcuts
+    }
+
+
     set(key, data){
         return this.register.set(key, data)
     }

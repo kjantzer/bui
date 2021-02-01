@@ -195,3 +195,39 @@ import {ActionSheet} from 'bui/presenters/panel'
 ActionSheet('my-view')
 ActionSheet('my-view', {anchor: 'top'})
 ```
+
+## Shortcuts
+Registered panels can opt-in to a "shortcuts" feature. A list of available shortcuts can be accessed with `register.shortcuts`
+
+Shortcuts were originally developed for `Search Popup`, but they may also be useful for other things, such as creating a menu system.
+
+```js
+import Panel, {register} from 'panel'
+console.log(register.shortcuts)
+```
+
+### Opt-in
+```js
+Panel.register('path', 'custom-element', {
+    title: 'Title',
+    icon: 'icon-name',
+    shortcut: true // use ^ title, icon and root registered path
+})
+
+Panel.register('issue(/:id)', 'issues-list', {
+    title: 'Issues',
+    icon: 'bug',
+    shortcuts: [
+        {
+            // main title & icon ^ will be used if none given
+            description: 'See all issues'
+        },{
+            title: 'New Issue',
+            // args will be used to create a url with the registered path
+            args: {id: 'new'},
+            // anything else listed here will be part of the shortcut
+            custom: 'value',
+        }
+    ]
+})
+```
