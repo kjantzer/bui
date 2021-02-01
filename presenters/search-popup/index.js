@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
-import Panel from '../panel'
+import Panel, {register as panelRegister} from '../panel'
 import Notif from '../notif'
 import '../../helpers/lit-element/shared'
 import device from '../../util/device'
@@ -9,7 +9,7 @@ import './empty-view'
 import Coll from './models'
 
 export const filters = {
-    search: {data: null},
+    search: {hideIcon: true},
     auto_open: {
         values: [
             {label: 'Yes', val:''},
@@ -19,6 +19,10 @@ export const filters = {
         // no filtering, this filter is used as a search "setting"
         filterBy(m, val, key){ return true}
     }
+}
+
+export function shortcuts(){
+    return panelRegister.shortcuts
 }
 
 export default class extends LitElement{
@@ -66,6 +70,9 @@ export default class extends LitElement{
         this.resultView = 'b-search-popup-row'
         this.filters = filters
     }
+
+    get shortcutsTrigger(){ return '/' }
+    get shortcuts(){ return shortcuts() }
 
     get coll(){
         return this.__coll = this.__coll || new Coll(this.url)
@@ -162,6 +169,7 @@ export default class extends LitElement{
                 <text-field slot="control"
                     placeholder="${this.placeholder}"
                     @keyup=${this.onKeyUp}
+                    @paste=${this.onPaste}
                     @change=${this.onChange}
                 ></text-field>
                 <b-icon name="search" slot="prefix"></b-icon>
@@ -215,13 +223,21 @@ export default class extends LitElement{
         this.fc.value = ''
         this._term = ''
         this.coll.term = ''
+        this.list.term = ''
         this.coll.reset()
-        this.list.reload()
         this.focus()
+        setTimeout(()=>{
+            this.list.reload()
+        })
     }
 
     onOpen(){
         this.focus()
+    }
+
+    onPaste(e){
+        let val = e.currentTarget.currentValue
+        this._search(val)
     }
 
     // TODO: use panel `onKeyUp` option so we dont have to be focused in the search box
@@ -249,13 +265,14 @@ export default class extends LitElement{
 
     _selectResult(result, {scrollTo=true}={}){
         let active = this.list.$$('[part="row"][active]')
+        let first = this.list.$$('[part="row"]')
         
         if( result == 'first' )
-            result = this.list.$$('[part="row"]')
+            result = first
         else if( result == 'next' )
-            result = active&&active.nextElementSibling
+            result = active?active.nextElementSibling:first
         else if( result == 'prev' )
-            result = active&&active.previousElementSibling
+            result = active?active.previousElementSibling:first
 
         if( result ){
             active && active.removeAttribute('active')
@@ -311,12 +328,34 @@ export default class extends LitElement{
 
         if( !this._term ) return this.clear()
 
+        if( this.shortcuts && this._term[0] == this.shortcutsTrigger )
+            return this._loadShortcuts()
+        else
+            this.list.term = ''
+
         if( this._term.length < this.minTermLength) return
 
         // delay fetching in case user types another character
         this.fetching = true
         this._fetchDelay = setTimeout(this.fetchResults.bind(this), this.typeDelay)
     }
+
+    async _loadShortcuts(){
+
+        this.coll.reset(this.shortcuts.map(s=>{
+            s.type = 'shortcut'
+            return s
+        }))
+
+        this.list.term = this._term.slice(1) // remove leading "trigger"
+        setTimeout(()=>{
+            this._selectResult('first')
+        })
+    }
+
+
+
+
 
     async fetchResults(){
         
@@ -330,8 +369,7 @@ export default class extends LitElement{
             this.goToSelected()
         }
     }
-       
-    
+
     get shouldAutoOpen(){
         if( this.list.filters && this.list.filters.get('auto_open') )
             return this.list.filters.get('auto_open').value !== false

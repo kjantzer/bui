@@ -8,8 +8,7 @@ A "spotlight" / "Alfred app" like view for doing global app searches
 - List
 - Form (text-field)
 
-#### Example
-
+**Example**
 ```js
 import SearchPopup from 'bui/presenters/search-popup'
 import SearchPopupResult from 'bui/presenters/search-popup/result'
@@ -109,4 +108,23 @@ customElements.defineShared('my-search', class extends SearchPopup{
     }
 })
 
+```
+
+## Shortcuts
+By default, registered panels that opt-in to `shortcuts` will be available in search. The default trigger is `/`
+
+```js
+customElements.defineShared('my-search', class extends SearchPopup{
+
+    get shortcutsTrigger(){ return '/' }
+    get shortcuts(){
+        // use registered panel shortcuts with a custom one
+        return super.shortcuts.concat([
+            {
+                title: 'Custom shortcut!',
+                url: '/custom-shortcut'
+            }
+        ])
+    }
+})
 ```
