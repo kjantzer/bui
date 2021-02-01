@@ -22,7 +22,8 @@ export const DefaultOpts = {
 	jumpNav: false, // true (always show) or number of results for it to show
 	typeDelay: 700, // how long until typed characters reset
 	hasMenuIcon: 'right-open',
-	onSelect: ()=>{}
+	onSelect: ()=>{},
+	onResultsFetched: ()=>{}
 }
 
 const SearchDefaults = {
@@ -307,6 +308,9 @@ export default class Menu {
 		this.searchSpinner.hidden = true
 
 		this.render()
+
+		if( this.opts.search.onResultsFetched)
+			this.opts.search.onResultsFetched.call(this)
 	}
 
 	appendTo(el){
