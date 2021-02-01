@@ -82,8 +82,7 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
         })
         this.appendChild(this.valueMenu.el)
         this.valueMenu.render()
-
-
+        
         let extendResults = this.opts.extendResults
 
         if( this.opts.allowFuzzy )
@@ -106,7 +105,10 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
                 url: this.opts.url,
                 placeholder: this.opts.placeholder || 'Search',
                 parse: this.opts.parseResult,
-                extendResults
+                extendResults,
+                onResultsFetched: ()=>{
+                    this.popover._updatePosition()
+                }
             }
         })
 
