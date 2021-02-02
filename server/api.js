@@ -100,6 +100,12 @@ module.exports = class API {
 
 				let resp = await model[fnName].apply(model, args)
 
+                if( opts.cacheable ||
+                    (opts.cacheable !== false && Class.api.cacheable)
+                ){
+                    res.set('X-Is-Cacheable', '1');
+                }
+
                 // TODO: let class determine how response is returned?
                 this.finishResponse(req, res, resp)                
 
