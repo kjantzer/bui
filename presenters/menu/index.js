@@ -414,8 +414,8 @@ export default class Menu {
 
 		let dataTitle = (m.dataTitle || m.label+' '+m.description).trim().toLowerCase()
 
-		let label = m.label && m.label.constructor.name == 'TemplateResult' ? m.label : unsafeHTML(m.label||'')
-		let description = m.description && m.description.constructor.name == 'TemplateResult' ? m.description : unsafeHTML(m.description||'')
+		let label = m.label && m.label.getHTML ? m.label : unsafeHTML(m.label||'')
+		let description = m.description && m.description.getHTML ? m.description : unsafeHTML(m.description||'')
 
 		return html`
 			<div class="menu-item ${m.className}" val=${m.val} index=${i}
