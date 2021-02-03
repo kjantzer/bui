@@ -24,7 +24,10 @@ class MyClass {
         requiresAuthentication: true, // routes default to private, change to make all public
         routes: [
             ['get', '/url-path', 'methodName'],
-            ['get', '/url-path-public', 'methodName', {requiresAuthentication:false}]
+            ['get', '/url-path-public', 'methodName', {
+                requiresAuthentication:false,
+                cacheable: true // adds header `X-Is-Cacheable` for use with service worker
+            }]
         ]
     }}
 
