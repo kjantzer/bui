@@ -26,34 +26,32 @@ customElements.define('b-tabs', class extends LitElement {
     connectedCallback(){
         super.connectedCallback()
 
-        // window.addEventListener('resize', this._resizeHandler)
+        // when nodes are added/removed, update the "views" object
+        this.mutationObserver = new MutationObserver(mutations=>{
 
-        if( !this.views ){
-            
-            let views = []
-            this.childNodes.forEach(node=>{
+			let needsUpdated = false
+            mutations.forEach(mut=>{
 
-                if( node.nodeName == '#text' ){
-                    let str = node.textContent.trim()
-                    if( !str ) return
-                    let _views = str.split("\n").map(s=>s.trim())
-                    _views = _views.filter(v=>v) // ignore empty lines
-                    views.push(..._views)
-                    node.textContent = ''
-                
-                }else if( node.slot || ['#comment', 'SCRIPT', 'STYLE'].includes(node.nodeName) ){
-                    // ignore views that have a slot name
-
-                }else if( node.title ){
-                    views.push(node)
-                }else{
-                    node.hidden = true
-                    console.error('Cannot use `'+node.tagName+'` as it is missing a `title`')
+                if( mut.addedNodes ){
+                    this.views.add(mut.addedNodes)
+                    needsUpdated = true
                 }
+
+                if( mut.removedNodes ){
+                    this.views.remove(mut.removedNodes)
+                    needsUpdated = true
+                }
+
             })
 
-            this.views = views
-        }
+            if( needsUpdated ){
+                this.active = this.views.active
+                this.update()
+            }
+            
+		});
+
+		this.mutationObserver.observe(this, {attributes: false, childList: true, subtree: false});
     }
 
     disconnectedCallback(){
@@ -70,17 +68,14 @@ customElements.define('b-tabs', class extends LitElement {
         return last.offsetLeft+last.offsetWidth >= this.offsetWidth || last.offsetTop+last.offsetHeight >= this.offsetHeight
     }
 
-    get views(){ return this.__views }
-    set views(views){
-        this.__views = this.__views || new TabViews()
-        this.__views.key = this.key
+    get views(){ 
 
-        views.forEach(v=>{
-            v = new TabView(v)
-            this.__views.set(v.id, v)
-        })
-
-        this.active = this.getAttribute('active') || this.views.active || this.views.first
+        if( !this.__views ){
+            this.__views = new TabViews(this.key, this.childNodes)
+            this.active = this.getAttribute('active') || this.views.active || this.views.first
+        }    
+        
+        return this.__views
     }
 
     static get styles(){return css`
@@ -330,7 +325,7 @@ customElements.define('b-tabs', class extends LitElement {
                 <slot name="menu:before"></slot>
                 <div class="tab-bar-item single-menu" active @click=${this.popoverMenu}>
                     <b-icon name="menu"></b-icon>
-                    ${this.views.active.title}
+                    ${this.views.active?this.views.active.title:''}
                 </div>
                 ${this.views.map(v=>v.render(this.menuClick))}
                 <slot name="menu:after"></slot>
@@ -341,6 +336,9 @@ customElements.define('b-tabs', class extends LitElement {
     render(){return html`
         ${this.renderTabBar()}
         <slot class="content"></slot>
+        <slot name="empty">
+            <b-empty-state ?hidden=${this.views.size>0}>No views</b-empty-state>
+        </slot>
     `}
 
     async popoverMenu(e){
@@ -397,9 +395,13 @@ customElements.define('b-tabs', class extends LitElement {
         this.views.active = val
         this.update()
         
-        let view = this.views.active.view
+        let activeTab = this.views.active
 
-        this.setAttribute('active', this.views.active.id)
+        if( !activeTab ) return
+
+        let view = activeTab.view
+
+        this.setAttribute('active', activeTab.id)
 
         if( this._propagateModel )
             view.model = this.model
