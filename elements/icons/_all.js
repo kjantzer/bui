@@ -269,6 +269,7 @@ Icon.register(
 	['up-circled', require('./up-circled.svg.html')],
 	['up-open', require('./up-open.svg.html')],
 	['up', require('./up.svg.html')],
+	['ups', require('./ups.svg.html')],
 	['upload-cloud', require('./upload-cloud.svg.html')],
 	['user-add', require('./user-add.svg.html')],
 	['user', require('./user.svg.html')],
