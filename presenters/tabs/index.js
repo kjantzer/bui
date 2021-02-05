@@ -23,17 +23,22 @@ customElements.define('b-tabs', class extends LitElement {
         }, 250)
     }
 
-    connectedCallback(){
-        super.connectedCallback()
-
+    setupMutationObserver(){
+        if( this.mutationObserver ) return
+        
+        let setupTS = new Date().getTime()
+        
         // when nodes are added/removed, update the "views" object
         this.mutationObserver = new MutationObserver(mutations=>{
 
 			let needsUpdated = false
+            // to support lit-html ${?:}, dont set active unless view has been setup for a second or more
+            let makeActive = (new Date().getTime() - setupTS) > 1000
+
             mutations.forEach(mut=>{
 
                 if( mut.addedNodes ){
-                    this.views.add(mut.addedNodes)
+                    this.views.add(mut.addedNodes, {makeActive})
                     needsUpdated = true
                 }
 
@@ -54,11 +59,6 @@ customElements.define('b-tabs', class extends LitElement {
 		this.mutationObserver.observe(this, {attributes: false, childList: true, subtree: false});
     }
 
-    disconnectedCallback(){
-        super.disconnectedCallback()
-        // window.removeEventListener('resize', this._resizeHandler)
-    }
-
     // this breaks down when last item is hidden
     get shouldBeSingleMenu(){
         if( this.offsetWidth == 0 ) return false
@@ -73,6 +73,7 @@ customElements.define('b-tabs', class extends LitElement {
         if( !this.__views ){
             this.__views = new TabViews(this.key, this.childNodes)
             this.active = this.getAttribute('active') || this.views.active || this.views.first
+            this.setupMutationObserver()
         }    
         
         return this.__views

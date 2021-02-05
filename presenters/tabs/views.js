@@ -52,7 +52,7 @@ export default class TabViews extends Map {
         })
     }
 
-    add(nodes){
+    add(nodes, {makeActive=true}={}){
         let nextA
         viewsFromNodes(nodes).forEach((v,i)=>{
             v = new TabView(v)
@@ -62,7 +62,7 @@ export default class TabViews extends Map {
             
             this.set(v.id, v)
 
-            if( i == 0 )
+            if( i == 0 && makeActive )
                 this.active = v
         })
     }
