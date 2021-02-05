@@ -1,13 +1,18 @@
 import { LitElement, html, css } from 'lit-element'
 import Panel, {register as panelRegister} from '../panel'
 import Notif from '../notif'
+import Popover from '../popover'
 import '../../helpers/lit-element/shared'
 import device from '../../util/device'
+import store from '../../util/store'
 import mobileAsyncFocus from '../../util/mobileAsyncFocus'
 import './result'
 import './empty-view'
+import './divider'
+import Tips from './tips'
 import Coll from './models'
 
+const maxHistoryDefault = 120
 export const filters = {
     search: {hideIcon: true},
     auto_open: {
@@ -48,6 +53,9 @@ export default class extends LitElement{
             type: 'search-popup'
         })
 
+        if( !device.isMobile && this.settings().enlarge )
+            this.enlarge()
+
         this.panel.open()
 
         if( fromShortcut && this.shortcutsTrigger
@@ -78,7 +86,14 @@ export default class extends LitElement{
 
         this.emptyView = 'b-search-popup-empty-results'
         this.resultView = 'b-search-popup-row'
+        this.dividerView = 'b-search-popup-results-divider'
         this.filters = filters
+
+        this.history = store.create('b-search-popup:'+this.key+':history', [])
+        this.settings = store.create('b-search-popup:'+this.key+':settings', {
+            maxHistory: maxHistoryDefault,
+            enlarge: false
+        })
     }
 
     get shortcutsTrigger(){ return '/' }
@@ -193,6 +208,7 @@ export default class extends LitElement{
             key="${this.key}"
             empty="${this.emptyView}"
             row="${this.resultView}"
+            divider="${this.dividerView}"
             .filters=${this.filters}
             .coll=${this.coll}
             @select-result=${this.selectResult}
@@ -205,11 +221,16 @@ export default class extends LitElement{
             ${device.isMobile?html`
                 <b-btn slot="toolbar:after" @click=${this.close} lg color="theme">Done</b-btn>
             `:html`
+                <b-btn slot="toolbar:after" @click=${this.showTips} icon="lightbulb" text></b-btn>
                 <b-btn slot="toolbar:after" @click=${this.enlarge} icon="resize-full" text></b-btn>
             `}
 
         </b-list>
     `}
+
+    showTips(e){
+        new Popover(e.currentTarget, Tips.shared)
+    }
 
     close(){
         this.panel&&this.panel.close()
@@ -217,6 +238,7 @@ export default class extends LitElement{
 
     firstUpdated(){
         this.fc = this.shadowRoot.querySelector('form-control')
+        this.coll.reset(this.history()||[])
         // window.addEventListener('focus-'+this.key, this.focus.bind(this))
     }
 
@@ -239,7 +261,7 @@ export default class extends LitElement{
         this._term = ''
         this.coll.term = ''
         this.list.term = ''
-        this.coll.reset()
+        this.coll.reset(this.history()||[])
         this.focus()
         setTimeout(()=>{
             this.list.reload()
@@ -313,8 +335,10 @@ export default class extends LitElement{
         
         if( !active ) return
         let metaKey = e && (e.metaKey || e.ctrlKey)
-        if( this.goTo(active.model, metaKey) !== false )
+        if( this.goTo(active.model, metaKey) !== false ){
+            this.trackHistory(active.model)
             this.close()
+        }
     }
 
     goToResult(e){
@@ -327,6 +351,39 @@ export default class extends LitElement{
         return false
     }
 
+    trackHistory(data){
+
+        if( data.type == 'shortcut' )
+            return;
+        
+        data = Object.assign({}, data, {
+            _historyTs: new Date().getTime()
+        })
+        
+        // remove data points added by BUI
+        delete data.coll
+        delete data.collection
+        delete data.search
+        delete data.searchMatches
+
+        let history = this.history() || []
+        history.unshift(data)        
+
+        let ids = []
+        let deduped = []
+
+        history.forEach(d=>{
+            let id = d.id+'-'+d.type
+            if( ids.includes(id) ) return
+            ids.push(id)
+            deduped.push(d)
+        })
+
+        history = deduped.slice(0, this.settings().maxHistory||maxHistoryDefault)
+
+        this.history(history)
+    }
+
     enlarge(){
         if( !this.panel ) return
 
@@ -335,6 +392,10 @@ export default class extends LitElement{
             this.__initialPanelHeight = this.panel.height
         
         this.panel.height = this.panel.height == '100%' ? this.__initialPanelHeight : '100%'
+
+        let settings = this.settings()
+        settings.enlarge = this.panel.height=='100%'
+        this.settings( settings)
     }
 
     _search(val){
