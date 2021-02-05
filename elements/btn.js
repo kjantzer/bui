@@ -91,6 +91,10 @@ export default class BtnElement extends LitElement {
             /* transition: 120ms; */
         }
 
+        :host([thin]) {
+            --padding: 0 .6em;
+        }
+
         main > span {
             display: inline-flex;
             justify-content: center;

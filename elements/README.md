@@ -96,9 +96,13 @@ Effectively a "span" tag with attributes to apply styles
 - `icon`
 - `color`
 - `outline`
+- `pill`
 - `text` - no button outline until hover
 - `clear`
-- `pill`
+- `fab` - floating action button
+- `stacked`
+- `thin` - reduces top/bottom padding
+- `xs`, `sm`, `lg`, `xl`
 
 #### Properties
 - `spin` - set to `true` to show a spinner
