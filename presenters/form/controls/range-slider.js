@@ -259,7 +259,7 @@ customElements.define('range-slider', class extends LitElement{
     }
 
     get _len(){ return this.max - this.min }
-    get _minLeft(){ return (this.valMin) / this._len * 100 }
+    get _minLeft(){ return (this.valMin - this.min) / this._len * 100 }
     get _maxLeft(){ return (this.valMax - this.min) / this._len * 100 }
     get _trackLength(){ return this._maxLeft - this._minLeft }
 
