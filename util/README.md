@@ -144,6 +144,10 @@ const cache = store.create('my-cache-key')
 cache('some value')
 console.log(cache()) // "some value"
 cache(null) // clears the stored value
+
+// with default value
+const settings = store.create('my-settings-key', {mode: 'dark'})
+console.log(settings().mode) // 'dark'
 ```
 
 `localStorage` is the default export, but `sessionStore` is also available:

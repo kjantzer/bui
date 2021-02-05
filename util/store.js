@@ -35,11 +35,19 @@ export const sessionStore = (key, val)=>{
 export default localStore
 
 // creates special "store" function that doesn't need the key each time
-localStore.create = key=>{
+localStore.create = (key,defaultVal)=>{
+	
+	if( defaultVal && !localStore(key) )
+		localStore(key, defaultVal)
+
 	return (val)=>{ return localStore(key, val)}
 }
 
-sessionStore.create = key=>{
+sessionStore.create = (key,defaultVal)=>{
+
+	if( defaultVal && !sessionStore(key) )
+		sessionStore(key, defaultVal)
+
 	return (val)=>{return sessionStore(key, val)}
 }
 
