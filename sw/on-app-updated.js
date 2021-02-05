@@ -35,6 +35,7 @@ function newUpdateNotif(worker){
     if( !navigator.serviceWorker.controller ) return
 
     new Notif({
+        nid: 'bui-sw-app-updated',
         msg: 'App update available',
         icon: 'arrows-ccw',
         btns: [{label: 'Update', color: 'theme'}],
