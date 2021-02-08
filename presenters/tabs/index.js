@@ -72,8 +72,13 @@ customElements.define('b-tabs', class extends LitElement {
 
         if( !this.__views ){
             this.__views = new TabViews(this.key, this.childNodes)
-            this.active = this.getAttribute('active') || this.views.active || this.views.first
-            this.setupMutationObserver()
+
+            // return views before setting "active"
+            // fixes timing issue with rendering custom tab bar
+            setTimeout(()=>{
+                this.active = this.getAttribute('active') || this.views.active || this.views.first
+                this.setupMutationObserver()
+            })
         }    
         
         return this.__views
