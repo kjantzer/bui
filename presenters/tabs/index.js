@@ -77,8 +77,9 @@ customElements.define('b-tabs', class extends LitElement {
             // fixes timing issue with rendering custom tab bar
             setTimeout(()=>{
                 this.active = this.getAttribute('active') || this.views.active || this.views.first
-                this.setupMutationObserver()
             })
+
+            this.setupMutationObserver()
         }    
         
         return this.__views
@@ -389,7 +390,7 @@ customElements.define('b-tabs', class extends LitElement {
         // we will then begin propagating the model to the tab views
         this._propagateModel = true
 
-        if( this.views )
+        if( this.__views )
             this.views.active.view.model = this.model
     }
 
