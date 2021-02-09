@@ -5,6 +5,7 @@ import docs from 'bui/presenters/search-popup/README.md'
 customElements.define('demo-presenter-search-popup', class extends View{
 
     static get title(){ return 'Search Popup' }
+    static get id(){ return 'search-popup' }
 
     static get styles(){return [super.styles, css`
         

@@ -5,8 +5,10 @@ router.config({
     prefix: '#/'
 })
 
+import 'bui/util/window.open'
 import '../elements/icons/_all'
 import './markdown-docs'
 
 import './header'
 import './main'
+import './sw'

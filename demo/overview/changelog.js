@@ -4,6 +4,7 @@ import docs from '../../CHANGELOG.md'
 customElements.define('demo-changelog', class extends LitElement{
 
     static get title(){ return 'Changelog' }
+    static get id(){ return 'changelog' }
 
     static get styles(){return css`
         :host {

@@ -2,11 +2,11 @@ import { LitElement, html, css } from 'lit-element'
 import 'bui/elements/headers'
 import 'bui/elements/hr'
 import docs from 'bui/README.md'
-import './overview/setup'
-import './overview/changelog'
+import './setup'
+import './changelog'
 
 let docsStr = docs
-let trimIndex = docsStr.search('## Installation')
+let trimIndex = docsStr.search('## 🎉 Features')
 docsStr = trimIndex > -1 ? docsStr.substr(trimIndex) : docsStr
 
 // FIXME: needs improvement
@@ -21,6 +21,7 @@ customElements.define('demo-overview', class extends LitElement{
 
     static get title(){ return 'Overview' }
     static get icon(){ return 'info-circled' }
+    static get path(){ return 'overview(/:view(/*))' }
 
     static get styles(){return css`
         :host {
@@ -94,7 +95,7 @@ customElements.define('demo-overview', class extends LitElement{
             min-width: 0;
         }
 
-        b-tabs::part(tab-bar) {
+        b-tabs-router::part(tab-bar) {
             color: white;
             --inactiveColor: rgba(255,255,255,.4);
             --border-color: rgba(255,255,255,.1);
@@ -108,8 +109,8 @@ customElements.define('demo-overview', class extends LitElement{
         <div class="bgd"></div>
         
 
-        <b-tabs key="demo-overview">
-            <div title="About">
+        <b-tabs-router path="overview/" key="demo-overview">
+            <div title="About" view-id="about">
             <main>
 
                 <header>
@@ -136,7 +137,7 @@ customElements.define('demo-overview', class extends LitElement{
             demo-setup
             demo-changelog
 
-        </b-tabs>
+        </b-tabs-router>
     `}
 
 })

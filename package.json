@@ -9,14 +9,11 @@
         "url": "https://github.com/kjantzer/bui"
     },
     "scripts": {
-        "start": "parcel demo/index.html --no-autoinstall --out-dir demo/dist",
-        "build": "parcel build demo/index.html --out-dir public --public-url ./ --no-minify",
-        "build-docs-script": "parcel build demo/docs.js --out-dir docs -o bui.js --no-minify",
-        "build-docs-script-watch": "parcel watch demo/docs.js --out-dir docs -o bui.js",
-        "build-docs": "./node_modules/.bin/docpress build",
-        "build-pages": "npm run build && npm run build-docs-script && npm run build-docs",
-        "publish-pages": "cd ./public && git add -A && git commit -m 'publish docs' && git push origin HEAD:gh-pages",
-        "build-and-publish-pages": "npm run build && npm run publish-pages"
+        "start": "npm run build-sw && parcel demo/index.html --no-autoinstall --out-dir demo/dist",
+        "build": "parcel build demo/index.html --no-autoinstall --out-dir public --public-url ./ --no-minify",
+        "build-sw": "parcel build demo/sw/src/index.js --no-autoinstall --out-dir ./demo --out-file ./sw.js --no-minify",
+        "commit-pages": "cd ./public && git add -A && git commit -m 'publish docs' && git push origin HEAD:gh-pages",
+        "publish-pages": "npm run build && npm run commit-pages"
     },
     "keywords": [
         "custom elements",

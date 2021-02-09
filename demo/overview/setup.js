@@ -4,6 +4,7 @@ import docs from '../../docs/setup.md'
 customElements.define('demo-setup', class extends LitElement{
 
     static get title(){ return 'Setup' }
+    static get id(){ return 'setup' }
 
     static get styles(){return css`
         :host {

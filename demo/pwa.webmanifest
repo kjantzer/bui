@@ -1,0 +1,25 @@
+{
+  "short_name": "BUI",
+  "name": "Blackstone UI",
+  "display": "standalone",
+  "theme_color": "#fff",
+  "background_color": "#fff",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/imgs/big-sur-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/imgs/big-sur-256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "/imgs/big-sur-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
