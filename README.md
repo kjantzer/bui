@@ -6,17 +6,16 @@
 
 <h1 align="center">Blackstone UI (BUI)</h1>
 
+Web components for creating interfaces - built with [lit-html](https://lit-html.polymer-project.org/) and [lit-element](https://lit-element.polymer-project.org/) by [Blackstone Publishing](https://blackstonepublishing.com)
+
 <div align="center">
 
-[![demo](https://img.shields.io/badge/npm-v3.0.0-blue)](https://www.npmjs.com/package/blackstone-ui)
-[![demo](https://img.shields.io/badge/-Demo-blue)](https://bui.js.org)
-[![docs](https://img.shields.io/badge/-Documentation-black)](https://bui.js.org/docs/)
+[![demo](https://img.shields.io/badge/-Demo%20&%20Documentation-blue)](https://bui.js.org)
 
 </div>
 
-Web components for creating interfaces - built with [lit-html](https://lit-html.polymer-project.org/) and [lit-element](https://lit-element.polymer-project.org/) by [Blackstone Publishing](https://blackstonepublishing.com)
-
 [![preview](./preview.jpg)](https://bui.js.org)
+
 
 ## 🎉 Features
 - 📱 Progressive scaling from desktop to mobile devices
