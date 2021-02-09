@@ -14,7 +14,7 @@ export default class TabView {
                 this.__title = this._viewClass.title
                 this.__options = this._viewClass.tabOptions || {}
                 this.__icon = this._viewClass.icon
-                this.__id = this.__title
+                this.__id = this.__title.toLowerCase().replace(/ /g, '-')
             }else{
                 this.__id = this._viewName
             }
