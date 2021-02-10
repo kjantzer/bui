@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
 import 'bui/elements/text'
 import Menu from 'bui/presenters/menu'
-import {colorScheme} from 'bui/util/device'
+import device, {colorScheme} from 'bui/util/device'
 import 'bui/elements/logo'
 
 window.colorScheme = colorScheme
@@ -25,6 +25,9 @@ customElements.define('demo-header', class extends LitElement{
 
     constructor(){
         super()
+
+        device.applyClasses()
+
         // document.documentElement.toggleAttribute('dark', this.isDarkMode)
         colorScheme.apply({colorizeFaviconComposition: 'source-in'})
     }
