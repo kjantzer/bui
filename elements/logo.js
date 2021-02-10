@@ -13,8 +13,8 @@ customElements.define('bui-logo', class extends LitElement{
         }
 
         svg {
-            height: .7em;
-            margin: -.25em .05em;
+            height: .62em;
+            margin: -0.25em 0em -0.17em;
         }
 
         svg * {
@@ -22,8 +22,9 @@ customElements.define('bui-logo', class extends LitElement{
         }
 
         span {
-            color: currentColor;
-            opacity: .4;
+            /* color: currentColor; */
+            color: var(--theme);
+            /* opacity: .4; */
             font-size: .9em;
             line-height: 0;
             margin-top: -.07em;
