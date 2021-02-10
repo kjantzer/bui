@@ -30,6 +30,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             align-items: center;
             font-size: 1.1em;
             padding-top: .25em;
+            padding-bottom: .25em;
             --b-btn-stacked-icon-opacity:.3;
         }
 
@@ -40,6 +41,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
         @media (min-width:700px) {
             b-btn {
                 font-size: 1.2em;
+                padding-bottom: 0;
             }
         }
 
