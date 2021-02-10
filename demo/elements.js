@@ -296,14 +296,14 @@ customElements.define('demo-elements', class extends LitElement{
                 <h1>Media</h1>
 
                 <h2>Audio</h2>
-                <b-audio src="http://media.w3.org/2010/07/bunny/04-Death_Becomes_Fur.mp4"></b-audio>
+                <b-audio src="//media.w3.org/2010/07/bunny/04-Death_Becomes_Fur.mp4"></b-audio>
 
                 <br>
                 <b-hr short></b-hr>
                 <br>
 
                 <h2>Embed</h2>
-                <b-embed url="https://www.youtube.com/watch?v=sK1ODp0nDbM"></b-embed>
+                <b-embed url="//www.youtube.com/watch?v=sK1ODp0nDbM"></b-embed>
 
             </section>
 
