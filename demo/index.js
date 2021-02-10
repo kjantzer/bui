@@ -11,4 +11,4 @@ import './markdown-docs'
 
 import './header'
 import './main'
-import './sw'
+import './sw/index.js'
