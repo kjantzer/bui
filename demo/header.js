@@ -44,7 +44,7 @@ customElements.define('demo-header', class extends LitElement{
         bui-logo {
             margin: 0 .5rem 0 .5rem;
             --size: 2.2em;
-            color: var(--theme-chosen);
+            /* color: var(--theme-chosen); */
         }
 
         .right {

@@ -55,8 +55,9 @@ customElements.define('demo-overview', class extends LitElement{
 
         main {
             margin: 1em auto;
-            width: 900px;
-            max-width: calc(100% - var(--view-gutter));
+            /* width: 900px;
+            max-width: calc(100% - var(--view-gutter)); */
+            max-width: 900px;
             position: relative;
             z-index: 1;
         }
@@ -67,6 +68,16 @@ customElements.define('demo-overview', class extends LitElement{
             font-size: 1.4em;
             /* padding-top: var(--view-gutter); */
             padding-bottom: 3%;
+        }
+
+        @media (max-width: 699px) {
+            header {
+                font-size: 1em;
+            }
+
+            .bgd {
+                height: 70vh;
+            }
         }
 
         bui-logo {
