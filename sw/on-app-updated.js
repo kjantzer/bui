@@ -1,4 +1,4 @@
-import Notif from 'notif'
+import Notif from '../presenters/notif'
 
 // when a new service worker takes over, reload the app to begin using it
 let refreshing;
