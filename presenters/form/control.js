@@ -34,9 +34,9 @@ class FormControlElement extends HTMLElement {
 			<main>
 				<slot name="control"></slot>
 				<slot name="main"></slot>
-				<div class="prefix">${prefix}</div>
-				<div class="label">${label}</div>
-				<div class="suffix">${suffix}</div>
+				<div class="prefix" part="prefix">${prefix}</div>
+				<div class="label" part="label">${label}</div>
+				<div class="suffix" part="suffix">${suffix}</div>
 				<div class="btns">
 					<span class="btn-save">
 						<svg class="check" focusable="false" viewBox="0 0 24 24"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
@@ -61,6 +61,7 @@ class FormControlElement extends HTMLElement {
 		if( this.control ){
 			
 			this.control.slot = 'control'
+			this.setAttribute('control-type', this.control.tagName.toLowerCase())
 
 			this.mutationObserver = new MutationObserver(mutations=>{
 				mutations.forEach(m=>{

@@ -26,7 +26,7 @@ slot[name="after"]{
 	--selectionColor: var(--fc-selection-color, #333);
 	--focusBgd: #FFF8E1;
 	--focusColor: var(--fc-theme);
-	 --bgd:var(--fc-bgd, #fff);
+	--bgd:var(--fc-bgd, #fff);
 	--borderColor: rgba(0,0,0,.3);
 	--invalidColor: #ff1744;
 	--unsavedColor: transparent; /*#FFC107;*/
