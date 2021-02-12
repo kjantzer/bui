@@ -25,54 +25,90 @@ customElements.define('demo-presenter-form', class extends LitElement{
             margin: 0;
             padding: 0;
         }
+
+        form-control[material="outline"] {
+            --fc-bgd: var(--theme-bgd);
+        }
+
+        form-control[suffix]::part(suffix) {
+            flex-grow: 100;
+        }
+
+        .form-result {
+            background: var(--theme-bgd-accent);
+            border-radius: 4px;
+            font-family: monospace;
+            padding: 1em;
+            margin-top: .5em;
+            /* white-space: pre-wrap; */
+        }
+
+        form-control [slot="prefix"] {
+            pointer-events: none;
+        }
     `}
 
+    onFormChange(changes){
+        setTimeout(()=>{
+            this.update()
+        })
+    }
+
+    formResult(){
+        if( !this.formHandler ) return ''
+        return html`
+            ${this.formHandler.isInvalid?html`
+                <b-label filled="red">Invalid</b-label>
+            `:''}
+            ${JSON.stringify(this.formHandler.values, null, 4)}
+        `
+    }
+
     render(){return html`
-        
-
-
+    
         <b-paper>
             <b-h1>Form</b-h1>
             <br>
 
+        <form-handler .onChange=${this.onFormChange.bind(this)}>
         <b-grid cols=3 cols-mobile=1>
 
-            <form-control material="filled" label="Name">
+            <form-control material="filled" key="name" label="Name">
                 <input slot="control" type="text" autocomplete="name">
             </form-control>
 
-            <form-control material="filled" label="Email">
+            <form-control material="filled" key="email" label="Email">
                 <input slot="control" type="email">
             </form-control>
 
-            <form-control material="filled" label="Phone">
+            <form-control material="filled" key="phone" label="Phone">
                 <input slot="control" type="tel">
             </form-control>
             
-            <form-control material="filled" label="Validate and prefix" prefix="$">
+            <form-control material="filled" key="prefix" label="Validate and prefix" prefix="$">
                 <text-field validate="decimal" max="2"></text-field>
             </form-control>
 
-            <form-control material="filled" label="Validate and suffix" suffix=" units">
+            <form-control material="filled" key="suffix" label="Validate and suffix" suffix=" units">
                 <text-field validate="int"></text-field>
             </form-control>
 
-            <form-control material="filled" label="Date Field">
+            <form-control material="filled" key="date" label="Date Field">
                 <text-field type="date"></text-field>
             </form-control>
 
-            <form-control colspan material="filled" label="Text Field (Multiline)">
+            <form-control colspan material="filled" key="text" label="Text Field (Multiline)">
                 <text-field multiline></text-field>
             </form-control>
 
-            <form-control colspan material="filled" label="Rich Text Field">
+            <form-control colspan material="filled" key="rte" label="Rich Text Field">
                 <rich-text-field></rich-text-field>
                 <span slot="help">Rich text editing is enabled using quill.js</span>
             </form-control>
 
             
             <b-grid colspan cols-mobile=1>
-                <form-control material="filled" label="Select Field">
+                <form-control material="filled" key="select" label="Select Field">
                     <select-field>
                         <option value="">No Value</option>
                         <hr>
@@ -85,7 +121,7 @@ customElements.define('demo-presenter-form', class extends LitElement{
                     </select-field>
                 </form-control>
 
-                <form-control material="filled" label="Multi Select Field">
+                <form-control material="filled" key="select-multi" label="Multi Select Field">
                     <select-field multiple>
                         <option value="1">Option 1</option>
                         <option value="2">Option 2</option>
@@ -97,16 +133,26 @@ customElements.define('demo-presenter-form', class extends LitElement{
             </b-grid>
 
             <div>
-                <check-box label="Checkbox"></check-box> &nbsp;&nbsp;
-                <check-box type="switch" label="Switch"></check-box> &nbsp;&nbsp;
+                <check-box key="checkbox" label="Checkbox"></check-box> &nbsp;&nbsp;
+                <check-box type="switch" key="switch" label="Switch"></check-box> &nbsp;&nbsp;
             </div>
 
-            <radio-group>
+            <radio-group key="radio">
                 <radio-btn label="One"></radio-btn>
                 <radio-btn label="Two"></radio-btn>
             </radio-group>
 
+            <form-control key="slider" prefix="0" suffix="100" style="margin-top: .25em;">
+                <range-slider slot="control" style="margin: 0 1em;"></range-slider>
+            </form-control>
+
         </b-grid>
+        </form-handler>
+
+        <br><br>
+        <b-text ucase bold>Form Result</b-text>
+        <div class="form-result">${this.formResult()}</div>
+
         </b-paper>
 
         <b-paper>
@@ -116,26 +162,150 @@ customElements.define('demo-presenter-form', class extends LitElement{
 
             <b-grid cols=4 cols-mobile="1">
             <div>
-                Standard&nbsp;&nbsp;&nbsp;&nbsp;
+                Standard&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <range-slider></range-slider>
             </div>
 
             <div>
-                Range&nbsp;&nbsp;&nbsp;&nbsp;
-                <range-slider range></range-slider>
+                Range&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <range-slider range .value=${[20,60]}></range-slider>
             </div>
 
             <div>
-                Stepped&nbsp;&nbsp;&nbsp;&nbsp;
+                Stepped&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <range-slider step=10 value=0></range-slider>
             </div>
 
             <div>
-                Min/Max&nbsp;&nbsp;&nbsp;&nbsp;
-                <range-slider min="-100" max=20></range-slider>
+                Min/Max&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <range-slider min="-100" max=20 value=0></range-slider>
             </div>
 
             </b-grid>
+        </b-paper>
+
+        <b-paper>
+
+            <b-h1>Baked-in Styles</b-h1><br><br>
+
+            <b-text block bold ucase>Material Filled</b-text><br>
+            <b-grid cols=3 cols-mobile=1>
+
+                <form-control material="filled" label="Text Field">
+                    <text-field></text-field>
+                    <span slot="prefix"><b-icon name="mail"></b-icon>&nbsp;</span>
+                </form-control>
+
+                <form-control material="filled" label="Prefixed" prefix="$" suffix=".00">
+                    <text-field></text-field>
+                </form-control>
+
+                <form-control material="filled" label="Select Field">
+                    <select-field>
+                        <option value="">—</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                    </select-field>
+                </form-control>
+
+            </b-grid>
+
+            <br><br>
+
+            <b-text block bold ucase>Material Filled (Dense)</b-text><br>
+            <b-grid cols=3 cols-mobile=1>
+
+                <form-control dense material="filled" label="Text Field">
+                    <text-field></text-field>
+                    <span slot="prefix"><b-icon name="mail"></b-icon>&nbsp;</span>
+                </form-control>
+
+                <form-control dense material="filled" label="Prefixed" prefix="$" suffix=".00">
+                    <text-field></text-field>
+                </form-control>
+
+                <form-control dense material="filled" label="Select Field">
+                    <select-field>
+                        <option value="">—</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                    </select-field>
+                </form-control>
+
+            </b-grid>
+
+            <br><br>
+
+            <b-text block bold ucase>Material Outline</b-text><br>
+            <b-grid cols=3 cols-mobile=1>
+
+                <form-control material="outline" label="Text Field">
+                    <text-field></text-field>
+                    <span slot="prefix"><b-icon name="mail"></b-icon>&nbsp;</span>
+                </form-control>
+
+                <form-control material="outline" label="Prefixed" prefix="$" suffix=".00">
+                    <text-field></text-field>
+                </form-control>
+
+                <form-control material="outline" label="Select Field">
+                    <select-field>
+                        <option value="">—</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                    </select-field>
+                </form-control>
+
+            </b-grid>
+
+            <br><br>
+
+            <b-text block bold ucase>Material</b-text><br>
+            <b-grid cols=3 cols-mobile=1>
+
+                <form-control material="" label="Text Field">
+                    <text-field></text-field>
+                    <span slot="prefix"><b-icon name="mail"></b-icon>&nbsp;</span>
+                </form-control>
+
+                <form-control material="" label="Prefixed" prefix="$" suffix=".00">
+                    <text-field></text-field>
+                </form-control>
+
+                <form-control material="" label="Select Field">
+                    <select-field>
+                        <option value="">—</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                    </select-field>
+                </form-control>
+
+            </b-grid>
+
+            <br><br>
+
+            <b-text block bold ucase>Plain</b-text><br>
+            <b-grid cols=3 cols-mobile=1>
+
+                <form-control>
+                    <text-field placeholder="Text Field"></text-field>
+                    <span slot="prefix"><b-icon name="mail"></b-icon>&nbsp;</span>
+                </form-control>
+
+                <form-control prefix="$" suffix=".00">
+                    <text-field placeholder="0"></text-field>
+                </form-control>
+
+                <form-control>
+                    <select-field placeholder="Select Field">
+                        <option value="">—</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                    </select-field>
+                </form-control>
+
+            </b-grid>
+
         </b-paper>
 
 
