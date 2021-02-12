@@ -30,11 +30,11 @@ customElements.define('range-slider', class extends LitElement{
 
     static get styles(){return css`
         :host {
-            --size: 6px;
+            --size: 8px;
             --thumbSize: 18px;
             --color: var(--fc-theme);
             --thumbColor: var(--color);
-            --bgd: var(--theme-text-accent, rgba(0,0,0,.4));
+            --bgd: rgba(var(--theme-text-rgb, 0,0,0,), .2);
             --padding: 10px;
 
             display: inline-block;
@@ -55,7 +55,7 @@ customElements.define('range-slider', class extends LitElement{
             height: var(--size);
             width: 100%;
             background: var(--color);
-            border-radius: 6px;
+            border-radius: var(--size);
             position: absolute;
             top: var(--padding);
             left: 0;
@@ -214,6 +214,10 @@ customElements.define('range-slider', class extends LitElement{
             this._active = 'max'
         }
         else if( !this.range || (dmin == dmax && this.valMax > this.valMin && this._active == 'max') || dmax < dmin || val > this.valMax ){
+
+            if( !this.range )
+                this.valMin = this.min
+
             this.valMax = val
             this._active = 'max'
         }else{
@@ -295,6 +299,10 @@ customElements.define('range-slider', class extends LitElement{
         window.addEventListener(device.isMobile?'touchmove':'mousemove', this.mouseMove, true)
         this._mouseDown = true
         this.mouseMove(e)
+
+        // stop text on page from being selected if user drags past ends of slider
+        this._bodyUserSelect = document.body.style.userSelect
+        document.body.style.userSelect = 'none'
     }
 
     mouseUp(){
@@ -313,6 +321,11 @@ customElements.define('range-slider', class extends LitElement{
                 detail: {value: this.value}
             }))
         }
+
+        // put back the body "user select" style
+        setTimeout(()=>{
+            document.body.style.userSelect = this._bodyUserSelect
+        })
     }
 
     mouseMove(e){
