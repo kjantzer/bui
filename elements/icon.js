@@ -218,3 +218,7 @@ export class IconList extends LitElement {
 	`}
 }
 customElements.define('b-icon-list', IconList)
+
+export function iconNames(){
+	return Array.from(SVG_ICONS.keys())
+}
