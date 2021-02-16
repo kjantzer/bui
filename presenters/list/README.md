@@ -81,6 +81,9 @@ const filters = {
         width: '160px', // exact width of menu
         multi: false, // can more than one value be selected?
         db: false, // true will make the filterBy happen on server instead
+        onFirstLoad: async (list, filter)=>{
+            // use this to fetch data before showing menu for the first time
+        },
 
         // values are passed to `Menu`, check docs for available options
         values: [

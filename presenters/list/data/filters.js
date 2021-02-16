@@ -436,6 +436,13 @@ export class Filter {
         if( this.isCustomView  )
             return this.showCustomView(el)
 
+        if( this.attrs.onFirstLoad ){
+            el.spin = true
+            await this.attrs.onFirstLoad.call(this.parent.list, this)
+            el.spin = false
+        }
+            
+
         let selected = await new Menu(this.values, {
             selected: this.value,
             multiple: this.isMulti,
