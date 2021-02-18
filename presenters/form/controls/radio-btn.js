@@ -38,7 +38,7 @@ customElements.define('radio-btn', class extends LitElement{
 		:host([placement="right"]) { flex-direction: row; }
 
 		svg {
-			fill: currentColor;
+			fill: rgba(var(--theme-text-rgb, 0,0,0), .5);
 			width: var(--size);
 			height: var(--size);
 			display: inline-block;

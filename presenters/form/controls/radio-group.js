@@ -3,15 +3,17 @@ import { LitElement, html, css } from 'lit-element'
 customElements.define('radio-group', class extends LitElement{
 
 	static get properties(){return {
-		key: {type: String, reflect: true}
+		key: {type: String, reflect: true},
+		deselectable: {type: Boolean}
 	}}
 
 	static get styles(){return css`
 		:host {
-			display: flex;
+			display: inline-flex;
 			flex-wrap: wrap;
 			outline: none;
 			border-radius: 4px;
+			vertical-align: middle;
 		}
 
 		:host(:not([slot="control"])[focused]) {
@@ -101,6 +103,8 @@ customElements.define('radio-group', class extends LitElement{
 	constructor() {
 		super()
 		
+		this.deselectable = true
+
 		this.addEventListener('change', this._onChange, true)
 		
 		this.addEventListener('keydown', e=>{
@@ -169,7 +173,11 @@ customElements.define('radio-group', class extends LitElement{
 		
 		if( e.target == this ) return
 		
-		this.value = e.target.value
+		if( this.deselectable )
+			this.value = e.target.active ? e.target.value : null
+		else
+			this.value = e.target.value
+		
 		this.setAttribute('value', this.value)
 		e.stopPropagation&&e.stopPropagation()
 		

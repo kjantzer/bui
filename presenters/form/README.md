@@ -283,6 +283,7 @@ A radio group allows for only one radio-btn in set to be selected. It also provi
 
 #### Attributes
 - `key` - when using with form-handler
+- `deselectable` - default true: selected radio can be deselected
 - `segment`
 - `segment="theme"`
 - `stacked` (use with segment)

@@ -44,6 +44,10 @@ svg {
 	padding: .25em;
 }
 
+svg.uncheck {
+	fill: rgba(var(--theme-text-rgb, 0,0,0), .5);
+}
+
 .switch {
 	display: none
 }
