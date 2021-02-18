@@ -104,10 +104,10 @@ customElements.define('range-slider', class extends LitElement{
         thumb:before {
             content: '';
             position: absolute;
-            height: 250%;
-            width: 250%;
-            left: -75%;
-            top: -75%;
+            height: 200%;
+            width: 200%;
+            left: -50%;
+            top: -50%;
             background: var(--thumbColor);
             opacity: .2;
             border-radius: 30px;

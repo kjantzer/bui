@@ -22,7 +22,7 @@ customElements.define('radio-group', class extends LitElement{
 		}
 
 		:host([slot="control"]) {
-			/* margin: .5em 2px 2px 2px; */
+			--radio-segment-min-width: 1em;
 		}
 
 		:host ::slotted(radio-btn){
@@ -35,6 +35,7 @@ customElements.define('radio-group', class extends LitElement{
 			background-color: var(--theme-bgd-accent, #ccc);
 			--radio-segment-radius: 6px;
 			--radio-segment-padding: .25rem;
+			--radio-segment-min-width: 5em;
 			border-radius: var(--radio-segment-radius);
 			padding: var(--radio-segment-padding);
 			display: inline-flex;
@@ -56,10 +57,12 @@ customElements.define('radio-group', class extends LitElement{
 			flex-grow: 1;
 			margin-right: 0;
 			--radio-display: none;
+			--radio-btn-label-padding: 0;
     		justify-content: center;
 			border-radius: var(--radio-segment-radius);
 			font-size: var(--radio-segment-font-size, 0.8em);
-			padding: var(--radio-segment-padding) 2em;
+			padding: var(--radio-segment-padding);
+			min-width: var(--radio-segment-min-width);
 			font-weight: bold;
 		}
 
@@ -69,7 +72,7 @@ customElements.define('radio-group', class extends LitElement{
 		}
 
 		:host([segment][stacked]) ::slotted(radio-btn){
-			padding: calc(var(--radio-segment-padding)*2) 1em;
+			padding: calc(var(--radio-segment-padding)*1.5);
 		}
 
 		:host([segment]) ::slotted(radio-btn:not(:first-child)) {
@@ -198,7 +201,7 @@ customElements.define('radio-group', class extends LitElement{
 	
 	get value(){
 		let radio = this.active
-		return radio && radio.value
+		return radio ? radio.value : null
 	}
 	
 	set value(val){

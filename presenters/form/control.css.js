@@ -238,8 +238,9 @@ slot[name="help"] {
 	border-radius: var(--fc-border-radius, 0px);
 }
 
-:host([material]:not(:focus-within):not([focused]):hover) main {
-	background: var(--bgd);
+:host([material=""]:not(:focus-within):not([focused]):hover) main {
+	/* background: var(--bgd); */
+	border-bottom-color: var(--focusColor);
 }
 
 :host([material]) main:before {
@@ -262,6 +263,12 @@ slot[name="help"] {
 :host([material]:not([material="filled"])) slot[name="control"]::slotted(radio-group) {
 	--padY: .35em;
 	--padX: .25em;
+}
+
+:host ::slotted(check-box),
+:host ::slotted(radio-btn),
+:host ::slotted(radio-group) {
+	height: 1em;
 }
 
 :host slot[name="control"]::slotted(check-box) {
