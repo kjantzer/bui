@@ -250,47 +250,56 @@ select-field::part(value):after {
 - `type="switch"`
 
 ```html
-<form-control>
+<check-box label="Active"></check-box>
+
+<!-- when using form-handler -->
+<form-control key="is_active">
 	<check-box label="Active"></check-box>
 </form-control>
 ```
 
-<!--
-<check-box label="Active"></check-box>
--->
-
 ## `<radio-btn>`
 
-Radio buttons should be nested inside of a `radio-group`
-
-<!--
-<radio-group>
-	<radio-btn label="Male"></radio-btn>
-	<radio-btn label="Female"></radio-btn>
-</radio-group>
--->
+```html
+<radio-btn value=1 label="Yes"></radio-btn>
+```
 
 #### Attributes
-
 - `active`
 - `label`
-- `placement="right"` - placement of label
+- `value` (label will be used if not set)
+- `placement="right"` - placement of label (top, right, bottom, left)
+
+## `<radio-group>`
+A radio group allows for only one radio-btn in set to be selected. It also provides some styling options
 
 ```html
-<form-control material="filled">
-	<radio-group>
-		<radio-btn value label="Null" active></radio-btn>
-		<radio-btn value=0 label="No"></radio-btn>
-		<radio-btn value=1 label="Yes"></radio-btn>
-	</radio-group>
-</form-control>
+<radio-group>
+	<radio-btn value label="Null" active></radio-btn>
+	<radio-btn value=0 label="No"></radio-btn>
+	<radio-btn value=1 label="Yes"></radio-btn>
+</radio-group>
 ```
+
+#### Attributes
+- `key` - when using with form-handler
+- `segment`
+- `segment="theme"`
+- `stacked` (use with segment)
+
+#### Styles
+- `--radio-segment-radius`
+- `--radio-segment-font-size`
+- `--radio-segment-active-bgd`
+- `--radio-segment-active-color`
+- `--radio-segment-hover-bgd`
+
 
 ## `<range-slider>`
 
-<!--
-<range-slider></range-slider>
--->
+```html
+<range-slider min=0 max=100 step=1 value=37></range-slider>
+```
 
 #### Attributes
 - `value`

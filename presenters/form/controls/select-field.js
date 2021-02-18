@@ -160,6 +160,8 @@ class SelectFieldElement extends HTMLElement {
 	
 	onKeypress(e){
 		if( e.code == 'Space' ){
+			e.preventDefault()
+			e.stopPropagation()
 			this.toggleMenu()
 		}
 	}

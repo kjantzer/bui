@@ -162,8 +162,11 @@ class CheckBoxElement extends HTMLElement {
 		this.addEventListener('click', this._onClick.bind(this))
 		
 		this.addEventListener('keydown', e=>{
-			if( ['Space', 'Enter'].includes(e.code) )
+			if( ['Space', 'Enter'].includes(e.code) ){
+				e.stopPropagation()
+				e.preventDefault()
 				this._onClick()
+			}
 		})
 		
 		this.addEventListener('focus', e=>{

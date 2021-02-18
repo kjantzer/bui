@@ -26,6 +26,29 @@ customElements.define('range-slider', class extends LitElement{
         this.valMin = 0
         this.valMax = 0
         this.value = [0,0]
+
+        this.addEventListener('keydown', this._onKeyDown)
+		
+        // respond to the "thumbs" gaining focus
+		this.shadowRoot.addEventListener('focus', e=>{
+
+            if( e.target.hasAttribute('max') )
+                this._active = 'max'
+            
+            if( e.target.hasAttribute('min') )
+                this._active = 'min'
+
+            // this flag keeps the thumb highlighted
+            this._mouseDown = true
+            this.update()
+
+		}, true)
+		
+		this.addEventListener('blur', e=>{
+            this._mouseDown = false
+            this._active = null
+            this.update()
+		})
     }
 
     static get styles(){return css`
@@ -74,7 +97,8 @@ customElements.define('range-slider', class extends LitElement{
             top: calc(var(--padding) + (var(--size) / 2));
             background: var(--thumbColor);
             border-radius: var(--thumbSize);
-            box-shadow: 0 0 0 1px var(--theme-bgd, var(--thumb-shadow, #fff)) inset
+            box-shadow: 0 0 0 1px var(--theme-bgd, var(--thumb-shadow, #fff)) inset;
+            outline: none;
         }
 
         thumb:before {
@@ -281,10 +305,10 @@ customElements.define('range-slider', class extends LitElement{
     render(){return html`
         <rail></rail>
         <track style="left:${this._minLeft}%; width:${this._trackLength}%"></track>
-        <thumb min ?active=${this._active=='min'} style="left:${this._minLeft}%">
+        <thumb min ?active=${this._active=='min'} style="left:${this._minLeft}%" tabindex="0">
             <div><span>${this.valMin}</span></div>
         </thumb>
-        <thumb max ?active=${this._active=='max'} style="left:${this._maxLeft}%">
+        <thumb max ?active=${this._active=='max'} style="left:${this._maxLeft}%" tabindex="0">
             <div><span>${this.valMax}</span></div>
         </thumb>
         <div class="labels">
@@ -356,6 +380,52 @@ customElements.define('range-slider', class extends LitElement{
             composed: true,
             detail: {value: this.value}
         }))
+    }
+
+    _onKeyDown(e){
+        let move = null
+
+        if( ['ArrowLeft', 'ArrowDown'].includes(e.code) ){
+            move = 'down'
+        }else if( ['ArrowRight', 'ArrowUp'].includes(e.code) ){
+            move = 'up'
+        }
+
+        if( !move ) return
+
+        e.preventDefault()
+        e.stopPropagation()
+
+        let val = this.value
+        let stepVal = this.step
+
+        if( move == 'down' )
+            stepVal = stepVal * -1
+
+        if( e.shiftKey )
+            stepVal = stepVal * 10
+
+        // TODO: jump to "min" needs work
+        // if( e.shiftKey && (e.ctrlKey || e.metaKey) ){
+        //     stepVal = stepVal > 0 ? this.max : this.min
+        // }
+        
+        if( this.range ){
+
+            if( val[0] == val[1] ){
+                if( stepVal > 0 )
+                    this._active = 'max'
+                else
+                    this._active = 'min'
+            }
+
+            if( this._active == 'min' )
+                this.value = [val[0]+stepVal, val[1]]
+            else
+                this.value = [val[0], val[1]+stepVal]
+        }
+        else
+            this.value += stepVal
     }
 
 })

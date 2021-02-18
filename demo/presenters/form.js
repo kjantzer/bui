@@ -137,10 +137,31 @@ customElements.define('demo-presenter-form', class extends LitElement{
                 <check-box type="switch" key="switch" label="Switch"></check-box> &nbsp;&nbsp;
             </div>
 
-            <radio-group key="radio">
-                <radio-btn label="One"></radio-btn>
-                <radio-btn label="Two"></radio-btn>
-            </radio-group>
+
+            <div>
+
+                <radio-group key="radio">
+                    <radio-btn label="One"></radio-btn>
+                    <radio-btn label="Two"></radio-btn>
+                </radio-group>
+
+                <br>
+                
+                <radio-group key="segment" segment>
+                    <radio-btn label="One" active></radio-btn>
+                    <radio-btn label="Two"></radio-btn>
+                    <radio-btn label="Three" value="3"></radio-btn>
+                </radio-group>
+
+                <br><br>
+                
+                <radio-group key="segment-stacked" segment stacked>
+                    <radio-btn label="One" active></radio-btn>
+                    <radio-btn label="Two"></radio-btn>
+                    <radio-btn label="Three" value="3"></radio-btn>
+                </radio-group>
+
+            </div>
 
             <form-control key="slider" prefix="0" suffix="100" style="margin-top: .25em;">
                 <range-slider slot="control" style="margin: 0 1em;"></range-slider>

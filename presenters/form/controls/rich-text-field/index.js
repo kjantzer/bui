@@ -71,17 +71,17 @@ class RichTextField extends HTMLElement {
 
     html(){ return html`
         <style>${styles.cssText}</style>
-        <textarea class="view-source"></textarea>
+        <textarea tabindex="-1" class="view-source"></textarea>
         <main class="ql-editor">${this.__value?unsafeHTML(this.__value):''}</main>
         <toolbar>
-            <b-btn tabindex=0 format="bold" text @click=${this.format} icon="bold"></b-btn>
-            <b-btn tabindex=0 format="italic" text @click=${this.format} icon="italic"></b-btn>
-            <b-btn tabindex=0 format="align" value="center" text @click=${this.format} title="Center align" icon="paragraph-center"></b-btn>
-            <b-btn tabindex=0 format="list" value="ordered" text @click=${this.format} icon="list-numbered"></b-btn>
-            <b-btn tabindex=0 format="list" value="bullet" text @click=${this.format} icon="list2"></b-btn>
-            <!-- <b-btn tabindex=0 @click=${this.insertDivider} text icon="minus"></b-btn> -->
-            <b-btn tabindex=0 @click=${this.insertSpecial} text icon="quote-right"></b-btn>
-            <!-- <b-btn tabindex=0 @click=${this.toggleSource} text icon="code" title="Toggle source code"></b-btn> -->
+            <b-btn format="bold" text @click=${this.format} icon="bold"></b-btn>
+            <b-btn format="italic" text @click=${this.format} icon="italic"></b-btn>
+            <b-btn format="align" value="center" text @click=${this.format} title="Center align" icon="paragraph-center"></b-btn>
+            <b-btn format="list" value="ordered" text @click=${this.format} icon="list-numbered"></b-btn>
+            <b-btn format="list" value="bullet" text @click=${this.format} icon="list2"></b-btn>
+            <!-- <b-btn @click=${this.insertDivider} text icon="minus"></b-btn> -->
+            <b-btn @click=${this.insertSpecial} text icon="quote-right"></b-btn>
+            <!-- <b-btn @click=${this.toggleSource} text icon="code" title="Toggle source code"></b-btn> -->
         </toolbar>
     `}
 

@@ -1,26 +1,137 @@
+import { LitElement, html, css } from 'lit-element'
 
-class RadioGroupElement extends HTMLElement {
+customElements.define('radio-group', class extends LitElement{
 
-	get key(){ return this.getAttribute('key')}
+	static get properties(){return {
+		key: {type: String, reflect: true}
+	}}
+
+	static get styles(){return css`
+		:host {
+			display: flex;
+			flex-wrap: wrap;
+			outline: none;
+			border-radius: 4px;
+		}
+
+		:host(:not([slot="control"])[focused]) {
+			box-shadow: 0 0 0 2px var(--theme);
+			transition: 200ms boxShadow;
+		}
+
+		:host([slot="control"]) {
+			/* margin: .5em 2px 2px 2px; */
+		}
+
+		:host ::slotted(radio-btn){
+			margin-right: 1em;
+		}
+
+		:host([segment]) {
+			align-self: flex-start;
+			/* justify-self: flex-start; */
+			background-color: var(--theme-bgd-accent, #ccc);
+			--radio-segment-radius: 6px;
+			--radio-segment-padding: .25rem;
+			border-radius: var(--radio-segment-radius);
+			padding: var(--radio-segment-padding);
+			display: inline-flex;
+		}
+
+		:host([segment][slot="control"]) {
+			background-color: transparent !important;
+		}
+
+		:host([segment][stacked]) {
+			flex-direction: column;
+		}
+
+		:host([segment][disabled]) {
+			color: var(--theme-text-accent, #888);
+		}
+
+		:host([segment]) ::slotted(radio-btn){
+			flex-grow: 1;
+			margin-right: 0;
+			--radio-display: none;
+    		justify-content: center;
+			border-radius: var(--radio-segment-radius);
+			font-size: var(--radio-segment-font-size, 0.8em);
+			padding: var(--radio-segment-padding) 2em;
+			font-weight: bold;
+		}
+
+		:host([segment][slot="control"]) ::slotted(radio-btn){
+			margin-bottom: calc(-1 * var(--padX) / 2);
+    		/* margin-top: calc(-1 * var(--padX) / 4); */
+		}
+
+		:host([segment][stacked]) ::slotted(radio-btn){
+			padding: calc(var(--radio-segment-padding)*2) 1em;
+		}
+
+		:host([segment]) ::slotted(radio-btn:not(:first-child)) {
+			margin-left: 2px;
+		}
+
+		:host([segment][stacked]) ::slotted(radio-btn:not(:first-child)) {
+			margin-left: 0;
+			margin-top: 2px;
+		}
+
+		:host([segment]) ::slotted(radio-btn[active]) {
+			background-color: var(--radio-segment-active-bgd, var(--theme-bgd, #fff));
+			color: var(--radio-segment-active-color, inherit);
+		}
+
+		:host([segment="theme"]) ::slotted(radio-btn[active]) {
+			background-color: var(--radio-segment-active-bgd, var(--theme-theme, #2196F3));
+			color: var(--radio-segment-active-color, var(--theme-bgd, #fff));
+		}
+
+		:host([segment]:not([disabled]):not([focused])) ::slotted(radio-btn:not([active]):hover) {
+			background-color: var(--radio-segment-hover-bgd, var(--theme-bgd-accent2, #eee));
+		}
+	`}
+
+	render(){return html`
+		<slot></slot>
+	`}
 	
 	constructor() {
 		super()
 		
-		// let shadow = this.attachShadow({mode: 'open'})
-		// let temp = document.createElement('template')
-		// temp.innerHTML = `<style>${styles}</style>`
-		// this.shadowRoot.appendChild(temp.content.cloneNode(true));
-
-		this.style.outline = 'none'
-		
-		this.addEventListener('change', this._onChange.bind(this), true)
+		this.addEventListener('change', this._onChange, true)
 		
 		this.addEventListener('keydown', e=>{
 			if( ['ArrowLeft', 'ArrowUp'].includes(e.code) ){
+				e.preventDefault()
+				e.stopPropagation()
 				this.nav(-1)
 			}else if( ['ArrowRight', 'ArrowDown'].includes(e.code) ){
+				e.preventDefault()
+				e.stopPropagation()
 				this.nav(1)
 			}
+		})
+
+		/* add `focused` to support tabindex navigation */
+		this.addEventListener('focus', e=>{
+			this._setFocused = setTimeout(()=>{
+				this.setAttribute('focused', '')
+			},10)
+		})
+		
+		this.addEventListener('blur', e=>{
+			this.removeAttribute('focused')
+		})
+
+		// dont show "focused" when clicking inside, only when using keyboard
+		this.addEventListener('mousedown', e=>{
+			setTimeout(()=>{
+				clearTimeout(this._setFocused)
+				this.removeAttribute('focused')
+			})
 		})
 
 		this.onChildrenChange = this.onChildrenChange.bind(this)
@@ -33,6 +144,8 @@ class RadioGroupElement extends HTMLElement {
 	}
 	
 	connectedCallback(){
+		super.connectedCallback()
+
 		if( !this.hasAttribute('tabindex') )
 			this.setAttribute('tabindex', '0')
 
@@ -49,6 +162,7 @@ class RadioGroupElement extends HTMLElement {
 		else if( i < 0 ) i = this.radios.length-1
 		
 		this.value = this.radios[i].value
+		this._onChange({target:this.radios[i]})
 	}
 	
 	_onChange(e){
@@ -57,7 +171,7 @@ class RadioGroupElement extends HTMLElement {
 		
 		this.value = e.target.value
 		this.setAttribute('value', this.value)
-		e.stopPropagation()
+		e.stopPropagation&&e.stopPropagation()
 		
 		var event = new CustomEvent('change', {
 			bubbles: true,
@@ -95,8 +209,6 @@ class RadioGroupElement extends HTMLElement {
 		this.radios.forEach(el=>el.disabled=val)
 	}
 	
-}
-
-customElements.define('radio-group', RadioGroupElement)
+})
 
 export default customElements.get('radio-group')

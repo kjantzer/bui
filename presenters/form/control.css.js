@@ -259,8 +259,8 @@ slot[name="help"] {
 	/* border-bottom: solid 1px transparent; */
 }
 
-:host([material]) slot[name="control"]::slotted(radio-group) {
-	--padY: .25em;
+:host([material]:not([material="filled"])) slot[name="control"]::slotted(radio-group) {
+	--padY: .35em;
 	--padX: .25em;
 }
 
@@ -358,6 +358,17 @@ slot[name="help"] {
 	/* margin: 0 .5em .5em 0; */
 	--padY: .75em;
 	--padX: .75em;
+	--radio-segment-active-bgd: var(--theme-text);
+	--radio-segment-active-color: var(--theme-bgd);
+}
+
+:host(:not([material="filled"])) {
+	--radio-segment-active-bgd: var(--theme-text);
+	--radio-segment-active-color: var(--theme-bgd);
+}
+
+:host(:not([material="filled"])[disabled]) {
+	--radio-segment-active-bgd: var(--theme-text-accent);
 }
 
 :host([material="outline"]),
@@ -380,8 +391,9 @@ slot[name="help"] {
 }
 
 :host([material="outline"]) slot[name="control"]::slotted(radio-group) {
-	--padY: .25em;
+	--padY: .5em;
 	--padX: .5em;
+	margin-top: 0.16em;
 }
 
 :host([material="outline"]) .label {
@@ -475,6 +487,10 @@ slot[name="help"] {
 	padding: 0;
     margin: var(--padY) var(--padX);
     border-radius: 0;
+}
+
+:host([material="filled"]) slot[name="control"]::slotted(radio-group[segment]) {
+	margin-top: -.2em;
 }
 
 :host([material="filled"]) .label {
