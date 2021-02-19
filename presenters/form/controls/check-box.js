@@ -220,13 +220,19 @@ customElements.define('check-box', class extends LitElement{
 		
 		this.dispatchEvent(event)
 	}
+
+	set checked(val){
+		let oldVal = this.checked
+
+		// make these values "false" too
+		if( val === '0' || val === '' )
+			val = false
+
+		this.__checked = val
+		this.requestUpdate('checked', oldVal)
+	}
 	
-	// set checked(val){
-	// 	if( val === '0' || val === '' ) val = false
-	// 	val ? this.setAttribute('checked', '') : this.removeAttribute('checked')
-	// }
-	
-	// get checked(){ return this.hasAttribute('checked') }
+	get checked(){ return this.__checked}
 
 	get value(){ return this.checked }
 	set value(val){ this.checked = val }
