@@ -287,6 +287,7 @@ A radio group allows for only one radio-btn in set to be selected. It also provi
 - `segment`
 - `segment="theme"`
 - `stacked` (use with segment)
+- `pill` (use with segment)
 
 #### Styles
 - `--radio-segment-radius`
@@ -294,6 +295,9 @@ A radio group allows for only one radio-btn in set to be selected. It also provi
 - `--radio-segment-active-bgd`
 - `--radio-segment-active-color`
 - `--radio-segment-hover-bgd`
+- `--radio-segment-min-width` - of each button
+- `--radio-segment-padding`
+- `--radio-segment-btn-padding` - defaults to ^ padding
 
 
 ## `<range-slider>`
