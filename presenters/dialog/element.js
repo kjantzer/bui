@@ -1,10 +1,9 @@
 import { LitElement, html, css } from 'lit-element'
-import makeBtn, {cancelBtns} from './make-btn'
+import Button from './btn'
+import '../../elements/spinner'
+import '../../helpers/lit-element/events'
 
-import Panel from '../panel'
-window.panel = Panel // TEMP
-
-customElements.define('b-dialog', class extends LitElement{
+customElements.define('b-dialog', class DialogElement extends LitElement{
 
     static get properties(){return {
         icon: {type: String},
@@ -12,8 +11,14 @@ customElements.define('b-dialog', class extends LitElement{
         title: {type: String},
         body: {type: String},
 
-        accent: {type: String},
-        closeBtn: {type: Boolean}
+        closeBtn: {type: Boolean},
+
+        color: {type: String, reflect: true},
+        accent: {type: String, reflect: true},
+        edge: {type: Boolean, reflect: true},
+        toast: {type: Boolean, reflect:true},
+        stack: {type: Boolean, reflect:true},
+        noContent: {type: Boolean, reflect:true},
     }}
 
     static get styles(){return css`
@@ -33,10 +38,16 @@ customElements.define('b-dialog', class extends LitElement{
             border: solid 1px var(--theme-bgd-accent); /* temp */
         }
 
+        :host([in-panel]),
+        :host([in-popover]),
+        :host([in-notif]) {
+            border: none;
+        }
+
         :host([color]) {
             --theme-text: white;
             --theme-text-rgb: 255,255,255;
-            --b-btn-bgd: white;
+            --b-btn-bgd: var(--theme-text);
             color: var(--theme-text);
             background-color: var(--color);
         }
@@ -44,14 +55,28 @@ customElements.define('b-dialog', class extends LitElement{
         :host([color="red"]) { --color: var(--red); }
         :host([color="blue"]) { --color: var(--blue); }
         :host([color="green"]) { --color: var(--green); }
+        :host([color="orange"]) {
+            --color: var(--orange);
+            --theme-text: var(--light-text);
+            --theme-text-rgb: var(--light-text-rgb);
+        }
+
+        :host([color="inverse"]) {
+            --theme-bgd: var(--theme-inverse-text);
+            --color: var(--theme-inverse-bgd);
+            --theme-text: var(--theme-inverse-text);
+            --theme-text-rgb: var(--theme-inverse-text-rgb);
+        }
 
         :host([accent="red"]) { --accent: var(--red-700); }
         :host([accent="blue"]) { --accent: var(--blue); }
         :host([accent="green"]) { --accent: var(--green); }
+        :host([accent="orange"]) { --accent: var(--orange); }
 
         :host([color="red"][accent]) { --accent: var(--red-800); }
         :host([color="blue"][accent]) { --accent: var(--blue-800); }
         :host([color="green"][accent]) { --accent: var(--green-800); }
+        :host([color="orange"][accent]) { --accent: var(--orange-800); }
 
         :host([edge]) { box-shadow: 6px 0 0 0 var(--accent) inset; }
         :host([stack][edge]) { box-shadow: 0px 6px 0 0 var(--accent) inset; }
@@ -63,6 +88,14 @@ customElements.define('b-dialog', class extends LitElement{
         :host([toast]) {
             grid-template-columns: auto 1fr auto;
             --icon-size: 1.2em;
+        }
+
+        :host([nocontent][notext]) {
+            min-width: 1em;
+        }
+
+        :host([nocontent][notext]) main {
+            display: none;
         }
 
         aside {
@@ -81,14 +114,16 @@ customElements.define('b-dialog', class extends LitElement{
         aside ::slotted(*[fill]) {
             border-radius: var(--radius) 0 0 var(--radius);
         }
-        
-        aside ::slotted(*:not([fill])),
-        aside b-icon {
+
+        aside b-icon,
+        aside b-spinner,
+        aside ::slotted(*:not([fill])) {
             margin: var(--pad) 0 var(--pad) var(--pad);
         }
 
-        :host([stack]) aside ::slotted(*:not([fill])),
-        :host([stack]) aside b-icon {
+        :host([stack]) aside b-icon,
+        :host([stack]) aside b-spinner,
+        :host([stack]) aside ::slotted(*:not([fill])) {
             margin: var(--pad) var(--pad) 0 var(--pad);
         }
 
@@ -96,13 +131,23 @@ customElements.define('b-dialog', class extends LitElement{
             border-radius: var(--radius) var(--radius) 0 0;
         }
 
-        aside b-icon {
+        aside b-icon,
+        aside b-spinner {
             --size: var(--icon-size, 2em);
             color: var(--accent);
+        }
+
+        :host([toast]) aside {
+            grid-row: span 1;
+        }
+
+        :host([toast]) aside b-icon,
+        :host([toast]) aside b-spinner {
             align-self: center;
         }
 
-        :host([color][accent]) aside b-icon {
+        :host([color]:not([color="inverse"])[accent]) aside b-icon,
+        :host([color]:not([color="inverse"])[accent]) aside b-spinner {
             background: var(--accent);
             padding: .5em;
             border-radius: 50%;
@@ -110,8 +155,15 @@ customElements.define('b-dialog', class extends LitElement{
         }
 
         main {
-            /* padding: 0 var(--pad); */
             margin: var(--pad);
+        }
+
+        main > slot::slotted(*:first-child) {
+            margin-top: var(--pad);
+        }
+
+        main ::slotted(form-control) {
+            display: block;
         }
 
         .pretitle slot {
@@ -122,11 +174,6 @@ customElements.define('b-dialog', class extends LitElement{
         .title slot {
             font-size: 1.2em;
             font-weight: bold;
-        }
-
-        .title, .body {
-            /* margin-top: var(--pad);
-            margin-bottom: var(--pad); */
         }
 
         .body {
@@ -144,11 +191,19 @@ customElements.define('b-dialog', class extends LitElement{
             margin-top: auto;
         }
 
+        :host([nocontent][notext][in-popover]) footer {
+            padding: .25rem;
+        }
+
+        :host([nobtns]) footer {
+            padding: 0;
+        }
+
         :host([toast]) footer {
             margin-top: inherit;
         }
 
-        footer b-btn {
+        footer b-dialog-btn {
             text-transform: uppercase;
             line-height: 0;
             align-self: center;
@@ -156,8 +211,11 @@ customElements.define('b-dialog', class extends LitElement{
 
         .close-btn {
             position: absolute;
-            top: calc(var(--pad) / 2);
-            right: calc(var(--pad) / 2);
+            padding: .35em .1em;
+            /* top: 0;
+            right: 0; */
+            top: calc(var(--pad) / 4);
+            right: calc(var(--pad) / 4);
         }
 
         .close-btn:not(:hover) {
@@ -165,22 +223,68 @@ customElements.define('b-dialog', class extends LitElement{
         }
     `}
 
-    constructor(){
+    constructor(opts={}){
         super()
+        
+        for( let k in opts ){
 
-        // this.title = 'Dialog Title'
-        // this.body = 'Body of the dialog box'
-        // this.icon = 'info-circled'
+            let prop = Object.getOwnPropertyDescriptor(DialogElement.prototype, k)
+
+            if( prop && prop.set ){
+                this[k] = opts[k]
+            }
+        }
+
+        // TEMP: backwards compt
+        if( opts.msg )
+            this.body = opts.msg
+
+        if( opts.btns === undefined )
+            this.btns = ['dismiss']
+
+        this.promise = new Promise(resolve=>{ this._resolve = resolve })
     }
+
+    updated(){
+        if( this.btns.length>0 && !this.title && !this.pretitle && !this.body )
+            this.setAttribute('notext', '')
+        else
+            this.removeAttribute('notext')
+
+        this.toggleAttribute('nobtns', this.btns.length==0)
+    }
+
+    set btns(btns){
+        let doUpdate = !!this.__btns
+        if( !btns )
+            this.__btns = []
+        else if( !Array.isArray(btns) )
+            this.__btns = [btns]
+        else 
+            this.__btns = btns
+        
+        if( doUpdate ){
+            this.update()
+            this.updated()
+        }
+    }
+
+    get btns(){ return this.__btns }
 
     render(){return html`
 
         ${this.closeBtn?html`
-            <b-icon class="close-btn" name="cancel-circled"></b-icon>
+            <b-icon class="close-btn" name="cancel-circled" @click=${this.cancelClose}></b-icon>
         `:''}
 
         <aside>
-            <slot name="icon">${this.icon?html`<b-icon square name="${this.icon}"></b-icon>`:''}</slot>
+            <slot name="icon">
+                ${this.icon=='spinner'?html`
+                    <b-spinner></b-spinner>
+                `:this.icon?html`
+                    <b-icon square name="${this.icon}"></b-icon>
+                `:''}
+            </slot>
         </aside>
         <main>
             <div class="pretitle">
@@ -192,11 +296,91 @@ customElements.define('b-dialog', class extends LitElement{
             <div class="body">
                 <slot name="body">${this.body}</slot>
             </div>
+            ${this.renderView()}
+            <slot></slot>
         </main>
-        <footer>
-            <b-btn clear>Dismiss</b-btn>
+        <footer @click=${this.onClick}>
+            ${this.btns.map(b=>new Button(b))}
         </footer>
     `}
+
+    renderView(){ return '' }
+
+    onClick(e){
+        e.stopPropagation()
+        
+        let btn = e.target
+        if( btn.tagName != "B-DIALOG-BTN" ) return
+
+        this.emitEvent('chosen', {btn})
+
+        this.resolveBtn(btn)
+    }
+
+    onKeydown(e){
+
+        let btn
+
+        if( this.btns.lengt == 0 || !['Escape', 'Enter'].includes(e.key) )
+            return
+
+        if( this.shadowRoot.activeElement && this.shadowRoot.activeElement.tagName == 'B-DIALOG-BTN'){
+            btn = this.shadowRoot.activeElement
+            btn.blur()
+        }
+        
+        if( e.key == 'Escape' ){
+            btn = Array.from(this.$$all('b-dialog-btn')).find(btn=>btn.isCancelBtn)
+        }else if( !btn && e.key == 'Enter' ){
+            btn = Array.from(this.$$all('b-dialog-btn')).reverse().find(btn=>!btn.isCancelBtn)
+        }
+
+        if( btn != undefined ){
+			// let other views finish with keydown before we process (ex: Dialog.prompt)
+			setTimeout(()=>{
+                // FIXME: 
+				if( document.activeElement == document.body )
+					this.resolveBtn(btn)
+			}, 0);
+		}
+	}
+
+    cancelClose(){
+        if( this.resolve(false) === true )
+			this.close()
+    }
+	
+	resolveBtn(btn){
+		if( btn.isCancelBtn )
+			btn = false
+		
+		if( this.resolve(btn) === true )
+			this.close()
+	}
+	
+	resolve(resp){
+		if( this.onResolve ){
+			
+			try{
+				resp = this.onResolve(resp, this)
+			}catch(err){
+				console.log('failed to resolve');
+				return false
+			}
+		}
+		
+		if( this._resolve )
+			this._resolve(resp)
+			
+		return true
+	}
+	
+	close(){
+		if( this.presenter )
+			this.presenter.close()
+        else
+            this.remove()
+	}
 
 })
 

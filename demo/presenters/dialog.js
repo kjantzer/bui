@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit-element'
 import View from './view'
 import docs from 'bui/presenters/dialog/README.md'
 import Dialog from 'bui/presenters/dialog'
+import Prompt from 'bui/presenters/dialog/prompt'
 import Notif from 'bui/presenters/notif'
 
 customElements.define('demo-presenter-dialog', class extends View{
@@ -10,42 +11,12 @@ customElements.define('demo-presenter-dialog', class extends View{
 
     get docs(){ return docs }
 
+    onChosen(e){
+        console.log('chosen?', e);
+    }
 
     renderContent(){ return html`
 
-        <div>
-
-            <b-dialog stack>
-                <img slot="icon" src="https://catalog.blackstone.io/api/book/djh8/artwork?resize=200&prelim=1&proof=1" fill>
-                <span slot="title">Dialog Title</span>
-                <span slot="body">Body of the dialog</span>
-            </b-dialog> &nbsp;&nbsp;&nbsp;
-
-            <b-dialog stack>
-                ${dialogSVG}
-                <span slot="title">Dialog Title</span>
-                <span slot="body">Body of the dialog</span>
-            </b-dialog> &nbsp;&nbsp;&nbsp;
-
-            <b-dialog stack accent="red" icon="trash" title="Delete Item?" body="This action cannot be undone"></b-dialog> <br><br><br>
-
-            <b-dialog title="Normal Dialog" body="With icon to the side"></b-dialog> <br><br><br>
-
-            <b-dialog toast title="Dialog Title" body="With body text"></b-dialog> <br><br><br>
-
-            <b-dialog toast color="red" pretitle="Error" icon="bug"
-             body="There was a problem doing that"></b-dialog> <br><br><br>
-
-            <b-dialog toast color="red" accent edge pretitle="Error" icon="attention-1"
-             body="There was a problem doing that"></b-dialog> <br><br><br>
-
-            <b-dialog toast accent="blue" edge pretitle="Did you know?" body="You can use keyboard shortcuts" icon="info-circled"></b-dialog> <br><br><br>
-            
-
-        </div>
-
-        <br><br><br><br><br><br><br><br>
-        
         <b-btn color="blue" text @click=${dialogs.confirm}>Confirm Modal</b-btn>
         <b-btn color="red" text @click=${dialogs.error}>Error Modal</b-btn>
         <b-btn color="orange" text @click=${dialogs.warn}>Warn Modal</b-btn>
@@ -53,9 +24,84 @@ customElements.define('demo-presenter-dialog', class extends View{
         <b-btn color="red" text @click=${dialogs.errorPopover}>Error Popover</b-btn>
         <b-btn color="red" text @click=${dialogs.confirmDelete}>Confirm Delete Popover</b-btn>
 
+        <b-btn text @click=${this.openPrompt}>Prompt</b-btn>
+        <b-btn text @click=${this.openPrompt}>Prompt Custom</b-btn>
+
+        <br><br>
+
+        <h2>Display examples</h2>
+
+        <b-grid cols=3 cols-mobile=1 style="align-items: flex-start;">
+
+            <b-dialog stack .btns=${['cancel', 'ok']} @chosen=${this.onChosen}>
+                ${dialogSVG}
+                <span slot="title">Custom SVG Icon</span>
+                <span slot="body">Body of the dialog with <b-text tone="info" italic ucase>custom</b-text> html using slots</span>
+            </b-dialog>
+
+            <b-dialog stack accent="red" icon="trash" 
+                title="Delete Item?" 
+                body="This action cannot be undone"
+                .btns=${['delete']}
+            ></b-dialog>
+
+            <b-dialog toast title="Toast Dialog" body="With body text" .btns=${'x'}></b-dialog>
+        </b-grid>
+
+        <br><br>
+
+        <b-grid cols=2 cols-mobile=1 style="align-items: flex-start;">
+
+            <b-dialog toast accent="blue" pretitle="Did you know?" body="You can use keyboard shortcuts" icon="info-circled"></b-dialog>
+
+            <b-dialog toast accent="orange" edge pretitle="Warning" icon="attention-1"
+             body="There was a problem doing that"></b-dialog>
+
+            <b-dialog toast accent="red" edge pretitle="Error" icon="bug"
+             body="There was a problem doing that"></b-dialog>
+
+            <b-dialog toast color="red" accent edge pretitle="Fatal Error" icon="alert"
+             body="There was a problem doing that" .btns=${'x'}></b-dialog>
+
+        </b-grid>
+
         <br><br>
         <h2>Documentation</h2>
     `}
+
+    async openPrompt(e){
+
+        if( e.target.innerText == 'Prompt' ){
+            let val = await new Prompt({
+                body: 'What is your name?',
+                placeholder: 'Name',
+                prefix:html`<b-icon name="user"></b-icon>&nbsp;`,
+                pattern: 'int'
+            }).modal()
+
+            if( val )
+                Notif.alert('Value: '+val)
+            return
+        }
+
+        let val = await new Prompt({
+            title: 'Account Details',
+            icon: 'user',
+            prompts: [
+                {label: 'Name', key: 'name', required: true, val: 'Kevin'},
+                {label: 'Email', key: 'email', pattern:'email', prefix:html`<b-icon name="mail"></b-icon>&nbsp;`},
+                html`
+                    <radio-group segment key="gender">
+                        <radio-btn value="male">Male</radio-btn>
+                        <radio-btn value="female">Female</radio-btn>
+                    </radio-group>
+                `
+            ]
+        }).modal()
+
+        if( val )
+            Notif.alert('Value: '+JSON.stringify(val))
+    }
 
 })
 
@@ -63,19 +109,19 @@ export default customElements.get('demo-presenter-dialog')
 
 const dialogs = {
     async success(el){
-        Dialog.success({btns:false}).notif()
+        Dialog.success({toast: true, body: 'Action succeded', color:'inverse', btns:false}).notif()
     },
 
     async warn(el){
-        Dialog.warn({title: 'Ooops', msg: 'That is not supported'}).modal()
+        Dialog.warn({body: 'That is not supported'}).modal()
     },
 
     async error(el){
-        Dialog.error({title: 'Error', msg: 'Something went wrong'}).modal()
+        Dialog.error({body: 'Something went wrong'}).modal()
     },
 
     async errorPopover(el){
-        Dialog.error({title: 'Error', msg: 'Something went wrong'}).popover(el)
+        Dialog.error({body: 'Something went wrong'}).popover(el)
     },
 
     async confirm(el){
