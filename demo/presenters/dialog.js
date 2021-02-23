@@ -76,7 +76,6 @@ customElements.define('demo-presenter-dialog', class extends View{
                 body: 'What is your name?',
                 placeholder: 'Name',
                 prefix:html`<b-icon name="user"></b-icon>&nbsp;`,
-                pattern: 'int'
             }).modal()
 
             if( val )

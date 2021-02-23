@@ -33,9 +33,13 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 		else
         	this.prompts = [makePrompt(opts, 0, opts)]
 
-		if( device.isiOS && opts.autoFocus !== false ){
-			setTimeout(()=>{this.focus()})
-            mobileAsyncFocus(this)
+
+		if( opts.autoFocus !== false ){
+
+			setTimeout(()=>{this.focus()}, 200)
+			
+			if( device.isiOS )
+				mobileAsyncFocus(this)
 		}
     }
 
