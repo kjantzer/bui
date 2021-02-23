@@ -210,17 +210,16 @@ customElements.define('b-notif', class extends LitElement{
                 body=${this.msg}
                 .btns=${this.btns}
                 color=${this.color}
-                @click=${this.onNotifClick}
+                @chosen=${this.onDialogBtnChoose}
             ></b-dialog>
             `}
         </slot>
         </main>
     `}
 
-    onNotifClick(e){
+    onDialogBtnChoose(e){
         e.stopPropagation()
-        let data = e.constructor.name == 'CustomEvent' ? e.detail : undefined
-        this.onClick(data)
+        this.onClick(e.detail.btn)
     }
     
 

@@ -1,5 +1,8 @@
 # Changelog
 
+## 2021-02-23
+- REMOVAL: notif `snackbar` element removed (now uses `b-dialog`). The snackbar element was only used internally. Notif syntax remains unchanged.
+
 ## 2020-12-14
 - REMOVAL: `date-picker` element removed. Internally it was only used by `text-field` and has been completely replaced by `Datepicker`
 

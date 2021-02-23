@@ -41,15 +41,15 @@ new Notif(opts)
 ```js
 opts = {
     nid: null, // notif ID (random ID will be used if not set)
-    type: '', // aplies color and icon
-    color: '',
+    type: '', // applies color and icon options
     width: '', // override default css width
     
     // custom view
     view: null,
 
-    // or data for "snackbar" view
-    msg: '',
+    // or data for "b-dialog" view
+    msg: '', // aka "body"
+    color: '',
     icon: '',
     btns: [],
     
