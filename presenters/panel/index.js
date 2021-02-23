@@ -341,6 +341,7 @@ export class Panel extends LitElement {
 
     set view(view){
         if( this.view ){
+            this.view.removeAttribute('in-panel')
             this.view.panel = null
             this.view.remove()
         }
@@ -363,6 +364,7 @@ export class Panel extends LitElement {
             }
 
             this.view.panel = this
+            this.view.setAttribute('in-panel', '')
             this.appendChild(this.view)
             this._linkToolbar()
         }
