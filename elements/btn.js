@@ -55,6 +55,7 @@ export default class BtnElement extends LitElement {
             line-height: 1rem;
             font-weight: bold;
             font-family: var(--b-btn-font);
+            outline: none;
 
             -webkit-touch-callout: none; /* iOS Safari */
             -webkit-user-select: none; /* Safari */
@@ -62,6 +63,10 @@ export default class BtnElement extends LitElement {
             -moz-user-select: none; /* Firefox */
             -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; 
+        }
+
+        :host(:focus:not(:active):not(:hover)) {
+            box-shadow: 0 0 0 2px var(--theme);
         }
 
         /* hide by default */
@@ -231,7 +236,7 @@ export default class BtnElement extends LitElement {
         :host([color^="primary"])  { --color: var(--color-primary); }
         :host([color^="theme"])  { --color: var(--theme); }
         :host([color^="black"])  { --color: var(--black); }
-        :host([color^="white"])  { --color: var(--white); --textColor: var(--black); }
+        :host([color^="white"])  { --color: var(--text-bgd-accent2, #ddd); --textColor: var(--theme-text, #111); }
         :host([color^="orange"]) { --color: var(--orange); }
         :host([color^="blue"])   { --color: var(--blue); }
         :host([color^="red"])    { --color: var(--red); }
