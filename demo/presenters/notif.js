@@ -75,7 +75,7 @@ const notifExamples = [
     autoClose: 3000,
     nid: 'uploading',
     btns: [
-        {label: 'View', color: 'theme'}
+        {label: 'View'}
     ]
 },{
     msg: 'Photo moved to trash',
