@@ -1,32 +1,69 @@
 :root {
     // set initial theme colors
     --theme: var(--blue);
+
+    --light-text-rgb: 34,34,34;
+    --light-bgd-rgb: 255,255,255;
+    --light-text: rgba(var(--light-text-rgb), 1);
+    --light-text-accent: rgba(var(--light-text-rgb),.4);
+    --light-bgd: white;
+    --light-bgd-accent: #ebebeb;
+    --light-bgd-accent2: var(--light);
+    --light-shadow: rgba(0,0,0,.2);
+
+    --dark-text-rgb: 255,255,255;
+    --dark-bgd-rgb: 0,0,0;
+    --dark-text: rgba(var(--dark-text-rgb), 1);
+    --dark-text-accent: rgba(var(--dark-text-rgb),.4);
+    --dark-bgd: var(--dark);
+    --dark-bgd-accent: var(--dark-black);
+    --dark-bgd-accent2: #242729;
+    --dark-shadow: rgba(0,0,0,.4);
+
 }
 
 // default to light
 :root,
 :root[light]
 {
-    --theme-text-rgb: 34,34,34;
-    --theme-bgd-rgb: 255,255,255;
-    --theme-text: rgba(var(--theme-text-rgb), 1);
-    --theme-text-accent: rgba(var(--theme-text-rgb),.4);
-    --theme-bgd: white;
-    --theme-bgd-accent: #ebebeb;
-    --theme-bgd-accent2: var(--light);
-    --theme-shadow: rgba(0,0,0,.2);
+    --theme-text-rgb: var(--light-text-rgb);
+    --theme-bgd-rgb: var(--light-bgd-rgb);
+    --theme-text: var(--light-text);
+    --theme-text-accent: var(--light-text-accent);
+    --theme-bgd: var(--light-bgd);
+    --theme-bgd-accent: var(--light-bgd-accent);
+    --theme-bgd-accent2: var(--light-bgd-accent2);
+    --theme-shadow: var(--light-shadow);
+
+    --theme-inverse-text-rgb: var(--dark-text-rgb);
+    --theme-inverse-bgd-rgb: var(--dark-bgd-rgb);
+    --theme-inverse-text: var(--dark-text);
+    --theme-inverse-text-accent: var(--dark-text-accent);
+    --theme-inverse-bgd: var(--dark-bgd);
+    --theme-inverse-bgd-accent: var(--dark-bgd-accent);
+    --theme-inverse-bgd-accent2: var(--dark-bgd-accent2);
+    --theme-inverse-shadow: var(--dark-shadow);
 }
 
 :root[dark]
 {
-    --theme-text-rgb: 255,255,255;
-    --theme-bgd-rgb: 0,0,0;
-    --theme-text: rgba(var(--theme-text-rgb), 1);
-    --theme-text-accent: rgba(var(--theme-text-rgb),.4);
-    --theme-bgd: var(--dark);
-    --theme-bgd-accent: var(--dark-black);
-    --theme-bgd-accent2: #242729;
-    --theme-shadow: rgba(0,0,0,.4);
+    --theme-text-rgb: var(--dark-text-rgb);
+    --theme-bgd-rgb: var(--dark-bgd-rgb);
+    --theme-text: var(--dark-text);
+    --theme-text-accent: var(--dark-text-accent);
+    --theme-bgd: var(--dark-bgd);
+    --theme-bgd-accent: var(--dark-bgd-accent);
+    --theme-bgd-accent2: var(--dark-bgd-accent2);
+    --theme-shadow: var(--dark-shadow);
+
+    --theme-inverse-text-rgb: var(--light-text-rgb);
+    --theme-inverse-bgd-rgb: var(--light-bgd-rgb);
+    --theme-inverse-text: var(--light-text);
+    --theme-inverse-text-accent: var(--light-text-accent);
+    --theme-inverse-bgd: var(--light-bgd);
+    --theme-inverse-bgd-accent: var(--light-bgd-accent);
+    --theme-inverse-bgd-accent2: var(--light-bgd-accent2);
+    --theme-inverse-shadow: var(--light-shadow);
 }
 
 // set colors and styles for BUI elements and presenters
