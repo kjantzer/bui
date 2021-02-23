@@ -562,7 +562,8 @@ class TextFieldElement extends HTMLElement {
 				this.dispatchEvent(new CustomEvent("change", {detail}));
 			
 			this.dispatchEvent(new Event("enterkey")); // DEPRECATED
-			this.dispatchEvent(new CustomEvent("submit", {detail})); // I think this makes more sense
+			// I think this makes more sense
+			this.dispatchEvent(new CustomEvent("submit", {detail, bubbles: true, composed: true,}));
 		}
 		
 		if( e.key == 'Escape' ){
