@@ -60,39 +60,16 @@ export default css`
     height: 0 !important;
 }
 
-:host([color="red"]) {
-    --b-notif-color: #fff;
-    --b-notif-bgd: var(--red);
-}
-
-:host([color="blue"]) {
-    --b-notif-color: #fff;
-    --b-notif-bgd: var(--blue);
-}
-
-:host([color="green"]) {
-    --b-notif-color: #fff;
-    --b-notif-bgd: var(--green);
-}
-
-:host([color="orange"]) {
-    --b-notif-color: #222;
-    --b-notif-bgd: var(--orange);
-}
-
-:host([color="amber"]) {
-    --b-notif-color: var(--gray-900);
-    --b-notif-bgd: var(--amber);
+:host(:empty) main {
+    color: var(--b-notif-color, #fff);
+    background: var(--b-notif-bgd, #333);
 }
 
 main {
-    --radius: var(--b-notif-radius, 4px);
+    --radius: var(--b-notif-radius, 5px);
     border-radius: var(--radius);
-    color: var(--b-notif-color, #fff);
-    background: var(--b-notif-bgd, #333);
     margin-top: var(--spacing-top, 0);
     margin-bottom: var(--spacing-bottom, 0);
-
     box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2),
                 0px 6px 10px 0px rgba(0,0,0,0.14),
                 0px 1px 18px 0px rgba(0,0,0,0.12);
@@ -100,6 +77,11 @@ main {
 
 slot {
     display: block;
+}
+
+slot > *,
+slot::slotted(*) {
+    width: 100%;
 }
 
 

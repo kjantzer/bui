@@ -3,7 +3,7 @@ import Controller from './controller'
 import device from '../../util/device'
 import style from './style'
 import TYPES from './types'
-import './snackbar'
+import '../dialog/element'
 
 // list of open notifs
 const NOTIFS = new Map()
@@ -64,8 +64,8 @@ customElements.define('b-notif', class extends LitElement{
         this.addEventListener(device.isMobile?'touchend':'mouseout', this.onMouseOut)
 
         if( this.opts.view ){
-            this.appendChild(this.opts.view)
             this.opts.view.notif = this
+            this.opts.view.setAttribute('in-notif', '')
         }
 
         let existingNotif = NOTIFS.get(this.nid)
@@ -96,8 +96,10 @@ customElements.define('b-notif', class extends LitElement{
                 NOTIFS.delete(this.nid)
                 this.opts.onClose(this)
                 
-                if( this.opts.view )
+                if( this.opts.view ){
                     delete this.opts.view.notif
+                    this.opts.view.removeAttribute('in-notif')
+                }
 
                 resolve(btn)
             },700)
@@ -200,17 +202,22 @@ customElements.define('b-notif', class extends LitElement{
     render(){return html`
         <main>
         <slot>
-            <b-snackbar
-                .icon=${this.icon}
-                .msg=${this.msg}
+            ${this.opts.view?this.opts.view:html`
+            <b-dialog
+                in-notif
+                toast
+                icon=${this.icon}
+                body=${this.msg}
                 .btns=${this.btns}
-                ?color=${!!this.color}
-                @click=${this.onSnackbarClick}></b-snackbar>
+                color=${this.color}
+                @click=${this.onNotifClick}
+            ></b-dialog>
+            `}
         </slot>
         </main>
     `}
 
-    onSnackbarClick(e){
+    onNotifClick(e){
         e.stopPropagation()
         let data = e.constructor.name == 'CustomEvent' ? e.detail : undefined
         this.onClick(data)

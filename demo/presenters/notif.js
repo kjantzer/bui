@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit-element'
 import View from './view'
 import docs from 'bui/presenters/notif/README.md'
 import Notif from 'bui/presenters/notif'
+import Prompt from 'bui/presenters/dialog/prompt'
 
 customElements.define('demo-presenter-notif', class extends View{
 
@@ -11,9 +12,13 @@ customElements.define('demo-presenter-notif', class extends View{
 
     renderContent(){ return html`
 
+        <h3>Examples</h3>
+
         ${notifExamples.map(n=>html`
-            <b-btn text .notif=${n} @click=${this.showNotif}>${n.msg}</b-btn>
+            <b-btn text color="theme" .notif=${n} @click=${this.showNotif}>${n.msg}</b-btn>&nbsp;&nbsp;
         `)}
+
+        <b-btn text color="theme" @click=${this.showPrompt}>With Prompt</b-btn>
 
         <br><br>
         <h2>Documentation</h2>
@@ -22,6 +27,23 @@ customElements.define('demo-presenter-notif', class extends View{
     showNotif(e){
         let opts = e.currentTarget.notif
         new Notif(opts)
+    }
+
+    async showPrompt(){
+        let email = await new Prompt({
+            body: 'Sign up for our newsletter',
+            closeBtn:true,
+            btns: ['submit'],
+            autoFocus: false,
+            placeholder: 'email',
+            pattern: 'email',
+            prefix: html`<b-icon name="mail"></b-icon>&nbsp;`
+        }).notif({
+            autoClose: false,
+            closeOnClick: false
+        })
+
+        console.log(email);
     }
 
 })
@@ -53,13 +75,13 @@ const notifExamples = [
     autoClose: 3000,
     nid: 'uploading',
     btns: [
-        {label: 'View', color: 'primary'}
+        {label: 'View', color: 'theme'}
     ]
 },{
     msg: 'Photo moved to trash',
     autoClose: 6000,
     btns: [
-        {label: 'Undo', color: 'primary'}
+        {label: 'Undo', color: 'theme'}
     ]
 },{
     type: 'info',
@@ -75,9 +97,6 @@ const notifExamples = [
     msg: 'Warning type notif'
 },{
     type: 'success',
-    msg: 'Success type notif',
-    onClose: ()=>{
-        this.querySelector('b-btn').hidden = false
-    }
+    msg: 'Success type notif'
 }
 ]
