@@ -92,7 +92,8 @@ export default class Popover {
 		this.opts = opts
 		this.view = view
 		
-		this.view.classList.add('__view')
+		this.view.classList.add('__view') // DEPRECATED
+		this.view.setAttribute('in-popover', '')
 		
 		this.el = document.createElement('div')
 		this.el.classList.add('popover')
@@ -248,6 +249,7 @@ export default class Popover {
 		
 		this.el.popover = null
 		this.view.popover = null
+		this.view.removeAttribute('in-popover', '')
 
 		this.mutationObserver.disconnect()
 		this.popper.destroy()
