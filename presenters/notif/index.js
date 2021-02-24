@@ -206,6 +206,7 @@ customElements.define('b-notif', class extends LitElement{
             <b-dialog
                 in-notif
                 toast
+                ?nocontent=${!this.msg}
                 .icon=${this.icon}
                 .body=${this.msg}
                 .btns=${this.btns}
@@ -219,7 +220,9 @@ customElements.define('b-notif', class extends LitElement{
 
     onDialogBtnChoose(e){
         e.stopPropagation()
-        this.onClick(e.detail.btn)
+        let btn = e.detail.btn
+        if( btn.isCancelBtn ) btn = false
+        this.onClick(btn)
     }
     
 
