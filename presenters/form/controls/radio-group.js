@@ -95,7 +95,7 @@ customElements.define('radio-group', class extends LitElement{
 		}
 
 		:host([segment="theme"]) ::slotted(radio-btn[active]) {
-			background-color: var(--radio-segment-active-bgd, var(--theme-theme, #2196F3));
+			background-color: var(--radio-segment-active-bgd, var(--theme, #2196F3));
 			color: var(--radio-segment-active-color, var(--theme-bgd, #fff));
 		}
 
