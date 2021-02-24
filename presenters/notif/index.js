@@ -206,8 +206,8 @@ customElements.define('b-notif', class extends LitElement{
             <b-dialog
                 in-notif
                 toast
-                icon=${this.icon}
-                body=${this.msg}
+                .icon=${this.icon}
+                .body=${this.msg}
                 .btns=${this.btns}
                 color=${this.color}
                 @chosen=${this.onDialogBtnChoose}
