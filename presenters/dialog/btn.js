@@ -32,6 +32,10 @@ customElements.define('b-dialog-btn', class extends Btn{
         return this.opts.value || this.opts.label
     }
 
+    get label(){
+        return this.opts.label
+    }
+
     constructor(opts){
         super()
 
