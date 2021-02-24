@@ -6,6 +6,7 @@ const PRESETS = {
 	'no': {label: 'No', doesCancel:true},
 	'done': {label: 'Done'},
 	'apply': {label: 'Apply', color: 'theme'},
+    'undo': {label: 'Undo', color: 'theme'},
 	'ok': {label: 'Okay', color: 'theme'},
     'continue': {label: 'Continue', color: 'theme'},
 	'yes': {label: 'Yes', color: 'theme'},

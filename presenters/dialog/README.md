@@ -3,38 +3,38 @@ Dialog
 
 > An extensible class for creating dialogs with built-in presets for warnings, errors, success, and prompts.
 
-<!--
-<b-btn onclick="Dialog.alert({title: 'Alert Title', msg: 'Message for the alert'}).modal()">Alert</b-btn>
-<b-btn onclick="Dialog.success({title: 'Alert Title', msg: 'Message for the alert'}).modal()">Success</b-btn>
-<b-btn onclick="Dialog.warn({title: 'Alert Title', msg: 'Message for the alert'}).modal()">Warning</b-btn>
-<b-btn onclick="Dialog.error({title: 'Alert Title', msg: 'Message for the alert'}).modal()">Error</b-btn>
--->
-
 ## Options
 
 `new Dialog(opts)`
 
 ```js
 opts = {
-	icon:'', // name of icon, custom element, or "spinner" to show a spinner
+	icon:'', // name of icon, lit-html, or "spinner" to show a spinner
+	pretitle: '',
 	title:'',
-	msg:'',
+	body:'',
 	view: null,
-	w: null,
+	// w: null, // TODO: add this feature again?
+
 	btns:['dismiss'],
-	className: ''
+	closeBtn: false, // close button in top right
+
+	// color options
+	color: '', // blue, red, green, orange
+	accent: '', // same ^
+	edge: false,  // only works with `accent`
+	
+	// style variants
+	toast: false,
+	stack: false,
+
+	// removes spacing from main content block
+	noContent: false
 }
 ```
 
-## Properties
-The following properties can be changed after the dialog has been created.
-
-- `title`
-- `msg`
-- `icon`
-- `btns`
-
 ## Presets
+The following presets can be used. They accept the same arguments as `new Dialog()` but change certain option defaults
 
 - `Dialog.waiting()`
 - `Dialog.alert()`
@@ -45,10 +45,23 @@ The following properties can be changed after the dialog has been created.
 - `Dialog.confirmDelete()`
 - `Dialog.prompt()`
 
+You can register your own presets if you have dialog patterns you use a lot
+
+```js
+import {registerPreset} from 'bui/presenters/dialog`
+
+registerPreset('myPreset', {
+	icon: 'plus-circled',
+	color: 'blue'
+})
+
+Dialog.myPreset({body: 'Cool!'}).modal()
+```
+
 ## Presenters
 
-After creating a dialog, you must present it. You can render the `dialog.el` where you like
-or use one of the 3 presenters (preferred) baked in:
+After creating a dialog, you must present it. You can render the `dialog` element where you like
+or use one of the 3 presenters baked in:
 
 - `.modal(opts)`
 - `.popover(target, opts)`

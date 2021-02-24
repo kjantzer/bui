@@ -28,6 +28,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             vertical-align: text-top;
             min-width: 200px;
             max-width: 100%;
+            max-height: 100%;
             position:relative;
             background: var(--theme-bgd, #fff);
             border-radius: var(--radius);
@@ -115,14 +116,12 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             border-radius: var(--radius) 0 0 var(--radius);
         }
 
-        aside b-icon,
-        aside b-spinner,
+        aside [name="icon"] > *,
         aside ::slotted(*:not([fill])) {
             margin: var(--pad) 0 var(--pad) var(--pad);
         }
 
-        :host([stack]) aside b-icon,
-        :host([stack]) aside b-spinner,
+        :host([stack]) aside [name="icon"] > *,
         :host([stack]) aside ::slotted(*:not([fill])) {
             margin: var(--pad) var(--pad) 0 var(--pad);
         }
@@ -131,8 +130,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             border-radius: var(--radius) var(--radius) 0 0;
         }
 
-        aside b-icon,
-        aside b-spinner {
+        aside [name="icon"] > * {
             --size: var(--icon-size, 2em);
             color: var(--accent);
         }
@@ -156,11 +154,19 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
 
         main {
             margin: var(--pad);
+            min-height: 0;
+            min-width: 0;
         }
 
         main > slot::slotted(*:first-child) {
             margin-top: var(--pad);
+            max-height: 100%;
         }
+
+        main > slot::slotted(.b-menu) {
+            margin: calc(-1 * var(--pad));
+            margin-top: 0;
+        } 
 
         main ::slotted(form-control) {
             display: block;
@@ -240,10 +246,24 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             this.body = opts.msg
 
         if( opts.btns === undefined )
-            this.btns = ['dismiss']
+            this.btns = opts.toast ? ['x'] : ['dismiss']
 
         this.promise = new Promise(resolve=>{ this._resolve = resolve })
     }
+
+    set view(val){
+        let oldVal = this.view
+        this.__view = val
+
+        if( oldVal )
+            oldVal.remove()
+        
+        this.appendChild(val)
+    
+        this.requestUpdate('view', oldVal)
+    }
+    
+    get view(){ return this.__view}
 
     updated(){
         if( this.btns.length>0 && !this.title && !this.pretitle && !this.body )
@@ -279,11 +299,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
 
         <aside>
             <slot name="icon">
-                ${this.icon=='spinner'?html`
-                    <b-spinner></b-spinner>
-                `:this.icon?html`
-                    <b-icon square name="${this.icon}"></b-icon>
-                `:''}
+                ${this.renderIcon()}
             </slot>
         </aside>
         <main>
@@ -305,6 +321,19 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
     `}
 
     renderView(){ return '' }
+
+    renderIcon(){
+        if( this.icon == 'spinner' )
+            return html`<b-spinner></b-spinner>`
+
+        if( this.icon && this.icon.getHTML )
+            return this.icon
+        
+        if( this.icon )
+            return html`<b-icon square name="${this.icon}"></b-icon>`
+        
+        return ''
+    }
 
     onClick(e){
         e.stopPropagation()
