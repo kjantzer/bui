@@ -835,7 +835,7 @@ export default class Menu {
 			view: this.el,
 			btns: opts.btns||false
 		})
-		this.presenter = new Panel(dialog.el, opts)
+		this.presenter = new Panel(dialog, opts)
 		this.presenter.open()
 
 		// if dialog btn clicked, take action
