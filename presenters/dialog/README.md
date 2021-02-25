@@ -67,17 +67,41 @@ or use one of the 3 presenters baked in:
 - `.popover(target, opts)`
 - `.notif(opts)`
 
-## Promise Based
+#### Promise Based
 
 The presenters are promise based that resolve when closed or a button is clicked.
 This allows for using async/await to instead of nested functions (see example below).
 
-## Examples
+## Parts
+Certain [parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) have been exposed to allow for style overrides.
+
+- `aside`
+- `main`
+- `pretitle`
+- `title`
+- `body`
+- `footer`
+
+```css
+/* example */
+b-dialog::part(footer) {
+	background: var(--theme-bgd-accent);
+}
+```
+
+## Events
+
+### `chosen`
+when a button is selected
+
+```html
+<b-dialog @chosen=${onBtnChosen}></b-dialog>
+```
 
 ```js
-Dialog.warn({title: 'Invalid Product', msg: 'The ID given is not a valid product'}).modal()
-Dialog.success().notif()
-
-let val = await Dialog.prompt().modal()
-console.log(val)
+function onBtnChosen(e){
+	e.preventDefault() // stop dialog from closing
+	let {btn, dialog} = e.detail
+	console.log(btn.label, btn.value)
+}
 ```

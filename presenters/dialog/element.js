@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
+import {unsafeHTML} from 'lit-html/directives/unsafe-html'
 import Button from './btn'
 import '../../elements/spinner'
 import '../../helpers/lit-element/events'
@@ -26,6 +27,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             display: inline-grid;
             grid-template-columns: auto 1fr;
             vertical-align: text-top;
+            box-sizing: border-box;
             min-width: 200px;
             max-width: 100%;
             max-height: 100%;
@@ -100,6 +102,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         }
 
         aside {
+            position: relative;
             display: flex;
             justify-content: center;
             border-radius: var(--radius) 0 0 var(--radius);
@@ -206,7 +209,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         }
 
         :host([toast]) footer {
-            margin-top: inherit;
+            margin-top: 0;
         }
 
         footer b-dialog-btn {
@@ -297,28 +300,36 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             <b-icon class="close-btn" name="cancel-circled" @click=${this.cancelClose}></b-icon>
         `:''}
 
-        <aside>
+        <aside part="aside">
             <slot name="icon">
                 ${this.renderIcon()}
             </slot>
         </aside>
-        <main>
-            <div class="pretitle">
-                <slot name="pretitle">${this.pretitle}</slot>
+        <main part="main">
+            <div class="pretitle" part="pretitle">
+                <slot name="pretitle">${this._renderStr(this.pretitle)}</slot>
             </div>
-            <div class="title">
-                <slot name="title">${this.title}</slot>
+            <div class="title" part="title">
+                <slot name="title">${this._renderStr(this.title)}</slot>
             </div>
-            <div class="body">
-                <slot name="body">${this.body}</slot>
+            <div class="body" part="body">
+                <slot name="body">${this._renderStr(this.body)}</slot>
             </div>
             ${this.renderView()}
             <slot></slot>
         </main>
-        <footer @click=${this.onClick}>
+        <footer @click=${this.onClick} part="footer">
             ${this.btns.map(b=>new Button(b))}
         </footer>
     `}
+
+    _renderStr(str){
+        if( str && str.getHTML ) // lit-html
+            return str
+        if( str ) // TODO: make developer opt-in to using unsafeHTML?
+            return unsafeHTML(str)
+        return ''
+    }
 
     renderView(){ return '' }
 
@@ -341,9 +352,12 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         let btn = e.target
         if( btn.tagName != "B-DIALOG-BTN" ) return
 
-        this.emitEvent('chosen', {btn})
-
-        this.resolveBtn(btn)
+        // dont resolve button if other code intercepts and does `event.preventDefault()`
+        if( this.emitEvent('chosen', {btn, dialog:this}, {cancelable:true}) ){
+            this.resolveBtn(btn)
+        }else{
+            btn.blur()
+        }
     }
 
     onKeydown(e){
