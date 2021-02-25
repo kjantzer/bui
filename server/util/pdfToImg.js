@@ -7,6 +7,8 @@ module.exports = function pdfToImg(input, output, {
 
     return new Promise((resolve, reject)=>{
 
+        let resp = ''
+
         const worker = childProcess.spawn('gm', [
             'convert',
             '-density', density,
@@ -16,12 +18,20 @@ module.exports = function pdfToImg(input, output, {
             output
         ]);
 
+        worker.stdout.on('data', (data) => {
+            resp += data
+        });
+
+        worker.stderr.on('data', (data) => {
+            resp += data
+        });
+
         worker.on('error', err => {
             reject(err)
         });
         
         worker.on('close', code => {
-            resolve()
+            resolve(resp)
         });
 
     })
