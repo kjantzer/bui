@@ -14,7 +14,8 @@ const PRESETS = {
 	'create': {label: 'Create', color: 'theme'},
     'submit': {label: 'Submit', color: 'theme'},
 	'delete': {label: 'Delete', color: 'red'},
-	'x': {label: '', icon:'cancel-1', doesCancel:true}
+	'x': {label: '', icon:'cancel-1', doesCancel:true},
+    '...': {label: '', icon:'dot-3'}
 }
 
 export function registerPreset(name, opts){
@@ -29,7 +30,7 @@ customElements.define('b-dialog-btn', class extends Btn{
     }
 
     get value(){
-        return this.opts.value || this.opts.label
+        return this.opts.value || this.opts.label || this.opts.icon
     }
 
     get label(){
