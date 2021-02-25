@@ -30,8 +30,11 @@ customElements.define('b-dialog-btn', class extends Btn{
     }
 
     get value(){
-        return this.opts.value || this.opts.label || this.opts.icon
+        return this.opts.value || this.opts.val || this.opts.label || this.opts.icon
     }
+
+    // TEMP: backwards compat
+    get val(){ return this.value }
 
     get label(){
         return this.opts.label
