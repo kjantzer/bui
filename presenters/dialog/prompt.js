@@ -23,10 +23,12 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 
 		opts = Object.assign({
 			material: 'filled',
-			btns: ['cancel', 'save']
+			btns: ['cancel', 'save'],
+			//onSubmit(val, control, blur){}
 		}, opts)
 
         super(opts)
+		this.opts = opts
 
 		if( opts.prompts )
 			this.prompts = opts.prompts.map((p,i)=>makePrompt(p, i, opts))
@@ -50,14 +52,33 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 	`}
 
 	onSubmit(e){
+
+		if( e.target.isInvalid ) return
+
+		if( this.opts.onSubmit ){
+			let control = e.target
+			let blur = function(){ control.blur() }
+			return this.opts.onSubmit(this.value, control, blur)
+		}
+		
 		// if valid, blur the field so "enter" keypress fires correctly on Dialog
-		if( !e.target.isInvalid )
-			e.target.blur()
+		e.target.blur()
 	}
 
 	focus(){
 		if( this.formHandler.controls.length > 0 )
 			this.formHandler.controls[0].focus()
+	}
+
+	get value(){
+		let vals = this.formHandler.values
+
+		if( this.formHandler.controls.length == 1 ){
+			let control = this.formHandler.controls[0]
+			vals = this.html ? control.value : (control.control.textValue || control.value)
+		}
+
+		return vals
 	}
 
     resolve(resp){
@@ -66,15 +87,10 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 			return false
 
 		let returnResp = this.btns.length > 2
-		let vals = this.formHandler.values
+		let vals = this.value
 
 		// no button selected
 		if( !resp ) return super.resolve(returnResp ? [resp] : resp)
-		
-		if( this.formHandler.controls.length == 1 ){
-			let control = this.formHandler.controls[0]
-			vals = this.html ? control.value : (control.control.textValue || control.value)
-		}
 
 		resp = returnResp ? [resp, vals] : vals
 
