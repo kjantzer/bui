@@ -34,7 +34,9 @@ customElements.define('b-ts', class extends LitElement{
     get date(){ return this.__date}
     set date(date){
 
-        if( typeof date === 'string' || date instanceof Date )
+        if( typeof date === 'string' 
+        || typeof date === 'number' 
+        || date instanceof Date )
             date = dayjs(date)
 
         this.__date = date
