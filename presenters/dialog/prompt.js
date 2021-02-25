@@ -5,6 +5,9 @@ import Dialog from './element'
 import { html, css } from 'lit-element'
 import device from '../../util/device'
 import mobileAsyncFocus from '../../util/mobileAsyncFocus'
+import '../form/controls/text-field'
+import '../form/control'
+import '../form/handler'
 
 customElements.define('b-dialog-prompt', class extends Dialog{
 
