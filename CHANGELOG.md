@@ -1,5 +1,8 @@
 # Changelog
 
+## 2021-02-26
+- BREAKING: `realtime` code moved from `/server/realtime` to root `/realtime`
+
 ## 2021-02-23
 - REMOVAL: notif `snackbar` element removed (now uses `b-dialog`). The snackbar element was only used internally. Notif syntax remains unchanged.
 

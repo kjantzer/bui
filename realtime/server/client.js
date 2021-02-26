@@ -24,7 +24,7 @@ module.exports = class Client {
             delete user.__offlineNotif
         }
 
-        // first time coming on line, send notif
+        // first time coming online, send notif
         else if( user.sockets.size == 0 )
             io.emit(this.path, {id: user.id, online:true})
         
