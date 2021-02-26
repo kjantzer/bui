@@ -2,16 +2,37 @@ import { LitElement, html, css } from 'lit-element'
 import '../../elements/avatar'
 
 let realtime = null
+let currentUserID = null
 
 customElements.define('b-realtime-users', class extends LitElement{
 
+    static set realtime(val){ realtime = val }
+    static set currentUserID(val){ currentUserID = val }
+
     static get properties(){return {
         key: {type: String, reflect: true},
-        max: {type: Number, reflect: true}
+        max: {type: Number, reflect: true},
+        test: {type: Boolean}
     }}
 
     parseData(data){
-        return data
+
+        if( this.test )
+            return data
+        
+        let uniq = new Map()
+
+        data.forEach(d=>{
+            let id = d.attrs.id || new Date().getTime()
+            console.log(currentUserID, id);
+            if( currentUserID == id )
+                return
+
+            if( !uniq.get(id) )
+                uniq.set(id, d)
+        })
+
+        return Array.from(uniq.values())
     }
 
     renderUser(m){
@@ -22,8 +43,11 @@ customElements.define('b-realtime-users', class extends LitElement{
             console.warn('`renderer` must return `lit-html`')
         }
 
-        if( !render )
-            render = html`<b-avatar class="avatar" initials="?"></b-avatar>`
+        if( !render ){
+            let name = m.attrs&&m.attrs.name
+            let initials = name ? name.split(' ').map(s=>s[0]).filter(s=>s).slice(0,2).join('') : '?'
+            render = html`<b-avatar class="avatar" initials="${initials}" title=${name}></b-avatar>`
+        }
 
         return render
     }
@@ -94,10 +118,6 @@ customElements.define('b-realtime-users', class extends LitElement{
     disconnectedCallback(){
         super.disconnectedCallback()
         this.closeRealtime()
-    }
-
-    static set realtime(val){
-        realtime = val
     }
 
     openRealtime(){
