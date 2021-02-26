@@ -1,5 +1,5 @@
 import {Model, Collection} from 'backbone'
-import sync, {syncBackboneCollection} from '../server/realtime/client/sync'
+import sync, {syncBackboneCollection} from '../realtime/client/sync'
 import {colorScheme} from '../util/device'
 import '../helpers/backbone/relations'
 

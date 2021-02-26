@@ -11,6 +11,10 @@ module.exports = class Client {
 
         socket.attr = JSON.parse(data.attr||'{}')
 
+        if( !user ){
+            return console.warn('Socket connected without user')
+        }
+
         socket.attr = Object.assign(socket.attr, {
             id: user.id,
             name: user.name,
