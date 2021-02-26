@@ -20,6 +20,7 @@ customElements.define('b-notif', class extends LitElement{
         btns: {type: Array},
         icon: {type: String},
         color: {type: String, reflect: true},
+        accent: {type: String, reflect: true},
         width: {type: String},
         animation: {type: String, reflect: true},
     }}
@@ -37,6 +38,7 @@ customElements.define('b-notif', class extends LitElement{
             msg: '',
             icon: '',
             btns: [],
+            color: 'inverse',
 
             animation: device.minScreenSize <= 699 ? 'grow' : 'slide',
             animationForReplace: 'grow',
@@ -210,7 +212,9 @@ customElements.define('b-notif', class extends LitElement{
                 .icon=${this.icon}
                 .body=${this.msg}
                 .btns=${this.btns}
-                color=${this.color}
+                .color=${this.color}
+                .accent=${this.accent}
+                ?edge=${!!this.accent}
                 @chosen=${this.onDialogBtnChoose}
             ></b-dialog>
             `}
