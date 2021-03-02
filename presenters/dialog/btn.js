@@ -13,6 +13,7 @@ const PRESETS = {
 	'save': {label: 'Save', color: 'theme'},
 	'create': {label: 'Create', color: 'theme'},
     'submit': {label: 'Submit', color: 'theme'},
+    'upload': {label: 'Upload', color: 'theme'},
 	'delete': {label: 'Delete', color: 'red'},
 	'x': {label: '', icon:'cancel-1', doesCancel:true},
     '...': {label: '', icon:'dot-3'}
