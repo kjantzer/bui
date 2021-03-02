@@ -239,10 +239,16 @@ let notifClass = customElements.get('b-notif')
 for( let key in TYPES ){
     if( !notifClass[key] )
         notifClass[key] = (msg, opts={})=>{
+            
             // string or lit-html
             if( typeof msg == 'string' || msg.constructor.name == 'TemplateResult' ){
                 opts = opts || {}
                 opts.msg = msg
+            }
+
+            if( msg instanceof Error ){
+                opts = opts || {}
+                opts.msg = msg.message
             }
 
             let Notif = customElements.get('b-notif')

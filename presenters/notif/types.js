@@ -18,7 +18,8 @@ export default {
     },
     failed: {
         icon: 'cancel-circled',
-        color: 'red'
+        accent: 'red',
+        color: 'inverse',
     },
     success: {
         icon: 'ok-circled',
