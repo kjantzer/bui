@@ -1,16 +1,18 @@
 
-export default (file)=>{
+export default (file, format='Text')=>{
 
-    return new Promise(resolve=>{
+    return new Promise((resolve, reject)=>{
 
         var reader = new FileReader();
 
         reader.onload = e=>{
-            var text = reader.result;
-            resolve(text)
+            resolve(reader.result)
         }
 
-        reader.readAsText(file);
+        if( reader['readAs'+format] ) 
+            reader['readAs'+format](file)
+        else
+            reject('Invalid format requested')
     
     })
 
