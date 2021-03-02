@@ -24,7 +24,7 @@ customElements.define('b-realtime-users', class extends LitElement{
 
         data.forEach(d=>{
             let id = d.attrs.id || new Date().getTime()
-            console.log(currentUserID, id);
+            
             if( currentUserID == id )
                 return
 
