@@ -5,7 +5,7 @@
 ```js
 const app = require('express')();
 const API = require('bui/server/api')
-const Sync = require('bui/server/realtime/server/sync')
+const Sync = require('bui/realtime/server/sync')
 
 new API(app, [
     MyClass,
