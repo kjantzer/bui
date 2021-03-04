@@ -6,5 +6,6 @@ module.exports = {
     Like: require('./Like'),
     FullText: require('./FullText'),
     Between: require('./Between'),
-    FindInSet: require('./FindInSet')
+    FindInSet: require('./FindInSet'),
+    UnsafeSQL: require('./UnsafeSQL')
 }
