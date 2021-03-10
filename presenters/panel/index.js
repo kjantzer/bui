@@ -537,6 +537,7 @@ export class Panel extends LitElement {
             overflow: visible;
             display: flex;
             flex-direction: column;
+            max-height: 100%;
             background: var(--b-panel-bgd, #fff);
             box-shadow: var(--b-panel-shadow, var(--theme-shadow, rgba(0,0,0,.2)) 0 3px 10px);
             border-radius: var(--radius-top) var(--radius-top) var(--radius-bottom) var(--radius-bottom);
