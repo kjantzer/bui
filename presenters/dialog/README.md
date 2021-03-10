@@ -77,9 +77,11 @@ Certain [parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) have be
 
 - `aside`
 - `main`
-- `pretitle`
-- `title`
-- `body`
+	- `header`
+		- `pretitle`
+		- `title`
+	- `body-wrap`
+		- `body`
 - `footer`
 
 ```css

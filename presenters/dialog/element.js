@@ -156,9 +156,22 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         }
 
         main {
-            margin: var(--pad);
+            margin-bottom: var(--pad);
             min-height: 0;
             min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main header {
+            padding-top: var(--pad);
+        }
+        
+        main .pretitle,
+        main .title,
+        main .body-wrap {
+            padding-left: var(--pad);
+            padding-right: var(--pad);
         }
 
         main > slot::slotted(*:first-child) {
@@ -183,6 +196,10 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         .title slot {
             font-size: 1.2em;
             font-weight: bold;
+        }
+
+        .body-wrap {
+            overflow: auto;
         }
 
         .body {
@@ -306,17 +323,21 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             </slot>
         </aside>
         <main part="main">
-            <div class="pretitle" part="pretitle">
-                <slot name="pretitle">${this._renderStr(this.pretitle)}</slot>
+            <header part="header">
+                <div class="pretitle" part="pretitle">
+                    <slot name="pretitle">${this._renderStr(this.pretitle)}</slot>
+                </div>
+                <div class="title" part="title">
+                    <slot name="title">${this._renderStr(this.title)}</slot>
+                </div>
+            </header>
+            <div class="body-wrap" part="body-wrap">
+                <div class="body" part="body">
+                    <slot name="body">${this._renderStr(this.body)}</slot>
+                </div>
+                ${this.renderView()}
+                <slot></slot>
             </div>
-            <div class="title" part="title">
-                <slot name="title">${this._renderStr(this.title)}</slot>
-            </div>
-            <div class="body" part="body">
-                <slot name="body">${this._renderStr(this.body)}</slot>
-            </div>
-            ${this.renderView()}
-            <slot></slot>
         </main>
         <footer @click=${this.onClick} part="footer">
             ${this.btns.map(b=>new Button(b))}
