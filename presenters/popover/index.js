@@ -32,7 +32,8 @@ const WatchClicks = function(e){
 	let target = e.path ? e.path.find(el=>el.popover) : e.target
 
 	// the clicked target already has a popover and has the "toggle" setting, so close the current popover
-	if( target && target.popover && target.popover.view != target && target.popover.opts.clickToggles ){
+	if( target && target.popover && typeof target.popover != 'function' 
+	&& target.popover.view != target && target.popover.opts.clickToggles ){
 		target.popover._close()
 		e.preventDefault()
 		e.stopPropagation()
