@@ -57,6 +57,14 @@ const presenters = {
 		}, opts))
 	},
 
+	drawer(opts){
+		return this._panel(Object.assign({
+			type: '',
+			width: 'auto',
+			animation: '',
+		}, opts))
+	},
+
 	_panel(opts={}){
 
 		opts = Object.assign({
