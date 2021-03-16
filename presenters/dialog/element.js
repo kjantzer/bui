@@ -31,6 +31,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             min-width: 200px;
             max-width: 100%;
             max-height: 100%;
+            min-height: 0;
             position:relative;
             background: var(--theme-bgd, #fff);
             border-radius: var(--radius);
