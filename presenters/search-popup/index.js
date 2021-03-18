@@ -109,6 +109,7 @@ export default class extends LitElement{
             height: 100%;
             position:relative;
             grid-template-rows: auto 1fr;
+            overflow: hidden;
         }
 
         .searchbox {
