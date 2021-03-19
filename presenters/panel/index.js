@@ -638,6 +638,7 @@ export class Panel extends LitElement {
         main > slot::slotted(*) {
             width: 100%;
             pointer-events: all;
+            overflow: hidden;
             /* display: grid;
             grid-template-rows: auto 1fr; */
         }
