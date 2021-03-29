@@ -27,7 +27,7 @@ export class UploaderElement extends LitElement {
             height: 100%;
             display: block;
             position: absolute;
-            z-index: 10000;
+            z-index: 1000;
             left: 0;
             top: 0;
             visibility: hidden;
