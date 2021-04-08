@@ -127,6 +127,16 @@ function makePrompt(opts, i=0, globalOpts){
 		type: '',
 		multiline: false,
 	}, opts)
+
+	if( opts.type == 'switch' )
+	return html`
+		<check-box 
+			key="${opts.key}"
+			type="switch"
+			.value=${opts.val}
+			label="${opts.label}"
+		></check-box>
+	`
 	
 	return html`
 	<form-control material="${globalOpts.material}"
@@ -135,7 +145,7 @@ function makePrompt(opts, i=0, globalOpts){
 		prefix="${opts.prefix}"
 		suffix="${opts.suffix}"
 		style="${opts.w?`width:${opts.w}px;`:''}"
-	>
+	>	
 		<text-field
 			pattern="${opts.pattern}"
 			placeholder="${opts.placeholder}"
