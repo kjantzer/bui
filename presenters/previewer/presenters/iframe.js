@@ -44,6 +44,8 @@ customElements.define('b-previewer-iframe', class extends LitElement{
                 console.log('on click');
             }
 
+            this.emitEvent('loaded')
+
             // this.$$('iframe').addEventListener('click', e=>{
             //     console.log('clicked?', e);
                 

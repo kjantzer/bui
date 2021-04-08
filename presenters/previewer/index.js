@@ -75,7 +75,7 @@ const previewHtml = /*html*/`
 
 customElements.define('b-previewer', class extends LitElement{
 
-    static open(items){
+    static open(items, opts){
 
         if( items && !Array.isArray(items) )
             items = [items]
@@ -86,7 +86,7 @@ customElements.define('b-previewer', class extends LitElement{
         if( device.isMobile )
             return this.openInNewWindow(item)
 
-        let view = new (customElements.get('b-previewer'))(items)
+        let view = new (customElements.get('b-previewer'))(items, opts)
 
         let panel = new Panel(view, {
             type: 'previewer',
@@ -101,10 +101,14 @@ customElements.define('b-previewer', class extends LitElement{
         panel.open()
     }
 
-    constructor(items=[]){
+    constructor(items=[], {
+        onLoaded=()=>{}
+    }={}){
         super()
         this.items = items
         this.model = items[0]
+
+        this.addEventListener('loaded', onLoaded)
     }
 
     static get styles(){return css`
@@ -126,7 +130,7 @@ customElements.define('b-previewer', class extends LitElement{
 
         b-panel-toolbar {
             color:  var(--theme-text);
-            pointer-events: all;
+            /* pointer-events: all; */
         }
 
         b-previewer-iframe ~ b-panel-toolbar {
@@ -153,7 +157,6 @@ customElements.define('b-previewer', class extends LitElement{
     close(){ this.panel.close() }
 
     render(){return html`
-        ${this.presenterFor(this.model)}
         <b-panel-toolbar overlay>
             <b-btn slot="close-btn" @click=${this.close} pill lg color="black" icon="cancel-1"></b-btn>
             <div slot="title">
@@ -161,6 +164,7 @@ customElements.define('b-previewer', class extends LitElement{
                 ${this.model.label}
             </div>
         </b-panel-toolbar>
+        ${this.presenterFor(this.model)}
     `}
 
     presenterFor(model){
