@@ -109,7 +109,7 @@ module.exports = class MyModel extends Model {
     afterUpdate(attrs){ /* noop */ }
 
     async beforeDestroy(){ /* noop */ }
-    afterDestroy(){ /* noop */ }
+    async afterDestroy(){ /* noop */ }
 
 }
 ```

@@ -333,7 +333,7 @@ module.exports = class Model {
         
         let result = await this.db.q(/*sql*/`DELETE FROM ${this.config.table} WHERE ${clause}`, clauseValues)
 
-        this.afterDestroy(result)
+        await this.afterDestroy(result)
 
         return String(result.affectedRows)
     }
