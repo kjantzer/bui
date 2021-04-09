@@ -107,7 +107,16 @@
 
 // adjust colors of <b-paper> when in dark mode
 :root[dark] {
-    --b-paper-overshadow: rgba(0, 0, 0, 0.35) 0px 0px 20px;
+    // --b-paper-overshadow: rgba(0, 0, 0, 0.35) 0px 0px 20px;
+    --b-paper-overshadow:
+        0 0.7px 2.2px rgba(0, 0, 0, 0.019),
+        0 1.4px 5.3px rgba(0, 0, 0, 0.035),
+        0 2.4px 10px rgba(0, 0, 0, 0.048),
+        0 3.7px 17.9px rgba(0, 0, 0, 0.058),
+        0 6px 33.4px rgba(0, 0, 0, 0.7),
+        0 13px 80px rgba(0, 0, 0, 0.35);
+
+
     --b-paper-shadow: rgba(0,0,0,.35) 0 1px 5px;
     --b-paper-postit-color: var(--theme-bgd);
     --b-paper-postit-bgd: var(--amber-200);
