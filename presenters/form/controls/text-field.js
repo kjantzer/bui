@@ -163,7 +163,7 @@ class TextFieldElement extends HTMLElement {
 						name="${this.name||this.input}"
 						autocomplete="${this.autocomplete}">
 						
-				<b-icon name="calendar-3" class="calendar"></b-icon>
+				<!--<b-icon name="calendar-3" class="calendar"></b-icon>-->
 			</main>
 			<slot id="value"></slot>`
 			
@@ -179,14 +179,14 @@ class TextFieldElement extends HTMLElement {
 		this._editor = this.$('.editor')
 		this._input = this.$('.input')
 
-		if( this.type == 'date' ){
-			this._datePicker = new Datepicker({
-				value: this.value,
-				range: false,
-				inputs: false,
-				btns: false
-			})
-		}
+		// if( this.type == 'date' ){
+		// 	this._datePicker = new Datepicker({
+		// 		value: this.value,
+		// 		range: false,
+		// 		inputs: false,
+		// 		btns: false
+		// 	})
+		// }
 		
 		if( this._val ){
 			this._editor.innerHTML = htmlCleaner.clean(this._val, this.htmlClean||{})
@@ -210,7 +210,7 @@ class TextFieldElement extends HTMLElement {
 		this.shadowRoot.addEventListener('click', this._onClick.bind(this))
 		this.addEventListener('click', this._onClick.bind(this))
 
-		this.shadowRoot.querySelector('.calendar').addEventListener('click', this._onClick.bind(this))
+		// this.shadowRoot.querySelector('.calendar').addEventListener('click', this._onClick.bind(this))
     }
 	
 	$(str){ return this.shadowRoot.querySelector(str)}
@@ -220,7 +220,10 @@ class TextFieldElement extends HTMLElement {
 		this._setClassNames()
 	}
 	
-	disconnectedCallback(){}
+	disconnectedCallback(){
+		if( this._datePickerOpen )
+			this._datePickerOpen.close()
+	}
 	
 	static get observedAttributes() { return ['disabled', 'placeholder']; }
 	attributeChangedCallback(name, oldValue, newValue){
@@ -311,8 +314,17 @@ class TextFieldElement extends HTMLElement {
 		this._setClassNames()
 	}
 
+	get _datePicker(){
+		return this.__datePicker = this.__datePicker || new Datepicker({
+			value: this.value,
+			range: false,
+			inputs: false,
+			btns: false
+		})
+	}
+
 	get dbValue(){
-		if( this._datePicker )
+		if( this.type == 'date' )
 			return this.value ? this._datePicker.value.format('YYYY-MM-DD') : this.value
 		return this.value
 	}
@@ -363,14 +375,17 @@ class TextFieldElement extends HTMLElement {
 	_onClick(e){
 
 		// was calendar icon clicked?
-		if( e.target.classList.contains('calendar') ){
-			e.stopPropagation()
-			return this.pickDate()
-		}
+		// if( e.target.classList.contains('calendar') ){
+		// 	e.stopPropagation()
+		// 	return this.pickDate()
+		// }
 
 		if( e.target != this )
 			return
 
+		if( this.type == 'date' )
+			this.pickDate()
+		
 		if( !e.target.isFocused )
 			this.focus()
 	}
@@ -381,20 +396,21 @@ class TextFieldElement extends HTMLElement {
 		this._datePicker.value = this.value
 
 		let apply = function(e){
-			p&&p.close();
+			this._datePickerOpen&&this._datePickerOpen.close()
 			this._changeValue(e.detail.date)
 		}.bind(this)
 
 		// apply the value once a date is selected
 		this._datePicker.addEventListener('date-selected', apply, {once: true})
 
-		let p = new Popover(this.$('.calendar'), this._datePicker, {
+		this._datePickerOpen = new Popover(this, this._datePicker, {
 			align: 'bottom-end', 
 			overflowBoundry: 'window',
 			maxHeight: false, 
 			adjustForMobile: true,
 			// NOTE: not called when p.close() is called
 			onClose:()=>{
+				this._datePickerOpen = null
 				this._datePicker.removeEventListener('date-selected', apply)
 			}
 		})
@@ -599,9 +615,14 @@ class TextFieldElement extends HTMLElement {
 	}
 
 	_onBlur(){
-		if( this._didPressKey )
+		if( this._didPressKey ){
 			this._updateValue()
-			
+
+			// if blur from enter/tab/esc...we should close the date picker
+			if( this._datePickerOpen )
+				this._datePickerOpen.close()
+		}
+
 		delete this._didPressKey
 	}
 	
