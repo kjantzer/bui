@@ -38,7 +38,7 @@ class FormHandler extends HTMLElement {
 		let vals = {}
 		this.controls.forEach(control=>{
 			if( control.key )
-				vals[control.key] = control.value
+				vals[control.key] = control.dbValue
 		})
 		return vals
 	}
