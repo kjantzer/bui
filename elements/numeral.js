@@ -1,6 +1,15 @@
 import { LitElement, html, css } from 'lit-element'
 import numeral from 'numeral'
 
+/*
+    TODO: consider swap out numeral for `toLocaleString`
+
+    Ex:
+    // cash
+    3.75.toLocaleString('en-US', { style: 'currency', currency: 'USD' }
+    // bytes to megabytes
+    (7061153*1e-6).toLocaleString('en-US', { style: 'unit', unit: 'megabyte', notation:'compact'})
+*/
 customElements.define('b-numeral', class extends LitElement{
 
     static get properties(){return {

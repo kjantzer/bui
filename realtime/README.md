@@ -73,6 +73,7 @@ export class Book {
     get url(){ return '/api/book'+this.id }
 
     constructor(){
+        // super() // make sure to call this if subclassing
         this.realtimeSync = sync(this.url, this)
     }
 
