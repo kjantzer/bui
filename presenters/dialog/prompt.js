@@ -49,7 +49,7 @@ customElements.define('b-dialog-prompt', class extends Dialog{
     }
 
     renderView(){return html`
-		<form-handler @submit=${this.onSubmit}>
+		<form-handler @submit=${this.onSubmit} .model=${this.opts.model}>
 			${this.prompts}
 		</form-handler>
 	`}
@@ -149,6 +149,7 @@ function makePrompt(opts, i=0, globalOpts){
 		<text-field
 			pattern="${opts.pattern}"
 			placeholder="${opts.placeholder}"
+			type="${opts.type}"
 			?html=${opts.html}
 			?multiline=${opts.multiline}
 			?required=${opts.required}
