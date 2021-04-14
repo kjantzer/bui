@@ -17,6 +17,13 @@ function registerIcon(name, icon, {prefix='icon-'}={}){
 		name = name.replace(prefix, '')
 	}
 
+	// remove <title> tags – we dont want to see them when hovering over the icon
+	let title = icon.querySelector('title')
+	if( title ){
+		icon.setAttribute('data-title', title.textContent)
+		title.remove()
+	}
+
 	if( !name )
 		return console.warn('Icons must have a name')
 
