@@ -51,7 +51,9 @@ class FormControlElement extends HTMLElement {
 			<slot id="value"></slot>`
 			
         this.shadowRoot.appendChild(temp.content.cloneNode(true));
-		
+    }
+
+	firstUpdated(){
 		let value = this.$('#value')
 		this._val = value.assignedNodes().map(el=>el.textContent.trim()).join(' ')
 		this._val = this._val.replace(/^\n|\n$/g, '').trim()
@@ -94,7 +96,7 @@ class FormControlElement extends HTMLElement {
 					slot.removeAttribute('hidden')
 			})
 		})
-    }
+	}
 	
 	_onChange(e){
 		
@@ -120,6 +122,12 @@ class FormControlElement extends HTMLElement {
 	$$(str){ return this.shadowRoot.querySelectorAll(str)}
 	
 	connectedCallback(){
+
+		if( !this.__firstUpdated ){
+			this.__firstUpdated = true
+			this.firstUpdated()
+		}
+
 		this._setClassNames()
 		
 		// hide slots that are empty
