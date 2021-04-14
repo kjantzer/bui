@@ -133,12 +133,14 @@ function makePrompt(opts, i=0, globalOpts){
 
 	if( opts.type == 'switch' )
 	return html`
+	<div>
 		<check-box 
 			key="${opts.key}"
 			type="switch"
 			.value=${opts.val}
 			label="${opts.label}"
 		></check-box>
+	</div>
 	`
 
 	let control = html`
