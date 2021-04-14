@@ -112,6 +112,9 @@ function makePrompt(opts, i=0, globalOpts){
 	if( opts.getHTML )
 		return opts
 
+	if( opts == 'divider' )
+		return html`<b-hr></b-hr>`
+
     opts = Object.assign({
 		key: 'prompt-'+i,
 		val: '',
@@ -137,6 +140,27 @@ function makePrompt(opts, i=0, globalOpts){
 			label="${opts.label}"
 		></check-box>
 	`
+
+	let control = html`
+		<text-field
+			pattern="${opts.pattern}"
+			placeholder="${opts.placeholder}"
+			type="${opts.type}"
+			?html=${opts.html}
+			?multiline=${opts.multiline}
+			?required=${opts.required}
+			.value=${opts.val}></text-field>
+	`
+
+	if( opts.options ){
+		control = html`
+			<select-field
+				placeholder="${opts.placeholder}"
+				.options=${opts.options}
+				.value=${opts.val}
+			></select-field>
+		`
+	}
 	
 	return html`
 	<form-control material="${globalOpts.material}"
@@ -146,14 +170,7 @@ function makePrompt(opts, i=0, globalOpts){
 		suffix="${opts.suffix}"
 		style="${opts.w?`width:${opts.w}px;`:''}"
 	>	
-		<text-field
-			pattern="${opts.pattern}"
-			placeholder="${opts.placeholder}"
-			type="${opts.type}"
-			?html=${opts.html}
-			?multiline=${opts.multiline}
-			?required=${opts.required}
-			.value=${opts.val}></text-field>
+		${control}
 
 		${opts.helpText?html`<div slot="help">${opts.helpText}</div>`:''}
 		${opts.label?html`<span slot="label">${opts.label}</span>`:''}
