@@ -60,10 +60,10 @@ export default css`
     height: 0 !important;
 }
 
-:host(:empty) main {
+/* :host(:empty) main {
     color: var(--b-notif-color, #fff);
     background: var(--b-notif-bgd, #333);
-}
+} */
 
 main {
     --radius: var(--b-notif-radius, 5px);
