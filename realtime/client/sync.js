@@ -57,7 +57,10 @@ export class Sync extends Map {
 }
 
 
-export function syncBackboneCollection(sync){
+export function syncBackboneCollection(sync, {
+    addUpdates=true,
+    triggerDestroy=false
+}={}){
     let {action, attrs} = sync
     let model = this.get(attrs.id)
     action = action.toLowerCase()
@@ -65,11 +68,16 @@ export function syncBackboneCollection(sync){
     if( action == 'update' && model ){    
         model.set(attrs)
     }
-    else if( ['update', 'insert', 'add'].includes(action) && !model ){
+    else if( !model && (['insert', 'add'].includes(action) 
+                        || (addUpdates&&action=='update') )
+    ){
         model = new (this.model)(attrs)
         this.add(model)
     }
     else if(  ['delete'].includes(action) && model ){
+        if( triggerDestroy )
+            model.trigger('destroy')
+            
         this.remove(model)
     }
 }
