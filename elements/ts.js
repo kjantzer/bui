@@ -4,7 +4,8 @@ import dayjs from '../helpers/day-js'
 customElements.define('b-ts', class extends LitElement{
 
     static get properties(){return {
-        format: {type: String}
+        format: {type: String},
+        fallback: {type: String}
     }}
 
     constructor(){
@@ -51,11 +52,11 @@ customElements.define('b-ts', class extends LitElement{
         if( !this.date ) return ''
         
         if( this.format == 'relative' && this.date.fromNow )
-            return this.date.isValid() ? this.date.fromNow() : ''
+            return this.date.isValid() ? this.date.fromNow() : this.fallback
         if( this.format == 'calendar' && this.date.calendarDate )
-            return this.date.calendarDate()
+            return this.date.calendarDate() || this.fallback
         else
-            return this.date.format(this.format)
+            return this.date.format(this.format) || this.fallback
     }
 
     render(){return html`
