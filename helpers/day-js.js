@@ -36,6 +36,11 @@ dayjs.prototype.format = function(...args){
     return DayJsFormat.call(this, ...args)
 }
 
+dayjs.prototype.sortValue = function(invalidAddition=9){
+    if (!this.isValid()) return invalidAddition+99999999999999
+    return this.unix()
+}
+
 // let `.set` handle hash of changes
 const DayJsSet = dayjs.prototype.set
 dayjs.prototype.set = function(...args){
