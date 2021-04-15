@@ -34,6 +34,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             min-height: 0;
             position:relative;
             background: var(--theme-bgd, #fff);
+            color: var(--theme-text, #222);
             border-radius: var(--radius);
 
             --radius: 5px;
