@@ -266,21 +266,24 @@ export default class Menu {
 		return this.__searchSpinner = this.__searchSpinner || this.el.querySelector('.menu-search-bar b-spinner')
 	}
 
+	get searchOpts(){ return this.opts.search||{}}
+
 	async fetchResults(term){
 
 		// already in process of looking up this term
-		if( this._fetchingTerm === term )
+		if( term !== undefined && this._fetchingTerm === term )
 			return
 
 		this._fetchingTerm = term
 
 		let url = this.searchUrl
+		let encodedTerm = term === undefined ? '' : encodeURIComponent(term)
 
 		// URL can be a dynamic function
 		if( typeof url == 'function' )
-			url = url(encodeURIComponent(term))
+			url = url(encodedTerm)
 		else
-			url += encodeURIComponent(term)
+			url += encodedTerm
 
 		this.searchSpinner.hidden = false
 
@@ -288,7 +291,7 @@ export default class Menu {
 
 		// looks like we started searching for another term before we got
 		// this response back, so ignore the results
-		if( this._fetchingTerm !== term )
+		if( term !== undefined && this._fetchingTerm !== term )
 			return
 
 		let menu = []
@@ -329,9 +332,13 @@ export default class Menu {
 
 			${this.searchIsOn?html`
 				<div class="menu-search-bar">
-					<b-icon name="${this.searchIcon}"></b-icon>
 					<b-spinner hidden></b-spinner>
-					<input type="text" placeholder="${this.searchPlaceholder}" value=${this.opts.matching||''}>
+					${this.searchOpts.input!==false?html`
+						<b-icon name="${this.searchIcon}"></b-icon>
+						<input type="text" placeholder="${this.searchPlaceholder}" value=${this.opts.matching||''}>
+					`:html`
+						
+					`}
 				</div>
 			`:''}
 
@@ -768,6 +775,11 @@ export default class Menu {
 		}
 		
 		this.render()
+
+		// NOTE: this is rather hacky, but we'll leave for now
+		if( this.searchOpts.autoFetch ){
+			this.fetchResults()
+		}
 		
 		let onClose = opts.onClose
 		opts.onClose = ()=>{
