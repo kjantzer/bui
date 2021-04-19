@@ -597,6 +597,14 @@ export class Panel extends LitElement {
             transform: translateY(100px);
         }
 
+        :host([anchor="center"][animation="drop"]) > main,
+        :host([anchor="top"][animation="drop"]) > main,
+        :host([anchor="bottom"][animation="drop"]) > main {
+            position: relative;
+            margin: auto auto;
+            transform: translateY(-100px);
+        }
+
         :host([anchor="center"]) > main {
             border-radius: var(--radius);
         }
@@ -610,7 +618,7 @@ export class Panel extends LitElement {
         }
 
         :host([anchor="top"]) > main {
-            margin-top: 0;
+            margin-top: 0 !important;
             transform: translateY(-100px);
             border-radius: 0 0 var(--radius) var(--radius);
         }
