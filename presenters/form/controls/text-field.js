@@ -383,7 +383,7 @@ class TextFieldElement extends HTMLElement {
 		if( e.target != this )
 			return
 
-		if( this.type == 'date' )
+		if( this.type == 'date' && !this.disabled )
 			this.pickDate()
 		
 		if( !e.target.isFocused )
