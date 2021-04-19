@@ -49,12 +49,10 @@ export default class extends LitElement{
             anchor: device.isMobile ? 'top': 'center',
             closeOnEsc: true,
             width: device.isMobile ? '100%' :'600px',
-            height: device.isMobile ? '50%' : '500px',
-            type: 'search-popup'
+            height: device.isMobile ? '50%' : '540px',
+            type: 'search-popup',
+            animation: 'drop'
         })
-
-        if( !device.isMobile && this.settings().enlarge )
-            this.enlarge()
 
         this.panel.open()
 
@@ -219,14 +217,18 @@ export default class extends LitElement{
             <span slot="toolbar:refresh"></span>
             <span style="display: none;" slot="spinner"></span>
 
-            ${device.isMobile?html`
-                <b-btn slot="toolbar:after" @click=${this.close} lg color="theme">Done</b-btn>
-            `:html`
-                <b-btn slot="toolbar:after" @click=${this.showTips} icon="lightbulb" text></b-btn>
-                <b-btn slot="toolbar:after" @click=${this.enlarge} icon="resize-full" text></b-btn>
-            `}
+            ${this.renderToolbarButtons()}
 
         </b-list>
+    `}
+
+    renderToolbarButtons(){return html`
+        ${device.isMobile?html`
+            <b-btn slot="toolbar:after" @click=${this.close} lg color="theme">Done</b-btn>
+        `:html`
+            <b-btn slot="toolbar:after" @click=${this.showTips} icon="lightbulb" text></b-btn>
+            <b-btn slot="toolbar:after" @click=${this.enlarge} icon="resize-full" text></b-btn>
+        `}
     `}
 
     showTips(e){
@@ -240,7 +242,11 @@ export default class extends LitElement{
     firstUpdated(){
         this.fc = this.shadowRoot.querySelector('form-control')
         this.coll.reset(this.history()||[])
+        this.setAttribute('state', 'empty')
         // window.addEventListener('focus-'+this.key, this.focus.bind(this))
+
+        if( !device.isMobile && this.settings().enlarge )
+            this.enlarge()
     }
 
     focus(){
@@ -263,6 +269,7 @@ export default class extends LitElement{
         this.coll.term = ''
         this.list.term = ''
         this.coll.reset(this.history()||[])
+        this.setAttribute('state', 'empty')
         this.focus()
         setTimeout(()=>{
             this.list.reload()
@@ -396,7 +403,7 @@ export default class extends LitElement{
 
         let settings = this.settings()
         settings.enlarge = this.panel.height=='100%'
-        this.settings( settings)
+        this.settings(settings)
     }
 
     _search(val){
@@ -430,6 +437,8 @@ export default class extends LitElement{
             return s
         }))
 
+        this.setAttribute('state', 'shortcuts')
+
         this.list.term = this._term.slice(1) // remove leading "trigger"
         
         if( !this.list.term )
@@ -446,6 +455,8 @@ export default class extends LitElement{
         this.coll.term = this._term
         await this.list.refresh()
         this.fetching = false
+
+        this.setAttribute('state', 'results')
         
         this._selectResult('first')
 
