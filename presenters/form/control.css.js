@@ -357,6 +357,23 @@ slot[name="help"] {
 	color: var(--invalidColor);
 }
 
+/*
+	Material hover
+*/
+
+:host([material="hover"]) {
+	--padY: .25em;
+}
+
+:host([material="hover"]:not(:hover)),
+:host([material="hover"][disabled]) {
+	--borderColor: transparent;
+}
+
+:host([material="hover"]:not(:focus-within):not([focused]):hover) main {
+	border-bottom-color: var(--borderColor);
+}
+
 
 /*
 	Material Outline
