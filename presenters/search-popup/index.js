@@ -48,7 +48,7 @@ export default class extends LitElement{
             title: 'Search',
             anchor: device.isMobile ? 'top': 'center',
             closeOnEsc: true,
-            width: device.isMobile ? '100%' :'600px',
+            width: device.isMobile ? '100%' :'640px',
             height: device.isMobile ? '50%' : '540px',
             type: 'search-popup',
             animation: 'drop'
