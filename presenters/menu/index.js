@@ -135,13 +135,13 @@ export default class Menu {
 		this.__fuse = new Fuse(this.__menu, {
 			keys: [{
 				name: 'dataTitle',
-				weight: 0.7
+				weight: 0.5
 			},{
 				name: 'label',
-				weight: 0.5
+				weight: 0.3
 			}, {
 				name: 'description',
-				weight: 0.3
+				weight: 0.2
 			}],
 			minMatchCharLength: 3,
 			threshold: 0.4,
