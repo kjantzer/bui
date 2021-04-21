@@ -48,6 +48,9 @@ export default class IconElement extends HTMLElement {
 
 			if( Array.isArray(icon) )
 				[name, icon] = icon
+			
+			if( icon.default )
+				icon = icon.default
 				
 			registerIcon(name, icon)
 		})
