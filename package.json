@@ -55,7 +55,7 @@
         "lodash": "^4.17.11",
         "numeral": "^2.0.6",
         "popper.js": "^1.14.7",
-        "quill": "github:kjantzer/quill#shadow",
+        "quill": "github:yananym/quill",
         "workbox-recipes": "^6.1.0",
         "socket.io": "^2.3.0",
         "url-pattern": "^1.0.3"

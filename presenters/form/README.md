@@ -161,7 +161,9 @@ The field will also auto convert some special characters (such as 3 periods to a
 
 > NOTE: current quill.js doesn't like the shadowDOM so we are using a forked version
 > that has changes made to work inside the shadowDOM; however, the changes
-> may still have some issues in certain browsers – see https://github.com/quilljs/quill/pull/2337
+> may still have some issues in certain browsers – see:  
+> https://github.com/quilljs/quill/pull/2337  
+> https://github.com/quilljs/quill/issues/2961  
 
 ## `<select-field>`
 

@@ -5,7 +5,7 @@ import Italic from 'quill/formats/italic';
 import {AlignStyle} from 'quill/formats/align';
 // import Header from 'quill/formats/header';
 // import Blockquote from 'quill/formats/blockquote';
-import List, { ListItem } from 'quill/formats/list';
+import List from 'quill/formats/list';
 
 // custom modules
 import './clipboard'
@@ -20,7 +20,6 @@ Quill.register({
 //   'formats/header': Header,
 //   'formats/blockquote': Blockquote,
   'formats/list': List,
-  'formats/list-item': ListItem,
 });
 
 export {
