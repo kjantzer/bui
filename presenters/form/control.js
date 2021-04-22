@@ -51,14 +51,14 @@ class FormControlElement extends HTMLElement {
 			<slot id="value"></slot>`
 			
         this.shadowRoot.appendChild(temp.content.cloneNode(true));
+
+		this.control = this.querySelector(CONTROLS)
     }
 
 	firstUpdated(){
 		let value = this.$('#value')
 		this._val = value.assignedNodes().map(el=>el.textContent.trim()).join(' ')
 		this._val = this._val.replace(/^\n|\n$/g, '').trim()
-		
-		this.control = this.querySelector(CONTROLS)
 		
 		if( this.control ){
 			
