@@ -1,9 +1,9 @@
 # Gitlab CI (Continuous Integration)
 image: node:4.2.2
 # add 'node_modules' to cache for speeding up builds
-cache:
-  paths:
-    - node_modules/ # Node modules and dependencies
+# cache:
+#   paths:
+#     - node_modules/ # Node modules and dependencies
 
 pages:
     stage: deploy
