@@ -11,6 +11,7 @@ pages:
         # kevin's iMac has been setup as a runner with this tag
         - catalog_deploy
     script:
+        - npm cache clean -f
         - npm install
         - npm run build
     artifacts:
