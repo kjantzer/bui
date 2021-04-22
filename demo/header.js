@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import 'bui/elements/text'
 import Menu from 'bui/presenters/menu'
 import device, {colorScheme} from 'bui/util/device'

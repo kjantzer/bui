@@ -1,4 +1,4 @@
-import {html} from 'lit-element'
+import {html} from 'lit'
 import Menu from '../../menu'
 import titleize from '../../../util/titleize'
 import device from '../../../util/device'

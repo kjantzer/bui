@@ -1,7 +1,7 @@
 /*
 	Select Field
 */
-import {css} from 'lit-element'
+import {css} from 'lit'
 import Menu from '../../menu'
 import device from '../../../util/device';
 

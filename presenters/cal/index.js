@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import '../../elements/btn-group'
 import '../../helpers/lit-element/events'
 import '../../helpers/day-js'

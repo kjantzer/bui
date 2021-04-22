@@ -1,4 +1,4 @@
-import {css} from 'lit-element'
+import {css} from 'lit'
 import Popover from '../../popover'
 import Datepicker from '../../datepicker'
 import setValueAttrs from '../util/setValueAttrs'

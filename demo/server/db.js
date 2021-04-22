@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import docs from 'bui/server/db/README.md'
 
 customElements.define('demo-server-db', class extends LitElement{

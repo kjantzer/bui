@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import 'bui/elements/headers'
 import 'bui/elements/hr'
 import docs from 'bui/README.md'
@@ -132,7 +132,7 @@ customElements.define('demo-overview', class extends LitElement{
                         Blackstone <b-text bold>UI</b-text>
                     </b-text>
 
-                    <p><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">Web components</a> for creating applications – built by Blackstone Publishing using <a href="https://lit-html.polymer-project.org">lit-html</a> and <a href="https://lit-element.polymer-project.org">lit-element</a></p>
+                    <p>A <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">web components</a> library for creating applications. <br>Built with <a href="https://lit.dev">Lit</a> by Blackstone Publishing</p>
 
                 </header>
 

@@ -1,5 +1,5 @@
-import { LitElement, html } from 'lit-element'
-import {live} from 'lit-html/directives/live'
+import { LitElement, html } from 'lit'
+import {live} from 'lit/directives/live'
 import 'lit-virtualizer'
 import dayjs from 'dayjs'
 import styles from './styles'
@@ -175,7 +175,16 @@ customElements.define('b-datepicker', class extends LitElement{
         </footer>
     `}
 
-    renderMonth(date){return html`
+    renderMonth(date){
+        
+        // create the month like this for now as lit-virtualizer
+        // doesnt like the change made in new `lit` package
+        let month = document.createElement('b-datepicker-month')
+        month.date = date
+        month.selectedRange = this.selectedRange
+        return month
+
+        return html`
         <b-datepicker-month 
             .date=${date}
             .selectedRange=${this.selectedRange}

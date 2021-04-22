@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import sparkline from '@fnando/sparkline'
 
 customElements.define('b-sparkline', class extends LitElement{

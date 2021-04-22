@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import '../markdown-docs'
 import docs from 'bui/helpers/README.md'
 import docsRelations from 'bui/helpers/backbone/relations/README.md'

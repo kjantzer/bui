@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 // import Menu from '../presenters/menu'
 import './icon'
 import '../presenters/form/controls/range-slider'

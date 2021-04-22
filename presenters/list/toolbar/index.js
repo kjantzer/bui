@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Popover from '../../popover'
 import './sort-btn'
 import './sort-dir-btn'

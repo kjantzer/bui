@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit-element'
-import {unsafeHTML} from 'lit-html/directives/unsafe-html'
+import { LitElement, html, css } from 'lit'
+import {unsafeHTML} from 'lit/directives/unsafe-html'
 import Button from './btn'
 import '../../elements/spinner'
 import '../../helpers/lit-element/events'
@@ -306,8 +306,9 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             this.__btns = btns
         
         if( doUpdate ){
-            this.update()
-            this.updated()
+            this.requestUpdate()
+            // this.update()
+            // this.updated()
         }
     }
 
@@ -347,8 +348,10 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
     `}
 
     _renderStr(str){
-        if( str && str.getHTML ) // lit-html
+        if( str && str._$litType$ ) // lit-html
             return str
+        if( str instanceof Error )
+            return str.toString()
         if( str ) // TODO: make developer opt-in to using unsafeHTML?
             return unsafeHTML(str)
         return ''
@@ -360,7 +363,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         if( this.icon == 'spinner' )
             return html`<b-spinner></b-spinner>`
 
-        if( this.icon && this.icon.getHTML )
+        if( this.icon && this.icon._$litType$ )
             return this.icon
         
         if( this.icon )

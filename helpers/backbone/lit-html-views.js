@@ -3,7 +3,7 @@
 
     !! DEPRECATED
 */
-import {render} from 'lit-html';
+import {render} from 'lit';
 import {View} from 'backbone'
 
 View.prototype.props = function(){

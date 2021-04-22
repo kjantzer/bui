@@ -24,6 +24,8 @@ class FormHandler extends HTMLElement {
 	
 	connectedCallback(){
 
+		clearTimeout(this.__disconnectedReset)
+
 		let host = this.getRootNode().host
 		if( host && !host.formHandler )
 			host.formHandler = this
@@ -77,11 +79,15 @@ class FormHandler extends HTMLElement {
 	}
 
 	disconnectedCallback(){
-		this.controls = this.editors = []
-		this.controlsByKey = {}
-		this.model = null
 
-		this.removeEventListener('change', this.onEditorChange)
+		// delay in case it reconnects right away (like when parent/host is sorted by dragging)
+		this.__disconnectedReset = setTimeout(()=>{
+			this.controls = this.editors = []
+			this.controlsByKey = {}
+			this.model = null
+
+			this.removeEventListener('change', this.onEditorChange)
+		}, 0)
 	}
 
 	get model(){ return this._model }

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Controller from './controller'
 import device from '../../util/device'
 import style from './style'

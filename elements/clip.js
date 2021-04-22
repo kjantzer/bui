@@ -1,7 +1,7 @@
 /*
     DEPRECATED
 */
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 
 customElements.define('b-clip', class extends LitElement{
 

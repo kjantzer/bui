@@ -141,7 +141,7 @@ File icon has some default file formats defined, but you will inevitably want to
 To support this, you must deliberately call the "define" function before using the custom element.
 
 ```js
-import { css } from 'lit-element'
+import { css } from 'lit'
 import defineFileIcon, {fileIconColors} from 'bui/elements/file-icon'
 
 // list of predefined colors

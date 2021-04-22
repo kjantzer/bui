@@ -1,7 +1,7 @@
 /*
 	https://icomoon.io/app
 */
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css } from 'lit';
 
 const SVG_ICONS = new Map()
 

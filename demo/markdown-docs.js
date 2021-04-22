@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit-element'
-import {unsafeHTML} from 'lit-html/directives/unsafe-html'
+import { LitElement, html, css } from 'lit'
+import {unsafeHTML} from 'lit/directives/unsafe-html'
 import marked from 'marked'
 import hljs from 'highlight.js'
 import {codeHightlighStyle} from './code-hightlight-style'

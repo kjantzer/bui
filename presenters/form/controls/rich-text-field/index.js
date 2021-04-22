@@ -1,5 +1,5 @@
-import { render, html } from "lit-html";
-import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
+import { render, html } from "lit";
+import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import {normalizeText, htmlCleaner} from '../../../../util'
 import Menu from '../../../menu'
 import styles from './style'
@@ -167,7 +167,7 @@ class RichTextField extends HTMLElement {
     }
 
     render(){
-        render(this.html(), this, {eventContext: this})
+        render(this.html(), this, {eventContext: this, host: this})
     }
 
     firstUpdated(){

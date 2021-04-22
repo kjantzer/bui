@@ -1,6 +1,6 @@
-import {html, render} from 'lit-html'
-import {unsafeHTML} from 'lit-html/directives/unsafe-html'
-import {live} from 'lit-html/directives/live'
+import {html, render} from 'lit'
+import {unsafeHTML} from 'lit/directives/unsafe-html'
+import {live} from 'lit/directives/live'
 import Popover from '../popover'
 import Dialog from '../dialog'
 import Panel from '../panel'
@@ -421,8 +421,8 @@ export default class Menu {
 
 		let dataTitle = (m.dataTitle || m.label+' '+m.description).trim().toLowerCase()
 
-		let label = m.label && m.label.getHTML ? m.label : unsafeHTML(m.label||'')
-		let description = m.description && m.description.getHTML ? m.description : unsafeHTML(m.description||'')
+		let label = m.label && m.label._$litType$ ? m.label : unsafeHTML(m.label||'')
+		let description = m.description && m.description._$litType$ ? m.description : unsafeHTML(m.description||'')
 
 		return html`
 			<div class="menu-item ${m.className}" val=${m.val} index=${i}

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import DataSource from './data/source'
 import Filters from './data/filters'
 import Sorts from './data/sorts'

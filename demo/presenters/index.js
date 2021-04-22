@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import 'bui/helpers/colors-list'
 import 'bui/presenters/form'
 import 'bui/presenters/list'
