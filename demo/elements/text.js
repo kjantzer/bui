@@ -1,4 +1,4 @@
-import { html } from 'lit'
+import { html } from 'lit-element'
 import 'bui/elements/numeral'
 import dayjs from 'bui/helpers/day-js'
 import 'bui/elements/ts'

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from 'lit-element'
 
 export default class MentionElement extends LitElement{
     

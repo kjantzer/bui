@@ -1,4 +1,4 @@
-import {LitElement, html, css} from 'lit'
+import {LitElement, html, css} from 'lit-element'
 import Menu from '../menu'
 import router from '../../router'
 import device from '../../util/device'

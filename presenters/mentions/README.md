@@ -65,7 +65,7 @@ A default `<b-mention>` element will be registered and used upon the first intia
 If you wish to extend the default mention, you can import, extend, and register it yourself.
 
 ```js
-import {html} from 'lit'
+import {html} from 'lit-element'
 import Mentions, {MentionElement} from 'bui/presenters/mentions'
 
 class CustomMentionElement extends MentionElement {

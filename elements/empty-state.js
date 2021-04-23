@@ -1,7 +1,7 @@
 /*
     https://undraw.co/illustrations
 */
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css } from "lit-element";
 
 export default class EmptyState extends LitElement {
 

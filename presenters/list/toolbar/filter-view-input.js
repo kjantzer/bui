@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from 'lit-element'
 
 customElements.define('b-list-filter-view-input', class extends LitElement{
 

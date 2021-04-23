@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from 'lit-element'
 import dayjs from 'dayjs'
 import Datepicker from '../../../presenters/datepicker'
 

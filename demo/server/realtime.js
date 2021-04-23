@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from 'lit-element'
 import docs from 'bui/realtime/README.md'
 
 customElements.define('demo-server-realtime', class extends LitElement{

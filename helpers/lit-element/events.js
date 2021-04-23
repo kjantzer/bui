@@ -1,4 +1,4 @@
-import {LitElement} from 'lit'
+import {LitElement} from 'lit-element'
 
 LitElement.prototype.emitEvent = function(eventName, detail=null, overrides={}){
 

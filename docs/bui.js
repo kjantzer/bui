@@ -679,7 +679,7 @@ const directives = new WeakMap();
  *
  * @example
  *
- * import {directive, html} from 'lit';
+ * import {directive, html} from 'lit-html';
  *
  * const immutable = directive((v) => (part) => {
  *   if (part.value !== v) {
@@ -3864,7 +3864,7 @@ Object.keys(_cssTag).forEach(function (key) {
  * component:
  *
  *  ```js
- * import {LitElement, html} from 'lit';
+ * import {LitElement, html} from 'lit-element';
  *
  * class MyElement extends LitElement {
  *
@@ -13849,7 +13849,7 @@ exports.default = void 0;
 
 var _litElement = require("lit-element");
 
-var _unsafeHtml = require("lit/directives/unsafe-html");
+var _unsafeHtml = require("lit-html/directives/unsafe-html");
 
 var _makeBtn = _interopRequireWildcard(require("../dialog/make-btn"));
 
@@ -13960,7 +13960,7 @@ customElements.define('b-snackbar', class extends _litElement.LitElement {
 var _default = customElements.get('b-snackbar');
 
 exports.default = _default;
-},{"lit-element":"bhxD","lit/directives/unsafe-html":"jTPt","../dialog/make-btn":"TZ6L","../../helpers/lit-element/events":"euwv"}],"XAiK":[function(require,module,exports) {
+},{"lit-element":"bhxD","lit-html/directives/unsafe-html":"jTPt","../dialog/make-btn":"TZ6L","../../helpers/lit-element/events":"euwv"}],"XAiK":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15974,9 +15974,9 @@ exports.default = exports.DefaultOpts = void 0;
 
 var _litHtml = require("lit-html");
 
-var _unsafeHtml = require("lit/directives/unsafe-html");
+var _unsafeHtml = require("lit-html/directives/unsafe-html");
 
-var _live = require("lit/directives/live");
+var _live = require("lit-html/directives/live");
 
 var _popover = _interopRequireDefault(require("../popover"));
 
@@ -16634,7 +16634,7 @@ class Menu {
 }
 
 exports.default = Menu;
-},{"lit-html":"SPDu","lit/directives/unsafe-html":"jTPt","lit/directives/live":"RaiV","../popover":"Soyf","../dialog":"pos3","../panel":"cmZt","fuse.js":"Wp9p","../../elements/hr":"IOAQ","../form/controls/check-box":"jNfL","../form/controls/select-field":"h8fl","../../util/device":"la8o","./style.less":"r4vn"}],"P61z":[function(require,module,exports) {
+},{"lit-html":"SPDu","lit-html/directives/unsafe-html":"jTPt","lit-html/directives/live":"RaiV","../popover":"Soyf","../dialog":"pos3","../panel":"cmZt","fuse.js":"Wp9p","../../elements/hr":"IOAQ","../form/controls/check-box":"jNfL","../form/controls/select-field":"h8fl","../../util/device":"la8o","./style.less":"r4vn"}],"P61z":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

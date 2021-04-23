@@ -2,7 +2,7 @@
     Tells the element to update when a new backbone coll
     is assigned
 */
-import {LitElement} from 'lit'
+import {LitElement} from 'lit-element'
 
 Object.defineProperty(LitElement.prototype, 'coll', {
 

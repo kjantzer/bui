@@ -1,5 +1,5 @@
 
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from 'lit-element'
 
 export const fileIconColors = {
 

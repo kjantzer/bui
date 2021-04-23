@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from 'lit-element'
 import docs from 'bui/presenters/form/README.md'
 
 // must be deliberately imported

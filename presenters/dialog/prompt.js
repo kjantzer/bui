@@ -2,7 +2,7 @@
 	A subclass of Dialog that supports variable prompt inputs
 */
 import Dialog from './element'
-import { html, css } from 'lit'
+import { html, css } from 'lit-element'
 import device from '../../util/device'
 import mobileAsyncFocus from '../../util/mobileAsyncFocus'
 import '../form/controls/text-field'
@@ -109,7 +109,7 @@ export default customElements.get('b-dialog-prompt')
 function makePrompt(opts, i=0, globalOpts){
 
 	// must be custom lit-html
-	if( opts._$litType$ )
+	if( opts.getHTML )
 		return opts
 
 	if( opts == 'divider' )

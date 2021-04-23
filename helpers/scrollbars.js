@@ -1,4 +1,4 @@
-import {css} from 'lit'
+import {css} from 'lit-element'
 import device from '../util/device'
 
 const styles = css`

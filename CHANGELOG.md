@@ -1,9 +1,5 @@
 # Changelog
 
-## 2021-04-22
-- Upgraded `lit-element` and `lit-html` to new `lit` [package](https://lit.dev)
-- Upgraded `quill` package to support webpack 5
-
 ## 2021-02-26
 - BREAKING: `realtime` code moved from `/server/realtime` to root `/realtime`
 

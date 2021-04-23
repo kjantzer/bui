@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from 'lit-element'
 
 // https://embedresponsively.com/ 
 customElements.define('b-embed', class Embed extends LitElement {

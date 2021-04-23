@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from 'lit-element'
 import Panel from 'panel'
 import device from 'bui/util/device'
 

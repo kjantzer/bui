@@ -53,7 +53,7 @@ Rendering panels this way probably shouldn't happen very often, but it is suppor
 
 ```javascript
 import {Panel} from 'bui'
-import {html} from 'lit'
+import {html} from 'lit-html'
 
 new Panel(()=>html`
     <b-panel-toolbar></b-panel-toolbar>

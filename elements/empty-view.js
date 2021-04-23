@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from 'lit-element'
 import EmptyState from 'bui/elements/empty-state'
 
 customElements.define('b-empty-view', class extends EmptyState {

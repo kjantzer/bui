@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from 'lit-element'
 import './touch-ripple'
 
 customElements.define('radio-btn', class extends LitElement{

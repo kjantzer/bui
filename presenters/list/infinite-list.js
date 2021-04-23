@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from 'lit-element'
 import '../../elements/empty-state'
 
 customElements.define('b-infinite-list', class extends LitElement {

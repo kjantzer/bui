@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from 'lit-element'
 import View from './view'
 import docs from 'bui/presenters/panel/README.md'
 import Panel, {Modal} from 'bui/presenters/panel'
@@ -39,7 +39,6 @@ customElements.define('demo-presenter-panel', class extends View{
 export default customElements.get('demo-presenter-panel')
 
 Panel.register('view-1', ()=>html`
-    <div style="display: grid; grid-template-rows: auto 1fr;">
     <b-panel-toolbar shadow>
         <b-btn slot="right" text>Btn</b-btn>
         <span slot="left">
@@ -53,7 +52,6 @@ Panel.register('view-1', ()=>html`
             <div title="View 2">View 2 content</div>
         </b-tabs>
     </main>
-    </div>
 `, {title: 'View 1'})
 
 

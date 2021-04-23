@@ -1,4 +1,4 @@
-import {LitElement, html, css, unsafeCSS} from 'lit'
+import {LitElement, html, css, unsafeCSS} from 'lit-element'
 import Controller from './controller'
 import router from '../../router'
 import Route from '../../router/route'

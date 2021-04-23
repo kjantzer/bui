@@ -1,4 +1,4 @@
-import { html, css } from 'lit'
+import { html, css } from 'lit-element'
 import 'bui/elements/hardcover-book'
 import 'bui/elements/hardcover-book-2d'
 import 'bui/elements/sparkline'

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from 'lit-element'
 import device from '../../../util/device'
 
 customElements.define('range-slider', class extends LitElement{
