@@ -26,7 +26,9 @@ customElements.define('range-slider', class extends LitElement{
         this.valMin = 0
         this.valMax = 0
         this.value = [0,0]
+    }
 
+    firstUpdated(){
         this.addEventListener('keydown', this._onKeyDown)
 		
         // respond to the "thumbs" gaining focus
