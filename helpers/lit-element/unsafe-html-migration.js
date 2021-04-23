@@ -8,7 +8,8 @@ UnsafeHTMLDirective.prototype.render = function(value){
     try{
         return UnsafeHTMLDirective_Render.call(this, value)
     }catch(err){
-        console.warn('UnsafeHTML wrong value:', value);
+        if( value != null )
+            console.warn('UnsafeHTML wrong value:', value);
         return ''
     }
 }
