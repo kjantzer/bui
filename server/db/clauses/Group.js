@@ -26,9 +26,13 @@ module.exports = class Group extends Map {
 
         this.forEach((val, key)=>{
 
+            if( key.toSqlString ){
+                key = key.toSqlString()
+
             // NOTE: this might create issues in existing code
-            if( key[0] != '`' )
+            }else if( key[0] != '`' ){
                 key = db.escapeId(key)
+            }
 
             if( val instanceof Clause )
                 clauses.push(val.toSqlString(db, key))
