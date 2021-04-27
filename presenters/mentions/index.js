@@ -33,13 +33,13 @@ export default class {
 			// fuse.js options
 			keys: [{
 				name: 'dataTitle',
-				weight: 0.7
+				weight: 0.5
 			},{
 				name: 'label',
-				weight: 0.5
+				weight: 0.3
 			}, {
 				name: 'description',
-				weight: 0.3
+				weight: 0.2
 			}],
 			minMatchCharLength: 2,
 			threshold: 0.2,
