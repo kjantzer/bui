@@ -8,7 +8,7 @@ import './server'
 customElements.define('demo-main', class extends App{
 
     get views(){
-        return `
+        return html`
             demo-overview
             demo-elements
             demo-presenters

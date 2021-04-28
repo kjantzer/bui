@@ -5,7 +5,7 @@
 import styles from './control.css.js'
 import nativeInputHelper from './util/nativeInputHelper'
 
-const CONTROLS = '[slot="control"], .control, text-field, rich-text-field, select-field, check-box, radio-group, token-text-field'
+const CONTROLS = '[slot="control"], .control, text-field, text-editor, rich-text-field, select-field, check-box, radio-group, token-text-field'
 const MIRROR_CONTROL_ATTRS = ['invalid', 'empty', 'no-value', 'falsy', 'focused', 'value']
 
 

@@ -142,7 +142,13 @@ as `password`. For this purpose the `input` attribute can be applied.
 #### Multiline
 In this mode the enter key will create new lines instead of submitting/saving the value. Holding `ctrl/cmd` and enter will trigger the submit event.
 
+## `<text-editor>`
+
+NEW: still a work in progress. Uses [tiptap](https://www.tiptap.dev/) and will replace `rich-text-field`
+
 ## `<rich-text-field>`
+
+!! DEPRECATED - `text-editor` is replacing
 
 Similar to the `text-field` but with [quill.js](https://quilljs.com) enabled for rich text editing.
 
