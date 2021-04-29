@@ -35,6 +35,9 @@ customElements.define('text-editor', class extends LitElement{
     connectedCallback(){
         super.connectedCallback()
 
+        clearTimeout(this._cleanupTimeout)
+        if( this.editor ) return
+
         this.editor = new Editor({
             extensions: [
                 ...defaultExtensions(),
@@ -63,7 +66,11 @@ customElements.define('text-editor', class extends LitElement{
 
     disconnectedCallback(){
         super.disconnectedCallback()
-        this.editor.destroy()
+        // delay cleanup in case quickly reconnected
+        this._cleanupTimeout = setTimeout(()=>{
+            this.editor.destroy()
+            delete this.editor
+        },10)
     }
 
     render(){return html`
