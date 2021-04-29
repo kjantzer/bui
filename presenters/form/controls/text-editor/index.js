@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
 import { Editor } from '@tiptap/core'
 import { defaultExtensions } from '@tiptap/starter-kit'
+import { SmartCharacterReplacer } from './smart-character-replacer'
 import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
 import './menubar'
@@ -38,7 +39,8 @@ customElements.define('text-editor', class extends LitElement{
             extensions: [
                 ...defaultExtensions(),
                 Placeholder,
-                TextAlign
+                TextAlign,
+                SmartCharacterReplacer
             ],
             editorProps: {
                 attributes: {
