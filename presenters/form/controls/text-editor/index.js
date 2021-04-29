@@ -102,6 +102,8 @@ customElements.define('text-editor', class extends LitElement{
         this.__val = val
         if( this.editor )
             this.editor.commands.setContent(val)
+        
+        this.toggleAttribute('empty', this.isEmpty)
     }
 
     get isEmpty(){
