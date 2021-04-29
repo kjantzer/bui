@@ -146,6 +146,11 @@ In this mode the enter key will create new lines instead of submitting/saving th
 
 NEW: still a work in progress. Uses [tiptap](https://www.tiptap.dev/) and will replace `rich-text-field`
 
+#### Attributes
+- `value`
+- `placeholder`
+- `menubar` - show some editing controls?
+
 ## `<rich-text-field>`
 
 !! DEPRECATED - `text-editor` is replacing
