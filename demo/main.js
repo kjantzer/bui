@@ -1,3 +1,4 @@
+import {html} from 'lit-element'
 import App from 'bui/presenters/tabs/app'
 import './overview'
 import './elements'
