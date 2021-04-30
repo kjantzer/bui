@@ -57,11 +57,11 @@ export default css`
 	opacity: 0
 }
 
-.ProseMirror p:first-child { margin-top: 0;}
-.ProseMirror p:last-child { margin-bottom: 0;}
+.ProseMirror :first-child { margin-top: 0;}
+.ProseMirror :last-child { margin-bottom: 0;}
 
 .ProseMirror code {
-	background-color: var(--theme-bgd-accent);
+	background-color: rgba(var(--theme-bgd-rgb),0.6);
 	color: var(--theme-color-accent);
 	padding: .1rem .3rem;
 	border-radius: .4rem;
@@ -89,6 +89,17 @@ export default css`
 	color: var(--theme-text-accent);
 	pointer-events: none;
 	height: 0;
+}
+
+.ProseMirror blockquote {
+	color: rgba(var(--theme-text-rgb),0.6);
+    border-left: 4px solid rgba(var(--theme-text-rgb),0.2);
+    padding: 0.25em 0.5em;
+    margin: 0.5em 0 .5em 1em;
+}
+
+.ProseMirror :is(h1,h2,h3,h4,h5){
+	line-height: 1em;
 }
 
 `

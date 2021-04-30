@@ -114,7 +114,7 @@ customElements.define('text-editor', class extends LitElement{
     }
 
     get isEmpty(){
-        return this.editor.isEmpty
+        return !this.editor||this.editor.isEmpty
     }
 
     onEditorUpdate(){
