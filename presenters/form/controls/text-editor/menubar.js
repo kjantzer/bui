@@ -48,10 +48,15 @@ customElements.define('b-text-editor-menubar', class extends LitElement{
     `}
 
     set editor(val){
+        if( this.editor === val ) return
+        
         this.__editor = val
     
         if( this.editor ){
             this.editor.on('transaction', this.editorChanged.bind(this))
+            this.editor.on('destroy', ()=>{
+                this.editor = null
+            })
 
             // this.editor.on('blur', e=>{
             //     this.__bluring = setTimeout(()=>{

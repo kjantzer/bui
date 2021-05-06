@@ -59,6 +59,7 @@ customElements.define('text-editor', class extends LitElement{
 
         setTimeout(()=>{
             this.shadowRoot.querySelector('main').prepend(this.editor.options.element)
+            this.shadowRoot.querySelector('b-text-editor-menubar').editor = this.editor
         })
 
         this.toggleAttribute('empty', this.isEmpty)
