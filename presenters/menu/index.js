@@ -66,6 +66,9 @@ export default class Menu {
 	}
 	
 	constructor(menu=[], opts={}){
+
+		// remove null/empty values
+		menu = menu.filter(i=>i)
 		
 		this.el = document.createElement('div')
 		this.el.classList.add('b-menu')
