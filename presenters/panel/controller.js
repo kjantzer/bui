@@ -187,7 +187,7 @@ class PanelController extends LitElement {
         if( this.length == 0 ){
             
             // TEMP - improve interoperability with Groundwork
-            if( window.app && app.sv('sheets').sheets.length > 0 )
+            if( window.app && window.app.sv && app.sv('sheets').sheets.length > 0 )
                 app.sv('sheets').setHash()
             else
                 router.push('')
