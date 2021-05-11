@@ -42,11 +42,15 @@ class Book {
         this.syncData(attrs)
 
         // if you want to control which clients in the sync room you can like this:
-        this.syncData(attrs, socket=>{
+        this.syncData(attrs, {toClients:socket=>{
             if( socket.id == 'someid' )
                 return true
             return false
-        })
+        }})
+
+        // by default, the client who made the request does not get the sync
+        // use "all" to include the request client
+        this.syncData(attrs, {toClients:'all'})
     }
 
     // this method is added by Sync

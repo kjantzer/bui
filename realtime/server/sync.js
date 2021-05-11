@@ -34,7 +34,7 @@ module.exports = class Sync extends Map {
             }
         });
 
-        Class.prototype.syncData = function(data, toClients){
+        Class.prototype.syncData = function(data, {toClients=null}={}){
 
             if( !this.syncPath ) return console.error('Class does have `syncPath` set')
 
