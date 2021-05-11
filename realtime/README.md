@@ -95,14 +95,18 @@ myModel.realtimeSync.connect()
 myModel.realtimeSync.close()
 ```
 
-### Backbone Collection Sync
-A basic Backbone.Collection sync function is implemeted and can be used
+### Backbone Sync
+There are two basic sync functions for Backbone models and collections
 ```js
-import {syncBackboneCollection} from 'bui/realtime/client/sync'
+import {syncBackboneCollection, syncBackboneModel} from 'bui/realtime/client/sync'
 
 class {
     onSync(sync){
+        // for a Collection
         syncBackboneCollection.call(this, sync)
+
+        // for a Model (supports relations)
+        syncBackboneModel.call(this, sync)
     }
 }
 
@@ -161,7 +165,7 @@ Tracks and shows which clients/users are looking at a particular view. Users are
 
 ```js
 import realtime from 'bui/realtime/client'
-import ReatimeUsers from 'bui/realtime/client/realtime-users'
+import RealtimeUsers from 'bui/realtime/client/realtime-users'
 
 RealtimeUsers.realtime = realtime
 RealtimeUsers.currentUserID = 1 // 

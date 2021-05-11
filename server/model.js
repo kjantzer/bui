@@ -91,7 +91,7 @@ module.exports = class Model {
     }
 
     toJSON(){
-        return this.attrs||{}
+        return Object.assign({}, this.attrs||{})
     }
 
     get filters(){
@@ -282,7 +282,12 @@ module.exports = class Model {
 
         this.afterAdd&&this.afterAdd(attrs)
 
-        return await this.find()
+        let resp = await this.find()
+
+        if( this.config.sync && this.syncData )
+            this.syncData('add', resp)
+
+        return resp
     }
 
     async update(attrs={}){
@@ -311,6 +316,9 @@ module.exports = class Model {
             if( this.id )
                 this.attrs = Object.assign(this.attrs||{}, attrs)
 
+            if( this.config.sync && this.syncData )
+                this.syncData('update', attrs)
+
             return attrs
         }
         
@@ -334,6 +342,9 @@ module.exports = class Model {
         let result = await this.db.q(/*sql*/`DELETE FROM ${this.config.table} WHERE ${clause}`, clauseValues)
 
         await this.afterDestroy(result)
+
+        if( this.config.sync && this.syncData && result )
+            this.syncData('destroy', result)
 
         return String(result.affectedRows)
     }

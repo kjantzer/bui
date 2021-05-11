@@ -74,8 +74,9 @@ module.exports = class MyModel extends Model {
         idAttribute: 'id',
         orderBy: '',
         limit: '',
-        jsonFields: [] // will parse and encode on find/update/create
-        csvFields: [] // ex: `1,2,3` => ['1', '2', '3']
+        jsonFields: [], // will parse and encode on find/update/create
+        csvFields: [], // ex: `1,2,3` => ['1', '2', '3']
+        sync: false, // if true, will call `this.syncData()` on update/add/destroy
     }}
 
     // alter the where clause

@@ -81,3 +81,56 @@ export function syncBackboneCollection(sync, {
         this.remove(model)
     }
 }
+
+export function syncBackboneModel(data, {addMissingUpdates=true}={}){
+    
+    let model = this
+    let {action, attrs, syncData, url} = data
+    
+    // sync url is different, so use it to try and find the correct child model
+    if( url && url != this.url() ){
+        
+        // `/api/book/1/elements/2` => `elements.2`
+        let path = url.replace(this.url()+'/', '').replace(/\//g, '.')
+
+        // remove trailing ID `model.1` => `model`
+        if( data.action == 'add' )
+            path = path.replace(/\.\d+$/,'')
+
+        model = this.get(path)
+
+        if( !model && addMissingUpdates ){
+            data.action = 'add'
+            path = path.replace(/\.\d+$/,'')
+            model = this.get(path)
+        }
+    }
+
+    if( !model )
+        return console.warn('Sync: unsure how to handle, ', data)
+
+    let didSync = false
+
+    if( action == 'add' ){
+        let m = model.add(syncData)
+        didSync = true
+    }
+    
+    if( action == 'update' ){
+        didSync = true
+        model.set(syncData||attrs)
+    }
+
+    if( action == 'destroy' && model.collection ){
+        didSync = true
+        // can't call `model.destroy` as that would send a request to the server
+        model.collection.remove(model)
+        model.trigger('destroy', model, model.collection, {})
+    }
+
+    // let views know when sync changes happen
+    if( didSync )
+        model.trigger('realtime-sync', data)
+
+    return didSync
+}
