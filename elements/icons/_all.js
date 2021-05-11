@@ -5,6 +5,7 @@ export default Icon
 
 Icon.register(
     ['address', require('./address.svg.html')],
+	['pod', require('./pod.svg.html')],
 	['alert', require('./alert.svg.html')],
 	['amazon', require('./amazon.svg.html')],
 	['android', require('./android.svg.html')],
