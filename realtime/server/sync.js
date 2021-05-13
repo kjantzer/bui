@@ -27,7 +27,7 @@ module.exports = class Sync extends Map {
         // create a syncPath getter that will use the sync path pattern
         // and create a string using the class attributres
         // path: `/book/:id` will become `/book/1` (if `class.id == 1`)
-        if( Class.prototype.syncPath === undefined )
+        if( !Class.prototype.hasOwnProperty('syncPath') )
         Object.defineProperty(Class.prototype, 'syncPath', {
             get: function syncPath() {
                 return this.apiPath || this.syncPathPattern.stringify(this)

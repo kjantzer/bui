@@ -65,7 +65,7 @@ export function syncBackboneCollection(sync, {
     let model = this.get(attrs.id)
     action = action.toLowerCase()
 
-    if( action == 'update' && model ){    
+    if( ['update', 'patch'].includes(action) && model ){    
         model.set(attrs)
     }
     else if( !model && (['insert', 'add'].includes(action) 
@@ -74,7 +74,7 @@ export function syncBackboneCollection(sync, {
         model = new (this.model)(attrs)
         this.add(model)
     }
-    else if(  ['delete'].includes(action) && model ){
+    else if( ['destroy', 'delete'].includes(action) && model ){
         if( triggerDestroy )
             model.trigger('destroy')
             
@@ -111,8 +111,8 @@ export function syncBackboneModel(data, {addMissingUpdates=true}={}){
 
     let didSync = false
 
-    if( action == 'add' ){
-        let m = model.add(syncData)
+    if( action == 'add' && attrs ){
+        let m = model.add(attrs)
         didSync = true
     }
     
