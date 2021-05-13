@@ -12,6 +12,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             background: var(--theme-bgd) !important;
             padding-bottom: env(safe-area-inset-bottom);
             position: relative;
+            padding: 0 .25em;
         }
 
         @media (orientation:landscape) {
@@ -32,6 +33,9 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             padding-top: .25em;
             padding-bottom: .25em;
             --b-btn-stacked-icon-opacity:.3;
+
+            border-radius: .75em;
+            margin: .25em 0;
         }
 
         b-btn > span {
@@ -47,11 +51,14 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
         b-btn[active] {
             --b-btn-stacked-icon-opacity: 1;
-            color: var(--b-app-tab-bar-active-color, var(--theme-text));
+            /* color: var(--b-app-tab-bar-active-color, var(--theme-text)); */
             /* top border */
             /* box-shadow: black 1px 6px 0px -2px inset; */
-            border-radius: 0;
+            /* border-radius: 0; */
             /* --bgdColor: rgba(var(--theme-text-rgb),.1); */
+
+            color: white;
+            background: var(--b-app-tab-bar-active-color, var(--theme));
         }
         
         b-btn[active] span {
@@ -76,18 +83,19 @@ customElements.define('b-app-tab-bar', class extends LitElement{
                 grid-template-columns: repeat(auto-fit, 72px);
                 align-content: flex-start;
                 gap: .5em;
-                padding-top: .5em;
-                padding-bottom: .5em;
+                padding: .5em 0;
             }
 
             b-btn {
                 padding-top: .5em;
                 padding-bottom: .35em;
+
+                margin: 0 .25em;
             }
 
             b-btn[active] {
                 /* left border */
-                box-shadow: var(--b-app-tab-bar-active-color, var(--theme-chosen, var(--theme-text))) 6px 1px 0px -2px inset;
+                /* box-shadow: var(--b-app-tab-bar-active-color, var(--theme-chosen, var(--theme-text))) 6px 1px 0px -2px inset; */
                 /* border-top-left-radius: 0;
                 border-bottom-left-radius: 0; */
             }
