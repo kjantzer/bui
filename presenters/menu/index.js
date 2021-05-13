@@ -12,6 +12,8 @@ import device from '../../util/device';
 
 const styles = require('./style.less')
 
+export {Dialog, Popover}
+
 export const DefaultOpts = {
 	selected: false,
 	multiple: false,
