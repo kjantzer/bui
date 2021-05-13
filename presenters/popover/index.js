@@ -174,11 +174,17 @@ export default class Popover {
 
 	createInvisiblePlaceholderTarget(e){
 		let target = document.createElement('div')
-		target._popoverTarget = e._popoverTarget = (e._popoverTarget || e.currentTarget)
+		target._popoverTarget = (e._popoverTarget || e.currentTarget)
 		target.classList.add('popover-invisible-placeholder')
 		target.style.position = 'absolute'
 		
 		if( e instanceof MouseEvent ){
+
+			if( !Object.isFrozen(e) ){
+				e._popoverTarget = target._popoverTarget
+				Object.freeze(e)
+			}
+
 			target.style.left = e.clientX+'px'
 			target.style.top = e.clientY+'px'
 
