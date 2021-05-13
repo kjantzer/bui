@@ -47,6 +47,17 @@ class FormHandler extends HTMLElement {
 		return vals
 	}
 
+	set values(vals={}){
+		this.controls.forEach(control=>{
+			if( control.key && vals[control.key] != undefined ){
+				control.value = vals[control.key]
+			}
+		})
+
+		this.setControlIfs()
+		this.store(vals)
+	}
+
 	bindControls(){
 		// TODO: change to `controls`?
 		this.controls = this.editors = Array.from(this.querySelectorAll('form-control[key], check-box[key], radio-group[key], text-field[key], select-field[key]'))
@@ -319,7 +330,8 @@ class FormHandler extends HTMLElement {
 	get(key){
 		if( typeof key == 'number' )
 			return this.controls[key]
-			
+		
+		if( !this.controls ) return
 		return Array.from(this.controls).find(ed=>ed.key==key)
 	}
 }
