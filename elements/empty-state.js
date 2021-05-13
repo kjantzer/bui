@@ -32,6 +32,10 @@ export default class EmptyState extends LitElement {
             color: rgba(255,255,255,.1);
         }
 
+        :host([dashed]) {
+            border: dashed 1px;
+        }
+
         :host([static]) {
             position: static;
             height: auto;
