@@ -284,8 +284,14 @@ module.exports = class Model {
 
         let resp = await this.find()
 
-        if( this.config.sync && this.syncData )
-            this.syncData('add', resp)
+        if( this.config.sync && this.req && this.syncData )
+            this.syncData({
+                action:'add',
+                attrs:resp,
+                syncData:attrs,
+                method: this.req.method,
+                url: this.apiPath
+            })
 
         return resp
     }
@@ -316,8 +322,14 @@ module.exports = class Model {
             if( this.id )
                 this.attrs = Object.assign(this.attrs||{}, attrs)
 
-            if( this.config.sync && this.syncData )
-                this.syncData('update', attrs)
+            if( this.config.sync && this.req && this.syncData )
+                this.syncData({
+                    action: 'update',
+                    attrs: this.toJSON(),
+                    syncData: attrs,
+                    method: this.req.method,
+                    url: this.apiPath
+                })
 
             return attrs
         }
@@ -343,8 +355,13 @@ module.exports = class Model {
 
         await this.afterDestroy(result)
 
-        if( this.config.sync && this.syncData && result )
-            this.syncData('destroy', result)
+        if( this.config.sync && this.req && this.syncData && result )
+            this.syncData({
+                action: 'destroy',
+                attrs: this.toJSON(),
+                method: this.req.method,
+                url: this.apiPath
+            })
 
         return String(result.affectedRows)
     }
