@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit-element'
 import { Editor } from '@tiptap/core'
 import { defaultExtensions } from '@tiptap/starter-kit'
 import { SmartCharacterReplacer } from './smart-character-replacer'
+import { KeyboardEvents } from './keyboard-events'
 import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
 import './menubar'
@@ -43,7 +44,8 @@ customElements.define('text-editor', class extends LitElement{
                 ...defaultExtensions(),
                 Placeholder,
                 TextAlign,
-                SmartCharacterReplacer
+                SmartCharacterReplacer,
+                KeyboardEvents
             ],
             editorProps: {
                 attributes: {
@@ -59,7 +61,8 @@ customElements.define('text-editor', class extends LitElement{
 
         setTimeout(()=>{
             this.shadowRoot.querySelector('main').prepend(this.editor.options.element)
-            this.shadowRoot.querySelector('b-text-editor-menubar').editor = this.editor
+            if( this.menubar )
+                this.shadowRoot.querySelector('b-text-editor-menubar').editor = this.editor
         })
 
         this.toggleAttribute('empty', this.isEmpty)
@@ -102,6 +105,7 @@ customElements.define('text-editor', class extends LitElement{
     }
 
     get value(){
+        if( this.isEmpty ) return ''
         return this.__val = this.editor ? this.editor.getHTML() : (this.__val||'')
     }
 

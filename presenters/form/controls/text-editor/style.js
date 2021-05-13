@@ -61,7 +61,7 @@ export default css`
 .ProseMirror :last-child { margin-bottom: 0;}
 
 .ProseMirror code {
-	background-color: rgba(var(--theme-bgd-rgb),0.6);
+	background-color: rgba(var(--theme-text-rgb),0.1);
 	color: var(--theme-color-accent);
 	padding: .1rem .3rem;
 	border-radius: .4rem;
