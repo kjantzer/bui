@@ -4,13 +4,19 @@ import Button from './btn'
 import '../../elements/spinner'
 import '../../helpers/lit-element/events'
 
+const basicConverter = { 
+    toAttribute: (value, type) => { 
+        return value ? '1' : '0'
+    }
+  }
+
 customElements.define('b-dialog', class DialogElement extends LitElement{
 
     static get properties(){return {
         icon: {type: String},
-        pretitle: {type: String},
-        title: {type: String},
-        body: {type: String},
+        pretitle: {type: String, reflect: true, converter: basicConverter},
+        title: {type: String, reflect: true, converter: basicConverter},
+        body: {type: String, reflect:true, converter: basicConverter},
 
         closeBtn: {type: Boolean},
 
@@ -140,6 +146,10 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             color: var(--accent);
         }
 
+        :host([title='0'][pretitle='0']) aside [name="icon"] > * {
+            --size: var(--icon-size, 1em);
+        }
+
         :host([toast]) aside {
             grid-row: span 1;
         }
@@ -254,6 +264,12 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
     constructor(opts={}){
         super()
         
+        opts = Object.assign({
+            pretitle: '',
+            title: '',
+            body: ''
+        }, opts)
+
         for( let k in opts ){
 
             let prop = Object.getOwnPropertyDescriptor(DialogElement.prototype, k)

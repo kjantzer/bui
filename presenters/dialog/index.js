@@ -24,6 +24,7 @@ Dialog.prompt = (opts)=>{ return new Prompt(opts) }
 registerPreset('waiting', {
 	icon: 'spinner',
 	title: 'Processing...',
+	color: 'inverse',
 	btns: false
 })
 
