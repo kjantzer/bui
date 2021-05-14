@@ -166,7 +166,9 @@ export const colorScheme = {
             secondary = localStorage.getItem('theme-secondary')
         }else{
             localStorage.setItem('theme-accent', accent)
-            localStorage.setItem('theme-secondary', secondary)
+            
+            if( secondary )localStorage.setItem('theme-secondary', secondary)
+            else localStorage.removeItem('theme-secondary', secondary)
         }
 
         if( accent ){
