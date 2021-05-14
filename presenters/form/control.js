@@ -31,7 +31,7 @@ class FormControlElement extends HTMLElement {
         temp.innerHTML = `
 			<style>${styles.cssText}</style>
 			<slot name="before"></slot>
-			<main>
+			<main part="main">
 				<slot name="control"></slot>
 				<slot name="main"></slot>
 				<div class="prefix" part="prefix">${prefix}</div>
