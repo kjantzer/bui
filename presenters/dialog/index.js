@@ -54,6 +54,7 @@ registerPreset('warn', {
 	pretitle: 'Warning',
 	icon: 'attention-1',
 	accent: 'orange',
+	color: 'inverse',
 	edge: true,
 	btns: ['dismiss']
 })
@@ -62,6 +63,7 @@ registerPreset('error', {
 	pretitle: 'Error',
 	icon: 'attention-circle',
 	accent: 'red',
+	color: 'inverse',
 	edge: true,
 	btns: ['dismiss']
 })
@@ -79,6 +81,7 @@ registerPreset('fatal', {
 registerPreset('info', {
 	icon: 'info-circled',
 	accent: 'blue',
+	color: 'inverse',
 	btns: ['dismiss']
 })
 
