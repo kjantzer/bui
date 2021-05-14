@@ -126,6 +126,7 @@ export const colorScheme = {
     get theme(){ return localStorage.getItem('theme') },
     get accent(){ return localStorage.getItem('theme-accent') },
 
+    // TODO: rename to `setColorMode` or `setLightDarkMode`
     setTheme(theme){
 
         const html = document.documentElement
@@ -155,20 +156,27 @@ export const colorScheme = {
         localStorage.setItem('meta-theme-color', metaThemeColor.content)  
     },
 
-    setAccent(accent){
+    setAccent(accent, secondary){
 
         const html = document.documentElement
         let colorizeFaviconComposition = localStorage.getItem('theme-colorize-icon')
 
         if( accent === undefined ){
             accent = localStorage.getItem('theme-accent')
+            secondary = localStorage.getItem('theme-secondary')
         }else{
             localStorage.setItem('theme-accent', accent)
+            localStorage.setItem('theme-secondary', secondary)
         }
 
         if( accent ){
             html.style.setProperty('--theme', `var(--${accent}, #${accent})`);
             html.style.setProperty('--theme-chosen', `var(--${accent}, #${accent})`);
+
+            if( secondary ){
+                html.style.setProperty('--theme-secondary', `var(--${secondary}, #${secondary})`);
+                html.style.setProperty('--theme-secondary-chosen', `var(--${secondary}, #${secondary})`);
+            }
 
             if( colorizeFaviconComposition )
                 colorizeFavicon(this.getCssVar('theme'), colorizeFaviconComposition)
@@ -176,6 +184,8 @@ export const colorScheme = {
         }else{
             html.style.removeProperty('--theme');
             html.style.removeProperty('--theme-chosen');
+            html.style.removeProperty('--theme-secondary');
+            html.style.removeProperty('--theme-secondary-chosen');
 
             colorizeFavicon(false)
         }
