@@ -54,7 +54,7 @@ customElements.define('text-editor', class extends LitElement{
             },
             editable: !this.disabled,
             injectCSS: false,
-            content: this.value,
+            content: this.__val||'', // .value may have been set before we get here
             onUpdate: this.onEditorUpdate.bind(this),
             onBlur: this.onBlur.bind(this)
         })
