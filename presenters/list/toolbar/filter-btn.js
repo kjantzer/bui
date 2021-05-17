@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
+import {unsafeHTML} from 'lit-html/directives/unsafe-html'
 import '../../../elements/label'
 
 customElements.define('b-list-filter-btn', class extends LitElement{
@@ -46,7 +47,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
                 <b-label xs>${this.filter.label}</b-label>
                 <div>
                     ${this.filter.icon?html`<b-icon name="${this.filter.icon}"></b-icon>`:''}
-                    ${this.filter.valueLabel}
+                    ${unsafeHTML(this.filter.valueLabel)}
                 </div>
             </main>
         </b-btn>
