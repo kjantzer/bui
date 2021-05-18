@@ -137,7 +137,7 @@ module.exports = class DB {
 
     bulkInsert(table, rows){
         let [cols, vals] = this.parseBulkInsert(rows)
-        let sql = `INSERT INTO ${table} (${cols}) VALUES ?`
+        let sql = `INSERT IGNORE INTO ${table} (${cols}) VALUES ?`
         return this.query(sql, [vals])
     }
 
