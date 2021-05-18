@@ -797,7 +797,8 @@ export default class Menu {
 				this.resolve(false)
 		}
 		
-		opts.onKeydown = this.onKeydown.bind(this)
+		if( !opts.onKeydown)
+			opts.onKeydown = this.onKeydown.bind(this)
 		
 		this.presenter = new Popover(target, this.el, opts)
 
@@ -831,7 +832,8 @@ export default class Menu {
 			// animation: 'scale'
 		}, opts)
 
-		opts.onKeydown = this.onKeydown.bind(this)
+		if( !opts.onKeydown )
+			opts.onKeydown = this.onKeydown.bind(this)
 		
 		let onClose = opts.onClose
 		opts.onClose = ()=>{
