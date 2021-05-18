@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import { Editor } from '@tiptap/core'
-import { defaultExtensions } from '@tiptap/starter-kit'
+import StarterKit from '@tiptap/starter-kit'
 import { SmartCharacterReplacer } from './smart-character-replacer'
 import { KeyboardEvents } from './keyboard-events'
 import Placeholder from '@tiptap/extension-placeholder'
@@ -28,10 +28,13 @@ customElements.define('text-editor', class extends LitElement{
 
     `]}
 
-    constructor(){
-        super()
-        // this.value = '<p>Testing content here</p>'
-    }
+	set extensions(extension){
+		if( !Array.isArray(extension) )
+			extension = [extension]
+		this.__extensions = extension
+	}
+
+	get extensions(){ return this.__extensions || []}
 
     connectedCallback(){
         super.connectedCallback()
@@ -41,11 +44,12 @@ customElements.define('text-editor', class extends LitElement{
 
         this.editor = new Editor({
             extensions: [
-                ...defaultExtensions(),
+                StarterKit,
                 Placeholder,
                 TextAlign,
                 SmartCharacterReplacer,
-                KeyboardEvents
+                KeyboardEvents,
+				...this.extensions
             ],
             editorProps: {
                 attributes: {
@@ -117,6 +121,11 @@ customElements.define('text-editor', class extends LitElement{
         
         this.toggleAttribute('empty', this.isEmpty)
     }
+
+	get textValue(){
+		if( this.isEmpty ) return ''
+		return this.editor.view.docView.contentDOM.textContent // NOTE: is there a better less hacky way?
+	}
 
     get isEmpty(){
         return !this.editor||this.editor.isEmpty
