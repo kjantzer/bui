@@ -185,6 +185,13 @@ class FormControlElement extends HTMLElement {
 		let val = control.dbValue
 		return val !== undefined ? val : control.value
 	}
+
+	get textValue(){
+		let control = this.control
+		if( !control ) return undefined
+		let val = control.textValue
+		return val !== undefined ? val : control.value
+	}
 	
 	get options(){ return this.control && this.control.options}
 	
