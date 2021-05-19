@@ -190,7 +190,7 @@ import {pageCache, googleFontsCache, offlineFallback } from 'workbox-recipes'
 import {precacheAndRoute} from 'workbox-precaching'
 import {setDefaultHandler} from 'workbox-routing'
 import {NetworkOnly} from 'workbox-strategies'
-import cacheableAPI from 'bui/sw/src/cacheable-api'
+import cacheableAPI from 'bui/sw/cacheable-api'
 
 // pre-caches files compiled by webpack; see WorkboxWebpackPlugin.InjectManifest
 precacheAndRoute(self.__WB_MANIFEST);
@@ -226,7 +226,7 @@ const WorkboxWebpackPlugin = require("workbox-webpack-plugin");
 // add this to "plugins"
 new WorkboxWebpackPlugin.InjectManifest({
     // maximumFileSizeToCacheInBytes: 3000000, // 3mb
-    swSrc: "./client/sw/src/index.js",
+    swSrc: "./client/sw/index.js",
     swDest: path.resolve(__dirname, 'dist', 'sw.js'),
     additionalManifestEntries: [
         {url: 'offline.html', revision: '1'},
@@ -240,15 +240,10 @@ Now you can register and use the built service worker from above
 
 ```js
 // in app entry
-import onAppUpdated from 'bui/sw/on-app-updated'
+import 'bui/sw/client/on-app-updated'
 
 window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js').then(registration=>{
-        // will show a Notif with "app update available"
-        onAppUpdated(registration)
-    }, err=>{
-        console.log('ServiceWorker registration failed: ', err);
-    });
+    navigator.serviceWorker.register('sw.js')
 });
 ```
 
