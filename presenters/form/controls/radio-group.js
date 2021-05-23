@@ -16,6 +16,10 @@ customElements.define('radio-group', class extends LitElement{
 			vertical-align: middle;
 		}
 
+		:host([hidden]) {
+			display: none;
+		}
+
 		:host(:not([slot="control"])[focused]) {
 			box-shadow: 0 0 0 2px var(--theme);
 			transition: 200ms boxShadow;
