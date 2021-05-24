@@ -107,6 +107,7 @@ db.query(`SELECT * FROM table_name WHERE ${clause}`, values)
 - `Between(start, end, {addHours:false})`
 - `FullText(val)`
 - `FindInSet(val)`
+- `JsonContains(val, [path='$'])`
 - `UnsafeSQL(rawSql)` - unsafe to input uncleaned user data
 
 #### Custom Clauses

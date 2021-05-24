@@ -7,5 +7,6 @@ module.exports = {
     FullText: require('./FullText'),
     Between: require('./Between'),
     FindInSet: require('./FindInSet'),
+    JsonContains: require('./JsonContains'),
     UnsafeSQL: require('./UnsafeSQL')
 }
