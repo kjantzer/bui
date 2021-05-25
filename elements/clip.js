@@ -1,5 +1,7 @@
 /*
     DEPRECATED
+
+    Use: `<b-text clip></b-text>`
 */
 import { LitElement, html, css } from 'lit-element'
 
