@@ -110,14 +110,34 @@ customElements.define('b-tabs', class extends LitElement {
             font-size: var(--menuFontSize);
             min-width: 0;
             overflow: hidden;
+            overflow-y: auto;
             background: var(--menuBgd);
         }
+
+        .tab-bar::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
 
         .tab-bar-item {
             padding: var(--menuItemPadding);
             cursor: pointer;
             box-sizing: border-box;
             color: var(--inactiveColor);
+        }
+
+        
+        :host([layout="top"]) .tab-bar
+        :host([layout="bottom"]) .tab-bar {
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        :host([layout="top"]) .tab-bar-item
+        :host([layout="bottom"]) .tab-bar-item {
+            white-space: nowrap;
+        }
+
+        :host([layout="left"]) .tab-bar
+        :host([layout="right"]) .tab-bar{
+            overflow-y: auto;
         }
 
         .tab-bar-item[active] {
