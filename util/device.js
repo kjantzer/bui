@@ -234,3 +234,18 @@ export const colorScheme = {
     
 }
 
+
+export const ThemeColors = [
+    {label: 'Default', val:''},
+    {label: 'Blue', val:'blue'},
+    {label: 'Green', val: '27ae60'},
+    {label: 'Pink', val:'pink'},
+    {label: 'Purple', val:'deep-purple'},
+    {label: 'Orange', val:'orange'},
+    {label: 'Deep Orange', val:'deep-orange'},
+    {label: 'Teal', val:'teal'},
+    {label: 'Red', val: 'red-600'},
+    {label: 'Cyan', val:'cyan'},
+    {label: 'Indigo', val: 'indigo-A200'},
+    {label: 'Mint', val: '00b894'}
+]
