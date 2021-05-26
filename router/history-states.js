@@ -17,7 +17,13 @@ export default class HistoryStates {
     get length(){ return this.states.length }
 
     get current(){
-        return this.get(this._current)
+        let state = this.get(this._current)
+        if( !state ){
+            this._current = this.length-1
+            state = this.get(this._current)
+        }
+
+        return state
     }
 
     save(){
