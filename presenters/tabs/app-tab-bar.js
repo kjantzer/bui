@@ -120,7 +120,10 @@ customElements.define('b-app-tab-bar', class extends LitElement{
         ${this.views.map(v=>html`
             ${v.canDisplay&&(!device.isMobile||v.id!='emails')?html`
 
-                <b-btn text stacked icon="${v.icon}" ?active=${v.active} .tabView=${v} @click=${this.onClick}>
+                <b-btn text vid=${v.id} stacked icon="${typeof v.icon==='string'?v.icon:''}" ?active=${v.active} .tabView=${v} @click=${this.onClick}>
+                    ${typeof v.icon !== 'string'?html`
+                        <span slot="icon">${v.icon}</span>
+                    `:''}
                     <span>${v.title}</span>
                 </b-btn>
 
