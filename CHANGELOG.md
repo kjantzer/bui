@@ -1,5 +1,8 @@
 # Changelog
 
+## 2021-05
+- CHANGE: `radio-btn` no longer has `label` slot. Default slot is used for the label.
+
 ## 2021-02-26
 - BREAKING: `realtime` code moved from `/server/realtime` to root `/realtime`
 
