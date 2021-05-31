@@ -19,6 +19,9 @@ export default class Sorts extends Map {
 
     set value(val){
 
+        if( (!val || Object.keys(val).length == 0) && this.__defaultSort )
+            val = this.__defaultSort
+
         let didChange = JSON.stringify(this.__value) != JSON.stringify(val)
 
         this.__value = val
@@ -58,6 +61,8 @@ export default class Sorts extends Map {
                     desc: sorts[key].desc || false
                 }
             })
+
+            this.__defaultSort = defaultVals
 
             if( this.unset ){
                 this.__value = defaultVals
