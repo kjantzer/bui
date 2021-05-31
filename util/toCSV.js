@@ -7,6 +7,7 @@ export default (rawData, opts)=>{
 		title: '',
 		description: '',
 		header: true,
+		preset: undefined
 	}, opts)
 
 
@@ -16,7 +17,7 @@ export default (rawData, opts)=>{
 	// see if the array of data contains Backbone Models or custom classes that implement `toCSV` or `toJSON`
 	rawData = rawData.map(d=>{
 		if( d && d.toCSV )
-			return d.toCSV()
+			return d.toCSV(opts.preset)
 
 		if( d && d.toJSON )
 			return d.toJSON()
