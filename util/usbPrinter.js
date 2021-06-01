@@ -82,7 +82,7 @@ class UsbPrinter {
                 await this.setupDevice(device)
             }
         }catch(err){
-            throw new Error(err)
+            throw err
         }
     }
 
