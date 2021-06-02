@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
 import AJAX from '../util/ajax.js';
 import '../util/file.ext.js'
+import resizeImg from '../util/resizeImg'
 
 export class UploaderElement extends LitElement {
 
@@ -11,6 +12,7 @@ export class UploaderElement extends LitElement {
         multiple: {type: Boolean},
         placeholder: {type: String},
         files: {type: Array},
+        resize: {type: Object},
         dragging: {type: Boolean, reflect: true },
         uploading: {type: Boolean, reflect: true }
     }}
@@ -90,15 +92,16 @@ export class UploaderElement extends LitElement {
         this.disabled = false
         this.accept = '';
         this.multiple = false
+        this.resize = false
         this.placeholder = 'Drop to upload';
         this.files = []
         this._numUploading = 0
         this._numUploaded = 0
         this._fileProgress = 0
-        this.dragging = false;
-        this.uploading = false;
+        this.dragging = false
+        this.uploading = false
 
-        ['dragenter', 'dragleave', 'dragover', 'drop'].forEach(fn=>{
+        ;['dragenter', 'dragleave', 'dragover', 'drop'].forEach(fn=>{
             this[fn] = this['_'+fn].bind(this)
         })
 	}
@@ -250,6 +253,9 @@ export class UploaderElement extends LitElement {
 
             let file = this.files[i]
             let _formData = new FormData();
+                        
+            if( this.resize )
+                file = await resizeImg(file, this.resize)
 
             _formData.append(fileKey, file)
             _formData.append('totalFiles', this.files.length)
