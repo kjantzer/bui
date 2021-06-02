@@ -291,6 +291,8 @@ module.exports = class Model {
                 syncData:attrs,
                 method: this.req.method,
                 url: this.apiPath
+            },{
+                toClients: this.req.path==this.syncPath ? null : 'all'
             })
 
         return resp
@@ -329,6 +331,8 @@ module.exports = class Model {
                     syncData: attrs,
                     method: this.req.method,
                     url: this.apiPath
+                },{
+                    toClients: this.req.path==this.syncPath ? null : 'all'
                 })
 
             return attrs
@@ -361,6 +365,8 @@ module.exports = class Model {
                 attrs: this.toJSON(),
                 method: this.req.method,
                 url: this.apiPath
+            },{
+                toClients: this.req.path==this.syncPath ? null : 'all'
             })
 
         return String(result.affectedRows)
