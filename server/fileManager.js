@@ -2,7 +2,8 @@ const Model = require('./model')
 const mkdirp = require('mkdirp')
 const path = require('path')
 const fs = require('fs')
-// const sharp = require('sharp')
+const sharp = require('sharp')
+const exif = require('exif-reader')
 const msOfficeThumbnailer = require('./thumbnail/msOffice')
 
 module.exports = class FileManager extends Model {
@@ -18,6 +19,8 @@ module.exports = class FileManager extends Model {
 
     get skipDuplicates(){ return false } // only for same parent_id
     get waitForPreviewGeneration(){ return false }
+    get previewSize(){ return 800 }
+    get autoRotate(){ return false }
 
     get parent_id(){ return this.__parent_id }
     set parent_id(id){ this.__parent_id = id }
@@ -46,10 +49,6 @@ module.exports = class FileManager extends Model {
     get previewPath(){
 
         if( !this.attrs.has_preview ){
-            
-            if( this.attrs.ext == 'pdf' )
-                this.generatePreview()
-
             return this.filePath
         }
 
@@ -63,7 +62,7 @@ module.exports = class FileManager extends Model {
             where['parent_id'] = this.parent_id || false
     }
 
-    async upload(file, src='', {traits=null}={}){
+    async upload(file, src='', {traits={}}={}){
 
         if( !file ){
             file = this.req.files.file
@@ -101,15 +100,32 @@ module.exports = class FileManager extends Model {
 
         await mkdirp.sync(this.dirPath)
 
-        let result = await this.db.query(`INSERT INTO ${this.config.table} SET ?`, info)
-        let id = result.insertId
+        let isImg = info.type.match(/image/) && !info.type.match(/photoshop/)
+        let sharpImg
+        let metadata = {}
 
-        if( !id )
+        if( isImg ){
+            sharpImg = sharp(file.tempFilePath || file.data)
+            metadata = await sharpImg.metadata()
+
+            if( metadata.exif ){
+                metadata.exif = info.traits.exif = exif(metadata.exif)
+                delete info.traits.exif.exif
+            }
+            
+            info.traits.width = metadata.width
+            info.traits.height = metadata.height
+            info.traits.dpi = metadata.density
+        }
+
+        await this.add(info)
+
+        if( !this.id )
             throw new Error('failed to insert file record')
 
         // change filename to include the DB record ID so each is uniquely named
-        filename = `${id}-${filename}`
-        await this.db.query(`UPDATE ${this.config.table} SET filename = ? WHERE id = ?`, [filename, id])
+        filename = `${this.id}-${filename}`
+        await this.update({filename})
 
         let fileMoved = await new Promise(resolve=>{
             
@@ -120,13 +136,10 @@ module.exports = class FileManager extends Model {
 
         if( fileMoved === true ){
 
-            this.id = id
-            let row = await this.find()
-
             if( this.waitForPreviewGeneration )
-                await this.generatePreview()
+                await this.generatePreview({metadata, sharpImg, filename})
             else
-                this.generatePreview()
+                this.generatePreview({metadata, sharpImg, filename})
 
             if( this.config.sync && this.syncData )
                 this.syncData({
@@ -138,17 +151,33 @@ module.exports = class FileManager extends Model {
 
         }else{
             console.log('failed to upload, delete DB record', fileMoved);
-            this.db.query(`DELETE FROM ${this.config.table} WHERE id = ? `, id)
+            this.destroy()
             throw fileMoved
         }
 
         return this
     }
 
-    generatePreview(){
+    async generatePreview({metadata, sharpImg, filename}={}){
+
+        // resave the image with proper rotation (iPhone, etc)
+        if( sharpImg && this.autoRotate
+        && metadata.exif && metadata.exif.image.Orientation != 1){
+
+            let rotate = (metadata.exif.image.Orientation-1) * 90
+
+            sharpImg
+            .rotate(rotate)
+            .toFile(this.dirPath+'/'+filename)
+        }
+
+        // preview generation turned off
+        if( this.previewSize === false )
+            return false
+
         // if office doc, create PDF preview and jpg thumbnail
         if( msOfficeThumbnailer.extensions.includes(this.attrs.ext) ){
-            return msOfficeThumbnailer.generate(this.filePath)
+            await msOfficeThumbnailer.generate(this.filePath)
             .then(async resp=>{
                 this.update({has_preview: true})
             }).catch(err=>{
@@ -156,7 +185,18 @@ module.exports = class FileManager extends Model {
             })
         }
 
-        // TODO: create preview for image files types
+        if( sharpImg ){
+            await sharpImg
+                .resize(this.previewSize, this.previewSize, {
+                        fit:'inside',
+                        withoutEnlargement: true,
+                        background:'#ffffff'
+                })
+                .flatten({background:'#ffffff'}) // in case png with transparency is uploaded
+                .toFile(this.dirPath+'/'+filename+'.preview.jpg')
+
+            this.update({has_preview: true})
+        }
     }
 
     // delete the files after the DB record is removed
@@ -170,6 +210,7 @@ module.exports = class FileManager extends Model {
         if( fs.existsSync(file+'.preview.pdf') )
             fs.unlinkSync(file+'.preview.pdf')
 
+        // small jpg previews of PDFs or large images
         if( fs.existsSync(file+'.preview.jpg') )
             fs.unlinkSync(file+'.preview.jpg')
     }
