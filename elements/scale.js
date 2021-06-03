@@ -54,9 +54,10 @@ customElements.define('b-scale', class extends LitElement{
         </b-text>
     `}
 
-    firstUpdated(){
+    async firstUpdated(){
         // connect to the scale if already requested and "paired" with this browser
-        this.scale.connect()
+        await this.scale.connect()
+        this.update()
     }
 
     connectedCallback(){
