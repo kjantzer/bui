@@ -7,6 +7,7 @@ class HidDevice {
     static get default(){ return this.shared('default') }
 
     // https://www.hogentogler.com/fairbanks/29824c-shipping-scale.asp
+    static get scale(){ return this.fairbanksScale }
     static get fairbanksScale(){ 
         return this.shared('fairbanksScale', {
             vendorID: 0x0b67,
@@ -109,13 +110,17 @@ class HidDevice {
             await device.open()
             this.device = device
             this.emit('connected', true)
-            this.emit('change', {weight:0})
+            this._change({weight:0})
             return device
         }else{
             this.device = false
             return false
         }
+    }
 
+    _change(val){
+        this.value = val
+        this.emit('change', val)
     }
 
     // TODO: this assumes fairbanksScale
@@ -133,7 +138,7 @@ class HidDevice {
 
         if( weight != this._currentVal ){
             this._currentVal = weight
-            this.emit('change', {weight,unit,isNegative})
+            this._change({weight,unit,isNegative})
         }
     }
 
@@ -149,7 +154,7 @@ class HidDevice {
         && this.device.productId == event.device.productId ){
             this.disconnect()
             this.emit('connected', false)
-            this.emit('change', {weight:0})
+            this._change({weight:0})
         }
     }
     
