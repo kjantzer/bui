@@ -44,7 +44,7 @@ class MyClass {
 }
 ```
 
-## Model
+# Model
 
 Models are only useful if they can query the database
 
@@ -137,7 +137,7 @@ module.exports = class Attachements extends FileManager {
         ]
     }}
 
-    get ASSETS_PATH(){ return '/mnt/data }
+    get ASSETS_PATH(){ return '/mnt/data' }
     get group(){ return 'attachments' }
     // get waitForPreviewGeneration(){ return false }
     // get skipDuplicates(){ return false }
