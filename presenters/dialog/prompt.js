@@ -168,8 +168,6 @@ function makePrompt(opts, i=0, globalOpts){
 	<form-control material="${globalOpts.material}"
 		key="${opts.key}"
 		show=${opts.label?'':'suffix prefix'}
-		prefix="${opts.prefix}"
-		suffix="${opts.suffix}"
 		style="${opts.w?`width:${opts.w}px;`:''}"
 	>	
 		${control}
