@@ -12,6 +12,10 @@ customElements.define('b-grid', class extends LitElement{
             min-width: 0;
         }
 
+        :host([hidden]) {
+            display: none;
+        }
+
         ::slotted(*) {
             min-width: 0;
             min-height: 0;
