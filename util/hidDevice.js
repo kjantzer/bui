@@ -5,6 +5,8 @@ const Instances = new Map()
 class HidDevice {
 
     static get default(){ return this.shared('default') }
+
+    // https://www.hogentogler.com/fairbanks/29824c-shipping-scale.asp
     static get fairbanksScale(){ 
         return this.shared('fairbanksScale', {
             vendorID: 0x0b67,
@@ -20,25 +22,23 @@ class HidDevice {
 
     constructor({
         vendorID=0x0b67,
-        productID=0x555e,
-        reconnectMs=1000 // ms
+        productID=0x555e
     }={}){
 
         this.vendorId = vendorID
         this.productId = productID
-        this.reconnectMs = reconnectMs
-        
-        if( !'hid' in navigator )
-            throw new Error('HID no supported')
 
         this._inputReport = this._inputReport.bind(this)
         this._connect = this._connect.bind(this)
         this._disconnect = this._disconnect.bind(this)
 
-        navigator.hid.addEventListener('connect', this._connect);
-        navigator.hid.addEventListener('connect', this._disconnect);
+        if( this.isSupported ){
+            navigator.hid.addEventListener('connect', this._connect);
+            navigator.hid.addEventListener('disconnect', this._disconnect);
+        }
     }
 
+    get isSupported(){ return 'hid' in navigator  }
     get name(){ return this.device&&this.device.productName }
     get isConnected(){ return !!this.device && this.device.opened }
     
@@ -48,41 +48,6 @@ class HidDevice {
     // alias
     open(){ return this.connect() }
     close(){ return this.disconnect() }
-
-    _inputReport(event){
-        const { data, device, reportId } = event;
-        let d = new Uint8Array(data.buffer)
-        
-        let isNegative = d[0] == 5
-        var weight = isNegative ? 0 : ((d[4]*256) + d[3]) / 100;
-        
-        let unit = {
-            12: 'lb',
-            3: 'kg'
-        }[d[1]]
-
-        if( weight != this._currentVal ){
-            this._currentVal = weight
-            this.emit('change', {weight,unit})
-        }
-    }
-
-    _connect(event){
-        if( this.device.vendorId == event.device.vendorId 
-        && this.device.productId == event.device.productId ){
-            this.setupDevice(event.device)
-        }
-    }
-
-    _disconnect(event){
-        if( this.device.vendorId == event.device.vendorId 
-        && this.device.productId == event.device.productId ){
-            this.disconnect()
-            this.emit('connected', false)
-        }
-    }
-
-    emit(){} // TEMP
 
     get device(){ return this.__device }
     set device(device){
@@ -100,6 +65,9 @@ class HidDevice {
     }
 
     connectToDevice(){
+
+        if( !this.isSupported ) return false
+
         if( this._connectingToDevice )
             return this._connectingToDevice
 
@@ -113,6 +81,7 @@ class HidDevice {
 
     async requestDevice(){
 
+        if( !this.isSupported ) return false
         if( this.isConnected ) return this.device
 
         try{
@@ -139,12 +108,48 @@ class HidDevice {
             await device.open()
             this.device = device
             this.emit('connected', true)
+            this.emit('change', {weight:0})
             return device
         }else{
             this.device = false
             return false
         }
 
+    }
+
+    // TODO: this assumes fairbanksScale
+    _inputReport(event){
+        const { data, device, reportId } = event;
+        let d = new Uint8Array(data.buffer)
+        
+        let isNegative = d[0] == 5
+        var weight = isNegative ? 0 : ((d[4]*256) + d[3]) / 100;
+        
+        let unit = {
+            12: 'lb',
+            3: 'kg'
+        }[d[1]]
+
+        if( weight != this._currentVal ){
+            this._currentVal = weight
+            this.emit('change', {weight,unit,isNegative})
+        }
+    }
+
+    _connect(event){
+        if( this.device.vendorId == event.device.vendorId 
+        && this.device.productId == event.device.productId ){
+            this.setupDevice(event.device)
+        }
+    }
+
+    _disconnect(event){
+        if( this.device.vendorId == event.device.vendorId 
+        && this.device.productId == event.device.productId ){
+            this.disconnect()
+            this.emit('connected', false)
+            this.emit('change', {weight:0})
+        }
     }
     
 }
