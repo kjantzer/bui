@@ -8,6 +8,7 @@ export default css`
 	outline: none;
 }
 .ProseMirror {
+	cursor: text;
 	word-wrap: break-word;
 	white-space: pre-wrap;
 	-webkit-font-variant-ligatures: none;
