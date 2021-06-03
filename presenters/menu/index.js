@@ -131,6 +131,12 @@ export default class Menu {
 		if( typeof menu == 'function' )
 			menu = menu()
 
+		menu = menu.map(val=>{
+			if( val != 'divider' && ['string', 'number'].includes(typeof val) )
+				return {label: val, val}
+			return val
+		})
+
 		this.__menu = menu
 
 		if( this.searchUrl && !this.__origMenu )
