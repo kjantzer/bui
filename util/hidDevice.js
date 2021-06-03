@@ -67,6 +67,7 @@ class HidDevice {
     connectToDevice(){
 
         if( !this.isSupported ) return false
+        if( this.isConnected ) return this.device
 
         if( this._connectingToDevice )
             return this._connectingToDevice
