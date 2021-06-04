@@ -179,8 +179,8 @@ customElements.define('b-previewer', class extends LitElement{
         return view
     }
 
-    static openInNewWindow(item){
-        let url = item.displayURL
+    static async openInNewWindow(item){
+        let url = item.displayURL || item
         // window.open(item.displayURL)
 
         const a = window.document.createElement('a');
@@ -189,7 +189,7 @@ customElements.define('b-previewer', class extends LitElement{
         a.target = '_blank'
         // a.setAttribute('download', filename||'')
 
-        let popup = window.open('', 'Loading...')
+        let popup = await window.open('', 'Loading...')
 
         var meta = document.createElement('meta');
         meta.name = 'viewport'
