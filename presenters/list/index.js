@@ -388,6 +388,12 @@ customElements.define('b-list', class extends LitElement {
         })
     }
 
+    get currentModels(){
+        return this.selection.isOn 
+        ? this.selection.result.models
+        : this.dataSource.data
+    }
+
     async refresh(){
         this.spinner.show = true
         try{
