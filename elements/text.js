@@ -105,7 +105,7 @@ customElements.define('b-text', class extends LitElement{
         this.addEventListener('click', this.onClick)
 
         if( this.hasAttribute('clip') && !this.hasAttribute('title') )
-            this.title = this.innerText
+            this.title = this.textContent
     }
 
     onClick(){
