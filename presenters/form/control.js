@@ -204,7 +204,7 @@ class FormControlElement extends HTMLElement {
 		return this.control&&this.control.isInvalid
 	}
 
-	get label(){ return this.$('.label').innerText }
+	get label(){ return this.$('.label').textContent }
 	set label(str){
 		this.$('.label').innerHTML = str
 		if( str ){
