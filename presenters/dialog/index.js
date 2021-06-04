@@ -45,7 +45,7 @@ registerPreset('confirm', {
 
 registerPreset('confirmYes', opts=>{ return {
 	// icon: opts.title||opts.msg||opts.body?'trash':'',
-	accent: opts.title||opts.msg||opts.body?'red':'',
+	// accent: opts.title||opts.msg||opts.body?'red':'',
 	noContent: true,
 	btns: ['cancel', 'yes']
 }})
