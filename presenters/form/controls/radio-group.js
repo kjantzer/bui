@@ -166,6 +166,7 @@ customElements.define('radio-group', class extends LitElement{
 			this.setAttribute('tabindex', '0')
 
 		this.radios = Array.from(this.querySelectorAll('radio-btn'))
+		this.value = this.value
 	}
 	
 	nav(dir=1){
@@ -210,7 +211,7 @@ customElements.define('radio-group', class extends LitElement{
 	
 	get value(){
 		let radio = this.active
-		return radio ? radio.value : null
+		return radio ? radio.value : this.getAttribute('value')
 	}
 	
 	set value(val){
