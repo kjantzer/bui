@@ -240,7 +240,7 @@ export default class Filters extends Map {
             })
 
             if( !this.term 
-            || (!searchOptions.data || searchOptions.data === 'db' )
+            || (!searchOptions.data || searchOptions.data === 'db' || searchOptions.db )
             || this.term.length < searchOptions.minMatchCharLength )
                 return resolve(data)
 
