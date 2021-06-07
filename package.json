@@ -50,6 +50,8 @@
         "@tiptap/extension-placeholder": "*",
         "@tiptap/extension-text-align": "*",
         "@tiptap/starter-kit": "*",
+        "@tiptap/suggestion": "*",
+        "backbone": "^1.4.0",
         "component-emitter": "^1.3.0",
         "dayjs": "^1.8.35",
         "fuse.js": "^3.4.5",

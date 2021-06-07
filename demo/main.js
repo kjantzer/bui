@@ -5,6 +5,7 @@ import './elements'
 import './presenters'
 import './tools'
 import './server'
+import './components'
 
 customElements.define('demo-main', class extends App{
 
@@ -13,6 +14,7 @@ customElements.define('demo-main', class extends App{
             demo-overview
             demo-elements
             demo-presenters
+            demo-components
             demo-tools
             demo-server
         `
