@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
-import './search-popup'
+import './search'
 import './comments'
 import docs from '../../components/README.md'
 
@@ -27,7 +27,7 @@ customElements.define('demo-components', class extends LitElement{
                     <demo-markdown-docs notoc .docs=${docs}></demo-markdown-docs>
                 </b-paper>
             </div>
-            demo-presenter-search-popup
+            demo-presenter-search
             demo-components-comments
         </b-tabs-router>
     `}
