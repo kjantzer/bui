@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import View from '../presenters/view'
-import docs from 'bui/presenters/search-popup/README.md'
+import docs from 'bui/components/search/README.md'
 
 customElements.define('demo-presenter-search-popup', class extends View{
 

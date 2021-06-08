@@ -1,4 +1,4 @@
-Search Popup
+Search
 ====================
 
 A "spotlight" / "Alfred app" like view for doing global app searches
@@ -10,8 +10,8 @@ A "spotlight" / "Alfred app" like view for doing global app searches
 
 **Example**
 ```js
-import SearchPopup from 'bui/presenters/search-popup'
-import SearchPopupResult from 'bui/presenters/search-popup/result'
+import SearchPopup from 'bui/components/search'
+import SearchPopupResult from 'bui/components/search/result'
 
 customElements.defineShared('my-search', class extends SearchPopup{
 

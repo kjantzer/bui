@@ -1,5 +1,8 @@
 # Changelog
 
+## 2021-06-08
+- BREAKING: `search-popup` renamed and moved to `components/search`
+
 ## 2021-05
 - CHANGE: `radio-btn` no longer has `label` slot. Default slot is used for the label.
 
