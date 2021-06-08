@@ -55,7 +55,7 @@ class Comment extends Model {
         ts_read: 'date'
     }}
 
-    get isByMe(){ return User && Userid == this.get('uid')}
+    get isByMe(){ return User && User.id == this.get('uid')}
     get meta(){ return this.attributes.meta || {} }
     
     get isUnread(){ return !this.isByMe && !this.get('ts_read').isValid() }
