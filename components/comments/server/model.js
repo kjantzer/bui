@@ -83,7 +83,7 @@ module.exports = class Comments extends Model {
     }
 
     sendPushMsg(){
-        if( PushMsg && this.attrs.meta?.mentions ){
+        if( PushMsg && this.attrs.meta && this.attrs.meta.mentions ){
             let meta = this.attrs.meta
             let msg = {
                 tag: this.group+':'+this.gid,

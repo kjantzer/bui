@@ -55,14 +55,14 @@ class Comment extends Model {
         ts_read: 'date'
     }}
 
-    get isByMe(){ return User?.id == this.get('uid')}
+    get isByMe(){ return User && Userid == this.get('uid')}
     get meta(){ return this.attributes.meta || {} }
     
     get isUnread(){ return !this.isByMe && !this.get('ts_read').isValid() }
     get isResolved(){ return !!this.meta.resolved }
     
     get reactions(){ return this.meta.reactions || [] }
-    get userHasReacted(){ return this.reactions.includes(User?.id) }
+    get userHasReacted(){ return User && this.reactions.includes(User.id) }
     
     toggleResolved(){
         let meta = this.meta
@@ -82,12 +82,12 @@ class Comment extends Model {
 
         let meta = this.meta
         let reactions = meta.reactions || []
-        let index = reactions.indexOf(User?.id)
+        let index = reactions.indexOf(User.id)
 
         if( index > -1 )
             reactions.splice(index, 1)
         else
-            reactions.push(User?.id)
+            reactions.push(User.id)
         
         if( reactions.length > 0 )
             meta.reactions = reactions
