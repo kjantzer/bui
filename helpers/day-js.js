@@ -29,6 +29,10 @@ dayjs.prototype.calendarDate = function(formats={}){
     return this.calendar(null, formats)
 }
 
+dayjs.prototype.weeksInMonth = function(){
+    return Math.ceil((this.daysInMonth()+1+this.day()) / 7)
+}
+
 const DayJsFormat = dayjs.prototype.format
 dayjs.prototype.format = function(...args){
     // https://github.com/iamkun/dayjs/blob/dev/src/index.js#L252
