@@ -10,9 +10,9 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
             border-top: solid 1px var(--theme-bgd-accent) !important;
             background: var(--theme-bgd) !important;
-            padding-bottom: env(safe-area-inset-bottom);
             position: relative;
             padding: 0 .25em;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         @media (orientation:landscape) {
