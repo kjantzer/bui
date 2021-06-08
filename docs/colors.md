@@ -21,7 +21,6 @@ button {
 ```css
 :root {
     --theme: var(--teal-400);
-    --color-secondary: var(--amber);
     --black: #222;
 }
 ```
