@@ -19,7 +19,8 @@ customElements.define('b-calendar', class extends LitElement{
         // inputs: {type: Boolean, reflect: true},
         // btns: {type: Boolean, reflect: true},
         active: {type: String, reflect: true},
-        inView: {type: Object}
+        inView: {type: Object},
+        ready: {type: Boolean, reflect: true}
         // presets: {type: Array}
     }}
     
@@ -116,7 +117,13 @@ customElements.define('b-calendar', class extends LitElement{
         
         setTimeout(() => {
             this.scrollToDate('start')
-        }, 1);
+            this.ready = true
+        }, 10);
+    }
+
+    disconnectedCallback(){
+        super.disconnectedCallback()
+        this.ready = false
     }
 
     render(){return html`
@@ -130,11 +137,11 @@ customElements.define('b-calendar', class extends LitElement{
 
             <div class="nav">
                 <slot name="before-nav"></slot>
-                <div>
+                <span>
                     <b-btn text icon="left-open-big" @click=${this.prevMonth}></b-btn>
                     <b-btn text @click=${this.goToToday}>Today</b-btn>
                     <b-btn text icon="right-open-big" @click=${this.nextMonth}></b-btn>
-                </div>
+                </span>
                 <slot name="after-nav"></slot>
             </div>
 
@@ -157,7 +164,10 @@ customElements.define('b-calendar', class extends LitElement{
     `}
 
     onMonthInView(e){
+        if( !this.ready ) return
+
         let month = e.detail
+        
         if( this.inView )
             this.inView.removeAttribute('inviewport')
         
@@ -170,11 +180,16 @@ customElements.define('b-calendar', class extends LitElement{
             .date=${date}
             .selectedRange=${this.selectedRange}
             .renderDayContent=${this.renderDayContent}
-        >${until(this.renderMonthContent(date), '')}</b-calendar-month>
+        >${until(this._renderMonthContent(date), '')}</b-calendar-month>
     `}
 
-    async renderMonthContent(date){
-        return ''
+    _renderMonthContent(date){
+        if( !this.ready ) return ''
+        if( !this.renderMonthContent ) return ''
+
+        let month = date.month()+1
+        let year = date.year()
+        return this.renderMonthContent(date, month, year)
     }
 
     scrollToDate(date='start', location='center'){

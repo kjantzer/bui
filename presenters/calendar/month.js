@@ -212,37 +212,42 @@ customElements.define('b-calendar-month', class extends LitElement{
     firstUpdated(){
         this.shadowRoot.addEventListener('click', this.onClick, false)
         this.selectedRange.on('change', this.onSelectedRangeChange)
+    }
 
-        this.intersectionObserver = new IntersectionObserver((entries)=>{
-            // let wasInViewport = this.inViewport
-            this.inViewport = entries[0].isIntersecting
+    get intersectionObserver(){
+        return this.__intersectionObserver = this.__intersectionObserver || new IntersectionObserver((entries)=>{
 
-            // if( !wasInViewport && !this.inViewport ) return
+            clearTimeout(this._emitInViewport)
 
-            // console.log(this.inViewport?'in':'left',' view?', this.date.format('l'));
+            this.inViewport = entries.length == 1 && entries[0].isIntersecting
+
             if( this.inViewport )
-                this.emitEvent('month-in-view', this)
+                this._emitInViewport = setTimeout(()=>{
+                    this.emitEvent('month-in-view', this)
+                },100)
         }, {
             threshold: 0.80
         });
-
-        this.intersectionObserver.observe(this)
     }
 
     connectedCallback(){
         super.connectedCallback()
         if( this.selectedRange )
             this.selectedRange.on('change', this.onSelectedRangeChange)
+
+        this.intersectionObserver.observe(this)
     }
 
     disconnectedCallback(){
         super.disconnectedCallback()
         if( this.selectedRange )
             this.selectedRange.off('change', this.onSelectedRangeChange)
+
+        if( this.__intersectionObserver )
+            this.intersectionObserver.unobserve(this)
     }
 
     onSelectedRangeChange(){
-        // console.log('selected range changed', this.date.format('l'));
         this.update()
     }
 
