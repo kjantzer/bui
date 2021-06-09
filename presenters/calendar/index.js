@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit-element'
-// import {live} from 'lit-html/directives/live'
+import {until} from 'lit-html/directives/until'
 import 'lit-virtualizer'
 import dayjs from 'dayjs'
 import styles from './styles'
@@ -169,8 +169,13 @@ customElements.define('b-calendar', class extends LitElement{
         <b-calendar-month 
             .date=${date}
             .selectedRange=${this.selectedRange}
-        ></b-calendar-month>
+            .renderDayContent=${this.renderDayContent}
+        >${until(this.renderMonthContent(date), '')}</b-calendar-month>
     `}
+
+    async renderMonthContent(date){
+        return ''
+    }
 
     scrollToDate(date='start', location='center'){
 
@@ -216,6 +221,9 @@ customElements.define('b-calendar', class extends LitElement{
 
     /* calendar */
     onDateSelected(e){
+
+        return //TODO: disable selection for now
+
         let {date, month} = e.detail
         
         if( date )

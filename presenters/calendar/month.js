@@ -65,6 +65,9 @@ customElements.define('b-calendar-month', class extends LitElement{
             /* padding: .7em; */
             height: 100%;
             width: 100%;
+            display: grid;
+            padding-top: 2em;
+            box-sizing: border-box;
             /* display: flex;
             justify-content: center;
             align-items: center; */
@@ -75,6 +78,11 @@ customElements.define('b-calendar-month', class extends LitElement{
             /* border-right: solid 1px var(--theme-text-accent);
             border-bottom: solid 1px var(--theme-text-accent); */
             box-shadow: 0px 0px 1px rgba(var(--theme-text-rgb), .4);
+        }
+
+        .day main {
+            text-align: left;
+            overflow: visible;
         }
 
         .day-num {
@@ -90,7 +98,7 @@ customElements.define('b-calendar-month', class extends LitElement{
             position: absolute;
             top: .25em;
             right: .25em;
-            font-weight: bold;
+            /* font-weight: bold; */
         }
 
         :host(:not([inviewport])) .day-num {
@@ -99,8 +107,8 @@ customElements.define('b-calendar-month', class extends LitElement{
         }
 
         .day.today .day-num {
-            background-color: var(--theme);
-            color: white;
+            box-shadow: 0 0 0 2px var(--theme) inset;
+            color: var(--theme);
         }
 
         .day[num="1"] .day-num {
@@ -128,10 +136,10 @@ customElements.define('b-calendar-month', class extends LitElement{
             color: var(--theme-text-accent, #aaa);
         }
 
-        /* .day.active {
+        .day.active .day-num {
             background-color: var(--theme);
-            color: white;
-        } */
+            color: white !important;
+        }
 
         /* .day.today {
             box-shadow: 0 0 0 1px var(--theme);
@@ -141,6 +149,7 @@ customElements.define('b-calendar-month', class extends LitElement{
             display: grid;
             grid-template-columns: 1fr 1fr;
             position: absolute;
+            left: -2px;
             width: calc(100% + (var(--gap)));
             height: 100%;
             z-index: -1;
@@ -205,10 +214,10 @@ customElements.define('b-calendar-month', class extends LitElement{
         this.selectedRange.on('change', this.onSelectedRangeChange)
 
         this.intersectionObserver = new IntersectionObserver((entries)=>{
-            let wasInViewport = this.inViewport
+            // let wasInViewport = this.inViewport
             this.inViewport = entries[0].isIntersecting
 
-            if( !wasInViewport && !this.inViewport ) return
+            // if( !wasInViewport && !this.inViewport ) return
 
             // console.log(this.inViewport?'in':'left',' view?', this.date.format('l'));
             if( this.inViewport )
@@ -289,13 +298,17 @@ customElements.define('b-calendar-month', class extends LitElement{
 
                 <span class="day-num">${day==1?`${this.date.format('MMM')} `:''}${day}</span>
 
+                <main>
+                    <slot name="${this.date.format('YYYY-MM')}-${day}"></slot>
+                </main>
+
             </div>
         `)}
             
     `}
 
     onClick(e){
-        return
+        // return
         let el = e.target
 
         // find the clicked day

@@ -92,7 +92,7 @@ export default css`
         /* grid-auto-rows: 2em; */
         gap: var(--gap);
         text-align: right;
-        border-bottom: solid 2px var(--theme-bgd-accent, #ddd);
+        border-bottom: solid 2px rgba(var(--theme-text-rgb), .1);
         padding: .15em var(--pad);
     }
 
