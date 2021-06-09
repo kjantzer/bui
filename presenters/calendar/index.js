@@ -128,19 +128,25 @@ customElements.define('b-calendar', class extends LitElement{
 
     render(){return html`
 
-
         <header part="header">
             
-            <b-text xl bold>
-                ${this.inView?html`${this.inView.date.format('MMMM YYYY')}`:''}&nbsp;
-            </b-text>
+            <div class="title">
+                    
+                <slot name="before-title"></slot>
+
+                <b-text xl bold part="title">
+                    ${this.inView?html`${this.inView.date.format('MMMM YYYY')}`:''}&nbsp;
+                </b-text>
+
+                <slot name="after-title"></slot>
+            </div>
 
             <div class="nav">
                 <slot name="before-nav"></slot>
                 <span>
-                    <b-btn text icon="left-open-big" @click=${this.prevMonth}></b-btn>
-                    <b-btn text @click=${this.goToToday}>Today</b-btn>
-                    <b-btn text icon="right-open-big" @click=${this.nextMonth}></b-btn>
+                    <b-btn text icon="left-open-big" @click=${this.prevMonth}></b-btn
+                    ><b-btn text @click=${this.goToToday}>Today</b-btn
+                    ><b-btn text icon="right-open-big" @click=${this.nextMonth}></b-btn>
                 </span>
                 <slot name="after-nav"></slot>
             </div>
