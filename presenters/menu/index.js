@@ -442,7 +442,7 @@ export default class Menu {
 				?icon-only=${!m.label && !m.description} ?selected=${m.selected}>
 				${checkbox}
 				${icon}
-				${m.view&&m.view instanceof HTMLElement ?m.view:html`
+				${m.view&&(m.view instanceof HTMLElement||m.view.type=='html') ?m.view:html`
 					<span class="mi-content">
 						<div class="mi-label">${label}</div>
 						<div class="mi-description">${description}</div>
