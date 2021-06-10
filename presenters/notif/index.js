@@ -46,7 +46,7 @@ customElements.define('b-notif', class extends LitElement{
             autoClose: 4000,
             closeOnClick: true,
 
-            anchor: 'bottom-right', //device.minScreenSize <= 699 ? 'bottom' : 'bottom-right',
+            anchor: 'top-right', //device.minScreenSize <= 699 ? 'bottom' : 'bottom-right',
 
             onClose(){},
             onClick(){}
