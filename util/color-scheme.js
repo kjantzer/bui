@@ -93,7 +93,7 @@ export const colorScheme = {
             html.style.setProperty('--theme-chosen', `var(--${accent}, #${accent})`);
 
             if( !secondary )
-                secondary = changeHue(this.getCssVar('theme'), 20).substr(1)
+                secondary = changeHue(this.getCssVar('theme'), 10).substr(1)
 
             if( secondary ){
                 html.style.setProperty('--theme-secondary', `var(--${secondary}, #${secondary})`);
