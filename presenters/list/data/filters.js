@@ -123,7 +123,7 @@ export default class Filters extends Map {
 
         // GETTING
         }else{
-            return key ? this.__value[key] : this.__value
+            return key ? this.__value[key] : Object.assign({}, this.__value)
         }
     }
 
