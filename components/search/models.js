@@ -8,6 +8,7 @@ export default class Coll extends Collection {
         this.term = ''
     }
 
+    set url(val){ this.__url = val }
     get url(){ return this.__url+'/'+encodeURIComponent(this.term)  }
 
     fetch(...args){

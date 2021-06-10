@@ -34,6 +34,9 @@ export default class extends LitElement{
 
     open({
         term='',
+        placeholder=null,
+        url=null,
+        filters=null,
         fromShortcut= null
     }={}){
 
@@ -62,6 +65,31 @@ export default class extends LitElement{
         }else if( term ){
             this.term = term
         }
+
+        this.defaultUrl = this.defaultUrl || this.url
+        this.defaultPlaceholder = this.defaultPlaceholder || this.placeholder
+        
+        this.coll.url = this.url = url || this.defaultUrl
+        this.placeholder = placeholder || this.defaultPlaceholder
+
+        setTimeout(()=>{
+            if( filters ){
+                
+                if( !this.origFilters() ){
+                    this.origFilters(this.list.filters.value())
+                }
+
+                this.list.filters.update(filters)
+
+            }else{
+                
+                let origFilters = this.origFilters()
+                if( origFilters ){
+                    this.list.filters.reset(origFilters)
+                    this.origFilters(null)
+                }                
+            }
+        })
     }
 
     static get properties(){ return {
@@ -87,6 +115,7 @@ export default class extends LitElement{
         this.dividerView = 'b-search-popup-results-divider'
         this.filters = filters
 
+        this.origFilters = store.create('b-search-popup:'+this.key+':origional-filters')
         this.history = store.create('b-search-popup:'+this.key+':history', [])
         this.settings = store.create('b-search-popup:'+this.key+':settings', {
             maxHistory: maxHistoryDefault,
