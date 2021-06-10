@@ -9,7 +9,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             grid-template-columns: repeat( auto-fit, minmax(60px, 1fr) );
 
             border-top: solid 1px var(--theme-bgd-accent) !important;
-            background: var(--theme-bgd) !important;
+            background: var(--b-app-tab-bar-bgd, var(--theme-bgd)) !important;
             position: relative;
             padding: 0 .25em;
             padding-bottom: env(safe-area-inset-bottom);
@@ -23,7 +23,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
         }
 
         b-btn {
-            color: var(--theme-text);
+            color: var(--b-app-tab-bar-text-color, var(--theme-text));
             text-align: center;
             display: flex;
             align-content: center;
@@ -32,7 +32,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             font-size: 1.1em;
             padding-top: .25em;
             padding-bottom: .25em;
-            --b-btn-stacked-icon-opacity:.3;
+            --b-btn-stacked-icon-opacity: var(--b-app-tab-bar-bgd-stacked-icon-opacity, .3);
 
             border-radius: .75em;
             margin: .25em 0;
@@ -57,7 +57,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             /* border-radius: 0; */
             /* --bgdColor: rgba(var(--theme-text-rgb),.1); */
 
-            color: white;
+            color: var(--b-app-tab-bar-active-color-text, white);
             background: var(--b-app-tab-bar-active-color, var(--theme));
         }
         

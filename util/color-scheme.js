@@ -1,4 +1,5 @@
 import colorizeFavicon from './colorize-favicon'
+import {changeHue} from './color-shift'
 
 window.colorizeFavicon = colorizeFavicon // TEMP
 
@@ -90,6 +91,9 @@ export const colorScheme = {
         if( accent ){
             html.style.setProperty('--theme', `var(--${accent}, #${accent})`);
             html.style.setProperty('--theme-chosen', `var(--${accent}, #${accent})`);
+
+            if( !secondary )
+                secondary = changeHue(this.getCssVar('theme'), 20).substr(1)
 
             if( secondary ){
                 html.style.setProperty('--theme-secondary', `var(--${secondary}, #${secondary})`);
