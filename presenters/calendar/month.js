@@ -16,12 +16,13 @@ customElements.define('b-calendar-month', class extends LitElement{
             /* gap: var(--gap); */
             text-align: center;
             width: 100%;
-            height: 80%;
+            --height: 80%;
+            height: var(--height);
             pointer-events: none;
         }
 
         :host([weeks="6"]) {
-            height: 100%;
+            --height: 100%;
             grid-auto-rows: 20%;
         }
 
@@ -215,6 +216,12 @@ customElements.define('b-calendar-month', class extends LitElement{
     }
 
     get intersectionObserver(){
+
+        let threshold = {
+            'biweekly': 0.4,
+            'weekly': 0.2
+        }[this.display]||0.8
+
         return this.__intersectionObserver = this.__intersectionObserver || new IntersectionObserver((entries)=>{
 
             clearTimeout(this._emitInViewport)
@@ -226,7 +233,7 @@ customElements.define('b-calendar-month', class extends LitElement{
                     this.emitEvent('month-in-view', this)
                 },100)
         }, {
-            threshold: 0.80
+            threshold: threshold
         });
     }
 

@@ -20,7 +20,11 @@ customElements.define('b-calendar', class extends LitElement{
         // btns: {type: Boolean, reflect: true},
         active: {type: String, reflect: true},
         inView: {type: Object},
-        ready: {type: Boolean, reflect: true}
+        ready: {type: Boolean, reflect: true},
+
+        weekends: {type: String, reflect: true},
+        display: {type: String, reflect: true},
+
         // presets: {type: Array}
     }}
     
@@ -184,6 +188,8 @@ customElements.define('b-calendar', class extends LitElement{
     renderMonth(date){return html`
         <b-calendar-month 
             .date=${date}
+            .weekly=${this.weekly}
+            .display=${this.display}
             .selectedRange=${this.selectedRange}
             .renderDayContent=${this.renderDayContent}
         >${until(this._renderMonthContent(date), '')}</b-calendar-month>

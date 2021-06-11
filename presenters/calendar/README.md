@@ -28,5 +28,9 @@ html`
 `
 ```
 
+## Attributes
+- `weekends` - mini, small
+- `display` - biweekly, weekly
+
 ## TODO:
 More docs needed

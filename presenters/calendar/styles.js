@@ -17,8 +17,12 @@ export default css`
         height: 100%;
     }
 
-    :host([small-weekends]) {
+    :host([weekends="small"]) {
         --columns: 1fr repeat(5, 2fr) 1fr;
+    }
+
+    :host([weekends="mini"]) {
+        --columns: 3em repeat(5, 2fr) 3em;
     }
     
     /* :host(:not([inputs])) header {
@@ -100,5 +104,13 @@ export default css`
         font-size: var(--font-size);
         font-weight: bold;
         margin-right: .5em;
+    }
+
+    :host([display="biweekly"]) b-calendar-month {
+        height: calc(var(--height) * 2)
+    }
+
+    :host([display="weekly"]) b-calendar-month {
+        height: calc(var(--height) * 4)
     }
 `
