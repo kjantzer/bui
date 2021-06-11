@@ -24,7 +24,6 @@ import 'bui/elements/embed'
 import 'bui/elements/audio'
 import 'bui/elements/carousel'
 import 'bui/elements/timeline-horz'
-import defineFileIcon from 'bui/elements/file-icon'
 import 'bui/helpers/day-js'
 
 import buttons from './elements/buttons'
@@ -33,8 +32,6 @@ import specialty, {styles as specialtyStyles} from './elements/specialty'
 import iconDocs from '../docs/icons.md'
 
 import elementDocs, {allDocs} from './elements/docs'
-
-defineFileIcon()
 
 customElements.define('demo-elements', class extends LitElement{
 
