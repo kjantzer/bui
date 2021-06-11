@@ -11,17 +11,32 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             display: flex;
             /* justify-content: space-evenly; */
 
-            border-top: solid 1px var(--theme-bgd-accent) !important;
+            border-top: none !important;
             background: var(--b-app-tab-bar-bgd, var(--theme-bgd)) !important;
             position: relative;
             padding: 0 .25em;
-            padding-bottom: env(safe-area-inset-bottom);
+            padding-bottom: calc(env(safe-area-inset-bottom) / 1.5);
+        }
+
+
+        @media (max-width: 699px) {
+        /* dull the colors a little  */
+        :host(.tab-bar):before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(60deg, #000, #555);
+            opacity: .1;
+        }
         }
 
         @media (orientation:landscape) {
             :host {
-                padding-left: calc(0.6 * env(safe-area-inset-left));
-                padding-right: calc(0.1 * env(safe-area-inset-left));
+                padding-left: calc(0.6 * env(safe-area-inset-left)) !important;
+                padding-right: calc(0.1 * env(safe-area-inset-left)) !important;
             }
         }
 
