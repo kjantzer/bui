@@ -28,6 +28,7 @@ and filter the results.
 - `divider` - optional divider (see below)
 - `.coll` - a Backbone.Collection to use for fetching data
 - `listOptions` - change defaults (see below)
+- `toolbar=""` - `bottom`, `bottom-mobile` (flips toolbar to bottom)
 
 ## List Row
 The custom element listed in the `row` attribute will have a link

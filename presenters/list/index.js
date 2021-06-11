@@ -194,6 +194,24 @@ customElements.define('b-list', class extends LitElement {
         :host([queuing]) .queuing-overlay {
             display: flex;
         } */
+
+        :host([toolbar="bottom"]) {
+            grid-template-rows: auto 1fr auto auto;
+        }
+
+        :host([toolbar="bottom"]) b-list-toolbar {
+            order: 3;
+        }
+
+        @media (max-width:699px){
+            :host([toolbar="bottom-mobile"]) {
+                grid-template-rows: auto 1fr auto auto;
+            }
+
+            :host([toolbar="bottom-mobile"]) b-list-toolbar {
+                order: 3;
+            }
+        }
     `}
 
     get spinner(){
