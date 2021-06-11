@@ -106,6 +106,9 @@ export const fileIconLabels = {
 
 export default function(customColors={}, customLabels={}){
 
+if( customElements.get('b-file-icon') )
+    return
+
 Object.assign(fileIconColors, customColors)
 Object.assign(fileIconLabels, customLabels)
 
