@@ -79,9 +79,16 @@ Sets css vars for to support the dark/light mode, accent, and text colors.
 This makes some styling assumptions for a Progressive Web App (PWA)
 - `html/body` full height and no overflow
     - expected that the app element will take care of scrolling
-- sets `--view-gutter` (adjust for smaller screens)
 - prevents iOS "callouts" from image long presses
 - makes a few adjustments to BUI presenter styles
+
+CSS Varibles
+- `--view-gutter` (2em desktop, 1em mobile)
+- `--safe-top` shorthand for `env(safe-area-inset-top)`
+- `--safe-bottom`
+- `--safe-left`
+- `--safe-right`
+- `--font-system`
 
 ## App Entry
 
