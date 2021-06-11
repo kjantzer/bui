@@ -5,8 +5,11 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
     static get styles(){return css`
         :host(.tab-bar) {
-            display: grid !important;
-            grid-template-columns: repeat( auto-fit, minmax(60px, 1fr) );
+            /* display: grid !important;
+            grid-template-columns: repeat( auto-fit, minmax(60px, 1fr) ); */
+            
+            display: flex;
+            /* justify-content: space-evenly; */
 
             border-top: solid 1px var(--theme-bgd-accent) !important;
             background: var(--b-app-tab-bar-bgd, var(--theme-bgd)) !important;
@@ -36,6 +39,9 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
             border-radius: .75em;
             margin: .25em 0;
+            min-width: 60px;
+            flex-grow: 1;
+            flex-shrink: 0;
         }
 
         b-btn > span {
@@ -77,6 +83,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
         @media /*(max-height: 699px) and (orientation:landscape),*/
         (min-width:700px) {
             :host(.tab-bar) {
+                display: grid !important;
                 border-top:none !important;
                 border-right: solid 1px var(--theme-bgd-accent);
                 order: 0 !important;
@@ -91,6 +98,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
                 padding-bottom: .35em;
 
                 margin: 0 .25em;
+                flex-shrink: 1;
             }
 
             b-btn[active] {
