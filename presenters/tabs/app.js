@@ -61,7 +61,6 @@ customElements.define('b-app', class extends LitElement {
             overflow: auto;
             -webkit-overflow-scrolling: touch;
             --b-sub-color: var(--theme-text-accent);
-            --list-toolbar-shadow: 0 0 0 1px var(--theme-bgd-accent);
         }
 
         b-tabs-router > * {
