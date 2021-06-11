@@ -295,6 +295,12 @@ export default class BtnElement extends LitElement {
             font-weight: normal;
         }
 
+        @media (max-width: 699px) {
+            :host([icon-only="mobile"]) slot.label {
+                display: none;
+            }
+        }
+
         @media (hover){
         :host([text]:hover),
         :host([clear]:hover) {
@@ -371,7 +377,7 @@ export default class BtnElement extends LitElement {
                     ${this.icon?html`<b-icon part="icon" name="${this.icon}"></b-icon>`:''}
                 </slot>
             </span>
-            <slot></slot>
+            <slot class="label"></slot>
         </main>
     `}
 

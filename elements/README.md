@@ -103,6 +103,7 @@ Effectively a "span" tag with attributes to apply styles
 - `stacked`
 - `thin` - reduces top/bottom padding
 - `xs`, `sm`, `lg`, `xl`
+- `icon-only="mobile"` - label will be hidden on small devices
 
 #### Properties
 - `spin` - set to `true` to show a spinner
