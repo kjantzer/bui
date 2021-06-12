@@ -1,6 +1,7 @@
 const Model = require('../model')
 const bcrypt = require('bcrypt')
 var crypto = require("crypto");
+const AccessError = require('../errors').AccessError
 
 const serializedUsers = new Map()
 const MIN_PW_LEN = 8
@@ -60,6 +61,16 @@ module.exports = class User extends Model {
 
 
 // ==============================================================
+
+    toJSON(){
+        let data = Object.assign({}, this.attrs)
+        // delete data.password
+        return data
+    }
+
+    toString(){
+        return JSON.stringify(this.toJSON())
+    }
 
     constructor(attrs={}, req){
 
