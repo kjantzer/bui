@@ -1,4 +1,5 @@
 import store from '../../util/store'
+import '../../helpers/backbone/promises'
 
 class FormHandler extends HTMLElement {
 	
@@ -255,7 +256,7 @@ class FormHandler extends HTMLElement {
 		
 		if( this.model ){
 			if( this.autoSave === true ){
-				this.model.save(changes, {patch:this.patchSave||false})
+				this.model.saveSync(changes, {patch:this.patchSave||false})
 				this.model.trigger('edited', false, changes)
 				this.model.trigger('saved', changes)
 			}else{
