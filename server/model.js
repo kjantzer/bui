@@ -82,6 +82,7 @@ module.exports = class Model {
 
     get id(){ return this.__id || this.attrs[this.idAttribute] }
     set id(id){ this.__id = id }
+    get isSingular(){ return this.id }
     
     get idAttribute(){ return this.config.idAttribute || defaultConfig.idAttribute }
     get tableAlias(){ return this.config.tableAlias || this.config.table }
@@ -244,6 +245,12 @@ module.exports = class Model {
         // might need to activate this if too  many conflicts
         let convertToObject = true//this.config.resultsAsObject == true
         let ClassObj = Object.getPrototypeOf(this).constructor
+
+        if( this.isSingular && resp && resp[0] ){
+            id = this.id = resp[0][this.idAttribute]
+            if( resp.length > 1 )
+                console.warn('MODEL.isSingular returning more than one result')
+        }
         
         if( id && id == this.id ){
             this.attrs = resp[0]
@@ -344,7 +351,7 @@ module.exports = class Model {
     async destroy(){
 
         if( !this.config.table ) throw Error('missing config.table')
-        if( !this.id ) throw Error('missing id')
+        if( !this.isSingular ) throw Error('not a singular model')
 
         await this.find()
         
