@@ -2,13 +2,21 @@
 class AppInstaller {
 
     constructor(){
-        window.addEventListener('beforeinstallprompt', e=>{
-            e.preventDefault() // stop android from showing "install banner"
-            this._installer = e
+
+        this.install = this.install.bind(this)
+        
+        this._promise = new Promise(resolve=>{
+            window.addEventListener('beforeinstallprompt', e=>{
+                e.preventDefault() // stop android from showing "install banner"
+                this._installer = e
+                resolve(true)
+            })
         })
     }
 
-    get canInstall(){ return this._installer }
+    get canInstallPromise(){ return this._promise }
+
+    get canInstall(){ return !!this._installer }
 
     async install(){
 

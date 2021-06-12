@@ -16,6 +16,9 @@ html`
         <b-btn @click=${AppInstaller.install}>Install</b-btn>
     `:''}
 `
+
+// if you need to react to when the installer becomes available...
+AppInstaller.canInstallPromise.then(canInstall=>this.update())
 ```
 
 ## `AJAX`
