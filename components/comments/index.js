@@ -33,7 +33,7 @@ customElements.define('b-comments', class extends LitElement{
     `}
 
     update(changedProps){
-        if( changedProps.group != undefined || changedProps.gid != undefined ){
+        if( changedProps.get('group') != undefined || changedProps.get('gid') != undefined ){
             this.coll.realtimeSync.close()
             this.__coll = null
         }
