@@ -91,11 +91,18 @@ module.exports = class FileManager extends Model {
         if( this.skipDuplicates == true ){
             let dupe = await this.db.query(/*sql*/`
                 SELECT * FROM files
-                WHERE IFNULL(parent_id,'') = ? AND dir_path = ? AND md5 = ?
-            `, [info.parent_id||'', info.dir_path, info.md5]).then(r=>r.first)
+                WHERE IFNULL(parent_id,'') = ? AND group_name = ? AND dir_path = ? AND md5 = ?
+            `, [info.parent_id||'', this.group, info.dir_path, info.md5]).then(r=>r.first)
 
             if( dupe )
                 throw new Error('Duplicate file: '+dupe.filename)
+        }
+
+        // only one file allowed for this group/parent_id
+        if( this.isSingular ){
+            await this.find()
+            if( this.id )
+                await this.destroy()
         }
 
         await mkdirp.sync(this.dirPath)
