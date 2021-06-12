@@ -15,7 +15,7 @@ class AvatarElement extends HTMLElement {
         let shadow = this.attachShadow({mode: 'open'})
         let temp = document.createElement('template')
 
-		let aspectRatio = this.getAttribute('cover') == 'false' ? '' : 'xMinYMin slice meet'
+		let aspectRatio = this.hasAttribute('cover') ? 'xMinYMin slice' : 'xMinYMin slice meet'
         
         temp.innerHTML = /*html*/`<style>
 			:host {
