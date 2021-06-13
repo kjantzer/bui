@@ -46,7 +46,7 @@ customElements.define('b-realtime-users', class extends LitElement{
         if( !render ){
             let name = m.attrs&&m.attrs.name
             let initials = name ? name.split(' ').map(s=>s[0]).filter(s=>s).slice(0,2).join('') : '?'
-            render = html`<b-avatar class="avatar" initials="${initials}" title=${name}></b-avatar>`
+            render = html`<b-avatar part="avatar" class="avatar" initials="${initials}" title=${name}></b-avatar>`
         }
 
         return render
@@ -146,7 +146,7 @@ customElements.define('b-realtime-users', class extends LitElement{
     }
 
     render(){return html`
-        <main>
+        <main part="main">
             
             ${this.users.map((m,i)=>!this.showUser(i)?'':this.renderUser(m))}
             ${this.users.length>this.max?html`
