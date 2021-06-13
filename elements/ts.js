@@ -49,7 +49,7 @@ customElements.define('b-ts', class extends LitElement{
     }
 
     get displayTime(){
-        if( !this.date ) return ''
+        if( !this.date ) return this.fallback
         
         if( this.format == 'relative' && this.date.fromNow )
             return this.date.isValid() ? this.date.fromNow() : this.fallback
