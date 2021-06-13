@@ -16,6 +16,10 @@ customElements.define('b-hr', class extends LitElement{
             grid-column: 1/-1;
         }
 
+        :host([hidden]) {
+            display: none;
+        }
+
         :host([thick]) {
             height: 4px;
         }
