@@ -36,8 +36,8 @@ module.exports = class User extends Model {
         return this.attrs.password_is_temp
     }
 
-    async saveNewPassword(user, pw, isTemp=false){
-        return user.update({
+    async saveNewPassword(pw, isTemp=false){
+        return this.update({
             password: pw,
             password_is_temp: isTemp,
             password_last_changed: new Date()
@@ -162,7 +162,7 @@ module.exports = class User extends Model {
         if( this.id != this.req.user.id && !this.req.user.isAdmin )
             throw new AccessError()
 
-        let user = await this.constructor.findBy('id', this.id)
+        await this.find()
         let {currentPW, newPW} = this.req.body
 
         // if NOT the logged in user, then only a temp password can be set
@@ -175,13 +175,12 @@ module.exports = class User extends Model {
         if( !newPW || newPW.length < MIN_PW_LEN )
             throw new Error('too short')
 
-        if( !doSetTemp && isResetting && !await user.verifyPassword(currentPW) )
+        if( !doSetTemp && isResetting && !await this.verifyPassword(currentPW) )
             throw new Error('invalid current password')
 
         let newPWHash = await this.constructor.encryptPassword(newPW)
         
-        user.req = this.req
-        return this.saveNewPassword(user, newPWHash, doSetTemp)
+        return this.saveNewPassword(newPWHash, doSetTemp)
     }
 
     static async encryptPassword(pw){
