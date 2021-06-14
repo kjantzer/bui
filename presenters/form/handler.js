@@ -225,6 +225,8 @@ class FormHandler extends HTMLElement {
 		let val = e.detail.value
 		
 		if( !key ) return
+
+		e.stopPropagation()
 		
 		let changes = {}
 		changes[key] = val
