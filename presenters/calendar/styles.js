@@ -17,6 +17,11 @@ export default css`
         height: 100%;
     }
 
+    :host(:not([ready])) {
+        opacity: 0;
+        pointer-events: none;
+    }
+
     :host([weekends="small"]) {
         --columns: 1fr repeat(5, 2fr) 1fr;
     }

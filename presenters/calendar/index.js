@@ -116,19 +116,19 @@ customElements.define('b-calendar', class extends LitElement{
         this.selectedRange.on('change', this.onSelectedRangeChange.bind(this))
     }
 
-    connectedCallback(){
-        super.connectedCallback()
+    // connectedCallback(){
+    //     super.connectedCallback()
         
-        setTimeout(() => {
-            this.scrollToDate('start')
-            this.ready = true
-        }, 10);
-    }
+    //     setTimeout(() => {
+    //         this.scrollToDate('start')
+    //         this.ready = true
+    //     }, 10);
+    // }
 
-    disconnectedCallback(){
-        super.disconnectedCallback()
-        this.ready = false
-    }
+    // disconnectedCallback(){
+    //     super.disconnectedCallback()
+    //     this.ready = false
+    // }
 
     render(){return html`
 
@@ -174,7 +174,12 @@ customElements.define('b-calendar', class extends LitElement{
     `}
 
     onMonthInView(e){
-        if( !this.ready ) return
+        if( !this.ready ){
+            console.log('scroll');
+            this.scrollToDate('start')
+            this.ready = true
+            return
+        }
 
         let month = e.detail
         
