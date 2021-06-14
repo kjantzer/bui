@@ -16,11 +16,15 @@ customElements.define('b-list-filter-btn', class extends LitElement{
         main {
             display: inline-grid;
             line-height: 1.2em;
+            margin-bottom: -.25em;
         }
 
         b-label {
             grid-area: unset;
             color: var(--toolbarTextColor);
+            margin: -0.5em 0px;
+            position: relative;
+            top: -0.5em;
             /* opacity: .4; */
         }
 
