@@ -191,7 +191,7 @@ customElements.define('radio-group', class extends LitElement{
 		else
 			this.value = e.target.value
 		
-		this.setAttribute('value', this.value)
+		this.setAttribute('value', this.value||'')
 		e.stopPropagation&&e.stopPropagation()
 		
 		var event = new CustomEvent('change', {
@@ -221,7 +221,7 @@ customElements.define('radio-group', class extends LitElement{
 			else
 				el.active=false
 		})
-		this.setAttribute('value', val)
+		this.setAttribute('value', val||'')
 	}
 	
 	get disabled(){ return this.hasAttribute('disabled') }
