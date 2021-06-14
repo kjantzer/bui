@@ -32,5 +32,18 @@ html`
 - `weekends` - mini, small
 - `display` - biweekly, weekly
 
+## Events
+
+### `move-to`
+
+If rendered content wants to move slots, this can be called
+
+```js
+import 'bui/helpers/lit-element/events'
+
+//inside content...
+this.emitEvent('move-to', newSlot)
+```
+
 ## TODO:
 More docs needed

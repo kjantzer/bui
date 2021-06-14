@@ -192,8 +192,32 @@ customElements.define('b-calendar', class extends LitElement{
             .display=${this.display}
             .selectedRange=${this.selectedRange}
             .renderDayContent=${this.renderDayContent}
+            @move-to=${this.moveContentTo}
         >${until(this._renderMonthContent(date), '')}</b-calendar-month>
     `}
+
+    moveContentTo(e){
+        let content = e.target
+        let month = e.currentTarget
+        let slot = e.detail
+
+        // already in proper month
+        if( slot.includes(month.date.format('YYYY-MM')) )
+            return
+        
+        // get months in the DOM
+        let months = Array.from(this.querySelectorAll('b-calendar-month'))
+
+        // find the month the content should move to (may not be in DOM)
+        month = months.find(month=>{
+            return slot.includes(month.date.format('YYYY-MM'))
+        })
+
+        // if in the DOM, move to that month
+        // if not in the DOM, it will be moved/re-rendered later by `_renderMonthContent`
+        if( month )
+            month.appendChild(content)
+    }
 
     _renderMonthContent(date){
         if( !this.ready ) return ''
