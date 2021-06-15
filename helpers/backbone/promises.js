@@ -31,6 +31,20 @@ const fetchSync = function(opts={}){
 Collection.prototype.fetchSync = fetchSync
 Model.prototype.fetchSync = fetchSync
 
+const fetchOnce = function(opts){
+    if( !this.hasFetched && !this.isFetching ){
+        this.fetchSync(opts)
+        return true
+    }else if( opts && opts.success ){
+        opts.success(this, this.models)
+        return false;
+    }
+}
+
+Collection.prototype.fetchOnce = fetchOnce
+Model.prototype.fetchOnce = fetchOnce
+
+
 Model.prototype.saveSync = function(key, val, opts){
     return new Promise((resolve, reject)=>{
 
