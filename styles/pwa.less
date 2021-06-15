@@ -47,15 +47,15 @@ html, body {
 // slightly larger menu on small screens
 @media screen and (max-width:699px), screen and (max-height:699px) {
 
-    html {
+    :root.mobile html {
         --view-gutter: 1em;
     }
     
-    .popover .b-menu {
+    :root.mobile .popover .b-menu {
         font-size: 1.1em;
     }
 
-    b-panels[name="root"] {
+    :root.mobile b-panels[name="root"] {
         top: 0;
         z-index: 110;
     }
