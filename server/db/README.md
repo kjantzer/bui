@@ -81,11 +81,13 @@ let resp = await this.db.bulkInsert('table_name', rows)
 Predefined clauses can be used to aid in creation of queries, particularly when clauses are optional or given from an outside source.
 
 ```js
-let clauses = new db.clauses.Group({
+let {Group, Between, Like} = db.clauses
+
+let clauses = new Group({
     'is_active': true,
-    'release_date': new db.clauses.Between('2020-01-01', '2020-01-31'),
-    'name': new db.clauses.Like('%Smith'),
-    'a-clause-group': new db.clauses.Group({
+    'release_date': new Between('2020-01-01', '2020-01-31'),
+    'name': new Like('%Smith'),
+    'a-clause-group': new Group({
         'category': ['Adventure', 'Science'],
         'genre': 'Non-Fiction'
     }, 'OR')
@@ -107,7 +109,9 @@ db.query(`SELECT * FROM table_name WHERE ${clause}`, values)
 - `Between(start, end, {addHours:false})`
 - `FullText(val)`
 - `FindInSet(val)`
-- `JsonContains(val, [path='$'])`
+- `JsonContains(val, ?path='$')`
+- `IsEmpty({includeNull:false})`
+- `NotEmpty({includeNull:false})`
 - `UnsafeSQL(rawSql)` - unsafe to input uncleaned user data
 
 #### Custom Clauses
