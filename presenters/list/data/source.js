@@ -118,7 +118,10 @@ export default class DataSource {
 
             if( this.lastFiltered < this.filters.lastChanged ){
                 this.data = await this.filters.filter(this._rawData)
-                await this.sort()
+                
+                if( this.sorts && !this.sorts.sortOnDB )
+                    await this.sort()
+
                 this._filteredData = this.data
             }
 

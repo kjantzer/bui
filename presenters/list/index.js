@@ -114,8 +114,14 @@ customElements.define('b-list', class extends LitElement {
             overflow-x: auto;
         }
 
-        slot[name="header"]::-webkit-scrollbar,
-        slot[name="footer"]::-webkit-scrollbar {
+        slot[name="header"]::slotted(*),
+        slot[name="footer"]::slotted(*) {
+            overflow-y: auto;
+        }
+
+        /* this doesn't seem to work */
+        slot[name="header"]::slotted(*::-webkit-scrollbar),
+        slot[name="footer"]::slotted(*::-webkit-scrollbar) {
             display: none;
             width: 0 !important;
             height: 0 !important;
