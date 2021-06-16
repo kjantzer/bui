@@ -239,7 +239,7 @@ module.exports = class Model {
 
         // parse each row (for decoding JSON strings, etc)
         await Promise.series(resp, (row,i)=>{
-            return this.findParseRow(row, i, resp.length)
+            return this.findParseRow(row, i, resp.length, resp)
         })
 
         // might need to activate this if too  many conflicts
