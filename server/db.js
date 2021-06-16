@@ -205,10 +205,13 @@ module.exports = class DB {
 class DBResults extends Array {
     static get array_chunk_size(){return 10000}
     
-    groupBy(key){
+    groupBy(key, {forceArray=false}={}){
         let group = {}
         this.forEach(row=>{
             if( row[key] ){
+
+                if( forceArray && !group[row[key]] )
+                    group[row[key]] = []
 
                 // exists with one row...convert to array of rows
                 if( group[row[key]] && group[row[key]][key] )
