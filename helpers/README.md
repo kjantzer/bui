@@ -243,3 +243,36 @@ of related models and collections. Children classes are only created when access
 from the parent model's attributes or a specificed lookup collection.
 
 [Read more on Relations](./backbone/relations/README.md)
+
+***
+
+## Scrollbars
+Make scrollbars look more like stock Mac/iOS. Also provides a few utiliesi
+
+### Style
+```js
+import scrollbars from 'bui/helpers/scrollbars'
+
+// only change style on windows
+css`
+    ${scrollbars.styleWindows()}
+`
+
+css`
+    ${scrollbars.styleAll()}
+`
+```
+
+### Hide 
+```js
+css`
+    ${scrollbars.hide()}
+`
+```
+
+### Disable Wheel Scroll
+```js
+firstUpdated(){
+    scrollbars.stopWheelScrolling(this)
+}
+```

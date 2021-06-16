@@ -1,4 +1,4 @@
-import {css} from 'lit-element'
+import {css, unsafeCSS} from 'lit-element'
 import device from '../util/device'
 
 const styles = css`
@@ -27,7 +27,32 @@ const styles = css`
     }
 `
 
+const hide = (el=':host')=>css`
+${unsafeCSS(el)}::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+`
+
+const stopWheelScrolling = target=>{
+    target.addEventListener('wheel', e=>{
+        e.preventDefault()
+        e.stopPropagation()
+        return false
+    })
+}
+
+const styleWindows = ()=>device.isWindows ? styles : css``
+const styleAll = ()=>styles
+
 export default {
-    ifWindows(){ return device.isWindows ? styles : css`` },
-    forAll(){ return styles }
+    styleWindows,
+    styleAll,
+    hide,
+    stopWheelScrolling,
+
+    // DEPRECATED
+    ifWindows(){ return styleWindows() },
+    forAll(){ return styleAll() }
 }
