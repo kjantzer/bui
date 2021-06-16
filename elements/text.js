@@ -27,6 +27,11 @@ customElements.define('b-text', class extends LitElement{
             vertical-align: text-bottom;
         }
 
+        :host([clip]) ::slotted(b-text),
+        :host([clip]) ::slotted(span) {
+            display: contents;
+        }
+
         :host([monospace]) {
             font-family: var(--b-text-monospace, 'Source Code Pro', 'Courier New', Courier, monospace)
         }
