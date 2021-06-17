@@ -1,9 +1,10 @@
 
 import Dialog from './element'
 import Prompt from './prompt'
-import bindPresenters from './bind-presenters'
+import bindPresenters, {Notif, Panel, Popover} from './bind-presenters'
 
 export default Dialog
+export {Notif, Panel, Popover}
 
 export function registerPreset(name, defaults){
 	Dialog[name] = function(opts={}){

@@ -11,6 +11,8 @@ import Panel from '../panel'
 import Popover from '../popover'
 import device from '../../util/device'
 
+export {Notif, Panel, Popover}
+
 export default function bindPresenters(Dialog){
     Object.assign(Dialog.prototype, presenters)
 }
