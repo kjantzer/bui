@@ -279,6 +279,9 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             }
         }
 
+        if( opts.onResolve )
+            this.onResolve = opts.onResolve
+
         // TEMP: backwards compt
         if( opts.msg )
             this.body = opts.msg
