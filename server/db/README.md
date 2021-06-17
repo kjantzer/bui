@@ -72,7 +72,10 @@ let rows = [
     {num: 2, label: 'two'}
 ]
 
-let resp = await this.db.bulkInsert('table_name', rows)
+let resp = await this.db.bulkInsert('table_name', rows, {
+    ignore: true, // these are the default options
+    replace: false
+})
 ```
 
 ## Clauses

@@ -135,9 +135,9 @@ module.exports = class DB {
         return `ON DUPLICATE KEY UPDATE ${updates.join(', ')}`
     }
 
-    bulkInsert(table, rows){
+    bulkInsert(table, rows, {ignore=true, replace=false}={}){
         let [cols, vals] = this.parseBulkInsert(rows)
-        let sql = `INSERT IGNORE INTO ${table} (${cols}) VALUES ?`
+        let sql = `${replace?'REPLACE':'INSERT'} ${ignore&&!replace?'IGNORE':''} INTO ${table} (${cols}) VALUES ?`
         return this.query(sql, [vals])
     }
 
