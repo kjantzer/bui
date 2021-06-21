@@ -27,6 +27,11 @@ customElements.define('b-comments', class extends LitElement{
             position:relative;
         }
 
+        :host([group="thread"]) {
+            border-left: solid 1px var(--theme-text-accent);
+            padding-left: .5em;
+        }
+
         b-comment-row:not(:first-child) {
             margin-top: .5em;
         }

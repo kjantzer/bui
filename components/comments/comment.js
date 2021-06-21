@@ -99,6 +99,10 @@ customElements.define('b-comment-row', class extends LitElement {
             grid-column: span 2;
         }
 
+        b-btn.reply {
+            --padding: 0 .5em;
+        }
+
         b-btn.resolve,
         b-btn.reaction {
             --padding: 0 .25em;
@@ -264,6 +268,8 @@ customElements.define('b-comment-row', class extends LitElement {
                 @saved=${this.doneEditing}
                 @canceled=${this.doneEditing}></b-write-comment>
 
+            `:this.coll.isThread?html`
+                <b-btn xs clear @click=${this.beginEditing} class="reply">Reply</b-btn>
             `:html`
                 <b-btn class="write" block color="white" sm @click=${this.beginEditing}>${this.placeholderBtn}</b-btn>
             `}
@@ -295,11 +301,11 @@ customElements.define('b-comment-row', class extends LitElement {
 
     showMenu(e){
 
-        if( !this.model ) return
-        if( this.model.get('type') == 'system' ) return
-
         e.preventDefault()
         e.stopPropagation()
+
+        if( !this.model ) return
+        if( this.model.get('type') == 'system' ) return  
         
         let menu = [
             {label: 'Edit', icon: 'pencil', fn: 'beginEditing'},

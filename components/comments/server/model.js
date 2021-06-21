@@ -109,10 +109,17 @@ module.exports = class Comments extends Model {
     }
 
     async destroy(...args){
+
+        // delete all comments for a group/gid
         if( !this.id && this.group && this.gid ){
             return await this.db.q(/*sql*/`DELETE FROM ${this.config.table} 
-                                                WHERE \`group\` = ? AND gid = ?`, [this.group, this.gid])
+                                            WHERE \`group\` = ? AND gid = ?`, [this.group, this.gid])
         }
+
+        // delete any threaded messages that might exist
+        if( this.id )
+            await this.db.q(/*sql*/`DELETE FROM ${this.config.table} 
+                                    WHERE \`group\` = ? AND gid = ?`, ['thread', this.id])
 
         return super.destroy(...args)
     }

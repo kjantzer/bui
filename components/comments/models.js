@@ -37,6 +37,8 @@ export default class Comments extends Collection {
     url(){ return `${API_ROOT}/comments/${this.group}/${this.gid}` }
     get model(){ return Comment }
 
+    get isThread(){ return this.group == 'thread' }
+
     fetch(...args){
         if( !Backbone.$ ) return
 
