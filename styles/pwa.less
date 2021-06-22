@@ -47,7 +47,7 @@ html, body {
 // slightly larger menu on small screens
 @media screen and (max-width:699px), screen and (max-height:699px) {
 
-    :root.mobile {
+    :root {
         --view-gutter: 1em;
     }
     
@@ -73,4 +73,5 @@ b-panel {
     position: fixed;
     z-index: 2000 !important;
     top: 0;
+    background: rgba(var(--dark-bgd-rgb), .7);
 }
