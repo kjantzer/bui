@@ -83,11 +83,10 @@ This makes some styling assumptions for a Progressive Web App (PWA)
 - makes a few adjustments to BUI presenter styles
 
 CSS Varibles
-- `--view-gutter` (2em desktop, 1em mobile)
-- `--safe-top` shorthand for `env(safe-area-inset-top)`
-- `--safe-bottom`
-- `--safe-left`
-- `--safe-right`
+- `--gutter` (2em desktop, 1em mobile)
+- `--safe-[side]` shorthand for `env(safe-area-inset-[side])`
+- `--gutter-safe`
+- `--gutter-safe-[side]` (top, bottom, left, right)
 - `--font-system`
 
 ## App Entry

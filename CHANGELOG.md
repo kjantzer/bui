@@ -1,5 +1,8 @@
 # Changelog
 
+## 2021-06-22
+- DEPERECATED: `--view-gutter` changing to `--gutter` (former still exists)
+
 ## 2021-06-08
 - BREAKING: `search-popup` renamed and moved to `components/search`
 
