@@ -15,7 +15,7 @@ export const PanelDefaults = {
     width: '100%',
     height: '100%',
     anchor: 'right',
-    animation: '',
+    animation: 'rise',
     quickJump: true,
     closeOnEsc: false,
     controller: null, // root controller will be created and used
@@ -249,12 +249,16 @@ export class Panel extends LitElement {
             defaultOpts.height = ''
             defaultOpts.anchor = 'center'
             defaultOpts.animation = 'scale'
-        }
-
-        if( opts.type == 'actionsheet' ){
+        
+        }else if( opts.type == 'actionsheet' ){
             defaultOpts.width = '100%'
             defaultOpts.height = ''
             defaultOpts.anchor = 'bottom'
+
+        }else{
+            // change to slide animation if view has width set (makes more sense)
+            if( !opts.animation && opts.width )
+                opts.animation = 'slide'
         }
 
         opts = Object.assign(defaultOpts, opts)
@@ -656,6 +660,12 @@ export class Panel extends LitElement {
             position: relative;
             margin: auto auto;
             transform: translateY(-100px);
+        }
+
+        :host([animation="rise"]) > main {
+            position: relative;
+            margin: auto auto;
+            transform: translateY(100px);
         }
 
         :host([anchor="center"]) > main {
