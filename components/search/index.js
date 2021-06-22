@@ -33,10 +33,6 @@ export function shortcuts(){
 
 export default class extends LitElement{
 
-    static get properties(){return {
-        state: {type: String, reflect: true}
-    }}
-
     open({
         term='',
         placeholder=null,
@@ -256,6 +252,9 @@ export default class extends LitElement{
 
         </b-list>
     `}
+
+    set state(val){ this.setAttribute('state', val) }
+    get state(){ return this.getAttribute('state') || 'empty' }
 
     renderToolbarButtons(){return html`
         ${device.isMobile?html`
