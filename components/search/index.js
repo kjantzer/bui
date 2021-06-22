@@ -12,6 +12,7 @@ import './divider'
 import Tips from './tips'
 import Coll from './models'
 
+const maxHeight = '96%';
 const maxHistoryDefault = 120
 export const filters = {
     search: {hideIcon: true},
@@ -54,7 +55,7 @@ export default class extends LitElement{
             width: device.isMobile ? '100%' :'640px',
             height: device.isMobile ? '50%' : '540px',
             type: 'search-popup',
-            animation: 'drop'
+            animation: 'scale',// 'drop'
         })
 
         this.panel.open()
@@ -428,10 +429,10 @@ export default class extends LitElement{
         if( !this.__initialPanelHeight )
             this.__initialPanelHeight = this.panel.height
         
-        this.panel.height = this.panel.height == '100%' ? this.__initialPanelHeight : '100%'
+        this.panel.height = this.panel.height == maxHeight ? this.__initialPanelHeight : maxHeight
 
         let settings = this.settings()
-        settings.enlarge = this.panel.height=='100%'
+        settings.enlarge = this.panel.height==maxHeight
         this.settings(settings)
     }
 
