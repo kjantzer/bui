@@ -47,7 +47,14 @@ const presenters = {
 	},
 	
 	modal(opts={}, mobileOpts){
-		if( mobileOpts && device.isMobile )
+		mobileOpts = Object.assign({
+			anchor: 'top',
+			width: '100%',
+			height: 'auto',
+			type: ''
+		}, mobileOpts)
+
+		if( device.isMobile )
 			return this._panel(mobileOpts)
 		else
 			return this._panel(opts)
