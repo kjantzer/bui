@@ -33,6 +33,10 @@ export function shortcuts(){
 
 export default class extends LitElement{
 
+    static get properties(){return {
+        state: {type: String, reflect: true}
+    }}
+
     open({
         term='',
         placeholder=null,
@@ -60,13 +64,6 @@ export default class extends LitElement{
 
         this.panel.open()
 
-        if( fromShortcut && this.shortcutsTrigger
-        && fromShortcut == this.shortcutsTrigger ){
-            this.term = this.shortcutsTrigger
-        }else if( term ){
-            this.term = term
-        }
-
         this.defaultUrl = this.defaultUrl || this.url
         this.defaultPlaceholder = this.defaultPlaceholder || this.placeholder
         
@@ -74,6 +71,14 @@ export default class extends LitElement{
         this.placeholder = placeholder || this.defaultPlaceholder
 
         setTimeout(()=>{
+
+            if( fromShortcut && this.shortcutsTrigger
+            && fromShortcut == this.shortcutsTrigger ){
+                this.term = this.shortcutsTrigger
+            }else if( term ){
+                this.term = term
+            }
+
             if( filters ){
                 
                 if( !this.origFilters() ){
@@ -219,7 +224,7 @@ export default class extends LitElement{
         
         <header>
 
-            <form-control show="prefix" class="searchbox">
+            <form-control show="prefix" class="searchbox" .value=${this._term}>
                 <text-field slot="control"
                     placeholder="${this.placeholder}"
                     @keyup=${this.onKeyUp}
@@ -272,7 +277,7 @@ export default class extends LitElement{
     firstUpdated(){
         this.fc = this.shadowRoot.querySelector('form-control')
         this.coll.reset(this.history()||[])
-        this.setAttribute('state', 'empty')
+        this.state = 'empty'
         // window.addEventListener('focus-'+this.key, this.focus.bind(this))
 
         if( !device.isMobile && this.settings().enlarge )
@@ -299,7 +304,7 @@ export default class extends LitElement{
         this.coll.term = ''
         this.list.term = ''
         this.coll.reset(this.history()||[])
-        this.setAttribute('state', 'empty')
+        this.state = 'empty'
         this.focus()
         setTimeout(()=>{
             this.list.reload()
@@ -311,8 +316,8 @@ export default class extends LitElement{
     }
 
     set term(val){
-        if( !this.fc ) return console.warn('not ready')
-        this.fc.value = val
+        if( this.fc )
+            this.fc.value = val
         this._search(val)
     }
 
@@ -448,15 +453,18 @@ export default class extends LitElement{
 
         if( !this._term ) return this.clear()
 
-        if( this.shortcuts && this._term[0] == this.shortcutsTrigger )
+        if( this.shortcuts && this._term[0] == this.shortcutsTrigger ){
+            this.list.filters.searchOptions = {minMatchCharLength: 1}
             return this._loadShortcuts()
-        else
+        }else{
+            this.list.filters.searchOptions = {minMatchCharLength: this.minTermLength}
             this.list.term = ''
+        }
 
-        if( this._term.length < this.minTermLength) return
+        if( this._term.length < this.minTermLength ) return
 
         // delay fetching in case user types another character
-        this.fetching = true
+        // this.fetching = true
         this._fetchDelay = setTimeout(this.fetchResults.bind(this), this.typeDelay)
     }
 
@@ -467,12 +475,14 @@ export default class extends LitElement{
             return s
         }))
 
-        this.setAttribute('state', 'shortcuts')
+        this.state = 'shortcuts'
 
         this.list.term = this._term.slice(1) // remove leading "trigger"
-        
-        if( !this.list.term )
-            this.list.reload()
+
+        setTimeout(()=>{
+            if( !this.list.term )
+                this.list.reload()
+        })
 
         setTimeout(()=>{
             this._selectResult('first')
@@ -482,11 +492,12 @@ export default class extends LitElement{
 
     async fetchResults(){
         
+        this.fetching = true
         this.coll.term = this._term
         await this.list.refresh()
         this.fetching = false
 
-        this.setAttribute('state', 'results')
+        this.state = 'results'
         
         this._selectResult('first')
 
