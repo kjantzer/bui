@@ -10,6 +10,11 @@ export const colorScheme = {
     get isLightMode(){ return window.matchMedia("(prefers-color-scheme: light)").matches },
     get isUnset(){ return window.matchMedia("(prefers-color-scheme: no-preference)").matches },
 
+    get isDaytime(){
+        const hours = new Date().getHours()
+        return hours > 6 && hours < 20
+    },
+
     get isSupported(){ return this.isDarkMode || this.isLightMode || this.isUnset },
     
     onChange(cb){
@@ -65,6 +70,8 @@ export const colorScheme = {
 
         if( theme == 'system' )
             theme = this.isDarkMode ? 'dark' : 'light'
+        if( theme == 'auto' )
+            theme = !this.isDaytime ? 'dark' : 'light'
 
         if( theme )
             html.setAttribute(theme, '')
