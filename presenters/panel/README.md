@@ -96,6 +96,29 @@ panel.shake()
 panel.bounce()
 ```
 
+### Permissions
+Registered panels support a `permission` option to keep the view from opening under certain circumstances. For it to work you must set the `permissionCheck` function.
+
+```js
+import Panel from 'bui/presenters/panel';
+
+// provide custom logic for testing permissions
+Panel.permissionCheck = permission=>{
+    if( permission == 'admin' && !user.isAdmin )
+        return false
+    return true
+}
+
+Panel.register('my-custom-element', 'custom-element', {
+    title: 'My Custom Element View',
+    // permission will be evaluated before opening
+    permission: 'admin', // Panel.permissionCheck used
+    // permission(){ return user.isAdmin } // or provide inline function
+})
+```
+
+>NOTE: disabling panels with permission is only a convient way to reduce UI clutter for certain users. It should be accompanied with a server permission check on any API requests if it is truely critical the user doesn't have access.
+
 
 ## Controller
 Panels are rendered inside of a panel controller `<b-panels></b-pannels>`.

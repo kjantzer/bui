@@ -6,6 +6,7 @@ import device from '../../util/device'
 import './controller'
 import './toolbar'
 import '../../elements/btn'
+import CollMap from '../../util/collmap'
 
 export const PanelDefaults = {
     type: '',
@@ -22,53 +23,13 @@ export const PanelDefaults = {
     disableOverscrollClose: false
 }
 
+let permissionCheck
+
 class RegisteredPanels {
 
     constructor(){
-        this.register = new Map()
+        this.register = new CollMap()
     }
-
-    get shortcuts(){
-
-        let shortcuts = []
-
-        this.register.forEach(reg=>{
-
-            let {view, route, opts} = reg
-
-            view = customElements.get(view)
-            opts = Object.assign({}, opts)
-
-            if( !view ) return
-            if( !opts.shortcuts&&!opts.shortcut ) return
-
-            // use title/icon on the view if it gives it
-            if( !opts.title && view.title ) opts.title = view.title
-            if( !opts.icon && view.icon ) opts.icon = view.icon
-
-            if( opts.shortcuts === true || opts.shortcut === true ){
-                shortcuts.push({
-                    title: opts.title,
-                    icon: opts.icon||'',
-                    url: route.rootPath
-                })
-            }
-
-            if( opts.shortcuts && Array.isArray(opts.shortcuts) )
-            opts.shortcuts.forEach(s=>{
-
-                shortcuts.push(Object.assign({}, opts, {
-                    description: '',
-                    url: route.makePath(s.args||{})
-                }, s))
-
-            })
-
-        })
-
-        return shortcuts
-    }
-
 
     set(key, data){
         return this.register.set(key, data)
@@ -83,6 +44,14 @@ class RegisteredPanels {
             return console.warn(`A panel is already registered for ${path}`)
         }
 
+        if( typeof view == 'string' ){
+            let ce = customElements.get(view)
+            if( ce ){
+                opts.title = opts.title || ce.title
+                opts.icon = opts.icon || ce.icon
+            }
+        }
+
         this.set(path, {view, opts})
 
         if( opts.route !== false )
@@ -92,6 +61,20 @@ class RegisteredPanels {
         })
     }
 
+    checkPermission(reg){
+        let permission = reg.opts.permission
+
+        if( !permission ) return true
+
+        if( typeof permission == 'function' )
+            return permission() !== false
+
+        if( permissionCheck && permissionCheck(permission) == false )
+            return false
+            
+        return true
+    }
+
     _initiate(path){
         let registered = this.get(path)
 
@@ -99,6 +82,9 @@ class RegisteredPanels {
             console.error(`Panel for ${path} not found`)
             return false
         }
+
+        if( this.checkPermission(registered) == false )
+            return
 
         // first time this panel is being requested
         if( !registered.panel ){
@@ -135,6 +121,66 @@ class RegisteredPanels {
         else
             registered.panel.open()
     }
+
+    get shortcuts(){
+        return this.toMenu({onlyShortcuts:true})
+    }
+
+    get menu(){
+        return this.toMenu()
+    }
+
+    toMenu({
+        onlyShortcuts=false,
+        relatedShortcuts=true,
+        checkPermission=true
+    }={}){
+
+        let menu = []
+
+        this.register.forEach(reg=>{
+
+            let {view, route, opts} = reg
+
+            view = customElements.get(view)
+            opts = Object.assign({}, opts)
+
+            if( !view ) return
+            if( onlyShortcuts && !opts.shortcuts&&!opts.shortcut ) return
+            if( checkPermission && this.checkPermission(reg) == false ) return
+
+            // use title/icon on the view if it gives it
+            if( !opts.title && view.title ) opts.title = view.title
+            if( !opts.icon && view.icon ) opts.icon = view.icon
+
+            let shortcuts = []
+
+            if( opts.shortcuts && Array.isArray(opts.shortcuts) ){
+                shortcuts = opts.shortcuts.map(s=>{
+                    return Object.assign({}, opts, {
+                        description: '',
+                        url: route.makePath(s.args||{})
+                    }, s)
+                })
+            }
+
+            if( !onlyShortcuts || opts.shortcuts === true || opts.shortcut === true ){
+                menu.push({
+                    title: opts.title,
+                    icon: opts.icon||'',
+                    url: route.rootPath,
+                    shortcuts
+                })
+            }
+
+            if( relatedShortcuts && onlyShortcuts && shortcuts.length > 0 )
+                menu.push(...shortcuts )
+        })
+
+        menu = menu.sort((a,b)=>a.title>b.title?1:-1)
+        
+        return menu
+    }
     
 }
 
@@ -163,6 +209,13 @@ export const ActionSheet = function(view, opts={}){
 }
 
 export class Panel extends LitElement {
+
+    static set permissionCheck(fn){
+        if( typeof fn != 'function' )
+            throw new Error('permissionCheck should be a function')
+
+        permissionCheck = fn
+    }
 
     static get properties(){return {
         title: {type: String},
