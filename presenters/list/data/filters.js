@@ -4,9 +4,10 @@ import Popover from '../../popover'
 import titleize from '../../../util/titleize'
 import Fuse from 'fuse.js'
 import Emitter from 'component-emitter'
-import FilterViewDate from '../toolbar/filter-view-date'
-import FilterViewInput from '../toolbar/filter-view-input'
-import FilterViewSlider from '../toolbar/filter-view-slider'
+
+import FilterViewDate from '../toolbar/filter-view/date'
+import FilterViewInput from '../toolbar/filter-view/input'
+import FilterViewSlider from '../toolbar/filter-view/slider'
 import FilterViewSearch from '../toolbar/filter-view/search'
 // import FilterViewToken from '../toolbar/filter-view/token'
 
@@ -62,6 +63,8 @@ export default class Filters extends Map {
 
         return active.join(' | ')
     }
+
+    get length(){ return Object.keys(this.__value).length }
 
     // alias that makes more sense when working programically
     update(filters){

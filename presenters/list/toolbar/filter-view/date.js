@@ -1,6 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
-import dayjs from 'dayjs'
-import Datepicker from '../../../presenters/datepicker'
+import Datepicker from '../../../../presenters/datepicker'
 
 customElements.define('b-list-filter-view-date', class extends LitElement{
 
