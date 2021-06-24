@@ -1,5 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
+import device from '../../../util/device'
 import './filter-btn'
+import FiltersPanel from './filters-panel'
 
 customElements.define('b-list-filters', class extends LitElement{
 
@@ -37,18 +39,68 @@ customElements.define('b-list-filters', class extends LitElement{
                 order: -1;
             }
         }
+
+        .show-filters main {
+            display: inline-grid;
+            line-height: 1.2em;
+            margin-bottom: -.25em;
+        }
+
+        .show-filters b-label {
+            grid-area: unset;
+            color: var(--toolbarTextColor);
+            margin: -0.5em 0px;
+            position: relative;
+            top: -0.5em;
+            /* opacity: .4; */
+        }
+
+        .show-filters b-icon {
+            font-size: .8em;
+            vertical-align: middle;
+            margin-top: -1px;
+            color: var(--toolbarTextColor);
+            opacity: .4;
+        }
     `}
 
+    // TODO: allow threshold to be set via .listOptions?
+    get showOverflow(){ return this.filters.size > 8 || (this.filters.size > 3 && device.isSmallDevice) }
+
     render(){return html`
-        <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" text
-            @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
+
+        ${this.showOverflow?html`
+
+            <b-btn text @click=${this.openFiltersPanel} style="flex-shrink: 0;" class="show-filters" _icon="filter">
+                <main>
+                    <b-label xs>Filters</b-label>
+                    <div>
+                        <b-icon name="filter"></b-icon>
+                        ${this.filters.length} <b-text muted sm>of</b-text> <b-text muted>${this.filters.size}</b-text>
+                    </div>
+                </main>
+            </b-btn>
         
-        ${this.filters.map(filter=>html`
+        `:html`
+            <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" text
+                @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
+        `}
+
+        ${this.filters.map(filter=>!this.showOverflow||filter.isActive?html`
             <b-list-filter-btn ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
-        `)}
-        
+        `:'')}
+
+        ${this.showOverflow?html`
         <b-btn color="hover-red" title="Clear filters" icon="erase" text @click=${this.resetFilters}></b-btn>
+        `:''}
     `}
+
+    openFiltersPanel(){
+        this._filtersPanel = this._filtersPanel || new FiltersPanel()
+        this._filtersPanel.open({
+            filters: this.filters
+        })
+    }
 
     applyQueuedFilters(){
         this.filters.queuing = false

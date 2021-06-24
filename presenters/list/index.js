@@ -209,6 +209,22 @@ customElements.define('b-list', class extends LitElement {
             order: 3;
         }
 
+        b-panels {
+            grid-row-start: 2;
+            grid-row-end: -1;
+            overflow: hidden;
+        }
+
+        b-panel {
+            --radius: 0
+        }
+
+        b-panel::part(main) {
+            box-shadow: none;
+            border-top: solid 1px var(--theme-bgd-accent);
+            background: var(--b-list-filter-overflow-bgd, var(--theme-bgd));
+        }
+
         @media (max-width:699px){
             :host([toolbar="bottom-mobile"]) {
                 grid-template-rows: auto 1fr auto auto;
@@ -234,8 +250,13 @@ customElements.define('b-list', class extends LitElement {
             <b-spinner-overlay></b-spinner-overlay>
         </slot>
         
-        <b-list-toolbar .filters=${this.filters} .sorts=${this.sorts} .layouts=${this.layouts}
-            @filter-term-changed=${this.onFilterTermChange} part="toolbar">
+        <b-list-toolbar 
+            .filters=${this.filters}
+            .sorts=${this.sorts}
+            .layouts=${this.layouts}
+            .listOptions=${this.listOptions}
+            @filter-term-changed=${this.onFilterTermChange} part="toolbar"
+        >
             <slot name="toolbar:before" slot="before"></slot>
             <slot name="toolbar:after" slot="after"></slot>
             <slot name="toolbar:refresh" slot="refresh-btn">
@@ -257,8 +278,11 @@ customElements.define('b-list', class extends LitElement {
             .dataSource=${this.dataSource}
             fetch-on-load=${(this.listOptions&&this.listOptions.fetchOnLoad)}
             layout="${this.layout}"
-        ></b-infinite-list>
+        >
+        </b-infinite-list>
         <slot name="footer" part="footer-slot"></slot>
+
+        <b-panels name="b-list:${this.key}"></b-panels>
     `}
 
     connectedCallback(){

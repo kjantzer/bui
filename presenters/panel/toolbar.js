@@ -95,6 +95,17 @@ class PanelToolbar extends LitElement {
             text-align: right;
         }
 
+        /* hide on small devices in landscape (allow for more space for the content) */ 
+        @media (max-height: 699px) and (orientation:landscape) {
+            :host {
+                min-height: 0;
+                padding: 0;
+                height: 0;
+                visibility: hidden;
+                overflow: hidden !important;
+            }
+        }
+
         @media print {
             b-btn {
                 display: none; /* assume we dont want buttons to display on print */

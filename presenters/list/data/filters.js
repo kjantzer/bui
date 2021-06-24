@@ -45,8 +45,12 @@ export default class Filters extends Map {
 
     get _storeKey(){ return 'b-list:'+this.key+':filters' }
 
-    reset(values={}){
-        this.queuing = false
+    reset(values={}, {stopQueing=true}={}){
+        this.queuedChanges = null
+        
+        if( stopQueing )
+            this.queuing = false
+
         let resetData = {}
         this.map(filter=>{
             resetData[filter.key] = values[filter.key] !== undefined ? values[filter.key] : filter.defaultVal
@@ -64,7 +68,7 @@ export default class Filters extends Map {
         return active.join(' | ')
     }
 
-    get length(){ return Object.keys(this.__value).length }
+    get length(){ return Object.keys(this.value()).length}
 
     // alias that makes more sense when working programically
     update(filters){
@@ -434,10 +438,10 @@ export class Filter {
         : val
     }
 
-    async showMenu(el){
+    async showMenu(el, opts={}){
 
         if( this.isCustomView  )
-            return this.showCustomView(el)
+            return this.showCustomView(el, opts)
 
         if( this.attrs.onFirstLoad ){
             el.spin = true
@@ -450,12 +454,12 @@ export class Filter {
             selected: this.value,
             multiple: this.isMulti,
             width: this.attrs.width||null
-        }).popover(el, {
+        }).popover(el, Object.assign({
             overflowBoundry: this.attrs.overflowBoundry || 'scrollParent',
             maxHeight: this.attrs.maxHeight || '60vh',
             align: this.attrs.align || 'bottom',
             adjustForMobile: true
-        })
+        }, opts))
 
         let oldVal = this.value
 
@@ -495,7 +499,7 @@ export class Filter {
         return this._customView
     }
 
-    async showCustomView(el){
+    async showCustomView(el, opts){
 
         if( !this.customView )
             return Dialog.warn({msg:`${this.key}: unsupported view`}).popover(el)
@@ -510,7 +514,7 @@ export class Filter {
         }
         
         // TODO: support `adjustForMobile`
-        new Popover(el, this.customView, {
+        new Popover(el, this.customView, Object.assign({
             width: this.attrs.width||null,
             maxHeight: this.attrs.maxHeight || '60vh',
             align: this.attrs.align || 'bottom',
@@ -522,7 +526,7 @@ export class Filter {
                     this.customView.onKeydown(...args)
                 }
             }
-        })
+        }, opts))
     }
 
     filterData(data){
