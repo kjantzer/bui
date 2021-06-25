@@ -239,6 +239,23 @@ class CustomFilterView extends HTMLElement {
 }
 ```
 
+### Presets
+You can create predefined presets that will apply multiple filters at once. The `filters` defined for a preset are expected to be the same format as what `list.filters.value()` returns (or what `list.filters.reset()` expects).
+
+```js
+const filters = {
+    presets: [
+        {
+            label: 'Westerns',
+            description: '', // optional
+            filters: {keywords: 'western'}
+        }
+    ]
+}
+```
+
+> Note: this feature is new and will be improved in the future. More documentation is needed.
+
 ## Sorts
 ```js
 const sorts = {
@@ -506,6 +523,7 @@ Filters and Sorts emit events when changed:
 
 ```js
 list.filters.on('change', changes=>{})
+list.filters.on('change-queue', changes=>{})
 list.sorts.on('change', selectedSorts=>{})
 list.dataSource.on('changed', ()=>{})
 ```
@@ -527,7 +545,7 @@ clears the list and fetches new data
 `list.reload()`  
 reapplies the filters and reloads the table (new data is NOT fetched)
 
-`list.filters.reset(filterVals={})`  
+`list.filters.reset(filterVals={}, {stopQueuing=true, silent=false})`  
 reset filters to default or given values
 
 `list.filters.update(filterVals)`  

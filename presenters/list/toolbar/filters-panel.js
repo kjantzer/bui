@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
 import Panel from '../../panel'
 import device from '../../../util/device'
+import './filter-presets'
 
 customElements.define('b-list-filters-panel', class extends LitElement{
 
@@ -68,12 +69,12 @@ customElements.define('b-list-filters-panel', class extends LitElement{
     }
 
     cancel(){
-        this.filters.reset(this.__originalFilters, {stopQueing:false})
+        this.filters.reset(this.__originalFilters, {stopQueuing:false})
         this.close()
     }
 
     reset(){
-        this.filters.reset({}, {stopQueing:false})
+        this.filters.reset({}, {stopQueuing:false})
     }
 
     render(){return html`
@@ -93,7 +94,7 @@ customElements.define('b-list-filters-panel', class extends LitElement{
                 <b-btn sm clear ucase bold @click=${this.close}>APPLY</b-btn>
                 `:''}
                 
-                <b-btn sm color="red" clear ucase bold @click=${this.cancel}>CANCEL</b-btn>
+                <b-btn sm clear ucase bold @click=${this.cancel}>CANCEL</b-btn>
 
             </span>
         </header>
@@ -101,6 +102,8 @@ customElements.define('b-list-filters-panel', class extends LitElement{
         <main>
 
             <b-grid _cols-mobile=1>
+
+                <b-list-filter-presets colspan=2 .filters=${this.filters}></b-list-filter-presets>
 
             ${this.filters.map(filter=>html`
                 <b-list-filter-btn larger ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>

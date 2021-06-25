@@ -5,6 +5,7 @@ import titleize from '../../../util/titleize'
 import Fuse from 'fuse.js'
 import Emitter from 'component-emitter'
 
+import Presets from './filter-presets'
 import FilterViewDate from '../toolbar/filter-view/date'
 import FilterViewInput from '../toolbar/filter-view/input'
 import FilterViewSlider from '../toolbar/filter-view/slider'
@@ -45,17 +46,21 @@ export default class Filters extends Map {
 
     get _storeKey(){ return 'b-list:'+this.key+':filters' }
 
-    reset(values={}, {stopQueing=true}={}){
+    reset(values={}, {stopQueuing=true, silent=false}={}){
         this.queuedChanges = null
         
-        if( stopQueing )
+        if( stopQueuing )
             this.queuing = false
 
         let resetData = {}
         this.map(filter=>{
             resetData[filter.key] = values[filter.key] !== undefined ? values[filter.key] : filter.defaultVal
         })
-        this.value(resetData)
+
+        this.value(resetData, {silent})
+
+        if( silent !== true )
+            this.emit('reset')
     }
 
     toString(){
@@ -71,11 +76,11 @@ export default class Filters extends Map {
     get length(){ return Object.keys(this.value()).length}
 
     // alias that makes more sense when working programically
-    update(filters){
-        this.value(filters)
+    update(filters, opts){
+        this.value(filters, opts)
     }
 
-    value(key, val){
+    value(key, val, opts={}){
         // first time getting value, get it from local storage
         if( this.__value === undefined ){
             this.__value = this.key && JSON.parse(localStorage.getItem(this._storeKey)) || {}
@@ -89,6 +94,9 @@ export default class Filters extends Map {
             // may be setting more than one value
             let changes = typeof key == 'object' ? key : {[key]:val}
             let didChange = []
+
+            if( typeof key == 'object' )
+                opts = val || {}
 
             for( let k in changes){
                 
@@ -122,9 +130,11 @@ export default class Filters extends Map {
                     filter.emit('change', this.value(k))
                 })
 
-                if( this.queuing )
+                if( this.queuing ){
                     this.queuedChanges = changes
-                else
+                    if( opts.silent !== true )
+                        this.emit('change-queue', changes)
+                }else if( opts.silent !== true )
                     this.emit('change', changes)
             }
 
@@ -187,6 +197,8 @@ export default class Filters extends Map {
         this.forEach(filter=>delete filter.parent)
         this.clear()
 
+        let presets = []
+
         for( let key in filters ){
 
             if( !filters[key] )
@@ -197,10 +209,17 @@ export default class Filters extends Map {
                 continue
             }
 
+            if( key == 'presets' ){
+                presets = filters[key]
+                continue;
+            }
+
             let filter = new Filter(key, filters[key])
             filter.parent = this
             this.set(key, filter)
         }
+
+        this.presets.set(presets)
 
         this.lastChanged = new Date().getTime()
     }
@@ -209,6 +228,12 @@ export default class Filters extends Map {
         let resp = []
         this.forEach((v, key)=>resp.push(fn(v, key)))
         return resp
+    }
+
+    get presets(){
+        this.__presets = this.__presets || new Presets()
+        this.__presets.filters = this
+        return this.__presets
     }
 
     set searchOptions(opts){

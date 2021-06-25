@@ -316,8 +316,9 @@ customElements.define('b-list', class extends LitElement {
     }
 
     onKeyup(e){
-        if( this.queuing && !this.filters.queuedChanges )
-            this.queuing =  false
+        // why was I doing this?
+        // if( this.queuing && !this.filters.queuedChanges )
+        //     this.queuing =  false
     }
 
     get queuing(){ return this.filters && this.filters.queuing }

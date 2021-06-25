@@ -50,8 +50,16 @@ customElements.define('b-list-filter-btn', class extends LitElement{
             opacity: 1;
         }
 
+        :host([larger]) b-btn:not([active]) b-label {
+            opacity: .7;
+        }
+
         :host([larger]) b-btn:not([active]) div {
             opacity: .4;
+        }
+
+        :host([larger]) b-btn[active] {
+            box-shadow: 0 0 0 1px var(--theme) inset;
         }
 
         :host([larger]) b-btn[active] b-label {
