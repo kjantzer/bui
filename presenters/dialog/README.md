@@ -102,7 +102,7 @@ let values = await Dialog.prompt({
 	title: 'Account Info',
 	prompts: [
 		{key: 'name', label: 'Name'},
-		{key: 'email', label: 'Email', pattern: 'email', placeholder: '(optional)},
+		{key: 'email', label: 'Email', pattern: 'email', placeholder: '(optional)'},
 		{key: 'gender', label: 'Gender', options: [{label: 'Unset', val: ''}, 'Male', 'Female']}
 	]
 }).modal()
