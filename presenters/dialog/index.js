@@ -31,7 +31,9 @@ registerPreset('waiting', {
 
 registerPreset('spinner', {
 	icon: 'spinner',
-	btns: false
+	btns: false,
+	color: 'inverse',
+	noContent: true,
 })
 
 registerPreset('alert', {

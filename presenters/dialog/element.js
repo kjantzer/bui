@@ -307,7 +307,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
     get view(){ return this.__view}
 
     updated(){
-        if( this.btns.length>0 && !this.title && !this.pretitle && !this.body )
+        if( this.btns.length==0 && !this.title && !this.pretitle && !this.body )
             this.setAttribute('notext', '')
         else
             this.removeAttribute('notext')
