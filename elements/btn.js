@@ -76,6 +76,11 @@ export default class BtnElement extends LitElement {
             }
         }
 
+        :host([disabled]) {
+            pointer-events: none !important;
+            opacity: .5;
+        }
+
         :host([hidden]) {
             display: none !important;
         }
