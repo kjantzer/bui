@@ -64,8 +64,12 @@ customElements.define('b-list-filters', class extends LitElement{
         }
     `}
 
-    // TODO: allow threshold to be set via .listOptions?
-    get showOverflow(){ return this.filters.size > 8 || (this.filters.size > 3 && device.isSmallDevice) }
+    get showOverflow(){ 
+        if( this.filters.opts.overflow != undefined )
+            return this.filters.opts.overflow
+
+        return this.filters.size > this.filters.opts.overflowThreshold
+        || ( device.isSmallDevice && this.filters.size > this.filters.opts.overflowThresholdMobile) }
 
     render(){return html`
 
@@ -86,7 +90,7 @@ customElements.define('b-list-filters', class extends LitElement{
                 @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
         `}
 
-        ${this.filters.map(filter=>!this.showOverflow||filter.isActive?html`
+        ${this.filters.map(filter=>this.showFilter(filter)?html`
             <b-list-filter-btn ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
         `:'')}
 
@@ -94,6 +98,10 @@ customElements.define('b-list-filters', class extends LitElement{
         <b-btn color="hover-red" title="Clear filters" icon="erase" text @click=${this.resetFilters}></b-btn>
         `:''}
     `}
+
+    showFilter(filter){
+        return !this.showOverflow || (filter.isActive || filter.attrs.alwaysShow)
+    }
 
     openFiltersPanel(){
         this._filtersPanel = this._filtersPanel || new FiltersPanel()

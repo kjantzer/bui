@@ -11,7 +11,6 @@ and filter the results.
     row="row-element-name"
     divider="row-divider-element"
     .listOptions=${listOptions}
-    .customStyles=${css``}
     .coll=${this.coll}
     .filters=${filters}
     .sorts=${sorts}
@@ -82,6 +81,7 @@ const filters = {
         width: '160px', // exact width of menu
         multi: false, // can more than one value be selected?
         db: false, // true will make the filterBy happen on server instead
+        alwaysShow: false, // see "overflow panel"
         onFirstLoad: async (list, filter)=>{
             // use this to fetch data before showing menu for the first time
         },
@@ -239,6 +239,21 @@ class CustomFilterView extends HTMLElement {
 }
 ```
 
+### Overflow Panel
+When there are lots of filters, an "overflow" panel view becomes available. You can choose to disable this or change the threshold of when the panel is activated
+
+```js
+const filters = {
+    options: {
+        overflowThreshold: 8, // defaults
+        overflowThresholdMobile: 3,
+        overflow: false // enable/disable overflow all together
+    }
+}
+```
+
+When the overflow is activated, only "active" filters are shown in the toolbar. If you wish to keep certain filters in the toolbar at all times, add `alwaysShow: true` to the desired filters
+
 ### Presets
 You can create predefined presets that will apply multiple filters at once. The `filters` defined for a preset are expected to be the same format as what `list.filters.value()` returns (or what `list.filters.reset()` expects).
 
@@ -251,6 +266,16 @@ const filters = {
             filters: {keywords: 'western'}
         }
     ]
+}
+```
+
+Fiters are only availble when the overflow threshold is met. Adjust the threshold if needed. Or if you want to disable presets, do so in `options`:
+
+```js
+const filters = {
+    options: {
+        presets: false
+    }
 }
 ```
 
@@ -369,6 +394,37 @@ A list header can be rendered between the toolbar and the list items.
 ```html
 <b-list>
     <div slot="header"></div>
+</b-list>
+```
+
+#### Prebuilt Header
+There is prebuilt header that can be used to simplify list headers
+
+```js
+import ListHeader from 'bui/presenters/list/header'
+
+customElements.define('row-element-name', class extends LitElement{
+
+    static get styles(){return [ListHeader.sharedStyles, css`
+        /* add more styles */
+    `]}
+
+    static header(){return html`
+        <div w="40px">ID</div>
+        <div w="1fr">Label</div>
+    `}
+
+    render(){return html`
+        <span>1</span>
+        <span>Row Label</span>
+    `}
+
+})
+```
+
+```html
+<b-list row="row-element-name">
+    <b-list-header></b-list-header>
 </b-list>
 ```
 
@@ -495,7 +551,7 @@ The list view uses shadow dom to render the content. If you need to apply
 custom styles (ex: to make results display as a grid) you can provide
 a `.customStyles` prop
 
->NOTE: using `parts` is preferred now
+>DEPRECATED – note: styling via `parts` is now preferred
 
 ```css
 let styles = css`

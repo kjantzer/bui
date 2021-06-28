@@ -103,7 +103,9 @@ customElements.define('b-list-filters-panel', class extends LitElement{
 
             <b-grid _cols-mobile=1>
 
+                ${this.filters.opts.presets?html`
                 <b-list-filter-presets colspan=2 .filters=${this.filters}></b-list-filter-presets>
+                `:''}
 
             ${this.filters.map(filter=>html`
                 <b-list-filter-btn larger ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>

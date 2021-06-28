@@ -197,6 +197,7 @@ export default class Filters extends Map {
         this.forEach(filter=>delete filter.parent)
         this.clear()
 
+        let options = {}
         let presets = []
 
         for( let key in filters ){
@@ -214,12 +215,24 @@ export default class Filters extends Map {
                 continue;
             }
 
+            if( key == 'options' ){
+                options = filters[key]
+                continue;
+            }
+
             let filter = new Filter(key, filters[key])
             filter.parent = this
             this.set(key, filter)
         }
 
-        this.presets.set(presets)
+        this.opts = Object.assign({
+            overflowThreshold: 8,
+            overflowThresholdMobile: 3,
+            presets: presets === false ? false : true
+        }, options)
+
+        if( presets )
+            this.presets.set(presets)
 
         this.lastChanged = new Date().getTime()
     }
