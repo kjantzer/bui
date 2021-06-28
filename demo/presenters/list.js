@@ -1,9 +1,12 @@
 import { LitElement, html, css } from 'lit-element'
+import Notif from 'notif'
 import View from './view'
 import docs from 'bui/presenters/list/README.md'
 import 'bui/presenters/list'
 import 'bui/presenters/list/export-btn'
+import 'bui/presenters/list/selection-btn'
 import ListHeader from 'bui/presenters/list/header'
+import copyText from 'bui/util/copyText'
 
 customElements.define('demo-presenter-list', class extends View{
 
@@ -30,8 +33,13 @@ customElements.define('demo-presenter-list', class extends View{
                 .coll=${data}
             >
 
-                <b-btn text pill icon="plus-circled" color="theme" slot="toolbar:before"></b-btn>
+                <b-list-selection-btn></b-list-selection-btn>
                 <b-list-export-btn></b-list-export-btn>
+
+                <span slot="actions:left">
+                    &nbsp;
+                    <b-btn @click=${this.copy} slot="actions:left">Copy IDs</b-btn>
+                </span>
 
                 <b-list-header></b-list-header>
 
@@ -44,6 +52,12 @@ customElements.define('demo-presenter-list', class extends View{
         <br><br>
         <h2>Documentation</h2>
     `}
+
+    copy(){
+        let ids = this.list.currentModels.map(m=>m.id)
+        copyText(ids.join(', '))
+        Notif.alert(`${ids.length} IDs copied`)
+    }
 
 })
 
