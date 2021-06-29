@@ -307,7 +307,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
     get view(){ return this.__view}
 
     updated(){
-        if( this.btns.length==0 && !this.title && !this.pretitle && !this.body )
+        if( this.btns.length>0 && !this.title && !this.pretitle && !this.body )
             this.setAttribute('notext', '')
         else
             this.removeAttribute('notext')
@@ -406,7 +406,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
 
         let btn
 
-        if( this.btns.lengt == 0 || !['Escape', 'Enter'].includes(e.key) )
+        if( this.btns.length == 0 || !['Escape', 'Enter'].includes(e.key) )
             return
 
         if( this.shadowRoot.activeElement && this.shadowRoot.activeElement.tagName == 'B-DIALOG-BTN'){
