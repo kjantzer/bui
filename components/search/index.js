@@ -220,7 +220,7 @@ export default class extends LitElement{
         
         <header>
 
-            <form-control show="prefix" class="searchbox" .value=${this._term}>
+            <form-control show="prefix" class="searchbox">
                 <text-field slot="control"
                     placeholder="${this.placeholder}"
                     @keyup=${this.onKeyUp}
