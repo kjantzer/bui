@@ -79,7 +79,7 @@ const readFile = (filePath, {raw=false}={})=>{
         if( filePath.match(/\.json$/) )
             contents = JSON.parse(contents)
 
-        if( filePath.match(/\.txt$/) )
+        if( filePath.match(/\.(txt|md|html|svg)$/) )
             contents = String(contents)
 
         if( filePath.match(/\.csv$/) )
