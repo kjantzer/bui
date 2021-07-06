@@ -24,6 +24,10 @@ customElements.define('b-list-toolbar', class extends LitElement{
             position: relative;
         }
 
+        :host(.selection-bar-shown) > * {
+            visibility: hidden;
+        }
+
         [hidden] { display: none; }
 
         b-list-sort-btn {
