@@ -50,7 +50,7 @@ export class PaperElement extends LitElement {
         :host([empty]) {
             background: none;
             box-shadow: none;
-            border: 1px dashed rgba(0,0,0,.3);
+            border: 1px dashed rgba(var(--theme-text-rgb),.2);
         }
 
         :host([centered]) {
