@@ -469,11 +469,17 @@ export class Filter {
             return false
         })
 
-        return matchedVal 
-        ? matchedVal.map(f=>{
-            return [f.selection, f.toolbarLabel||f.label].filter(s=>s).join(' ')
-        }).join(', ')
-        : val
+        if( matchedVal&&matchedVal.length>0 )
+            return matchedVal.map(f=>{
+                return [f.selection, f.toolbarLabel||f.label].filter(s=>s).join(' ')
+            }).join(', ')
+        
+        if( Array.isArray(val) )
+            return this.value.map(v=>{
+                return [v.selection, v.val].filter(s=>s).join(' ')
+            }).join(', ')
+
+        return val
     }
 
     async showMenu(el, opts={}){
