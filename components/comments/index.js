@@ -12,7 +12,7 @@ customElements.define('b-comments', class extends LitElement{
     static set nameTag(val){ Comment.nameTag = val }
 
     static get listeners(){return {
-        coll: {'add remove update': 'requestUpdate'}
+        coll: {'add remove update': 'update'}
     }}
 
     static get properties(){return {
@@ -37,13 +37,20 @@ customElements.define('b-comments', class extends LitElement{
         }
     `}
 
-    update(changedProps){
+    shouldUpdate(changedProps){
         if( changedProps.get('group') != undefined || changedProps.get('gid') != undefined ){
+            
+            this.unbindListeners()
             this.coll.realtimeSync.close()
             this.__coll = null
+            this.bindListeners()
+            this.coll.realtimeSync.open()
+            
+            if( this.inViewport )
+                this.refresh()
         }
 
-        super.update(changedProps)
+        return super.shouldUpdate(changedProps)
     }
 
     get coll(){
@@ -56,14 +63,17 @@ customElements.define('b-comments', class extends LitElement{
 
             this.inViewport = entries[0].isIntersecting
             if( !this.inViewport ) return
-
-            this.markRead()
-
-            if( !this.coll.hasFetched && !this.coll.isFetching )
-                this.coll.fetchSync()
+            this.refresh()
         });
 
         this.intersectionObserver.observe(this)
+    }
+
+    refresh(){
+        this.markRead()
+            
+        if( !this.coll.hasFetched && !this.coll.isFetching )
+            this.coll.fetchSync()
     }
 
     connectedCallback(){
