@@ -138,6 +138,9 @@ customElements.define('b-comment-row', class extends LitElement {
             margin-left: .5em !important;
         }
 
+        .extras b-hr {
+            margin: 0 1em;
+        }
 
         :host(:not(:hover)) .extras b-hr {
             visibility: hidden;
