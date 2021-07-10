@@ -310,9 +310,10 @@ customElements.define('b-list', class extends LitElement {
     }
 
     onKeydown(e){
-        if( e.target !== document.body ) return
-        if( !e.metaKey && !e.ctrlKey ) return
-        this.queuing = true
+        // if( e.target !== document.body ) return
+        // if( !e.metaKey && !e.ctrlKey ) return
+        // console.log('here');
+        // this.queuing = true
     }
 
     onKeyup(e){
