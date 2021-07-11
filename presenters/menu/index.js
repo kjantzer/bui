@@ -866,7 +866,7 @@ export default class Menu {
 		// if dialog btn clicked, take action
 		dialog.promise.then(btn=>{
 
-			if( btn.val == 'apply' && this.opts.multiple )
+			if( ['apply', 'save'].includes(btn.val) && this.opts.multiple )
 				this.resolve(this.selected)
 
 			else if( btn )
