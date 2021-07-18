@@ -250,7 +250,7 @@ customElements.define('b-tabs', class extends LitElement {
         }
 
         .content::slotted([hidden]) {
-            display: none !important;
+            display: none;
         }
         
         /*
@@ -362,7 +362,7 @@ customElements.define('b-tabs', class extends LitElement {
 
     render(){return html`
         ${this.renderTabBar()}
-        <slot class="content"></slot>
+        <slot class="content" part="content"></slot>
         <slot name="empty">
             <b-empty-state ?hidden=${this.views.size>0}>No views</b-empty-state>
         </slot>
