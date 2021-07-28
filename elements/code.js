@@ -10,6 +10,7 @@ customElements.define('b-code', class extends LitElement{
             border-radius: 3px;
             color: initial;
             padding: 0 .3em;
+            display: inline-block;
         }
 
         code {
