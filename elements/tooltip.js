@@ -1,3 +1,6 @@
+/*
+    Tooltip (uses Popover to display)
+*/
 import { LitElement, html, css } from 'lit-element'
 import Popover from 'popover'
 
@@ -24,11 +27,14 @@ function onMouseMove(e){
         
     hideTooltip()
 
+    // track current location of the mouse
     mouseX = e.clientX
     mouseY = e.clientY
 
+    // if a tooltip has become activated, show it when the mouse stops moving
     if( activeTooltip ){
 
+        // use delay from the tooltip
         let delay = activeTooltip.delay
         
         // treat as seconds (convert to MS)
@@ -42,8 +48,10 @@ function onMouseMove(e){
 }
 
 function showTooltip(){
+    // no active tooltip or one is already shown, dont show another
     if( !activeTooltip || shownTooltip ) return
 
+    // default target is the mouse location (native-like)
     let target = new MouseEvent('mousemove', {clientX: mouseX, clientY: mouseY})
     
     if( activeTooltip.target != 'mouse' )
@@ -52,6 +60,7 @@ function showTooltip(){
     shownTooltip = new Popover(target, activeTooltip.innerHTML, {
         className: 'tooltip',
         align: activeTooltip.align,
+        // TODO: support `maxW` ?
     })
 }
 
@@ -69,29 +78,38 @@ customElements.define('b-tooltip', class extends LitElement{
     static get properties(){return {
         delay: {type: Number},
         align: {type: String},
-        target: {type: String}
+        target: {type: String}, // target to align tooltip to
+        trigger: {type: String} // what should trigger the tooltip? (parent, offset)
     }}
 
     constructor(){
         super()
 
+        // begin following mouse when first tooltip is created
         followMouse()
 
         this.onTrigger = this.onTrigger.bind(this)
         this.clearTrigger = this.clearTrigger.bind(this)
 
-        // this.trigger = 'hover'
-        this.delay = 1
+        // default settings
+        this.delay = 1 // second
         this.align = 'right-top'
         this.target = 'mouse'
+        this.trigger = 'parent'
+
+        // if denoted as a "label", then use different defaults
+        if( this.hasAttribute('label') ){
+            this.delay = 0
+            this.target = 'parent'
+            this.align = 'top'
+        }
     }
 
-    // render(){return html``}
-
     get triggerElement(){
+        // the element that triggers this toolip as 'active'
         if( !this._triggerElement ){
 
-            if( this.target == 'parent' )
+            if( this.trigger == 'parent' )
                 this._triggerElement = this.parentElement
             else
                 this._triggerElement = this.offsetParent || this.parentElement
@@ -104,7 +122,6 @@ customElements.define('b-tooltip', class extends LitElement{
         super.connectedCallback()
 
         setTimeout(()=>{
-            console.log(this.triggerElement);
             this.triggerElement.addEventListener('mouseleave', this.clearTrigger)
             this.triggerElement.addEventListener('mouseenter', this.onTrigger)
         })
@@ -114,6 +131,7 @@ customElements.define('b-tooltip', class extends LitElement{
         super.disconnectedCallback()
         this.triggerElement.removeEventListener('mouseleave', this.clearTrigger)
         this.triggerElement.removeEventListener('mouseenter', this.onTrigger)
+        this._triggerElement = null
     }
 
     clearTrigger(){

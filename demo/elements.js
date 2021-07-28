@@ -8,6 +8,7 @@ import 'bui/elements/btn'
 import 'bui/elements/btn-group'
 import 'bui/elements/spinner'
 import 'bui/elements/spinner-overlay'
+import 'bui/elements/tooltip'
 import 'bui/elements/uploader'
 import 'bui/elements/paper'
 import 'bui/elements/grid'
@@ -262,7 +263,8 @@ customElements.define('demo-elements', class extends LitElement{
 
             <section title="Spinner">
 
-                <h1>Spinners</h1>
+                <b-paper>
+                <b-h1>Spinners</b-h1>
 
                 Inline spinner <b-spinner></b-spinner>
                 
@@ -271,6 +273,42 @@ customElements.define('demo-elements', class extends LitElement{
                 <div style="position: relative; z-index: 0;">
                     <b-spinner-overlay show></b-spinner-overlay>
                     An overlay spinner. Sint ullamco sunt in officia sint. Ea ullamco ipsum anim fugiat anim officia eu sint. Laborum anim fugiat ipsum Lorem. Mollit et cupidatat incididunt pariatur mollit cillum ex ex.</div>
+
+                </b-paper>
+
+            </section>
+            
+            <section title="Tooltip">
+
+                <b-paper>
+
+                    <b-h1>Tooltips</b-h1>
+
+                    <p>Hover over me and wait a second to see a tooltip.
+                        <b-tooltip>👋 Hey there!</b-tooltip>
+                    </p>
+
+                    <p>Hover over me and wait a 5 seconds to see a tooltip.
+                        <b-tooltip delay=5>⏱ I took a bit longer to show</b-tooltip>
+                    </p>
+
+                    <p>Tooltips have a few settings. Hover over the info icon to see how <b-code>delay</b-code>, <b-code>target</b-code>, and <b-code>align</b-code> can changed for a different effect.
+                        <b-icon name="info-circled"><b-tooltip delay=0 target="parent" align="top">Testing</b-tooltip></b-icon></p>
+
+                    <p>A preset attribute called <b-code>label</b-code> can be used as a shorthand for this ^</p>
+
+                    <div>
+                        <b-btn clear empty lg icon="home"><b-tooltip label>Home</b-tooltip></b-btn>
+                        <b-btn clear empty lg icon="user"><b-tooltip label>Account</b-tooltip></b-btn>
+                        <b-btn clear empty lg icon="cog"><b-tooltip label>Settings</b-tooltip></b-btn>
+                    </div>
+
+
+                    <p>Tooltips use the Popover presenter to show the tooltip.</p>
+
+                    <p><b-text tone="info">HTML<b-tooltip delay=500><b>Bold</b> text with an icon <b-icon name="blackstone"></b-icon></b-tooltip></b-text> is also supported in the tooltips</p>
+
+                </b-paper>
 
             </section>
 
