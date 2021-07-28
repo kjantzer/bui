@@ -18,12 +18,14 @@ customElements.define('b-comments', class extends LitElement{
     static get properties(){return {
         group: {type: String},
         gid: {type: Number},
+        limit: {type: Number},
         replies: {type: Boolean} // not supported yet
     }}
 
     static get styles(){return css`
         :host {
-            display: block;
+            display: flex;
+            flex-direction: column-reverse;
             position:relative;
         }
 
@@ -32,10 +34,18 @@ customElements.define('b-comments', class extends LitElement{
             padding-left: .5em;
         }
 
-        b-comment-row:not(:first-child) {
+        b-comment-row:not(:last-child) {
             margin-top: .5em;
         }
+        .view-all ~ b-comment-row {
+            display: none;
+        }
     `}
+
+    constructor(){
+        super()
+        this.limit = 10
+    }
 
     shouldUpdate(changedProps){
         if( changedProps.get('group') != undefined || changedProps.get('gid') != undefined ){
@@ -92,13 +102,21 @@ customElements.define('b-comments', class extends LitElement{
     }
 
     render(){return html`
-        ${this.coll.map(m=>html`
-            <b-comment-row .model=${m} .meta=${this.meta} @mark-read=${this.markRead}></b-comment-row>
-        `)}
 
         <!-- write new comment -->
         <b-comment-row .coll=${this.coll} .meta=${this.meta}></b-comment-row>
+
+        ${this.coll.map((m,i)=>html`
+            ${this.limit&&i==this.limit?html`
+                <b-btn color="white" block @click=${this.viewAllComments} class="view-all">View all comments</b-btn>
+            `:''}
+            <b-comment-row .model=${m} .meta=${this.meta} @mark-read=${this.markRead}></b-comment-row>
+        `).reverse()}
     `}
+
+    viewAllComments(e){
+        e.currentTarget.remove()
+    }
 
     markRead(e){
 
