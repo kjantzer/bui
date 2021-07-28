@@ -8,6 +8,7 @@ export default class BtnElement extends LitElement {
         href: {type: String, reflect: true},
         value: {type: String, reflect: true},
         icon: { type: String },
+        tooltip: {type: String},
         spin: {type: Boolean, reflect: true, attribute: 'spin'}
     }}
 
@@ -386,12 +387,16 @@ export default class BtnElement extends LitElement {
                 </slot>
             </span>
             <slot class="label"></slot>
+            ${this.tooltip?html`
+                <b-tooltip label>${this.tooltip}</b-tooltip>
+            `:''}
         </main>
     `}
 
 	constructor(){
 		super()
         this.icon = ''
+        this.tooltip = ''
         this.spin = false
 	}
 

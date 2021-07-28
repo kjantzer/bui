@@ -110,9 +110,9 @@ customElements.define('b-tooltip', class extends LitElement{
         if( !this._triggerElement ){
 
             if( this.trigger == 'parent' )
-                this._triggerElement = this.parentElement
+                this._triggerElement = this.parentElement || this.getRootNode().host
             else
-                this._triggerElement = this.offsetParent || this.parentElement
+                this._triggerElement = this.offsetParent || this.parentElement || this.getRootNode().host
         }
         
         return this._triggerElement

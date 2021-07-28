@@ -280,7 +280,7 @@ customElements.define('demo-elements', class extends LitElement{
             
             <section title="Tooltip">
 
-                <b-paper>
+                <b-paper><b-text tooltip="Testing">tooltips</b-text>
 
                     <b-h1>Tooltips</b-h1>
 
@@ -300,13 +300,13 @@ customElements.define('demo-elements', class extends LitElement{
                     <div>
                         <b-btn clear empty lg icon="home"><b-tooltip label>Home</b-tooltip></b-btn>
                         <b-btn clear empty lg icon="user"><b-tooltip label>Account</b-tooltip></b-btn>
-                        <b-btn clear empty lg icon="cog"><b-tooltip label>Settings</b-tooltip></b-btn>
+                        <b-btn clear empty lg icon="cog" tooltip="Settings"></b-btn>
                     </div>
 
 
                     <p>Tooltips use the Popover presenter to show the tooltip.</p>
 
-                    <p><b-text tone="info">HTML<b-tooltip delay=500><b>Bold</b> text with an icon <b-icon name="blackstone"></b-icon></b-tooltip></b-text> is also supported in the tooltips</p>
+                    <p><b-text tone="info">HTML<b-tooltip delay=500><b>Bold</b> text with an icon <b-icon name="blackstone"></b-icon></b-tooltip></b-text> is also supported in the <b-text tooltip="Testing">tooltips</b-text></p>
 
                 </b-paper>
 

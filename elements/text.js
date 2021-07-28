@@ -2,6 +2,10 @@ import { LitElement, html, css } from 'lit-element'
 
 customElements.define('b-text', class extends LitElement{
 
+    static get properties() { return {
+        tooltip: {type: String}
+    }}
+
     static get styles(){return css`
         :host {
             display: inline-block;
@@ -124,6 +128,9 @@ customElements.define('b-text', class extends LitElement{
 
     render(){return html`
         <slot></slot>
+        ${this.tooltip?html`
+            <b-tooltip>${this.tooltip}</b-tooltip>
+        `:''}
     `}
 
 })
