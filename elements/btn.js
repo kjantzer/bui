@@ -224,17 +224,20 @@ export default class BtnElement extends LitElement {
             justify-content: center
         }
 
-        :host(:empty) {
+        :host(:empty),
+        :host([empty]) {
             --padding: .4em .5em;
         }
 
-        :host(:empty) main b-icon {
+        :host(:empty) main b-icon ,
+        :host([empty]) main b-icon {
             margin-left: 0;
             margin-right: 0;
         }
 
         /* offset play icon to make it appear more centered */
-        :host(:empty) main b-icon[name="play"] {
+        :host(:empty) main b-icon[name="play"],
+        :host([empty]) main b-icon[name="play"] {
 			margin: 0 -.1em 0 .1em;
         }
 
