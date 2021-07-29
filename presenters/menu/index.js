@@ -14,6 +14,11 @@ const styles = require('./style.less')
 
 export {Dialog, Popover}
 
+function isDivider(val){
+	val = val.val || val.label || val
+	return ['divider', '-', '–'].includes(val)
+}
+
 export const DefaultOpts = {
 	selected: false,
 	multiple: false,
@@ -132,7 +137,7 @@ export default class Menu {
 			menu = menu()
 
 		menu = menu.map(val=>{
-			if( val != 'divider' && ['string', 'number'].includes(typeof val) )
+			if( !isDivider(val) && ['string', 'number'].includes(typeof val) )
 				return {label: val, val}
 			return val
 		})
@@ -375,7 +380,8 @@ export default class Menu {
 	
 	renderItem(m, i){
 		
-		if( m == 'divider' || (m.label == 'divider' && m.val == 'divider') )
+		if( isDivider(m) )
+		// if( m == 'divider' || (m.label == 'divider' && m.val == 'divider') )
 			return html`<b-hr></b-hr>`
 
 		if( m.divider !== undefined )
