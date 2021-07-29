@@ -6,11 +6,15 @@ module.exports = class Comments extends Model {
 
     static set PushMsg(val){ PushMsg = val }
 
-    static systemCommentFor(model, attrs){
+    static forModel(model){
         return new Comments({
             group: model.config.table,
             gid: model.id
-        }, model.req).add(Object.assign({type: 'system'}, attrs))
+        }, model.req)
+    }
+
+    static systemCommentFor(model, attrs){
+        return this.forModel(model).add(Object.assign({type: 'system'}, attrs))
     }
 
     static get api(){return {
