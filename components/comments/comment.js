@@ -75,6 +75,8 @@ customElements.define('b-comment-row', class extends LitElement {
             --size: 1em;
             margin-top: 0;
             margin-left: 1em;
+            position: relative;
+            left: -.45em;
         }
 
         header {
