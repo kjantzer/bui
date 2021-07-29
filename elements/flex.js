@@ -7,6 +7,7 @@ customElements.define('b-flex', class extends LitElement{
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 1em;
         }
 
         :host([inline]) {
@@ -21,6 +22,11 @@ customElements.define('b-flex', class extends LitElement{
         :host([col][center]) {
             align-items: center;
         }
+
+        :host([gap="0"]), :host([gap="none"]) { gap: 0; }
+        :host([gap=".5"]) { gap: .5em; }
+        :host([gap="1"]) { gap: 1em; }
+        :host([gap="2"]) { gap: 2em; }
     `}
 
     render(){return html`
