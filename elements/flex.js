@@ -10,6 +10,18 @@ customElements.define('b-flex', class extends LitElement{
             gap: 1em;
         }
 
+        :host([top]) {
+            align-items: flex-start;
+        }
+        
+        :host([bottom]) {
+            align-items: flex-end;
+        }
+
+        :host([center]) {
+            justify-content: center;
+        }
+
         :host([inline]) {
             display: inline-flex;
         }
