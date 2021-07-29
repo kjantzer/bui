@@ -6,7 +6,7 @@ if( require.main !== module){
 
 	exports.extensions = ['pdf', 'docx', 'doc', 'xlsx', 'xls']
 
-	exports.generate = function(file, {size=null}={}){
+	exports.generate = function(file, {size=null, quality=null}={}){
 
 		return new Promise((resolve, reject)=>{
 			let args = [
@@ -16,6 +16,9 @@ if( require.main !== module){
 
 			if( size )
 				args.push('--size='+size)
+			
+			if( quality )
+				args.push('--quality='+quality)
 
 			let child = spawn('nodejs', args)
 			let error = ''
@@ -144,7 +147,8 @@ if( require.main !== module){
 		console.log('create thumbnail...');
 		await createThumbnail(pdfFile+'[0]', {
 			output: argv.file+'.preview.jpg',
-			size: argv.size
+			size: argv.size,
+			quality: argv.quality
 		})
 
 		console.log('all done');
