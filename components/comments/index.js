@@ -107,7 +107,7 @@ customElements.define('b-comments', class extends LitElement{
         <b-comment-row .coll=${this.coll} .meta=${this.meta}></b-comment-row>
 
         ${this.coll.map((m,i)=>html`
-            ${this.limit&&i==this.limit?html`
+            ${this.limit&&i==this.coll.length-this.limit?html`
                 <b-btn color="white" block @click=${this.viewAllComments} class="view-all">View all comments</b-btn>
             `:''}
             <b-comment-row .model=${m} .meta=${this.meta} @mark-read=${this.markRead}></b-comment-row>
