@@ -5,6 +5,12 @@ export default Icon
 
 Icon.register(
     ['address', require('./address.svg.html')],
+	['book-jacket', require('./book-jacket.svg.html')],
+	['paperback', require('./paperback.svg.html')],
+	['endsheet', require('./endsheet.svg.html')],
+	['book-insert', require('./book-insert.svg.html')],
+	['book-interior', require('./book-interior.svg.html')],
+	['book-case-wrap', require('./book-case-wrap.svg.html')],
 	['pod', require('./pod.svg.html')],
 	['alert', require('./alert.svg.html')],
 	['amazon', require('./amazon.svg.html')],
