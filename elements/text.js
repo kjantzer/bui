@@ -40,6 +40,7 @@ customElements.define('b-text', class extends LitElement{
             font-family: var(--b-text-monospace, 'Source Code Pro', 'Courier New', Courier, monospace)
         }
 
+        :host([nobold]) { font-weight: normal; }
         :host([bold]) { font-weight: bold; }
         :host([xbold]) { font-weight: 900; }
         :host([italic]) { font-style: italic; }
