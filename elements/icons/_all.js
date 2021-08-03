@@ -9,6 +9,7 @@ Icon.register(
 	['paperback', require('./paperback.svg.html')],
 	['endsheet', require('./endsheet.svg.html')],
 	['book-insert', require('./book-insert.svg.html')],
+	['timeline', require('./timeline.svg.html')],
 	['book-interior', require('./book-interior.svg.html')],
 	['book-case-wrap', require('./book-case-wrap.svg.html')],
 	['pod', require('./pod.svg.html')],
