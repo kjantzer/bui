@@ -61,7 +61,6 @@ customElements.define('b-timeline-horz', class extends LitElement{
             transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-
         .bubble b-icon {
             font-size: 1.6em;
             color: var(--theme-text);
@@ -107,18 +106,18 @@ customElements.define('b-timeline-horz', class extends LitElement{
 
     render(){return html`
          
-        <div class="date">
+        <div class="date" part="date">
             ${this.renderDate()}
         </div>
 
         <div class="line">
-            <div class="bubble" @click=${this.onBubbleClick}>
+            <div class="bubble" @click=${this.onBubbleClick} part="bubble">
                 ${this.renderBubble()}
             </div>
-            <b-hr vert></b-hr>
+            <b-hr vert part="line"></b-hr>
         </div>
         
-        <div class="content">
+        <div class="content" part="content">
             ${this.renderContent()}
         </div>
     `}
