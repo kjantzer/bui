@@ -37,6 +37,19 @@ export class Sync extends Map {
         return syncPath 
     }
 
+    _changePath(syncPath, path){
+        
+        let wasConnected = syncPath.isConnected
+        syncPath.disconnect()
+
+        this.delete(syncPath.path)
+        syncPath.path = path
+        this.set(path, syncPath)
+
+        if( wasConnected )
+            syncPath.connect()
+    }
+
     reconnect(){
         
         // FIXME: change to one call that opens all
@@ -48,7 +61,7 @@ export class Sync extends Map {
 
     get(path, create=false){
 		if( !super.get(path) && create === true ){
-			this.set(path, new SyncPath(this.socket, path))
+			this.set(path, new SyncPath(this, path))
 		}
 
         return super.get(path)
@@ -57,28 +70,53 @@ export class Sync extends Map {
 }
 
 
-export function syncBackboneCollection(sync, {
+// NOTE: do we really need different sync methods for coll/vs model?
+// maybe can refactor to one?
+export function syncBackboneCollection(data, {
     addUpdates=true,
     triggerDestroy=false
 }={}){
-    let {action, attrs} = sync
+
+    let {action, attrs, url} = data
+    let thisUrl = typeof this.url == 'function' ? this.url() : this.url
     let model = this.get(attrs.id)
+    
     action = action.toLowerCase()
 
-    if( ['update', 'patch'].includes(action) && model ){    
+    // sync url is different, so use it to try and find the correct child model
+    if( url && url != thisUrl ){
+        
+        // `/api/book/1/elements/2` => `elements.2`
+        let path = url.replace(thisUrl+'/', '').replace(/\//g, '.')
+
+        // remove trailing ID `model.1` => `model`
+        if( data.action == 'add' )
+            path = path.replace(/\.\d+$/,'')
+
+        model = this.get(path) || this
+
+        if( !model && addUpdates ){
+            data.action = 'add'
+            path = path.replace(/\.\d+$/,'')
+            model = this.get(path) || this
+        }
+    }
+
+    if( !model )
+        return console.warn('Sync: unsure how to handle, ', data)
+
+    if( ['update', 'patch'].includes(action) )
         model.set(attrs)
-    }
-    else if( !model && (['insert', 'add'].includes(action) 
-                        || (addUpdates&&action=='update') )
-    ){
-        model = new (this.model)(attrs)
-        this.add(model)
-    }
-    else if( ['destroy', 'delete'].includes(action) && model ){
+
+    if( ['insert', 'add'].includes(action) )
+        model.add(attrs)
+    
+    if( ['destroy', 'delete'].includes(action) ){
+
+        model.collection.remove(model)
+
         if( triggerDestroy )
-            model.trigger('destroy')
-            
-        this.remove(model)
+            model.trigger('destroy', model, model.collection, {})
     }
 }
 

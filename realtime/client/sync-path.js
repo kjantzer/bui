@@ -1,13 +1,19 @@
 export default class SyncPath extends Map {
 
-    constructor(socket, path){
+    constructor(syncHandler, path){
         
         super()
 
         this.path = path
-        this.socket = socket
+        this.syncHandler = syncHandler
+        this.socket = syncHandler.socket
 
         this.onSync = this.onSync.bind(this)
+    }
+
+    changePath(path){
+        if( path != this.path )
+            this.syncHandler._changePath(this, path)
     }
 
     add(object){

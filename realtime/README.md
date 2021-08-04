@@ -84,6 +84,14 @@ export class Book {
     // this will be called when the model gets sync data
     onSync(sync){
     }
+
+    get id(){ return this.__id }
+    set id(val){
+        this.__id = val
+        
+        // sync path can also be changed at a later time
+        this.realtimeSync.changePath(this.url)
+    }
 }
 
 let myModel = new MyModel()
