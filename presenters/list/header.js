@@ -12,6 +12,7 @@ customElements.define('b-list-header', class extends LitElement{
         :host > * {
             position: relative;
             padding: .5rem;
+            box-sizing: border-box;
             border-bottom: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .1));
         }
     `}
