@@ -41,7 +41,7 @@ module.exports = class Model {
         return  orderBy ? `ORDER BY ${orderBy}` : ''
     }
 
-    findParseRow(row, index, resultCount){
+    findParseRow(row, index, resultCount, resp){
         this.decodeFields(row)
         return row
     }
