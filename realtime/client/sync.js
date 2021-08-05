@@ -113,7 +113,8 @@ export function syncBackboneCollection(data, {
     
     if( ['destroy', 'delete'].includes(action) ){
 
-        model.collection.remove(model)
+        if( model.collection )
+            model.collection.remove(model)
 
         if( triggerDestroy )
             model.trigger('destroy', model, model.collection, {})
