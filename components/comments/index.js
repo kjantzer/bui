@@ -34,6 +34,17 @@ customElements.define('b-comments', class extends LitElement{
             padding-left: .5em;
         }
 
+        :host([overlay]) {
+            --theme-text: var(--dark-text);
+            --theme-text-accent: var(--dark-text-accent);
+            --theme-text-rgb: var(--dark-text-rgb);
+            --theme-bgd: var(--dark-bgd);
+            --theme-bgd-accent: var(--dark-bgd-accent);
+            --theme-bgd-accent2: var(--dark-bgd-accent2);
+            color: var(--theme-text);
+            background: linear-gradient(to bottom, transparent, rgba(0,0,0,.8));
+        }
+
         b-comment-row:not(:last-child) {
             margin-top: .5em;
         }
