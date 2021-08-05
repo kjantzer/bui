@@ -112,7 +112,7 @@ function makePrompt(opts, i=0, globalOpts){
 	if( opts.getHTML )
 		return opts
 
-	if( opts == 'divider' )
+	if( opts == 'divider' || opts == '-' )
 		return html`<b-hr></b-hr>`
 
     opts = Object.assign({
@@ -130,6 +130,9 @@ function makePrompt(opts, i=0, globalOpts){
 		type: '',
 		multiline: false,
 	}, opts)
+
+	if( !opts.val && globalOpts.val && globalOpts.val[opts.key] )
+		opts.val = globalOpts.val[opts.key]
 
 	if( opts.type == 'switch' )
 	return html`
