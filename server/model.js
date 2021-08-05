@@ -269,7 +269,7 @@ module.exports = class Model {
         return resp;
     }
 
-    async add(attrs={}){
+    async add(attrs={}, {manualSync=false}={}){
 
         if( !this.config.table ) throw Error('missing config.table')
 
@@ -291,21 +291,27 @@ module.exports = class Model {
 
         let resp = await this.find()
 
+        let syncData
         if( this.config.sync && this.req && this.syncData )
-            this.syncData({
-                action:'add',
-                attrs:resp,
-                syncData:attrs,
-                method: this.req.method,
-                url: this.apiPath
-            },{
-                toClients: this.req.path==this.syncPath ? null : 'all'
-            })
+            syncData = ()=>{
+                this.syncData({
+                    action:'add',
+                    attrs:resp,
+                    syncData:attrs,
+                    method: this.req.method,
+                    url: this.apiPath
+                },{
+                    toClients: this.req.path==this.syncPath ? null : 'all'
+                })
+            }
 
-        return resp
+        if( syncData && !manualSync )
+                syncData()
+
+        return manualSync ? {resp, syncData} : resp
     }
 
-    async update(attrs={}){
+    async update(attrs={}, {manualSync=false}={}){
 
         // let subclass remove or modify attributes to be updated
         attrs = await this.validateUpdate(attrs)
@@ -331,18 +337,24 @@ module.exports = class Model {
             if( this.id )
                 this.attrs = Object.assign(this.attrs||{}, attrs)
 
+            let syncData
             if( this.config.sync && this.req && this.syncData )
-                this.syncData({
-                    action: 'update',
-                    attrs: this.toJSON(),
-                    syncData: attrs,
-                    method: this.req.method,
-                    url: this.apiPath
-                },{
-                    toClients: this.req.path==this.syncPath ? null : 'all'
-                })
+                syncData = ()=>{
+                    this.syncData({
+                        action: 'update',
+                        attrs: this.toJSON(),
+                        syncData: attrs,
+                        method: this.req.method,
+                        url: this.apiPath
+                    },{
+                        toClients: this.req.path==this.syncPath ? null : 'all'
+                    })
+                }
 
-            return attrs
+            if( syncData && !manualSync )
+                syncData()
+
+            return manualSync ? {attrs, syncData} : attrs
         }
         
         return false
