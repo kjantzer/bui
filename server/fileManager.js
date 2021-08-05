@@ -125,14 +125,14 @@ module.exports = class FileManager extends Model {
             info.traits.dpi = metadata.density
         }
 
-        await this.add(info)
+        let {syncData} = await this.add(info, {manualSync:true})
 
         if( !this.id )
             throw new Error('failed to insert file record')
 
         // change filename to include the DB record ID so each is uniquely named
         filename = `${this.id}-${filename}`
-        await this.update({filename})
+        await this.update({filename}, {manualSync:true})
 
         let fileMoved = await new Promise(resolve=>{
             
@@ -148,13 +148,9 @@ module.exports = class FileManager extends Model {
             else
                 this.generatePreview({metadata, sharpImg, filename})
 
-            if( this.config.sync && this.syncData )
-                this.syncData({
-                    action: 'add',
-                    attrs: this.attrs,
-                    method: this.req.method,
-                    url: this.apiPath
-                })
+
+            if( syncData )
+                syncData()
 
         }else{
             console.log('failed to upload, delete DB record', fileMoved);
