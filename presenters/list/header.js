@@ -26,7 +26,9 @@ customElements.define('b-list-header', class extends LitElement{
 
         ${scrollbars.hide()}
 
-        div {
+        :host > div,
+        :host > b-text,
+        :host > span {
             font-size: .8em;
             font-weight: bold;
         }
