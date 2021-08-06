@@ -39,8 +39,21 @@ customElements.define('b-flex', class extends LitElement{
             align-items: flex-start;
         }
 
+        :host([col][left]) {
+            align-items: flex-start;
+        }
+
+        :host([col][right]) {
+            align-items: flex-end;
+        }
+
         :host([col][center]) {
             align-items: center;
+        }
+
+        :host([col][left][center]) {
+            align-items: flex-start;
+            justify-content: center;
         }
 
         :host([gap="0"]), :host([gap="none"]) { gap: 0; }
