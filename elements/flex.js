@@ -18,6 +18,14 @@ customElements.define('b-flex', class extends LitElement{
             align-items: flex-end;
         }
 
+        :host([left]) {
+            justify-content: flex-start;
+        }
+
+        :host([right]) {
+            justify-content: flex-end;
+        }
+
         :host([center]) {
             justify-content: center;
         }
@@ -39,6 +47,11 @@ customElements.define('b-flex', class extends LitElement{
         :host([gap=".5"]) { gap: .5em; }
         :host([gap="1"]) { gap: 1em; }
         :host([gap="2"]) { gap: 2em; }
+
+        :host ::slotted(*) {
+            min-width: 0;
+            min-height: 0;
+        }
     `}
 
     render(){return html`
