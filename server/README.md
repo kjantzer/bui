@@ -76,6 +76,7 @@ module.exports = class MyModel extends Model {
         limit: '',
         jsonFields: [], // will parse and encode on find/update/create
         csvFields: [], // ex: `1,2,3` => ['1', '2', '3']
+        nullFields: [], // make these keys null when value is "falsy"
         sync: false, // if true, will call `this.syncData()` on update/add/destroy
     }}
 

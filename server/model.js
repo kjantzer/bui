@@ -147,11 +147,21 @@ module.exports = class Model {
     encodeFields(attrs){
         this.encodeJsonFields(attrs)
         this.encodeCsvFields(attrs)
+        this.encodeNullFields(attrs)
     }
     
     decodeFields(attrs){
         this.decodeJsonFields(attrs)
         this.decodeCsvFields(attrs)
+    }
+
+    encodeNullFields(attrs){
+        if( this.config.nullFields && Array.isArray(this.config.nullFields) ){
+            this.config.nullFields.forEach(fieldName=>{
+                if( attrs[fieldName] != undefined && !attrs[fieldName] )
+                    attrs[fieldName] = null
+            })
+        }
     }
 
     encodeCsvFields(attrs){
