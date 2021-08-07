@@ -10,6 +10,7 @@ Icon.register(
 	['endsheet', require('./endsheet.svg.html')],
 	['book-insert', require('./book-insert.svg.html')],
 	['timeline', require('./timeline.svg.html')],
+	['glue', require('./glue.svg.html')],
 	['design', require('./design.svg.html')],
 	['foil', require('./foil.svg.html')],
 	['lamination', require('./lamination.svg.html')],
