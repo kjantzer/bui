@@ -99,6 +99,7 @@ const presenters = {
 		opts = Object.assign({
 			autoClose: this.btns.length>0 ? false : 3000,
 			closeOnClick: this.btns.length==0,
+			width: 'auto',
 			onClose: ()=>{ this.resolve(false) }
 		}, opts)
 		
