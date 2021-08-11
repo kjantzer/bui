@@ -108,6 +108,10 @@ class UsbPrinter {
 
         if( !this.device ) throw new Error('No device connected')
 
+        // support printing multiple "pages"
+        if( Array.isArray(text) )
+            return text.forEach(txt=>this.print(txt))
+
         const encoder = new TextEncoder();
         const data = encoder.encode(text);
 
