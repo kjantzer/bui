@@ -101,12 +101,16 @@ customElements.define('b-app-tab-bar', class extends LitElement{
                 display: grid !important;
                 border-top:none !important;
                 border-right: solid 1px var(--theme-bgd-accent);
-                order: 0 !important;
                 grid-template-columns: repeat(auto-fit, 72px);
                 align-content: flex-start;
                 gap: .5em;
                 padding: .5em 0;
+                --tab-bar-order: 0;
             }
+
+            /* :host(.tab-bar):not([layout="bottom"]) {
+                order: 0 !important;
+            } */
 
             b-btn {
                 padding-top: .5em;
@@ -163,7 +167,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
     `}
 
     get shouldShowSearch(){
-        return device.isMobile
+        return device.isMobile && !this.host.hasAttribute('no-search')
     }
 
     focusSearch(){

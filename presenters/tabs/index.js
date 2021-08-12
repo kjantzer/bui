@@ -112,6 +112,11 @@ customElements.define('b-tabs', class extends LitElement {
             overflow: hidden;
             overflow-y: auto;
             background: var(--menuBgd);
+            order: var(--tab-bar-order, 0);
+        }
+
+        slot {
+            order: 2;
         }
 
         .tab-bar::-webkit-scrollbar { display: none; width: 0 !important; height: 0 !important; }
@@ -167,9 +172,14 @@ customElements.define('b-tabs', class extends LitElement {
             flex-direction: column;
         }
 
-        :host([layout="bottom"]) .tab-bar,
-        :host([layout="right"]) .tab-bar {
-            order: 2;
+        :host([layout="top"]),
+        :host([layout="left"]) {
+            --tab-bar-order: 1;
+        }
+
+        :host([layout="bottom"]),
+        :host([layout="right"]) {
+            --tab-bar-order: 3;
         }
 
         :host([layout="top"]) .tab-bar { border-bottom: solid 1px var(--border-color); }
@@ -334,6 +344,7 @@ customElements.define('b-tabs', class extends LitElement {
                 this.__customTabBar.views = this.views
                 this.__customTabBar.onMenuClick = this.menuClick.bind(this)
                 this.__customTabBar.classList.add('tab-bar')
+                this.__customTabBar.setAttribute('layout', this.layout)
                 this.__customTabBar.part = 'tab-bar'
                 this.__customTabBar.innerHTML = /*html*/`
                     <span slot="menu:before"><slot name="menu:before"></slot></span>
