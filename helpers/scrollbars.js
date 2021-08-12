@@ -1,8 +1,8 @@
 import {css, unsafeCSS} from 'lit-element'
 import device from '../util/device'
 
-const styles = css`
-    ::-webkit-scrollbar {
+const styles = (el='')=>css`
+    ${unsafeCSS(el)}::-webkit-scrollbar {
         width: 8px; /* 1px wider than Lion. */
         /* This is more usable for users trying to click it. */
         background-color: rgba(0,0,0,0);
@@ -10,18 +10,18 @@ const styles = css`
     }
 
     /* hover effect for both scrollbar area, and scrollbar 'thumb' */
-    ::-webkit-scrollbar:hover {
+    ${unsafeCSS(el)}::-webkit-scrollbar:hover {
         background-color: rgba(0, 0, 0, 0.09);
     }
 
     /* The scrollbar 'thumb' ...that marque oval shape in a scrollbar */
-    ::-webkit-scrollbar-thumb:vertical {
+    ${unsafeCSS(el)}::-webkit-scrollbar-thumb:vertical {
         /* This is the EXACT color of Mac OS scrollbars.
             Yes, I pulled out digital color meter */
         background: rgba(0,0,0,0.5);
         -webkit-border-radius: 100px;
     }
-    ::-webkit-scrollbar-thumb:vertical:active {
+    ${unsafeCSS(el)}::-webkit-scrollbar-thumb:vertical:active {
         background: rgba(0,0,0,0.61); /* Some darker color when you click it */
         -webkit-border-radius: 100px;
     }
@@ -43,8 +43,8 @@ const stopWheelScrolling = target=>{
     })
 }
 
-const styleWindows = ()=>device.isWindows ? styles : css``
-const styleAll = ()=>styles
+const styleWindows = (...args)=>device.isWindows ? styles(...args) : css``
+const styleAll = (...args)=>styles(...args)
 
 export default {
     styleWindows,
