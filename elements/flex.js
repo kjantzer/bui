@@ -39,6 +39,10 @@ customElements.define('b-flex', class extends LitElement{
             align-items: flex-start;
         }
 
+        :host([col][stretch]) {
+            align-items: stretch;
+        }
+
         :host([col][left]) {
             align-items: flex-start;
         }
