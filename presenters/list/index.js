@@ -9,6 +9,7 @@ import './infinite-list'
 import '../../elements/spinner-overlay'
 import '../../helpers/lit-element/selectors'
 import Selection from '../selection'
+import Scrollbars from '../../helpers/scrollbars'
 
 customElements.define('b-list', class extends LitElement {
 
@@ -148,6 +149,8 @@ customElements.define('b-list', class extends LitElement {
             position: relative;
             -webkit-overflow-scrolling: touch;
         }
+
+        ${Scrollbars.styleWindows('b-infinite-list')}
 
         b-infinite-list[selection-on] {
             user-select: none;
