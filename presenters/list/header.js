@@ -37,6 +37,8 @@ customElements.define('b-list-header', class extends LitElement{
     firstUpdated(){
         scrollbars.stopWheelScrolling(this)
 
+        if( this.slot != 'header') return
+
         let children = Array.from(this.shadowRoot.children)
 
         let prevW = null
@@ -63,7 +65,7 @@ customElements.define('b-list-header', class extends LitElement{
         if( !rowEl ) return html``
 
         let styles = rowEl.sharedStyles || this.constructor.sharedStyles
-        let render = (rowEl.header&&rowEl.header()) || ''
+        let render = (this.slot&&rowEl[this.slot]&&rowEl[this.slot].call(this.parentElement)) || ''
 
         return html`
             <style>${styles}</style>
