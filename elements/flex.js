@@ -62,6 +62,7 @@ customElements.define('b-flex', class extends LitElement{
         }
 
         :host([gap="0"]), :host([gap="none"]) { gap: 0; }
+        :host([gap=".25"]) { gap: .25em; }
         :host([gap=".5"]) { gap: .5em; }
         :host([gap="1"]) { gap: 1em; }
         :host([gap="2"]) { gap: 2em; }
