@@ -362,7 +362,7 @@ export class Filter {
         values = typeof values == 'function' ? values.call(this.parent.list, this) : values
 
         values = values.map(v=>{
-            if( typeof v == 'string' && !['divider'].includes(v) )
+            if( typeof v == 'string' && !['divider', '-'].includes(v) )
                 v = {label: v, val: v}
 
             // make "unset" values uniform
