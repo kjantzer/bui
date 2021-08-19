@@ -22,7 +22,11 @@ customElements.define('b-numeral', class extends LitElement{
         this.__num = val
     
         this.requestUpdate('num', oldVal)
-        this.title = this._title+` `+val
+        
+        if( !this._title && this.title )
+            this._title = this.title||''
+
+        this.title = ((this._title||'')+` `+val).trim()
     }
     
     get num(){ return this.__num}
@@ -41,8 +45,6 @@ customElements.define('b-numeral', class extends LitElement{
     }
 
     firstUpdated(){
-
-        this._title = this.title
 
         let num = this.textContent
         if( num )
