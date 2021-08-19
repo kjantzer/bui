@@ -72,6 +72,13 @@ customElements.define('b-text', class extends LitElement{
         :host([tone="info"]) { color: var(--b-text-tone-info, var(--blue, blue)); }
         :host([tone="good"]) { color: var(--b-text-tone-good, var(--green, blue)); }
 
+        :host([color="theme"]) { color: var(--theme); }
+        :host([color="red"]) { color: var(--red, red); }
+        :host([color="orange"]) { color: var(--orange, orange); }
+        :host([color="blue"]) { color: var(--blue, blue); }
+        :host([color="green"]) { color: var(--green, blue); }
+        :host([color="purple"]) { color: var(--deep-purple, blue); }
+
         :host([link]),
         :host([href]) {
             cursor: default;
