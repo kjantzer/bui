@@ -9,6 +9,7 @@ customElements.define('b-text', class extends LitElement{
     static get styles(){return css`
         :host {
             display: inline-block;
+            cursor: default;
         }
 
         :host([block]) {
