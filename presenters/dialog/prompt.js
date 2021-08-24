@@ -41,7 +41,11 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 
 		if( opts.autoFocus !== false ){
 
-			setTimeout(()=>{this.focus()}, 200)
+			setTimeout(()=>{
+				this.focus()
+				if( opts.autoFocus == 'select' )
+					this.selectAll()
+			}, 200)
 			
 			if( device.isiOS )
 				mobileAsyncFocus(this)
@@ -71,6 +75,11 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 	focus(){
 		if( this.formHandler.controls.length > 0 )
 			this.formHandler.controls[0].focus()
+	}
+
+	selectAll(){
+		if( this.formHandler.controls.length > 0 )
+			this.formHandler.controls[0].control.select('all')
 	}
 
 	get value(){
