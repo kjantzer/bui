@@ -17,6 +17,7 @@
 	https://www.databar-barcode.info/application-identifiers/
 */
 import Emmitter from 'component-emitter'
+import {median} from './math'
 
 class BarcodeScanner {
 
@@ -54,12 +55,21 @@ class BarcodeScanner {
 			this.startListening();
 	}
 	
-	onBarcodeScanned(str, type){
-		this.emit('scanned', str, type)
+	onBarcodeScanned(result){
+
+		let {str, type, val} = result
+		this.emit('scanned', result)
+
         window.dispatchEvent(new CustomEvent('barcode-scanned', {
             bubbles: true,
             composed: true,
-            detail: {str, type}
+            detail: {str:val||str, type}
+        }))
+
+		window.dispatchEvent(new CustomEvent('barcode-scanned:'+type, {
+            bubbles: true,
+            composed: true,
+            detail: result
         }))
 	}
 
@@ -89,86 +99,18 @@ class BarcodeScanner {
 
 		if( this._chars.length >= this.opts.scanCharMin ){
 
-			var str = this._chars.join(''), type;
+			let str = this._chars.join('')
+			let speed = median(this._speed)
 			
-			[str, type] = this.parseCode(str, type);
+			let result = Parsers.parse(str, speed)
 
-			this.onBarcodeScanned(str, type)
+			this.onBarcodeScanned(result)
 		}
 
 		this._lastTimeScanned = (new Date()).getTime()
 		this._lastTime = null;
 		this._chars = [];
-	}
-	
-	parseCode(str, type="unknown"){
-		
-		var trackingNum = null
-		var match;
-		
-		str = str.replace(/[\n\r]/g, '');
-		
-		// TEMP - some orders got malformed IDs assigned and we left them in place.
-		let malformedOrderIDs = ['Le1345139-2', 'Le1345139-4', 'Le1345148-0', 'Le1345148-5', 'Le1345148-6', 'Le1345148-7', 'Le1345148-8', 'Le1345148-9', 'We1345148-2', 'We1345148-3', 'We1345148-4', 'Ce1345139-3']
-
-		// make boombox show as an isbn...(maybe change to partner_ref?)
-		if( str == '027242896406' )
-			type = 'isbn'
-		
-		// barcodes on pallet boxes prefix isbn with 011
-		else if( match = str.match(/^(?:011)?(978[\d]{10})$/) ){
-			type = 'isbn'
-			str = match[1]
-
-		// custom defined type: `[type]string`
-		}else if( match = str.match(/^\[(.+)\](.+)$/) ){
-			type = match[1]
-			str = match[2]
-
-		// qty barcode found on print book boxes 
-		}else if( match = str.match(/^\(30\) (\d+)$/) ){
-			type = 'qty'
-			str = match[1]
-
-		}else if( match = str.match(/^BX(\d{9})/) ){
-			type = 'box_id'
-			str = parseInt(match[1])
-		}else if( match = str.match(/^\(_\)(.+)$/) ){
-			type = 'shelf_location'
-			str = match[1]
-
-		}else if( str.match(/^\d{2}-[a-iA-I]([\d][a-iA-I]?)?$/)) type = 'shelf_location'
-
-		else if( match = str.match(/^rma-item-([0-9]+)/) ){
-			type = 'rma_item'
-			str = match[1]
-		}
-		else if( match = str.match(/^pick:(.+)/) ){
-			type = 'pick_list'
-			str = match[1].split(',')
-		}
-		else if( match = str.match(/^reshelf:(.+)/) ){
-			type = 'reshelf_list'
-			str = match[1].split(',')
-		}
-		else if( match = str.match(/^\(251\)T?(\w{6}).+/) ){
-			type = 'product_id'
-			str = match[1]
-
-		}
-		else if( str.length == 6 && str.match(/^[1-7][0-2]|^[zphb][a-z]/i) ) type = 'product_id'
-		else if( malformedOrderIDs.includes(str) || str.match(/^[\d]{6,9}(-\d)?$|^ae\d+|^[CLWEAI][\d]{8}/) ) type = 'order_id'
-		else if( match = str.match(/^RPLC([0-9]+)/i) ){
-			type = 'replacement'
-			str = match[1]
-		}
-		else if( trackingNum = this.parseTrackingNum(str) ){
-			str = trackingNum
-			type = 'tracking_num'
-		}
-		else if( str.length < 20 ) type = 'invoice_id'
-		
-		return [str, type]
+		this._speed = []
 	}
 	
 	timeSinceScan(){
@@ -216,7 +158,9 @@ class BarcodeScanner {
 		}
 		
 		var now = (new Date()).getTime();
-		if( now - this._lastTime < this.opts.scanCharSpeed ){
+		var speed = now - this._lastTime
+		
+		if( speed < this.opts.scanCharSpeed ){
 			
 			var keycode = e.keyCode;
 
@@ -248,13 +192,16 @@ class BarcodeScanner {
 		if( !this._lastTime ){
 			this._lastTime = now;
 			this._chars = [];
+			this._speed = []
 		}
 
 		var charStr = String.fromCharCode(e.which);
+		var speed = now - this._lastTime
 
-		if( now - this._lastTime < this.opts.scanCharSpeed ){
+		if( speed < this.opts.scanCharSpeed ){
 
 			this._chars.push(charStr);
+			this._speed.push(speed)
 
 			this._scanFinished();
 		}
@@ -286,10 +233,10 @@ class BarcodeScanner {
 		e.stopPropagation()
 		
 		var str, type
-		[str, type] = this.parseCode(e.data);
+		let result = Parsers.parse(str)
 		
 		this.stopWaitingForTextInput()
-		this.onBarcodeScanned(str, type)
+		this.onBarcodeScanned(result)
 		return false;
 	}
 	
@@ -311,13 +258,138 @@ class BarcodeScanner {
 
 }
 
-let scannerInstance
+Emmitter(BarcodeScanner.prototype)
 
-export default function(opts){
+let scannerInstance
+function singleton(opts){
     if( !scannerInstance ){
         scannerInstance = new BarcodeScanner(opts)
     }
     return scannerInstance
 }
 
-Emmitter(BarcodeScanner.prototype)
+singleton.addParser = function(key, val){
+	Parsers.set(key, val)
+}
+
+export default singleton
+
+
+class BarcodeParsers extends Map {
+
+	set(key, val){
+
+		// got a bunch of parsers, set each one
+		if( val == undefined && typeof key == 'object' ){
+			for( let [k,v] of Object.entries(key) ){
+				this.set(k, v)
+			}
+			return
+		}
+
+		if( this.get(key) )
+			return console.warn('Barcode Scanner - parser already exists:', key, this.get(key))
+
+		// defaults
+		let parse = {
+			speed: 0,
+			type: 'string'
+		}
+
+		if( typeof val == 'function'){
+			parse.patt = val
+
+		}else if( val instanceof RegExp ){
+			parse.patt = val
+		
+		}else if( typeof val == 'object' ){
+			parse = Object.assign(parse, val)
+		}
+
+		return super.set(key, parse)
+	}
+
+	parse(str, speed){
+
+		str = str.replace(/[\n\r]/g, '');
+
+		let result = {
+			str,
+			val: null,
+			type: null
+		}
+
+		// test each parser for a match
+		for( let [type, parse] of this ){
+
+			if( parse.speed && speed != parse.speed )
+				continue
+
+			// custom function
+			if( typeof parse.patt == 'function' ){
+				
+				let val = parse.patt(str, speed)
+
+				// if parse function returned something, it's considereed a match
+				if( val !== undefined && val !== false ){
+					result.type = type
+					result.val = val
+				}
+
+			// regular expression
+			}else if( parse.patt instanceof RegExp ){
+
+				let matches = str.match(parse.patt)
+
+				if( matches ){
+					result.type = type
+					if( matches.length > 2 )
+						result.val = matches.slice(1)
+					else if( matches.length > 1 )
+						result.val = matches[1]
+					else
+						result.val = str
+				}
+			}
+
+			// did this parser match?
+			if( result.val != null ){
+
+				// optionally parse the result further
+				if( typeof parse.parse == 'function' )
+					parse.parse(result)
+
+				// format the result value based on "type"
+				if( parse.type ){
+					if( Array.isArray(result.val) )
+						result.val = result.val.map(val=>{
+							return resultValParser(parse.type, val)
+						})
+					else
+						result.val = resultValParser(parse.type, result.val)
+				}
+
+				// stop testing the remaining parsers
+				// NOTE: should this be turned off to allow multiple matches?
+				break;
+			}
+		}
+
+		return result
+	}
+}
+
+function resultValParser(type, val){
+
+	if( type == 'int' )
+		return parseInt(val)
+	else if( type == 'float' )
+		return parseFloat(val)
+	else if( type == 'boolean' )
+		return Boolean(val)
+	
+	return val
+}
+
+const Parsers = new BarcodeParsers()
+
