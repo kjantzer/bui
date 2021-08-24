@@ -63,6 +63,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             background-color: var(--color);
         }
 
+        :host([color="theme"]) { --color: var(--theme); }
         :host([color="red"]) { --color: var(--red); }
         :host([color="blue"]) { --color: var(--blue); }
         :host([color="green"]) { --color: var(--green); }
@@ -79,11 +80,13 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             --theme-text-rgb: var(--theme-inverse-text-rgb);
         }
 
+        :host([accent="theme"]) { --accent: var(--theme-secondary); }
         :host([accent="red"]) { --accent: var(--red-700); }
         :host([accent="blue"]) { --accent: var(--blue); }
         :host([accent="green"]) { --accent: var(--green); }
         :host([accent="orange"]) { --accent: var(--orange); }
 
+        :host([color="theme"][accent]) { --accent: var(--theme-secondary); }
         :host([color="red"][accent]) { --accent: var(--red-800); }
         :host([color="blue"][accent]) { --accent: var(--blue-800); }
         :host([color="green"][accent]) { --accent: var(--green-800); }

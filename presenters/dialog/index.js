@@ -37,6 +37,7 @@ registerPreset('spinner', {
 })
 
 registerPreset('alert', {
+	color: 'inverse',
 	btns: ['dismiss']
 })
 
