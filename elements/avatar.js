@@ -200,7 +200,6 @@ class AvatarElement extends HTMLElement {
 		// let size = this.offsetHeight * 2
 		let size = this.size * 2
 		if( size < 80 ) size = 80
-		console.log(this.size);
 		this.url = guid ? `//gravatar.com/avatar/${guid}?d=404&s=${size}` : ''
 	}
 }
