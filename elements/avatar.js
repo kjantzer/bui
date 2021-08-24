@@ -197,8 +197,10 @@ class AvatarElement extends HTMLElement {
 		if( !this.isConnected || !guid ) return
 		// FIXME: accessing offsetHeight is a perf hit...as it requires a reflow
 		// https://www.sitepoint.com/10-ways-minimize-reflows-improve-performance/
-		let size = this.offsetHeight * 2
+		// let size = this.offsetHeight * 2
+		let size = this.size * 2
 		if( size < 80 ) size = 80
+		console.log(this.size);
 		this.url = guid ? `//gravatar.com/avatar/${guid}?d=404&s=${size}` : ''
 	}
 }
