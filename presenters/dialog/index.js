@@ -13,6 +13,13 @@ export function registerPreset(name, defaults){
 
 		if( typeof defaultOpts == 'function' )
 			defaultOpts = defaultOpts(opts)
+		
+		if( typeof opts == 'string' ){
+			opts = {body: opts}
+
+			if( defaultOpts.btns && defaultOpts.btns.length == 1 )
+				opts.btns = false
+		}
 
 		return new Dialog(Object.assign({}, defaultOpts, opts))
 	}
