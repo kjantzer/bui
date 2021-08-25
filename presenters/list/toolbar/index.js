@@ -104,7 +104,9 @@ customElements.define('b-list-toolbar', class extends LitElement{
         <div class="after">
 
             ${!this.filters||!this.filters.showSearch?'':html`
-            <b-list-search-bar @keydown=${this.onKeyDown} placeholder=${this.filters.searchOptions.placeholder}></b-list-search-bar>
+            <b-list-search-bar @keydown=${this.onKeyDown} 
+                title="Press '/' to focus"
+                placeholder=${this.filters.searchOptions.placeholder}></b-list-search-bar>
             `}
 
             ${!this.layouts?'':html`
@@ -139,7 +141,9 @@ customElements.define('b-list-toolbar', class extends LitElement{
     }
 
     _termChanged(term){
-        if( term == this.filters.term ) return
+        // same term or both falsy
+        if( term == this.filters.term 
+        || (!term && !this.filters.term) ) return
 
         this.filters.term = term
 

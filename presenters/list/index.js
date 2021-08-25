@@ -312,7 +312,60 @@ customElements.define('b-list', class extends LitElement {
             delete this.host
     }
 
+    focusSearchInput(){
+        let searchBar = this.toolbar.$$('b-list-search-bar')
+        if( searchBar )
+            searchBar.focus()
+    }
+
+    blurSearchInput(){
+        let searchBar = this.toolbar.$$('b-list-search-bar')
+        if( searchBar )
+            searchBar.blur()
+    }
+
     onKeydown(e){
+
+        if( this.offsetParent // is this list visible?
+        && document.activeElement.tagName == 'BODY' // NOT inside an input
+        ){
+
+            // Like Google search results, focus search when `/` is pressed
+            if( e.key == '/'
+            && !e.ctrlKey && !e.metaKey && !e.shiftKey // ignore if extra keys pressed
+            ){
+                setTimeout(()=>{
+                    e.preventDefault()
+                    this.focusSearchInput()
+                })
+            }
+
+            if( e.shiftKey & e.key == 'R' ){
+
+                // focus search so we can check `document.activeElement`
+                setTimeout(()=>{
+                    e.preventDefault()
+                    this.focusSearchInput()
+
+                    // traverse up the DOM to see if this list is in the activeElement
+                    setTimeout(()=>{
+                        let parent = this
+                        let isActive = false
+                        while( parent != undefined ){
+                            parent = parent.parentElement || parent.getRootNode().host
+                            if( isActive = parent == document.activeElement )
+                                break
+                        }
+
+                        // yep, active, so refresh
+                        if( isActive ){
+                            this.refresh()
+                            this.blurSearchInput()
+                        }
+                    })
+                })
+            }
+        }
         // if( e.target !== document.body ) return
         // if( !e.metaKey && !e.ctrlKey ) return
         // console.log('here');
