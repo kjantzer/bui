@@ -28,16 +28,25 @@ customElements.define('b-embed', class Embed extends LitElement {
             width: 100%;
             height: 100%;
         }
+
+        :host(:not([failed])) b-empty-state {display: none;}
+        :host([failed]) iframe {opacity: 0;}
     `}
 
     render(){return html`
-        <main>
-            <iframe src='${this.formattedURL}' 
+        <main part="main">
+            <iframe src='${this.formattedURL}'
+                    @load=${this.onLoad}
                     frameborder='0' 
                     allowfullscreen>
             </iframe>
+            <b-empty-state>Failed to load</b-empty-state>
         </main>
     `}
+
+    onLoad(e){
+        this.toggleAttribute('failed', !e.target.getAttribute('src'))
+    }
 
     get formattedURL(){
 
@@ -48,6 +57,9 @@ customElements.define('b-embed', class Embed extends LitElement {
         if( match ){
             return 'https://www.youtube.com/embed/'+match[1]
         }
+
+        if( !this.url.match(/^http|^\//) )
+            return ''
 
         return this.url
     }
