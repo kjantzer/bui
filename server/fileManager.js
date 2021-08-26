@@ -116,8 +116,12 @@ module.exports = class FileManager extends Model {
             metadata = await sharpImg.metadata()
 
             if( metadata.exif ){
-                metadata.exif = info.traits.exif = exif(metadata.exif)
-                delete info.traits.exif.exif
+                try{
+                    metadata.exif = info.traits.exif = exif(metadata.exif)
+                    delete info.traits.exif.exif
+                }catch(err){
+                    console.log(err);
+                }
             }
             
             info.traits.width = metadata.width
