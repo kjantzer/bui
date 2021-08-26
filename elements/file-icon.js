@@ -16,6 +16,7 @@ export const fileIconColors = {
     jpeg: css`:host([ext="jpeg"]){ --bgd: var(--blue); }`,
     png: css`:host([ext="png"]){ --bgd: var(--blue); }`,
     gif: css`:host([ext="gif"]){ --bgd: var(--blue); }`,
+    svg: css`:host([ext="svg"]){ --bgd: var(--cyan); }`,
 
     wav: css`:host([ext="wav"]){ --bgd: var(--deep-purple); }`,
     mp3: css`:host([ext="mp3"]){ --bgd: var(--deep-purple); }`,
