@@ -20,7 +20,7 @@ class FormHandler extends HTMLElement {
 	get autoSave(){ return this.hasAttribute('autosave') }
 	set autoSave(val){ val ? this.setAttribute('autosave', '') : this.removeAttribute('autosave') }
 
-	get patchSave(){ return this.hasAttribute('patchsave') }
+	get patchSave(){ return this.hasAttribute('patchsave') || this.getAttribute('autosave') == 'patch' }
 	set patchSave(val){ val ? this.setAttribute('patchsave', '') : this.removeAttribute('patchsave') }
 	
 	connectedCallback(){
