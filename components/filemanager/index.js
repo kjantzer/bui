@@ -13,7 +13,8 @@ customElements.define('b-file-manager', class extends LitElement{
         sort: {type: Boolean},
         row: {type: String},
         accept: {type: String},
-        placeholder: {type: String}
+        placeholder: {type: String},
+        limit: {type: Number}
     }}
 
     static get listeners(){return {
@@ -37,6 +38,7 @@ customElements.define('b-file-manager', class extends LitElement{
         this.accept = '' // all files
         this.sort = true
         this.placeholder = 'No files'
+        this.limit = 0        
     }
     
     get coll(){ return this.model && this.model.get('files') }
@@ -48,7 +50,7 @@ customElements.define('b-file-manager', class extends LitElement{
     }
 
     firstUpdated(){
-        if( !device.isTouch && this.sort )
+        if( !device.isTouch && this.sort && this.limit != 1)
         this.sortable = Sortable.create(this.$$('.files'), {
             draggable: this.row,
             handle: '.drag',
@@ -104,6 +106,9 @@ customElements.define('b-file-manager', class extends LitElement{
     async onUpload(e){
         let uploader = e.currentTarget
         let {invalid} = e.detail
+
+        if( this.limit > 0 && this.coll.length == this.limit )
+            return Dialog.stopped(`File limit of ${this.limit} already reached`).notif()
 
         if( invalid )
             Dialog.warn(`${invalid.length} invalid files – allowed types: ${this.accept}`).notif()
