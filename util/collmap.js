@@ -1,9 +1,17 @@
 
 module.exports = class CollMap extends Map {
 
-    constructor(data){
+    constructor(data, {appendKey=false}={}){
         if( data )
             data = Object.entries(data)
+
+        if( appendKey && data ){
+            let k = typeof appendKey == 'string' ? appendKey : 'key'
+            data.forEach(([key, d])=>{
+                d[k] = key
+            })
+        }
+
         super(data)
     }
     
