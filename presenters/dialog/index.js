@@ -77,6 +77,15 @@ registerPreset('warn', {
 	btns: ['dismiss']
 })
 
+registerPreset('stopped', {
+	pretitle: 'Ooops...',
+	icon: 'block',
+	accent: 'red',
+	color: 'inverse',
+	edge: true,
+	btns: ['dismiss']
+})
+
 registerPreset('error', {
 	pretitle: 'Error',
 	icon: 'attention-circle',
