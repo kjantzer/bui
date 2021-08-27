@@ -106,7 +106,7 @@ customElements.define('b-file-manager', class extends LitElement{
         let {invalid} = e.detail
 
         if( invalid )
-            Dialog.warn(`${invalid.length} invalid files`).notif()
+            Dialog.warn(`${invalid.length} invalid files – allowed types: ${this.accept}`).notif()
 
         if( uploader.files.length == 0 )
             return
