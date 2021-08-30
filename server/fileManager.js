@@ -60,6 +60,8 @@ module.exports = class FileManager extends Model {
         // if asking for a set of files, parent_id must be given
         if( !this.id )
             where['parent_id'] = this.parent_id || false
+
+        where['group_name'] = this.group
     }
 
     async upload(file, src='', {traits={}}={}){
