@@ -75,7 +75,7 @@ const previewHtml = /*html*/`
 
 customElements.define('b-previewer', class extends LitElement{
 
-    static open(items, opts){
+    static open(items, opts={}){
 
         if( items && !Array.isArray(items) )
             items = [items]
