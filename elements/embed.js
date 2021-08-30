@@ -4,7 +4,8 @@ import { LitElement, html, css } from 'lit-element'
 customElements.define('b-embed', class Embed extends LitElement {
 
     static get properties(){return {
-        url: {type: String, reflect: true}
+        url: {type: String, reflect: true},
+        placeholder: {type: String}
     }}
 
     static get styles(){return css`
@@ -40,7 +41,7 @@ customElements.define('b-embed', class Embed extends LitElement {
                     frameborder='0' 
                     allowfullscreen>
             </iframe>
-            <b-empty-state>Failed to load</b-empty-state>
+            <b-empty-state>${this.url?'Failed to load':(this.placeholder||'')}</b-empty-state>
         </main>
     `}
 
