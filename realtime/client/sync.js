@@ -93,7 +93,7 @@ export function syncBackboneCollection(data, {
         if( data.action == 'add' )
             path = path.replace(/\.\d+$/,'')
 
-        model = this.get(path) || this
+        model = this.get(path)
 
         if( !model && addUpdates ){
             data.action = 'add'
@@ -103,7 +103,7 @@ export function syncBackboneCollection(data, {
     }
 
     if( !model )
-        return console.warn('Sync: unsure how to handle, ', data)
+        return addUpdates ? console.warn('Sync: unsure how to handle, ', data) : false
 
     if( ['update', 'patch'].includes(action) )
         model.set(attrs)
