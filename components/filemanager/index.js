@@ -31,6 +31,10 @@ customElements.define('b-file-manager', class extends LitElement{
             display: none !important;
             background-color: red;
         }
+
+        b-empty-state {
+            grid-column: 1/-1;
+        }
     `}
 
     constructor(){
@@ -100,7 +104,7 @@ customElements.define('b-file-manager', class extends LitElement{
     }
 
     renderEmptyState(){return html`
-        <b-empty-state must-be="first" static md>${this.placeholder}</b-empty-state>
+        <b-empty-state must-be="first" static md part="empty-state">${this.placeholder}</b-empty-state>
     `}
 
     async onUpload(e){
