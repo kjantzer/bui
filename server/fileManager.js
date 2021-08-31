@@ -5,6 +5,9 @@ const fs = require('fs')
 const sharp = require('sharp')
 const exif = require('exif-reader')
 const msOfficeThumbnailer = require('./thumbnail/msOffice')
+const ffmpeg = require('fluent-ffmpeg')
+
+ffmpeg.setFfmpegPath('/usr/bin/ffmpeg');
 
 module.exports = class FileManager extends Model {
 
@@ -110,6 +113,7 @@ module.exports = class FileManager extends Model {
         await mkdirp.sync(this.dirPath)
 
         let isImg = info.type.match(/image/) && !info.type.match(/photoshop/)
+        let isVideo = info.type.match(/video/)
         let sharpImg
         let metadata = {}
 
@@ -148,12 +152,13 @@ module.exports = class FileManager extends Model {
         })
 
         if( fileMoved === true ){
+            
+            let generatePreview = isVideo 
+                ? this.generateThumbnail() 
+                : this.generatePreview({metadata, sharpImg, filename})
 
             if( this.waitForPreviewGeneration )
-                await this.generatePreview({metadata, sharpImg, filename})
-            else
-                this.generatePreview({metadata, sharpImg, filename})
-
+                await generatePreview
 
             if( syncData )
                 syncData()
@@ -165,6 +170,60 @@ module.exports = class FileManager extends Model {
         }
 
         return this
+    }
+
+    async generateThumbnail(){
+        
+        let metadata = await new Promise(resolve=>{
+            ffmpeg.ffprobe(this.filePath, function(err, metadata) {
+                resolve(metadata);
+            });
+        })
+
+        let videoStream = metadata.streams.find(s=>s.codec_type=='video')
+
+        let traits = this.attrs.traits || {}
+        if( videoStream ){
+            traits.width = videoStream.width
+            traits.height = videoStream.height
+            traits.duration = metadata.format.duration
+        }
+
+        let w = 0
+        let h = 0
+
+        if( traits.width > traits.height ){
+            w = 800
+            h = w / (traits.width / traits.height)
+        }else{
+            
+            if( traits.width == traits.height )
+                traits.square = true
+            else
+                traits.portrait = true
+
+            h = 800
+            w = h / (traits.height / traits.width)
+        }
+        
+        await new Promise(resolve=>{
+
+            ffmpeg(this.filePath)
+            .output(this.filePath+'.preview.jpg')
+            .noAudio()
+            .seek(0.25) // move foward a little in case video starts black
+            .on('error', function(err) {
+                console.log('An error occurred: ' + err.message);
+                resolve()
+            })
+            .on('end', function() {
+                console.log('Processing finished !');
+                resolve()
+            })
+            .run();
+        })
+
+        await this.update({traits, has_preview: true})
     }
 
     async generatePreview({metadata, sharpImg, filename}={}){
