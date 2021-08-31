@@ -1,6 +1,12 @@
 import {Model} from 'backbone'
 import { round } from '../../util/math'
 
+const RESOLUTIONS = {
+    '3840x2160': '4K',
+    '1920x1080': '1080p',
+    '1280x720': '720p'
+}
+
 export default class FileModel extends Model {
 
     get displayURL(){ return this.url()+'?display' }
@@ -39,11 +45,28 @@ export default class FileModel extends Model {
         return round(this.traits.height||0, 4)
     }
 
+    get duration(){
+        return this.traits.duration||0
+    }
+
+    get resolution(){
+        let size = Math.max(this.width, this.height)+'x'+Math.min(this.width, this.height)
+        return RESOLUTIONS[size] || ''
+    }
+
     get origFilenameLabel(){
         return this.get('orig_filename').replace(RegExp(`\.${this.get('ext')}$`), '')
     }
 
     get filenameLabel(){
         return this.get('filename').replace(RegExp(`\.${this.get('ext')}$`), '')
+    }
+
+    get isVideo(){
+        return this.get('type').match(/video/)
+    }
+
+    get isImg(){
+        return this.get('type').match(/image/)
     }
 }

@@ -6,7 +6,8 @@ import download from '../../util/download'
 customElements.define('c-file-row', class extends LitElement{
 
     static get properties(){return {
-        layout: {type: String}
+        layout: {type: String, reflect: true},
+        overshadow: {type: Boolean}
     }}
 
     static get styles(){return css`
@@ -38,8 +39,37 @@ customElements.define('c-file-row', class extends LitElement{
             height: 100%;
         }
 
+        .duration {
+            position: absolute;
+            bottom: 2px;
+            left: 2px;
+        }
+
+        .res {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+        }
+
         section {
             padding: 1rem;
+            box-sizing: border-box;
+            min-width: 0;
+        }
+
+        :host([layout="mini-row"]) {
+            --img-min-height: 2em;
+            --file-icon-size: 2em;
+        }
+
+        :host([layout="mini-row"]) main {
+            display: grid;
+            grid-template-columns: auto 1fr;
+        }
+
+        :host([layout="mini-row"]) img {
+            border-radius: var(--radius) 0 0 var(--radius);
+            width: 6em;
         }
 
         @media (min-width: 700px) {
@@ -55,13 +85,31 @@ customElements.define('c-file-row', class extends LitElement{
         }
     `}
 
+    constructor(){
+        super()
+        this.overshadow = true
+    }
+
     render(){return html`
-        <b-paper compact overshadow>
+        <b-paper compact ?overshadow=${this.overshadow}>
 
             <main>
-                <b-file-preview class="img" part="preview" @preview=${this.preview} @contextmenu=${this.showMenu}>
+                <b-file-preview class="img" part="preview" icon="${this.model.isVideo?'play':''}"
+                @preview=${this.preview}
+                @contextmenu=${this.showMenu}>
                     <slot name="drag"></slot>
                     <img src="${this.model.previewURL}" draggable="false">
+                    
+                    ${this.model.isVideo?html`
+                    
+                        <b-label filled="black" class="duration" xs>
+                            <b-timer time=${this.model.duration*1000}></b-timer>
+                        </b-label>
+
+                        <b-label xs class="res" filled="black" ?hidden=${!this.model.resolution}>
+                            ${this.model.resolution}</b-label>
+                    `:''}
+
                 </b-file-preview>
 
                 <section part="content"><slot name="content">${this.renderContent()}</slot></section>

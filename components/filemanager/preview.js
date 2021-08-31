@@ -2,6 +2,10 @@ import { LitElement, html, css } from 'lit-element'
 
 customElements.define('b-file-preview', class extends LitElement{
 
+    static get properties(){return {
+        icon: {type: String}
+    }}
+
     static get styles(){return css`
         :host {
             display: block;
@@ -45,7 +49,7 @@ customElements.define('b-file-preview', class extends LitElement{
 
     render(){return html`
         <slot></slot>
-        <b-icon name="search" @click=${this.onClick}></b-icon>
+        <b-icon name="${this.icon||'search'}" @click=${this.onClick}></b-icon>
     `}
 
     onClick(){
