@@ -72,7 +72,7 @@ from the background; this script enables such a function.
 ## `BarcodeScanner`
 
 ```js
-import BarcodeScanner from 'bui/util/barcodeScanner`
+import BarcodeScanner from 'bui/util/barcodeScanner'
 
 // add single parser
 BarcodeScanner.addParser('isbn', /^(978[\d]{10})$/)
