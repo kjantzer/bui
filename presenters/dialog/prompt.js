@@ -140,6 +140,9 @@ function makePrompt(opts, i=0, globalOpts){
 		multiline: false,
 	}, opts)
 
+	if( ['int', 'decimal', 'float', 'number'].includes(opts.pattern) )
+		opts.type = 'number'
+
 	if( !opts.val && globalOpts.val && globalOpts.val[opts.key] )
 		opts.val = globalOpts.val[opts.key]
 
@@ -160,6 +163,7 @@ function makePrompt(opts, i=0, globalOpts){
 			pattern="${opts.pattern}"
 			placeholder="${opts.placeholder}"
 			type="${opts.type}"
+			input="${opts.type}"
 			?html=${opts.html}
 			?multiline=${opts.multiline}
 			?required=${opts.required}
