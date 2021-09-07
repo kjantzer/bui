@@ -21,7 +21,7 @@ const presenters = {
 
 	popover(target, opts={}){
 
-		if( opts.adjustForMobile && device.is_mobile )
+		if( opts.adjustForMobile && device.isMobile )
 			return this.modal((typeof opts.adjustForMobile == 'object' ? opts.adjustForMobile : {}))
 		
 		if( target.currentTarget )
@@ -49,7 +49,7 @@ const presenters = {
 	modal(opts={}, mobileOpts){
 		mobileOpts = Object.assign({
 			anchor: 'top',
-			width: '100%',
+			width: device.isTablet ? 'auto' : '100%',
 			height: 'auto',
 			type: ''
 		}, mobileOpts)
