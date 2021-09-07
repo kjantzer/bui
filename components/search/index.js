@@ -45,7 +45,7 @@ export default class extends LitElement{
             We will focus the input "onOpen", but iOS (and maybe android?)
             wont focus and open keyboard async (after the tap is over)
         */
-        if( device.isiOS )
+        if( device.isMobile )
             mobileAsyncFocus(this)
 
         this.panel = this.panel || new Panel(this, {
@@ -53,7 +53,7 @@ export default class extends LitElement{
             anchor: device.isMobile ? 'top': 'center',
             closeOnEsc: true,
             width: device.isMobile ? '100%' :'640px',
-            height: device.isMobile ? '50%' : '540px',
+            height: device.isiOS ? '50%' : '540px',
             type: 'search-popup',
             animation: 'scale',// 'drop'
         })
