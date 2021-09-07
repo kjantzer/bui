@@ -96,7 +96,9 @@ class PanelToolbar extends LitElement {
         }
 
         /* hide on small devices in landscape (allow for more space for the content) */ 
-        @media (max-height: 699px) and (orientation:landscape) {
+        @media
+        screen and (orientation:landscape) and (max-width:999px) and (max-height:699px)
+        {
             :host {
                 min-height: 0;
                 padding: 0;
