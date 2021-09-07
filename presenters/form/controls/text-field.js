@@ -219,6 +219,10 @@ class TextFieldElement extends HTMLElement {
 	connectedCallback(){
 		this._setClassNames()
 
+		// make sure we dont have an empty input attribute
+		if( !this.input )
+			this.removeAttribute('input')
+
 		// TODO: how this applied needs improved
 		this._input.type = this.input
 	}
