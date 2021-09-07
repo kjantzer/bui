@@ -43,6 +43,10 @@ const device = {
         return device.isiOS || device.isAndroid
     },
 
+    get isTablet(){
+        return this.isMobile && this.minScreenSize >= 700 && this.isTouch
+    },
+
     get isHandheldScanner(){
         return !!HandheldScanners.find(patt=>patt.test(UA))
     },
