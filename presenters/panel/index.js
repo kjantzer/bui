@@ -223,6 +223,7 @@ export class Panel extends LitElement {
         height: {type: String},
         anchor: {type: String, reflect: true},
         type: {type: String, reflect: true},
+        vid: {type: String, reflect: true},
         animation: {type: String, reflect: true}
     }}
 
@@ -264,6 +265,7 @@ export class Panel extends LitElement {
         opts = Object.assign(defaultOpts, opts)
 
         this.animation = opts.animation
+        this.vid = opts.vid
         this.type = opts.type
         this.closeBtn = opts.closeBtn
         this.title = opts.title
