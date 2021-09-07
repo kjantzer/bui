@@ -485,6 +485,9 @@ export default class Menu {
 		}
 		
 		if( target ){
+
+			if( window.soundFX && soundFX.playIfMobile )
+                soundFX.playIfMobile('tinyTap', 0.3)
 			
 			let data = this.displayMenu[target.getAttribute('index')]
 
