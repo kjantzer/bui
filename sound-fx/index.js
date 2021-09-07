@@ -2,6 +2,7 @@
 import fetchAudioBuffer from './fetch-audio-buffer';
 import methodPatch from './method-patch';
 import MobileAudioFix from './mobile-audio-fix';
+import device from '../util/device'
 
 // All of my MP3s were built to be a consistent volume on export,
 // so I can safely set the same gain on all of them.
@@ -43,6 +44,11 @@ export default class Single {
 
     this.mobileAudio = new MobileAudioFix(this.context);
     this.mobileAudio.init();
+  }
+
+  playIfMobile(...args){
+    if( device.isMobile )
+      this.play(...args)
   }
 
   play(key, volume) {
