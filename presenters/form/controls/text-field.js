@@ -218,6 +218,9 @@ class TextFieldElement extends HTMLElement {
 	
 	connectedCallback(){
 		this._setClassNames()
+
+		// TODO: how this applied needs improved
+		this._input.type = this.input
 	}
 	
 	disconnectedCallback(){
