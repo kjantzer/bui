@@ -232,8 +232,7 @@ class BarcodeScanner {
 		e.preventDefault()
 		e.stopPropagation()
 		
-		var str, type
-		let result = Parsers.parse(str)
+		let result = Parsers.parse(e.data)
 		
 		this.stopWaitingForTextInput()
 		this.onBarcodeScanned(result)
