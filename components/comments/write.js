@@ -3,6 +3,8 @@ import '../../presenters/form/handler'
 import '../../presenters/form/control'
 import '../../presenters/form/controls/text-editor'
 import '../../helpers/lit-element/events'
+import device from '../../util/device'
+import mobileAsyncFocus from '../../util/mobileAsyncFocus'
 
 let extensions = []
 let MENTION_TAG
@@ -83,12 +85,16 @@ customElements.define('b-write-comment', class extends LitElement{
         
         if( this.hasAttribute('auto-focus') )
             setTimeout(() => {
-                this.focus() 
+                this.focus()
             },100);
     }
 
     focus(){
-        this.formHandler.get('comment').focus()
+        let el = this.formHandler.get('comment')
+        if( device.isMobile )
+			mobileAsyncFocus(el, {delay: 1000})
+        else
+            el.focus()
     }
 
     onEscape(){
