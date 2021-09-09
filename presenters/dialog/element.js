@@ -26,6 +26,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         toast: {type: Boolean, reflect:true},
         stack: {type: Boolean, reflect:true},
         noContent: {type: Boolean, reflect:true},
+        keyboardShortcuts: {type: Boolean}
     }}
 
     static get styles(){return css`
@@ -408,6 +409,9 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
     onKeydown(e){
 
         let btn
+
+        if( this.keyboardShortcuts === false )
+            return
 
         if( this.btns.length == 0 || !['Escape', 'Enter'].includes(e.key) )
             return
