@@ -156,7 +156,7 @@ module.exports = class User extends Model {
         return bcrypt.compare(pw, this.attrs.password)
     }
 
-    async changePassword(){
+    async changePassword({temp=true}={}){
 
         // users can change their own passwords and admins can always change
         if( this.id != this.req.user.id && !this.req.user.isAdmin )
@@ -166,7 +166,7 @@ module.exports = class User extends Model {
         let {currentPW, newPW} = this.req.body
 
         // if NOT the logged in user, then only a temp password can be set
-        let doSetTemp = this.id != this.req.user.id
+        let doSetTemp = temp == false ? false : this.id != this.req.user.id
         let isResetting = !doSetTemp && !this.req.user.hasTempPassword
 
         if( currentPW == newPW )
@@ -175,7 +175,7 @@ module.exports = class User extends Model {
         if( !newPW || newPW.length < MIN_PW_LEN )
             throw new Error('too short')
 
-        if( !doSetTemp && isResetting && !await this.verifyPassword(currentPW) )
+        if( !doSetTemp && isResetting && this.attrs.password && !await this.verifyPassword(currentPW) )
             throw new Error('invalid current password')
 
         let newPWHash = await this.constructor.encryptPassword(newPW)
