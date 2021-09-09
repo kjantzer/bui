@@ -63,7 +63,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             margin-top: .25em;
         }
         
-        @media (min-width:700px) {
+        @media (min-width:900px) {
             b-btn {
                 font-size: 1.2em;
                 padding-bottom: 0;
@@ -96,7 +96,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
         /* phones in landscape */
         @media /*(max-height: 699px) and (orientation:landscape),*/
-        (min-width:700px) {
+        (min-width:900px) {
             :host(.tab-bar) {
                 display: grid !important;
                 border-top:none !important;
