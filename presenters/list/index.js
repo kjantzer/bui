@@ -228,7 +228,7 @@ customElements.define('b-list', class extends LitElement {
             background: var(--b-list-filter-overflow-bgd, var(--theme-bgd));
         }
 
-        @media (max-width:699px){
+        @media (max-width:599px){
             :host([toolbar="bottom-mobile"]) {
                 grid-template-rows: auto 1fr auto auto;
             }

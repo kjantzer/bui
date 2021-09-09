@@ -25,7 +25,7 @@ customElements.define('b-h1', class extends LitElement {
             user-select: none; 
         }
 
-        @media (max-width:699px){
+        @media (max-width:599px){
             :host{
                 font-size: var(--b-h1-size-mobile, 1.6em);
             }
@@ -63,7 +63,7 @@ customElements.define('b-h2', class extends LitElement {
             user-select: none; 
         }
 
-        @media (max-width:699px){
+        @media (max-width:599px){
             :host {
                 font-size: var(--b-h2-size-mobile, 1.3em);
             }
@@ -100,7 +100,7 @@ customElements.define('b-h3', class extends LitElement {
             user-select: none; 
         }
 
-        @media (max-width:699px){
+        @media (max-width:599px){
             :host {
                 font-size: var(--b-h2-size-mobile, 1.3em);
             }

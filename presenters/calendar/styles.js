@@ -42,7 +42,7 @@ export default css`
         visibility: hidden;
     }
 
-    @media (max-width: 699px){
+    @media (max-width: 599px){
         :host {
             /* grid-template-columns: 1fr; */
             /* grid-template-rows: auto auto 1fr auto auto; */

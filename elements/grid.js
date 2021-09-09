@@ -45,7 +45,7 @@ customElements.define('b-grid', class extends LitElement{
         :host([rows="auto,1"]) { grid-template-rows: auto 1fr; }
         :host([rows="1,auto"]) { grid-template-rows: auto 1fr; }
 
-        @media (max-width:699px){
+        @media (max-width:599px){
             :host([cols-mobile="1"]) { grid-template-columns: 1fr; }
             :host([cols-mobile="2"]) { grid-template-columns: repeat(2, 1fr); }
             :host([cols-mobile="3"]) { grid-template-columns: repeat(3, 1fr); }
@@ -74,7 +74,7 @@ customElements.define('b-grid', class extends LitElement{
         ::slotted([colspan="5"]) { grid-column: span 5; }
         ::slotted([colspan="6"]) { grid-column: span 6; }
 
-        @media (max-width:699px){
+        @media (max-width:599px){
             ::slotted([colspan-mobile]) { grid-column: 1/-1; }
             ::slotted([colspan-mobile="2"]) { grid-column: span 2; }
             ::slotted([colspan-mobile="3"]) { grid-column: span 3; }

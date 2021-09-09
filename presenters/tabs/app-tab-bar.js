@@ -19,7 +19,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
         }
 
 
-        @media (max-width: 699px) {
+        @media (max-width: 599px) {
         /* dull the colors a little  */
         :host(.tab-bar):before {
             content: '';
@@ -95,7 +95,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
         }
 
         /* phones in landscape */
-        @media /*(max-height: 699px) and (orientation:landscape),*/
+        @media /*(max-height: 599px) and (orientation:landscape),*/
         (min-width:900px) {
             :host(.tab-bar) {
                 display: grid !important;

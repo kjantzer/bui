@@ -72,7 +72,7 @@ customElements.define('c-file-row', class extends LitElement{
             width: 6em;
         }
 
-        @media (min-width: 700px) {
+        @media (min-width: 600px) {
             :host([layout="row"]) main {
                 display: grid;
                 grid-template-columns: auto 1fr;

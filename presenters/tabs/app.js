@@ -67,7 +67,7 @@ customElements.define('b-app', class extends LitElement {
             flex-grow: 1;
         }
 
-        @media /*(max-height: 699px) and (orientation:landscape),*/
+        @media /*(max-height: 599px) and (orientation:landscape),*/
         (min-width:900px) {
             b-tabs-router {
                 grid-template-columns: auto 1fr;

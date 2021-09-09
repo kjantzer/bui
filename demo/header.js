@@ -55,7 +55,7 @@ customElements.define('demo-header', class extends LitElement{
             padding-right: 1em;
         }
 
-        @media (max-width: 699px) {
+        @media (max-width: 599px) {
             b-text {
                 display: none;
             }

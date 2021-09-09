@@ -29,7 +29,7 @@ customElements.define('b-list-filters-panel', class extends LitElement{
             justify-content: space-between;
         }
 
-        @media (max-height: 699px) and (orientation:landscape) {
+        @media (max-height: 599px) and (orientation:landscape) {
             b-grid {
                 grid-template-columns: 1fr 1fr 1fr;
             }

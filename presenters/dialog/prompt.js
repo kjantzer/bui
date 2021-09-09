@@ -48,7 +48,7 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 			}, 200)
 			
 			if( device.isMobile )
-				mobileAsyncFocus(this)
+				mobileAsyncFocus(this, {delay: 1500})
 		}
     }
 

@@ -33,7 +33,7 @@ customElements.define('b-list-filters', class extends LitElement{
             flex-shrink: 0;
         }
 
-        @media (max-width:699px) {
+        @media (max-width:599px) {
             /* move active filters  to front on small devices */
             .filters b-list-filter-btn[active] {
                 order: -1;

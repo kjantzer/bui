@@ -20,7 +20,7 @@ const device = {
         return window.outerWidth < window.outerHeight ? window.outerWidth : window.outerHeight;
     },
 
-    get isSmallDevice(){ return this.minScreenSize <= 699 },
+    get isSmallDevice(){ return this.minScreenSize <= 599 },
 
     get isLandscape(){ return window.outerHeight < window.outerWidth },
     get isPortrait(){ return window.outerWidth < window.outerHeight },
@@ -43,7 +43,7 @@ const device = {
     },
 
     get isTouch(){
-        return 'ontouchstart' in window
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0
     },
     
     get isMobile(){
@@ -51,7 +51,7 @@ const device = {
     },
 
     get isTablet(){
-        return this.isMobile && this.minScreenSize >= 700 && this.isTouch
+        return this.isMobile && this.minScreenSize >= 600 && this.isTouch
     },
 
     get isHandheldScanner(){

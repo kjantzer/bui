@@ -103,7 +103,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             display: none;
         }
 
-        @media (max-width: 699px) {
+        @media (max-width: 599px) {
             :host {
                 grid-template-columns: 1fr;
             }

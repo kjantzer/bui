@@ -148,7 +148,7 @@ export default class extends LitElement{
             border-bottom: solid 1px var(--theme-bgd-accent);
         }
 
-        @media (min-width: 699px) {
+        @media (min-width: 599px) {
             .searchbox {
                 font-size: 1.6em;
             }

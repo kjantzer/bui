@@ -304,7 +304,7 @@ export default class BtnElement extends LitElement {
             font-weight: normal;
         }
 
-        @media (max-width: 699px) {
+        @media (max-width: 599px) {
             :host([icon-only="mobile"]) slot.label {
                 display: none;
             }

@@ -33,7 +33,7 @@ export default css`
         width: 170px;
     }
 
-    @media (max-width: 699px){
+    @media (max-width: 599px){
 
         :host {
             grid-template-columns: 1fr;

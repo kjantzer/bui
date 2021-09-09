@@ -35,7 +35,7 @@ customElements.define('b-list-selection-bar', class extends LitElement{
             vertical-align: text-bottom;
         }
 
-        @media (max-width: 699px) {
+        @media (max-width: 599px) {
             .count > span {
                 display: none;
             }

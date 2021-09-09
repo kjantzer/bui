@@ -30,7 +30,7 @@ class PanelToolbar extends LitElement {
 
         :host([hidden]) { display: none; }
 
-        /* @media (max-width: 699px) {
+        /* @media (max-width: 599px) {
             .middle {
                 display: none;
             }
@@ -97,7 +97,7 @@ class PanelToolbar extends LitElement {
 
         /* hide on small devices in landscape (allow for more space for the content) */ 
         @media
-        screen and (orientation:landscape) and (max-width:999px) and (max-height:699px)
+        screen and (orientation:landscape) and (max-width:999px) and (max-height:599px)
         {
             :host {
                 min-height: 0;
