@@ -54,7 +54,7 @@ const presenters = {
 			type: ''
 		}, mobileOpts)
 
-		if( device.isMobile )
+		if( device.isMobile && device.isSmallDevice )
 			return this._panel(mobileOpts)
 		else
 			return this._panel(opts)
