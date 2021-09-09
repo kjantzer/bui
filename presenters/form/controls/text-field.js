@@ -45,6 +45,7 @@ main {
 	margin: -.1em 0;
 	border: none;
 	background: transparent;
+	color: inherit;
 	/* background: yellow; */
 }
 
