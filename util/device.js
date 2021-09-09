@@ -22,6 +22,9 @@ const device = {
 
     get isSmallDevice(){ return this.minScreenSize <= 699 },
 
+    get isLandscape(){ return window.outerHeight < window.outerWidth },
+    get isPortrait(){ return window.outerWidth < window.outerHeight },
+
     get isiOS(){
         return /iPad|iPhone|iPod/.test(UA)
         || (device.isMac && navigator.standalone !== undefined ) // iPadOS 13+
@@ -35,12 +38,16 @@ const device = {
         return /android/i.test(UA)
     },
 
+    get isChromeOS(){
+        return /CrOS/.test(UA)
+    },
+
     get isTouch(){
         return 'ontouchstart' in window
     },
     
     get isMobile(){
-        return device.isiOS || device.isAndroid
+        return device.isiOS || device.isAndroid || (device.isChromeOS && this.isTouch)
     },
 
     get isTablet(){
@@ -83,6 +90,9 @@ const device = {
         html.classList.toggle('ios', device.isiOS)
         html.classList.toggle('electron', device.isElectron)
         html.classList.toggle('android', device.isAndroid)
+        html.classList.toggle('chromeos', device.isChromeOS)
+        html.classList.toggle('touch', device.isTouch)
+        html.classList.toggle('tablet', device.isTablet)
         html.classList.toggle('mac', device.isMac)
         html.classList.toggle('windows', device.isWindows)
         html.classList.toggle('installed', device.isInstalled)
