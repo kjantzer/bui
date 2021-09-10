@@ -1,26 +1,32 @@
 import { LitElement, html, css } from 'lit-element'
 import device from 'bui/util/device'
+import scrollbars from 'bui/helpers/scrollbars'
 
 customElements.define('b-app-tab-bar', class extends LitElement{
 
     static get styles(){return css`
+        
         :host(.tab-bar) {
-            /* display: grid !important;
-            grid-template-columns: repeat( auto-fit, minmax(60px, 1fr) ); */
-            
             display: flex;
-            /* justify-content: space-evenly; */
-
-            border-top: none !important;
             background: var(--b-app-tab-bar-bgd, var(--theme-bgd)) !important;
-            position: relative;
-            padding: 0 .25em;
+            border-top: none !important;
             padding-bottom: calc(env(safe-area-inset-bottom) / 1.5);
+            --padding: 0 .25em;
+            --btn-radius: .75em;
+            position: relative;
         }
 
+        main {
+            display: flex;
+            flex-grow: 1;
+            overflow: auto;
 
-        @media (max-width: 599px) {
-        /* dull the colors a little  */
+            position: relative;
+            padding: var(--padding)
+        }
+
+        ${device.mediaQuery('small', css`
+        /* dull the bgd color a little */
         :host(.tab-bar):before {
             content: '';
             position: absolute;
@@ -31,7 +37,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             background: linear-gradient(60deg, #000, #555);
             opacity: .1;
         }
-        }
+        `)}
 
         @media (orientation:landscape) {
             :host {
@@ -52,7 +58,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             padding-bottom: .25em;
             --b-btn-stacked-icon-opacity: var(--b-app-tab-bar-bgd-stacked-icon-opacity, .3);
 
-            border-radius: .75em;
+            border-radius: var(--btn-radius);
             margin: .25em 0;
             min-width: 60px;
             flex-grow: 1;
@@ -96,16 +102,23 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
         /* phones in landscape */
         @media /*(max-height: 599px) and (orientation:landscape),*/
-        (min-width:900px) {
+        (min-width:900px) and (min-height: 600px), (min-width: 700px){
+
             :host(.tab-bar) {
+                /* display: grid !important; */
+                flex-direction: column;
+                border-right: solid 1px var(--theme-bgd-accent);
+                --tab-bar-order: 0;
+                --padding: .5em 0;
+            }
+
+            main {
                 display: grid !important;
                 border-top:none !important;
-                border-right: solid 1px var(--theme-bgd-accent);
+                flex-grow: 0;
                 grid-template-columns: repeat(auto-fit, 72px);
                 align-content: flex-start;
                 gap: .5em;
-                padding: .5em 0;
-                --tab-bar-order: 0;
             }
 
             /* :host(.tab-bar):not([layout="bottom"]) {
@@ -134,15 +147,19 @@ customElements.define('b-app-tab-bar', class extends LitElement{
                 margin-top: .5em;
             }
 
-            [icon="search"] {
+            /* [icon="search"] {
                 display: none;
-            }
+            } */
         }
+
+        ${scrollbars.hide('main')}
     `}
 
     render(){return html`
 
-        <!-- <slot name="menu:before"></slot> -->
+        <slot name="before"></slot>
+
+        <main>
 
         ${this.views.map(v=>html`
             ${v.canDisplay&&(!device.isMobile||v.id!='emails')?html`
@@ -163,7 +180,9 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             </b-btn>
         `:''}
 
-        <!-- <slot name="menu:after"></slot> -->
+        </main>
+
+        <slot name="after"></slot>
     `}
 
     get shouldShowSearch(){
