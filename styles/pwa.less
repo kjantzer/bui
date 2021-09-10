@@ -50,7 +50,8 @@ html, body {
     Only require one side to be large. Android will shrink the viewport
     when the keyboard opens
 */
-@media (min-width:600px), (min-height:600px) {
+@media (min-width:600px) and (min-height:400px),
+(min-width:400px) and (min-height:600px) {
     html.mobile:not(.chromeos) body {
         // little larger on tablets
         font-size: 18px;
