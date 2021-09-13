@@ -25,7 +25,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             padding: var(--padding)
         }
 
-        ${device.mediaQuery('small', css`
+        ${device.mediaQuery('sm', css`
         /* dull the bgd color a little */
         :host(.tab-bar):before {
             content: '';
