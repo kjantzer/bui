@@ -30,6 +30,9 @@ customElements.define('b-app', class extends LitElement {
 
         let activeView = this.tabs.views.active
 
+        // not sure this *should * ever happen, but it does, so fail gracefully
+        if( !activeView ) return
+
         // new route matches active view...make it active again
         if( !e.detail.path || activeView.route.patt.match(e.detail.path) ){
             
