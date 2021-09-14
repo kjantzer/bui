@@ -20,7 +20,8 @@ const device = {
         return window.outerWidth < window.outerHeight ? window.outerWidth : window.outerHeight;
     },
 
-    get isSmallDevice(){ return this.minScreenSize <= 599 },
+    get isSmall(){ return this.minScreenSize <= 599 },
+    get isSmallDevice(){ return this.isSmall }, // DEPRECATED
 
     get isLandscape(){ return window.outerHeight < window.outerWidth },
     get isPortrait(){ return window.outerWidth < window.outerHeight },
