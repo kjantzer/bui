@@ -6,6 +6,11 @@ import { downloadCSV } from '../../util/download'
 
 customElements.define('b-list-export-btn', class extends Btn{
 
+    static get properties() { return {...super.properties,
+        omitTitle: {type: Boolean, reflect: true},
+        omitDescription: {type: Boolean, reflect: true}
+    }}
+
     constructor(){
         super()
         this.setAttribute('text', '')
@@ -13,8 +18,10 @@ customElements.define('b-list-export-btn', class extends Btn{
         this.icon = this.icon || 'file-excel'
         this.slot = this.slot || 'toolbar:after'
         this.title = this.title || "Export data to CSV file"
-
         this.addEventListener('click', this.export)
+
+        this.omitTitle = false;
+        this.omitDescription = false;
     }
 
     async export(){
@@ -50,11 +57,11 @@ customElements.define('b-list-export-btn', class extends Btn{
         if( typeof this.filename == 'function' )
             filename = this.filename()
 
-        downloadCSV(toCSV(data, {
-            title: list.key,
-            description: description,
-            preset
-        }), filename)
+        const opts = {preset}
+        if(!this.omitTitle){opts.title = list.key}
+        if(!this.omitDescription){opts.description = description}
+
+        downloadCSV(toCSV(data, opts), filename)
     }
 
 })
