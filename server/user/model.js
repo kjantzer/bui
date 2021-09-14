@@ -2,6 +2,7 @@ const Model = require('../model')
 const bcrypt = require('bcrypt')
 var crypto = require("crypto");
 const AccessError = require('../errors').AccessError
+const CollMap = require(bui`util/collmap`)
 
 const serializedUsers = new Map()
 const MIN_PW_LEN = 8
@@ -80,7 +81,7 @@ module.exports = class User extends Model {
         super(attrs, req)
         this.req = req
         this.attrs = attrs
-        this.sockets = new Map()
+        this.sockets = new CollMap()
 
         if( this.emailHashKey ){
             this[this.emailHashKey] = this.attrs[this.emailHashKey] = null
