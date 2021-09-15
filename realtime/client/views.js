@@ -9,6 +9,13 @@ export default class Views extends Map {
 
         socket.on('connect', ()=>{ this.reopen() })
         socket.on('view:sync', payload=>{ this.onViewSync(payload) })
+        socket.on('view:emit', this.onEmitReceive.bind(this) )
+    }
+
+    onEmitReceive(viewName, payload){
+        let view = this.get(viewName)
+        if( !view ) return
+        view.onEmitReceive(payload)
     }
 
     onViewSync(payload){
@@ -64,6 +71,14 @@ export default class Views extends Map {
     info(viewNamePattern){
         return new Promise(resolve=>{
             this.socket.emit('view:info', viewNamePattern, data=>{
+                resolve(data)
+            })
+        })
+    }
+
+    emitTo(viewName, opts){
+        return new Promise(resolve=>{
+            this.socket.emit('view:emit', viewName, opts, data=>{
                 resolve(data)
             })
         })

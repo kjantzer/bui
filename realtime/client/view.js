@@ -29,6 +29,13 @@ export default class View {
 
         this.emit('change', clients) // NOTE: should this be `this.clients`?
     }
+
+    onEmitReceive(payload){
+        if( payload.action )
+            this.emit(payload.action, payload)
+        else
+            this.emit('receive', payload)
+    }
 }
 
 Emitter(View.prototype)

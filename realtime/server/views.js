@@ -10,6 +10,16 @@ class Views extends Map {
 			this.get(viewName).add(socket, data)
 		});
 
+		socket.on('view:emit', (viewName, opts, cb)=>{
+
+			let view = this.get(viewName)
+
+			if( !view )
+				return cb({error: 'Invalid view name'})
+
+			cb(view.emit(opts))
+		});
+
 		socket.on('view:info', (viewNamePattern, cb)=>{
 
 			let resp = []
