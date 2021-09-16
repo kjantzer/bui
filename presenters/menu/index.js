@@ -782,7 +782,7 @@ export default class Menu {
 			return this.promise
 		}
 
-		if( opts.adjustForMobile && device.isMobile && !device.isiPad ){
+		if( opts.adjustForMobile && device.isMobile && !device.isTablet ){
 			let modalOpts = {btns: ['cancel','apply']}
 
 			if( this.searchIsOn )
