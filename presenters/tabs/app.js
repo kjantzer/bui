@@ -8,6 +8,9 @@ customElements.define('b-app', class extends LitElement {
     firstUpdated(){
         document.body.classList.add('show')
 
+        // since this may be subclassed multiple times, provide a way to know what it is (for styling)        
+        this.classList.add('b-app')
+
         this.tabs = this.shadowRoot.querySelector('b-tabs-router')
         
         // let elements render to DOM before starting router
