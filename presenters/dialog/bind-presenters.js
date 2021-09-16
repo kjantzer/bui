@@ -54,6 +54,10 @@ const presenters = {
 			type: ''
 		}, mobileOpts)
 
+		// special anchor change for Chrome OS Tablets when dialog has prompts
+		if( !opts.anchor && this.prompts && device.isChromeOS && device.isTablet )
+			opts.anchor = device.isLandscape ? 'center-left' : 'top'
+
 		if( device.isMobile && device.isSmallDevice )
 			return this._panel(mobileOpts)
 		else

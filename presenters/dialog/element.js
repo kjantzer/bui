@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import {unsafeHTML} from 'lit-html/directives/unsafe-html'
+import device from 'bui/util/device'
 import Button from './btn'
 import '../../elements/spinner'
 import '../../helpers/lit-element/events'
@@ -249,7 +250,14 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             text-transform: uppercase;
             line-height: 0;
             align-self: center;
+            font-size: var(--b-dialog-btn-size, inherit);
         }
+
+        ${device.mediaQuery('tablet', css`
+        footer b-dialog-btn {
+            font-size: var(--b-dialog-btn-size, 1em);
+        }
+        `)}
 
         .close-btn {
             position: absolute;
