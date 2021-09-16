@@ -625,6 +625,7 @@ export class Panel extends LitElement {
 
         :host([type="actionsheet"][anchor="bottom"]) > main {
             padding-bottom: env(safe-area-inset-bottom);
+            /* border-radius: var(--radius) var(--radius) 0 0; */
         }
 
         :host([open]) {
@@ -649,36 +650,51 @@ export class Panel extends LitElement {
         }
 
         :host([anchor="center"]) > main,
+        :host([anchor="center-left"]) > main,
         :host([anchor="top"]) > main,
         :host([anchor="bottom"]) > main {
             position: relative;
-            margin: auto auto;
+            margin: auto;
             transform: translateY(100px);
+        }
+
+        :host([anchor="center-left"]) > main {
+            transform: translate(-50%, 100px);
+            margin: auto 0;
+            margin-left: 30%;
+        }
+
+        :host([anchor="center-left"][open]) > main {
+            transform: translate(-50%, 0) !important;
         }
 
         :host([anchor="center"][animation="drop"]) > main,
         :host([anchor="top"][animation="drop"]) > main,
         :host([anchor="bottom"][animation="drop"]) > main {
             position: relative;
-            margin: auto auto;
+            margin: auto;
             transform: translateY(-100px);
         }
 
         :host([animation="rise"]) > main {
             position: relative;
-            margin: auto auto;
+            margin: auto;
             transform: translateY(100px);
         }
 
-        :host([anchor="center"]) > main {
+        :host([anchor^="center"]) > main {
             border-radius: var(--radius);
         }
 
-        :host([anchor="center"][animation="scale"]) > main {
+        :host([anchor^="center"][animation="scale"]) > main {
             transform: scale(.5);
         }
 
-        :host([anchor="center"][animation="fade"]) > main {
+        :host([anchor="center-left"][animation="scale"]) > main {
+            transform: translate(-50%, 0) scale(.5);
+        }
+
+        :host([anchor^="center"][animation="fade"]) > main {
             transform: none;
         }
 

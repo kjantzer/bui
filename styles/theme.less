@@ -133,11 +133,11 @@ b-panel {
     color: var(--theme-text);
 }
 
-b-panel:not([anchor="center"]) {
+b-panel:not([anchor^="center"]) {
     --b-panel-shadow: 0 0 0 1px var(--theme-bgd-accent);
 }
 
-:root.installed b-panel:not([anchor="center"]) {
+:root.installed b-panel:not([anchor^="center"]) {
     --b-panel-shadow: none;
 }
 
