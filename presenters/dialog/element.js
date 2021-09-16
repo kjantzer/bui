@@ -250,12 +250,12 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             text-transform: uppercase;
             line-height: 0;
             align-self: center;
-            font-size: var(--b-dialog-btn-size, inherit);
+            font-size: var(--b-dialog-btn-size, .9rem);
         }
 
         ${device.mediaQuery('tablet', css`
         footer b-dialog-btn {
-            font-size: var(--b-dialog-btn-size, 1em);
+            font-size: var(--b-dialog-btn-size, 1rem);
         }
         `)}
 
