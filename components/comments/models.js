@@ -39,6 +39,8 @@ export default class Comments extends Collection {
 
     get isThread(){ return this.group == 'thread' }
 
+    get numUnread(){ return this.filter(m=>m.isUnread).length }
+
     fetch(...args){
         if( !Backbone.$ ) return
 

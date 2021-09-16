@@ -42,7 +42,7 @@ module.exports = class Comments extends Model {
     get syncPath(){ return this.apiPathPattern.stringify({group: this.group, gid: this.gid}) }
 
     findWhere(where){
-        let {Value, JsonContains} = this.db.clauses
+        let {Value, JsonContains, Group, UnsafeSQL} = this.db.clauses
 
         if( this.group != '_')
             where.group = this.group
@@ -52,8 +52,14 @@ module.exports = class Comments extends Model {
 
             // comments NOT by this uer
             where['c.uid'] = new Value('!=', this.req.user.id)
-            // NOT marked read
-            where['cr.id'] = 'IS NULL'
+            
+            // NOT marked read or new comment
+            where.unread = new Group({
+                'cr.id': 'IS NULL',
+                // NOTE: should this be opt-in?
+                recent: new UnsafeSQL('c.ts_created >= CURDATE() - INTERVAL 2 DAY')
+            }, 'OR')
+
             // comment mentions this user
             where['c.meta'] = new JsonContains(this.req.user.id, '$.mentions')
 
