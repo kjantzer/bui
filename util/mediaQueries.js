@@ -21,6 +21,10 @@ MediaQueries.set('sm-md', styles=>css`
     }
 `)
 
+MediaQueries.set('tablet', styles=>device.isTablet&&css`
+    ${styles}
+`)
+
 const mediaQuery = (key, styles)=>{
     let query = MediaQueries.get(key)
     
