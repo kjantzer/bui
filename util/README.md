@@ -69,42 +69,6 @@ would have been made or received (websocket).
 It may be important to trigger a refresh of data when resuming 
 from the background; this script enables such a function.
 
-## `BarcodeScanner`
-
-```js
-import BarcodeScanner from 'bui/util/barcodeScanner'
-
-// add single parser
-BarcodeScanner.addParser('isbn', /^(978[\d]{10})$/)
-
-// add several at once
-BarcodeScanner.addParser({
-    // simple regex match
-    isbn: /^(978[\d]{10})$/,
-
-    // additional settings
-    id_list: {
-		patt: /^IDs:(.+)/,
-		type: 'int',
-        // assuming scanned code was "IDs:1,2,53,134" parsed result will be `[1, 2, 53, 134]`
-		parse(result){ result.val=result.val.split(',') }
-	}
-})
-
-// init
-BarcodeScanner()
-
-// react to specific barcode
-window.addEventListener('barcode-scanned:isbn', e=>{
-    let {str, val, type} = e.detail
-})
-
-// react to any scanned barcode
-window.addEventListener('barcode-scanned', e=>{
-    let {str, type} = e.detail
-})
-```
-
 ## `colorScheme`
 Detect OS level [color schemes](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme) and react to changes. You can do this with CSS, this utilty is for use in JS if needed
 
