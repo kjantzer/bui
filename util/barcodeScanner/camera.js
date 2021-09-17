@@ -153,9 +153,19 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
 
         this.detecting = this.detecting || setInterval(this.detectCode, detectInterval);
 
+        this.focusTo(focusDistance)
+
+        // after 3 seconds try minium focus distance
+        this._autoFocusChange = setTimeout(()=>{
+            this.focusTo(0.05)
+        }, 3*1000)
+    }
+
+    focusTo(focusDistance){
+        if( !this.stream ) return
         let track = this.stream.getVideoTracks()[0]
         let supports = track.getCapabilities()
-        
+
         if( supports.focusDistance )
         track.applyConstraints({
             advanced: [{ focusMode: 'manual', focusDistance}]
@@ -174,6 +184,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
             this.presenter = null
         }
 
+        clearTimeout(this._autoFocusChange)
         clearInterval(this.detecting)
         this.detecting = null
 
