@@ -326,6 +326,9 @@ customElements.define('b-list', class extends LitElement {
 
     onKeydown(e){
 
+        if( e.cancelBubble )
+            return
+
         if( this.offsetParent // is this list visible?
         && document.activeElement.tagName == 'BODY' // NOT inside an input
         ){
@@ -341,7 +344,7 @@ customElements.define('b-list', class extends LitElement {
             }
 
             if( e.shiftKey & e.key == 'R' ){
-
+                
                 // focus search so we can check `document.activeElement`
                 setTimeout(()=>{
                     e.preventDefault()
