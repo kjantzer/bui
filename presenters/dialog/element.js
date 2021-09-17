@@ -75,6 +75,20 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             --theme-text-rgb: var(--light-text-rgb);
         }
 
+        :host([color="dark"]) {
+            --theme-bgd: var(--dark-text);
+            --color: var(--dark-bgd);
+            --theme-text: var(--dark-text);
+            --theme-text-rgb: var(--dark-text-rgb);
+        }
+
+        :host([color="light"]) {
+            --theme-bgd: var(--light-text);
+            --color: var(--light-bgd);
+            --theme-text: var(--light-text);
+            --theme-text-rgb: var(--light-text-rgb);
+        }
+
         :host([color="inverse"]) {
             --theme-bgd: var(--theme-inverse-text);
             --color: var(--theme-inverse-bgd);
