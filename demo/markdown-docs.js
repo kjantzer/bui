@@ -95,6 +95,14 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             gap: var(--view-gutter);
         }
 
+        :host(:last-of-type) .toc .end {
+            display: none;
+        }
+
+        .toc .end {
+            margin: 1em 0;
+        }
+
         :host([notoc]) {
             grid-template-columns: 1fr;
         }
@@ -238,6 +246,10 @@ customElements.define('demo-markdown-docs', class extends LitElement{
         this.scrollTo(e.currentTarget.getAttribute('slug'))
     }
 
+    jumpToNext(){
+        this.nextElementSibling.scrollIntoView()
+    }
+
     render(){return html`
 
         <div class="toc"><div class="toc-inner">
@@ -248,6 +260,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
                 </div>
             `)}
             <slot name="toc:bottom"></slot>
+            <b-btn class="end" clear color="theme" block @click=${this.jumpToNext}>Next Section</b-btn>
         </div></div>
 
         <main>
