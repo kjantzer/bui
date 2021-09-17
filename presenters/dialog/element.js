@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import {unsafeHTML} from 'lit-html/directives/unsafe-html'
-import device from 'bui/util/device'
+import {mediaQuery} from '../../util/mediaQueries'
 import Button from './btn'
 import '../../elements/spinner'
 import '../../helpers/lit-element/events'
@@ -267,7 +267,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             font-size: var(--b-dialog-btn-size, .9rem);
         }
 
-        ${device.mediaQuery('tablet', css`
+        ${mediaQuery('tablet', css`
         footer b-dialog-btn {
             font-size: var(--b-dialog-btn-size, 1rem);
         }

@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
-import device from 'bui/util/device'
-import scrollbars from 'bui/helpers/scrollbars'
+import device from '../../util/device'
+import {mediaQuery} from '../../util/mediaQueries'
+import scrollbars from '../../helpers/scrollbars'
 
 customElements.define('b-app-tab-bar', class extends LitElement{
 
@@ -25,7 +26,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             padding: var(--padding)
         }
 
-        ${device.mediaQuery('sm', css`
+        ${mediaQuery('sm', css`
         /* dull the bgd color a little */
         :host(.tab-bar):before {
             content: '';
