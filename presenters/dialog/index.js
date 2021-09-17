@@ -115,5 +115,6 @@ registerPreset('info', {
 registerPreset('success', {
 	icon: 'ok-circled',
 	accent: 'green',
+	color: 'inverse',
 	btns: ['dismiss']
 })
