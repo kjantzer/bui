@@ -126,7 +126,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         facingMode='environment',
         width=640,
         aspectRatio=1.7777777778,
-        focusDistance=0.2,
+        focusDistance=0.1,
         detectInterval=100 // ms
     }={}){
 
