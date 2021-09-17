@@ -71,10 +71,17 @@ class UsbPrinter {
             resolve(this.setupDevice(devices[0]))
         })
     }
+
+    get timeSinceRequestedDevice(){
+        let ts = new Date().getTime()
+        return (ts - (this.tsRequestedDevice||ts)) / 1000
+    }
     
     async requestDevice(){
         
         if( this.isConnected ) return this.device
+
+        this.tsRequestedDevice = new Date().getTime()
 
         try{
             if( !await this.connectToDevice() ){
