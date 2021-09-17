@@ -10,6 +10,11 @@
     CameraScanner.open() // closes after first scan
     CameraScanner.open({continous: true})
     ```
+
+    TODO:
+    - support switching cameras (list available)
+    - toggle torch/light if supported
+    - zoom support?
 */
 import { LitElement, html, css } from 'lit-element'
 import {Parsers, emit} from './index'
@@ -93,23 +98,26 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         this.detectCode = this.detectCode.bind(this)
     }
 
-    // connectedCallback(){
-    //     super.connectedCallback()
-    //     this.start()
-    // }
-
     disconnectedCallback(){
         super.disconnectedCallback()
         this.stop()
     }
 
-    checkFeatures(){
+    static get isSupported(){
         // Check for a camera
         if( !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia )
-            throw new Error('getUserMedia not supported')
+            return 'getUserMedia not supported'
 
         if( !'BarcodeDetector' in window )
-            throw new Error('BarcodeDetector not supported')
+            return 'BarcodeDetector not supported'
+
+        return true
+    }
+
+    checkFeatures(){
+        let isSupported = this.constructor.isSupported
+        if( isSupported !== true )
+            throw new Error(isSupported)
     }
 
     async start({

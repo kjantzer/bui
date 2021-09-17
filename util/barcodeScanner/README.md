@@ -45,8 +45,26 @@ There is a camera version available that uses Dialog and Notif to present.
 Upon a successful scan, it will emit the same `barcode-scanned` events
 
 ```js
-import CameraScanner from 'bui/util/barcodeScanner/camera'
+import BarcodeCamera from 'bui/util/barcodeScanner/camera'
 
-CameraScanner.open() // closes after first scan
-CameraScanner.open({continous: true})
+if( BarcodeCamera.isSupported ){
+    
+    BarcodeCamera.open() // default settings
+   
+    BarcodeCamera.open({
+        anchor: 'top-right',
+        scanner: {
+            continous: false, // closes after first scan
+            formats: ['qr_code', 'ean_13', 'code_128'],
+            facingMode: 'environment',
+            width: 640,
+            aspectRatio: 1.7777777778,
+            focusDistance: 0.2,
+            detectInterval: 100 
+        }
+    })
+
+    // programtaically close the shared barcode scanner
+    BarcodeCamera.shared.close()
+}
 ```
