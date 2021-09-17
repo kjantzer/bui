@@ -48,12 +48,22 @@ export default class extends LitElement{
         if( device.isMobile )
             mobileAsyncFocus(this)
 
+        let anchor = device.isMobile ? 'top': 'center'
+        let width = device.isMobile ? '100%' :'640px'
+        let height = device.isiOS ? '50%' : '540px'
+
+        if( device.isChromeOS && device.isTablet && device.isLandscape ){
+            anchor = 'left'
+            width = '50%'
+            height = '100%'
+        }
+
         this.panel = this.panel || new Panel(this, {
             title: 'Search',
-            anchor: device.isMobile ? 'top': 'center',
+            anchor,
             closeOnEsc: true,
-            width: device.isMobile ? '100%' :'640px',
-            height: device.isiOS ? '50%' : '540px',
+            width,
+            height,
             type: 'search-popup',
             animation: 'scale',// 'drop'
         })
