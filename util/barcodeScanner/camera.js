@@ -108,7 +108,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         if( !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia )
             return 'getUserMedia not supported'
 
-        if( !'BarcodeDetector' in window )
+        if( !window.BarcodeDetector )
             return 'BarcodeDetector not supported'
 
         return true
