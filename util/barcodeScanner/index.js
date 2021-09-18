@@ -64,22 +64,22 @@ class BarcodeScanner {
 	startListening(){
 		if( this.opts.textInputKeys ){
 			// document.addEventListener('input', this.onInput)
-			document.addEventListener('textInput', this.onTextInput)
+			window.addEventListener('textInput', this.onTextInput)
 		}
-		document.addEventListener('keydown', this.onKeyDown)
-		document.addEventListener('keypress', this.onKeyPress)
-		document.addEventListener('keyup', this.onKeyUp)
+		window.addEventListener('keydown', this.onKeyDown, true)
+		window.addEventListener('keypress', this.onKeyPress, true)
+		window.addEventListener('keyup', this.onKeyUp, true)
 		this.emit('listening', true);
 	}
 
 	stopListening(){
 		if( this.opts.textInputKeys ){
-			// document.removeEventListener('input', this.onInput)
-			document.removeEventListener('textInput', this.onTextInput)
+			// window.removeEventListener('input', this.onInput)
+			window.removeEventListener('textInput', this.onTextInput)
 		}
-		document.removeEventListener('keydown', this.onKeyDown)
-		document.removeEventListener('keypress', this.onKeyPress)
-		document.removeEventListener('keyup', this.onKeyOp)
+		window.removeEventListener('keydown', this.onKeyDown, true)
+		window.removeEventListener('keypress', this.onKeyPress, true)
+		window.removeEventListener('keyup', this.onKeyUp, true)
 		this.emit('listening', false);
 	}
 
@@ -161,7 +161,9 @@ class BarcodeScanner {
 				(keycode > 185 && keycode < 193) || // ;=,-./` (in order)
 				(keycode > 218 && keycode < 223);   // [\]' (in order)
 
-			
+			// when barcode scanning, dont let other keyboard listeners pick up these events
+			e.stopPropagation()
+
 			// ignore keystroke for invalid characters
 			if( !valid ){
 				e.preventDefault();
@@ -183,7 +185,7 @@ class BarcodeScanner {
 			this._speed = []
 		}
 
-		var charStr = String.fromCharCode(e.which);
+		var charStr = String.fromCharCode(e.which); // could use `e.key`?
 		var speed = now - this._lastTime
 
 		if( speed < this.opts.scanCharSpeed ){
