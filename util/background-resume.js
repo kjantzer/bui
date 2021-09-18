@@ -27,7 +27,7 @@ import device from './device'
 const refreshRate = 500
 const minTimePassed = refreshRate * 2
 
-if( device.is_mobile ){
+if( device.isMobile ){
     
     let lastFired = new Date().getTime();
 
