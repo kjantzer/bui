@@ -34,8 +34,6 @@ customElements.define('b-previewer-iframe', class extends LitElement{
     onLoad(){
         // setTimeout(() => {
             // console.log(this.$$('iframe'));
-
-            console.log(this.$$('iframe').contentDocument.body);
             
             // doesn't work
             this.$$('iframe').contentDocument.body.style.background = 'transparent'    
