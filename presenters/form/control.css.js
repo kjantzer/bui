@@ -402,7 +402,7 @@ slot[name="help"] {
 }
 	
 :host([material="outline"]) main {
-	border: solid 1px var(--borderColor);
+	border: solid var(--fc-border-width, 1px) var(--borderColor);
 	padding-top: 0;
 	background: var(--bgd);
 }
