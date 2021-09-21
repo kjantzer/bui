@@ -1,7 +1,9 @@
 import {css} from 'lit-element'
 import device from './device'
+import ColMap from './collmap'
 
-const MediaQueries = new Map()
+// TODO: add warning when setting/adding new media query when `b-media-query` already defined
+const MediaQueries = new ColMap()
 
 MediaQueries.set('sm', styles=>css`
     @media (max-width:599px) {
@@ -9,8 +11,32 @@ MediaQueries.set('sm', styles=>css`
     }
 `)
 
+MediaQueries.set('sm-landscape', styles=>css`
+    @media (max-width:599px) and (orientation:landscape) {
+        ${styles}
+    }
+`)
+
+MediaQueries.set('sm-portrait', styles=>css`
+    @media (max-width:599px) and (orientation:portrait) {
+        ${styles}
+    }
+`)
+
 MediaQueries.set('md', styles=>css`
     @media (max-width:1199px) {
+        ${styles}
+    }
+`)
+
+MediaQueries.set('md-landscape', styles=>css`
+    @media (max-width:1199px) and (orientation:landscape) {
+        ${styles}
+    }
+`)
+
+MediaQueries.set('md-portrait', styles=>css`
+    @media (max-width:1199px) and (orientation:portrait) {
         ${styles}
     }
 `)
