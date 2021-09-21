@@ -47,6 +47,12 @@ MediaQueries.set('sm-md', styles=>css`
     }
 `)
 
+MediaQueries.set('lg', styles=>css`
+    @media (min-width:1200px) {
+        ${styles}
+    }
+`)
+
 MediaQueries.set('tablet', styles=>device.isTablet&&css`
     ${styles}
 `)
