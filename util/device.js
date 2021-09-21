@@ -21,6 +21,7 @@ const device = {
     },
 
     get isSmall(){ return this.minScreenSize <= 599 },
+    get isMedium(){ return this.minScreenSize <= 1199 },
     get isSmallDevice(){ return this.isSmall }, // DEPRECATED
 
     get isLandscape(){ return window.outerHeight < window.outerWidth },
