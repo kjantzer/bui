@@ -16,7 +16,8 @@ module.exports = class Client {
         }
 
         socket.attr = Object.assign(socket.attr, {
-            id: user.id,
+            id: user.id, // DEPRECATED
+            uid: user.id,
             name: user.name,
             email: user.email,
             type: user.type
