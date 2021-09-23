@@ -1,4 +1,6 @@
-
+/*
+    Collection (Coll) Map
+*/
 module.exports = class CollMap extends Map {
 
     constructor(data, {appendKey=false}={}){
@@ -37,5 +39,9 @@ module.exports = class CollMap extends Map {
     find(fn){
         // TODO: improve this, we should stop filtering once found
         return this.filter(fn)[0]
+    }
+
+    toJSON(){
+        return this.map(v=>v.toJSON&&v.toJSON())
     }
 }
