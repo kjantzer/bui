@@ -27,4 +27,15 @@ module.exports = class CollMap extends Map {
         this.forEach((v, key)=>resp.push(fn(v, key)))
         return resp
     }
+
+    filter(fn){
+        let resp = []
+        this.forEach((v, key)=>fn(v, key)?resp.push(v):null)
+        return resp
+    }
+
+    find(fn){
+        // TODO: improve this, we should stop filtering once found
+        return this.filter(fn)[0]
+    }
 }
