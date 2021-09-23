@@ -11,9 +11,11 @@ export default class View {
         this.clients = new CollMap()
     }
 
-    get thisClient(){
-        return this.clients.find(c=>c.id==this.socket.id)
-    }
+    get thisClient(){ return this.clients.find(c=>c.id==this.socket.id) }
+
+    find(...args){ return this.clients.find(...args) }
+    map(...args){ return this.clients.map(...args) }
+    find(...args){ return this.clients.find(...args) }
 
     open(data){
 
@@ -53,17 +55,36 @@ export default class View {
         this.clients.clear()
         
         clients.forEach(c=>{
-            this.clients.set(c.id, SocketView(c))
+            this.clients.set(c.id, SocketView(c, this))
         })
 
         this.emit('change', this.clients)
     }
 
     onEmitReceive(payload){
-        if( payload.action )
-            this.emit(payload.action, payload)
+        if( payload.action ){
+            let {action, clients} = payload
+            delete payload.action
+            delete payload.clients
+            this.emit(action, payload, clients)
+        }
         else
             this.emit('receive', payload)
+    }
+
+    emitTo(action, opts={}){
+
+        if( typeof action == 'string' )
+            opts.action = action
+        else{
+            opts = action
+        }
+
+        return new Promise(resolve=>{
+            this.socket.emit('view:emit', this.name, opts, data=>{
+                resolve(data)
+            })
+        })
     }
 }
 

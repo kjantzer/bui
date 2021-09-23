@@ -76,7 +76,14 @@ export default class Views extends Map {
         })
     }
 
-    emitTo(viewName, opts){
+    emitTo(viewName, action, opts={}){
+
+        if( typeof action == 'string' )
+            opts.action = action
+        else{
+            opts = action
+        }
+
         return new Promise(resolve=>{
             this.socket.emit('view:emit', viewName, opts, data=>{
                 resolve(data)

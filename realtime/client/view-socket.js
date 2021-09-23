@@ -1,7 +1,18 @@
 
-export default (attrs)=>new Proxy(attrs, {
+export default (attrs, view)=>new Proxy(attrs, {
 
     get(target, prop) {
+
+        if( prop == 'emit' )
+            return function(action,  opts={}){
+                if( typeof action == 'string' )
+                    opts.action = action
+                else{
+                    opts = action
+                }
+                opts.clients = [target.id]
+                return view.emitTo(opts)
+            }
 
         if( prop == 'toJSON' )
             return function(){ return target }
