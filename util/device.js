@@ -65,6 +65,10 @@ const device = {
         return /CriOS/.test(UA)
     },
 
+    get chromeVersion(){
+        return (UA.match(/Chrome\/([\d\.]+) /)||[])[1]
+    },
+
     get isElectron(){
         return /Electron/.test(UA)
     },
