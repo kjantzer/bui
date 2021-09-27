@@ -229,6 +229,7 @@ module.exports = class Model {
 
         // if no special WHERE given, default to querying for this model
         }else if( !where && this.id ) {
+            // NOTE: i feel if `this.id` is set, it should always be in the where
             where = {}
             id = this.id
             where[this.tableAlias+'.'+this.idAttribute] = this.id

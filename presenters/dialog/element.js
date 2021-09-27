@@ -387,7 +387,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             </div>
         </main>
         <footer @click=${this.onClick} part="footer">
-            ${this.btns.map(b=>new Button(b))}
+            ${this.btns.map(b=>b?new Button(b):'')}
         </footer>
     `}
 
