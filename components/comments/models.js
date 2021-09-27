@@ -6,6 +6,10 @@ import '../../helpers/backbone/promises'
 let API_ROOT = '/api'
 let User = window.User
 
+function userID(){
+    return User && (User.get('kiosk_active_user')||User.id)
+}
+
 export default class Comments extends Collection {
 
     static set API_ROOT(val){ API_ROOT = val }
@@ -59,14 +63,14 @@ class Comment extends Model {
         ts_read: 'date'
     }}
 
-    get isByMe(){ return User && User.id == this.get('uid')}
+    get isByMe(){ return userID() == this.get('uid')}
     get meta(){ return this.attributes.meta || {} }
     
     get isUnread(){ return !this.isByMe && !this.get('ts_read').isValid() }
     get isResolved(){ return !!this.meta.resolved }
     
     get reactions(){ return this.meta.reactions || [] }
-    get userHasReacted(){ return User && this.reactions.includes(User.id) }
+    get userHasReacted(){ return this.reactions.includes(userID()) }
     
     toggleResolved(){
         let meta = this.meta
@@ -86,12 +90,12 @@ class Comment extends Model {
 
         let meta = this.meta
         let reactions = meta.reactions || []
-        let index = reactions.indexOf(User.id)
+        let index = reactions.indexOf(userID())
 
         if( index > -1 )
             reactions.splice(index, 1)
         else
-            reactions.push(User.id)
+            reactions.push(userID())
         
         if( reactions.length > 0 )
             meta.reactions = reactions
@@ -114,7 +118,7 @@ export function markCommentRead(model){
     if( !User ) return
     
     // ignore if already read or comment is by this user
-    if( !model.isUnread || User.id == model.get('uid') )
+    if( !model.isUnread || userID() == model.get('uid') )
         return
 
     ReadComments.add(model)
