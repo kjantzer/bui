@@ -15,7 +15,7 @@ export default class View {
 
     find(...args){ return this.clients.find(...args) }
     map(...args){ return this.clients.map(...args) }
-    find(...args){ return this.clients.find(...args) }
+    filter(...args){ return this.clients.filter(...args) }
 
     open(data){
 
