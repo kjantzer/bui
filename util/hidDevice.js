@@ -1,4 +1,5 @@
 import Emitter from 'component-emitter'
+import {throttle as throttleFn} from './throttle'
 
 const Instances = new Map()
 
@@ -11,7 +12,24 @@ class HidDevice {
     static get fairbanksScale(){ 
         return this.shared('fairbanksScale', {
             vendorID: 0x0b67,
-            productID: 0x555e
+            productID: 0x555e,
+            defaultValue: {weight: 0, unit: 'lb', isNegative:false},
+            parse(event){
+                const { data, device, reportId } = event;
+                let d = new Uint8Array(data.buffer)
+                
+                let isNegative = d[0] == 5
+                var weight = isNegative ? 0 : ((d[4]*256) + d[3]) / 100;
+                
+                let unit = {
+                    12: 'lb',
+                    3: 'kg'
+                }[d[1]]
+
+                let value = `${isNegative?'-':''}${weight}${unit}`
+                
+                return {value, weight, unit, isNegative}
+            }
         })
     }
 
@@ -23,13 +41,18 @@ class HidDevice {
 
     constructor({
         vendorID=0x0b67,
-        productID=0x555e
+        productID=0x555e,
+        defaultValue={},
+        parse=(event)=>{ return event },
+        throttle=100 // ms
     }={}){
 
         this.vendorId = vendorID
         this.productId = productID
+        this.defaultValue = defaultValue
+        this.parse = parse
 
-        this._inputReport = this._inputReport.bind(this)
+        this._inputReport = throttleFn(this._inputReport.bind(this), throttle)
         this._connect = this._connect.bind(this)
         this._disconnect = this._disconnect.bind(this)
 
@@ -110,7 +133,7 @@ class HidDevice {
             await device.open()
             this.device = device
             this.emit('connected', true)
-            this._change({weight:0})
+            this._change(this.defaultValue)
             return device
         }else{
             this.device = false
@@ -123,23 +146,20 @@ class HidDevice {
         this.emit('change', val)
     }
 
-    // TODO: this assumes fairbanksScale
     _inputReport(event){
-        const { data, device, reportId } = event;
-        let d = new Uint8Array(data.buffer)
-        
-        let isNegative = d[0] == 5
-        var weight = isNegative ? 0 : ((d[4]*256) + d[3]) / 100;
-        
-        let unit = {
-            12: 'lb',
-            3: 'kg'
-        }[d[1]]
+        let result = this.parse(event)
 
-        if( weight != this._currentVal ){
-            this._currentVal = weight
-            this._change({weight,unit,isNegative})
+        if( result && result != event && result.value != undefined ){
+            
+            if( result.value != this._currentVal ){
+                this._currentVal = result.value
+                this._change(result)
+            }
+
+            return
         }
+
+        this._change(result)
     }
 
     _connect(event){
@@ -154,7 +174,7 @@ class HidDevice {
         && this.device.productId == event.device.productId ){
             this.disconnect()
             this.emit('connected', false)
-            this._change({weight:0})
+            this._change(this.defaultValue)
         }
     }
     
