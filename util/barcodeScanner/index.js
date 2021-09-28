@@ -268,15 +268,21 @@ export {Parsers}
 export function emit(result){
 	let {str, type, val} = result
 
-	window.dispatchEvent(new CustomEvent('barcode-scanned', {
+	let event = new CustomEvent('barcode-scanned', {
 		bubbles: true,
 		composed: true,
-		detail: {str:val||str, type}
-	}))
+		detail: Object.assign({}, result, {str:val||str}) // backwards compat
+	})
 
-	window.dispatchEvent(new CustomEvent('barcode-scanned:'+type, {
-		bubbles: true,
-		composed: true,
-		detail: result
-	}))
+	window.dispatchEvent(event)
+
+	setTimeout(()=>{
+		if( !event.cancelBubble ){
+			window.dispatchEvent(new CustomEvent('barcode-scanned:'+type, {
+				bubbles: true,
+				composed: true,
+				detail: result
+			}))
+		}
+	})
 }
