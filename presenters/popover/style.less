@@ -9,6 +9,11 @@
 	// transition: margin 200ms, opacity 200ms;
 	// opacity: 0;
 
+	&.inverse {
+		--bgd: var(--theme-inverse-bgd, #222);
+		color: var(--theme-inverse-text, #222);
+	}
+
 	&.no-pointer {
 		pointer-events: none;
 	}
