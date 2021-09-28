@@ -51,6 +51,20 @@ customElements.define('b-list-search-bar', class extends LitElement{
             color: var(--theme-text,#444);
             margin-right: .5em;
         }
+
+        form-control:focus-within {
+            box-shadow: 0 0 0px 1px var(--theme) inset;
+        }
+
+        form-control:not([falsy]) {
+            box-shadow: 0 0 0px 1px var(--theme) inset;
+            background-color: rgba(var(--theme-rgb), .1);
+        }
+
+        form-control:not([falsy]) b-icon,
+        form-control:focus-within b-icon {
+            color: var(--theme);
+        }
     `}
 
     render(){return html`
