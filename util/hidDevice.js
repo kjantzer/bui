@@ -44,13 +44,15 @@ class HidDevice {
         productID=0x555e,
         defaultValue={},
         parse=(event)=>{ return event },
-        throttle=100 // ms
+        throttle=100, // ms
+        stable=1000 // ms
     }={}){
 
         this.vendorId = vendorID
         this.productId = productID
         this.defaultValue = defaultValue
         this.parse = parse
+        this.stable = stable
 
         this._inputReport = throttleFn(this._inputReport.bind(this), throttle)
         this._connect = this._connect.bind(this)
@@ -144,6 +146,13 @@ class HidDevice {
     _change(val){
         this.value = val
         this.emit('change', val)
+
+        if( this.stable > 0 ){
+            clearTimeout(this._stableTimeout)
+            this._stableTimeout = setTimeout(()=>{
+                this.emit('stable', val)
+            }, this.stable)
+        }
     }
 
     _inputReport(event){
