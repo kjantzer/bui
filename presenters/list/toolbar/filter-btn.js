@@ -45,6 +45,10 @@ customElements.define('b-list-filter-btn', class extends LitElement{
             font-weight: bold;
         }
 
+        b-btn[active] b-label {
+            color: var(--theme);
+        }
+
         :host([larger]) b-btn {
             --padding: .5em;
             opacity: 1;
