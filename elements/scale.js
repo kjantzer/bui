@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import hidDevice from '../util/hidDevice'
+import '../helpers/lit-element/events'
 
 customElements.define('b-scale', class extends LitElement{
 
@@ -30,6 +31,7 @@ customElements.define('b-scale', class extends LitElement{
     constructor(){
         super(...arguments)
         this.onChange = this.onChange.bind(this)
+        this.onStable = this.onStable.bind(this)
 
         this.integers = 1
         this.decimals = 2
@@ -41,6 +43,11 @@ customElements.define('b-scale', class extends LitElement{
         return (this.weight||0)
             .toFixed(this.decimals)
             .padStart(this.decimals+1+this.integers, '0')
+    }
+
+    updated(){
+        this.toggleAttribute('connected', this.scale.isConnected)
+        this.toggleAttribute('weight', this.weight)
     }
 
     render(){return html`
@@ -63,17 +70,23 @@ customElements.define('b-scale', class extends LitElement{
     connectedCallback(){
         super.connectedCallback()
         this.scale.on('change', this.onChange)
+        this.scale.on('stable', this.onStable)
     }
 
     disconnectedCallback(){
         super.disconnectedCallback()
-        this.scale.on('change', this.onChange)
+        this.scale.off('change', this.onChange)
+        this.scale.off('stable', this.onStable)
     }
 
     onChange({weight, unit, isNegative}){
         this.weight = weight
         if( unit )
             this.unit = unit
+    }
+
+    onStable(result){
+        this.emitEvent('stable', result)
     }
 
     requestDevice(){
