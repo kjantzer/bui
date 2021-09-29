@@ -59,6 +59,12 @@ const WatchKeyboard = function(e){
 	popover._onKeydown(e)
 }
 
+export function closeAllPopovers(){
+	OpenPopovers.forEach(dd=>{
+		dd.close()
+	})
+}
+
 export default class Popover {
 	
 	constructor(target, view, opts={}){
