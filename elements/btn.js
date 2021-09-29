@@ -326,8 +326,17 @@ export default class BtnElement extends LitElement {
         :host([lg]) { font-size: 1.2rem; }
         :host([xl]) { font-size: 1.4rem; }
 
+        :host([fab][color="theme-gradient"]) {
+            background: var(--theme-gradient, var(--bgdColor))
+        }
+
+        :host([fab][color="theme-gradient"]) main {
+            border: none;
+        }
+
         /* floating action btn */
         :host([fab]) {
+            font-weight: normal;
             position: absolute;
             z-index: 100;
             box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2),
@@ -340,6 +349,10 @@ export default class BtnElement extends LitElement {
             height: 2em;
             --radius: 2em;
             overflow: hidden;
+        }
+
+        :host([fab][pill]) {
+            width: auto;
         }
 
         :host([fab]) b-spinner {
