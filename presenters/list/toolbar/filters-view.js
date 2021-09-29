@@ -26,7 +26,9 @@ customElements.define('b-list-filters', class extends LitElement{
 
         [icon='erase'] { display: none; }
         b-list-filter-btn[active] ~ [icon="erase"] {
-            display: inline-block
+            display: inline-block;
+            position: sticky;
+            right: 0;
         }
 
         b-list-filter-btn {
