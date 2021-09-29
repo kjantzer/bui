@@ -17,7 +17,8 @@ module.exports = class SearchType {
     get type(){ return this.constructor.name || 'unknown' }
 
     query(term){
-        return this.db.query(this.searchSql, this.formatTerm(term)).then(rows=>{
+        term = this.formatTerm(term)
+        return this.db.query(this.searchSql, term).then(rows=>{
             rows.forEach(row=>row.type=row.type||this.type)
             return rows
         })
