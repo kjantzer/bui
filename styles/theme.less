@@ -119,7 +119,6 @@
         0 6px 33.4px rgba(0, 0, 0, 0.7),
         0 13px 80px rgba(0, 0, 0, 0.35);
 
-
     --b-paper-shadow: rgba(0,0,0,.35) 0 1px 5px;
     --b-paper-postit-color: var(--theme-bgd);
     --b-paper-postit-bgd: #8c8161; // var(--amber-200);
@@ -127,6 +126,10 @@
     --b-paper-postit-bgd-accent: var(--orange);
     --b-paper-info-bgd: var(--blue-800);
     --b-paper-info-bgd-accent: var(--blue-400);
+}
+
+:root[dark] b-panel[type="modal"] {
+    --b-panel-shadow: var(--b-paper-overshadow);
 }
 
 b-panel {
