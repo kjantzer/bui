@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
 import './spinner'
 import './icon'
+import {mediaQuery} from '../util/mediaQueries'
 
 export default class BtnElement extends LitElement {
 
@@ -309,6 +310,18 @@ export default class BtnElement extends LitElement {
                 display: none;
             }
         }
+
+        ${mediaQuery('sm', css`
+            :host([icon-only="sm"]) slot.label {
+                display: none;
+            }
+        `)}
+
+        ${mediaQuery('md', css`
+            :host([icon-only="md"]) slot.label {
+                display: none;
+            }
+        `)}
 
         @media (hover){
         :host([text]:hover),
