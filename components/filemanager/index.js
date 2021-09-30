@@ -59,6 +59,8 @@ customElements.define('b-file-manager', class extends LitElement{
             draggable: this.row,
             handle: '.drag',
             swapThreshold: 1,
+            // https://github.com/SortableJS/Sortable/tree/master/plugins/OnSpill#revertonspill-plugin
+            // revertOnSpill: true, // doesn't work with shadow dom
             // direction: 'vertical',
             onUpdate: this.onSort.bind(this),
 
