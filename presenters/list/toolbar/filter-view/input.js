@@ -40,13 +40,15 @@ customElements.define('b-list-filter-view-input', class extends LitElement{
     }
 
     render(){return html`
-        <form-control material="filled">
+        <form-control material="filled" show="prefix,suffix">
             <text-field reset-invalid
                 placeholder="${this.get('placeholder')}" 
                 pattern=${this.get('pattern')}
                 @enterkey=${this.onEnter}></text-field>
                 
             <span slot="help">${this.get('helpText')}</span>
+            <span slot="prefix">${this.get('prefix')}</span>
+            <span slot="suffix">${this.get('suffix')}</span>
             <b-btn slot="suffix" class="cancel" icon="cancel-circled" text @click=${this.clearValue}></b-btn>
             
         </form-control>
