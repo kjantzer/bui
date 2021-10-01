@@ -26,6 +26,10 @@ export default class DataSource {
     }
     get coll(){ return this.__coll}
 
+    get isFiltered(){
+        return this.filters && !!(this.filters.areApplied || this.filters.term )
+    }
+
     async refilter(){
         this.lastFiltered = 0
         this._rawData = this.coll && this.coll.models || this.coll || []

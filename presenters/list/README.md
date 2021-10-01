@@ -606,3 +606,8 @@ reset filters to default or given values
 
 `list.filters.update(filterVals)`  
 applies the given filters
+
+`list.filters.areApplied` - true/false
+
+`list.dataSource.isFiltered`
+filters applied OR search term has value

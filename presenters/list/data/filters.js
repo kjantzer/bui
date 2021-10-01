@@ -80,6 +80,10 @@ export default class Filters extends Map {
         this.value(filters, opts)
     }
 
+    get areApplied(){
+        return Object.keys(this.value()).length > 0
+    }
+
     value(key, val, opts={}){
         // first time getting value, get it from local storage
         if( this.__value === undefined ){
