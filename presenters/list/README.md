@@ -176,6 +176,8 @@ const filters = {
         viewOpts: {
             placeholder: 'Keywords...',
             helpText: 'Separate with delimited',
+            prefix: '',
+            suffix: '',
             defaultLabel: '-',
             width: '200px'
         }
