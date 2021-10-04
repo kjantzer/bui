@@ -175,7 +175,7 @@ export default class Menu {
 			return this.__filteredMenu
 		
 		if( this.searchIsOn && !this.searchShouldShowAll )
-			return []
+			return this.menu.filter(m=>m.alwaysShow===true || m.selected)
 
 		if( this.searchIsOn && this.hideUnselected )
 			return this.menu.filter(m=>m.label===undefined || m.selected)
