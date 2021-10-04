@@ -237,7 +237,7 @@ class SelectFieldElement extends HTMLElement {
 				if( typeof o != 'object' )
 					return {label: o, val: o}
 				else
-					return Object.assign({}, o, {val: String(o.val)})
+					return Object.assign({}, o, {val: String(o.val||o)})
 			})
 		else if( typeof opts == 'object' ){
 			let _opts = []
