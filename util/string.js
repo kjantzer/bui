@@ -11,5 +11,10 @@ function titleize(str){
     return capitalize(str.replace(/[\-_]/g, ' '))
 }
 
+// https://ricardometring.com/javascript-replace-special-characters
+function replaceAccents(str){
+    // Example: `Shōgun` will become `Shogun`
+	return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove accents
+}
 
-module.exports = {capitalize, titleize}
+module.exports = {capitalize, titleize, replaceAccents}
