@@ -5,6 +5,7 @@ import { SmartCharacterReplacer } from './smart-character-replacer'
 import { KeyboardEvents } from './keyboard-events'
 import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
+import CharacterCount from '@tiptap/extension-character-count'
 import './menubar'
 import style from './style'
 
@@ -13,7 +14,8 @@ customElements.define('text-editor', class extends LitElement{
     static get properties(){return {
         menubar: {type: Boolean},
         disabled: {type: Boolean, reflect: true},
-        placeholder: {type: String}
+        placeholder: {type: String},
+        maxchar: {type: Number}
     }}
 
     static get styles(){return [style, css`
@@ -46,9 +48,15 @@ customElements.define('text-editor', class extends LitElement{
             extensions: [
                 StarterKit,
                 Placeholder,
-                TextAlign,
+                TextAlign.configure({
+                    types: ['heading', 'paragraph'],
+                    alignments: ['left', 'center'],
+                }),
                 SmartCharacterReplacer,
                 KeyboardEvents,
+                CharacterCount.configure({
+                    limit: this.maxchar||0,
+                }),
 				...this.extensions
             ],
             editorProps: {
@@ -84,7 +92,8 @@ customElements.define('text-editor', class extends LitElement{
     render(){return html`
         <main></main>
         ${this.menubar?html`
-            <b-text-editor-menubar part="menubar" .editor=${this.editor} ?disabled=${this.disabled}>
+            <b-text-editor-menubar part="menubar" .editor=${this.editor} 
+            ?disabled=${this.disabled} maxchar=${this.maxchar}>
                 <slot name="menubar:left" slot="left"></slot>
                 <slot name="menubar:right" slot="right"></slot>
             </b-text-editor-menubar>
@@ -93,6 +102,14 @@ customElements.define('text-editor', class extends LitElement{
 
     focus(){
         this.editor.commands.focus()
+    }
+
+    selectAll(){
+        this.editor.commands.selectAll()
+    }
+
+    blur(){
+        this.editor.commands.blur()
     }
 
     onBlur(){
@@ -122,9 +139,24 @@ customElements.define('text-editor', class extends LitElement{
         this.toggleAttribute('empty', this.isEmpty)
     }
 
+    
+
+    copy(){
+        this.focus()
+        this.selectAll()
+        setTimeout(() => {
+            document.execCommand("copy")
+            this.blur()    
+        });
+    }
+
+    get characterCount(){
+        return this.editor.getCharacterCount()
+    }
+
 	get textValue(){
 		if( this.isEmpty ) return ''
-		return this.editor.view.docView.contentDOM.textContent // NOTE: is there a better less hacky way?
+        return this.editor.getText({blockSeparator: `\n\n`})
 	}
 
     get isEmpty(){

@@ -46,9 +46,10 @@
     },
     "dependencies": {
         "@fnando/sparkline": "^0.3.10",
-        "@tiptap/core": "*",
+        "@tiptap/core": "^2.0.0-beta.118",
+        "@tiptap/extension-character-count": "^2.0.0-beta.13",
         "@tiptap/extension-placeholder": "*",
-        "@tiptap/extension-text-align": "*",
+        "@tiptap/extension-text-align": "^2.0.0-beta.23",
         "@tiptap/starter-kit": "*",
         "@tiptap/suggestion": "*",
         "backbone": "^1.4.0",

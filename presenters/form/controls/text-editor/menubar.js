@@ -1,9 +1,11 @@
 import { LitElement, html, css } from 'lit-element'
+import '../../../../elements/text'
 
 customElements.define('b-text-editor-menubar', class extends LitElement{
 
     static get properties(){return {
-        focused: {type: Boolean, reflect: true}
+        focused: {type: Boolean, reflect: true},
+        maxchar: {type: Number}
     }}
 
     static get styles(){return css`
@@ -96,7 +98,10 @@ customElements.define('b-text-editor-menubar', class extends LitElement{
 
         <div>
             <slot name="right"></slot>
-            <span title="Number of characters">${this.editor.getCharacterCount()}</span>
+            <span title="Number of characters">
+                ${this.editor.getCharacterCount()}
+                <b-text muted ?hidden=${!this.maxchar}> / ${this.maxchar}</b-text>
+            </span>
         </div>
     `}
 
