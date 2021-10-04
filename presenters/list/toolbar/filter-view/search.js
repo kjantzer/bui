@@ -138,7 +138,7 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
     get value(){
 
         if( !this._values )
-            return this.filter.value
+            return this._formatValues(this.filter.value)
 
         return this._values.map(d=>{
             return {label: d.label, val: d.val}
