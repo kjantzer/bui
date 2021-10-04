@@ -1,6 +1,10 @@
 
 module.exports = class EnhancedArray extends Array {
 
+    get(val){
+        return this.find(val=>val==val)
+    }
+
     isFirst(val){
         return this.indexOf(val) == 0
     }
