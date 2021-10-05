@@ -144,4 +144,4 @@ Results are returned in a subclass of `array` that provides a few helpers:
 - `.last`
 - `.value` gets value of first column in first row
 - `.values` gets value of first column in all rows
-- `.groupBy(key)` groups results by a key
+- `.groupBy(key, {forceArray=false, deleteKeyedValue=false}={})` groups results by a key
