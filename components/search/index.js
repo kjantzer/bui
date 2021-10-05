@@ -281,6 +281,8 @@ export default class extends LitElement{
 
     close(){
         this.panel&&this.panel.close()
+        if( this.state == 'shortcuts' )
+            this.clear()
     }
 
     firstUpdated(){
