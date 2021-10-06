@@ -7,15 +7,15 @@ export default Dialog
 export {Notif, Panel, Popover}
 
 export function registerPreset(name, defaults){
-	Dialog[name] = function(opts={}){
+	Dialog[name] = function(opts){
 
 		let defaultOpts = defaults
 
 		if( typeof defaultOpts == 'function' )
 			defaultOpts = defaultOpts(opts)
 		
-		if( typeof opts == 'string' ){
-			opts = {body: opts}
+		if( !opts || typeof opts == 'string' ){
+			opts = opts ? {body: opts} : {}
 
 			if( defaultOpts.btns && defaultOpts.btns.length == 1 )
 				opts.btns = false
