@@ -45,6 +45,8 @@ class UsbPrinter {
         this.connectToDevice()
     }
 
+    get isSupported(){ return navigator.usb }
+
     get name(){ return this.device&&this.device.productName }
     get isConnected(){ return !!this.device && this.device.opened }
     connect(){ return this.requestDevice() } // simplified alias
@@ -60,6 +62,8 @@ class UsbPrinter {
     }
 
     async connectToDevice(){
+
+        if( !this.isSupported ) return
 
         if( this._connectingToDevice )
             return this._connectingToDevice
@@ -78,6 +82,9 @@ class UsbPrinter {
     }
     
     async requestDevice(){
+
+        if( !this.isSupported )
+            throw new Error('USB devices not supported')
         
         if( this.isConnected ) return this.device
 
