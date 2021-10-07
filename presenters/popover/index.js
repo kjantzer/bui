@@ -109,7 +109,9 @@ export default class Popover {
 		document.body.append(this.el)
 		
 		if( this.opts.className ){
-			this.opts.className.split(' ').forEach(className=>this.el.classList.add(className));
+			this.opts.className.trim()
+								.split(' ')
+								.forEach(className=>this.el.classList.add(className.trim()));
 		}
 		
 		this.el.popover = this
