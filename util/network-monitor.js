@@ -3,6 +3,7 @@ import network from './network'
 
 let offlineDialog
 
+if( network )
 network.addEventListener('change', e=>{
 
     if( network.offline){
