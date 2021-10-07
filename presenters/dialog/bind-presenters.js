@@ -32,6 +32,10 @@ const presenters = {
 			onClose&&onClose()
 			this.resolve(false)
 		}
+
+		opts.className = opts.className || ''
+		opts.className += ' '+this.color // "inverse" color will work here
+		opts.color = this.color // TODO: support this in popover
 		
         if( this.onKeydown )
 		    opts.onKeydown = this.onKeydown.bind(this)
