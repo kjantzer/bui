@@ -16,7 +16,10 @@ export class UICustomError extends Error {
     }
 
     get notifOpts(){
-        return Object.assign((this.detail&&this.detail.notif)||{}, {nid: this.name})
+        return Object.assign({
+            nid: this.name,
+            animation: this.animation || 'bounce'
+        },(this.detail&&this.detail.notif)||{})
     }
 
     handle(){
@@ -56,6 +59,18 @@ export class UICustomError extends Error {
     }
 }
 
+export class UIAlertError extends UICustomError {
+
+    constructor(msg='Oops', ...args){
+        super(msg, ...args)
+        this.name = 'UIAlertError'
+    }
+
+    get presenter(){
+        return Dialog.alert(this.message)
+    }
+}
+
 export class UIPermissionError extends UICustomError {
     
     constructor(msg='You do not have permission', ...args){
@@ -77,7 +92,11 @@ export class UIWarningError extends UICustomError {
     }
 
     get presenter(){
-        return Dialog.warn(this.message)
+        return Dialog.warn({
+            pretitle: '',
+            body: this.message,
+            btns: false
+        })
     }
 }
 

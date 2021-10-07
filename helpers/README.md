@@ -307,6 +307,9 @@ if( !label )
 
 ### Custom Errors
 
+#### `UIAlertError`
+Generic alert. Defaults to `Dialog.alert`
+
 #### `UIPermissionError`
 For when a user is not allowed to do something. Defaults to `Dialog.stopped`
 
