@@ -95,6 +95,13 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             gap: var(--view-gutter);
         }
 
+        :host(:not(:last-of-type)) {
+            margin-bottom: 2em;
+            padding-bottom: 2em;
+            border-bottom: solid 2px var(--theme-bgd-accent);
+        }
+
+        :host(:first-of-type) .toc .start,
         :host(:last-of-type) .toc .end {
             display: none;
         }
@@ -246,6 +253,10 @@ customElements.define('demo-markdown-docs', class extends LitElement{
         this.scrollTo(e.currentTarget.getAttribute('slug'))
     }
 
+    jumpToPrev(){
+        this.previousElementSibling.scrollIntoView({block: 'end'})
+    }
+
     jumpToNext(){
         this.nextElementSibling.scrollIntoView()
     }
@@ -253,6 +264,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
     render(){return html`
 
         <div class="toc"><div class="toc-inner">
+            <b-btn class="start" clear color="theme" block @click=${this.jumpToPrev}>Prev Section</b-btn>
             <slot name="toc:top"></slot>
             ${this._toc.map(t=>html`
                 <div slug=${t.slug} level=${t.level} @click=${this.tocClick}>
