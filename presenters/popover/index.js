@@ -321,7 +321,7 @@ export default class Popover {
 		data.instance.modifiers.forEach(m=>{
 			if( m.name == 'preventOverflow' && m.boundaries ){
 
-				let offset = 0//(window.outerHeight * .05)
+				let offset = (window.outerHeight * .035)
 
 				// TODO: needs improvement when alignmen is not bottom-*
 				let h = (window.innerHeight) - bottom - (arrowH*2) - offset
