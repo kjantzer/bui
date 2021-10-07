@@ -588,7 +588,14 @@ export default class Menu {
 		}
 
 		if( this.opts.multiple && e.code == 'Enter' ){
-			this.resolve(this.selected)
+
+			// TODO: I think we should only click if item isn't already selected
+			if( activeItem )
+				activeItem.click()
+
+			if( e.ctrlKey || e.metaKey )
+				this.resolve(this.selected)
+
 			e.preventDefault()
 			e.stopPropagation()
 			return
