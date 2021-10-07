@@ -75,7 +75,8 @@ module.exports = class Model {
             this[key] = attrs[key]
         }
 
-        this.decodeFields(attrs)
+        if( attrs )
+            this.decodeFields(attrs)
     }
 
     get config(){ return {} }
