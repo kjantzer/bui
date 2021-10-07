@@ -388,6 +388,7 @@ class SelectFieldElement extends HTMLElement {
 		
 		let menu = this.options
 		let popoverOpts = {
+			className: '',
 			align: this.getAttribute('menu-align') || 'bottom',
 			maxHeight: this.getAttribute('menu-max-height') || 'auto',
 			maxWidth: this.getAttribute('menu-max-width') || 'none',
@@ -402,7 +403,18 @@ class SelectFieldElement extends HTMLElement {
 		
 		this.openMenu.el.setAttribute('select-field', this.className)
 
-		let val = await this.openMenu.popover(this.$('main'), popoverOpts)
+		let target = this.$('main')
+
+		// looks better/more considtent if menu is same with as select-field
+		if( !popoverOpts.width
+		&& this.parentElement.tagName == 'FORM-CONTROL'
+		&& this.parentElement.parentElement.tagName != 'FORM-CONTROL'){
+			target = this.parentElement
+			popoverOpts.width = target.clientWidth+'px'
+			popoverOpts.className += ' no-arrow'
+		}
+
+		let val = await this.openMenu.popover(target, popoverOpts)
 		
 		this.openMenu = null
 		this.focused = false

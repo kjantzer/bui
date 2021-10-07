@@ -3,7 +3,7 @@
 }
 
 .b-menu {
-	--hoverBgd: var(--b-menu-hover-bgd, rgba(0,0,0,.1));
+	--hoverBgd: var(--b-menu-hover-bgd, var(--theme-bgd-accent, rgba(0,0,0,.1)));
 	--hoverTextColor: inherit;
 	--checkboxColor: var(--b-menu-checkbox-color, #e10050);
 	--checkboxColorHover: var(--checkboxColor);
@@ -33,8 +33,8 @@
 			min-width: 2em;
 			box-shadow: none;
 			border: none;
-			background: var(--b-menu-input-bgd, #eee) !important;
-			color: var(--b-menu-input-color);
+			background: var(--b-menu-input-bgd, var(--theme-bgd-accent, #eee)) !important;
+			color: var(--b-menu-input-color, var(--theme-text));
 			border-radius: var(--b-menu-input-radius, 30px);
 			font-size: var(--b-menu-input-font-size, 1rem);
 			padding-top: var(--b-menu-input-padding, .35em);
@@ -49,7 +49,7 @@
 		// }
 
 		input::placeholder {
-			color: var(--b-menu-color-accent, rgba(0,0,0,.3));
+			color: var(--b-menu-color-accent, rgba(var(--theme-text-rgb), .5));
 		}
 
 		b-icon {
@@ -109,7 +109,7 @@
 		.mi-description {
 			font-size: .8em;
 			line-height: 1.2em;
-			color: var(--b-menu-description-color, rgba(0,0,0,.5));
+			color: var(--b-menu-description-color, var(--theme-text-accent));
 		}
 		
 		[selected] {
@@ -174,7 +174,7 @@
 		}
 
 		> select-field[value=""] {
-			color: var(--b-menu-description-color, rgba(0,0,0,.5));
+			color: var(--b-menu-description-color, var(--theme-text-accent));
 		}
 
 		> .mi-content ~ * {
@@ -203,7 +203,7 @@
 		font-weight: normal;
 		font-size: .9em;
 		border-top: solid 1px var(--b-hr-bgd, rgba(0,0,0,.1));
-		color: var(--b-menu-color-accent, rgba(0,0,0,.5));
+		color: var(--b-menu-color-accent, rgba(var(--theme-text-rgb), .5));
 	}
 
 	.menu-divider:first-child {
@@ -218,7 +218,7 @@
 		padding: .5em 1em;
 		font-size: .9em;
 		line-height: 1.2em;
-		color: var(--b-menu-color-accent, rgba(0,0,0,.5));
+		color: var(--b-menu-color-accent, rgba(var(--theme-text-rgb), .5));
 		background: var(--hoverBgd, #f5f5f5);
 		font-style: italic;
 	}

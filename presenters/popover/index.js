@@ -107,6 +107,9 @@ export default class Popover {
 		this.el.innerHTML = '<span class="__arrow" x-arrow><span class="__arrow" x-arrow></span></span>'
 		this.el.appendChild(view)
 		document.body.append(this.el)
+
+		if( this.opts.inverse )
+			this.el.classList.add('inverse')
 		
 		if( this.opts.className ){
 			this.opts.className.trim()
@@ -318,11 +321,15 @@ export default class Popover {
 		data.instance.modifiers.forEach(m=>{
 			if( m.name == 'preventOverflow' && m.boundaries ){
 
-				// TODO: needs improvement when alignmen is not bottom-*
-				let h = (window.innerHeight) - bottom - (arrowH*2)
+				let offset = 0//(window.outerHeight * .05)
 
-				if( bottom > window.innerHeight/2 )
-					h = top - (arrowH*2)	
+				// TODO: needs improvement when alignmen is not bottom-*
+				let h = (window.innerHeight) - bottom - (arrowH*2) - offset
+
+				// if the popover view becomes less than 1/4 of the screen
+				// calc height from the top (alignment will switch)
+				if( h <= window.innerHeight/4 )
+					h = top - (arrowH*2) - offset
 
 				this.maxHeight = h
 				this.view.style.width = this.opts.width||this.view.style.width
