@@ -45,9 +45,13 @@ customElements.define('b-tab-bar-manila', class extends LitElement{
         ${this.views.map(v=>html`
             ${v.canDisplay?html`
 
+                <slot name="before:${v.id}"></slot>
+
                 <b-btn part="tab" text icon="${v.icon||''}" ?active=${v.active} .tabView=${v} @click=${this.onClick}>
                     <span>${v.title}</span>
                 </b-btn>
+
+                <slot name="after:${v.id}"></slot>
 
             `:''}
         `)}

@@ -349,6 +349,10 @@ customElements.define('b-tabs', class extends LitElement {
                 this.__customTabBar.innerHTML = /*html*/`
                     <slot name="menu:before" slot="before"></slot>
                     <slot name="menu:after" slot="after"></slot>
+                    ${this.views.map(v=>/*html*/`
+                        <slot name="menu:before:${v.id}" slot="before:${v.id}"></slot>
+                        <slot name="menu:after:${v.id}" slot="after:${v.id}"></slot>
+                    `)}
                 `
             }else{
                 this.__customTabBar.update()

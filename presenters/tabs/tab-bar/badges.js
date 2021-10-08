@@ -31,9 +31,13 @@ customElements.define('b-tab-bar-badges', class extends LitElement{
         ${this.views.map(v=>html`
             ${v.canDisplay?html`
 
+                <slot name="before:${v.id}"></slot>
+
                 <b-btn pill color="theme" icon="${v.icon}" ?active=${v.active} .tabView=${v} @click=${this.onClick}>
                     <span>${v.title}</span>
                 </b-btn>
+
+                <slot name="after:${v.id}"></slot>
 
             `:''}
         `)}
