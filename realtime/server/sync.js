@@ -23,6 +23,7 @@ module.exports = class Sync extends Map {
         }
 
         let io = this.io
+        let syncRoot = Class.api.sync == 'root'
 
         // create a syncPath getter that will use the sync path pattern
         // and create a string using the class attributres
@@ -30,6 +31,9 @@ module.exports = class Sync extends Map {
         if( !Class.prototype.hasOwnProperty('syncPath') )
         Object.defineProperty(Class.prototype, 'syncPath', {
             get: function syncPath() {
+                if( this.apiPathPattern )
+                    return this.apiPathPattern.stringify(syncRoot?undefined:this)
+                    
                 return this.apiPath || this.syncPathPattern.stringify(this)
             }
         });
