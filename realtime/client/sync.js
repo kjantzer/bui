@@ -3,7 +3,11 @@ import SyncPath from './sync-path'
 
 let MainSync
 
-export default (path, object)=>{
+export default function sync(path, object){
+
+    if( typeof path == 'function' )
+        return enableSync(path, object)
+
     MainSync = MainSync || new Sync()
     return MainSync.add(path, object)
 }
@@ -67,6 +71,23 @@ export class Sync extends Map {
         return super.get(path)
     }
 
+}
+
+export function enableSync(Class, {
+    pathKey='url'
+}={}){
+
+    Object.defineProperty(Class.prototype, 'realtimeSync', {
+        get: function realtimeSync() {
+            return this.__realtimeSync = this.__realtimeSync || sync(this[pathKey], this)
+        }
+    });
+
+    let syncData = Class.prototype.map ? syncBackboneCollection : syncBackboneModel
+
+    Class.prototype.onSync = function(data){
+        syncData.call(this, data)
+    }
 }
 
 
