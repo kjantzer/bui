@@ -16,7 +16,7 @@ customElements.define('b-tabs-router', class extends TabsView {
             // when the route changes, switch to the appropriate  
             tab.route = router.add(rootPath+tab.path, (oldState, newState, dir)=>{
 
-                tab.routeState = newState
+                tab.route.state = newState
 
                 if( newState && this.active != tab.id )
                     this.active = tab
@@ -30,7 +30,7 @@ customElements.define('b-tabs-router', class extends TabsView {
             
             if( matchedState ){
                 this.active = tab
-                tab.routeState = matchedState
+                tab.route.state = matchedState
             }
         })
     }

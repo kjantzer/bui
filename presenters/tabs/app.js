@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit-element'
 import router from 'bui/router'
 import './tabs-router'
 import './app-tab-bar'
-import {mediaQuery, MediaQueries} from '../../util/MediaQueries'
+import {mediaQuery, MediaQueries} from '../../util/mediaQueries'
 
 if( !MediaQueries.get('b-app-landscape') )
 MediaQueries.set('b-app-landscape', styles=>css`
@@ -30,6 +30,7 @@ customElements.define('b-app', class extends LitElement {
                     path: this.tabs.views.active.id
                 }
             })
+            this.tabs.views.active.route.state = router.states.current
         })
 
         window.addEventListener('router:popstate', this.onPush.bind(this))
@@ -50,8 +51,10 @@ customElements.define('b-app', class extends LitElement {
             
             router.states.current.update({
                 title: activeView.title,
-                path: e.detail.path || activeView.id
+                // path: e.detail.path || activeView.id
+                path: activeView.route.makePath(activeView.route.params)
             })
+            activeView.route.state = router.states.current
             
             activeView.view.didBecomeActive&&activeView.view.didBecomeActive()
 
