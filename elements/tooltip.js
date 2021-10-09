@@ -58,7 +58,7 @@ function showTooltip(){
         target = activeTooltip.triggerElement
 
     shownTooltip = new Popover(target, activeTooltip.innerHTML, {
-        className: 'tooltip',
+        className: 'inverse no-arrow tooltip',
         align: activeTooltip.align,
         // TODO: support `maxW` ?
     })
