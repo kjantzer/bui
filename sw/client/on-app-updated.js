@@ -45,6 +45,7 @@ function newUpdateNotif(worker){
         icon: 'arrows-ccw',
         btns: [{label: 'Update', color: 'theme'}],
         autoClose: false,
+        width: 'auto',
         anchor: 'top-right',
         onClick(notif, btn){
             if( btn ){
