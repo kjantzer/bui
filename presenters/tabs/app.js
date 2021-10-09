@@ -1,7 +1,16 @@
 import { LitElement, html, css } from 'lit-element'
 import router from 'bui/router'
-import 'bui/presenters/tabs/tabs-router'
+import './tabs-router'
 import './app-tab-bar'
+import {mediaQuery, MediaQueries} from '../../util/MediaQueries'
+
+if( !MediaQueries.get('b-app-landscape') )
+MediaQueries.set('b-app-landscape', styles=>css`
+    @media /*(max-height: 599px) and (orientation:landscape),*/
+    (min-width:900px) and (min-height: 600px), (min-width: 700px) {
+        ${styles}
+    }
+`)
 
 customElements.define('b-app', class extends LitElement {
 
@@ -73,16 +82,17 @@ customElements.define('b-app', class extends LitElement {
             flex-grow: 1;
         }
 
-        @media /*(max-height: 599px) and (orientation:landscape),*/
-        (min-width:900px) and (min-height: 600px), (min-width: 700px) {
+        ${mediaQuery('b-app-landscape', css`
             b-tabs-router {
                 grid-template-columns: auto 1fr;
             }
-        }
+        `)}
     `}
 
+    get shouldShowSearch(){ return true }
+
     render(){return html`
-        <b-tabs-router layout="bottom" key="${this.key}" tab-bar="${this.tabBar}">
+        <b-tabs-router layout="bottom" key="${this.key}" tab-bar="${this.tabBar}" ?no-search=${!this.shouldShowSearch}>
             ${this.views}
         </b-tabs-router>  
     `}
