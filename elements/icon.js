@@ -91,6 +91,7 @@ export default class IconElement extends HTMLElement {
 		svg {
 			height: 100%;
 			/* width: 100%; */
+			min-width: 0;
 			display: inline-block;
 			fill: currentColor;
 			color: currentColor;
