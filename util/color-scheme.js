@@ -161,6 +161,8 @@ export const colorScheme = {
     
 }
 
+export default colorScheme
+
 
 export const ThemeColors = [
     {label: 'Default', val:''},
