@@ -40,6 +40,12 @@ router.config({
         // default handler
         if( config.clearInvalidPath )
             state.path = config.PATH_ROOT
+    },
+    // optional overrides
+    urlPattern: {
+        // https://github.com/snd/url-pattern#customize-the-pattern-syntax
+        // example: 
+        segmentValueCharset: 'a-zA-Z0-9'
     }
 })
 ```
