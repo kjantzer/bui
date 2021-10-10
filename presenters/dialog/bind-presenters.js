@@ -24,9 +24,6 @@ const presenters = {
 		if( opts.adjustForMobile && device.isMobile )
 			return this.modal((typeof opts.adjustForMobile == 'object' ? opts.adjustForMobile : {}))
 		
-		if( target.currentTarget )
-			target = target.currentTarget
-		
 		let onClose = opts.onClose
 		opts.onClose = ()=>{
 			onClose&&onClose()
