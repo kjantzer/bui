@@ -137,7 +137,9 @@ export default class Popover {
 
 		if( !target ) return
 
-		if( target instanceof MouseEvent || target instanceof KeyboardEvent ){
+		if( target instanceof MouseEvent 
+		|| target instanceof KeyboardEvent 
+		|| target instanceof PointerEvent ){
 			target = this.createInvisiblePlaceholderTarget(target)
 		}
 
@@ -189,7 +191,7 @@ export default class Popover {
 		target.classList.add('popover-invisible-placeholder')
 		target.style.position = 'absolute'
 		
-		if( e instanceof MouseEvent ){
+		if( e instanceof MouseEvent || e instanceof PointerEvent ){
 
 			if( !Object.isFrozen(e) ){
 				e._popoverTarget = target._popoverTarget
