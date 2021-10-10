@@ -15,3 +15,14 @@ globalThis.fetch.json = function(url, opts={}){
         return r
     })
 }
+
+
+globalThis.fetch.text = function(url, opts={}){
+
+    opts.headers = opts.headers || {}
+
+    if( opts.body && typeof opts.body == 'object' )
+        opts.body = JSON.stringify(opts.body)
+
+    return fetch(url, opts).then(r=>r.text())
+}
