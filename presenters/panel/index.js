@@ -293,6 +293,16 @@ export class Panel extends LitElement {
         if( this.opts.closeOnEsc && e.key == 'Escape' )
             this.close()
 
+        if( !this.opts.disableBackdropClick && document.activeElement.tagName == 'BODY'){
+            if( e.shiftKey && e.key == 'W' )
+                this.close()
+
+            if( e.shiftKey && e.key == 'Tab' ){
+                e.preventDefault()
+                this.panelController && this.panelController.quickJump()
+            }
+        }
+
         this.opts.onKeydown&&this.opts.onKeydown(e)
         this.view.onKeydown&&this.view.onKeydown(e)
     }
