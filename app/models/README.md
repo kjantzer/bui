@@ -10,7 +10,7 @@ Models
 A lightweight class for fetching an array of "models" from a server. No sorting is applied
 
 ```js
-import {Collection} from 'bui/models'
+import {Collection} from 'bui/app/models'
 
 export default class Coll extends Collection {
 

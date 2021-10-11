@@ -284,7 +284,7 @@ A catch-all error handler with support for custom UI errors.
 
 ```js
 // import near the top of your app entry
-import 'bui/helpers/error-handler`
+import 'bui/app/error-handler`
 ```
 
 After importing the error handler any uncaught error or promises will be caught and

@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
-import router from '../router'
+import router from '../../router'
 
 export default class RoutedView extends LitElement {
 

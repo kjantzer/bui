@@ -6,10 +6,10 @@ Makes it easy to prompt user to install the PWA app. It's a singleton class so y
 
 ```js
 // import this early in your code to capture the installer event
-import 'bui/util/app-installer'
+import 'bui/app/installer'
 
 //... somehwere else (say your app header)
-import AppInstaller from 'bui/util/app-installer'
+import AppInstaller from 'bui/app/installer'
 
 html`
     ${AppInstaller.canInstall?html`
@@ -54,7 +54,7 @@ new AJAX(method, url)
 ## Background Resume
 
 ```js
-import 'bui/util/background-resume'
+import 'bui/app/background-resume'
 
 window.addEventListener('background-resume', e=>{ /*do something*/ })
 ```

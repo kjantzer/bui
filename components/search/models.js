@@ -1,4 +1,4 @@
-import {Collection} from '../../models'
+import {Collection} from '../../app/models'
 
 export default class Coll extends Collection {
     

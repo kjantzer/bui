@@ -22,7 +22,7 @@
     and when its not, it means the timer was suspended and then window is
     focused we will trigger a resume event
 */
-import device from './device'
+import device from '../util/device'
 
 const refreshRate = 500
 const minTimePassed = refreshRate * 2

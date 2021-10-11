@@ -1,7 +1,7 @@
 import {Model, Collection} from 'backbone'
-import sync, {syncBackboneCollection} from '../realtime/client/sync'
-import {colorScheme} from '../util/device'
-import '../helpers/backbone/relations'
+import sync, {syncBackboneCollection} from '../../realtime/client/sync'
+import {colorScheme} from '../../util/device'
+import '../../helpers/backbone/relations'
 
 export const themeColors = [
     {label: 'Default', val:''},

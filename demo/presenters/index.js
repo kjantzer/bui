@@ -21,7 +21,7 @@ import dayjs from 'dayjs'
 customElements.define('demo-presenters', class extends LitElement{
 
     static get title(){ return 'Presenters' }
-    static get icon(){ return 'window' }
+    static get icon(){ return 'columns' }
     static get path(){ return 'presenters(/:tab)' }
 
     static get styles(){return css`

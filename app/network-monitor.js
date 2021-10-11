@@ -1,5 +1,5 @@
 import Dialog from '../presenters/dialog'
-import network from './network'
+import network from '../util/network'
 
 let offlineDialog
 
