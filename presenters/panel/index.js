@@ -219,8 +219,8 @@ export class Panel extends LitElement {
 
     static get properties(){return {
         title: {type: String},
-        width: {type: String},
-        height: {type: String},
+        width: {type: String, reflect: true},
+        height: {type: String, reflect: true},
         anchor: {type: String, reflect: true},
         type: {type: String, reflect: true},
         vid: {type: String, reflect: true},
@@ -591,7 +591,7 @@ export class Panel extends LitElement {
             opacity: 0;
             transition: opacity ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1),
                         background-color ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
-            --radius: var(--b-panel-radius, 5px);
+            --radius: var(--b-panel-radius, 8px);
             --radius-top: var(--radius);
             --radius-bottom: 0;
         }
@@ -659,6 +659,7 @@ export class Panel extends LitElement {
         :host([anchor="right"]) > main {
             transform: translateX(100px);
             height: 100%;
+            border-radius: var(--radius) 0 0 var(--radius);
         }
 
         :host([anchor="left"]) > main {
@@ -666,6 +667,7 @@ export class Panel extends LitElement {
             left: 0;
             transform: translateX(-100px);
             height: 100%;
+            border-radius: 0 var(--radius) var(--radius) 0;
         }
 
         :host([anchor="center"]) > main,
