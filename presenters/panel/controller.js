@@ -218,6 +218,7 @@ class PanelController extends LitElement {
         return resp.reverse() // most recent first
     }
 
+    // FIXME: not that great of an implementation
     async quickJump(el){
         
         let menu = this.map(panel=>{
@@ -229,30 +230,28 @@ class PanelController extends LitElement {
             }
         })
 
-        menu.shift() // remove first menu as its the open view
-
         let ts = new Date().getTime()
 
         // quick jump is already open
-        if( el.popover ){
-
-            // if quick jump triggered within a second, auto switch to the last opened view
-            if( el.quickJumpOpened && ts - el.quickJumpOpened <= 1000 && menu.length > 0){
-                el.popover.close()
-                menu[0].panel.open()
-            }
-            
+        if( this.quickJumpOpened )
             return
-        }
-
-        el.quickJumpOpened = ts
 
         if( menu.length == 0 )
-            menu.push({text: 'No other views open'})
+            return this.quickJumpOpened = null
+            // menu.push({text: 'No other views open'})
 
-        menu.unshift({divider: 'Quick Jump Menu'}, 'divider')
+        menu[0].selected = true // the open panel
 
-        let selected = await new Menu(menu).popover(el, {align: 'bottom-start'})
+        menu.unshift({divider: 'Open Views'}, 'divider')
+
+        this.quickJumpOpened = ts
+
+        // let selected = await new Menu(menu).popover(el, {align: 'bottom-start'})
+        let selected = await new Menu(menu, {autoSelectFirst: true}).modal({
+            onClose:()=>{
+                this.quickJumpOpened = null
+            }
+        })
 
         if( selected )
             selected.panel.open()
