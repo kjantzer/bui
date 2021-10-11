@@ -91,11 +91,6 @@ class PanelToolbar extends LitElement {
             --color: #ddd
         }
 
-        slot[name="title"] {
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
         :host([notitle]) slot[name="title"] {
             display: none;
         }
@@ -104,9 +99,9 @@ class PanelToolbar extends LitElement {
             text-align: right;
         }
 
-        [part="close-btn"] {
-            width: 1.95rem;
-            height: 1.95rem;
+        [part="close-btn"][icon="right-open"] {
+            width: 1.8rem;
+            height: 1.8rem;
             flex-shrink: 0;
             transform: rotate(var(--b-panel-toolbar-close-btn-rotation, 0deg));
         }
@@ -118,7 +113,7 @@ class PanelToolbar extends LitElement {
         }
 
         [part="close-btn"][icon="right-open"]::part(icon) {
-            --size: 1.8rem;
+            --size: 1.6rem;
         }
 
         /* hide on small devices in landscape (allow for more space for the content) */ 
@@ -159,7 +154,9 @@ class PanelToolbar extends LitElement {
             <slot name="left"></slot>
         </div>
         <div class="middle">
-            <slot name="title">${this.title}</slot>
+            <slot name="title:before"></slot>
+            <slot name="title"><b-text sm clip>${this.title}</b-text></slot>
+            <slot name="title:after"></slot>
             <slot name="middle"></slot>
         </div>
         <div class="right">
