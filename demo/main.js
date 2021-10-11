@@ -1,5 +1,5 @@
 import {html} from 'lit-element'
-import App from 'bui/presenters/tabs/app'
+import App from 'bui/app/tabbar'
 import './overview'
 import './elements'
 import './presenters'

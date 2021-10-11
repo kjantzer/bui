@@ -132,7 +132,7 @@ window.addEventListener('DOMContentLoaded', e=>{
 // app.js
 
 // NOTE: the tabs/app presenter will call `router.start()`
-import AppView from 'bui/presenters/tabs/app'
+import AppView from 'bui/app/tabbar'
 
 customElements.define('my-app', class extends App{
 

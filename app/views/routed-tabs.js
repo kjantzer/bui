@@ -1,6 +1,7 @@
-import TabsView from './index'
+import TabsView from '../../presenters/tabs'
 import router from '../../router'
 
+// TODO: rename to `b-routed-tabs`
 customElements.define('b-tabs-router', class extends TabsView {
 
     connectedCallback(){
