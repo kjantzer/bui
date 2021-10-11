@@ -130,18 +130,6 @@ b-panel {
     color: var(--theme-text);
 }
 
-b-panel:not([anchor^="center"]) {
-    --b-panel-shadow: 0 0 0 1px var(--theme-bgd-accent);
-}
-
-:root.installed b-panel:not([anchor^="center"]) {
-    --b-panel-shadow: none;
-}
-
-.installed b-panel,
-.electron b-panel {
-    // border-top: solid 1px var(--theme-bgd-accent);
-}
 
 :root[dark] .popover { --border: var(--dark-black); }
 :root[dark] .popover .__view {
