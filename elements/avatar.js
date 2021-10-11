@@ -28,6 +28,7 @@ class AvatarElement extends HTMLElement {
 			    vertical-align: middle;
 				position: relative;
 				border-radius: var(--b-avatar-radius, 50%);
+				line-height: 0;
 
 				-webkit-touch-callout: none; /* iOS Safari */
 				-webkit-user-select: none; /* Safari */
@@ -167,8 +168,9 @@ class AvatarElement extends HTMLElement {
 	}
 	
 	set size(size){
-		this.style.width = size+'px'
-		this.style.height = size+'px'
+		// this.style.setProperty('--size', size+'px')
+		// this.style.width = size+'px'
+		// this.style.height = size+'px'
 		// reload the gravatar to get the correct size
 		this.gravatar = this.getAttr('gravatar')
 	}
