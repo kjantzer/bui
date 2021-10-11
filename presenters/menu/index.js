@@ -567,7 +567,7 @@ export default class Menu {
 			return
 		
 		// stop processing the keypress unless it is one of these
-		if( !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Space'].includes(e.code) ) return
+		if( !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Space', 'Tab'].includes(e.code) ) return
 
 		if( !this.opts.multiple && e.code == 'Space' ) return
 		
@@ -613,7 +613,7 @@ export default class Menu {
 		if( this._active == null )
 			this._active = -1;
 		
-		this._active += ['ArrowUp', 'ArrowLeft'].includes(e.code) ? -1 : 1;
+		this._active += ['ArrowUp', 'ArrowLeft'].includes(e.code) || (e.code == 'Tab' && e.shiftKey) ? -1 : 1;
 		
 		if( this._active < 0 )
 			this._active = items.length - 1
