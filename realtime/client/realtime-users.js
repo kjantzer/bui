@@ -140,7 +140,7 @@ customElements.define('b-realtime-users', class extends LitElement{
     }
     
     showUser(i){
-        if( this.users.length > this.max )
+        if( this.users.size > this.max )
             i++
         return i < this.max
     }
@@ -148,7 +148,7 @@ customElements.define('b-realtime-users', class extends LitElement{
     render(){return html`
         <main part="main">
             
-            ${this.users.map((m,i)=>!this.showUser(i)?'':this.renderUser(m))}
+            ${this.users.map((m,k,i)=>!this.showUser(i)?'':this.renderUser(m))}
             ${this.users.length>this.max?html`
                 <b-avatar class="avatar" initials="+${this.users.length-this.max+1}" color="#555" bgd="#ddd"></b-avatar>
             `:''}
