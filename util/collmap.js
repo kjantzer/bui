@@ -27,13 +27,15 @@ module.exports = class CollMap extends Map {
 
     map(fn){
         let resp = []
-        this.forEach((v, key)=>resp.push(fn(v, key)))
+        let i = 0
+        this.forEach((v, key)=>resp.push(fn(v, key, i++)))
         return resp
     }
 
     filter(fn){
         let resp = []
-        this.forEach((v, key)=>fn(v, key)?resp.push(v):null)
+        let i = 0
+        this.forEach((v, key)=>fn(v, key, i++)?resp.push(v):null)
         return resp
     }
 
