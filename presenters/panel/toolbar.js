@@ -18,7 +18,7 @@ class PanelToolbar extends LitElement {
     static get styles(){return css`
         :host {
             display: grid;
-            grid-template-columns: 1fr max-content 1fr;
+            grid-template-columns: 1fr auto 1fr;
             /* background: linear-gradient(to bottom, #fff, #f5f5f5); */
             padding: .5em;
             padding: .4em .5em .3em;
@@ -28,6 +28,8 @@ class PanelToolbar extends LitElement {
             border-radius: 4px 4px 0 0;
             min-height: 40px;
             grid-column: 1/-1; /* full width */
+            min-width: 0;
+            gap: .25rem;
         }
 
         :host([hidden]) { display: none; }
@@ -51,6 +53,11 @@ class PanelToolbar extends LitElement {
             top: 0;
             left: 0;
             width: 100%;
+        }
+
+        .middle {
+            overflow: hidden;
+            min-width: 20%;
         }
 
         :host([overlay]) > div * {
