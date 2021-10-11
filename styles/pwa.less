@@ -86,6 +86,19 @@ b-panel {
     --b-menu-input-padding: .5em;
 }
 
+:root.installed.mac:not(.ios) b-panel {
+    --b-panel-radius: .75rem;
+}
+
+:root.installed:not(.ios) b-panel {
+    --b-panel-radius: 1rem;
+}
+
+:root.installed b-panel[height="100%"],
+:root b-panel[height="100%"][width="100%"] {
+    --b-panel-radius: 0 !important;
+}
+
 :root:not(.mobile) b-panel[type="search-popup"] {
     --radius: 1em;
     position: fixed;
