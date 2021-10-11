@@ -14,7 +14,7 @@ export const PanelDefaults = {
     title: '',
     width: '100%',
     height: '100%',
-    anchor: 'right',
+    anchor: 'bottom',
     animation: 'rise',
     quickJump: true,
     closeOnEsc: false,
@@ -224,7 +224,8 @@ export class Panel extends LitElement {
         anchor: {type: String, reflect: true},
         type: {type: String, reflect: true},
         vid: {type: String, reflect: true},
-        animation: {type: String, reflect: true}
+        animation: {type: String, reflect: true},
+        closebtn: {type: String, reflect: true}
     }}
 
     static register(path, view, opts){
@@ -255,8 +256,12 @@ export class Panel extends LitElement {
             defaultOpts.width = '100%'
             defaultOpts.height = ''
             defaultOpts.anchor = 'bottom'
-
+            
         }else{
+
+            if( opts.width && opts.width != '100%' )
+                defaultOpts.anchor = 'right'
+
             // change to slide animation if view has width set (makes more sense)
             if( !opts.animation && opts.width )
                 opts.animation = 'slide'
@@ -267,7 +272,7 @@ export class Panel extends LitElement {
         this.animation = opts.animation
         this.vid = opts.vid
         this.type = opts.type
-        this.closeBtn = opts.closeBtn
+        this.closebtn = opts.closeBtn
         this.title = opts.title
         this.width = opts.width
         this.height = opts.height
@@ -380,7 +385,7 @@ export class Panel extends LitElement {
     render(){return html`
         <div part="backdrop" class="backdrop"></div>
         <main part="main" style="${this.width?`width:${this.width};`:''}${this.height?`height:${this.height};`:''}">
-            <b-btn icon="cancel-1" pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closeBtn!==true}></b-btn>
+            <b-btn icon="cancel-1" pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closebtn!==true}></b-btn>
             <slot></slot>
             <div class="inlinehtml">
                 ${this.html}
@@ -465,6 +470,10 @@ export class Panel extends LitElement {
                 this.toolbar = this.shadowRoot.querySelector('b-panel-toolbar') || this.querySelector('b-panel-toolbar')
             
             if( this.toolbar ){
+                
+                if( this.closebtn )
+                    this.toolbar.closebtn = this.closebtn
+
                 this.toolbar.panel = this
                 this.toolbar.title = this.title
             }
@@ -718,6 +727,18 @@ export class Panel extends LitElement {
             margin-bottom: 0;
         }
 
+        :host([anchor="bottom"]) {
+            --b-panel-toolbar-close-btn-rotation: 90deg;
+        }
+
+        :host([anchor="top"]) {
+            --b-panel-toolbar-close-btn-rotation: -90deg;
+        }
+
+        :host([anchor="left"]) {
+            --b-panel-toolbar-close-btn-rotation: 180deg;
+        }
+
         .backdrop {
             position: absolute;
             top: 0;
@@ -731,6 +752,7 @@ export class Panel extends LitElement {
             top: 0;
             right: 0;
             z-index: 10000;
+            flex-shrink: 0;
             transform: translate(50%, -50%);
         }
 

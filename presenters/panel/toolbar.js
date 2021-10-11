@@ -4,13 +4,15 @@ class PanelToolbar extends LitElement {
 
     static get properties(){return {
         title: {type: String},
-        look: {type: String, reflect: true}
+        look: {type: String, reflect: true},
+        closebtn: {type: String, reflect: true}
     }}
 
     constructor(){
         super()
         this.title = ''
         this.look = ''
+        this.closebtn = 'cancel-1'
     }
 
     static get styles(){return css`
@@ -95,6 +97,23 @@ class PanelToolbar extends LitElement {
             text-align: right;
         }
 
+        [part="close-btn"] {
+            width: 1.95rem;
+            height: 1.95rem;
+            flex-shrink: 0;
+            transform: rotate(var(--b-panel-toolbar-close-btn-rotation, 0deg));
+        }
+
+        [part="close-btn"][icon="right-open"]::part(main) {
+            padding-top: 0;
+            padding-bottom: 0;
+
+        }
+
+        [part="close-btn"][icon="right-open"]::part(icon) {
+            --size: 1.8rem;
+        }
+
         /* hide on small devices in landscape (allow for more space for the content) */ 
         @media
         screen and (orientation:landscape) and (max-width:999px) and (max-height:599px)
@@ -116,11 +135,19 @@ class PanelToolbar extends LitElement {
 
     `}
 
+    get closeBtnIcon(){
+        if( this.closebtn === 'arrow' ) return 'right-open'
+        return this.closebtn
+    }
+
     render(){return html`
         <div class="left">
             <slot name="close-btn">
-                <b-btn outline icon="cancel-1" title="Right+click for quick jump menu"
-                    @click=${this.close} @contextmenu=${this.quickJump}></b-btn>
+                <b-btn ?outline=${this.closebtn!='arrow'} 
+                    part="close-btn"
+                    ?clear=${this.closebtn=='arrow'}
+                    icon="${this.closeBtnIcon}" 
+                    @click=${this.close}></b-btn>
             </slot>
             <slot name="left"></slot>
         </div>
@@ -135,15 +162,6 @@ class PanelToolbar extends LitElement {
 
     close(){
         this.panel&&this.panel.close()
-    }
-
-    quickJump(e){
-
-        if( !this.panel || this.panel.opts.quickJump !== true )
-            return
-
-        e.preventDefault();
-        this.panel&&this.panel.panelController&&this.panel.panelController.quickJump(e.target)
     }
 }
 
