@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const groupBy = require('../util/array.groupBy')
 require('../util/promise.series')
 
 const clauses = require('./db/clauses')
@@ -205,33 +206,9 @@ module.exports = class DB {
 class DBResults extends Array {
     static get array_chunk_size(){return 10000}
     
-    groupBy(key, {forceArray=false, deleteKeyedValue=false}={}){
-        let group = {}
-        this.forEach(row=>{
-            if( row[key] ){
-
-                let rowKey = row[key]
-
-                if( deleteKeyedValue )
-                    delete row[key]
-
-                if( forceArray && !group[rowKey] )
-                    group[rowKey] = []
-
-                // exists with one row...convert to array of rows
-                if( group[rowKey] && group[rowKey][key] )
-                    group[rowKey] = [group[rowKey]]
-
-                // already set, must be array of rows
-                if( group[rowKey] )
-                    group[rowKey].push(row)
-                // single row so far
-                else
-                    group[rowKey] = row
-            }
-        })
-        return group
-	}
+    groupBy(...args){
+        return groupBy.apply(this, args )
+    }
 
     get first(){ return this[0] }
     get last(){ return this[this.length-1] }
