@@ -195,6 +195,34 @@ needs to render one. A panel toolbar element has been created for such a task.
 - `overlay`
 - `notitle`
 
+## Fullscreen Button
+
+```js
+import 'bui/presenters/panel/fullscreen-btn'
+```
+Adds a fullscreen button and attaches a `fullscreen()` method to the panel
+
+```js
+panel.fullscreen({
+    close: false, // will close if alredy in minimized state
+    toggle: true // change to false to only make fullscreen
+})
+```
+
+```html
+<b-panel-toolbar>
+    <b-panel-fullscreen-btn></b-panel-fullscreen-btn>
+</b-panel-toolbar>
+```
+
+The fullscreen button needs to be linked to the parent `Panel`. This will happen automatically if nested inside a panel toolbar. Alternatively, you need to link it yourself
+
+```html
+<b-panel-fullscreen-btn .panel=${this.panel}></b-panel-fullscreen-btn>
+```
+
+> Note: this is a subclass of `b-btn` so you can add supported attributes such as `color="theme"` or `text`
+
 ## Modal
 Although designed as a large panel view, panels can be leveraged to present
 modal (popup/alert) windows. This can be accomplished through the options
