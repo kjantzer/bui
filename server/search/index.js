@@ -45,7 +45,7 @@ class SearchAPI {
         return this.searchTypes(types)
     }
 
-    async searchTypes(types=['book']){
+    async searchTypes(types=['book'], {hydrate=true}={}){
 
         if( !this.db ) throw new Error('Missing `this.db`')
         
@@ -68,6 +68,9 @@ class SearchAPI {
             keys: ["label"]
         })
         let result = fuse.search(this.term)
+
+        if( !hydrate )
+            return result
 
         // get list of IDs, grouped by type
         let byType = {}
