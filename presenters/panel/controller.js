@@ -2,6 +2,7 @@ import {LitElement, html, css} from 'lit-element'
 import Menu from '../menu'
 import router from '../../router'
 import device from '../../util/device'
+import overscroll from '../../util/overscroll'
 
 const PanelControllers = {}
 
@@ -52,35 +53,48 @@ class PanelController extends LitElement {
                 PanelControllers[this.name] = this
         }
 
-        // TODO: support his in Android? make feature opt in?
+        // TODO: support this in Android? make feature opt in?
         if( this.name == 'root' && device.isiOS ){
-            let overflowScrollAt = 0
+
+            const overscrollEl = overscroll.watch()
             let topPanel = null
 
-            window.addEventListener('touchend', e=>{
-                if( overflowScrollAt < -40 ){
-                    topPanel&&topPanel.close()
-                    setTimeout(()=>{
-                        if( topPanel ) topPanel.style.top = 0
-                        topPanel = null
-                    },300)
-                }else{
-                    topPanel = null
-                }
-            })
+            overscrollEl.addEventListener('overscroll', e=>{
 
-            window.addEventListener('scroll', e=>{
-
+                if( !e.detail ) return
+                
                 if( this.panels.size > 0 && !topPanel )
                     topPanel = this.panelOnTop
-                
+
                 if( !topPanel || topPanel.opts.disableOverscrollClose === true ) return
 
-                overflowScrollAt = document.scrollingElement.scrollTop
-                
-                if( overflowScrollAt < 0 && topPanel ){
-                    topPanel.style.top = (Math.abs(overflowScrollAt) * 1) + 'px'
+                let {top, bottom} = e.detail
+
+                if( top ){
+                    topPanel.style.top = Math.abs(top)+'px'
+                }else if( bottom && topPanel.fullscreen ){
+                    topPanel.style.top = bottom+'px'
                 }
+                
+            })
+
+            overscrollEl.addEventListener('overscrolled', e=>{
+
+                if( !topPanel || topPanel.opts.disableOverscrollClose === true ) return 
+
+                let {top, bottom} = e.detail
+
+                if( bottom && topPanel.fullscreen )
+                    topPanel.fullscreen({toggle: false})
+                else if( top && topPanel.fullscreen)
+                    topPanel.fullscreen({close:true})
+                else if( top )
+                    topPanel.close()
+
+                setTimeout(()=>{
+                    if( topPanel ) topPanel.style.top = 0
+                    topPanel = null
+                },300)
             })
         }
     }
