@@ -1,11 +1,11 @@
 import { LitElement, html, css } from 'lit-element'
 import { Editor } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
-import { SmartCharacterReplacer } from './smart-character-replacer'
 import { KeyboardEvents } from './keyboard-events'
 import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
 import CharacterCount from '@tiptap/extension-character-count'
+import Typography from '@tiptap/extension-typography'
 import './menubar'
 import style from './style'
 
@@ -52,7 +52,8 @@ customElements.define('text-editor', class extends LitElement{
                     types: ['heading', 'paragraph'],
                     alignments: ['left', 'center'],
                 }),
-                SmartCharacterReplacer,
+                Typography,
+                // SmartCharacterReplacer,
                 KeyboardEvents,
                 CharacterCount.configure({
                     limit: this.maxchar||0,
