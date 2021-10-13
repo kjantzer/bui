@@ -503,6 +503,11 @@ customElements.define('b-list', class extends LitElement {
         : this.dataSource.data
     }
 
+    get currentModelsOrAll(){
+        let models = this.currentModels
+        return models.length > 0 ? models : this.dataSource.data
+    }
+
     async refresh(){
         this.spinner.show = true
         try{
