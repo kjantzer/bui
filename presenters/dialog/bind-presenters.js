@@ -24,6 +24,10 @@ const presenters = {
 		if( opts.adjustForMobile && device.isMobile )
 			return this.modal((typeof opts.adjustForMobile == 'object' ? opts.adjustForMobile : {}))
 		
+		// legacy jQuery support
+		if( target.originalEvent )
+			target = target.originalEvent.target || target.originalEvent
+
 		let onClose = opts.onClose
 		opts.onClose = ()=>{
 			onClose&&onClose()
