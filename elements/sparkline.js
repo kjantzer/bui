@@ -21,7 +21,7 @@ customElements.define('b-sparkline', class extends LitElement{
 
         .sparkline {
             stroke: var(--theme, var(--blue, #000));
-            fill: none;
+            fill: var(--fill, none);
         }
 
         .sparkline--spot {
