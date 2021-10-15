@@ -16,9 +16,13 @@ customElements.define('b-copy-btn', class extends Btn{
         e.stopPropagation()
         
         let label = this.getAttribute('label') || 'Value'
+        
         let val = this.value
         if( typeof val == 'function' )
             val = val()
+        
+        if( this.value === undefined && this.parentElement )
+            val = this.parentElement.textContent.trim()
         
         copyText(val)
         Notif.alert(`${label} copied to clipboard`, {icon: 'paste'})
