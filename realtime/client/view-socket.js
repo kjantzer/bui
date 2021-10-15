@@ -20,10 +20,10 @@ export default (attrs, view)=>new Proxy(attrs, {
         if( target[prop] != undefined )
             return target[prop]
         
-        if( target.data[prop] != undefined )
+        if( target.data && target.data[prop] != undefined )
             return target.data[prop]
 
-        if( target.attrs[prop] != undefined )
+        if( target.attrs && target.attrs[prop] != undefined )
             return target.attrs[prop]
 
         return target[prop];
