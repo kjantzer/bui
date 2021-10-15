@@ -40,7 +40,7 @@ module.exports = class DB {
     }
 
     query(sql, data, {timeout=30000, debug=false, logFailure=false}={}){
-		return new Promise((resolve, reject)=>{
+		return new QueryPromise((resolve, reject)=>{
 
 			sql = mysql.format(sql, data)
 
@@ -201,6 +201,21 @@ module.exports = class DB {
         return [fields, values]
     }
 
+}
+
+// TODO: change this to a Proxy so ANY array method can be called and redirected
+class QueryPromise extends Promise {
+
+    get values(){ return this.then(r=>r.values) }
+    get value(){ return this.then(r=>r.value) }
+    get first(){ return this.then(r=>r.first) }
+    get last(){ return this.then(r=>r.last) }
+    get length(){ return this.then(r=>r.length) }
+
+    groupBy(...args){ return this.then(r=>r.groupBy(...args)) }
+    filter(...args){ return this.then(r=>r.filter(...args)) }
+    map(...args){ return this.then(r=>r.map(...args)) }
+    find(...args){ return this.then(r=>r.find(...args)) }
 }
 
 class DBResults extends Array {
