@@ -20,6 +20,7 @@ Icon.register(
 	['pod', require('./pod.svg.html')],
 	['alert', require('./alert.svg.html')],
 	['amazon', require('./amazon.svg.html')],
+	['company', require('./company.svg.html')],
 	['android', require('./android.svg.html')],
 	['appstore', require('./appstore.svg.html')],
 	['archive', require('./archive.svg.html')],
