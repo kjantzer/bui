@@ -84,7 +84,7 @@ router.goTo('my-custom-element')
 If the custom element implements `onOpen`, the panel will call it with the
 route `state` object
 
-`willOpen(state)`
+`async willOpen(state)`
 Called right before opening. If the function returns `false`, the panel
 will not open
 

@@ -506,8 +506,11 @@ export class Panel extends LitElement {
         }
 
         if( this.view && this.view.willOpen ){
-            if( await this.view.willOpen(this.route.state) === false )
+            if( await this.view.willOpen(this.route.state) === false ){
+                if( this.route)
+                    this.panelController._updateRoute()
                 return false;
+            }
         }
 
         this._onKeydown = this._onKeydown || this.onKeydown.bind(this)
