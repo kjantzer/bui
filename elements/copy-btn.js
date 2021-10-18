@@ -25,7 +25,7 @@ customElements.define('b-copy-btn', class extends Btn{
             val = this.parentElement.textContent.trim()
         
         copyText(val)
-        Notif.alert(`${label} copied to clipboard`, {icon: 'paste'})
+        Notif.alert(`${label} copied to clipboard`, {icon: this.icon})
     }
 
 })
