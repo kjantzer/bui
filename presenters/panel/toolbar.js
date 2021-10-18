@@ -154,10 +154,11 @@ class PanelToolbar extends LitElement {
             <slot name="left"></slot>
         </div>
         <div class="middle">
-            <slot name="title:before"></slot>
-            <slot name="title"><b-text sm clip>${this.title}</b-text></slot>
-            <slot name="title:after"></slot>
-            <slot name="middle"></slot>
+            <slot name="middle">
+                <slot name="title:before"></slot>
+                <slot name="title"><b-text sm clip>${this.title}</b-text></slot>
+                <slot name="title:after"></slot>
+            </slot>
         </div>
         <div class="right">
             <slot name="right"></slot>
