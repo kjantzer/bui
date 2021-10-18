@@ -47,7 +47,7 @@ class RegisteredPanels {
             if( _view ){
                 opts = view
                 view = path
-                path = ce.path
+                path = _view.path
             }       
         }
 
