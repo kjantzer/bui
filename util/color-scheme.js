@@ -35,10 +35,13 @@ export const colorScheme = {
         })
     },
 
-    apply({colorizeFaviconComposition='', theme=undefined, accent=undefined}={}){
+    apply({colorizeFaviconComposition='', theme=undefined, accent=undefined, watch=true}={}){
         localStorage.setItem('theme-colorize-icon', 
             colorizeFaviconComposition||localStorage.getItem('theme-colorize-icon')||'lighten')
-        this.onChange(this.setTheme.bind(this))
+        
+        if( watch )
+            this.onChange(this.setTheme.bind(this))
+
         this.setTheme(theme)
         this.setAccent(accent)
     },
