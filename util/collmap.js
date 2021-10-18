@@ -3,7 +3,11 @@
 */
 module.exports = class CollMap extends Map {
 
-    constructor(data, {appendKey=false}={}){
+    constructor(data, {appendKey=false, store=false}={}){
+
+        if( !data && store )
+            data = store()
+
         if( data )
             data = Object.entries(data)
 
@@ -16,6 +20,26 @@ module.exports = class CollMap extends Map {
         }
 
         super(data)
+
+        this.store = store
+    }
+
+    set(...args){
+        super.set(...args)
+        this._storeUpdate(...args)
+    }
+
+    delete(...args){
+        super.delete(...args)
+        this._storeUpdate(...args)
+    }
+
+    _storeUpdate(args){
+        if( this.store ){
+            this.store(this.toObject())
+            if( this.emit )
+                this.emit('change', args)
+        }
     }
     
     get first(){ return this.at(0) }
@@ -47,4 +71,9 @@ module.exports = class CollMap extends Map {
     toJSON(){
         return this.map(v=>v.toJSON&&v.toJSON())
     }
+
+    toObject(){
+        return Object.fromEntries(this.entries())
+    }
+    
 }
