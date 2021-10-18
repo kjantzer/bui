@@ -43,9 +43,12 @@ class RegisteredPanels {
 
         // use the path on the defined custom element
         if( path && typeof view != 'string' ){
-            opts = view
-            view = path
-            path = customElements.get(view).path
+            let _view = customElements.get(path)
+            if( _view ){
+                opts = view
+                view = path
+                path = ce.path
+            }       
         }
 
         if( !path )
