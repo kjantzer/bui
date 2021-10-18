@@ -40,9 +40,23 @@ class RegisteredPanels {
     }
 
     add(path, view, opts={}){
+
+        // use the path on the defined custom element
+        if( path && typeof view != 'string' ){
+            opts = view
+            view = path
+            path = customElements.get(view).path
+        }
+
+        if( !path )
+            return console.error('Missing path')
+
         if( this.get(path) ){
             return console.warn(`A panel is already registered for ${path}`)
         }
+
+        if( path && router.routes.includes('/'+path) )
+            return console.warn('Ignorning panel registration, route already in use')
 
         if( typeof view == 'string' ){
             let ce = customElements.get(view)
