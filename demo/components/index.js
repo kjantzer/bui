@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
 import './search'
 import './comments'
+import './fileexplorer'
 import docs from '../../components/README.md'
 
 customElements.define('demo-components', class extends LitElement{
@@ -29,6 +30,7 @@ customElements.define('demo-components', class extends LitElement{
             </div>
             demo-presenter-search
             demo-components-comments
+            demo-components-fileexplorer
         </b-tabs-router>
     `}
 
