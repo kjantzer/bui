@@ -6,13 +6,15 @@ customElements.define('b-panel-fullscreen-btn', class extends Btn{
     constructor(...args){
         super(...args)
         this.icon = "resize-full"
-        this.slot = "right"
 
         this.addEventListener('click', this.fullscreen)
     }
 
     connectedCallback(){
         super.connectedCallback()
+
+        if( !this.hasAttribute('slot') )
+            this.slot = "right"
 
         setTimeout(()=>{
 
