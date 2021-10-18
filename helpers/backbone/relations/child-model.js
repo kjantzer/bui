@@ -4,8 +4,13 @@ module.exports = function(Orig){ return {
 	// DEPRECATED - just use `get`
 	childCollection: function(key ){ return this.getCollection(key); }, // alias
 	
+	getPromise(key, opts={}){
+		opts.promise = true
+		return this.get(key, opts)
+	},
+
 	// Overrides default to get a collection if no attribute for given `key` exists
-	get: function(key, {dotnotation=true}={}){
+	get: function(key, {dotnotation=true, promise=false}={}){
 
 		// else, default to normal get of `attributes`
 		if( !dotnotation || typeof key !== 'string' )
@@ -25,10 +30,10 @@ module.exports = function(Orig){ return {
 		
 		// child model matching key?
 		if( this._childModel(key) )
-			return this.getModel(key, path);
+			return this.getModel(key, path, {promise});
 		
 		// traversing up the parents for every `get` is expensive when dealing with lots of models so only do it if no attribute matches
-		if( this.attributes[key] === undefined ){
+		if( this.attributes[key] === undefined && key != 'name' ){
 
 			if( this[key] !== undefined ){
 
@@ -190,7 +195,7 @@ module.exports = function(Orig){ return {
 		return path && m ? m.get(path) : m
 	},
 	
-	getModel: function(key, path){
+	getModel: function(key, path, {promise=false}={}){
 
 		this.__childModels = this.__childModels || {};
 
@@ -254,7 +259,7 @@ module.exports = function(Orig){ return {
 			if( typeof coll == 'function' ){
 				var Model = coll.call(this, id, key)
 			}else{
-				var Model = info.fetch ? coll.getOrFetch(id, {success:this._childModelFetched.bind(this, key), silent:true}) : coll.getOrCreate(attributes)
+				var Model = info.fetch ? coll.getOrFetch(id, {success:this._childModelFetched.bind(this, key, path), silent:true}) : coll.getOrCreate(attributes)
 				Model.refColl = coll
 			}
 
@@ -262,7 +267,7 @@ module.exports = function(Orig){ return {
 		}else{
 			var Model = new ChildModel(attributes)
 			// TODO: allow for urlPath to be used to set a url on this model
-			if( info.fetch && id ) Model.fetch({success:this._childModelFetched.bind(this, key)});
+			if( info.fetch && id ) Model.fetch({success:this._childModelFetched.bind(this, key, path)});
 		}
 
 		if( Model ){
@@ -272,13 +277,31 @@ module.exports = function(Orig){ return {
 
 		this.__childModels[key] = Model;
 
+		if( promise ){
+			this._getPromise = this._getPromise || new Promise((resolve, reject)=>{
+				this._getPromiseResolve = resolve
+			})
+
+			this._getPromise.get = (...args)=>this._getPromise.then(model=>model.get(...args))
+
+			return this._getPromise
+		}
+
 		return path && Model ? Model.get(path) : Model
 	},
 
-	_childModelFetched: function(key, model){
+	_childModelFetched: function(key, path, model){
 		// delay to allow for the model to save: `this.__childModels[key] = Model;`
 		setTimeout(()=>{
 			this.trigger('model:'+key+':fetch', model)
+
+			if( this._getPromiseResolve ){
+				if( path )
+					model = model.get(path)
+				this._getPromiseResolve(model)
+				delete this._getPromise
+				delete this._getPromiseResolve
+			}
 		})
 	},
 	
