@@ -20,9 +20,10 @@ customElements.define('my-file-browser', class extends FileBrowser{
     get root(){ return '/api/ftp' }
     get key(){ return 'file-browser' }
     get row(){ return 'b-filebrowser-file' }
+    get filters(){ return {} } // b-list filters
 
     openFile(model){}
-}
+})
 
 Panel.register('my-file-browser', {
     width: '800px',

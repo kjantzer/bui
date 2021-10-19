@@ -5,6 +5,10 @@ customElements.define('b-filebrowser-file', class extends LitElement{
 
     static get styles(){return [ListHeader.sharedFinderStyles, css`
 
+        :host {
+            user-select: none;
+        }
+
         b-file-icon {
             --size: 1.4em;
             margin: -.5rem 0;
@@ -17,10 +21,14 @@ customElements.define('b-filebrowser-file', class extends LitElement{
             margin: -.5rem 0;
         }
 
+        :host(.popover-open) .name {
+            color: var(--theme);
+        }
+
     `]}
 
     static header(){ return html`
-        <div w="40px">Type</div>
+        <div w="32px"></div>
         <div w="minmax(40%, 1fr)">Name</div>
         <div w="120px">Size</div>
         <div w="180px">Date</div>
@@ -37,7 +45,7 @@ customElements.define('b-filebrowser-file', class extends LitElement{
 
         </div>
 
-        <b-text clip>${this.model.get('name')}</b-text>
+        <b-text clip class="name">${this.model.get('name')}</b-text>
 
         <b-text>
             ${this.model.get('type')=='d'?'—':html`
@@ -52,10 +60,14 @@ customElements.define('b-filebrowser-file', class extends LitElement{
 
     firstUpdated(){
         this.addEventListener('dblclick', this.open)
+        this.addEventListener('click', this.onClick)
     }
 
-    async open(e){
-        clearTimeout(this._clicktimeout)
+    onClick(e){
+        this.emitEvent('clickitem', {model: this.model, target: this, originalEvent:e})
+    }
+
+    open(e){
         return this.emitEvent('navto', {model:this.model})
     }
 

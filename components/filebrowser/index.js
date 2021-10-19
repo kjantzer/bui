@@ -10,8 +10,6 @@ import Coll from './models'
 import './row'
 import './breadcrumbs'
 
-import Panel from 'panel'
-
 customElements.define('b-filebrowser', class extends RoutedView{
 
     static get title(){ return 'File Browser' }
@@ -22,8 +20,10 @@ customElements.define('b-filebrowser', class extends RoutedView{
     get root(){ return '/api/v6/ftp' }
     get key(){ return 'file-browser' }
     get row(){ return 'b-filebrowser-file' }
+    get filters(){ return {} }
 
     openFile(model){}
+    itemClick(e){let {model} = e.detail}
 
     static get listeners(){return {
         coll: {'change:path': 'onPathChange'}
@@ -69,8 +69,10 @@ customElements.define('b-filebrowser', class extends RoutedView{
             row="${this.row}"
             .listOptions=${{fetchOnLoad: false}}
             .sorts=${sorts}
+            .filters=${this.filters}
             .coll=${this.coll}
             @navto=${this.navTo}
+            @clickitem=${this.itemClick}
         >
             <b-root-titlebar title="${this.constructor.title}"></b-root-titlebar>
             <b-list-header></b-list-header>
@@ -106,9 +108,4 @@ const sorts = {
 }
 
 
-Panel.register('b-filebrowser', {
-    width: '800px',
-    height: '96vh',
-    anchor: 'center',
-    shortcut: true // TEMP
-})
+export default customElements.get('b-filebrowser')
