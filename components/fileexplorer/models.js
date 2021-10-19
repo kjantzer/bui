@@ -2,12 +2,13 @@ import {Collection} from 'backbone'
 
 export default class Coll extends Collection {
 
-    constructor(){
+    constructor({root='/api/ftp'}){
         super()
+        this.urlRoot = root
         this.path = []
     }
     
-    get url(){ return '/api/v6/ftp'+(this.path.length>0?('/'+this.path.join('/')):'') }
+    get url(){ return this.urlRoot+(this.path.length>0?('/'+this.path.join('/')):'') }
 
     get pathString(){
         return this.path.join('/')

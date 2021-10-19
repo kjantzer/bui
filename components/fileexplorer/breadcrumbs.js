@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
+import scrollbars from '../../helpers/scrollbars'
 
 customElements.define('b-fileexplorer-breadcrumbs', class extends LitElement{
 
@@ -13,14 +14,26 @@ customElements.define('b-fileexplorer-breadcrumbs', class extends LitElement{
             align-self: stretch;
             display: flex;
             align-items: center;
+            overflow-x: auto;
         }
 
-        b-btn:not(:last-of-type):not(:hover):not(:first-child) {
-            opacity: .5
+        ${scrollbars.hide()}
+
+        b-btn {
+            font-weight: normal;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        [sep] {
+            margin: 0px -0.35rem;
+            color: var(--theme-text-accent);
+            font-weight: bold;
         }
 
         b-btn:last-of-type {
             font-weight: bold;
+            color: var(--theme);
         }
     `}
 
@@ -29,8 +42,8 @@ customElements.define('b-fileexplorer-breadcrumbs', class extends LitElement{
         <b-btn text icon="home" index="" @click=${this.navTo}></b-btn>
         
         ${this.coll.path.map((path,i)=>html`
-            <b-icon name="right-open"></b-icon>
-            <b-btn text index=${i} color="theme" @click=${this.navTo}>${path}</b-btn>
+            <b-text sep>/</b-text>
+            <b-btn text index=${i} @click=${this.navTo}>${path}</b-btn>
         `)}
     `}
 
