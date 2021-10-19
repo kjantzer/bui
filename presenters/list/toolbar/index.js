@@ -64,8 +64,8 @@ customElements.define('b-list-toolbar', class extends LitElement{
             align-self: stretch;
             display: flex;
             align-items: center;
-            border-right: 2px solid rgba(0, 0, 0, 0.1);
-            padding: 0 .75em 0 .25em;
+            /* border-right: 2px solid rgba(0, 0, 0, 0.1); */
+            /* padding: 0 .75em 0 .25em; */
             margin-right: .25em;
         }
 
@@ -82,12 +82,27 @@ customElements.define('b-list-toolbar', class extends LitElement{
         .controls > b-icon:hover {
             color: #333;
         }
+
+        .count > span {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+            padding: 0.2em 0.4em;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 1px var(--theme-shadow) inset;
+            order: var(--count-order, 2);
+        }
+
+        [name="before"] { order: 1; }
+        .scroller { order: 3; }
+        .after { order: 4; }
     `}
 
     render(){return html`
         <slot name="before"></slot>
 
-        <div class="count">${this.count}</div>
+        <div class="count"><span>${this.count}</span></div>
 
         <div class="scroller">
 
