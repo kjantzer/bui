@@ -17,6 +17,43 @@ customElements.define('b-list-header', class extends LitElement{
         }
     `}
 
+    static get sharedFinderStyles(){ return css`
+
+        ${this.sharedStyles}
+
+        :host([slot="header"]) {
+            padding-left: .5rem;
+            padding-right: .5rem;
+        }
+
+        :host(:not([slot="header"])) {
+            margin-left: .5rem;
+            margin-right: .5rem;
+        }
+
+        :host(:not([slot="header"])) > * {
+            border-bottom: none;
+        }
+
+        :host > *:first-child {
+            border-radius: 4px 0 0 4px;
+        }
+
+        :host > *:last-child {
+            border-radius: 0 4px 4px 0;
+        }
+
+        :host(:nth-child(even)) > * {
+            background-color: var(--theme-bgd-accent2);
+        }
+
+        /* @media (hover){
+            :host(:hover) > * {
+                background-color: var(--theme-bgd-accent)
+            }
+        } */
+    `}
+
     constructor(){
         super()
         this.slot = "header"

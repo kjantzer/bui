@@ -111,7 +111,7 @@ customElements.define('b-list', class extends LitElement {
 
         slot[name="header"],
         slot[name="footer"] {
-            display: block;
+            display: grid;
             overflow-x: auto;
         }
 
