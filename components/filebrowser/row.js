@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
 import ListHeader from '../../presenters/list/header'
 
-customElements.define('b-fileexplorer-file', class extends LitElement{
+customElements.define('b-filebrowser-file', class extends LitElement{
 
     static get styles(){return [ListHeader.sharedFinderStyles, css`
 
@@ -61,4 +61,4 @@ customElements.define('b-fileexplorer-file', class extends LitElement{
 
 })
 
-export default customElements.get('b-fileexplorer-file')
+export default customElements.get('b-filebrowser-file')

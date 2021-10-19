@@ -1,9 +1,9 @@
 import { LitElement, html, css } from 'lit-element'
-import docs from 'bui/components/fileexplorer/README.md'
+import docs from 'bui/components/filebrowser/README.md'
 
-customElements.define('demo-components-fileexplorer', class extends LitElement{
+customElements.define('demo-components-filebrowser', class extends LitElement{
 
-    static get title(){ return 'File Explorer' }
+    static get title(){ return 'File Browser' }
 
     static get styles(){return css`
         :host {
@@ -29,7 +29,7 @@ customElements.define('demo-components-fileexplorer', class extends LitElement{
 
     render(){return html`
     	<b-paper>
-            <b-h1>File Explorer</b-h1>
+            <b-h1>File Browser</b-h1>
 			<demo-markdown-docs .docs=${docs}></demo-markdown-docs>
 		</b-paper>
     `}

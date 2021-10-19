@@ -12,16 +12,16 @@ import './breadcrumbs'
 
 import Panel from 'panel'
 
-customElements.define('b-fileexplorer', class extends RoutedView{
+customElements.define('b-filebrowser', class extends RoutedView{
 
-    static get title(){ return 'File Explorer' }
+    static get title(){ return 'File Browser' }
 	static get icon(){ return 'hdd' }
-    static get id(){ return 'file-explorer' }
-    static get path(){ return 'file-explorer(/*)' }
+    static get id(){ return 'file-browser' }
+    static get path(){ return 'file-browser(/*)' }
     
-    get root(){ return '/api/ftp' }
-    get key(){ return 'file-explorer' }
-    get row(){ return 'b-fileexplorer-file' }
+    get root(){ return '/api/v6/ftp' }
+    get key(){ return 'file-browser' }
+    get row(){ return 'b-filebrowser-file' }
 
     openFile(model){}
 
@@ -46,7 +46,7 @@ customElements.define('b-fileexplorer', class extends RoutedView{
             order: 2;
         }
 
-        b-fileexplorer-breadcrumbs {
+        b-filebrowser-breadcrumbs {
             padding: .5rem;
             padding-bottom: 0;
             order: 1;
@@ -74,7 +74,7 @@ customElements.define('b-fileexplorer', class extends RoutedView{
         >
             <b-root-titlebar title="${this.constructor.title}"></b-root-titlebar>
             <b-list-header></b-list-header>
-            <b-fileexplorer-breadcrumbs slot="header" .host=${this} .coll=${this.coll}></b-fileexplorer-breadcrumbs>
+            <b-filebrowser-breadcrumbs slot="header" .host=${this} .coll=${this.coll}></b-filebrowser-breadcrumbs>
 
         </b-list>
     `}
@@ -106,7 +106,7 @@ const sorts = {
 }
 
 
-Panel.register('b-fileexplorer', {
+Panel.register('b-filebrowser', {
     width: '800px',
     height: '96vh',
     anchor: 'center',

@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
 import scrollbars from '../../helpers/scrollbars'
 
-customElements.define('b-fileexplorer-breadcrumbs', class extends LitElement{
+customElements.define('b-filebrowser-breadcrumbs', class extends LitElement{
 
     static get listeners(){return {
         coll: {'change:path': 'update'}
@@ -55,4 +55,4 @@ customElements.define('b-fileexplorer-breadcrumbs', class extends LitElement{
 
 })
 
-export default customElements.get('b-fileexplorer-breadcrumbs')
+export default customElements.get('b-filebrowser-breadcrumbs')
