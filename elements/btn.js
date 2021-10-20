@@ -248,6 +248,7 @@ export default class BtnElement extends LitElement {
         :host([color^="black"])  { --color: var(--theme-text-accent, #222); --textColor: var(--theme-bgd, #fff); }
         :host([color^="white"])  { --color: var(--theme-bgd-accent2, #ddd); --textColor: var(--theme-text, #111); }
         :host([color^="orange"]) { --color: var(--orange); }
+        :host([color^="deep-orange"]) { --color: var(--deep-orange); }
         :host([color^="blue"])   { --color: var(--blue); }
         :host([color^="red"])    { --color: var(--red); }
         :host([color^="gray"])   { --color: var(--gray); }
