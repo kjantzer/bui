@@ -164,9 +164,12 @@ customElements.define('b-file-manager', class extends LitElement{
         if( !resp || resp.error ){
             return Dialog.warn({msg: (resp&&resp.error)||'Error', btns: false, pretitle: ''}).notif()
         }else{
-            // TODO: make optional?
-            this.coll.add(resp)
+            this.uploadComplete(resp)
         }
+    }
+
+    uploadComplete(model){
+        return this.coll.add(model)
     }
 
 })
