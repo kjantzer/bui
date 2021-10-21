@@ -47,11 +47,12 @@ customElements.define('b-list-header', class extends LitElement{
             background-color: var(--theme-bgd-accent2);
         }
 
-        /* @media (hover){
-            :host(:hover) > * {
+        @media (hover){
+            :host(:hover) > *,
+            :host(.popover-open) > * {
                 background-color: var(--theme-bgd-accent)
             }
-        } */
+        }
     `}
 
     constructor(){
