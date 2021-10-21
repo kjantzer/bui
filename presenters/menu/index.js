@@ -732,11 +732,18 @@ export default class Menu {
 		let menu = null
 		if( !val )
 			return menu = null
-		else
+
+		if( this.searchUrl ){
+			setTimeout(()=>{
+				this.fetchResults(val)
+			})
+		}else if( this.__fuse ){
+			
 			menu = this.__fuse.search(val)
 
-		if( this.opts.search && this.opts.search.extendResults )
-			this.opts.search.extendResults.call(this, menu, val)
+			if( this.opts.search && this.opts.search.extendResults )
+				this.opts.search.extendResults.call(this, menu, val)			
+		}
 
 		this.__filteredMenu = menu
 	}
