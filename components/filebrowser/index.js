@@ -37,7 +37,7 @@ customElements.define('b-filebrowser', class extends RoutedView{
     static get styles(){return [super.styles, css`
 
         :host {
-            grid-template-rows: 1fr;
+            grid-template-rows: 1fr !important;
         }
 
         b-list-header {

@@ -61,6 +61,7 @@ customElements.define('b-filebrowser-file', class extends LitElement{
     firstUpdated(){
         this.addEventListener('dblclick', this.open)
         this.addEventListener('click', this.onClick)
+        this.addEventListener('contextmenu', this.onClick)
     }
 
     onClick(e){
