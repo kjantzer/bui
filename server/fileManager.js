@@ -59,6 +59,10 @@ module.exports = class FileManager extends Model {
         return path.join(this.dirPath, name)
     }
 
+    ensureDirPath(){
+        return mkdirp.sync(this.dirPath)
+    }
+
     findWhere(where){
         // if asking for a set of files, parent_id must be given
         if( !this.id )
@@ -110,7 +114,7 @@ module.exports = class FileManager extends Model {
                 await this.destroy()
         }
 
-        await mkdirp.sync(this.dirPath)
+        await this.ensureDirPath()
 
         let isImg = info.type.match(/image/) && !info.type.match(/photoshop/)
         let isVideo = info.type.match(/video/)
