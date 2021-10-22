@@ -18,7 +18,9 @@ module.exports = class SearchType {
 
     query(term){
         term = this.formatTerm(term)
-        return this.db.query(this.searchSql, term).then(rows=>{
+        let sql = this.searchSql
+        if( typeof sql == 'function' ) sql = sql(term)
+        return this.db.query(sql, term).then(rows=>{
             rows.forEach(row=>row.type=row.type||this.type)
             return rows
         })
