@@ -45,7 +45,7 @@ class RegisteredPanels {
         if( path && typeof view != 'string' ){
             let _view = customElements.get(path)
             if( _view ){
-                opts = view
+                opts = view || {}
                 view = path
                 path = _view.path
             }       
