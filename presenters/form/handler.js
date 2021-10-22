@@ -135,8 +135,11 @@ class FormHandler extends HTMLElement {
 	}
 
 	storedValue(key, defaultVal=null){
-		if( this.model )
-			return this.model.has(key) ? this.model.get(key): defaultVal
+		if( this.model ){
+			let val = this.model.has(key) ? this.model.get(key): defaultVal
+			if( val && val.id ) val = val.id // child-models
+			return val
+		}
 		
 		let data = this.store()
 		return data ? data[key] : defaultVal
