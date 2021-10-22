@@ -553,7 +553,12 @@ export default class Menu {
 		if( (e.which >= 65 && e.which <= 90) // a-z
 		|| (e.which >= 48 && e.which <= 57) // 0-9
 		|| [8].includes(e.which) ){ // delete
-			this.onLetterPress(e)
+			if( e.metaKey || e.ctrlKey )
+				setTimeout(()=>{ // allow paste action to finish
+					this.onLetterPress(e)
+				},10)
+			else
+				this.onLetterPress(e)
 			return;
 		}
 		
@@ -698,9 +703,11 @@ export default class Menu {
 						return
 					}
 					
+					// no delay if paste keyboard shortcut
+					let delay = e.key == 'v' && (e.metaKey||e.ctrlKey) ? 0 : 700
 					this.__searchTermDelay = setTimeout(()=>{
 						this.fetchResults(val)
-					}, 700)
+					}, delay)
 
 				}else{
 					this.matching(val)
