@@ -239,6 +239,10 @@ class SelectFieldElement extends HTMLElement {
 				else
 					return Object.assign({}, o, {val: String(o.val!==undefined?o.val:o)})
 			})
+		else if( opts.toOptions )
+			opts = opts.toOptions()
+		else if( opts.toMenu )
+			opts = opts.toMenu()
 		else if( typeof opts == 'object' ){
 			let _opts = []
 			for( let k in opts ){
