@@ -49,7 +49,7 @@ export class UICustomError extends Error {
     logToConsole(){
         let {stack, detail, message} = this
 
-        console.group(message)
+        console.groupCollapsed(message)
         console.info(stack)
         
         if( detail )
