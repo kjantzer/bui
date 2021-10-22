@@ -278,13 +278,21 @@ module.exports = function(Orig){ return {
 		this.__childModels[key] = Model;
 
 		if( promise ){
-			this._getPromise = this._getPromise || new Promise((resolve, reject)=>{
-				this._getPromiseResolve = resolve
-			})
+			this._getPromises = this._getPromises || new Map()
 
-			this._getPromise.get = (...args)=>this._getPromise.then(model=>model.get(...args))
+			if( !this._getPromises.get(key) ){
+				let resolve
+				let promise = new Proxy(new Promise((_resolve)=>{resolve = _resolve}), {
+					get: function(target, prop) {
+						var value = target[prop];
+						return typeof value == 'function' ? value.bind(target) : value;
+					}
+				})
 
-			return this._getPromise
+				this._getPromises.set(key, {promise, resolve})
+			}
+
+			return this._getPromises.get(key).promise
 		}
 
 		return path && Model ? Model.get(path) : Model
@@ -295,12 +303,12 @@ module.exports = function(Orig){ return {
 		setTimeout(()=>{
 			this.trigger('model:'+key+':fetch', model)
 
-			if( this._getPromiseResolve ){
+			let getPromise = this._getPromises && this._getPromises.get(key) 
+			if( getPromise ){
 				if( path )
 					model = model.get(path)
-				this._getPromiseResolve(model)
-				delete this._getPromise
-				delete this._getPromiseResolve
+				getPromise.resolve(model)
+				this._getPromises.delete(key) 
 			}
 		})
 	},
