@@ -1,5 +1,6 @@
 
 function capitalize(str){
+    if( !str ) return str
     return str
     .split(' ')
     .map(s=>s[0]
@@ -8,11 +9,12 @@ function capitalize(str){
 }
 
 function titleize(str){
-    return capitalize(str.replace(/[\-_]/g, ' '))
+    return str ? capitalize(str.replace(/[\-_]/g, ' ')) : str
 }
 
 // https://ricardometring.com/javascript-replace-special-characters
 function replaceAccents(str){
+    if( !str ) return str
     // Example: `Shōgun` will become `Shogun`
 	return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove accents
 }
