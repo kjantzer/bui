@@ -2,6 +2,7 @@ import Backbone, {Collection, Model} from 'backbone'
 import sync, {syncBackboneCollection} from '../../realtime/client/sync'
 import '../../helpers/day-js'
 import '../../helpers/backbone/promises'
+import {summarize} from './util'
 
 let API_ROOT = '/api'
 let User = window.User
@@ -52,6 +53,10 @@ export default class Comments extends Collection {
             throw new Error('Missing group/ID')
 
         return super.fetch(...args)
+    }
+
+    summarize(){
+        return summarize(this.toJSON())[this.gid]
     }
 }
 

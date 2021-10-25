@@ -12,7 +12,7 @@ customElements.define('b-comments', class extends LitElement{
     static set nameTag(val){ Comment.nameTag = val }
 
     static get listeners(){return {
-        coll: {'add remove update': 'update'}
+        coll: {'add remove change': 'updateView'}
     }}
 
     static get properties(){return {
@@ -58,6 +58,20 @@ customElements.define('b-comments', class extends LitElement{
         this.limit = 10
     }
 
+    set model(model){
+        this._model = model
+
+        if( model ){
+            this.gid = model.id
+            this.meta = model.commentMeta ? model.commentMeta.bind(model) : null
+        }else{
+            this.gid = null
+            this.meta = null
+        }
+    }
+
+    get model(){ return this._model }
+
     shouldUpdate(changedProps){
         if( changedProps.get('group') != undefined || changedProps.get('gid') != undefined ){
             
@@ -88,6 +102,15 @@ customElements.define('b-comments', class extends LitElement{
         });
 
         this.intersectionObserver.observe(this)
+    }
+
+    updateView(){
+        clearTimeout(this._updateDelay)
+        this._updateDelay = setTimeout(()=>{
+            this.update()
+            if( this.model )
+                this.model.set('comments', this.coll.summarize())
+        },10)
     }
 
     refresh(){
@@ -142,6 +165,9 @@ customElements.define('b-comments', class extends LitElement{
         }else{
             this.coll.forEach(m=>markCommentRead(m))
         }
+
+        if( this.model )
+            this.model.set('comments', this.coll.summarize())
     }
 
 })

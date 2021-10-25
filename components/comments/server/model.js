@@ -1,4 +1,5 @@
 const Model = require('../../../server/model')
+const {summarize} = require('../util')
 
 let PushMsg
 
@@ -40,6 +41,11 @@ module.exports = class Comments extends Model {
 
     // never include `this.id` in the sync path
     get syncPath(){ return this.apiPathPattern.stringify({group: this.group, gid: this.gid}) }
+
+    async findSummary(){
+        let data = await this.find()
+        return summarize(data)
+    }
 
     findWhere(where){
         let {Value, JsonContains, Group, UnsafeSQL} = this.db.clauses
