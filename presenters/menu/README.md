@@ -182,3 +182,52 @@ new Menu(menuItems, {handler:myClass}).popover(target)
     console.log(selected.label) // Item 3
 })
 ```
+
+## Utilities
+
+### `toMenu()`
+
+```js
+// options
+toMenu.call(arr, {
+    before: [],
+    after: [],
+    unset: false
+}, d=>{
+    // optional function to translate each item in array
+    // a default translation will be used if left out
+    return {label: d.label, val: d.val}
+})
+```
+
+Example
+
+```js
+import {toMenu} from 'bui/presenters/menu'
+
+toMenu.call(['one', 'two', 'three'], {unset: true})
+
+// result:
+[
+    {
+        "label": "Uset",
+        "icon": "erase",
+        "val": ""
+    },
+    "divider",
+    {
+        "label": "one",
+        "val": "one"
+    },
+    {
+        "label": "two",
+        "val": "two"
+    },
+    {
+        "label": "three",
+        "val": "three"
+    }
+]
+```
+
+

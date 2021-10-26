@@ -9,15 +9,11 @@ import '../../elements/hr'
 import '../form/controls/check-box'
 import '../form/controls/select-field'
 import device from '../../util/device';
+import {toMenu, isDivider} from './util'
 
 const styles = require('./style.less')
 
-export {Dialog, Popover}
-
-function isDivider(val){
-	val = val.val || val.label || val
-	return ['divider', '-', '–'].includes(val)
-}
+export {Dialog, Popover, toMenu, isDivider}
 
 export const DefaultOpts = {
 	selected: false,
@@ -73,6 +69,11 @@ export default class Menu {
 	}
 	
 	constructor(menu=[], opts={}){
+
+		if( menu.toMenu )
+			menu = menu.toMenu()
+		else if( menu.toOptions )
+			menu = menu.toOptions()
 
 		// remove null/empty values
 		menu = menu.filter(i=>i)
@@ -403,7 +404,7 @@ export default class Menu {
 		else if( m.icon ) 
 			icon = html`<span class="icon">${m.icon}</span>`
 
-		let checkbox = (this.opts.multiple && !m.clearsAll) || m.selected ? html`<check-box ?checked=${live(m.selected)}></check-box>` : ''
+		let checkbox = (this.opts.multiple && !m.clearsAll) || m.selected ? html`<check-box placement="left" ?checked=${live(m.selected)}></check-box>` : ''
 		let menuIcon = m.menu && this.opts.hasMenuIcon ? html`<b-icon class="has-menu" name="${this.opts.hasMenuIcon}"></b-icon>` :''
 
 		if( m.selections ){
