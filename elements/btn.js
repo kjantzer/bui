@@ -145,10 +145,9 @@ export default class BtnElement extends LitElement {
             }
         }
 
-        /* b-icon,
-        ::slotted(b-icon) {
-            vertical-align: bottom;
-        } */
+        b-icon {
+            --size: 1em;
+        }
 
         b-spinner {
             opacity: 0;
