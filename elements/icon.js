@@ -64,8 +64,7 @@ export default class IconElement extends HTMLElement {
 			align-items: center;
 			justify-content: center;
 			color: inherit;
-			--size: 1em;
-			height: var(--size);
+			height: var(--size, 1em);
 		}
 
 		:host([hidden]) {
@@ -81,7 +80,7 @@ export default class IconElement extends HTMLElement {
 		}
 
 		:host([square]) {
-			width: var(--size);
+			width: var(--size, 1em);
 		}
 
 		:host([invalid]) {
