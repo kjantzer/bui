@@ -69,6 +69,8 @@ customElements.define('b-text', class extends LitElement{
 
         :host([tone="muted"]), :host([muted]) { color: rgba(var(--theme-text-rgb, 0,0,0),.4); }
         :host([muted="some"]) { color: rgba(var(--theme-text-rgb, 0,0,0),.8); }
+        :host([muted="1"]) { color: rgba(var(--theme-text-rgb, 0,0,0),.8); }
+        :host([muted="2"]) { color: rgba(var(--theme-text-rgb, 0,0,0),.6); }
         :host([tone="text"]) { color: var(--theme-text); }
         :host([tone="theme"]) { color: var(--theme); }
         :host([tone="critical"]) { color: var(--b-text-tone-critical, var(--red-A400, red)); }
