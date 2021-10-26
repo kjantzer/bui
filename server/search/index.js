@@ -50,12 +50,16 @@ class SearchAPI {
         if( !this.db ) throw new Error('Missing `this.db`')
         
         let data = []
+        let threshold
 
         // perform searches for each "type"
         await Promise.series(types, async type=>{
             let SearchType = SearchTypes.get(type)
             if( SearchType ){
-                let res = await new SearchType(this.req, this.db).query(this.term)
+                let st = new SearchType(this.req, this.db)
+                let res = await st.query(this.term)
+                if( !threshold || st.threshold < threshold )
+                    threshold = st.threshold
                 data.push(...res)
             }
         })
@@ -63,7 +67,7 @@ class SearchAPI {
         // further reduce and sort the results from a string search
         // by matching the `term` agaist the `label` returned from the search types
         let fuse = new Fuse(data, {
-            threshold: 0.2,
+            threshold: threshold,
             includeScore: true,
             keys: ["label"]
         })
