@@ -51,6 +51,15 @@ customElements.define('b-comments', class extends LitElement{
         .view-all ~ b-comment-row {
             display: none;
         }
+
+        .view-all {
+            --color: var(--btn-bgd-color, var(--theme-bgd-accent2, #ddd));
+            --textColor: var(--btn-text-color, var(--theme-text, #111));
+        }
+
+        .view-all:hover {
+            --color: var(--btn-bgd-color-hover, var(--theme-bgd-accent2, #ddd));
+        }
     `}
 
     constructor(){

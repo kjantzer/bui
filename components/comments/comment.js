@@ -100,6 +100,12 @@ customElements.define('b-comment-row', class extends LitElement {
 
         b-btn.write {
             grid-column: span 2;
+            --color: var(--btn-bgd-color, var(--theme-bgd-accent2, #ddd));
+            --textColor: var(--btn-text-color, var(--theme-text, #111));
+        }
+
+        b-btn.write:hover {
+            --color: var(--btn-bgd-color-hover, var(--theme-bgd-accent2, #ddd));
         }
 
         b-btn.reply {
