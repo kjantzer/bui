@@ -83,6 +83,8 @@ Icon.register(
 	['chat', require('./chat.svg.html')],
 	['check-empty', require('./check-empty.svg.html')],
 	['check', require('./check.svg.html')],
+	['check-box', require('./check-box.svg.html')],
+	['check-box-active', require('./check-box-active.svg.html')],
 	['circle-empty', require('./circle-empty.svg.html')],
 	['circle', require('./circle.svg.html')],
 	['clearclose', require('./clearclose.svg.html')],
