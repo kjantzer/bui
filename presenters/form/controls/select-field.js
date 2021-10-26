@@ -70,7 +70,8 @@ main input {
 }
 
 :host([chip]) #value > span {
-	background: rgba(0,0,0,.1);
+	background: var(--select-field-chip-bgd, rgba(0,0,0,.1));
+	color: var(--select-field-chip-text-color, inherit);
     margin: .1em;
     padding: .15em .5em;
     border-radius: 20px;
