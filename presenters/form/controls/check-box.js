@@ -8,7 +8,9 @@ customElements.define('check-box', class extends LitElement{
 		label: {type: String},
 		disabled: {type: Boolean},
 		checked: {type: Boolean, reflect: true},
-		placement: {type: String, reflect: true}
+		placement: {type: String, reflect: true},
+		iconEmpty: {type: String},
+		icon: {type: String},
 	}}
 
 	static get styles(){return css`
@@ -29,9 +31,17 @@ customElements.define('check-box', class extends LitElement{
 
 		:host([hidden]) { display: none; }
 
-		:host([checked]) svg.uncheck,
-		:host(:not([checked])) svg.check {
+		:host([checked]) .uncheck,
+		:host(:not([checked])) .check {
 			display: none
+		}
+
+		:host([icon="star"]) {
+			--color: var(--amber-600);
+		}
+
+		:host([icon="star"]:not([checked])) {
+			opacity: .5
 		}
 
 		main {
@@ -56,26 +66,17 @@ customElements.define('check-box', class extends LitElement{
 		:host([placement="left"]) label { margin-right: var(--check-box-label-padding); }
 		:host([placement="right"]) label { margin-left: var(--check-box-label-padding); }
 
-		svg {
-			fill: currentColor;
-			width: var(--size);
-			height: var(--size);
-			display: inline-block;
+		.icon {
 			transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 			user-select: none;
 			flex-shrink: 0;
-			/* padding: .25em; */
-		}
-
-		svg.uncheck {
-			fill: rgba(var(--theme-text-rgb, 0,0,0), .5);
 		}
 
 		.switch {
 			display: none
 		}
 
-		:host([type="switch"]) svg { display: none; }
+		:host([type="switch"]) .icon { display: none; }
 
 		:host([type="switch"]) .switch {
 			display: inline-block;
@@ -89,7 +90,7 @@ customElements.define('check-box', class extends LitElement{
 			cursor: default;
 		}
 
-		:host([disabled]) svg {
+		:host([disabled]) .icon {
 			fill: var(--colorDisabled)
 		}
 
@@ -160,13 +161,14 @@ customElements.define('check-box', class extends LitElement{
 	constructor(){
 		super()
 		this.placement = 'right'
+		this.iconEmpty = 'check-box'
+		this.icon = 'check-box-active'
 	}
 
 	render(){return html`
 		<main>
-			<svg class="uncheck" focusable="false" viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path></svg>
-
-			<svg class="check" focusable="false" viewBox="0 0 24 24"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
+			<b-icon name="${this.iconEmpty}" square class="icon uncheck" focusable="false"></b-icon>
+			<b-icon name="${this.icon}" square class="icon check" focusable="false"></b-icon>
 			
 			<div class="switch"></div>
 			

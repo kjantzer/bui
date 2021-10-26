@@ -261,6 +261,8 @@ select-field::part(value):after {
 - `label`
 - `placement="right"` - placement of label
 - `type="switch"`
+- `icon` - see custom icons below
+- `iconempty`
 
 ```html
 <check-box label="Active"></check-box>
@@ -269,6 +271,17 @@ select-field::part(value):after {
 <form-control key="is_active">
 	<check-box label="Active"></check-box>
 </form-control>
+
+<!-- html label -->
+<check-box>
+	<b-text bold>Active</b-text>
+</check-box>
+```
+
+#### Custom icons
+
+```html
+<check-box icon="star" iconempty="star-empty"></check-box>
 ```
 
 ## `<radio-btn>`
