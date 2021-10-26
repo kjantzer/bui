@@ -105,6 +105,7 @@ Collection.prototype.getOrFetchSync = function(id, opts={}){
 }
 
 
+// TODO: update this with custom Error class and support bui/app/errors
 const xhrError = function(xhr, resp){
 
     let err = new Error()
