@@ -3,6 +3,7 @@ import Backbone from 'backbone'
 /*
     Without proxy: SingletonColl().fetch()
     With proxy: SingletonColl.fetch() ^ this works too
+    NOTE: does this add unnecessary overhead processing?
 */
 const handlers = {
     get: function(target, prop, receiver) {
@@ -10,7 +11,12 @@ const handlers = {
             return target[prop]
 
         // get all props from the SingletonInstance
-        return target()[prop];
+        let targetProp = target()[prop]
+
+        if( typeof targetProp == 'function' )
+            return targetProp.bind(target())
+
+        return targetProp
     }
 }
 
