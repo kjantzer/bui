@@ -1,3 +1,4 @@
+import {html} from 'lit-html'
 
 export function toMenu({
     before=[],
@@ -5,11 +6,17 @@ export function toMenu({
     unset=false
 }={}, fn){
 
-    if( unset === true )
+    if( unset === true || ['clear', 'remove', 'unset'].includes(unset) )
         unset = {
-            label: 'Uset',
-            icon: 'erase',
-			val: ''
+            label: html`<b-text capitalize>${unset===true?'Unset':unset}</b-text>`,
+            // icon: 'erase',
+			val: '',
+            extras:[html`<b-icon name="erase"></b-icon>`]
+        }
+    else if( unset && typeof unset == 'string' )
+        unset = {
+            label: unset,
+            val: ''
         }
     
     let menu = this.map(m=>{
@@ -25,12 +32,18 @@ export function toMenu({
         }
     })
 
+    if( before && !Array.isArray(before) )
+        before = [before]
+    
     menu = before.concat(menu)
 	
 	if( unset )
 		menu.unshift(unset, 'divider')
 
-	menu  = menu.concat(after)
+    if( after && !Array.isArray(after) )
+        after = [after]
+	
+    menu  = menu.concat(after)
 
     return menu 
 }
