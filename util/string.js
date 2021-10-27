@@ -2,9 +2,9 @@
 function capitalize(str){
     if( !str ) return str
     return str
+    .trim()
     .split(' ')
-    .map(s=>s[0]
-    .toUpperCase()+s.substr(1))
+    .map(s=>s?(s[0].toUpperCase()+s.substr(1)):'')
     .join(' ')
 }
 
