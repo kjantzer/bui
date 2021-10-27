@@ -77,8 +77,15 @@ Model.prototype.editAttr = async function(key, val, opts={}){
 		let orig = this._origAttrs[key]
 		let edited = this._editedAttrs[key]
 		
-		// could be improved when comparing arrays
-		if( opts.save || edited === orig || (edited && edited.length == 0 && orig && orig.length == 0) )
+		if( opts.save 
+		|| edited === orig
+		|| (!edited && !orig) // treat "falsey" values as the same
+		|| (edited === true && orig === 1) // treat boolean "yes" as the same (assuming it was a check-box)
+		|| (!orig && Array.isArray(edited) && edited.length == 0 )
+		|| (edited && edited.length == 0 && orig && orig.length == 0)
+		// NOTE: do this for objects too?
+		|| (Array.isArray(orig) && Array.isArray(edited) && JSON.stringify(orig) == JSON.stringify(edited))
+		)
 			delete this._editedAttrs[key]
 
 		if( opts.save === true )
