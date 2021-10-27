@@ -141,7 +141,9 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
             return this._formatValues(this.filter.value)
 
         return this._values.map(d=>{
-            return {label: d.label, val: d.val}
+            d = Object.assign({}, d)
+            delete d.view // do not save custom element/views
+            return d
         })
     }
 
