@@ -53,6 +53,10 @@ export default class Label extends LitElement {
             text-transform: none;
             background: var(--bgd);
             color: var(--color);
+
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
         }
 
         :host([xs]) { font-size: .6rem; line-height: .6rem; }
@@ -87,6 +91,7 @@ export default class Label extends LitElement {
             min-width: .3em;
             text-align: center;
             min-height: 1em;
+            line-height: 0 !important;
         }
 
         :host([dot]) {
