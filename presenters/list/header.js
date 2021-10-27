@@ -15,6 +15,14 @@ customElements.define('b-list-header', class extends LitElement{
             box-sizing: border-box;
             border-bottom: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .1));
         }
+
+        :host > *:first-child {
+            padding-left: 1rem;
+        }
+
+        :host > *:last-child {
+            padding-right: 1rem;
+        }
     `}
 
     static get sharedFinderStyles(){ return css`
