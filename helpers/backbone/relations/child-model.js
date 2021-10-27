@@ -212,7 +212,7 @@ module.exports = function(Orig){ return {
 
 		// was a model given? (instead of a hash {})
 		// var infoIsModel = info && info.prototype && info.prototype.toJSON && info.prototype.fetch;
-		var infoIsModel = info && info.prototype && info.name !== key
+		var infoIsModel = isModel(info, key)
 
 		var ChildModel = infoIsModel ? info : (info.model ? info.model : Backbone.Model);
 
@@ -339,9 +339,13 @@ module.exports = function(Orig){ return {
 		// if `key` is a child model, clear the model to force `getModel` to run again
 		if( self.__childModels )
 		for( let key in attrs){
-			if( self.__childModels[key] )
-				delete self.__childModels[key];
-			else if( self.__childModelIDLookup && self.__childModelIDLookup[key] )
+			if( self.__childModels[key] ){
+				if( isModel(this.models[key], key) ){
+					self.__childModels[key].clear()
+					self.__childModels[key].set(attrs[key])
+				}else
+					delete self.__childModels[key];
+			}else if( self.__childModelIDLookup && self.__childModelIDLookup[key] )
 				delete self.__childModels[self.__childModelIDLookup[key]];
 		}
 		
@@ -349,3 +353,8 @@ module.exports = function(Orig){ return {
 		return Orig.Set.apply(this, arguments);
 	}
 }}
+
+
+function isModel(val, key){
+	return val && val.prototype && val.name !== key && val.prototype.isNew
+}
