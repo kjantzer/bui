@@ -113,6 +113,7 @@ db.query(`SELECT * FROM table_name WHERE ${clause}`, values)
 - `FullText(val)`
 - `FindInSet(val)`
 - `JsonContains(val, ?path='$')`
+- `JsonSearch(val, ?path='$')`
 - `IsEmpty({includeNull:false})`
 - `NotEmpty({includeNull:false})`
 - `UnsafeSQL(rawSql)` - unsafe to input uncleaned user data
@@ -134,6 +135,18 @@ class CustomClause extends db.clauses.Clause {
         return `${key} = ${db.escape(this.val)}`
     }
 }
+```
+
+#### Conflicting Keys
+If you need to create a group that uses the same key (field) more than once, use `toSqlString`
+
+```js
+let group = new Group({}, 'OR')
+let key = {toSqlString:()=>'label'}
+
+group.set(key, 'some value')
+group.set(key, 'another value')
+// label = 'some value' OR label = 'another value'
 ```
 
 ## Results
