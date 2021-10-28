@@ -103,11 +103,25 @@ customElements.define('b-list', class extends LitElement {
         :host {
             display: grid;
             grid-template-rows: auto auto 1fr auto;
+            grid-template-columns: auto 1fr auto;
             overflow: hidden;
             flex: 1;
             position: relative;
             z-index: 10;
+            grid-template-areas:
+                "toolbar toolbar toolbar"
+                "sidebarleft header sidebarright"
+                "sidebarleft list sidebarright"
+                "sidebarleft footer sidebarright";
+
         }
+
+        [part="list"] { grid-area: list; }
+        [part="toolbar"] { grid-area: toolbar; }
+        [part="header"] { grid-area: header; }
+        [part="footer"] { grid-area: footer; }
+        [part="sidebar:left"] { grid-area: sidebarleft; }
+        [part="sidebar:right"] { grid-area: sidebarright; }
 
         slot[name="header"],
         slot[name="footer"] {
@@ -127,6 +141,11 @@ customElements.define('b-list', class extends LitElement {
             width: 0 !important;
             height: 0 !important;
         }
+
+        [part="sidebar:left"],
+        [part="sidebar:right"] {
+            display: block;
+        } 
 
         b-spinner-overlay {
             --spinnerSize: 6em;
@@ -272,6 +291,8 @@ customElements.define('b-list', class extends LitElement {
             </b-list-selection-bar>
         </b-list-toolbar>
 
+        <slot name="sidebar:left" part="sidebar:left"></slot>
+
         <slot name="header" part="header-slot"></slot>
         <b-infinite-list
             part="list"
@@ -284,6 +305,8 @@ customElements.define('b-list', class extends LitElement {
         >
         </b-infinite-list>
         <slot name="footer" part="footer-slot"></slot>
+
+        <slot name="sidebar:right" part="sidebar:right"></slot>
 
         <b-panels name="b-list:${this.key}"></b-panels>
     `}
