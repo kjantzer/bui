@@ -14,7 +14,11 @@ let showTooltipTimeout;
 function followMouse(){
     if( followingMouse ) return
     followingMouse = true
-    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('mousemove', e=>{
+        requestAnimationFrame(function(){
+            onMouseMove(e)
+        })
+    })
 }
 
 function onMouseMove(e){
@@ -24,8 +28,13 @@ function onMouseMove(e){
     && Math.abs(e.clientX-mouseX) < 20 
     && Math.abs(e.clientY-mouseY) < 20 )
         return    
-        
-    hideTooltip()
+    
+    // skip - no need to close and reopen
+    if( shownTooltip && activeTooltip 
+    && shownTooltip.target == activeTooltip.triggerElement )
+        return
+
+    hideTooltip(e)
 
     // track current location of the mouse
     mouseX = e.clientX
