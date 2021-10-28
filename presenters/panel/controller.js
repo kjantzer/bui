@@ -34,6 +34,11 @@ class PanelController extends LitElement {
         }
     `}
 
+    get isVisible(){
+        let style = window.getComputedStyle(this)
+        return style.display != 'none' && !this.hidden
+    }
+
     get name(){
         return this.hasAttribute('name') ? this.getAttribute('name') : undefined
     }
@@ -181,6 +186,11 @@ class PanelController extends LitElement {
             }
         })
 
+        if( this.length > 0 )
+            this.setAttribute('num', this.length)
+        else
+            this.removeAttribute('num')
+
         let hostEl = this.getRootNode()
         hostEl = hostEl.host || hostEl.body || hostEl
 
@@ -234,6 +244,8 @@ class PanelController extends LitElement {
 
     // FIXME: not that great of an implementation
     async quickJump(el){
+
+        if( this.name != 'root'  ) return 
         
         let menu = this.map(panel=>{
             return {

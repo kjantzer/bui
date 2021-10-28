@@ -513,14 +513,6 @@ export class Panel extends LitElement {
     }
 
     async open(...args){
-        
-        if( this.route && this.route.state.props.controller )
-            this.controller = this.route.state.props.controller
-
-        // if no controller set, use the root controller
-        if( !this.panelController ){
-            this.panelController = Controller.for('root')
-        }
 
         if( this.view && this.view.willOpen ){
             if( await this.view.willOpen(this.route.state) === false ){
@@ -529,6 +521,19 @@ export class Panel extends LitElement {
                 return false;
             }
         }
+
+        // route requested custom controller
+        if( this.route && this.route.state.props.controller )
+            this.controller = this.route.state.props.controller
+
+        // else attempt to use the controller in the opts again
+        else if( this.opts.controller )
+            this.controller = this.opts.controller
+
+        // if no controller set (or doesn't exist) or it's currently NOT visible
+        // , use the root controller
+        if( !this.panelController || !this.panelController.isVisible )
+            this.panelController = Controller.for('root')
 
         this._onKeydown = this._onKeydown || this.onKeydown.bind(this)
         window.removeEventListener('keydown', this._onKeydown, true)
@@ -759,6 +764,10 @@ export class Panel extends LitElement {
 
         :host([anchor="left"]) {
             --b-panel-toolbar-close-btn-rotation: 180deg;
+        }
+
+        :host([anchor="right"]) {
+            --b-panel-toolbar-close-btn-rotation: 0deg;
         }
 
         .backdrop {
