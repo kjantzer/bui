@@ -96,9 +96,7 @@ customElements.define('b-list-filters', class extends LitElement{
             <b-list-filter-btn ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
         `:'')}
 
-        ${!this.showOverflow?html`
         <b-btn color="hover-red" title="Clear filters" icon="erase" text @click=${this.resetFilters}></b-btn>
-        `:''}
     `}
 
     showFilter(filter){
