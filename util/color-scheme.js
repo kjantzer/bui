@@ -40,7 +40,10 @@ export const colorScheme = {
             colorizeFaviconComposition||localStorage.getItem('theme-colorize-icon')||'lighten')
         
         if( watch )
-            this.onChange(this.setTheme.bind(this))
+            this.onChange(theme=>{
+                if( this.theme == 'system' )
+                    this.setTheme(theme)
+            })
 
         this.setTheme(theme)
         this.setAccent(accent)
