@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import '../../helpers/lit-element/events'
+import scrollbars from '../../helpers/scrollbars'
 
 customElements.define('b-calendar-month', class extends LitElement{
 
@@ -84,7 +85,12 @@ customElements.define('b-calendar-month', class extends LitElement{
         .day main {
             text-align: left;
             overflow: visible;
+            min-width: 0;
+            overflow-y: auto;
         }
+        
+        ${scrollbars.hide('.day main')}
+
 
         .day-num {
             font-size: var(--font-size);
