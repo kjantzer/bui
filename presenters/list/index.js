@@ -132,6 +132,7 @@ customElements.define('b-list', class extends LitElement {
         slot[name="header"]::slotted(*),
         slot[name="footer"]::slotted(*) {
             overflow-y: auto;
+            order: 10;
         }
 
         /* this doesn't seem to work */
