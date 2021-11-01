@@ -9,7 +9,8 @@ customElements.define('b-hr', class extends LitElement{
             display: block;
             margin: var(--padding, 1em) auto;
             height: 1px;
-            width: 100%;
+            /* width: 100%; */
+            flex-grow: 1;
             background: var(--bgd);
             
             /* full width */
@@ -39,7 +40,7 @@ customElements.define('b-hr', class extends LitElement{
             align-self: stretch;
         }
 
-        :host([pad="none"]) { --padding: 0em; }
+        :host([pad="none"]) { --padding: auto; }
         :host([pad="xs"]) { --padding: .25em; }
         :host([pad="sm"]) { --padding: .5em; }
         :host([pad="md"]) { --padding: 1.5em; }
@@ -48,6 +49,17 @@ customElements.define('b-hr', class extends LitElement{
         :host([vert][thick]) {
             height: auto;
             width: 4px;
+        }
+
+        :host([dot]) {
+            width: .5em;
+            height: .5em;
+            border-radius: 1em;
+        }
+
+        :host([dot][thick]) {
+            width: 1em;
+            height: 1em;
         }
     `}
 
