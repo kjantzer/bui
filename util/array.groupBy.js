@@ -6,7 +6,7 @@ module.exports = function groupBy(key, {
     let group = {}
     this.forEach(row=>{
         
-        let rowKey = row[key]
+        let rowKey = typeof key == 'function' ? String(key(row)) : row[key]
 
         if( rowKey ){
 
