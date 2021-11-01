@@ -15,6 +15,7 @@ import './menu'
 import './list'
 import './virtual-scroller'
 import './previewer'
+import './calendar'
 import './datepicker'
 import dayjs from 'dayjs'
 
@@ -62,6 +63,8 @@ customElements.define('demo-presenters', class extends LitElement{
                     <b-label badge="green" dot></b-label> Another event
                 </div>
             </b-cal>
+
+            demo-presenter-calendar
 
             demo-presenter-selection
             demo-presenter-mentions
