@@ -3,6 +3,7 @@ import './search'
 import './comments'
 import './filebrowser'
 import docs from '../../components/README.md'
+import printViewDocs from '../../components/print-view/README.md'
 
 customElements.define('demo-components', class extends LitElement{
 
@@ -31,6 +32,14 @@ customElements.define('demo-components', class extends LitElement{
             demo-presenter-search
             demo-components-comments
             demo-components-filebrowser
+
+            <div title="Print View" path="print-view" id="print-view">
+                <b-paper>
+                    <b-h1>Print View</b-h1>
+                    <demo-markdown-docs .docs=${printViewDocs}></demo-markdown-docs>
+                </b-paper>
+            </div>
+
         </b-tabs-router>
     `}
 
