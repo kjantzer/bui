@@ -68,12 +68,13 @@ customElements.defineShared('b-print-view', class extends LitElement{
         view,
         autoPrint=false,
         target,
-        align='bottom-end'
+        align='bottom-end',
+        data=null
     }={}){
 
         if( this.panel && this.panel.isOpen )
             return window.print()
-
+            
         if( !view ){
 
             let viewMenu = views
@@ -107,6 +108,7 @@ customElements.defineShared('b-print-view', class extends LitElement{
 
         this.view = new View(models)
         this.view.models = models
+        this.view.data = data
 
         let panel = new Panel(this, {
             title: this.view.name||'Print'
