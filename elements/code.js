@@ -8,7 +8,6 @@ customElements.define('b-code', class extends LitElement{
             background: var(--theme-bgd-accent, #ccc);
             color: var(--theme-text, inherit);
             border-radius: 3px;
-            color: initial;
             padding: 0 .3em;
             display: inline-block;
         }
