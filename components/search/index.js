@@ -200,12 +200,8 @@ export default class extends LitElement{
         :host([fetching]) .searchbox  b-spinner { visibility: visible; transition-delay: 0ms; }
         :host([fetching]) .searchbox [name="search"] { visibility: hidden; transition-delay: 0ms; }
 
-        b-list {
-            grid-template-rows: auto 1fr auto auto;
-        }
-
         b-list::part(toolbar) {
-            order: 3;
+            grid-row: 5;
             box-shadow: none;
             border-top: solid 1px var(--theme-bgd-accent);
         }
