@@ -592,7 +592,7 @@ The list dispatches a DOM event when the content changes (this would happen when
 list.addEventListener('content-changed', e=>{})
 ```
 
-## Methods
+## Methods & Properties
 
 `list.term = 'value'`
 Programatically search/filter by term
@@ -602,6 +602,12 @@ clears the list and fetches new data
 
 `list.reload()`  
 reapplies the filters and reloads the table (new data is NOT fetched)
+
+`list.currentModels`  
+returns array of selected models (see list.selection)
+
+`list.currentModelsOrAll`  
+returns selected models, or all (if none selected)
 
 `list.filters.reset(filterVals={}, {stopQueuing=true, silent=false})`  
 reset filters to default or given values
