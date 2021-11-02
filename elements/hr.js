@@ -9,7 +9,7 @@ customElements.define('b-hr', class extends LitElement{
             display: block;
             margin: var(--padding, 1em) auto;
             height: 1px;
-            /* width: 100%; */
+            min-width: 1em;
             flex-grow: 1;
             background: var(--bgd);
             
@@ -33,6 +33,7 @@ customElements.define('b-hr', class extends LitElement{
         :host([vert]) {
             display: inline-block;
             vertical-align: middle;
+            min-width: 0;
             min-height: 1em;
             height: auto;
             width: 1px;
@@ -52,6 +53,8 @@ customElements.define('b-hr', class extends LitElement{
         }
 
         :host([dot]) {
+            min-height: 0;
+            min-width: 0;
             width: .5em;
             height: .5em;
             border-radius: 1em;
