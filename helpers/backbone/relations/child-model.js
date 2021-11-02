@@ -356,5 +356,5 @@ module.exports = function(Orig){ return {
 
 
 function isModel(val, key){
-	return val && val.prototype && val.name !== key && val.prototype.isNew
+	return val && val.prototype && val.name !== key
 }
