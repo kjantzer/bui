@@ -53,8 +53,8 @@ export default class BtnElement extends LitElement {
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
-            font-size: .9rem;
-            line-height: 1rem;
+            font-size: var(--b-btn-font-size, .9rem);
+            line-height: var(--b-btn-line-height, 1rem);
             font-weight: bold;
             font-family: var(--b-btn-font);
             outline: none;
