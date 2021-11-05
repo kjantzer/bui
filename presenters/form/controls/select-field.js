@@ -233,17 +233,17 @@ class SelectFieldElement extends HTMLElement {
 			opts = [] // clear options until promise resolves
 		}
 
-		if( Array.isArray(opts) )
+		if( opts.toOptions )
+			opts = Array.from(opts.toOptions())
+		else if( opts.toMenu )
+			opts = Array.from(opts.toMenu())
+		else if( Array.isArray(opts) )
 			opts = opts.map(o=>{
 				if( typeof o != 'object' )
 					return {label: o, val: o}
 				else
 					return Object.assign({}, o, {val: String(o.val!==undefined?o.val:o)})
 			})
-		else if( opts.toOptions )
-			opts = opts.toOptions()
-		else if( opts.toMenu )
-			opts = opts.toMenu()
 		else if( typeof opts == 'object' ){
 			let _opts = []
 			for( let k in opts ){
