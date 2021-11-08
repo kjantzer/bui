@@ -56,6 +56,11 @@ customElements.define('b-root-titlebar', class extends LitElement{
         return this.getRootNode().host.panel
     }
 
+    get titleVal(){
+        return this.title || (this.panel&&this.panel.title) 
+        || (this.parentElement && this.parentElement.host && this.parentElement.host.constructor.title)
+    }
+
     render(){return html`
 
         ${this.panel?html`
@@ -64,7 +69,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
 
         <slot name="left"></slot>
 
-        <b-text lg xbold>${this.title||(this.panel&&this.panel.title)}</b-text>
+        <b-text lg xbold>${this.titleVal}</b-text>
 
         <slot></slot>
     `}
