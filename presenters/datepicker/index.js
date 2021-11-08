@@ -71,10 +71,14 @@ customElements.define('b-datepicker', class extends LitElement{
     }
     
     get value(){
+        let dbFormat = 'YYYY-MM-DD'
         if( this.range )
-            return {start: this.selectedRange.start, end: this.selectedRange.end}
+            return {
+                start: this.selectedRange.start.format(dbFormat),
+                end: this.selectedRange.end.format(dbFormat)
+            }
         else
-            return this.selectedRange.start
+            return this.selectedRange.start.format(dbFormat)
     }
 
     get label(){
