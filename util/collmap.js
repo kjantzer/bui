@@ -69,7 +69,7 @@ module.exports = class CollMap extends Map {
     }
 
     toJSON(){
-        return this.map(v=>v.toJSON&&v.toJSON())
+        return this.map(v=>(v.toJSON&&v.toJSON()||v))
     }
 
     toObject(){
