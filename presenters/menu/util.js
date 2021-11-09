@@ -9,6 +9,7 @@ export function toMenu({
     if( unset === true || ['clear', 'remove', 'unset'].includes(unset) )
         unset = {
             label: html`<b-text capitalize>${unset===true?'Unset':unset}</b-text>`,
+            toolbarLabel: '–',
             // icon: 'erase',
 			val: '',
             extras:[html`<b-icon name="erase"></b-icon>`]
