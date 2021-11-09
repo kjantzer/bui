@@ -16,6 +16,11 @@ module.exports = class SearchType {
     get threshold(){ return 0.2 }
     get type(){ return this.constructor.name || 'unknown' }
 
+    termForBoolean(term){
+        // remove characters that boolean mode doesn't like
+        return term.replace(/[\(\)\*-+]/g, ' ').replace(/\s{2,}/g, ' ')
+    }
+
     query(term){
         term = this.formatTerm(term)
         let sql = this.searchSql
