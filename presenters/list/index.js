@@ -292,7 +292,7 @@ customElements.define('b-list', class extends LitElement {
 
         <slot name="sidebar:left" part="sidebar:left"></slot>
 
-        <slot name="header" part="header-slot"></slot>
+        <slot name="header" part="header"></slot>
         <b-infinite-list
             part="list"
             .empty="${this.createEmptyElement}"
@@ -303,7 +303,7 @@ customElements.define('b-list', class extends LitElement {
             layout="${this.layout}"
         >
         </b-infinite-list>
-        <slot name="footer" part="footer-slot"></slot>
+        <slot name="footer" part="footer"></slot>
 
         <slot name="sidebar:right" part="sidebar:right"></slot>
 
