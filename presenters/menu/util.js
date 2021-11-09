@@ -28,8 +28,8 @@ export function toMenu({
 			return {label: m, val: m}
 
 		return {
-            label: m.get ? m.get('label') : m.label,
-            val: String(m.id),
+            label: m.get ? m.get('label') : (m.label || m.val || m.id),
+            val: String(m.val||m.id),
         }
     })
 
