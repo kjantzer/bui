@@ -5,6 +5,7 @@ import setValueAttrs from '../util/setValueAttrs'
 import validatePattern from '../util/validatePattern'
 import stopMaxLength from '../util/stopMaxLength'
 import {htmlCleaner} from '../../../util'
+import dayjs from 'dayjs'
 
 const styles = css`
 :host {
@@ -297,7 +298,7 @@ class TextFieldElement extends HTMLElement {
 					this._datePicker.value = val
 
 					if( val )
-						val = this._datePicker.value.format(this.format)
+						val = dayjs(val).format(this.format)
 
 				// if failed to set datepicker value, the val is invalid, reset to previous value
 				}catch(err){
@@ -336,7 +337,7 @@ class TextFieldElement extends HTMLElement {
 
 	get dbValue(){
 		if( this.type == 'date' )
-			return this.value ? this._datePicker.value.format('YYYY-MM-DD') : this.value
+			return this.value ? this._datePicker.value : this.value
 		return this.value
 	}
 
