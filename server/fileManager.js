@@ -6,6 +6,7 @@ const sharp = require('sharp')
 const exif = require('exif-reader')
 const msOfficeThumbnailer = require('./thumbnail/msOffice')
 const ffmpeg = require('fluent-ffmpeg')
+const Vibrant = require('node-vibrant')
 
 ffmpeg.setFfmpegPath('/usr/bin/ffmpeg');
 
@@ -266,9 +267,34 @@ module.exports = class FileManager extends Model {
                 })
                 .flatten({background:'#ffffff'}) // in case png with transparency is uploaded
                 .toFile(this.dirPath+'/'+filename+'.preview.jpg')
+            
+            let updateAttrs = {has_preview: true}
+            
+            try{
+                this.attrs.traits.colors = await this.getColorPalette()
+                updateAttrs.traits = this.attrs.traits
+            }catch(err){
+                console.log('could not find palette', err);
+            }
 
-            this.update({has_preview: true})
+            this.update(updateAttrs)
         }
+    }
+
+    async getColorPalette(){
+        let palette = await Vibrant.from(this.filePath+'.preview.jpg').getPalette()
+
+        let colors = {}
+
+        for( let key in palette ){
+            colors[key.toLowerCase()] = {
+                hex: palette[key].hex,
+                rgb: palette[key].rgb,
+                pop: palette[key].population,
+            }
+        }
+
+        return colors
     }
 
     // delete the files after the DB record is removed
