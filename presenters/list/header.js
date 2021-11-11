@@ -11,17 +11,17 @@ customElements.define('b-list-header', class extends LitElement{
 
         :host > * {
             position: relative;
-            padding: .5rem;
+            padding: var(--list-cell-padding-y, .5rem) var(--list-cell-padding-x, .5rem);
             box-sizing: border-box;
             border-bottom: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .1));
         }
 
         :host > *:first-child {
-            padding-left: 1rem;
+            padding-left: calc(var(--list-cell-padding-x, .5rem) * 2);
         }
 
         :host > *:last-child {
-            padding-right: 1rem;
+            padding-right: calc(var(--list-cell-padding-x, .5rem) * 2);
         }
     `}
 
