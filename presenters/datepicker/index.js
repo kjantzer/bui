@@ -56,6 +56,10 @@ customElements.define('b-datepicker', class extends LitElement{
             
             if( typeof val == 'string' )
                 val = val.split(',')
+            else if( val.format ){
+                val = val.format('MM/DD/YYYY')
+                val = [val, val]
+            }
             else
                 val = [val.start||val, val.end||val]
 
