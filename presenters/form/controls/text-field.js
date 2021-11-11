@@ -416,7 +416,7 @@ class TextFieldElement extends HTMLElement {
 		this._datePicker.addEventListener('date-selected', apply, {once: true})
 
 		this._datePickerOpen = new Popover(this, this._datePicker, {
-			align: 'bottom-end', 
+			align: 'bottom', 
 			overflowBoundry: 'window',
 			maxHeight: false, 
 			adjustForMobile: true,
