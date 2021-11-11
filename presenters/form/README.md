@@ -151,31 +151,6 @@ NEW: still a work in progress. Uses [tiptap](https://www.tiptap.dev/) and will r
 - `placeholder`
 - `menubar` - show some editing controls?
 
-## `<rich-text-field>`
-
-!! DEPRECATED - `text-editor` is replacing
-
-Similar to the `text-field` but with [quill.js](https://quilljs.com) enabled for rich text editing.
-
-The field will also auto convert some special characters (such as 3 periods to an ellipsis) using
-`util/normalizeText`
-
-<!--
-<form-control label="Rich Text Field" material style="width: 100%">
-	<rich-text-field></rich-text-field>
-</form-control>
--->
-
-#### Attributes
-- `value`
-- `placeholder`
-
-> NOTE: current quill.js doesn't like the shadowDOM so we are using a forked version
-> that has changes made to work inside the shadowDOM; however, the changes
-> may still have some issues in certain browsers – see:  
-> https://github.com/quilljs/quill/pull/2337  
-> https://github.com/quilljs/quill/issues/2961  
-
 ## `<select-field>`
 
 Creates a select field that uses `Menu` and `Popover` to display options.
