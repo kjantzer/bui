@@ -227,6 +227,12 @@ module.exports = class FileManager extends Model {
             })
             .run();
         })
+            
+        try{
+            traits.palette = await this.getColorPalette()
+        }catch(err){
+            console.log('could not find palette', err);
+        }
 
         await this.update({traits, has_preview: true})
     }
@@ -271,7 +277,7 @@ module.exports = class FileManager extends Model {
             let updateAttrs = {has_preview: true}
             
             try{
-                this.attrs.traits.colors = await this.getColorPalette()
+                this.attrs.traits.palette = await this.getColorPalette()
                 updateAttrs.traits = this.attrs.traits
             }catch(err){
                 console.log('could not find palette', err);
@@ -281,8 +287,11 @@ module.exports = class FileManager extends Model {
         }
     }
 
-    async getColorPalette(){
+    async getColorPalette({returnSwatches=false}={}){
         let palette = await Vibrant.from(this.filePath+'.preview.jpg').getPalette()
+
+        if( returnSwatches )
+            return palette
 
         let colors = {}
 
