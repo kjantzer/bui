@@ -46,7 +46,9 @@ customElements.define('b-tabs-router', class extends TabsView {
         if( tabView != oldTabView ){
             let oldState = tabView.routeState
 
-            let [newState, oldStates] = router.push(tabView.route.makePath(), {
+            let params = this.pathParams ? this.pathParams() : {}
+
+            let [newState, oldStates] = router.push(tabView.route.makePath(params), {
                 title: tabView.title,
                 fromMenuClick:new Date().getTime()
             })
