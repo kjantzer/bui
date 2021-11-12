@@ -35,6 +35,12 @@ customElements.define('b-file-manager', class extends LitElement{
         b-empty-state {
             grid-column: 1/-1;
         }
+
+        [part="files"] {
+            display: grid;
+            grid-template-columns: 1;
+            gap: 1em;
+        }
     `}
 
     constructor(){

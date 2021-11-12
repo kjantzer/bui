@@ -2,12 +2,14 @@ import { LitElement, html, css } from 'lit-element'
 import Previewer from '../../presenters/previewer'
 import Dialog from '../../presenters/dialog'
 import download from '../../util/download'
+import Palette from './palette'
 
 customElements.define('c-file-row', class extends LitElement{
 
     static get properties(){return {
         layout: {type: String, reflect: true},
-        overshadow: {type: Boolean}
+        overshadow: {type: Boolean},
+        palette: {type: Boolean}
     }}
 
     static get styles(){return css`
@@ -72,6 +74,12 @@ customElements.define('c-file-row', class extends LitElement{
             width: 6em;
         }
 
+        .palette {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+        }
+
         @media (min-width: 600px) {
             :host([layout="row"]) main {
                 display: grid;
@@ -88,6 +96,7 @@ customElements.define('c-file-row', class extends LitElement{
     constructor(){
         super()
         this.overshadow = true
+        this.palette = false
     }
 
     render(){return html`
@@ -108,6 +117,10 @@ customElements.define('c-file-row', class extends LitElement{
 
                         <b-label xs class="res" filled="black" ?hidden=${!this.model.resolution}>
                             ${this.model.resolution}</b-label>
+                    `:''}
+
+                    ${this.palette&&this.model.traits.palette?html`
+                        <b-btn text icon="format-color-fill" class="palette" @click=${this.viewPalette}></b-btn>
                     `:''}
 
                 </b-file-preview>
@@ -135,6 +148,10 @@ customElements.define('c-file-row', class extends LitElement{
             this.model.destroySync()
             this.remove()
         }
+    }
+
+    viewPalette(e){
+        Palette.open(this.model.traits.palette, e.currentTarget)
     }
 
 })
