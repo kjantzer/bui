@@ -58,6 +58,7 @@ customElements.define('b-hr', class extends LitElement{
             width: .5em;
             height: .5em;
             border-radius: 1em;
+            align-self: auto;
         }
 
         :host([dot][thick]) {
