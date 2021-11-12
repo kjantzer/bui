@@ -9,6 +9,9 @@ const fetchSync = function(opts={}){
     // a fetch is already happening
     if( this.__fetchSyncPromise ) return this.__fetchSyncPromise
 
+    if( opts.once && this.hasFetched )
+        return 
+
     return this.__fetchSyncPromise = new Promise((resolve, reject)=>{
         let model = this
         opts.success = function(){
@@ -31,6 +34,7 @@ const fetchSync = function(opts={}){
 Collection.prototype.fetchSync = fetchSync
 Model.prototype.fetchSync = fetchSync
 
+// DEPRECATED: use `fetchSync({once:true})`
 const fetchOnce = function(opts){
     if( !this.hasFetched && !this.isFetching ){
         this.fetchSync(opts)
