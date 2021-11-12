@@ -237,7 +237,9 @@ class SelectFieldElement extends HTMLElement {
 			opts = Array.from(opts.toOptions())
 		else if( opts.toMenu )
 			opts = Array.from(opts.toMenu())
-		else if( Array.isArray(opts) )
+
+		// make sure `toOptions/toMenu` formatted values correctly
+		if( Array.isArray(opts) )
 			opts = opts.map(o=>{
 				if( typeof o != 'object' )
 					return {label: o, val: o}
