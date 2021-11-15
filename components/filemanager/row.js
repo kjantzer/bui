@@ -153,7 +153,7 @@ customElements.define('c-file-row', class extends LitElement{
     }
 
     viewPalette(e){
-        Palette.open(this.model.traits.palette, e.currentTarget)
+        Palette.open(this.model.traits.palette, e.currentTarget||e)
     }
 
     onDragStart(e){
