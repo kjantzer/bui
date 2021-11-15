@@ -51,6 +51,8 @@ export default class Menu {
 		else if( !Array.isArray(args) )
 			args = [args]
 
+		args.push(selected)
+
 		if( selected.fn && typeof selected.fn == 'function'){
 			setTimeout(()=>{ // move to end of call stack
 				selected.fn.apply(handler, args)
