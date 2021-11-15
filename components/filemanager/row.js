@@ -97,6 +97,8 @@ customElements.define('c-file-row', class extends LitElement{
         super()
         this.overshadow = true
         this.palette = false
+
+        this.addEventListener('dragstart', this.onDragStart)
     }
 
     render(){return html`
@@ -154,6 +156,44 @@ customElements.define('c-file-row', class extends LitElement{
         Palette.open(this.model.traits.palette, e.currentTarget)
     }
 
+    onDragStart(e){
+        enableDragAndDropDownload(e.dataTransfer, this.model)   
+    }
+
 })
 
 export default customElements.get('c-file-row')
+
+// https://web.dev/datatransfer/
+// drag and drop outside of the browser!
+export function enableDragAndDropDownload(dataTransfer, model){
+    
+    let filename = model.get('orig_filename')
+    let host = location.protocol+'//'+location.host
+    let url = host+model.downloadURL
+
+    dataTransfer.setData('DownloadURL', [
+        `application/octet-stream:${filename}:${url}`
+    ]);
+
+    dataTransfer.setData('text/plain', host+model.displayURL);
+
+    // Navigates to the URL when dropping on the URL bar or browser page
+    dataTransfer.setData('text/uri-list', host+model.displayURL);
+
+    // https://schema.org/ImageObject
+    // NOTE: this needs improved, file may not be an image
+    const data = {
+        '@context': 'https://schema.org',
+        '@type': 'ImageObject',
+        thumbnail: host+model.previewURL,
+        contentUrl: url,
+        // datePublished: '2010-08-08',
+        description: model.get('description'),
+        name: filename,
+        height: model.height,
+        width: model.width
+    };
+
+    dataTransfer.setData('application/ld+json', JSON.stringify(data));
+}

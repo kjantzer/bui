@@ -59,8 +59,12 @@ customElements.define('b-file-manager', class extends LitElement{
         }
     }
 
+    get shouldEnableSort(){
+        return !device.isTouch && this.sort && this.limit != 1        
+    }
+
     firstUpdated(){
-        if( !device.isTouch && this.sort && this.limit != 1)
+        if( this.shouldEnableSort )
         this.sortable = Sortable.create(this.$$('.files'), {
             draggable: this.row,
             handle: '.drag',
@@ -68,42 +72,7 @@ customElements.define('b-file-manager', class extends LitElement{
             // https://github.com/SortableJS/Sortable/tree/master/plugins/OnSpill#revertonspill-plugin
             // revertOnSpill: true, // doesn't work with shadow dom
             // direction: 'vertical',
-            onUpdate: this.onSort.bind(this),
-
-            // https://web.dev/datatransfer/
-            // drag and drop outside of the browser!
-            setData: (dataTransfer, dragEl)=>{
-
-                let model = dragEl.model
-                let filename = model.get('orig_filename')
-                let host = location.protocol+'//'+location.host
-                let url = host+model.downloadURL
-
-                dataTransfer.setData('DownloadURL', [
-                    `application/octet-stream:${filename}:${url}`
-                ]);
-
-                dataTransfer.setData('text/plain', host+model.displayURL);
-
-                // Navigates to the URL when dropping on the URL bar or browser page
-                dataTransfer.setData('text/uri-list', host+model.displayURL);
-
-                // https://schema.org/ImageObject
-                // NOTE: this needs improved, file may not be an image
-                const data = {
-                    '@context': 'https://schema.org',
-                    '@type': 'ImageObject',
-                    thumbnail: host+model.previewURL,
-                    contentUrl: url,
-                    // datePublished: '2010-08-08',
-                    description: model.get('description'),
-                    name: filename,
-                    height: model.height,
-                    width: model.width
-                };
-
-                dataTransfer.setData('application/ld+json', JSON.stringify(data));
-            }
+            onUpdate: this.onSort.bind(this)
         })
     }
 
@@ -143,7 +112,12 @@ customElements.define('b-file-manager', class extends LitElement{
         let row = document.createElement(this.row)
         row.part = 'file'
         row.model = m
-        row.innerHTML = '<div class="drag" slot="drag"></div>'
+
+        if( this.shouldEnableSort)
+            row.innerHTML = '<div class="drag" slot="drag"></div>'
+        else
+            row.draggable = true
+
         return row
     }
 
