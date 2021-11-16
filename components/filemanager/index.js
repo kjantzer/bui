@@ -122,7 +122,9 @@ customElements.define('b-file-manager', class extends LitElement{
     }
 
     renderEmptyState(){return html`
-        <b-empty-state must-be="first" static md part="empty-state">${this.placeholder}</b-empty-state>
+        <b-empty-state must-be="first" static md part="empty-state">
+            <slot name="placeholder">${this.placeholder}</slot>
+        </b-empty-state>
     `}
 
     async onUpload(e){
