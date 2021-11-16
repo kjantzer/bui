@@ -11,6 +11,7 @@ Icon.register(
 	['book-insert', require('./book-insert.svg.html')],
 	['timeline', require('./timeline.svg.html')],
 	['partner', require('./partner.svg.html')],
+	['directory-files', require('./directory-files.svg.html')],
 	['glue', require('./glue.svg.html')],
 	['design', require('./design.svg.html')],
 	['foil', require('./foil.svg.html')],
