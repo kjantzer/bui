@@ -61,7 +61,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
             border-radius: var(--btn-radius);
             margin: .25em 0;
-            min-width: 60px;
+            min-width: var(--b-app-tab-bar-btn-min-width, 70px);
             flex-grow: 1;
             flex-shrink: 0;
         }

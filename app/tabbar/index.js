@@ -88,6 +88,7 @@ customElements.define('b-app', class extends LitElement {
         ${mediaQuery('b-app-landscape', css`
             b-tabs-router {
                 grid-template-columns: auto 1fr;
+                --b-app-tab-bar-btn-min-width: 60px;
             }
         `)}
     `}
