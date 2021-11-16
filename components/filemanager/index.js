@@ -90,7 +90,7 @@ customElements.define('b-file-manager', class extends LitElement{
     }
 
     render(){return html`
-        <b-uploader accept="${this.accept}" @change=${this.onUpload}></b-uploader>
+        <b-uploader accept="${this.accept}" @change=${this.onUpload} ?multiple=${this.limit!=1}></b-uploader>
             
         <div class="files" part="files">
         
