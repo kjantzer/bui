@@ -83,8 +83,8 @@ customElements.define('b-previewer', class extends LitElement{
         let item = items[0]
         
         // better experience on iOS (Android too?)
-        if( device.isMobile && opts.newWindowForMobile != false )
-            return this.openInNewWindow(item)
+        // if( device.isMobile && opts.newWindowForMobile != false )
+        //     return this.openInNewWindow(item)
 
         let view = new (customElements.get('b-previewer'))(items, opts)
 
