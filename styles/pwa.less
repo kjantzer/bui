@@ -109,6 +109,12 @@ b-panel {
     --b-panel-radius: 0 !important;
 }
 
+@media screen and (max-width:699px) {
+:root.installed.mobile b-panel[height="100%"]::part(main) {
+    box-shadow: none;
+}   
+}
+
 :root:not(.mobile) b-panel[type="search-popup"] {
     --radius: 1em;
     position: fixed;
