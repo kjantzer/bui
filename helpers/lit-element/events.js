@@ -29,8 +29,16 @@ LitElement.prototype.emitEvent = function(eventName, detail=null, overrides={}){
     ```
 */
 LitElement.prototype.willTakeAction = function(name, detail={}){
-    let action = Object.assign({}, detail, {name: name, allowed: true})
+    
+    let action = Object.assign({
+        model: this.model,
+        target: this
+    }, detail, {name: name, allowed: true})
+
     this.emitEvent('will-take-action', {action})
+    
+    // add alias
     action.notAllowed = !action.allowed
+
     return action
 }
