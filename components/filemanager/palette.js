@@ -22,12 +22,19 @@ customElements.defineShared('b-palette', class extends LitElement{
         .colors {
             text-align: center;
         }
+
         .swatch {
-            height: 3em;
-            width: 3em;
+            height: 3rem;
+            width: 3rem;
             border-radius: 2em;
             background: var(--color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: .8em;
         }
+
         .info {
             line-height: 0;
         }
@@ -55,7 +62,7 @@ customElements.defineShared('b-palette', class extends LitElement{
         <b-flex class="colors">
         ${this.palette.map(c=>html`
             <b-flex col style="--color:${c.hex};" center gap=".5">
-                <div class="swatch"></div>
+                <div class="swatch" title="Population">${c.pop}</div>
                 <div class="info">
                     <b-text xs block>${c.name}</b-text>
                     <b-text xs muted>${c.hex}</b-text>
