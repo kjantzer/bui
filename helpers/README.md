@@ -44,16 +44,49 @@ this.model.get('child-collection').on('reset', this.update.bind(this))
 import 'bui/helpers/lit-element/events'
 ```
 
+#### `emitEvent`
 To simplify event dispatching from inside the shadow dom, an `emitEvent`
 method has been added to lit-element
 
 ```js
-this.emitEvent(eventName, detail)
+this.emitEvent(eventName[, detail])
 this.emitEvent('element-event', {id: 1})
 ```
 
 The emitted event with have `bubbles: true` and `composed: true` so that the even
 will bubble up and out of the shadow dom
+
+#### `willTakeAction`
+Emits with a specially formatted `detail` object for informing parent views of the action
+and providing them the opportunity to cancel/disallow
+
+```js
+this.willTakeAction(actionName[, detail])
+
+if( !this.willTakeAction('delete').allowed ) return
+if( this.willTakeAction('delete').notAllowed ) return
+
+let action = this.willTakeAction('show-menu', {menu: [/*...*/]})
+if( action.allowed )
+    console.log(action.menu) // could be different if parent changed it
+```
+
+```html
+<child-el @will-take-action=${onAction}></child-el>
+```
+
+```js
+onAction(e){
+    let {action} = e.detail
+
+    if( action.name == 'delete' )
+        action.allowed = false
+
+    if( action.name == 'show-menu' )
+        action.menu = action.menu.filter(d=>d.val!='delete')
+}
+```
+
 
 ### Get
 
