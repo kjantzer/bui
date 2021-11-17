@@ -181,6 +181,11 @@ new Menu(menuItems, {handler:myClass}).popover(target)
 .then(selected=>{
     console.log(selected.label) // Item 3
 })
+
+// handler with args
+new Menu(menuItems, {handler:[myClass, 'arg1', 'arg2']}).popover(target)
+// long form
+new Menu(menuItems, {handler:myClass, handlerArgs: ['arg1', 'arg2']}).popover(target)
 ```
 
 ## Utilities

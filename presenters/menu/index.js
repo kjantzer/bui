@@ -765,8 +765,19 @@ export default class Menu {
 
 		let didHandle = false
 
-		if( this.opts.handler )
-			didHandle = Menu.handle(data, this.opts.handler, this.opts.handlerArgs)
+		if( this.opts.handler ){
+
+			let handler = this.opts.handler
+			let args = this.opts.handlerArgs
+
+			// handler = [handler, arg1, arg2]
+			if( Array.isArray(handler) ){
+				args = handler.slice(1)
+				handler = handler[0]
+			}
+
+			didHandle = Menu.handle(data, handler, args)
+		}
 
 		if( !didHandle && this._resolve ){
 			this._resolve(data)
