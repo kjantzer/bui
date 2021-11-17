@@ -3,6 +3,7 @@ import {repeat} from 'lit-html/directives/repeat'
 import Sortable from 'sortablejs'
 import Dialog, { Notif } from '../../presenters/dialog'
 import device from '../../util/device'
+import '../../helpers/lit-element/events'
 import '../../elements/uploader'
 import '../../elements/empty-state'
 
@@ -139,6 +140,8 @@ customElements.define('b-file-manager', class extends LitElement{
 
         if( uploader.files.length == 0 )
             return
+
+        if( !this.willTakeAction('upload-file').allowed ) return
 
         let url = typeof this.coll.url == 'function' ? this.coll.url() : this.coll.url
         let resp = await uploader.upload({url})

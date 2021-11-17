@@ -142,10 +142,14 @@ customElements.define('c-file-row', class extends LitElement{
     }
 
     download(){
+        if( this.willTakeAction('download').notAllowed ) return
         download(this.model.downloadURL)
     }
 
     async destroy(e){
+        
+        if( this.willTakeAction('delete').notAllowed ) return
+
         if( await Dialog.confirmDelete().popover(e) ){
             this.model.destroySync()
             this.remove()
@@ -157,6 +161,7 @@ customElements.define('c-file-row', class extends LitElement{
     }
 
     onDragStart(e){
+        if( this.willTakeAction('download', {drag: true}).notAllowed ) return
         enableDragAndDropDownload(e.dataTransfer, this.model)   
     }
 
