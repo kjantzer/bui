@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit-element'
 import './search'
 import './comments'
 import './filebrowser'
+import './filemanager'
 import docs from '../../components/README.md'
 import printViewDocs from '../../components/print-view/README.md'
 
@@ -31,6 +32,7 @@ customElements.define('demo-components', class extends LitElement{
             </div>
             demo-presenter-search
             demo-components-comments
+            demo-components-filemanager
             demo-components-filebrowser
 
             <div title="Print View" path="print-view" id="print-view">
