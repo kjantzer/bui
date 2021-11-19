@@ -171,7 +171,11 @@ module.exports = class API {
             let path = (req.query.display === 'preview' && resp.previewPath) || (resp.displayPath || resp.path)
             if( resp.name )
                 res.set('Filename', resp.name);
-            res.sendFile(path)
+
+            if( path.startsWith('http') )
+                res.redirect(path)
+            else
+                res.sendFile(path)
         
         }else{
             if( res.headersSent )
