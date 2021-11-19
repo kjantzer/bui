@@ -1,5 +1,7 @@
 /*
     Creates a linked subview if needed
+
+    DEPRECATED
 */
 import {LitElement} from 'lit-element'
 

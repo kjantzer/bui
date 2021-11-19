@@ -1,5 +1,6 @@
 require('./listeners')
 require('./events')
+require('./will-take-action')
 require('./model')
 require('./coll')
 require('./sv')
