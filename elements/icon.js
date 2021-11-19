@@ -60,7 +60,7 @@ export default class IconElement extends HTMLElement {
 	get styles(){return /*css*/`
 		:host {
 			display: inline-flex;
-			vertical-align: middle;
+			vertical-align: baseline;
 			align-items: center;
 			justify-content: center;
 			color: inherit;
