@@ -110,6 +110,7 @@ export default class BtnElement extends LitElement {
         main > span {
             display: inline-flex;
             justify-content: center;
+            line-height: 0;
         }
 
         slot {
