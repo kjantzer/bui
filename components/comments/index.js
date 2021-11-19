@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit-element'
 import Coll, { markCommentRead } from './models'
 import Comment from './comment'
 import WriteComment from './write'
+import '../../helpers/lit-element/events'
 
 customElements.define('b-comments', class extends LitElement{
 
@@ -27,6 +28,7 @@ customElements.define('b-comments', class extends LitElement{
             display: flex;
             flex-direction: column-reverse;
             position:relative;
+            gap: .5em;
         }
 
         :host([group="thread"]) {
@@ -45,9 +47,6 @@ customElements.define('b-comments', class extends LitElement{
             background: linear-gradient(to bottom, transparent, rgba(0,0,0,.8));
         }
 
-        b-comment-row:not(:last-child) {
-            margin-top: .5em;
-        }
         .view-all ~ b-comment-row {
             display: none;
         }
@@ -147,13 +146,13 @@ customElements.define('b-comments', class extends LitElement{
     render(){return html`
 
         <!-- write new comment -->
-        <b-comment-row .coll=${this.coll} .meta=${this.meta}></b-comment-row>
+        <b-comment-row part="write-comment" .coll=${this.coll} .meta=${this.meta}></b-comment-row>
 
         ${this.coll.map((m,i)=>html`
             ${this.limit&&i==this.coll.length-this.limit?html`
                 <b-btn color="white" block @click=${this.viewAllComments} class="view-all">View all comments</b-btn>
             `:''}
-            <b-comment-row .model=${m} .meta=${this.meta} @mark-read=${this.markRead}></b-comment-row>
+            <b-comment-row part="comment" .model=${m} .meta=${this.meta} @mark-read=${this.markRead}></b-comment-row>
         `).reverse()}
     `}
 

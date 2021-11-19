@@ -3,7 +3,7 @@ import {repeat} from 'lit-html/directives/repeat'
 import Sortable from 'sortablejs'
 import Dialog, { Notif } from '../../presenters/dialog'
 import device from '../../util/device'
-import '../../helpers/lit-element/events'
+import '../../helpers/lit-element/will-take-action'
 import '../../elements/uploader'
 import '../../elements/empty-state'
 

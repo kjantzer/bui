@@ -64,6 +64,45 @@ You can choose to add additional metadata by setting `.meta` (either an object o
 <b-comments group="book" gid="4805" .meta=${{title: 'Only Yesterday'}}></b-comments>
 ```
 
+#### Model
+You can give the comment a model and the `GID` and `Meta` will be set using that model. Note: `group` must still be set
+
+- `gid` = model.id
+- `meta` = model.commentMeta
+
+```html
+<b-comments group="book" .model=${this.model}></b-comments>
+```
+
+## Styling
+
+### Parts
+- `write-comment`
+- `comment`
+
+Example:
+
+```css
+/* make comments look more like post it notes */
+b-comment::part(comment) {
+	background: yellow;
+	padding: .5em;
+	border-radius: 5px;
+}
+```
+
+## Events
+
+### Will Take Action
+
+- `new-comment`
+- `edit`
+- `delete`
+- `resolve`
+- `react`
+
+> See `helpers/lit-element/will-take-action` for usability
+
 ## Server Model
 ```js
 const Comments = require(bui`components/comments/server/model`)

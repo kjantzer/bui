@@ -296,15 +296,18 @@ customElements.define('b-comment-row', class extends LitElement {
     }
 
     toggleResolved(){
-        this.model.toggleResolved()
+        if( this.willTakeAction('resolve').allowed )
+            this.model.toggleResolved()
     }
 
     toggleReaction(){
-        this.model.toggleReaction()
+        if( this.willTakeAction('react').allowed )
+            this.model.toggleReaction()
     }
 
     beginEditing(){
-        this.editing = true
+        if( this.willTakeAction(this.model?'edit':'new-comment').allowed )
+            this.editing = true
     }
     
     doneEditing(){
@@ -325,13 +328,17 @@ customElements.define('b-comment-row', class extends LitElement {
             {label: 'Delete', icon: 'trash', color: 'hover-red', fn: 'destroy'}
         ]
 
-        new Menu(menu, {
+        let action = this.willTakeAction('show-menu', {menu})
+        if( action.notAllowed ) return
+
+        new Menu(action.menu, {
             handler: this,
             handlerArgs: e
         }).popover(e)
     }
 
     async destroy(e){
+        if( this.willTakeAction('delete').notAllowed ) return
         if( await Dialog.confirmDelete().popover(e) )
             this.model.destroy()
     }

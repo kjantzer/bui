@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit-element'
 import '../../presenters/form/handler'
 import '../../presenters/form/control'
 import '../../presenters/form/controls/text-editor'
-import '../../helpers/lit-element/events'
+import '../../helpers/lit-element/will-take-action'
 import device from '../../util/device'
 import mobileAsyncFocus from '../../util/mobileAsyncFocus'
 
