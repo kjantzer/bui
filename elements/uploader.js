@@ -305,7 +305,7 @@ export class UploaderElement extends LitElement {
             detail: resp
         }))
 
-        return this.multiple ? resp : resp[0]
+        return this.files.length > 1 ? resp : resp[0]
     }
 
 }
