@@ -15,6 +15,7 @@
     }
     ```
 */
+import {LitElement} from 'lit-element'
 import './events'
 
 LitElement.prototype.willTakeAction = function(name, detail={}){
