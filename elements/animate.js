@@ -17,7 +17,8 @@ customElements.define('b-animate', class extends LitElement{
                 transition: var(--speed, 120ms) cubic-bezier(0.6, -0.28, 0.735, 0.045);
             }
 
-            :host([scale]) ::slotted(*:hover) {
+            :host([scale]) ::slotted(*:hover),
+            :host([scale]) ::slotted(*.popover-open) {
                 transform: scale(var(--scale, 1.05));
             }
         }
