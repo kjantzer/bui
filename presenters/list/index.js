@@ -456,13 +456,14 @@ customElements.define('b-list', class extends LitElement {
         let divider = this.getAttribute('divider')
         
         divider = divider && customElements.get(divider)
-
-        if( divider && divider.shouldDisplay && divider.shouldDisplay(prevModel, model, this) ){
-            divider = new divider(prevModel, model, this)
+        let shouldDisplay = divider && divider.shouldDisplay && divider.shouldDisplay(prevModel, model, this)
+        if( shouldDisplay ){
+            divider = new divider(prevModel, model, this, shouldDisplay)
             divider.part = 'divider'
             divider.list = this
             divider.model = model
             divider.prevModel = prevModel
+            divider.data = shouldDisplay
             return divider
         }
 
