@@ -69,7 +69,7 @@ function showTooltip(){
     shownTooltip = new Popover(target, activeTooltip.innerHTML, {
         className: 'inverse no-arrow tooltip',
         align: activeTooltip.align,
-        // TODO: support `maxW` ?
+        maxWidth: '50vw' // TODO: support `maxW` ?
     })
 }
 
