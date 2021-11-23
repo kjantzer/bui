@@ -80,14 +80,17 @@ customElements.define('b-realtime-users', class extends LitElement{
 
         b-avatar,
         .avatar {
-            border-radius: var(--size);
-            --size: var(--size);
+            position: relative;
+            
+            border-radius: var(--size, 1em);
+            --size: var(--size, 1em);
             /* box-shadow: rgba(0,0,0,.2) 0 0 2px */
+            box-shadow:  0 0 0 1px var(--theme-bgd);
         }
 
         b-avatar:not(:first-child),
         .avatar:not(:first-child) {
-            margin-left: calc(var(--size) / -1.7);
+            margin-left: calc(var(--size, 1em) / -1.7);
         }
     `}
 
@@ -149,8 +152,8 @@ customElements.define('b-realtime-users', class extends LitElement{
         <main part="main">
             
             ${this.users.map((m,k,i)=>!this.showUser(i)?'':this.renderUser(m))}
-            ${this.users.length>this.max?html`
-                <b-avatar class="avatar" initials="+${this.users.length-this.max+1}" color="#555" bgd="#ddd"></b-avatar>
+            ${this.users.size>this.max?html`
+                <b-avatar class="avatar" initials="+${this.users.size-this.max+1}" color="#555" bgd="#ddd"></b-avatar>
             `:''}
 
         </main>
