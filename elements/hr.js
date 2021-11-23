@@ -44,6 +44,7 @@ customElements.define('b-hr', class extends LitElement{
             width: 1px;
             margin: 0 var(--padding, .5em);
             align-self: stretch;
+            flex-grow: 0;
         }
 
         :host([pad="none"]) { --padding: auto; }
