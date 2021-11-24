@@ -18,7 +18,7 @@ customElements.define('b-realtime-users', class extends LitElement{
     parseData(data){
 
         if( this.test )
-            return data
+            return Array.from(data.values())
         
         let uniq = new Map()
 
@@ -143,7 +143,7 @@ customElements.define('b-realtime-users', class extends LitElement{
     }
     
     showUser(i){
-        if( this.users.size > this.max )
+        if( this.users.length > this.max )
             i++
         return i < this.max
     }
@@ -151,9 +151,9 @@ customElements.define('b-realtime-users', class extends LitElement{
     render(){return html`
         <main part="main">
             
-            ${this.users.map((m,k,i)=>!this.showUser(i)?'':this.renderUser(m))}
-            ${this.users.size>this.max?html`
-                <b-avatar class="avatar" initials="+${this.users.size-this.max+1}" color="#555" bgd="#ddd"></b-avatar>
+            ${this.users.map((m,i)=>!this.showUser(i)?'':this.renderUser(m))}
+            ${this.users.length>this.max?html`
+                <b-avatar class="avatar" initials="+${this.users.length-this.max+1}" color="#555" bgd="#ddd"></b-avatar>
             `:''}
 
         </main>
