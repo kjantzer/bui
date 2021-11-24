@@ -37,35 +37,35 @@ customElements.define('b-text', class extends LitElement{
             display: contents;
         }
 
-        :host([monospace]) {
+        :host([monospace]) .slot {
             font-family: var(--b-text-monospace, 'Source Code Pro', 'Courier New', Courier, monospace)
         }
 
-        :host([nobold]) { font-weight: normal; }
-        :host([bold]) { font-weight: bold; }
-        :host([xbold]) { font-weight: 900; }
-        :host([italic]) { font-style: italic; }
+        :host([nobold]) .slot { font-weight: normal; }
+        :host([bold]) .slot { font-weight: bold; }
+        :host([xbold]) .slot { font-weight: 900; }
+        :host([italic]) .slot { font-style: italic; }
 
-        :host([strike]) { text-decoration: line-through; }
+        :host([strike]) .slot { text-decoration: line-through; }
 
-        :host([capitalize]) { text-transform: capitalize; }
-        :host([ucase]) { text-transform: uppercase; }
-        :host([lcase]) { text-transform: lowercase }
+        :host([capitalize]) .slot { text-transform: capitalize; }
+        :host([ucase]) .slot { text-transform: uppercase; }
+        :host([lcase]) .slot { text-transform: lowercase }
 
-        :host([breakall]) { word-break: break-all; }
+        :host([breakall]) .slot { word-break: break-all; }
 
-        :host([align="left"]) { text-align: left; }
-        :host([align="right"]) { text-align: right; }
-        :host([align="center"]) { text-align: center; }
-        :host([align="justify"]) { text-align: justify; }
+        :host([align="left"]) .slot { text-align: left; }
+        :host([align="right"]) .slot { text-align: right; }
+        :host([align="center"]) .slot { text-align: center; }
+        :host([align="justify"]) .slot { text-align: justify; }
 
         /* https://spencermortensen.com/articles/typographic-scale/ */
-        :host([xs]) { font-size: .65em; line-height: 1.1em; }
-        :host([sm]) { font-size: .8409em; line-height: 1.1em; }
-        :host([md]) { font-size: 1.1892em; line-height: 1.1em; }
-        :host([lg]) { font-size: 1.4142em; line-height: 1.1em; }
-        :host([xl]) { font-size: 1.6818em; line-height: 1.1em; }
-        :host([xxl]) { font-size: 2em; line-height: 1.1em; }
+        :host([xs]) .slot { font-size: .65em; line-height: 1.1em; }
+        :host([sm]) .slot { font-size: .8409em; line-height: 1.1em; }
+        :host([md]) .slot { font-size: 1.1892em; line-height: 1.1em; }
+        :host([lg]) .slot { font-size: 1.4142em; line-height: 1.1em; }
+        :host([xl]) .slot { font-size: 1.6818em; line-height: 1.1em; }
+        :host([xxl]) .slot { font-size: 2em; line-height: 1.1em; }
 
         :host([tone="muted"]), :host([muted]) { color: rgba(var(--theme-text-rgb, 0,0,0),.4); }
         :host([muted="some"]) { color: rgba(var(--theme-text-rgb, 0,0,0),.8); }
@@ -147,7 +147,7 @@ customElements.define('b-text', class extends LitElement{
     }
 
     render(){return html`
-        <slot></slot>
+        <slot class="slot"></slot>
         ${this.tooltip?html`
             <b-tooltip>${this.tooltip}</b-tooltip>
         `:''}
