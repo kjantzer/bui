@@ -42,7 +42,6 @@ module.exports = class Model {
     }
 
     findParseRow(row, index, resultCount, resp){
-        this.decodeFields(row)
         return row
     }
 
@@ -251,6 +250,7 @@ module.exports = class Model {
 
         // parse each row (for decoding JSON strings, etc)
         await Promise.series(resp, (row,i)=>{
+            this.decodeFields(row)
             return this.findParseRow(row, i, resp.length, resp)
         })
 
