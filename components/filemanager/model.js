@@ -1,5 +1,8 @@
 import {Model} from 'backbone'
 import { round } from '../../util/math'
+import CollMap from '../../util/collmap'
+import tinycolor from 'tinycolor2'
+import colorScheme from '../../util/color-scheme'
 
 const RESOLUTIONS = {
     '3840x2160': '4K',
@@ -68,5 +71,64 @@ export default class FileModel extends Model {
 
     get isImg(){
         return this.get('type').match(/image/)
+    }
+
+    get palette(){
+        return this.__palette = this.__palette || new Palette(this.traits.palette)
+    }
+}
+
+
+
+export class Palette extends CollMap {
+
+    constructor(data, opts={}){
+        
+        if( data && data.hasOwnProperty('id') && !data.id )
+            data = {}
+
+        opts.appendKey = true
+
+        super(data, opts)
+    }
+
+    clearVars(el){
+        while( el.style[0] ){
+            el.style.removeProperty(el.style[0])
+        }
+    }
+
+    applyVars(el, {overrideTheme=true}={}){
+
+        this.clearVars(el)
+
+        if( this.size == 0 ) return
+
+        this.forEach((color, name)=>{
+            el.style.setProperty(`--palette-${name}`, color.rgb.join(' '))
+        })
+
+        el.style.setProperty('--palette-gradient', 
+            `linear-gradient(to right, 
+                rgb(var(--palette-vibrant)),
+                rgb(var(--palette-muted))
+            )`
+        )
+
+        el.style.setProperty(`--palette-text-accent`, this.textAccent.hex)
+
+        if( overrideTheme ){
+            el.style.setProperty('--theme', 'var(--palette-text-accent)')
+            el.style.setProperty('--theme-gradient', 'var(--palette-gradient)')
+        }
+    }
+
+    get textAccent(){
+        let bgd = colorScheme.getCssVar('theme-bgd')
+        let color = ['vibrant', 'lightvibrant', 'muted'].find(color=>{
+            return tinycolor.isReadable(bgd, this.get(color)?.hex, {level:"AA",size:"large"})
+        }) || 'darkvibrant'
+
+        return this.get(color)
     }
 }

@@ -65,6 +65,7 @@
         "numeral": "^2.0.6",
         "popper.js": "^1.14.7",
         "socket.io": "^2.3.0",
+        "tinycolor2": "^1.4.2",
         "url-pattern": "^1.0.3",
         "workbox-recipes": "^6.1.0"
     }
