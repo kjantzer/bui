@@ -34,7 +34,7 @@ class SearchAPI {
 
         if( !SearchType ) throw Error('Invalid search type')
             
-        return new SearchType(this.req, this.db).search(this.term)
+        return this.searchTypes([this.type])
     }
 
     // default searches all "types"
