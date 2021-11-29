@@ -256,8 +256,10 @@ export default class Popover {
 
 		this.target.popover = null
 
-		if( this.target._popoverTarget ){
-			this.target._popoverTarget.classList.remove('popover-open')
+		if( this.target.classList.contains('popover-invisible-placeholder') ){
+			if( this.target._popoverTarget )
+				this.target._popoverTarget.classList.remove('popover-open')
+				
 			this.target.remove()
 		}else
 			this.target.classList.remove('popover-open')
