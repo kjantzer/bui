@@ -350,7 +350,7 @@ export default class Menu {
 		render(html`
 
 			${this.searchIsOn?html`
-				<div class="menu-search-bar">
+				<div class="menu-search-bar" ?hidden=${this.searchOpts.input===false}>
 					<b-spinner hidden></b-spinner>
 					${this.searchOpts.input!==false?html`
 						<b-icon name="${this.searchIcon}"></b-icon>

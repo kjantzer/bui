@@ -99,6 +99,7 @@ search: {
     url: 'my-search?term=', // term will be appended to end
     url: term=>'my-search?term='+term, // custom function supported
 
+    input: true, // disable input (use `matching` to presearch)
     showAll: true, // should all results be displayed when nothing is searched
     hideUnselected: false,
     placeholder: 'Search',
