@@ -39,7 +39,7 @@ const defaultFilterby = (model, val, key) => {
     if( Array.isArray(val) )
         return val.includes(model.get(key))
     else
-        return val == model.get(key)
+        return val == model.get ? model.get(key) : model[key]
 };
 
 export default class Filters extends Map {
