@@ -12,6 +12,7 @@ import 'bui/elements/tooltip'
 import 'bui/elements/uploader'
 import 'bui/elements/paper'
 import 'bui/elements/grid'
+import 'bui/elements/flex'
 import 'bui/elements/timer'
 import 'bui/elements/empty-state'
 import 'bui/elements/label'
@@ -50,9 +51,13 @@ customElements.define('demo-elements', class extends LitElement{
             overflow: hidden;
         }
 
-        b-grid > div {
-            background: var(--theme-bgd);
+        [view-id="Layout"] b-grid > div {
+            background: var(--theme-bgd-accent);
             padding: .25em;
+        }
+
+        [view-id="Layout"] b-flex > div {
+            background: var(--theme-bgd-accent);
         }
 
         b-paper {
@@ -103,7 +108,42 @@ customElements.define('demo-elements', class extends LitElement{
     render(){return html`
         <b-tabs-router path="elements/" key="elements" layout="left">
 
-            <section title="Grid">
+             <section title="Icons">
+
+                <b-paper>
+                <b-h1>Icons</b-h1>
+
+                <demo-markdown-docs notoc .docs=${iconDocs}></demo-markdown-docs>
+
+                <b-btn href="material-icons">View Available Material Icons</b-btn>
+                </b-paper>
+
+                <br><br>
+
+                <b-paper>
+                    <b-h1>File Icon</b-h1>
+                    <b-file-icon ext="pdf" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="docx" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="xlsx" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="psd" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="indd" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="ai" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="mp3" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="mp4" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="html" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="xml" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="zip" style="--size:4em"></b-file-icon>
+
+                    <br><br>
+                    <demo-markdown-docs notoc .docs=${elementDocs['file-icon']}></demo-markdown-docs>
+                </b-paper>
+            </section>
+
+            b-demo-icons
+
+            <section title="Layout">
+
+                <b-paper>
                 <h1>Grid</h1>
 
                 <b-grid cols="4">
@@ -117,7 +157,8 @@ customElements.define('demo-elements', class extends LitElement{
                     <div>Row 8</div>
                 </b-grid>
 
-                <b-hr></b-hr>
+                <b-hr short thick pad="lg"></b-hr>
+
                 <h2>Columns</h2>
                 <div>There are defaults columns, but if you need something custom, you can apply your own <code>grid-template-columns</code> style</div>
 
@@ -157,7 +198,8 @@ customElements.define('demo-elements', class extends LitElement{
                     <div>Row 8</div>
                 </b-grid>
 
-                <b-hr></b-hr>
+                <b-hr short thick pad="lg"></b-hr>
+                
                 <h2>Gap</h2>
 
                 <h3><code>gap="0"</code></h3>
@@ -183,6 +225,42 @@ customElements.define('demo-elements', class extends LitElement{
                     <div>Row 3</div>
                     <div>Row 4</div>
                 </b-grid>
+
+                </b-paper>
+
+                <b-paper>
+
+                    <h1>Flex</h1>
+
+                    <b-paper outline compact><b-flex left>
+                        <div>Flex box</div>
+                        <div>Flex box</div>
+                        <div>Flex box</div>
+                    </b-flex>
+                    </b-paper>
+
+                    <b-paper outline compact><b-flex right>
+                        <div>Flex box</div>
+                        <div>Flex box</div>
+                        <div>Flex box</div>
+                    </b-flex>
+                    </b-paper>
+
+                    <b-paper outline compact><b-flex stretch>
+                        <div>stretch</div>
+                        <div>stretch</div>
+                        <div>stretch</div>
+                    </b-flex>
+                    </b-paper>
+
+                    <b-paper outline compact><b-flex col>
+                        <div>coll</div>
+                        <div>coll</div>
+                        <div>coll</div>
+                    </b-flex>
+                    </b-paper>
+
+                </b-paper>
                 
             </section>
 
@@ -358,38 +436,6 @@ customElements.define('demo-elements', class extends LitElement{
             </section>
 
             ${specialty}
-
-            <section title="Icons">
-
-                <b-paper>
-                <b-h1>Icons</b-h1>
-
-                <demo-markdown-docs notoc .docs=${iconDocs}></demo-markdown-docs>
-
-                <b-btn href="material-icons">View Available Material Icons</b-btn>
-
-                <br><br>
-
-                <b-paper>
-                    <b-h1>File Icon</b-h1>
-                    <b-file-icon ext="pdf" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="docx" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="xlsx" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="psd" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="indd" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="ai" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="mp3" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="mp4" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="html" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="xml" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="zip" style="--size:4em"></b-file-icon>
-
-                    <br><br>
-                    <demo-markdown-docs notoc .docs=${elementDocs['file-icon']}></demo-markdown-docs>
-                </b-paper>
-            </section>
-
-            b-demo-icons
 
             <section title="Docs">
 
