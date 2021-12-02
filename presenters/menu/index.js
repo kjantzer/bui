@@ -402,7 +402,7 @@ export default class Menu {
 		let icon = ''
 		
 		if( m.icon && typeof m.icon == 'string' )
-			icon = html`<b-icon name="${m.icon}"></b-icon>`
+			icon = html`<b-icon square name="${m.icon}"></b-icon>`
 		else if( m.icon ) 
 			icon = html`<span class="icon">${m.icon}</span>`
 
