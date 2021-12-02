@@ -42,7 +42,7 @@ export const Mention = Node.create({
 
   name: 'mention',
 
-  defaultOptions: {
+  addOptions(){ return {
     
     tag: 'b-mention',
 
@@ -123,7 +123,7 @@ export const Mention = Node.create({
 			}
 		},
     },
-  },
+  }},
 
   group: 'inline',
 
