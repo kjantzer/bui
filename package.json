@@ -46,6 +46,7 @@
     },
     "dependencies": {
         "@fnando/sparkline": "^0.3.10",
+        "@material-icons/svg": "github:material-icons/material-icons#original",
         "@tiptap/core": "2.0.0-beta.122",
         "@tiptap/extension-character-count": "2.0.0-beta.13",
         "@tiptap/extension-placeholder": "2.0.0-beta.33",

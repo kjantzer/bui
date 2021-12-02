@@ -24,6 +24,9 @@ function registerIcon(name, icon, {prefix='icon-'}={}){
 		title.remove()
 	}
 
+	icon.removeAttribute('width')
+	icon.removeAttribute('height')
+
 	if( !name )
 		return console.warn('Icons must have a name')
 

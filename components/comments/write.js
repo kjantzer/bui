@@ -74,7 +74,7 @@ customElements.define('b-write-comment', class extends LitElement{
                     @submit=${this.save}
                     @esckey=${this.onEscape}></text-editor>
 
-                <b-btn sm color="theme" @click=${this.save} icon="direction" slot="suffix"></b-btn>
+                <b-btn sm color="theme" @click=${this.save} icon="send" slot="suffix"></b-btn>
             </form-control>
 
         </form-handler>

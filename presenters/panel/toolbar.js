@@ -32,6 +32,10 @@ class PanelToolbar extends LitElement {
             gap: .25rem;
         }
 
+        :host ::slotted(*) {
+            app-region: none;
+        }
+
         :host([hidden]) { display: none; }
 
         /* @media (max-width: 599px) {
@@ -65,7 +69,7 @@ class PanelToolbar extends LitElement {
         }
 
         :host([shadow]) {
-            box-shadow: rgba(0,0,0,.2) 0 0 6px;
+            box-shadow: var(--theme-shadow) 0 0 6px;
         }
 
         :host([look="white"]) {
@@ -99,20 +103,20 @@ class PanelToolbar extends LitElement {
             text-align: right;
         }
 
-        [part="close-btn"][icon="right-open"] {
+        [part="close-btn"][icon="chevron_right"] {
             width: 1.8rem;
             height: 1.8rem;
             flex-shrink: 0;
             transform: rotate(var(--b-panel-toolbar-close-btn-rotation, 0deg));
         }
 
-        [part="close-btn"][icon="right-open"]::part(main) {
+        [part="close-btn"][icon="chevron_right"]::part(main) {
             padding-top: 0;
             padding-bottom: 0;
 
         }
 
-        [part="close-btn"][icon="right-open"]::part(icon) {
+        [part="close-btn"][icon="chevron_right"]::part(icon) {
             --size: 1.6rem;
         }
 
@@ -138,7 +142,7 @@ class PanelToolbar extends LitElement {
     `}
 
     get closeBtnIcon(){
-        if( this.closebtn === 'arrow' ) return 'right-open'
+        if( this.closebtn === 'arrow' ) return 'chevron_right'
         return this.closebtn
     }
 
