@@ -4,6 +4,7 @@ import '../views/routed-tabs'
 import './tab-bar'
 import {mediaQuery, MediaQueries} from '../../util/mediaQueries'
 
+// NOTE: change this name
 if( !MediaQueries.get('b-app-landscape') )
 MediaQueries.set('b-app-landscape', styles=>css`
     @media /*(max-height: 599px) and (orientation:landscape),*/
@@ -95,11 +96,18 @@ customElements.define('b-app', class extends LitElement {
             /* app-region: drag; */
         }
         
+        b-tabs-router > b-hr{
+            display: none;
+        }
 
         ${mediaQuery('b-app-landscape', css`
             b-tabs-router {
                 grid-template-columns: auto 1fr;
                 --b-app-tab-bar-btn-min-width: 60px;
+            }
+
+            b-tabs-router > b-hr {
+                display: inline-block;
             }
 
             b-panel-toolbar::part(close-btn) {
