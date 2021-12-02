@@ -20,7 +20,7 @@ window.docsStr = docsStr
 customElements.define('demo-overview', class extends LitElement{
 
     static get title(){ return 'Overview' }
-    static get icon(){ return 'info-circled' }
+    static get icon(){ return 'info' }
     static get path(){ return 'overview(/:view(/*))' }
 
     static get styles(){return css`

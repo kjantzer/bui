@@ -5,7 +5,18 @@ import { LitElement, html, css } from 'lit-element';
 
 const SVG_ICONS = new Map()
 
-function registerIcon(name, icon, {prefix='icon-'}={}){
+export function importMaterialIcons(icons){
+	return icons.map(icon=>{
+		let [iconName, customName] = Array.isArray(icon) ? icon: [icon, icon]
+
+		return [
+			customName||iconName, 
+			require(`@material-icons/svg/svg/${iconName}/baseline.svg`), {className: 'material'}
+		]
+	})
+}
+
+function registerIcon(name, icon, {prefix='icon-', className=''}={}){
 
 	let d = document.createElement('div')
 	d.innerHTML = icon
@@ -23,6 +34,11 @@ function registerIcon(name, icon, {prefix='icon-'}={}){
 		icon.setAttribute('data-title', title.textContent)
 		title.remove()
 	}
+
+	icon.setAttribute('part', 'svg')
+
+	if( className )
+		icon.classList.add(className)
 
 	icon.removeAttribute('width')
 	icon.removeAttribute('height')
@@ -48,15 +64,21 @@ export default class IconElement extends HTMLElement {
 	static register(...icons){
 		icons.forEach(icon=>{
 			let name = ''
+			let opts = {}
 
 			if( Array.isArray(icon) )
-				[name, icon] = icon
+				[name, icon, opts] = icon
 			
+			// if imported with `default` instead of icon src
 			if( icon.default )
 				icon = icon.default
 				
-			registerIcon(name, icon)
+			registerIcon(name, icon, opts)
 		})
+	}
+
+	static registeredIconNames(){
+		return Array.from(SVG_ICONS.keys())
 	}
 
 	// not ideal...
@@ -97,6 +119,10 @@ export default class IconElement extends HTMLElement {
 			display: inline-block;
 			fill: currentColor;
 			color: currentColor;
+		}
+
+		svg.material {
+			transform: scale(var(--b-icon-undersized-scale, 1.1)); /* slightly bigger for Material icons */
 		}
 
 		@keyframes rotate360 {

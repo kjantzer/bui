@@ -5,7 +5,7 @@ import './helpers'
 customElements.define('demo-tools', class extends LitElement{
 
     static get title(){ return 'Tools' }
-    static get icon(){ return 'wrench' }
+    static get icon(){ return 'construction' }
     static get path(){ return 'tools(/:tab)' }
 
     static get styles(){return css`

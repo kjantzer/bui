@@ -266,8 +266,8 @@ export default class extends LitElement{
         ${device.isMobile?html`
             <b-btn slot="toolbar:after" @click=${this.close} lg color="theme">Done</b-btn>
         `:html`
-            <b-btn slot="toolbar:after" @click=${this.showTips} icon="lightbulb" text></b-btn>
-            <b-btn slot="toolbar:after" @click=${this.enlarge} icon="resize-full" text></b-btn>
+            <b-btn slot="toolbar:after" @click=${this.showTips} icon="keyboard" text></b-btn>
+            <b-btn slot="toolbar:after" @click=${this.enlarge} icon="unfold_more" text></b-btn>
         `}
     `}
 

@@ -9,7 +9,7 @@ import printViewDocs from '../../components/print-view/README.md'
 customElements.define('demo-components', class extends LitElement{
 
     static get title(){ return 'Components' }
-    static get icon(){ return 'cube' }
+    static get icon(){ return 'view_sidebar' }
     static get path(){ return 'components(/:tab)' }
 
     static get styles(){return css`

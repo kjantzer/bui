@@ -6,7 +6,7 @@ import './realtime'
 customElements.define('demo-server', class extends LitElement{
 
     static get title(){ return 'Server' }
-    static get icon(){ return 'database' }
+    static get icon(){ return 'storage' }
     static get path(){ return 'server(/:tab)' }
 
     static get styles(){return css`

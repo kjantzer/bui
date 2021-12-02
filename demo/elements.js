@@ -26,6 +26,7 @@ import 'bui/elements/audio'
 import 'bui/elements/carousel'
 import 'bui/elements/timeline-horz'
 import 'bui/helpers/day-js'
+import './elements/icons'
 
 import buttons from './elements/buttons'
 import text from './elements/text'
@@ -358,7 +359,6 @@ customElements.define('demo-elements', class extends LitElement{
 
             ${specialty}
 
-
             <section title="Icons">
 
                 <b-paper>
@@ -366,9 +366,7 @@ customElements.define('demo-elements', class extends LitElement{
 
                 <demo-markdown-docs notoc .docs=${iconDocs}></demo-markdown-docs>
 
-                <h3>All Available BUI Icons</h3>
-                <b-icon-list cols="4"></b-icon-list>
-                </b-paper>
+                <b-btn href="material-icons">View Available Material Icons</b-btn>
 
                 <br><br>
 
@@ -390,6 +388,8 @@ customElements.define('demo-elements', class extends LitElement{
                     <demo-markdown-docs notoc .docs=${elementDocs['file-icon']}></demo-markdown-docs>
                 </b-paper>
             </section>
+
+            b-demo-icons
 
             <section title="Docs">
 
