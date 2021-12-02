@@ -42,6 +42,8 @@ customElements.define('b-app', class extends LitElement {
 
     onPush(e){
 
+        if( this.panel && !this.panel.isOpen ) return
+
         let activeView = this.tabs.views.active
 
         // not sure this *should * ever happen, but it does, so fail gracefully
@@ -85,10 +87,25 @@ customElements.define('b-app', class extends LitElement {
             flex-grow: 1;
         }
 
+        b-panel-toolbar {
+            z-index: 100;
+            /* https://web.dev/window-controls-overlay/ */
+            /* padding-left: env(titlebar-area-x); */
+            /* width: calc( env(titlebar-area-x) + env(titlebar-area-width)); */
+            /* app-region: drag; */
+        }
+        
+
         ${mediaQuery('b-app-landscape', css`
             b-tabs-router {
                 grid-template-columns: auto 1fr;
                 --b-app-tab-bar-btn-min-width: 60px;
+            }
+
+            b-panel-toolbar::part(close-btn) {
+                height: 60px;
+                margin: -2em 0px -2em 1em;
+                top: -0.25em;
             }
         `)}
     `}
@@ -96,9 +113,17 @@ customElements.define('b-app', class extends LitElement {
     get shouldShowSearch(){ return true }
 
     render(){return html`
-        <b-tabs-router layout="bottom" key="${this.key}" tab-bar="${this.tabBar}" ?no-search=${!this.shouldShowSearch}>
-            ${this.views}
-        </b-tabs-router>  
+        ${this.panel?html`
+            <b-panel-toolbar shadow></b-panel-toolbar>
+        `:''}
+
+        <b-tabs-router 
+            layout="bottom"
+            key="${this.key}"
+            tab-bar="${this.tabBar}" 
+            ?no-search=${!this.shouldShowSearch}
+            path="${this.panel?this.panel.route.makePath()+'/':''}"
+        >${this.views}</b-tabs-router>  
     `}
 
     get key(){ return 'app-view' }
