@@ -281,7 +281,7 @@ customElements.define('b-list', class extends LitElement {
             <slot name="toolbar:before" slot="before"></slot>
             <slot name="toolbar:after" slot="after"></slot>
             <slot name="toolbar:refresh" slot="refresh-btn">
-                <b-btn text pill icon="arrows-ccw" @click=${this.refresh}></b-btn>
+                <b-btn text pill icon="refresh" @click=${this.refresh}></b-btn>
             </slot>
             <!-- <b-label slot="after" class="queuing-label">Queuing filters, release to apply</b-label> -->
             <b-list-selection-bar part="selectionbar">

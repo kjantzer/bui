@@ -228,7 +228,7 @@ export default class BtnElement extends LitElement {
 
         :host(:empty),
         :host([empty]) {
-            --padding: .4em .5em;
+            --padding: .4em .4em;
         }
 
         :host(:empty) main b-icon ,
