@@ -8,8 +8,8 @@ import {Events} from 'backbone'
 
 export class Collection {
 
-    constructor(){
-        this.models = []
+    constructor(models){
+        this.models = models || []
     }
 
     get model(){
