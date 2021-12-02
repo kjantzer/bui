@@ -516,7 +516,7 @@ export class Panel extends LitElement {
 
         if( this.view && this.view.willOpen ){
             if( await this.view.willOpen(this.route.state) === false ){
-                if( this.route)
+                if( this.route && this.panelController )
                     this.panelController._updateRoute()
                 return false;
             }
@@ -577,7 +577,7 @@ export class Panel extends LitElement {
         this.route&&this.route.update({didExit: true})
         this._close()
 
-        if( this.route)
+        if( this.route && this.panelController )
             this.panelController._updateRoute()
 
         // put the view back to it's original DOM location (if it had one)
