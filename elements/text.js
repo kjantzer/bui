@@ -47,7 +47,7 @@ customElements.define('b-text', class extends LitElement{
         :host([xbold]) .slot { font-weight: 900; }
         :host([italic]) .slot { font-style: italic; }
 
-        :host([strike]) .slot { text-decoration: line-through; }
+        :host([strike]) { text-decoration: line-through; }
 
         :host([capitalize]) .slot { text-transform: capitalize; }
         :host([ucase]) .slot { text-transform: uppercase; }
