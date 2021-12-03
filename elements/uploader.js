@@ -305,6 +305,7 @@ export class UploaderElement extends LitElement {
             detail: resp
         }))
 
+        // NOTE: is this really better than determining with `this.multiple`?
         return this.files.length > 1 ? resp : resp[0]
     }
 
