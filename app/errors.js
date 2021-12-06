@@ -74,8 +74,8 @@ export class UIAlertError extends UICustomError {
 export class UIPermissionError extends UICustomError {
     
     constructor(msg='You do not have permission', ...args){
-        this.sound = 'denied'
         super(msg, ...args)
+        this.sound = 'denied'
         this.name = 'UIPermissionError'
     }
 
