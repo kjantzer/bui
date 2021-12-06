@@ -8,17 +8,12 @@ In order for svg icons to change colors, they must be inlined. To accomplish thi
 All the Google Material Icons are available via the [@material-icons](https://github.com/material-icons/material-icons) package. You can import and use them like so:
 
 ```js
-import Icon, {importMaterialIcons} from 'bui/elements/icon'
+import Icon from 'bui/elements/icon'
 
-// import the specific SVG icons you wish to use
-const Icons = importMaterialIcons([
-    'account_circle',
-    'person',
-    // you can use a custom icon name like this:
-    ['person', 'user'] // icon_name, custom_name
+Icon.register([
+    ['account_circle', require(`@material-icons/svg/svg/account_circle/baseline.svg`)],
+    ['person', require(`@material-icons/svg/svg/user/baseline.svg`)],
 ])
-
-Icon.register(...Icons)
 ```
 
 ## Custom Icons

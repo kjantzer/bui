@@ -1,12 +1,15 @@
 import { LitElement, html, css } from 'lit-element'
-import Icon, {importMaterialIcons} from 'bui/elements/icon'
+import Icon from 'bui/elements/icon'
 import AllIcons from '@material-icons/svg/data.json'
 import {Collection} from '../../app/models'
 import '../../elements/flex'
 import uniq from '../../util/uniq'
 
 const RegisteredIcons = Icon.registeredIconNames()
-const MaterialIcons = importMaterialIcons(AllIcons.icons.map(icon=>icon.name))
+const MaterialIcons = AllIcons.icons.map(icon=>[
+    icon.name,
+    require(`@material-icons/svg/svg/${icon.name}/baseline.svg`), {className: 'material'}
+])
 
 console.log(RegisteredIcons);
 window.Icon = Icon

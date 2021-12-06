@@ -5,17 +5,6 @@ import { LitElement, html, css } from 'lit-element';
 
 const SVG_ICONS = new Map()
 
-export function importMaterialIcons(icons){
-	return icons.map(icon=>{
-		let [iconName, customName] = Array.isArray(icon) ? icon: [icon, icon]
-
-		return [
-			customName||iconName, 
-			require(`@material-icons/svg/svg/${iconName}/baseline.svg`), {className: 'material'}
-		]
-	})
-}
-
 function registerIcon(name, icon, {prefix='icon-', className=''}={}){
 
 	let d = document.createElement('div')
