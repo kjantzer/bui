@@ -129,8 +129,9 @@ customElements.define('b-app', class extends LitElement {
             layout="bottom"
             key="${this.key}"
             tab-bar="${this.tabBar}" 
+            .model=${this.model}
             ?no-search=${!this.shouldShowSearch}
-            path="${this.panel?this.panel.route.makePath()+'/':''}"
+            path="${this.panel?this.panel.route.makePath(this.panel.route.params)+'/':''}"
         >${this.views}</b-tabs-router>  
     `}
 
