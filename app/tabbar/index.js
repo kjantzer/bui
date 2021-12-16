@@ -118,6 +118,9 @@ customElements.define('b-app', class extends LitElement {
         `)}
     `}
 
+    get key(){ return 'app-view' }
+    get tabBar(){ return 'b-app-tab-bar' }
+    get tabsPath(){ return this.panel?this.panel.route.makePath(this.panel.route.params)+'/':'' }
     get shouldShowSearch(){ return true }
 
     render(){return html`
@@ -131,18 +134,13 @@ customElements.define('b-app', class extends LitElement {
             tab-bar="${this.tabBar}" 
             .model=${this.model}
             ?no-search=${!this.shouldShowSearch}
-            path="${this.panel?this.panel.route.makePath(this.panel.route.params)+'/':''}"
+            path="${this.tabsPath}"
         >${this.views}</b-tabs-router>  
     `}
 
-    get key(){ return 'app-view' }
-    get tabBar(){ return 'b-app-tab-bar' }
-
-    get views(){
-        return html`
+    get views(){ return html`
         <div title="Home" icon="home">Render your app here</div>
-        `
-    }
+    `}
 
     trackScreenChange(screenName){
         // gtag('event', 'screen_view', {'screen_name': screenName});
