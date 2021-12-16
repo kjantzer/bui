@@ -130,6 +130,9 @@ customElements.define('b-datepicker', class extends LitElement{
 
         if( !this.monthsList ) return
 
+        if( date == 'today' )
+            date = dayjs()
+
         if( ['start', 'end'].includes(date) ) 
             date = this.selectedRange[date]
             

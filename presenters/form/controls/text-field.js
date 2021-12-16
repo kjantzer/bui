@@ -420,6 +420,14 @@ class TextFieldElement extends HTMLElement {
 			overflowBoundry: 'window',
 			maxHeight: false, 
 			adjustForMobile: true,
+			onKeydown: e=>{
+				// jump to "today" or selected "date"
+				if( e.key == 't' || e.key == 'd' ){
+					e.preventDefault()
+					e.stopPropagation()
+					this._datePicker.scrollToDate(e.key == 't' ? 'today' : 'start')
+				}
+			},
 			// NOTE: not called when p.close() is called
 			onClose:()=>{
 				this._datePickerOpen = null
