@@ -6,6 +6,8 @@ import { html, css } from 'lit-element'
 import device from '../../util/device'
 import mobileAsyncFocus from '../../util/mobileAsyncFocus'
 import '../form/controls/text-field'
+import '../form/controls/radio-group'
+import '../form/controls/radio-btn'
 import '../form/control'
 import '../form/handler'
 
@@ -19,6 +21,10 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 
 		:host(:not([notext])) form-handler {
 			margin-top: 1em;
+		}
+
+		radio-group {
+			margin-bottom: .25em;
 		}
     `]}
 
@@ -87,7 +93,7 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 
 		if( this.formHandler.controls.length == 1 ){
 			let control = this.formHandler.controls[0]
-			vals = this.html ? control.value : (control.control.textValue || control.value)
+			vals = this.html ? control.value : ((control.control && control.control.textValue) || control.value)
 		}
 
 		return vals
@@ -169,6 +175,24 @@ function makePrompt(opts, i=0, globalOpts){
 			?required=${opts.required}
 			.value=${opts.val}></text-field>
 	`
+
+	if( opts.options && opts.segment ){
+		return html`
+			<radio-group segment="theme" stacked
+			key="${opts.key}"
+			style="${opts.w?`width:${opts.w}px;`:''}">
+				
+				${opts.options.map(o=>html`
+					<radio-btn 
+						label=${o.label}
+						value=${o.val}
+						?disabled=${o.disabled}
+					></radio-btn>
+				`)}
+
+			</radio-group>
+		`
+	}
 
 	if( opts.options ){
 		control = html`
