@@ -4,12 +4,12 @@
 // can be overriden in the second argument.
 const mode = require('./math').mode
 
-module.exports = (strData, {
+function csvToArray(strData, {
     strDelimiter=',',
     hasHeader=true,
     normalizeHeader=false,
     formatHeader=null,
-}={})=>{
+}={}){
 
     // Create a regular expression to parse the CSV values.
     var objPattern = new RegExp(
@@ -119,13 +119,7 @@ module.exports = (strData, {
         let header = arrData.shift()
 
         if( normalizeHeader )
-            header = header.map(h=>{
-                return h.toLowerCase()
-                    .replace(/\s{2,}/g, ' ')
-                    .replace(/\s/g, '_')
-                    .replace(/[\/\[\]\(\)]/g, '')
-                    .replace(/_{2,}/g, '_')
-            })
+            header = header.map(str=>this.normalizeHeader(str))
 
         if( formatHeader )
             header = formatHeader(header)
@@ -143,4 +137,14 @@ module.exports = (strData, {
 
     // Return the parsed data.
     return( arrData );
+}
+
+module.exports = csvToArray
+
+csvToArray.normalizeHeader = (str)=>{
+    return str.toLowerCase()
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s|-/g, '_')
+    .replace(/[\/\[\]\(\)]/g, '')
+    .replace(/_{2,}/g, '_')
 }
