@@ -5,6 +5,7 @@ import './filebrowser'
 import './filemanager'
 import docs from '../../components/README.md'
 import printViewDocs from '../../components/print-view/README.md'
+import metadataDocs from '../../components/metadata/README.md'
 
 customElements.define('demo-components', class extends LitElement{
 
@@ -39,6 +40,13 @@ customElements.define('demo-components', class extends LitElement{
                 <b-paper>
                     <b-h1>Print View</b-h1>
                     <demo-markdown-docs .docs=${printViewDocs}></demo-markdown-docs>
+                </b-paper>
+            </div>
+
+            <div title="Metadata" path="metadata" id="metadata">
+                <b-paper>
+                    <b-h1>Metadata</b-h1>
+                    <demo-markdown-docs .docs=${metadataDocs}></demo-markdown-docs>
                 </b-paper>
             </div>
 
