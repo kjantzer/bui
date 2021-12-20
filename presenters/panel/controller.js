@@ -225,9 +225,12 @@ class PanelController extends LitElement {
         }else
         this.panels.forEach((panel)=>{
 
-            if( panel.onTop && panel.route && !panel.route.isCurrent ){
+            if( panel.onTop && panel.route && (!panel.route.isCurrent || panel.route.state.props.didExit) ){
                 // console.log(panel.route, panel.route.state.path);
-                router.push(panel.route)
+                // if( panel.route.isCurrent || panel.route.state.props.didExit )
+                    router.push(panel.route.makePath(panel.route.params))
+                // else
+                //     router.push(panel.route)
             }
         })
     }
