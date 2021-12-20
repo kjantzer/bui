@@ -51,10 +51,10 @@ module.exports = class Model {
     }
 
     async beforeAdd(attrs){ /* noop */ }
-    afterAdd(attrs){ /* noop */ }
+    afterAdd(attrs, beforeAddResp){ /* noop */ }
 
     async beforeUpdate(attrs, where){ /* noop */ }
-    afterUpdate(attrs){ /* noop */ }
+    afterUpdate(attrs, beforeUpdateResp){ /* noop */ }
 
     async beforeDestroy(where){ /* noop */ }
     afterDestroy(){ /* noop */ }
@@ -286,7 +286,7 @@ module.exports = class Model {
         if( !this.config.table ) throw Error('missing config.table')
 
         this.encodeFields(attrs)
-        await this.beforeAdd(attrs)
+        let beforeAdd = await this.beforeAdd(attrs)
 
         if( !attrs || Object.keys(attrs).length == 0 )
             throw Error('no data to add')
@@ -299,7 +299,7 @@ module.exports = class Model {
 
         this.id = result.insertId || this.id
 
-        this.afterAdd&&this.afterAdd(attrs)
+        this.afterAdd&&this.afterAdd(attrs, beforeAdd)
 
         let resp = await this.find()
 
@@ -328,7 +328,8 @@ module.exports = class Model {
         // let subclass remove or modify attributes to be updated
         attrs = await this.validateUpdate(attrs)
         let where = {[this.idAttribute]:this.id}
-        await this.beforeUpdate(attrs, where)
+        
+        let beforeUpdate = await this.beforeUpdate(attrs, where)
 
         if( !this.config.table ) throw Error('missing config.table')
 
@@ -344,7 +345,7 @@ module.exports = class Model {
             
             this.decodeFields(attrs)
 
-            this.afterUpdate(attrs)
+            this.afterUpdate(attrs, beforeUpdate)
 
             if( this.id )
                 this.attrs = Object.assign(this.attrs||{}, attrs)

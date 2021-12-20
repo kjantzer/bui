@@ -105,10 +105,10 @@ module.exports = class MyModel extends Model {
     }
 
     async beforeAdd(attrs){ /* noop */ }
-    afterAdd(attrs){ /* noop */ }
+    afterAdd(attrs, beforeAddResp){ /* noop */ }
 
     async beforeUpdate(attrs){ /* noop */ }
-    afterUpdate(attrs){ /* noop */ }
+    afterUpdate(attrs, beforeUpdateResp){ /* noop */ }
 
     async beforeDestroy(){ /* noop */ }
     async afterDestroy(){ /* noop */ }
