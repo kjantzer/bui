@@ -63,6 +63,9 @@ slot[name="after"]{
 	color: var(--selectionColor, #333);
 }
 
+/* auto hide unless content selected or within focus */
+:host([autohide][empty]:not(:focus-within)) { opacity: 0; margin-top: -100%; pointer-events: none; }
+
 /* :host(:not([disabled])) main {
 	cursor: text;
 } */
