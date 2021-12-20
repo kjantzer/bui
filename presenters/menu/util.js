@@ -3,6 +3,8 @@ import {html} from 'lit-html'
 export function toMenu({
     before=[],
     after=[],
+    icon=true,
+    description=true,
     unset=false
 }={}, fn){
 
@@ -29,7 +31,8 @@ export function toMenu({
 
 		return {
             label: m.get ? m.get('label') : (m.label || m.val || m.id),
-            icon: m.get ? m.get('icon') : m.icon,
+            icon: icon && (m.get ? m.get('icon') : m.icon),
+            description: description && (m.get ? m.get('description') : m.description),
             val: String(m.val||m.id),
         }
     })
