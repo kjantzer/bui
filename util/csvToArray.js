@@ -119,7 +119,7 @@ function csvToArray(strData, {
         let header = arrData.shift()
 
         if( normalizeHeader )
-            header = header.map(str=>this.normalizeHeader(str))
+            header = header.map(str=>normalizeHeader(str))
 
         if( formatHeader )
             header = formatHeader(header)
@@ -141,10 +141,12 @@ function csvToArray(strData, {
 
 module.exports = csvToArray
 
-csvToArray.normalizeHeader = (str)=>{
+function normalizeHeader(str){
     return str.toLowerCase()
     .replace(/\s{2,}/g, ' ')
     .replace(/\s|-/g, '_')
     .replace(/[\/\[\]\(\)]/g, '')
     .replace(/_{2,}/g, '_')
 }
+
+csvToArray.normalizeHeader = normalizeHeader
