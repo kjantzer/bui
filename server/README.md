@@ -85,10 +85,27 @@ module.exports = class MyModel extends Model {
         // defaults to noop
     }
 
-    findSql(where, opts){
+    // hook into findSql
+    // return sql joinString
+    // or [additionalSelectString, joinString]
+    findJoins(){
+        return '' // default
+
+        // example with join only
+        return /*sql*/`JOIN table_name t ON t.id = ${this.tableAlias}.ref_id`
+
+        // example with join AND a select
+        return [
+            't.some_field',
+            /*sql*/`JOIN table_name t ON t.id = ${this.tableAlias}.ref_id`
+        ]
+    }
+
+    findSql(where, {select="*", join=''}={}){
         // this is the default query
-        return /*sql*/`SELECT * 
+        return /*sql*/`SELECT ${select}
                         FROM ${this.config.table} ${this.config.tableAlias||''}
+                        ${join||''}
                         ${where}
                         ${this.findOrderBy()}
                         ${this.findLimit}`

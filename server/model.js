@@ -18,12 +18,15 @@ module.exports = class Model {
         // add or manipulate the where clause
     }
 
-    findSql(where, {select="*"}={}){
+    findJoins(){ return '' }
+
+    findSql(where, {select="*", join=''}={}){
 
         if( !this.config.table ) throw Error('missing config.table')
-        
+
         return /*sql*/`SELECT ${select} 
                         FROM ${this.config.table} ${this.config.tableAlias||''}
+                        ${join||''}
                         ${where}
                         ${this.findOrderBy()}
                         ${this.findLimit}`
@@ -242,6 +245,17 @@ module.exports = class Model {
 
         let [clause, clauseValues] = new this.db.clauses.Group(where).toSqlString(this.db)
         where = clause ? `WHERE ${clause}` : ''
+
+        opts.select = !opts.select || opts.select == '*' ? `${this.tableAlias}.*` : opts.select
+
+        let findJoins = this.findJoins()
+        let [join, joinSelect] = Array.isArray(findJoins) ? findJoins.reverse() : ([findJoins || '', ''])
+        
+        if( join )
+            opts.join = join
+
+        if( joinSelect )
+            opts.select += `, ${joinSelect}`
 
         let sql = this.findSql(where, opts)
         if( typeof sql != 'string' ) return sql
