@@ -78,6 +78,22 @@ module.exports = class FileManager extends Model {
             file = this.req.files.file
         }
 
+        // if all files uploaded together
+        if( Array.isArray(file) ){
+            let resp = []
+            for( let _file of file ){
+                try {
+                    let _resp = await new (this.constructor)(null, this.req).upload(_file, src, {traits})
+                    resp.push(_resp)
+                }catch(err){
+                    resp.push({
+                        error: err.message
+                    })
+                }
+            }
+            return resp
+        }
+
         if( !file ) throw new Error('No file found')
 
         let filename = file.name
