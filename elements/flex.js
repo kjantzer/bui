@@ -10,6 +10,10 @@ customElements.define('b-flex', class extends LitElement{
             gap: 1em;
         }
 
+        :host([hidden]) {
+            display: none;
+        }
+
         :host([wrap]) {
             flex-wrap: wrap;
         }
