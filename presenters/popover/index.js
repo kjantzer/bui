@@ -263,6 +263,8 @@ export default class Popover {
 			this.target.remove()
 		}else
 			this.target.classList.remove('popover-open')
+
+		this.target = null
 	}
 	
 	close(){
