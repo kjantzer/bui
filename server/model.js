@@ -1,3 +1,4 @@
+const related = require('./related')
 require('../util/promise.series')
 
 const defaultConfig = {
@@ -65,6 +66,8 @@ module.exports = class Model {
 // =================================================
     
     constructor(attrs, req, opts={}){
+
+        related.setup(this)
 
         if( !this.db )
             console.warn('Model.db has not been set yet')
