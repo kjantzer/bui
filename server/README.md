@@ -46,14 +46,16 @@ class MyClass {
 
 # Model
 
-Models are only useful if they can query the database
+## Setup
+Models are generally only useful if they can query the database
 
 ```js
 const Model = require('bui/server/model')
 
-Model.setDB(requre('./my-db-class'))
+Model.db = requre('./my-db-class')
 ```
 
+## Define
 ```js
 const Model = require('bui/server/model')
 
@@ -131,6 +133,38 @@ module.exports = class MyModel extends Model {
     async afterDestroy(){ /* noop */ }
 
 }
+```
+
+## Related
+
+The model class now supports "related" models
+
+```js
+const TypeModel = require('./type')
+
+class MyClass extends Model {
+
+    static related = {
+        // basic example
+        type: TypeModel,
+
+        // custom prop name
+        typeModel: {model: TypeModel, id: 'type'},
+
+        // JIT model import
+        type: {model: __dirname+'/type'},
+
+        files: {model: __dirname+'/files', relatedID: 'parent_id'}
+    }
+}
+
+const myclass = new MyClass({id: 1, type: 3451})
+console.log(myclass.type) // == TypeModel instance
+console.log(myclass.files) // == FilesModel instance
+
+// same as
+new TypeModel({id: 3451}, myclass.req)
+new Files({parent_id: 1}, myclass.req)
 ```
 
 # FileManager
