@@ -101,7 +101,8 @@ customElements.define('b-metadata', class extends LitElement{
         this.update()
 
         setTimeout(()=>{
-            this.$$(`[key="${key}"]`)?.focus()
+            let el = this.$$(`[key="${key}"]`)
+            el && el.focus()
         })
     }
 
