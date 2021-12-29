@@ -269,7 +269,7 @@ export default class Popover {
 	
 	close(){
 		
-		if( !this.target.popover ) return;
+		if( !this.target || !this.target.popover ) return;
 		
 		this.el.popover = null
 		this.view.popover = null
