@@ -4,6 +4,7 @@ import AllIcons from '@material-icons/svg/data.json'
 import {Collection} from '../../app/models'
 import '../../elements/flex'
 import uniq from '../../util/uniq'
+import copyText from '../../util/copyText'
 
 const RegisteredIcons = Icon.registeredIconNames()
 const MaterialIcons = AllIcons.icons.map(icon=>[
@@ -59,8 +60,25 @@ customElements.define('b-demo-icons', class extends LitElement{
             .filters=${filters}
             .coll=${this.coll}
         >
+
+        <b-list-selection-btn></b-list-selection-btn>
+        <b-btn text color="theme" slot="actions:left" @click=${this.copy}>Copy Import Code</b-btn>
+
         </b-list>
     `}
+
+    copy(){
+        
+        if( this.list.currentModels.length == 0 )
+            throw new UIAlertError('No icons selected')
+
+        let code = this.list.currentModels.map(d=>{
+            return `['${d.name}', require('@material-icons/svg/svg/${d.name}/baseline.svg')]`
+        })
+
+        copyText(code.join(`,\n`))
+        throw new UIAlertError('Copied')
+    }
 
 })
 
