@@ -114,7 +114,7 @@ export default class Popover {
 		if( this.opts.className ){
 			this.opts.className.trim()
 								.split(' ')
-								.forEach(className=>this.el.classList.add(className.trim()));
+								.forEach(className=> className ? this.el.classList.add(className.trim()) : null);
 		}
 		
 		this.el.popover = this
