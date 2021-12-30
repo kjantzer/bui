@@ -269,8 +269,7 @@ slot[name="help"] {
 }
 
 :host ::slotted(check-box),
-:host ::slotted(radio-btn),
-:host ::slotted(radio-group) {
+:host ::slotted(radio-btn) {
 	height: 1em;
 }
 
