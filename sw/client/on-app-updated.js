@@ -42,7 +42,7 @@ function newUpdateNotif(worker){
     new Notif({
         nid: 'bui-sw-app-updated',
         msg: 'App update available',
-        icon: 'arrows-ccw',
+        icon: 'refresh',
         btns: [{label: 'Update', color: 'theme'}],
         autoClose: false,
         width: 'auto',
