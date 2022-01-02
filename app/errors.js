@@ -33,7 +33,7 @@ export class UICustomError extends Error {
         
         if( this.detail&&this.detail.target ){
             
-            this.detail.target.scrollIntoViewIfNeeded()
+            this.detail.target.scrollIntoView()
             presenter.popover(this.detail.target)
             this.detail.target.focus()
         
