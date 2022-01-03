@@ -1,5 +1,17 @@
 # Changelog
 
+## 2021-06-22
+- DEPERECATED: `--view-gutter` changing to `--gutter` (former still exists)
+
+## 2021-06-08
+- BREAKING: `search-popup` renamed and moved to `components/search`
+
+## 2021-05
+- CHANGE: `radio-btn` no longer has `label` slot. Default slot is used for the label.
+
+## 2021-02-26
+- BREAKING: `realtime` code moved from `/server/realtime` to root `/realtime`
+
 ## 2021-02-23
 - REMOVAL: notif `snackbar` element removed (now uses `b-dialog`). The snackbar element was only used internally. Notif syntax remains unchanged.
 

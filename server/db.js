@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const groupBy = require('../util/array.groupBy')
 require('../util/promise.series')
 
 const clauses = require('./db/clauses')
@@ -39,7 +40,7 @@ module.exports = class DB {
     }
 
     query(sql, data, {timeout=30000, debug=false, logFailure=false}={}){
-		return new Promise((resolve, reject)=>{
+		return new QueryPromise((resolve, reject)=>{
 
 			sql = mysql.format(sql, data)
 
@@ -135,9 +136,9 @@ module.exports = class DB {
         return `ON DUPLICATE KEY UPDATE ${updates.join(', ')}`
     }
 
-    bulkInsert(table, rows){
+    bulkInsert(table, rows, {ignore=true, replace=false}={}){
         let [cols, vals] = this.parseBulkInsert(rows)
-        let sql = `INSERT INTO ${table} (${cols}) VALUES ?`
+        let sql = `${replace?'REPLACE':'INSERT'} ${ignore&&!replace?'IGNORE':''} INTO ${table} (${cols}) VALUES ?`
         return this.query(sql, [vals])
     }
 
@@ -202,28 +203,27 @@ module.exports = class DB {
 
 }
 
+// TODO: change this to a Proxy so ANY array method can be called and redirected
+class QueryPromise extends Promise {
+
+    get values(){ return this.then(r=>r.values) }
+    get value(){ return this.then(r=>r.value) }
+    get first(){ return this.then(r=>r.first) }
+    get last(){ return this.then(r=>r.last) }
+    get length(){ return this.then(r=>r.length) }
+
+    groupBy(...args){ return this.then(r=>r.groupBy(...args)) }
+    filter(...args){ return this.then(r=>r.filter(...args)) }
+    map(...args){ return this.then(r=>r.map(...args)) }
+    find(...args){ return this.then(r=>r.find(...args)) }
+}
+
 class DBResults extends Array {
     static get array_chunk_size(){return 10000}
     
-    groupBy(key){
-        let group = {}
-        this.forEach(row=>{
-            if( row[key] ){
-
-                // exists with one row...convert to array of rows
-                if( group[row[key]] && group[row[key]][key] )
-                    group[row[key]] = [group[row[key]]]
-
-                // already set, must be array of rows
-                if( group[row[key]] )
-                    group[row[key]].push(row)
-                // single row so far
-                else
-                    group[row[key]] = row
-            }
-        })
-        return group
-	}
+    groupBy(...args){
+        return groupBy.apply(this, args )
+    }
 
     get first(){ return this[0] }
     get last(){ return this[this.length-1] }

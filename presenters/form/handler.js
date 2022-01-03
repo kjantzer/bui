@@ -1,4 +1,5 @@
 import store from '../../util/store'
+import '../../helpers/backbone/promises'
 
 class FormHandler extends HTMLElement {
 	
@@ -19,7 +20,7 @@ class FormHandler extends HTMLElement {
 	get autoSave(){ return this.hasAttribute('autosave') }
 	set autoSave(val){ val ? this.setAttribute('autosave', '') : this.removeAttribute('autosave') }
 
-	get patchSave(){ return this.hasAttribute('patchsave') }
+	get patchSave(){ return this.hasAttribute('patchsave') || this.getAttribute('autosave') == 'patch' }
 	set patchSave(val){ val ? this.setAttribute('patchsave', '') : this.removeAttribute('patchsave') }
 	
 	connectedCallback(){
@@ -37,10 +38,25 @@ class FormHandler extends HTMLElement {
 	get values(){
 		let vals = {}
 		this.controls.forEach(control=>{
-			if( control.key )
-				vals[control.key] = control.value
+			if( control.key ){
+				let val = control.dbValue // text-field
+				if( val === undefined )
+					val = control.value // others
+				vals[control.key] = val
+			}
 		})
 		return vals
+	}
+
+	set values(vals={}){
+		this.controls.forEach(control=>{
+			if( control.key && vals[control.key] != undefined ){
+				control.value = vals[control.key]
+			}
+		})
+
+		this.setControlIfs()
+		this.store(vals)
 	}
 
 	bindControls(){
@@ -119,8 +135,11 @@ class FormHandler extends HTMLElement {
 	}
 
 	storedValue(key, defaultVal=null){
-		if( this.model )
-			return this.model.has(key) ? this.model.get(key): defaultVal
+		if( this.model ){
+			let val = this.model.has(key) ? this.model.get(key): defaultVal
+			if( val && val.id ) val = val.id // child-models
+			return val
+		}
 		
 		let data = this.store()
 		return data ? data[key] : defaultVal
@@ -209,6 +228,8 @@ class FormHandler extends HTMLElement {
 		let val = e.detail.value
 		
 		if( !key ) return
+
+		e.stopPropagation()
 		
 		let changes = {}
 		changes[key] = val
@@ -240,7 +261,7 @@ class FormHandler extends HTMLElement {
 		
 		if( this.model ){
 			if( this.autoSave === true ){
-				this.model.save(changes, {patch:this.patchSave||false})
+				this.model.saveSync(changes, {patch:this.patchSave||false})
 				this.model.trigger('edited', false, changes)
 				this.model.trigger('saved', changes)
 			}else{
@@ -315,7 +336,8 @@ class FormHandler extends HTMLElement {
 	get(key){
 		if( typeof key == 'number' )
 			return this.controls[key]
-			
+		
+		if( !this.controls ) return
 		return Array.from(this.controls).find(ed=>ed.key==key)
 	}
 }

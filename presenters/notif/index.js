@@ -20,6 +20,7 @@ customElements.define('b-notif', class extends LitElement{
         btns: {type: Array},
         icon: {type: String},
         color: {type: String, reflect: true},
+        accent: {type: String, reflect: true},
         width: {type: String},
         animation: {type: String, reflect: true},
     }}
@@ -37,14 +38,15 @@ customElements.define('b-notif', class extends LitElement{
             msg: '',
             icon: '',
             btns: [],
+            color: 'inverse',
 
-            animation: device.minScreenSize <= 699 ? 'grow' : 'slide',
+            animation: device.isSmallDevice ? 'grow' : 'slide',
             animationForReplace: 'grow',
             
             autoClose: 4000,
             closeOnClick: true,
 
-            anchor: 'bottom-right', //device.minScreenSize <= 699 ? 'bottom' : 'bottom-right',
+            anchor: 'top-right', //device.isSmallDevice ? 'bottom' : 'bottom-right',
 
             onClose(){},
             onClick(){}
@@ -206,10 +208,13 @@ customElements.define('b-notif', class extends LitElement{
             <b-dialog
                 in-notif
                 toast
-                icon=${this.icon}
-                body=${this.msg}
+                ?nocontent=${!this.msg}
+                .icon=${this.icon}
+                .body=${this.msg}
                 .btns=${this.btns}
-                color=${this.color}
+                .color=${this.color}
+                .accent=${this.accent}
+                ?edge=${!!this.accent}
                 @chosen=${this.onDialogBtnChoose}
             ></b-dialog>
             `}
@@ -219,7 +224,9 @@ customElements.define('b-notif', class extends LitElement{
 
     onDialogBtnChoose(e){
         e.stopPropagation()
-        this.onClick(e.detail.btn)
+        let btn = e.detail.btn
+        if( btn.isCancelBtn ) btn = false
+        this.onClick(btn)
     }
     
 
@@ -232,10 +239,16 @@ let notifClass = customElements.get('b-notif')
 for( let key in TYPES ){
     if( !notifClass[key] )
         notifClass[key] = (msg, opts={})=>{
+            
             // string or lit-html
             if( typeof msg == 'string' || msg.constructor.name == 'TemplateResult' ){
                 opts = opts || {}
                 opts.msg = msg
+            }
+
+            if( msg instanceof Error ){
+                opts = opts || {}
+                opts.msg = msg.message
             }
 
             let Notif = customElements.get('b-notif')

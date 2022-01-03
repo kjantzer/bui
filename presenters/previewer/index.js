@@ -75,7 +75,7 @@ const previewHtml = /*html*/`
 
 customElements.define('b-previewer', class extends LitElement{
 
-    static open(items){
+    static open(items, opts={}){
 
         if( items && !Array.isArray(items) )
             items = [items]
@@ -83,10 +83,10 @@ customElements.define('b-previewer', class extends LitElement{
         let item = items[0]
         
         // better experience on iOS (Android too?)
-        if( device.isMobile )
-            return this.openInNewWindow(item)
+        // if( device.isMobile && opts.newWindowForMobile != false )
+        //     return this.openInNewWindow(item)
 
-        let view = new (customElements.get('b-previewer'))(items)
+        let view = new (customElements.get('b-previewer'))(items, opts)
 
         let panel = new Panel(view, {
             type: 'previewer',
@@ -101,10 +101,14 @@ customElements.define('b-previewer', class extends LitElement{
         panel.open()
     }
 
-    constructor(items=[]){
+    constructor(items=[], {
+        onLoaded=()=>{}
+    }={}){
         super()
         this.items = items
         this.model = items[0]
+
+        this.addEventListener('loaded', onLoaded)
     }
 
     static get styles(){return css`
@@ -126,7 +130,7 @@ customElements.define('b-previewer', class extends LitElement{
 
         b-panel-toolbar {
             color:  var(--theme-text);
-            pointer-events: all;
+            /* pointer-events: all; */
         }
 
         b-previewer-iframe ~ b-panel-toolbar {
@@ -153,7 +157,6 @@ customElements.define('b-previewer', class extends LitElement{
     close(){ this.panel.close() }
 
     render(){return html`
-        ${this.presenterFor(this.model)}
         <b-panel-toolbar overlay>
             <b-btn slot="close-btn" @click=${this.close} pill lg color="black" icon="cancel-1"></b-btn>
             <div slot="title">
@@ -161,6 +164,7 @@ customElements.define('b-previewer', class extends LitElement{
                 ${this.model.label}
             </div>
         </b-panel-toolbar>
+        ${this.presenterFor(this.model)}
     `}
 
     presenterFor(model){
@@ -175,8 +179,8 @@ customElements.define('b-previewer', class extends LitElement{
         return view
     }
 
-    static openInNewWindow(item){
-        let url = item.displayURL
+    static async openInNewWindow(item){
+        let url = item.displayURL || item
         // window.open(item.displayURL)
 
         const a = window.document.createElement('a');
@@ -185,7 +189,7 @@ customElements.define('b-previewer', class extends LitElement{
         a.target = '_blank'
         // a.setAttribute('download', filename||'')
 
-        let popup = window.open('', 'Loading...')
+        let popup = await window.open('', 'Loading...')
 
         var meta = document.createElement('meta');
         meta.name = 'viewport'

@@ -32,6 +32,10 @@ export default class EmptyState extends LitElement {
             color: rgba(255,255,255,.1);
         }
 
+        :host([dashed]) {
+            border: dashed 1px;
+        }
+
         :host([static]) {
             position: static;
             height: auto;
@@ -42,17 +46,21 @@ export default class EmptyState extends LitElement {
             display: none;
         }
 
+        :host([inline]) {
+            display: inline-flex;
+        }
+
         :host([xs]) { font-size: .8em; }
         :host([sm]) { font-size: 1em; }
         :host([md]) { font-size: 1.4em; }
         :host([lg]) { font-size: 3em; }
 
         :host([must-be="first"]:not(:first-child)) {
-            display: none;
+            display: none !important;
         }
 
         :host([must-be="last"]:not(:last-child)) {
-            display: none;
+            display: none !important;
         }
     `}
 

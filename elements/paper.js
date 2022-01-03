@@ -34,7 +34,13 @@ export class PaperElement extends LitElement {
         }
 
         :host([overshadow]) {
-            box-shadow: var(--b-paper-overshadow, rgba(0, 0, 0, 0.1) 0px 0px 20px);
+            /* box-shadow: var(--b-paper-overshadow, rgba(0, 0, 0, 0.1) 0px 0px 20px); */
+            box-shadow: var(--b-paper-overshadow, 0 0.7px 2.2px rgba(0, 0, 0, 0.007),
+                0 1.4px 5.3px rgba(0, 0, 0, 0.012),
+                0 2.4px 10px rgba(0, 0, 0, 0.017),
+                0 3.7px 17.9px rgba(0, 0, 0, 0.02),
+                0 6px 33.4px rgba(0, 0, 0, 0.025),
+                0 13px 80px rgba(0, 0, 0, 0.07));
         }
 
         :host([inline]) {
@@ -44,7 +50,7 @@ export class PaperElement extends LitElement {
         :host([empty]) {
             background: none;
             box-shadow: none;
-            border: 1px dashed rgba(0,0,0,.3);
+            border: 1px dashed rgba(var(--theme-text-rgb),.2);
         }
 
         :host([centered]) {
@@ -59,7 +65,7 @@ export class PaperElement extends LitElement {
 
         :host([outline]) {
             box-shadow: none;
-            border-color: rgba(0, 0, 0, 0.1);
+            border-color: rgba(var(--theme-text-rgb),.2);
         }
 
         :host([noshadow]) {
@@ -94,7 +100,7 @@ export class PaperElement extends LitElement {
         :host([color="gray"]) {
             --bgd: var(--theme-bgd-accent, #EEEEEE);
             --bgdAccent: #BDBDBD;
-            color: #212121;
+            color: var(--theme-text);
         }
 
         :host([color="blue"]) {

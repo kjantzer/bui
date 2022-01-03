@@ -19,7 +19,7 @@ panel.open()
 - `anchor` (top, right, bottom, left, center)
 - `type` ('', modal, actionsheet)
 - `closeBtn` (bool) - will show a close button in the top right
-- `animation` (scale [only works on anchor=center])
+- `animation` ('scale' [only works on anchor=center], 'drop', 'rise')
 - `quickJump` (bool) - show quick jump menu when right click on close btn
 - `disableBackdropClick` - by default clicking backdrop will close panel
 - `disableOverscrollClose` - by default pulling down in overscroll (iOS) and letting go will hide the top panel
@@ -84,7 +84,7 @@ router.goTo('my-custom-element')
 If the custom element implements `onOpen`, the panel will call it with the
 route `state` object
 
-`willOpen(state)`
+`async willOpen(state)`
 Called right before opening. If the function returns `false`, the panel
 will not open
 
@@ -95,6 +95,29 @@ There are some built in animations
 panel.shake()
 panel.bounce()
 ```
+
+### Permissions
+Registered panels support a `permission` option to keep the view from opening under certain circumstances. For it to work you must set the `permissionCheck` function.
+
+```js
+import Panel from 'bui/presenters/panel';
+
+// provide custom logic for testing permissions
+Panel.permissionCheck = permission=>{
+    if( permission == 'admin' && !user.isAdmin )
+        return false
+    return true
+}
+
+Panel.register('my-custom-element', 'custom-element', {
+    title: 'My Custom Element View',
+    // permission will be evaluated before opening
+    permission: 'admin', // Panel.permissionCheck used
+    // permission(){ return user.isAdmin } // or provide inline function
+})
+```
+
+>NOTE: disabling panels with permission is only a convient way to reduce UI clutter for certain users. It should be accompanied with a server permission check on any API requests if it is truely critical the user doesn't have access.
 
 
 ## Controller
@@ -171,6 +194,34 @@ needs to render one. A panel toolbar element has been created for such a task.
 - `shadow`
 - `overlay`
 - `notitle`
+
+## Fullscreen Button
+
+```js
+import 'bui/presenters/panel/fullscreen-btn'
+```
+Adds a fullscreen button and attaches a `fullscreen()` method to the panel
+
+```js
+panel.fullscreen({
+    close: false, // will close if alredy in minimized state
+    toggle: true // change to false to only make fullscreen
+})
+```
+
+```html
+<b-panel-toolbar>
+    <b-panel-fullscreen-btn></b-panel-fullscreen-btn>
+</b-panel-toolbar>
+```
+
+The fullscreen button needs to be linked to the parent `Panel`. This will happen automatically if nested inside a panel toolbar. Alternatively, you need to link it yourself
+
+```html
+<b-panel-fullscreen-btn .panel=${this.panel}></b-panel-fullscreen-btn>
+```
+
+> Note: this is a subclass of `b-btn` so you can add supported attributes such as `color="theme"` or `text`
 
 ## Modal
 Although designed as a large panel view, panels can be leveraged to present

@@ -79,9 +79,15 @@ Sets css vars for to support the dark/light mode, accent, and text colors.
 This makes some styling assumptions for a Progressive Web App (PWA)
 - `html/body` full height and no overflow
     - expected that the app element will take care of scrolling
-- sets `--view-gutter` (adjust for smaller screens)
 - prevents iOS "callouts" from image long presses
 - makes a few adjustments to BUI presenter styles
+
+CSS Varibles
+- `--gutter` (2em desktop, 1em mobile)
+- `--safe-[side]` shorthand for `env(safe-area-inset-[side])`
+- `--gutter-safe`
+- `--gutter-safe-[side]` (top, bottom, left, right)
+- `--font-system`
 
 ## App Entry
 
@@ -97,7 +103,8 @@ router.config({
     root: '/',
 })
 
-import device, {colorScheme} from 'bui/util/device'
+import device from 'bui/util/device'
+import colorScheme from 'bui/util/color-scheme'
 
 // import all the lit-element helpers 
 import 'bui/helpers/lit-element'
@@ -125,7 +132,7 @@ window.addEventListener('DOMContentLoaded', e=>{
 // app.js
 
 // NOTE: the tabs/app presenter will call `router.start()`
-import AppView from 'bui/presenters/tabs/app'
+import AppView from 'bui/app/tabbar'
 
 customElements.define('my-app', class extends App{
 
@@ -139,11 +146,13 @@ customElements.define('my-app', class extends App{
 
 ```
 
-## PWA
+## PWA / SPA
 
-https://web.dev/progressive-web-apps/
+PWA: https://web.dev/progressive-web-apps/  
+SPA: https://developer.mozilla.org/en-US/docs/Glossary/SPA
 
 ### Web Manifest
+Allows your app to be "installed"
 
 ```html
 <link rel="manifest" href="/manifest.webmanifest">
@@ -190,7 +199,7 @@ import {pageCache, googleFontsCache, offlineFallback } from 'workbox-recipes'
 import {precacheAndRoute} from 'workbox-precaching'
 import {setDefaultHandler} from 'workbox-routing'
 import {NetworkOnly} from 'workbox-strategies'
-import cacheableAPI from 'bui/sw/src/cacheable-api'
+import cacheableAPI from 'bui/sw/cacheable-api'
 
 // pre-caches files compiled by webpack; see WorkboxWebpackPlugin.InjectManifest
 precacheAndRoute(self.__WB_MANIFEST);
@@ -226,7 +235,7 @@ const WorkboxWebpackPlugin = require("workbox-webpack-plugin");
 // add this to "plugins"
 new WorkboxWebpackPlugin.InjectManifest({
     // maximumFileSizeToCacheInBytes: 3000000, // 3mb
-    swSrc: "./client/sw/src/index.js",
+    swSrc: "./client/sw/index.js",
     swDest: path.resolve(__dirname, 'dist', 'sw.js'),
     additionalManifestEntries: [
         {url: 'offline.html', revision: '1'},
@@ -240,19 +249,15 @@ Now you can register and use the built service worker from above
 
 ```js
 // in app entry
-import onAppUpdated from 'bui/sw/on-app-updated'
+import 'bui/sw/client/on-app-updated'
 
 window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js').then(registration=>{
-        // will show a Notif with "app update available"
-        onAppUpdated(registration)
-    }, err=>{
-        console.log('ServiceWorker registration failed: ', err);
-    });
+    navigator.serviceWorker.register('sw.js')
 });
 ```
 
 ### Mobile
+Responsive scaling on small mobile devices and icons/title for when "adding to homescreen".
 
 ```html
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
@@ -267,8 +272,31 @@ window.addEventListener('load', function() {
 
 Android [maskable](https://web.dev/maskable-icon/) icons: https://maskable.app/
 
+### Meta Tags
+Since your SPA likely wont have much content, adding the proper meta tags will be important for when sharing a link to your app
+
+```html
+<!-- Primary Meta Tags -->
+<title>SkiReport - Is it time to shred the gnar?</title>
+<meta name="title" content="App Title">
+<meta name="description" content="Description">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://app-url">
+<meta property="og:title" content="App Title">
+<meta property="og:description" content="Description">
+<meta property="og:image" content="https://app-url/img/preview.jpg">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://app-url">
+<meta property="twitter:title" content="App Title">
+<meta property="twitter:description" content="Description">
+<meta property="twitter:image" content="https://app-url/img/preview.jpg">
+```
+
 ### Splashscreens
 iOS (and Android?) can show a splash screen when opening your installed PWA
 
 Use this link to create the sizes and get the html code: https://appsco.pe/developer/splash-screens
-

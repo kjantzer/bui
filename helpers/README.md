@@ -44,16 +44,49 @@ this.model.get('child-collection').on('reset', this.update.bind(this))
 import 'bui/helpers/lit-element/events'
 ```
 
+#### `emitEvent`
 To simplify event dispatching from inside the shadow dom, an `emitEvent`
 method has been added to lit-element
 
 ```js
-this.emitEvent(eventName, detail)
+this.emitEvent(eventName[, detail])
 this.emitEvent('element-event', {id: 1})
 ```
 
 The emitted event with have `bubbles: true` and `composed: true` so that the even
 will bubble up and out of the shadow dom
+
+#### `willTakeAction`
+Emits with a specially formatted `detail` object for informing parent views of the action
+and providing them the opportunity to cancel/disallow
+
+```js
+this.willTakeAction(actionName[, detail])
+
+if( !this.willTakeAction('delete').allowed ) return
+if( this.willTakeAction('delete').notAllowed ) return
+
+let action = this.willTakeAction('show-menu', {menu: [/*...*/]})
+if( action.allowed )
+    console.log(action.menu) // could be different if parent changed it
+```
+
+```html
+<child-el @will-take-action=${onAction}></child-el>
+```
+
+```js
+onAction(e){
+    let {action} = e.detail
+
+    if( action.name == 'delete' )
+        action.allowed = false
+
+    if( action.name == 'show-menu' )
+        action.menu = action.menu.filter(d=>d.val!='delete')
+}
+```
+
 
 ### Get
 
@@ -243,3 +276,78 @@ of related models and collections. Children classes are only created when access
 from the parent model's attributes or a specificed lookup collection.
 
 [Read more on Relations](./backbone/relations/README.md)
+
+***
+
+## Scrollbars
+Make scrollbars look more like stock Mac/iOS. Also provides a few utiliesi
+
+### Style
+```js
+import scrollbars from 'bui/helpers/scrollbars'
+
+// only change style on windows
+css`
+    ${scrollbars.styleWindows()}
+`
+
+css`
+    ${scrollbars.styleAll()}
+`
+```
+
+### Hide 
+```js
+css`
+    ${scrollbars.hide()}
+`
+```
+
+### Disable Wheel Scroll
+```js
+firstUpdated(){
+    scrollbars.stopWheelScrolling(this)
+}
+```
+
+***
+
+## Error Handler
+A catch-all error handler with support for custom UI errors. 
+
+```js
+// import near the top of your app entry
+import 'bui/app/error-handler`
+```
+
+After importing the error handler any uncaught error or promises will be caught and
+displayed to the use via `notif`.
+
+If a custom error was thrown (see `helpers/errors`) the handler will let the 
+custom error determine how to handle.
+
+Any subclassed `Error` with a `.handle` function will be handled this way
+
+```js
+// Default example (displays as `notif`)
+if( !label )
+    throw new UIWarningError('A label is required')
+
+// Example error with a target (will display with popover)
+if( !label )
+    throw new UIDeniedError('A label is required', {target: inputEl})
+```
+
+### Custom Errors
+
+#### `UIAlertError`
+Generic alert. Defaults to `Dialog.alert`
+
+#### `UIPermissionError`
+For when a user is not allowed to do something. Defaults to `Dialog.stopped`
+
+#### `UIWarningError`
+Defaults to `Dialog.warning`
+
+#### `UIDeniedError`
+Defaults to `Dialog.error`

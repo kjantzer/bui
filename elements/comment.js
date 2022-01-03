@@ -81,4 +81,4 @@ customElements.define('b-comment', class extends LitElement{
 
 })
 
-export default customElements.get('b-comment')
+export default customElements.get('b-comment0')

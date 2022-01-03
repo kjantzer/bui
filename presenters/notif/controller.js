@@ -68,7 +68,7 @@ customElements.define('b-notifs', class extends LitElement{
             right: env(safe-area-inset-right);
         }
 
-        @media (max-width:699px), (max-height: 699px) {
+        @media (max-width:599px), (max-height: 599px) {
             :host([name="main"]) {
                 position: fixed;
                 top: env(safe-area-inset-top);
@@ -113,7 +113,7 @@ customElements.define('b-notifs', class extends LitElement{
             align-items: flex-end;
         }
 
-        @media (max-width:699px) {
+        @media (max-width:599px) {
             slot {
                 padding: 0 !important;
                 position: static !important;

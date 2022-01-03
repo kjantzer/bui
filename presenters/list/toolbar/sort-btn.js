@@ -14,11 +14,15 @@ customElements.define('b-list-sort-btn', class extends LitElement{
         main {
             display: inline-grid;
             line-height: 1.2em;
+            margin-bottom: -.25em;
         }
 
         b-label {
             color: var(--toolbarTextColor);
             grid-area: unset !important;
+            margin: -0.5em 0px;
+            position: relative;
+            top: -0.5em
         }
 
         .none:not(:first-child) {

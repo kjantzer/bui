@@ -10,17 +10,24 @@ export default {
         color: 'red',
         animation: 'bounce'
     },
+    wrong: {
+        icon: 'attention-circle',
+        accent: 'red',
+        color: 'inverse',
+        animation: 'bounce'
+    },
     failed: {
         icon: 'cancel-circled',
-        color: 'red'
+        accent: 'red',
+        color: 'inverse',
     },
     success: {
         icon: 'ok-circled',
-        color: 'green'
+        accent: 'green'
     },
     info: {
         icon: 'info-circled',
-        color: 'blue'
+        accent: 'blue'
     },
     warning: {
         icon: 'attention-1',

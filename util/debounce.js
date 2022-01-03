@@ -4,20 +4,26 @@
 // be triggered. The function will be called after it stops being called for
 // N milliseconds. If `immediate` is passed, trigger the function on the
 // leading edge, instead of the trailing.
-export default function debounce(func, wait, immediate=false) {
-  var timeout;
+export default function debounce(func, wait, {immediate=false, maxWait=false}={}) {
+  let timeout
+  let ts = new Date().getTime()
 
   return function executedFunction() {
-    var context = this;
-    var args = arguments;
+    let context = this;
+    let args = arguments;
+    let _ts = new Date().getTime()
 	    
-    var later = function() {
+    let later = function() {
       timeout = null;
+      ts = _ts
       if (!immediate) func.apply(context, args);
     };
 
-    var callNow = immediate && !timeout;
-	
+    let callNow = immediate && !timeout;
+
+    if( timeout && maxWait && _ts - ts >= maxWait )
+      return
+
     clearTimeout(timeout);
 
     timeout = setTimeout(later, wait);

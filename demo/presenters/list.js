@@ -1,8 +1,12 @@
 import { LitElement, html, css } from 'lit-element'
+import Notif from 'notif'
 import View from './view'
 import docs from 'bui/presenters/list/README.md'
 import 'bui/presenters/list'
 import 'bui/presenters/list/export-btn'
+import 'bui/presenters/list/selection-btn'
+import ListHeader from 'bui/presenters/list/header'
+import copyText from 'bui/util/copyText'
 
 customElements.define('demo-presenter-list', class extends View{
 
@@ -14,7 +18,7 @@ customElements.define('demo-presenter-list', class extends View{
         b-list {
             height: 40vh;
             overflow: hidden;
-            border-bottom: solid 1px rgba(0,0,0,.1);
+            /* border-bottom: solid 1px rgba(0,0,0,.1); */
         }
     `]}
 
@@ -28,13 +32,32 @@ customElements.define('demo-presenter-list', class extends View{
                 .filters=${filters}
                 .coll=${data}
             >
+
+                <b-list-selection-btn></b-list-selection-btn>
                 <b-list-export-btn></b-list-export-btn>
+
+                <span slot="actions:left">
+                    &nbsp;
+                    <b-btn @click=${this.copy} slot="actions:left">Copy IDs</b-btn>
+                </span>
+
+                <b-list-header></b-list-header>
+
+                <div slot="footer" style="padding: .5em; border-top: solid 2px var(--theme-bgd-accent);">
+                    List footer content
+                </div>
             </b-list>
         </b-paper>
 
         <br><br>
         <h2>Documentation</h2>
     `}
+
+    copy(){
+        let ids = this.list.currentModels.map(m=>m.id)
+        copyText(ids.join(', '))
+        Notif.alert(`${ids.length} IDs copied`)
+    }
 
 })
 
@@ -53,7 +76,9 @@ const sorts = {
 }
 
 const filters = {
+    options: {overflow: true}, // override for demo - not useful for only one filter
     odd: {
+        alwaysShow:true,
         values: [
             {label: 'Any', toolbarLabel: '–', val: '' },
             'divider',
@@ -68,16 +93,19 @@ const filters = {
 
 customElements.define('a-list-view-row', class extends LitElement{
 
-    static get styles(){return css`
-        :host {
-            display: block;
-            padding: .5em 1em;
-            border-bottom: solid 1px var(--theme-bgd-accent);
-        }
+    // the content for `b-list-header`
+    static header(){ return html`
+        <div w="60px">ID</div>
+        <div w="1fr">Name</div>
     `}
 
+    static get styles(){return [ListHeader.sharedStyles, css`
+        /* add more styles for the row */
+    `]}
+
     render(){return html`
-        ${this.model.label}
+        <b-text monospace>${this.model.id}</b-text>
+        <span>${this.model.label}</span>
     `}
 
 })

@@ -6,6 +6,7 @@ import device from '../../util/device'
 import './controller'
 import './toolbar'
 import '../../elements/btn'
+import CollMap from '../../util/collmap'
 
 export const PanelDefaults = {
     type: '',
@@ -13,8 +14,8 @@ export const PanelDefaults = {
     title: '',
     width: '100%',
     height: '100%',
-    anchor: 'right',
-    animation: '',
+    anchor: 'bottom',
+    animation: 'rise',
     quickJump: true,
     closeOnEsc: false,
     controller: null, // root controller will be created and used
@@ -22,53 +23,13 @@ export const PanelDefaults = {
     disableOverscrollClose: false
 }
 
+let permissionCheck
+
 class RegisteredPanels {
 
     constructor(){
-        this.register = new Map()
+        this.register = new CollMap()
     }
-
-    get shortcuts(){
-
-        let shortcuts = []
-
-        this.register.forEach(reg=>{
-
-            let {view, route, opts} = reg
-
-            view = customElements.get(view)
-            opts = Object.assign({}, opts)
-
-            if( !view ) return
-            if( !opts.shortcuts&&!opts.shortcut ) return
-
-            // use title/icon on the view if it gives it
-            if( !opts.title && view.title ) opts.title = view.title
-            if( !opts.icon && view.icon ) opts.icon = view.icon
-
-            if( opts.shortcuts === true || opts.shortcut === true ){
-                shortcuts.push({
-                    title: opts.title,
-                    icon: opts.icon||'',
-                    url: route.rootPath
-                })
-            }
-
-            if( opts.shortcuts && Array.isArray(opts.shortcuts) )
-            opts.shortcuts.forEach(s=>{
-
-                shortcuts.push(Object.assign({}, opts, {
-                    description: '',
-                    url: route.makePath(s.args||{})
-                }, s))
-
-            })
-
-        })
-
-        return shortcuts
-    }
-
 
     set(key, data){
         return this.register.set(key, data)
@@ -79,8 +40,33 @@ class RegisteredPanels {
     }
 
     add(path, view, opts={}){
+
+        // use the path on the defined custom element
+        if( path && typeof view != 'string' ){
+            let _view = customElements.get(path)
+            if( _view ){
+                opts = view || {}
+                view = path
+                path = _view.path
+            }       
+        }
+
+        if( !path )
+            return console.error('Missing path')
+
         if( this.get(path) ){
             return console.warn(`A panel is already registered for ${path}`)
+        }
+
+        if( path && router.routes.includes('/'+path) )
+            return console.warn('Ignorning panel registration, route already in use')
+
+        if( typeof view == 'string' ){
+            let ce = customElements.get(view)
+            if( ce ){
+                opts.title = opts.title || ce.title
+                opts.icon = opts.icon || ce.icon
+            }
         }
 
         this.set(path, {view, opts})
@@ -92,6 +78,20 @@ class RegisteredPanels {
         })
     }
 
+    checkPermission(reg){
+        let permission = reg.opts.permission
+
+        if( !permission ) return true
+
+        if( typeof permission == 'function' )
+            return permission() !== false
+
+        if( permissionCheck && permissionCheck(permission) == false )
+            return false
+            
+        return true
+    }
+
     _initiate(path){
         let registered = this.get(path)
 
@@ -99,6 +99,9 @@ class RegisteredPanels {
             console.error(`Panel for ${path} not found`)
             return false
         }
+
+        if( this.checkPermission(registered) == false )
+            return
 
         // first time this panel is being requested
         if( !registered.panel ){
@@ -135,6 +138,66 @@ class RegisteredPanels {
         else
             registered.panel.open()
     }
+
+    get shortcuts(){
+        return this.toMenu({onlyShortcuts:true})
+    }
+
+    get menu(){
+        return this.toMenu()
+    }
+
+    toMenu({
+        onlyShortcuts=false,
+        relatedShortcuts=true,
+        checkPermission=true
+    }={}){
+
+        let menu = []
+
+        this.register.forEach(reg=>{
+
+            let {view, route, opts} = reg
+
+            view = customElements.get(view)
+            opts = Object.assign({}, opts)
+
+            if( !view ) return
+            if( onlyShortcuts && !opts.shortcuts&&!opts.shortcut ) return
+            if( checkPermission && this.checkPermission(reg) == false ) return
+
+            // use title/icon on the view if it gives it
+            if( !opts.title && view.title ) opts.title = view.title
+            if( !opts.icon && view.icon ) opts.icon = view.icon
+
+            let shortcuts = []
+
+            if( opts.shortcuts && Array.isArray(opts.shortcuts) ){
+                shortcuts = opts.shortcuts.map(s=>{
+                    return Object.assign({}, opts, {
+                        description: '',
+                        url: route.makePath(s.args||{})
+                    }, s)
+                })
+            }
+
+            if( !onlyShortcuts || opts.shortcuts === true || opts.shortcut === true ){
+                menu.push({
+                    title: opts.title,
+                    icon: opts.icon||'',
+                    url: route.rootPath,
+                    shortcuts
+                })
+            }
+
+            if( relatedShortcuts && onlyShortcuts && shortcuts.length > 0 )
+                menu.push(...shortcuts )
+        })
+
+        menu = menu.sort((a,b)=>a.title>b.title?1:-1)
+        
+        return menu
+    }
     
 }
 
@@ -164,13 +227,22 @@ export const ActionSheet = function(view, opts={}){
 
 export class Panel extends LitElement {
 
+    static set permissionCheck(fn){
+        if( typeof fn != 'function' )
+            throw new Error('permissionCheck should be a function')
+
+        permissionCheck = fn
+    }
+
     static get properties(){return {
         title: {type: String},
-        width: {type: String},
-        height: {type: String},
+        width: {type: String, reflect: true},
+        height: {type: String, reflect: true},
         anchor: {type: String, reflect: true},
         type: {type: String, reflect: true},
-        animation: {type: String, reflect: true}
+        vid: {type: String, reflect: true},
+        animation: {type: String, reflect: true},
+        closebtn: {type: String, reflect: true}
     }}
 
     static register(path, view, opts){
@@ -196,19 +268,28 @@ export class Panel extends LitElement {
             defaultOpts.height = ''
             defaultOpts.anchor = 'center'
             defaultOpts.animation = 'scale'
-        }
-
-        if( opts.type == 'actionsheet' ){
+        
+        }else if( opts.type == 'actionsheet' ){
             defaultOpts.width = '100%'
             defaultOpts.height = ''
             defaultOpts.anchor = 'bottom'
+            
+        }else{
+
+            if( opts.width && opts.width != '100%' )
+                defaultOpts.anchor = 'right'
+
+            // change to slide animation if view has width set (makes more sense)
+            if( !opts.animation && opts.width )
+                opts.animation = 'slide'
         }
 
         opts = Object.assign(defaultOpts, opts)
 
         this.animation = opts.animation
+        this.vid = opts.vid
         this.type = opts.type
-        this.closeBtn = opts.closeBtn
+        this.closebtn = opts.closeBtn
         this.title = opts.title
         this.width = opts.width
         this.height = opts.height
@@ -233,6 +314,16 @@ export class Panel extends LitElement {
 
         if( this.opts.closeOnEsc && e.key == 'Escape' )
             this.close()
+
+        if( !this.opts.disableBackdropClick && document.activeElement.tagName == 'BODY'){
+            if( e.shiftKey && e.key == 'W' )
+                this.close()
+
+            if( e.shiftKey && e.key == 'Tab' ){
+                e.preventDefault()
+                this.panelController && this.panelController.quickJump()
+            }
+        }
 
         this.opts.onKeydown&&this.opts.onKeydown(e)
         this.view.onKeydown&&this.view.onKeydown(e)
@@ -309,9 +400,9 @@ export class Panel extends LitElement {
     }
 
     render(){return html`
-        <div class="backdrop"></div>
-        <main style="${this.width?`width:${this.width};`:''}${this.height?`height:${this.height};`:''}">
-            <b-btn icon="cancel-1" pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closeBtn!==true}></b-btn>
+        <div part="backdrop" class="backdrop"></div>
+        <main part="main" style="${this.width?`width:${this.width};`:''}${this.height?`height:${this.height};`:''}">
+            <b-btn icon="cancel-1" pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closebtn!==true}></b-btn>
             <slot></slot>
             <div class="inlinehtml">
                 ${this.html}
@@ -396,6 +487,10 @@ export class Panel extends LitElement {
                 this.toolbar = this.shadowRoot.querySelector('b-panel-toolbar') || this.querySelector('b-panel-toolbar')
             
             if( this.toolbar ){
+                
+                if( this.closebtn )
+                    this.toolbar.closebtn = this.closebtn
+
                 this.toolbar.panel = this
                 this.toolbar.title = this.title
             }
@@ -418,19 +513,27 @@ export class Panel extends LitElement {
     }
 
     async open(...args){
-        
+
+        if( this.view && this.view.willOpen ){
+            if( await this.view.willOpen(this.route.state) === false ){
+                if( this.route && this.panelController )
+                    this.panelController._updateRoute()
+                return false;
+            }
+        }
+
+        // route requested custom controller
         if( this.route && this.route.state.props.controller )
             this.controller = this.route.state.props.controller
 
-        // if no controller set, use the root controller
-        if( !this.panelController ){
-            this.panelController = Controller.for('root')
-        }
+        // else attempt to use the controller in the opts again
+        else if( this.opts.controller )
+            this.controller = this.opts.controller
 
-        if( this.view && this.view.willOpen ){
-            if( await this.view.willOpen(this.route.state) === false )
-                return false;
-        }
+        // if no controller set (or doesn't exist) or it's currently NOT visible
+        // , use the root controller
+        if( !this.panelController || !this.panelController.isVisible )
+            this.panelController = Controller.for('root')
 
         this._onKeydown = this._onKeydown || this.onKeydown.bind(this)
         window.removeEventListener('keydown', this._onKeydown, true)
@@ -474,7 +577,7 @@ export class Panel extends LitElement {
         this.route&&this.route.update({didExit: true})
         this._close()
 
-        if( this.route)
+        if( this.route && this.panelController )
             this.panelController._updateRoute()
 
         // put the view back to it's original DOM location (if it had one)
@@ -513,7 +616,7 @@ export class Panel extends LitElement {
             opacity: 0;
             transition: opacity ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1),
                         background-color ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
-            --radius: var(--b-panel-radius, 5px);
+            --radius: var(--b-panel-radius, 8px);
             --radius-top: var(--radius);
             --radius-bottom: 0;
         }
@@ -535,8 +638,9 @@ export class Panel extends LitElement {
             max-width: var(--max-width, 100%);
             max-height: var(--max-height, 100%);
             overflow: visible;
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-rows: 1fr;
+            max-height: 100%;
             background: var(--b-panel-bgd, #fff);
             box-shadow: var(--b-panel-shadow, var(--theme-shadow, rgba(0,0,0,.2)) 0 3px 10px);
             border-radius: var(--radius-top) var(--radius-top) var(--radius-bottom) var(--radius-bottom);
@@ -565,6 +669,7 @@ export class Panel extends LitElement {
 
         :host([type="actionsheet"][anchor="bottom"]) > main {
             padding-bottom: env(safe-area-inset-bottom);
+            /* border-radius: var(--radius) var(--radius) 0 0; */
         }
 
         :host([open]) {
@@ -579,6 +684,7 @@ export class Panel extends LitElement {
         :host([anchor="right"]) > main {
             transform: translateX(100px);
             height: 100%;
+            border-radius: var(--radius) 0 0 var(--radius);
         }
 
         :host([anchor="left"]) > main {
@@ -586,36 +692,82 @@ export class Panel extends LitElement {
             left: 0;
             transform: translateX(-100px);
             height: 100%;
+            border-radius: 0 var(--radius) var(--radius) 0;
         }
 
         :host([anchor="center"]) > main,
+        :host([anchor="center-left"]) > main,
         :host([anchor="top"]) > main,
         :host([anchor="bottom"]) > main {
             position: relative;
-            margin: auto auto;
+            margin: auto;
             transform: translateY(100px);
         }
 
-        :host([anchor="center"]) > main {
+        :host([anchor="center-left"]) > main {
+            transform: translate(-50%, 100px);
+            margin: auto 0;
+            margin-left: 30%;
+        }
+
+        :host([anchor="center-left"][open]) > main {
+            transform: translate(-50%, 0) !important;
+        }
+
+        :host([anchor="center"][animation="drop"]) > main,
+        :host([anchor="top"][animation="drop"]) > main,
+        :host([anchor="bottom"][animation="drop"]) > main {
+            position: relative;
+            margin: auto;
+            transform: translateY(-100px);
+        }
+
+        :host([animation="rise"]) > main {
+            position: relative;
+            margin: auto;
+            transform: translateY(100px);
+        }
+
+        :host([anchor^="center"]) > main {
             border-radius: var(--radius);
         }
 
-        :host([anchor="center"][animation="scale"]) > main {
+        :host([anchor^="center"][animation="scale"]) > main {
             transform: scale(.5);
         }
 
-        :host([anchor="center"][animation="fade"]) > main {
+        :host([anchor="center-left"][animation="scale"]) > main {
+            transform: translate(-50%, 0) scale(.5);
+        }
+
+        :host([anchor^="center"][animation="fade"]) > main {
             transform: none;
         }
 
         :host([anchor="top"]) > main {
-            margin-top: 0;
+            margin-top: 0 !important;
             transform: translateY(-100px);
             border-radius: 0 0 var(--radius) var(--radius);
         }
 
         :host([anchor="bottom"]) > main {
             margin-bottom: 0;
+        }
+
+        :host([anchor="bottom"]) {
+            --b-panel-toolbar-close-btn-rotation: 90deg;
+        }
+
+        :host([anchor="top"]) {
+            --b-panel-toolbar-close-btn-rotation: -90deg;
+        }
+
+        :host([anchor="left"]) {
+            --b-panel-toolbar-close-btn-rotation: 180deg;
+        }
+
+        :host([anchor="right"]) {
+            --b-panel-toolbar-close-btn-rotation: 0deg;
         }
 
         .backdrop {
@@ -631,12 +783,14 @@ export class Panel extends LitElement {
             top: 0;
             right: 0;
             z-index: 10000;
+            flex-shrink: 0;
             transform: translate(50%, -50%);
         }
 
         main > slot::slotted(*) {
             width: 100%;
             pointer-events: all;
+            overflow: hidden;
             /* display: grid;
             grid-template-rows: auto 1fr; */
         }

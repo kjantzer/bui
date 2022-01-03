@@ -142,26 +142,14 @@ as `password`. For this purpose the `input` attribute can be applied.
 #### Multiline
 In this mode the enter key will create new lines instead of submitting/saving the value. Holding `ctrl/cmd` and enter will trigger the submit event.
 
-## `<rich-text-field>`
+## `<text-editor>`
 
-Similar to the `text-field` but with [quill.js](https://quilljs.com) enabled for rich text editing.
-
-The field will also auto convert some special characters (such as 3 periods to an ellipsis) using
-`util/normalizeText`
-
-<!--
-<form-control label="Rich Text Field" material style="width: 100%">
-	<rich-text-field></rich-text-field>
-</form-control>
--->
+NEW: still a work in progress. Uses [tiptap](https://www.tiptap.dev/) and will replace `rich-text-field`
 
 #### Attributes
 - `value`
 - `placeholder`
-
-> NOTE: current quill.js doesn't like the shadowDOM so we are using a forked version
-> that has changes made to work inside the shadowDOM; however, the changes
-> may still have some issues in certain browsers – see https://github.com/quilljs/quill/pull/2337
+- `menubar` - show some editing controls?
 
 ## `<select-field>`
 
@@ -248,6 +236,8 @@ select-field::part(value):after {
 - `label`
 - `placement="right"` - placement of label
 - `type="switch"`
+- `icon` - see custom icons below
+- `iconempty`
 
 ```html
 <check-box label="Active"></check-box>
@@ -256,6 +246,17 @@ select-field::part(value):after {
 <form-control key="is_active">
 	<check-box label="Active"></check-box>
 </form-control>
+
+<!-- html label -->
+<check-box>
+	<b-text bold>Active</b-text>
+</check-box>
+```
+
+#### Custom icons
+
+```html
+<check-box icon="star" iconempty="star-empty"></check-box>
 ```
 
 ## `<radio-btn>`

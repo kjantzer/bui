@@ -6,14 +6,18 @@ const PRESETS = {
 	'no': {label: 'No', doesCancel:true},
 	'done': {label: 'Done'},
 	'apply': {label: 'Apply', color: 'theme'},
+    'undo': {label: 'Undo', color: 'theme'},
 	'ok': {label: 'Okay', color: 'theme'},
     'continue': {label: 'Continue', color: 'theme'},
 	'yes': {label: 'Yes', color: 'theme'},
 	'save': {label: 'Save', color: 'theme'},
 	'create': {label: 'Create', color: 'theme'},
+    'open': {label: 'Open', color: 'theme'},
     'submit': {label: 'Submit', color: 'theme'},
+    'upload': {label: 'Upload', color: 'theme'},
 	'delete': {label: 'Delete', color: 'red'},
-	'x': {label: '', icon:'cancel-1', doesCancel:true}
+	'x': {label: '', icon:'cancel-1', doesCancel:true},
+    '...': {label: '', icon:'dot-3'}
 }
 
 export function registerPreset(name, opts){
@@ -28,7 +32,14 @@ customElements.define('b-dialog-btn', class extends Btn{
     }
 
     get value(){
-        return this.opts.value || this.opts.label
+        return this.opts.value || this.opts.val || this.opts.label || this.opts.icon
+    }
+
+    // TEMP: backwards compat
+    get val(){ return this.value }
+
+    get label(){
+        return this.opts.label
     }
 
     constructor(opts){

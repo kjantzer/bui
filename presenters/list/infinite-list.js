@@ -125,7 +125,7 @@ customElements.define('b-infinite-list', class extends LitElement {
     }
 
     checkNotEnoughContent(){
-        if( this.scrollHeight <= this.offsetHeight ){
+        if( this.offsetHeight > 0 && this.scrollHeight <= this.offsetHeight ){
             this.getContent()
         }
     }

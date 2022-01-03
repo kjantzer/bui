@@ -5,7 +5,7 @@ import { LitElement, html, css } from 'lit-element';
 
 const SVG_ICONS = new Map()
 
-function registerIcon(name, icon, {prefix='icon-'}={}){
+function registerIcon(name, icon, {prefix='icon-', className=''}={}){
 
 	let d = document.createElement('div')
 	d.innerHTML = icon
@@ -17,11 +17,26 @@ function registerIcon(name, icon, {prefix='icon-'}={}){
 		name = name.replace(prefix, '')
 	}
 
+	// remove <title> tags – we dont want to see them when hovering over the icon
+	let title = icon.querySelector('title')
+	if( title ){
+		icon.setAttribute('data-title', title.textContent)
+		title.remove()
+	}
+
+	icon.setAttribute('part', 'svg')
+
+	if( className )
+		icon.classList.add(className)
+
+	icon.removeAttribute('width')
+	icon.removeAttribute('height')
+
 	if( !name )
 		return console.warn('Icons must have a name')
 
 	if( SVG_ICONS.get(name) )
-		return console.warn('There is already an icon registered with that name' )
+		return console.warn('There is already an icon registered with that name:', name)
 
 	SVG_ICONS.set(name, icon)
 }
@@ -38,24 +53,32 @@ export default class IconElement extends HTMLElement {
 	static register(...icons){
 		icons.forEach(icon=>{
 			let name = ''
+			let opts = {}
 
 			if( Array.isArray(icon) )
-				[name, icon] = icon
+				[name, icon, opts] = icon
+			
+			// if imported with `default` instead of icon src
+			if( icon.default )
+				icon = icon.default
 				
-			registerIcon(name, icon)
+			registerIcon(name, icon, opts)
 		})
+	}
+
+	static registeredIconNames(){
+		return Array.from(SVG_ICONS.keys())
 	}
 
 	// not ideal...
 	get styles(){return /*css*/`
 		:host {
 			display: inline-flex;
-			vertical-align: middle;
+			vertical-align: baseline;
 			align-items: center;
 			justify-content: center;
 			color: inherit;
-			--size: 1em;
-			height: var(--size);
+			height: var(--size, 1em);
 		}
 
 		:host([hidden]) {
@@ -71,7 +94,7 @@ export default class IconElement extends HTMLElement {
 		}
 
 		:host([square]) {
-			width: var(--size);
+			width: var(--size, 1em);
 		}
 
 		:host([invalid]) {
@@ -81,9 +104,14 @@ export default class IconElement extends HTMLElement {
 		svg {
 			height: 100%;
 			/* width: 100%; */
+			min-width: 0;
 			display: inline-block;
 			fill: currentColor;
 			color: currentColor;
+		}
+
+		svg.material {
+			transform: scale(var(--b-icon-undersized-scale, 1.1)); /* slightly bigger for Material icons */
 		}
 
 		@keyframes rotate360 {

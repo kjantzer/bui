@@ -3,11 +3,11 @@ import {normalizePath} from './config'
 
 export default class Route {
     
-    constructor(path, onChange){
+    constructor(path, onChange, config={}){
         
         path = normalizePath(path)
         this.path = path
-        this.patt = new UrlPattern(path)
+        this.patt = new UrlPattern(path, config.urlPattern)
 
         this.onChange = onChange
     }
@@ -26,6 +26,10 @@ export default class Route {
 
     makePath(params){
         return this.patt.stringify(params)
+    }
+
+    get currentPath(){
+        return this.makePath(this.params||{})
     }
 
     update(props){

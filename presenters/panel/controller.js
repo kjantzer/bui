@@ -2,6 +2,7 @@ import {LitElement, html, css} from 'lit-element'
 import Menu from '../menu'
 import router from '../../router'
 import device from '../../util/device'
+import overscroll from '../../util/overscroll'
 
 const PanelControllers = {}
 
@@ -33,6 +34,11 @@ class PanelController extends LitElement {
         }
     `}
 
+    get isVisible(){
+        let style = window.getComputedStyle(this)
+        return style.display != 'none' && !this.hidden
+    }
+
     get name(){
         return this.hasAttribute('name') ? this.getAttribute('name') : undefined
     }
@@ -52,35 +58,48 @@ class PanelController extends LitElement {
                 PanelControllers[this.name] = this
         }
 
-        // TODO: support his in Android? make feature opt in?
+        // TODO: support this in Android? make feature opt in?
         if( this.name == 'root' && device.isiOS ){
-            let overflowScrollAt = 0
+
+            const overscrollEl = overscroll.watch()
             let topPanel = null
 
-            window.addEventListener('touchend', e=>{
-                if( overflowScrollAt < -40 ){
-                    topPanel&&topPanel.close()
-                    setTimeout(()=>{
-                        if( topPanel ) topPanel.style.top = 0
-                        topPanel = null
-                    },300)
-                }else{
-                    topPanel = null
-                }
-            })
+            overscrollEl.addEventListener('overscroll', e=>{
 
-            window.addEventListener('scroll', e=>{
-
+                if( !e.detail ) return
+                
                 if( this.panels.size > 0 && !topPanel )
                     topPanel = this.panelOnTop
-                
+
                 if( !topPanel || topPanel.opts.disableOverscrollClose === true ) return
 
-                overflowScrollAt = document.scrollingElement.scrollTop
-                
-                if( overflowScrollAt < 0 && topPanel ){
-                    topPanel.style.top = (Math.abs(overflowScrollAt) * 1) + 'px'
+                let {top, bottom} = e.detail
+
+                if( top ){
+                    topPanel.style.top = Math.abs(top)+'px'
+                }else if( bottom && topPanel.fullscreen ){
+                    topPanel.style.top = bottom+'px'
                 }
+                
+            })
+
+            overscrollEl.addEventListener('overscrolled', e=>{
+
+                if( !topPanel || topPanel.opts.disableOverscrollClose === true ) return 
+
+                let {top, bottom} = e.detail
+
+                if( bottom && topPanel.fullscreen )
+                    topPanel.fullscreen({toggle: false})
+                else if( top && topPanel.fullscreen)
+                    topPanel.fullscreen({close:true})
+                else if( top )
+                    topPanel.close()
+
+                setTimeout(()=>{
+                    if( topPanel ) topPanel.style.top = 0
+                    topPanel = null
+                },300)
             })
         }
     }
@@ -167,6 +186,11 @@ class PanelController extends LitElement {
             }
         })
 
+        if( this.length > 0 )
+            this.setAttribute('num', this.length)
+        else
+            this.removeAttribute('num')
+
         let hostEl = this.getRootNode()
         hostEl = hostEl.host || hostEl.body || hostEl
 
@@ -187,7 +211,7 @@ class PanelController extends LitElement {
         if( this.length == 0 ){
             
             // TEMP - improve interoperability with Groundwork
-            if( window.app && app.sv('sheets').sheets.length > 0 )
+            if( window.app && window.app.sv && app.sv('sheets').sheets.length > 0 )
                 app.sv('sheets').setHash()
             else
                 router.push('')
@@ -201,9 +225,12 @@ class PanelController extends LitElement {
         }else
         this.panels.forEach((panel)=>{
 
-            if( panel.onTop && panel.route && !panel.route.isCurrent ){
+            if( panel.onTop && panel.route && (!panel.route.isCurrent || panel.route.state.props.didExit) ){
                 // console.log(panel.route, panel.route.state.path);
-                router.push(panel.route)
+                // if( panel.route.isCurrent || panel.route.state.props.didExit )
+                    router.push(panel.route.makePath(panel.route.params))
+                // else
+                //     router.push(panel.route)
             }
         })
     }
@@ -218,7 +245,10 @@ class PanelController extends LitElement {
         return resp.reverse() // most recent first
     }
 
+    // FIXME: not that great of an implementation
     async quickJump(el){
+
+        if( this.name != 'root'  ) return 
         
         let menu = this.map(panel=>{
             return {
@@ -229,30 +259,28 @@ class PanelController extends LitElement {
             }
         })
 
-        menu.shift() // remove first menu as its the open view
-
         let ts = new Date().getTime()
 
         // quick jump is already open
-        if( el.popover ){
-
-            // if quick jump triggered within a second, auto switch to the last opened view
-            if( el.quickJumpOpened && ts - el.quickJumpOpened <= 1000 && menu.length > 0){
-                el.popover.close()
-                menu[0].panel.open()
-            }
-            
+        if( this.quickJumpOpened )
             return
-        }
-
-        el.quickJumpOpened = ts
 
         if( menu.length == 0 )
-            menu.push({text: 'No other views open'})
+            return this.quickJumpOpened = null
+            // menu.push({text: 'No other views open'})
 
-        menu.unshift({divider: 'Quick Jump Menu'}, 'divider')
+        menu[0].selected = true // the open panel
 
-        let selected = await new Menu(menu).popover(el, {align: 'bottom-start'})
+        menu.unshift({divider: 'Open Views'}, 'divider')
+
+        this.quickJumpOpened = ts
+
+        // let selected = await new Menu(menu).popover(el, {align: 'bottom-start'})
+        let selected = await new Menu(menu, {autoSelectFirst: true}).modal({
+            onClose:()=>{
+                this.quickJumpOpened = null
+            }
+        })
 
         if( selected )
             selected.panel.open()

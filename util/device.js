@@ -1,4 +1,4 @@
-import colorizeFavicon from './colorize-favicon'
+import {colorScheme, ThemeColors} from './color-scheme'
 
 const UA = navigator.userAgent
 
@@ -20,7 +20,12 @@ const device = {
         return window.outerWidth < window.outerHeight ? window.outerWidth : window.outerHeight;
     },
 
-    get isSmallDevice(){ return this.minScreenSize <= 699 },
+    get isSmall(){ return this.minScreenSize <= 599 },
+    get isMedium(){ return this.minScreenSize <= 1199 },
+    get isSmallDevice(){ return this.isSmall }, // DEPRECATED
+
+    get isLandscape(){ return window.outerHeight < window.outerWidth },
+    get isPortrait(){ return window.outerWidth < window.outerHeight },
 
     get isiOS(){
         return /iPad|iPhone|iPod/.test(UA)
@@ -35,12 +40,20 @@ const device = {
         return /android/i.test(UA)
     },
 
+    get isChromeOS(){
+        return /CrOS/.test(UA)
+    },
+
     get isTouch(){
-        return 'ontouchstart' in window
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0
     },
     
     get isMobile(){
-        return device.isiOS || device.isAndroid
+        return device.isiOS || device.isAndroid || (device.isChromeOS && this.isTouch)
+    },
+
+    get isTablet(){
+        return this.isMobile && this.minScreenSize >= 600 && this.isTouch
     },
 
     get isHandheldScanner(){
@@ -50,6 +63,10 @@ const device = {
     // https://developer.chrome.com/multidevice/user-agent
     get isiOSChrome(){
         return /CriOS/.test(UA)
+    },
+
+    get chromeVersion(){
+        return (UA.match(/Chrome\/([\d\.]+) /)||[])[1]
     },
 
     get isElectron(){
@@ -79,6 +96,9 @@ const device = {
         html.classList.toggle('ios', device.isiOS)
         html.classList.toggle('electron', device.isElectron)
         html.classList.toggle('android', device.isAndroid)
+        html.classList.toggle('chromeos', device.isChromeOS)
+        html.classList.toggle('touch', device.isTouch)
+        html.classList.toggle('tablet', device.isTablet)
         html.classList.toggle('mac', device.isMac)
         html.classList.toggle('windows', device.isWindows)
         html.classList.toggle('installed', device.isInstalled)
@@ -87,106 +107,4 @@ const device = {
 }
 
 export default device
-
-// https://medium.com/@jonas_duri/enable-dark-mode-with-css-variables-and-javascript-today-66cedd3d7845
-export const colorScheme = {
-
-    get isDarkMode(){ return window.matchMedia("(prefers-color-scheme: dark)").matches },
-    get isLightMode(){ return window.matchMedia("(prefers-color-scheme: light)").matches },
-    get isUnset(){ return window.matchMedia("(prefers-color-scheme: no-preference)").matches },
-
-    get isSupported(){ return this.isDarkMode || this.isLightMode || this.isUnset },
-    
-    onChange(cb){
-        // first time, setup watchers
-        if( !this._watchers ){
-            this._watchers = new Map()
-
-            window.matchMedia("(prefers-color-scheme: dark)").addListener(e => e.matches && this._dispatchChange('dark'))
-            window.matchMedia("(prefers-color-scheme: light)").addListener(e => e.matches && this._dispatchChange('light'))
-        }
-
-        this._watchers.set(cb, cb)
-    },
-    
-    _dispatchChange(mode){
-        this._watchers.forEach(cb=>{
-            cb(mode)
-        })
-    },
-
-    apply({colorizeFaviconComposition=''}={}){
-        localStorage.setItem('theme-colorize-icon', 
-            colorizeFaviconComposition||localStorage.getItem('theme-colorize-icon')||'lighten')
-        this.onChange(this.setTheme.bind(this))
-        this.setTheme()
-        this.setAccent()
-    },
-
-    get theme(){ return localStorage.getItem('theme') },
-    get accent(){ return localStorage.getItem('theme-accent') },
-
-    setTheme(theme){
-
-        const html = document.documentElement
-        let metaThemeColor = document.head.querySelector('meta[name="theme-color"]')
-
-        // create the meta theme color if not found
-        // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name/theme-color
-        if( !metaThemeColor ){
-            metaThemeColor = document.createElement('meta')
-            metaThemeColor.setAttribute('name', 'theme-color')
-            document.head.appendChild(metaThemeColor)
-        }
-
-        html.removeAttribute('light')
-        html.removeAttribute('dark')
-
-        if( theme === undefined )
-            theme = localStorage.getItem('theme') || 'system'
-        
-        localStorage.setItem('theme', theme)
-
-        if( theme == 'system' )
-            theme = this.isDarkMode ? 'dark' : 'light'
-
-        html.setAttribute(theme, '')
-        metaThemeColor.content = this.getCssVar('theme-bgd')
-        localStorage.setItem('meta-theme-color', metaThemeColor.content)  
-    },
-
-    setAccent(accent){
-
-        const html = document.documentElement
-        let colorizeFaviconComposition = localStorage.getItem('theme-colorize-icon')
-
-        if( accent === undefined ){
-            accent = localStorage.getItem('theme-accent')
-        }else{
-            localStorage.setItem('theme-accent', accent)
-        }
-
-        if( accent ){
-            html.style.setProperty('--theme', `var(--${accent}, #${accent})`);
-            html.style.setProperty('--theme-chosen', `var(--${accent}, #${accent})`);
-
-            if( colorizeFaviconComposition )
-                colorizeFavicon(this.getCssVar('theme'), colorizeFaviconComposition)
-
-        }else{
-            html.style.removeProperty('--theme');
-            html.style.removeProperty('--theme-chosen');
-
-            colorizeFavicon(false)
-        }
-
-    },
-
-    getCssVar(name){
-        if( name[0] != '-' )
-            name = '--'+name
-        return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
-    }
-    
-}
-
+export {colorScheme, ThemeColors} // legacy support, should direct import

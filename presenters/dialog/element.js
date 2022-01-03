@@ -1,15 +1,23 @@
 import { LitElement, html, css } from 'lit-element'
+import {unsafeHTML} from 'lit-html/directives/unsafe-html'
+import {mediaQuery} from '../../util/mediaQueries'
 import Button from './btn'
 import '../../elements/spinner'
 import '../../helpers/lit-element/events'
+
+const basicConverter = { 
+    toAttribute: (value, type) => { 
+        return value ? '1' : '0'
+    }
+  }
 
 customElements.define('b-dialog', class DialogElement extends LitElement{
 
     static get properties(){return {
         icon: {type: String},
-        pretitle: {type: String},
-        title: {type: String},
-        body: {type: String},
+        pretitle: {type: String, reflect: true, converter: basicConverter},
+        title: {type: String, reflect: true, converter: basicConverter},
+        body: {type: String, reflect:true, converter: basicConverter},
 
         closeBtn: {type: Boolean},
 
@@ -19,6 +27,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         toast: {type: Boolean, reflect:true},
         stack: {type: Boolean, reflect:true},
         noContent: {type: Boolean, reflect:true},
+        keyboardShortcuts: {type: Boolean}
     }}
 
     static get styles(){return css`
@@ -26,10 +35,14 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             display: inline-grid;
             grid-template-columns: auto 1fr;
             vertical-align: text-top;
+            box-sizing: border-box;
             min-width: 200px;
             max-width: 100%;
+            max-height: 100%;
+            min-height: 0;
             position:relative;
             background: var(--theme-bgd, #fff);
+            color: var(--theme-text, #222);
             border-radius: var(--radius);
 
             --radius: 5px;
@@ -52,11 +65,26 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             background-color: var(--color);
         }
 
+        :host([color="theme"]) { --color: var(--theme); }
         :host([color="red"]) { --color: var(--red); }
         :host([color="blue"]) { --color: var(--blue); }
         :host([color="green"]) { --color: var(--green); }
         :host([color="orange"]) {
             --color: var(--orange);
+            --theme-text: var(--light-text);
+            --theme-text-rgb: var(--light-text-rgb);
+        }
+
+        :host([color="dark"]) {
+            --theme-bgd: var(--dark-text);
+            --color: var(--dark-bgd);
+            --theme-text: var(--dark-text);
+            --theme-text-rgb: var(--dark-text-rgb);
+        }
+
+        :host([color="light"]) {
+            --theme-bgd: var(--light-text);
+            --color: var(--light-bgd);
             --theme-text: var(--light-text);
             --theme-text-rgb: var(--light-text-rgb);
         }
@@ -68,11 +96,13 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             --theme-text-rgb: var(--theme-inverse-text-rgb);
         }
 
+        :host([accent="theme"]) { --accent: var(--theme-secondary); }
         :host([accent="red"]) { --accent: var(--red-700); }
         :host([accent="blue"]) { --accent: var(--blue); }
         :host([accent="green"]) { --accent: var(--green); }
         :host([accent="orange"]) { --accent: var(--orange); }
 
+        :host([color="theme"][accent]) { --accent: var(--theme-secondary); }
         :host([color="red"][accent]) { --accent: var(--red-800); }
         :host([color="blue"][accent]) { --accent: var(--blue-800); }
         :host([color="green"][accent]) { --accent: var(--green-800); }
@@ -99,6 +129,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         }
 
         aside {
+            position: relative;
             display: flex;
             justify-content: center;
             border-radius: var(--radius) 0 0 var(--radius);
@@ -115,14 +146,12 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             border-radius: var(--radius) 0 0 var(--radius);
         }
 
-        aside b-icon,
-        aside b-spinner,
+        aside [name="icon"] > *,
         aside ::slotted(*:not([fill])) {
             margin: var(--pad) 0 var(--pad) var(--pad);
         }
 
-        :host([stack]) aside b-icon,
-        :host([stack]) aside b-spinner,
+        :host([stack]) aside [name="icon"] > *,
         :host([stack]) aside ::slotted(*:not([fill])) {
             margin: var(--pad) var(--pad) 0 var(--pad);
         }
@@ -131,10 +160,13 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             border-radius: var(--radius) var(--radius) 0 0;
         }
 
-        aside b-icon,
-        aside b-spinner {
+        aside [name="icon"] > * {
             --size: var(--icon-size, 2em);
             color: var(--accent);
+        }
+
+        :host([title='0'][pretitle='0']) aside [name="icon"] > * {
+            --size: var(--icon-size, 1em);
         }
 
         :host([toast]) aside {
@@ -155,12 +187,33 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         }
 
         main {
-            margin: var(--pad);
+            margin-bottom: var(--pad);
+            min-height: 0;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main header {
+            padding-top: var(--pad);
+        }
+        
+        main .pretitle,
+        main .title,
+        main .body-wrap {
+            padding-left: var(--pad);
+            padding-right: var(--pad);
         }
 
         main > slot::slotted(*:first-child) {
             margin-top: var(--pad);
+            max-height: 100%;
         }
+
+        main > slot::slotted(.b-menu) {
+            margin: calc(-1 * var(--pad));
+            margin-top: 0;
+        } 
 
         main ::slotted(form-control) {
             display: block;
@@ -174,6 +227,10 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         .title slot {
             font-size: 1.2em;
             font-weight: bold;
+        }
+
+        .body-wrap {
+            overflow: auto;
         }
 
         .body {
@@ -200,14 +257,21 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         }
 
         :host([toast]) footer {
-            margin-top: inherit;
+            margin-top: 0;
         }
 
         footer b-dialog-btn {
             text-transform: uppercase;
             line-height: 0;
             align-self: center;
+            font-size: var(--b-dialog-btn-size, .9rem);
         }
+
+        ${mediaQuery('tablet', css`
+        footer b-dialog-btn {
+            font-size: var(--b-dialog-btn-size, 1rem);
+        }
+        `)}
 
         .close-btn {
             position: absolute;
@@ -226,6 +290,12 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
     constructor(opts={}){
         super()
         
+        opts = Object.assign({
+            pretitle: '',
+            title: '',
+            body: ''
+        }, opts)
+
         for( let k in opts ){
 
             let prop = Object.getOwnPropertyDescriptor(DialogElement.prototype, k)
@@ -235,15 +305,32 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             }
         }
 
+        if( opts.onResolve )
+            this.onResolve = opts.onResolve
+
         // TEMP: backwards compt
         if( opts.msg )
             this.body = opts.msg
 
         if( opts.btns === undefined )
-            this.btns = ['dismiss']
+            this.btns = opts.toast ? ['x'] : ['dismiss']
 
         this.promise = new Promise(resolve=>{ this._resolve = resolve })
     }
+
+    set view(val){
+        let oldVal = this.view
+        this.__view = val
+
+        if( oldVal )
+            oldVal.remove()
+        
+        this.appendChild(val)
+    
+        this.requestUpdate('view', oldVal)
+    }
+    
+    get view(){ return this.__view}
 
     updated(){
         if( this.btns.length>0 && !this.title && !this.pretitle && !this.body )
@@ -277,34 +364,55 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             <b-icon class="close-btn" name="cancel-circled" @click=${this.cancelClose}></b-icon>
         `:''}
 
-        <aside>
+        <aside part="aside">
             <slot name="icon">
-                ${this.icon=='spinner'?html`
-                    <b-spinner></b-spinner>
-                `:this.icon?html`
-                    <b-icon square name="${this.icon}"></b-icon>
-                `:''}
+                ${this.renderIcon()}
             </slot>
         </aside>
-        <main>
-            <div class="pretitle">
-                <slot name="pretitle">${this.pretitle}</slot>
+        <main part="main">
+            <header part="header">
+                <div class="pretitle" part="pretitle">
+                    <slot name="pretitle">${this._renderStr(this.pretitle)}</slot>
+                </div>
+                <div class="title" part="title">
+                    <slot name="title">${this._renderStr(this.title)}</slot>
+                </div>
+            </header>
+            <div class="body-wrap" part="body-wrap">
+                <div class="body" part="body">
+                    <slot name="body">${this._renderStr(this.body)}</slot>
+                </div>
+                ${this.renderView()}
+                <slot></slot>
             </div>
-            <div class="title">
-                <slot name="title">${this.title}</slot>
-            </div>
-            <div class="body">
-                <slot name="body">${this.body}</slot>
-            </div>
-            ${this.renderView()}
-            <slot></slot>
         </main>
-        <footer @click=${this.onClick}>
-            ${this.btns.map(b=>new Button(b))}
+        <footer @click=${this.onClick} part="footer">
+            ${this.btns.map(b=>b?new Button(b):'')}
         </footer>
     `}
 
+    _renderStr(str){
+        if( str && str.getHTML ) // lit-html
+            return str
+        if( str ) // TODO: make developer opt-in to using unsafeHTML?
+            return unsafeHTML(str)
+        return ''
+    }
+
     renderView(){ return '' }
+
+    renderIcon(){
+        if( this.icon == 'spinner' )
+            return html`<b-spinner></b-spinner>`
+
+        if( this.icon && this.icon.getHTML )
+            return this.icon
+        
+        if( this.icon )
+            return html`<b-icon square name="${this.icon}"></b-icon>`
+        
+        return ''
+    }
 
     onClick(e){
         e.stopPropagation()
@@ -312,16 +420,22 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         let btn = e.target
         if( btn.tagName != "B-DIALOG-BTN" ) return
 
-        this.emitEvent('chosen', {btn})
-
-        this.resolveBtn(btn)
+        // dont resolve button if other code intercepts and does `event.preventDefault()`
+        if( this.emitEvent('chosen', {btn, dialog:this}, {cancelable:true}) ){
+            this.resolveBtn(btn)
+        }else{
+            btn.blur()
+        }
     }
 
     onKeydown(e){
 
         let btn
 
-        if( this.btns.lengt == 0 || !['Escape', 'Enter'].includes(e.key) )
+        if( this.keyboardShortcuts === false )
+            return
+
+        if( this.btns.length == 0 || !['Escape', 'Enter'].includes(e.key) )
             return
 
         if( this.shadowRoot.activeElement && this.shadowRoot.activeElement.tagName == 'B-DIALOG-BTN'){

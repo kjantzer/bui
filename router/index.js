@@ -111,7 +111,7 @@ export class Router {
     }
 
     add(path, onChange){
-        let route = new Route(path, onChange)
+        let route = new Route(path, onChange, config)
         ROUTES.push(route)
         return route
     }

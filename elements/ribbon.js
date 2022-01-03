@@ -17,7 +17,7 @@ customElements.define('b-ribbon', class extends LitElement{
 
     static get styles(){return css`
         :host {
-            --width: 4em;
+            --width: calc(.9ch * var(--char-len));
             --height: 1em;
             --padding: .25em;
             --color: var(--blue);
@@ -92,6 +92,11 @@ customElements.define('b-ribbon', class extends LitElement{
         }
 
     `}
+
+    firstUpdated(){
+        // TODO: update this when content changes?
+        this.style.setProperty('--char-len', this.textContent.length)
+    }
 
     render(){return html`
         <div class="wrap">

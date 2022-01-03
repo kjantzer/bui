@@ -12,13 +12,18 @@ customElements.define('b-list-selection-bar', class extends LitElement{
             height: 100%;
             width: 100%;
             box-sizing: border-box;
-            background: var(--theme-bgd, #fff);
+            visibility: visible !important;
 
             display: flex;
             justify-content: space-between;
             align-items: center;
             min-width: 0;
             padding: 0 .5em;
+        }
+
+        :host > div {
+            display: flex;
+            align-self: center;
         }
 
         :host(:not(.show)) {
@@ -30,7 +35,25 @@ customElements.define('b-list-selection-bar', class extends LitElement{
             /* margin: 0 1em; */
         }
 
-        @media (max-width: 699px) {
+        .count {
+            align-self: stretch;
+            display: inline-flex;
+            align-items: center;
+            margin-right: .25em;
+        }
+
+        .count > span {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+            padding: 0.2em 0.4em;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 1px var(--theme-shadow) inset;
+            order: var(--count-order, 2);
+        }
+
+        @media (max-width: 599px) {
             .count > span {
                 display: none;
             }
@@ -44,11 +67,13 @@ customElements.define('b-list-selection-bar', class extends LitElement{
         // TODO: unbind when changing?
         selection.on('begin', e=>{
             this.classList.add('show')
+            this.parentElement.classList.add('selection-bar-shown')
             this.update()
         })
 
         selection.on('end', e=>{
             this.classList.remove('show')
+            this.parentElement.classList.remove('selection-bar-shown')
         })
 
         selection.on('change', result=>{
@@ -62,10 +87,10 @@ customElements.define('b-list-selection-bar', class extends LitElement{
         ${this.selection?html`
 
             <div>
-                <b-btn class="cancel-btn" icon="cancel-1" @click=${this.end} outline></b-btn>
+                <b-btn class="cancel-btn" icon="cancel-circled" @click=${this.end} text></b-btn>
 
                 <span class="count">
-                ${this.selection.result.size} <span>selected</span>
+                    <span>${this.selection.result.size}&nbsp;<span>selected</span></span>
                 </span>
 
                 <slot name="left"></slot>

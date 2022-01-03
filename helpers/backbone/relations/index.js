@@ -35,7 +35,7 @@ Object.assign(Backbone.Model.prototype, require('./child-model')(orig))
 // dot notation
 const CollGet = Backbone.Collection.prototype.get
 Object.assign(Backbone.Collection.prototype, {
-	get(key, {dotnotation=true}={}){
+	get(key, {dotnotation=true, promise=false}={}){
 
 		// else, default to normal get of `attributes`
 		if( !dotnotation || typeof key !== 'string' )
@@ -51,7 +51,7 @@ Object.assign(Backbone.Collection.prototype, {
 		let m = CollGet.call(this, key)
 
 		if( path && m )
-			return m.get(path)
+			return m.get(path, {promise})
 
 		return m
 	}

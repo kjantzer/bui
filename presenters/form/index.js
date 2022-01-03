@@ -11,5 +11,5 @@ import './controls/radio-group'
 import './controls/touch-ripple'
 import './controls/range-slider'
 
-// must manually import this as it adds quite a bit of overhead with Quill
-// import './controls/rich-text-field'
+// must manually import this as it adds quite a bit of overhead with tiptap.js
+// import './controls/text-editor'

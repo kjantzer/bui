@@ -1,5 +1,4 @@
 import { LitElement, html, css } from 'lit-element'
-import Popover from '../../popover'
 import './sort-btn'
 import './sort-dir-btn'
 import './filters-view'
@@ -23,6 +22,10 @@ customElements.define('b-list-toolbar', class extends LitElement{
             align-items: center;
             min-width: 0;
             position: relative;
+        }
+
+        :host(.selection-bar-shown) > * {
+            visibility: hidden;
         }
 
         [hidden] { display: none; }
@@ -61,8 +64,8 @@ customElements.define('b-list-toolbar', class extends LitElement{
             align-self: stretch;
             display: flex;
             align-items: center;
-            border-right: 2px solid rgba(0, 0, 0, 0.1);
-            padding: 0 .75em 0 .25em;
+            /* border-right: 2px solid rgba(0, 0, 0, 0.1); */
+            /* padding: 0 .75em 0 .25em; */
             margin-right: .25em;
         }
 
@@ -79,12 +82,27 @@ customElements.define('b-list-toolbar', class extends LitElement{
         .controls > b-icon:hover {
             color: #333;
         }
+
+        .count > span {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+            padding: 0.2em 0.4em;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 1px var(--theme-shadow) inset;
+            order: var(--count-order, 2);
+        }
+
+        [name="before"] { order: 1; }
+        .scroller { order: 3; }
+        .after { order: 4; }
     `}
 
     render(){return html`
         <slot name="before"></slot>
 
-        <div class="count">${this.count}</div>
+        <div class="count"><span>${this.count}</span></div>
 
         <div class="scroller">
 
@@ -101,7 +119,9 @@ customElements.define('b-list-toolbar', class extends LitElement{
         <div class="after">
 
             ${!this.filters||!this.filters.showSearch?'':html`
-            <b-list-search-bar @keydown=${this.onKeyDown} placeholder=${this.filters.searchOptions.placeholder}></b-list-search-bar>
+            <b-list-search-bar @keydown=${this.onKeyDown} 
+                title="Press '/' to focus"
+                placeholder=${this.filters.searchOptions.placeholder}></b-list-search-bar>
             `}
 
             ${!this.layouts?'':html`
@@ -136,7 +156,9 @@ customElements.define('b-list-toolbar', class extends LitElement{
     }
 
     _termChanged(term){
-        if( term == this.filters.term ) return
+        // same term or both falsy
+        if( term == this.filters.term 
+        || (!term && !this.filters.term) ) return
 
         this.filters.term = term
 

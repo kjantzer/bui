@@ -70,7 +70,8 @@ main input {
 }
 
 :host([chip]) #value > span {
-	background: rgba(0,0,0,.1);
+	background: var(--select-field-chip-bgd, rgba(0,0,0,.1));
+	color: var(--select-field-chip-text-color, inherit);
     margin: .1em;
     padding: .15em .5em;
     border-radius: 20px;
@@ -232,12 +233,18 @@ class SelectFieldElement extends HTMLElement {
 			opts = [] // clear options until promise resolves
 		}
 
+		if( opts.toOptions )
+			opts = Array.from(opts.toOptions())
+		else if( opts.toMenu )
+			opts = Array.from(opts.toMenu())
+
+		// make sure `toOptions/toMenu` formatted values correctly
 		if( Array.isArray(opts) )
 			opts = opts.map(o=>{
 				if( typeof o != 'object' )
 					return {label: o, val: o}
 				else
-					return Object.assign({}, o, {val: String(o.val)})
+					return Object.assign({}, o, {val: String(o.val!==undefined?o.val:o)})
 			})
 		else if( typeof opts == 'object' ){
 			let _opts = []
@@ -282,7 +289,7 @@ class SelectFieldElement extends HTMLElement {
 			this._selected.push(m.val)
 			
 			if(m.val || this.showEmpty)
-				labels += `<span part="value" value="${m.val}">${m.label}</span>`
+				labels += `<span part="value" value="${m.val}">${m.selectLabel||m.label}</span>`
 				
 		})
 
@@ -388,6 +395,7 @@ class SelectFieldElement extends HTMLElement {
 		
 		let menu = this.options
 		let popoverOpts = {
+			className: '',
 			align: this.getAttribute('menu-align') || 'bottom',
 			maxHeight: this.getAttribute('menu-max-height') || 'auto',
 			maxWidth: this.getAttribute('menu-max-width') || 'none',
@@ -402,7 +410,19 @@ class SelectFieldElement extends HTMLElement {
 		
 		this.openMenu.el.setAttribute('select-field', this.className)
 
-		let val = await this.openMenu.popover(this.$('main'), popoverOpts)
+		let target = this.$('main')
+
+		// looks better/more considtent if menu is same with as select-field
+		if( !popoverOpts.width
+		&& this.parentElement.tagName == 'FORM-CONTROL'
+		&& this.parentElement.hasAttribute('material')
+		&& this.parentElement.getAttribute('material') != 'hover' ){
+			target = this.parentElement
+			popoverOpts.width = target.clientWidth+'px'
+			popoverOpts.className += ' no-arrow'
+		}
+
+		let val = await this.openMenu.popover(target, popoverOpts)
 		
 		this.openMenu = null
 		this.focused = false

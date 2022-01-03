@@ -20,7 +20,7 @@ window.docsStr = docsStr
 customElements.define('demo-overview', class extends LitElement{
 
     static get title(){ return 'Overview' }
-    static get icon(){ return 'info-circled' }
+    static get icon(){ return 'info' }
     static get path(){ return 'overview(/:view(/*))' }
 
     static get styles(){return css`
@@ -70,7 +70,7 @@ customElements.define('demo-overview', class extends LitElement{
             padding-bottom: 3%;
         }
 
-        @media (max-width: 699px) {
+        @media (max-width: 599px) {
             header {
                 font-size: 1em;
             }
@@ -91,7 +91,7 @@ customElements.define('demo-overview', class extends LitElement{
             padding: var(--view-gutter);
         }
 
-        @media (min-width: 700px) {
+        @media (min-width: 600px) {
             header [xl] {
                 font-size: 3em;
             }

@@ -7,7 +7,7 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
         :host {
             display: block;
             position:relative;
-            width: 200px;
+            width: var(--width, 200px);
             /* min-height: 300px; */
             max-height: 70vh;
         }
@@ -72,7 +72,10 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
 
     firstUpdated(){
 
-        this._values = this.filter.value || []
+        this._values = this._formatValues(this.filter.value) || []
+
+        if( this.opts.width )
+            this.style.setProperty('--width', this.opts.width)
 
         let [menu, selected] = this.menuForValues
         this.valueMenu = new Menu(menu, {
@@ -135,20 +138,39 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
     get value(){
 
         if( !this._values )
-            return this.filter.value
+            return this._formatValues(this.filter.value)
 
         return this._values.map(d=>{
-            return {label: d.label, val: d.val}
+            d = Object.assign({}, d)
+            delete d.view // do not save custom element/views
+            return d
         })
     }
 
     set value(val){
-        this._values = (val||[]).map(o=>Object.assign({}, o))
+
+        this._values = this._formatValues(val)
 
         if( this.valueMenu ){
             let [menu, selected] = this.menuForValues
             this.valueMenu.updateMenu(menu, selected)
         }
+    }
+
+    _formatValues(val){
+        // value should always be an array of values
+        if( val && !Array.isArray(val) )
+            val = [val]
+        
+        return (val||[]).map(o=>{
+
+            // if a string is given, convert to object
+            if( !o.val )
+                o = {label: o, val: o}
+            
+            // make sure we dont update the original object
+            return Object.assign({}, o)
+        })
     }
 
     get label(){

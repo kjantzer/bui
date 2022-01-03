@@ -56,6 +56,10 @@ customElements.define('b-datepicker', class extends LitElement{
             
             if( typeof val == 'string' )
                 val = val.split(',')
+            else if( val.format ){
+                val = val.format('MM/DD/YYYY')
+                val = [val, val]
+            }
             else
                 val = [val.start||val, val.end||val]
 
@@ -71,10 +75,14 @@ customElements.define('b-datepicker', class extends LitElement{
     }
     
     get value(){
+        let dbFormat = 'YYYY-MM-DD'
         if( this.range )
-            return {start: this.selectedRange.start, end: this.selectedRange.end}
+            return {
+                start: this.selectedRange.start.format(dbFormat),
+                end: this.selectedRange.end.format(dbFormat)
+            }
         else
-            return this.selectedRange.start
+            return this.selectedRange.start.format(dbFormat)
     }
 
     get label(){
@@ -121,6 +129,9 @@ customElements.define('b-datepicker', class extends LitElement{
     scrollToDate(date='start', location='center'){
 
         if( !this.monthsList ) return
+
+        if( date == 'today' )
+            date = dayjs()
 
         if( ['start', 'end'].includes(date) ) 
             date = this.selectedRange[date]

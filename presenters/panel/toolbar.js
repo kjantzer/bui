@@ -4,19 +4,21 @@ class PanelToolbar extends LitElement {
 
     static get properties(){return {
         title: {type: String},
-        look: {type: String, reflect: true}
+        look: {type: String, reflect: true},
+        closebtn: {type: String, reflect: true}
     }}
 
     constructor(){
         super()
         this.title = ''
         this.look = ''
+        this.closebtn = 'cancel-1'
     }
 
     static get styles(){return css`
         :host {
             display: grid;
-            grid-template-columns: 1fr max-content 1fr;
+            grid-template-columns: 1fr auto 1fr;
             /* background: linear-gradient(to bottom, #fff, #f5f5f5); */
             padding: .5em;
             padding: .4em .5em .3em;
@@ -26,11 +28,17 @@ class PanelToolbar extends LitElement {
             border-radius: 4px 4px 0 0;
             min-height: 40px;
             grid-column: 1/-1; /* full width */
+            min-width: 0;
+            gap: .25rem;
+        }
+
+        :host ::slotted(*) {
+            app-region: none;
         }
 
         :host([hidden]) { display: none; }
 
-        /* @media (max-width: 699px) {
+        /* @media (max-width: 599px) {
             .middle {
                 display: none;
             }
@@ -51,12 +59,17 @@ class PanelToolbar extends LitElement {
             width: 100%;
         }
 
+        .middle {
+            overflow: hidden;
+            min-width: 20%;
+        }
+
         :host([overlay]) > div * {
             pointer-events: initial;
         }
 
         :host([shadow]) {
-            box-shadow: rgba(0,0,0,.2) 0 0 6px;
+            box-shadow: var(--theme-shadow) 0 0 6px;
         }
 
         :host([look="white"]) {
@@ -82,17 +95,42 @@ class PanelToolbar extends LitElement {
             --color: #ddd
         }
 
-        slot[name="title"] {
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
         :host([notitle]) slot[name="title"] {
             display: none;
         }
 
         .right {
             text-align: right;
+        }
+
+        [part="close-btn"][icon="chevron_right"] {
+            width: 1.8rem;
+            height: 1.8rem;
+            flex-shrink: 0;
+            transform: rotate(var(--b-panel-toolbar-close-btn-rotation, 0deg));
+        }
+
+        [part="close-btn"][icon="chevron_right"]::part(main) {
+            padding-top: 0;
+            padding-bottom: 0;
+
+        }
+
+        [part="close-btn"][icon="chevron_right"]::part(icon) {
+            --size: 1.6rem;
+        }
+
+        /* hide on small devices in landscape (allow for more space for the content) */ 
+        @media
+        screen and (orientation:landscape) and (max-width:999px) and (max-height:599px)
+        {
+            :host {
+                min-height: 0;
+                padding: 0;
+                height: 0;
+                visibility: hidden;
+                overflow: hidden !important;
+            }
         }
 
         @media print {
@@ -103,17 +141,28 @@ class PanelToolbar extends LitElement {
 
     `}
 
+    get closeBtnIcon(){
+        if( this.closebtn === 'arrow' ) return 'chevron_right'
+        return this.closebtn
+    }
+
     render(){return html`
         <div class="left">
             <slot name="close-btn">
-                <b-btn outline icon="cancel-1" title="Right+click for quick jump menu"
-                    @click=${this.close} @contextmenu=${this.quickJump}></b-btn>
+                <b-btn ?outline=${this.closebtn!='arrow'} 
+                    part="close-btn"
+                    ?clear=${this.closebtn=='arrow'}
+                    icon="${this.closeBtnIcon}" 
+                    @click=${this.close}></b-btn>
             </slot>
             <slot name="left"></slot>
         </div>
         <div class="middle">
-            <slot name="title">${this.title}</slot>
-            <slot name="middle"></slot>
+            <slot name="middle">
+                <slot name="title:before"></slot>
+                <slot name="title"><b-text sm clip>${this.title}</b-text></slot>
+                <slot name="title:after"></slot>
+            </slot>
         </div>
         <div class="right">
             <slot name="right"></slot>
@@ -122,15 +171,6 @@ class PanelToolbar extends LitElement {
 
     close(){
         this.panel&&this.panel.close()
-    }
-
-    quickJump(e){
-
-        if( !this.panel || this.panel.opts.quickJump !== true )
-            return
-
-        e.preventDefault();
-        this.panel&&this.panel.panelController&&this.panel.panelController.quickJump(e.target)
     }
 }
 

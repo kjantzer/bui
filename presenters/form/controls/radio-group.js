@@ -16,6 +16,10 @@ customElements.define('radio-group', class extends LitElement{
 			vertical-align: middle;
 		}
 
+		:host([hidden]) {
+			display: none;
+		}
+
 		:host(:not([slot="control"])[focused]) {
 			box-shadow: 0 0 0 2px var(--theme);
 			transition: 200ms boxShadow;
@@ -95,7 +99,7 @@ customElements.define('radio-group', class extends LitElement{
 		}
 
 		:host([segment="theme"]) ::slotted(radio-btn[active]) {
-			background-color: var(--radio-segment-active-bgd, var(--theme-theme, #2196F3));
+			background-color: var(--radio-segment-active-bgd, var(--theme, #2196F3));
 			color: var(--radio-segment-active-color, var(--theme-bgd, #fff));
 		}
 
@@ -162,6 +166,7 @@ customElements.define('radio-group', class extends LitElement{
 			this.setAttribute('tabindex', '0')
 
 		this.radios = Array.from(this.querySelectorAll('radio-btn'))
+		this.value = this.value
 	}
 	
 	nav(dir=1){
@@ -186,7 +191,7 @@ customElements.define('radio-group', class extends LitElement{
 		else
 			this.value = e.target.value
 		
-		this.setAttribute('value', this.value)
+		this.setAttribute('value', this.value||'')
 		e.stopPropagation&&e.stopPropagation()
 		
 		var event = new CustomEvent('change', {
@@ -206,7 +211,7 @@ customElements.define('radio-group', class extends LitElement{
 	
 	get value(){
 		let radio = this.active
-		return radio ? radio.value : null
+		return radio ? radio.value : this.getAttribute('value')
 	}
 	
 	set value(val){
@@ -216,7 +221,7 @@ customElements.define('radio-group', class extends LitElement{
 			else
 				el.active=false
 		})
-		this.setAttribute('value', val)
+		this.setAttribute('value', val||'')
 	}
 	
 	get disabled(){ return this.hasAttribute('disabled') }

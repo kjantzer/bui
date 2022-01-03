@@ -98,7 +98,7 @@ customElements.define('b-tabs', class extends LitElement {
             --menuItemPadding: .75em 1em;
             --menuItemRadius: 4px;
             --inactiveColor: var(--b-tabs-inactive-color, rgba(0,0,0,.4));
-            --activeColor:  var(--b-tabs-active-color, inherit);
+            --activeColor:  var(--b-tabs-active-color, var(--theme));
             --border-color: var(--b-tabs-border-color, rgba(0, 0, 0, 0.1));
             --contentBgd: none;
             --contentShadow: none;
@@ -110,14 +110,39 @@ customElements.define('b-tabs', class extends LitElement {
             font-size: var(--menuFontSize);
             min-width: 0;
             overflow: hidden;
+            overflow-y: auto;
             background: var(--menuBgd);
+            order: var(--tab-bar-order, 0);
         }
+
+        slot {
+            order: 2;
+        }
+
+        .tab-bar::-webkit-scrollbar { display: none; width: 0 !important; height: 0 !important; }
 
         .tab-bar-item {
             padding: var(--menuItemPadding);
             cursor: pointer;
             box-sizing: border-box;
             color: var(--inactiveColor);
+        }
+
+        
+        :host([layout="top"]) .tab-bar,
+        :host([layout="bottom"]) .tab-bar {
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        :host([layout="top"]) .tab-bar-item,
+        :host([layout="bottom"]) .tab-bar-item {
+            white-space: nowrap;
+        }
+
+        :host([layout="left"]) .tab-bar,
+        :host([layout="right"]) .tab-bar{
+            overflow-y: auto;
         }
 
         .tab-bar-item[active] {
@@ -147,9 +172,14 @@ customElements.define('b-tabs', class extends LitElement {
             flex-direction: column;
         }
 
-        :host([layout="bottom"]) .tab-bar,
-        :host([layout="right"]) .tab-bar {
-            order: 2;
+        :host([layout="top"]),
+        :host([layout="left"]) {
+            --tab-bar-order: 1;
+        }
+
+        :host([layout="bottom"]),
+        :host([layout="right"]) {
+            --tab-bar-order: 3;
         }
 
         :host([layout="top"]) .tab-bar { border-bottom: solid 1px var(--border-color); }
@@ -230,7 +260,7 @@ customElements.define('b-tabs', class extends LitElement {
         }
 
         .content::slotted([hidden]) {
-            display: none !important;
+            display: none;
         }
         
         /*
@@ -314,10 +344,15 @@ customElements.define('b-tabs', class extends LitElement {
                 this.__customTabBar.views = this.views
                 this.__customTabBar.onMenuClick = this.menuClick.bind(this)
                 this.__customTabBar.classList.add('tab-bar')
+                this.__customTabBar.setAttribute('layout', this.layout)
                 this.__customTabBar.part = 'tab-bar'
                 this.__customTabBar.innerHTML = /*html*/`
-                    <span slot="menu:before"><slot name="menu:before"></slot></span>
-                    <span slot="menu:after"><slot name="menu:after"></slot></span>
+                    <slot name="menu:before" slot="before"></slot>
+                    <slot name="menu:after" slot="after"></slot>
+                    ${this.views.map(v=>/*html*/`
+                        <slot name="menu:before:${v.id}" slot="before:${v.id}"></slot>
+                        <slot name="menu:after:${v.id}" slot="after:${v.id}"></slot>
+                    `)}
                 `
             }else{
                 this.__customTabBar.update()
@@ -342,7 +377,7 @@ customElements.define('b-tabs', class extends LitElement {
 
     render(){return html`
         ${this.renderTabBar()}
-        <slot class="content"></slot>
+        <slot class="content" part="content"></slot>
         <slot name="empty">
             <b-empty-state ?hidden=${this.views.size>0}>No views</b-empty-state>
         </slot>

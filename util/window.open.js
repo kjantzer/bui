@@ -5,6 +5,8 @@ const windowOpen = window.open
 // better window opening for chrome installed apps
 window.open = function(url, windowName, windowFeatures={}){
 
+    return new Promise(resolve=>{
+
     const PWA = device.isChromeInstalledApp && (url[0]=='/' || url.includes(location.host))
     
     windowFeatures = Object.assign({
@@ -31,6 +33,8 @@ window.open = function(url, windowName, windowFeatures={}){
     
     // timeout to let 'event' clear so that installed app window will be used and not a new chrome browser tab
     setTimeout(()=>{
-        windowOpen(url, windowName, winFeatures)
+        resolve(windowOpen(url, windowName, winFeatures))
+    })
+
     })
 }

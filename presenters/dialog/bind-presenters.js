@@ -9,6 +9,9 @@
 import Notif from '../notif'
 import Panel from '../panel'
 import Popover from '../popover'
+import device from '../../util/device'
+
+export {Notif, Panel, Popover}
 
 export default function bindPresenters(Dialog){
     Object.assign(Dialog.prototype, presenters)
@@ -18,17 +21,22 @@ const presenters = {
 
 	popover(target, opts={}){
 
-		if( opts.adjustForMobile && device.is_mobile )
+		if( opts.adjustForMobile && device.isMobile )
 			return this.modal((typeof opts.adjustForMobile == 'object' ? opts.adjustForMobile : {}))
 		
-		if( target.currentTarget )
-			target = target.currentTarget
-		
+		// legacy jQuery support
+		if( target.originalEvent )
+			target = target.originalEvent.target || target.originalEvent
+
 		let onClose = opts.onClose
 		opts.onClose = ()=>{
 			onClose&&onClose()
 			this.resolve(false)
 		}
+
+		opts.className = opts.className || ''
+		opts.className += ' '+this.color // "inverse" color will work here
+		opts.color = this.color // TODO: support this in popover
 		
         if( this.onKeydown )
 		    opts.onKeydown = this.onKeydown.bind(this)
@@ -44,7 +52,18 @@ const presenters = {
 	},
 	
 	modal(opts={}, mobileOpts){
-		if( mobileOpts && device.isMobile )
+		mobileOpts = Object.assign({
+			anchor: 'top',
+			width: device.isTablet ? 'auto' : '100%',
+			height: 'auto',
+			type: ''
+		}, mobileOpts)
+
+		// special anchor change for Chrome OS Tablets when dialog has prompts
+		if( !opts.anchor && this.prompts && device.isChromeOS && device.isTablet )
+			opts.anchor = device.isLandscape ? 'center-left' : 'top'
+
+		if( device.isMobile && device.isSmallDevice )
 			return this._panel(mobileOpts)
 		else
 			return this._panel(opts)
@@ -53,6 +72,14 @@ const presenters = {
 	actionsheet(opts={}){
 		return this._panel(Object.assign({
 			type: 'actionsheet'
+		}, opts))
+	},
+
+	drawer(opts){
+		return this._panel(Object.assign({
+			type: '',
+			width: 'auto',
+			animation: '',
 		}, opts))
 	},
 
@@ -81,6 +108,7 @@ const presenters = {
 		opts = Object.assign({
 			autoClose: this.btns.length>0 ? false : 3000,
 			closeOnClick: this.btns.length==0,
+			width: 'auto',
 			onClose: ()=>{ this.resolve(false) }
 		}, opts)
 		

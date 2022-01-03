@@ -6,6 +6,9 @@ export default class HistoryState {
 
         this.parent = parent
 
+        if( !props )
+            props = {}
+
         if( !props.path )
             props.path = ''
 

@@ -4,7 +4,12 @@
 // can be overriden in the second argument.
 const mode = require('./math').mode
 
-module.exports = (strData, {strDelimiter=',', hasHeader=true}={})=>{
+function csvToArray(strData, {
+    strDelimiter=',',
+    hasHeader=true,
+    normalizeHeader=false,
+    formatHeader=null,
+}={}){
 
     // Create a regular expression to parse the CSV values.
     var objPattern = new RegExp(
@@ -82,7 +87,7 @@ module.exports = (strData, {strDelimiter=',', hasHeader=true}={})=>{
 
     // filter out comments
     arrData = arrData.filter(row=>{
-        if( row && row[0][0] == '#' ){
+        if( row && row[0] && row[0][0] == '#' ){
             comments.push(row)
             return false
         }
@@ -112,6 +117,12 @@ module.exports = (strData, {strDelimiter=',', hasHeader=true}={})=>{
 
     if( hasHeader ){
         let header = arrData.shift()
+
+        if( normalizeHeader )
+            header = header.map(str=>_normalizeHeader(str))
+
+        if( formatHeader )
+            header = formatHeader(header)
     
         arrData = arrData.map(line=>{
             let obj = {};
@@ -127,3 +138,15 @@ module.exports = (strData, {strDelimiter=',', hasHeader=true}={})=>{
     // Return the parsed data.
     return( arrData );
 }
+
+module.exports = csvToArray
+
+function _normalizeHeader(str){
+    return str.toLowerCase()
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s|-/g, '_')
+    .replace(/[\/\[\]\(\)]/g, '')
+    .replace(/_{2,}/g, '_')
+}
+
+csvToArray.normalizeHeader = _normalizeHeader

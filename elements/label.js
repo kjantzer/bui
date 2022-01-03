@@ -53,6 +53,10 @@ export default class Label extends LitElement {
             text-transform: none;
             background: var(--bgd);
             color: var(--color);
+
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
         }
 
         :host([xs]) { font-size: .6rem; line-height: .6rem; }
@@ -68,6 +72,16 @@ export default class Label extends LitElement {
             --color: var(--bgd);
         }
 
+        :host([outline="theme-gradient"]) {
+            border-color: var(--theme);
+            background: var(--theme-gradient);
+            color: var(--theme-text, #000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; 
+            -moz-background-clip: text;
+            -moz-text-fill-color: transparent;
+        }
+
         :host([badge]) {
             --radius: 30px;
             /* padding-left: .6em;
@@ -77,6 +91,7 @@ export default class Label extends LitElement {
             min-width: .3em;
             text-align: center;
             min-height: 1em;
+            line-height: 0 !important;
         }
 
         :host([dot]) {
@@ -108,6 +123,7 @@ export default class Label extends LitElement {
         }
 
         :host([filled="theme"]), :host([badge="theme"]) { --bgd: var(--theme); }
+        :host([filled="theme-gradient"]), :host([badge="theme-gradient"]) { --bgd: var(--theme-gradient); }
         :host([filled="blue"]), :host([badge="blue"]) { --bgd: var(--blue); }
         :host([filled="red"]), :host([badge="red"]) { --bgd: var(--red); }
         :host([filled="orange"]), :host([badge="orange"]) { --bgd: var(--orange); }
@@ -129,6 +145,7 @@ export default class Label extends LitElement {
         :host([outline="black"]) { --bgd: var(--theme-text,#333); }
         :host([outline="gray"]) { --bgd: var(--theme-text-accent, #ddd); }
         :host([outline="theme"]) { --bgd: var(--theme); }
+        :host([outline="theme-gradient"]) { --bgd: var(--theme); }
         :host([outline="blue"]) { --bgd: var(--blue); }
         :host([outline="red"]) { --bgd: var(--red); }
         :host([outline="orange"]) { --bgd: var(--orange); }

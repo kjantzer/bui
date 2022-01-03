@@ -3,7 +3,7 @@
     a collection of items as a set of controls. Buttons and actions
     are taken that need access to the model which has been set at the top
     level of the html item. This extension makes it easer to access 
-    the model and top parent target
+    the model, top parent target, and clicked target
 
     ex:
     ```js
@@ -64,6 +64,8 @@ function getEventTargetModel(){
     let target = this.currentTarget
     let model = target && target.model
 
+    this.clickTarget = target
+
     while(target&&!model){
         target = target.parentElement
         model = target&&target.model
@@ -76,3 +78,22 @@ function getEventTargetModel(){
 
     return model
 }
+
+
+const clickTarget = {
+
+    set: function(val){
+        this.__clickTarget = val
+    },
+    
+    get: function(){
+        if(this.__clickTarget)
+            return this.__clickTarget
+
+        getEventTargetModel.call(this)
+        return this.__clickTarget
+    }
+}
+
+Object.defineProperty(window.MouseEvent.prototype, 'clickTarget', clickTarget)
+Object.defineProperty(window.CustomEvent.prototype, 'clickTarget', clickTarget)

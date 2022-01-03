@@ -28,6 +28,22 @@ module.exports = class View {
         })
 	}
 
+	emit(opts){
+		let emittedTo = []
+
+		this.clients.forEach((data, client)=>{
+
+			// if requested certain client IDs, make sure this client matches
+			if( opts.clients && !opts.clients.includes(client.id) )
+				return
+
+			client.emit('view:emit', this.name, opts)
+			emittedTo.push(client.id)
+		})
+		
+		return {emittedTo}
+	}
+
 	get clientData(){
 		let syncData = []
 		this.clients.forEach((data, socket)=>{

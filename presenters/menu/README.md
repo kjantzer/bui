@@ -99,6 +99,7 @@ search: {
     url: 'my-search?term=', // term will be appended to end
     url: term=>'my-search?term='+term, // custom function supported
 
+    input: true, // disable input (use `matching` to presearch)
     showAll: true, // should all results be displayed when nothing is searched
     hideUnselected: false,
     placeholder: 'Search',
@@ -181,4 +182,58 @@ new Menu(menuItems, {handler:myClass}).popover(target)
 .then(selected=>{
     console.log(selected.label) // Item 3
 })
+
+// handler with args
+new Menu(menuItems, {handler:[myClass, 'arg1', 'arg2']}).popover(target)
+// long form
+new Menu(menuItems, {handler:myClass, handlerArgs: ['arg1', 'arg2']}).popover(target)
 ```
+
+## Utilities
+
+### `toMenu()`
+
+```js
+// options
+toMenu.call(arr, {
+    before: [],
+    after: [],
+    unset: false
+}, d=>{
+    // optional function to translate each item in array
+    // a default translation will be used if left out
+    return {label: d.label, val: d.val}
+})
+```
+
+Example
+
+```js
+import {toMenu} from 'bui/presenters/menu'
+
+toMenu.call(['one', 'two', 'three'], {unset: true})
+
+// result:
+[
+    {
+        "label": "Uset",
+        "icon": "erase",
+        "val": ""
+    },
+    "divider",
+    {
+        "label": "one",
+        "val": "one"
+    },
+    {
+        "label": "two",
+        "val": "two"
+    },
+    {
+        "label": "three",
+        "val": "three"
+    }
+]
+```
+
+

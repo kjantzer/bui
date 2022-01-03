@@ -4,9 +4,11 @@ import Popover from '../../popover'
 import titleize from '../../../util/titleize'
 import Fuse from 'fuse.js'
 import Emitter from 'component-emitter'
-import FilterViewDate from '../toolbar/filter-view-date'
-import FilterViewInput from '../toolbar/filter-view-input'
-import FilterViewSlider from '../toolbar/filter-view-slider'
+
+import Presets from './filter-presets'
+import FilterViewDate from '../toolbar/filter-view/date'
+import FilterViewInput from '../toolbar/filter-view/input'
+import FilterViewSlider from '../toolbar/filter-view/slider'
 import FilterViewSearch from '../toolbar/filter-view/search'
 // import FilterViewToken from '../toolbar/filter-view/token'
 
@@ -37,20 +39,28 @@ const defaultFilterby = (model, val, key) => {
     if( Array.isArray(val) )
         return val.includes(model.get(key))
     else
-        return val == model.get(key)
+        return val == (model.get ? model.get(key) : model[key])
 };
 
 export default class Filters extends Map {
 
     get _storeKey(){ return 'b-list:'+this.key+':filters' }
 
-    reset(values={}){
-        this.queuing = false
+    reset(values={}, {stopQueuing=true, silent=false}={}){
+        this.queuedChanges = null
+        
+        if( stopQueuing )
+            this.queuing = false
+
         let resetData = {}
         this.map(filter=>{
             resetData[filter.key] = values[filter.key] !== undefined ? values[filter.key] : filter.defaultVal
         })
-        this.value(resetData)
+
+        this.value(resetData, {silent})
+
+        if( silent !== true )
+            this.emit('reset')
     }
 
     toString(){
@@ -63,12 +73,18 @@ export default class Filters extends Map {
         return active.join(' | ')
     }
 
+    get length(){ return Object.keys(this.value()).length}
+
     // alias that makes more sense when working programically
-    update(filters){
-        this.value(filters)
+    update(filters, opts){
+        this.value(filters, opts)
     }
 
-    value(key, val){
+    get areApplied(){
+        return Object.keys(this.value()).length > 0
+    }
+
+    value(key, val, opts={}){
         // first time getting value, get it from local storage
         if( this.__value === undefined ){
             this.__value = this.key && JSON.parse(localStorage.getItem(this._storeKey)) || {}
@@ -82,6 +98,9 @@ export default class Filters extends Map {
             // may be setting more than one value
             let changes = typeof key == 'object' ? key : {[key]:val}
             let didChange = []
+
+            if( typeof key == 'object' )
+                opts = val || {}
 
             for( let k in changes){
                 
@@ -115,15 +134,17 @@ export default class Filters extends Map {
                     filter.emit('change', this.value(k))
                 })
 
-                if( this.queuing )
+                if( this.queuing ){
                     this.queuedChanges = changes
-                else
+                    if( opts.silent !== true )
+                        this.emit('change-queue', changes)
+                }else if( opts.silent !== true )
                     this.emit('change', changes)
             }
 
         // GETTING
         }else{
-            return key ? this.__value[key] : this.__value
+            return key ? this.__value[key] : Object.assign({}, this.__value)
         }
     }
 
@@ -180,6 +201,9 @@ export default class Filters extends Map {
         this.forEach(filter=>delete filter.parent)
         this.clear()
 
+        let options = {}
+        let presets = []
+
         for( let key in filters ){
 
             if( !filters[key] )
@@ -190,10 +214,29 @@ export default class Filters extends Map {
                 continue
             }
 
+            if( key == 'presets' ){
+                presets = filters[key]
+                continue;
+            }
+
+            if( key == 'options' ){
+                options = filters[key]
+                continue;
+            }
+
             let filter = new Filter(key, filters[key])
             filter.parent = this
             this.set(key, filter)
         }
+
+        this.opts = Object.assign({
+            overflowThreshold: 8,
+            overflowThresholdMobile: 3,
+            presets: presets === false ? false : true
+        }, options)
+
+        if( presets )
+            this.presets.set(presets)
 
         this.lastChanged = new Date().getTime()
     }
@@ -202,6 +245,12 @@ export default class Filters extends Map {
         let resp = []
         this.forEach((v, key)=>resp.push(fn(v, key)))
         return resp
+    }
+
+    get presets(){
+        this.__presets = this.__presets || new Presets()
+        this.__presets.filters = this
+        return this.__presets
     }
 
     set searchOptions(opts){
@@ -240,7 +289,7 @@ export default class Filters extends Map {
             })
 
             if( !this.term 
-            || (!searchOptions.data || searchOptions.data === 'db' )
+            || (!searchOptions.data || searchOptions.data === 'db' || searchOptions.db )
             || this.term.length < searchOptions.minMatchCharLength )
                 return resolve(data)
 
@@ -317,7 +366,7 @@ export class Filter {
         values = typeof values == 'function' ? values.call(this.parent.list, this) : values
 
         values = values.map(v=>{
-            if( typeof v == 'string' && !['divider'].includes(v) )
+            if( typeof v == 'string' && !['divider', '-'].includes(v) )
                 v = {label: v, val: v}
 
             // make "unset" values uniform
@@ -424,17 +473,23 @@ export class Filter {
             return false
         })
 
-        return matchedVal 
-        ? matchedVal.map(f=>{
-            return [f.selection, f.toolbarLabel||f.label].filter(s=>s).join(' ')
-        }).join(', ')
-        : val
+        if( matchedVal&&matchedVal.length>0 )
+            return matchedVal.map(f=>{
+                return [f.selection, f.toolbarLabel||f.label].filter(s=>s).join(' ')
+            }).join(', ')
+        
+        if( Array.isArray(val) )
+            return this.value.map(v=>{
+                return [v.selection, v.val].filter(s=>s).join(' ')
+            }).join(', ')
+
+        return val
     }
 
-    async showMenu(el){
+    async showMenu(el, opts={}){
 
         if( this.isCustomView  )
-            return this.showCustomView(el)
+            return this.showCustomView(el, opts)
 
         if( this.attrs.onFirstLoad ){
             el.spin = true
@@ -447,12 +502,12 @@ export class Filter {
             selected: this.value,
             multiple: this.isMulti,
             width: this.attrs.width||null
-        }).popover(el, {
+        }).popover(el, Object.assign({
             overflowBoundry: this.attrs.overflowBoundry || 'scrollParent',
             maxHeight: this.attrs.maxHeight || '60vh',
             align: this.attrs.align || 'bottom',
             adjustForMobile: true
-        })
+        }, opts))
 
         let oldVal = this.value
 
@@ -492,7 +547,7 @@ export class Filter {
         return this._customView
     }
 
-    async showCustomView(el){
+    async showCustomView(el, opts){
 
         if( !this.customView )
             return Dialog.warn({msg:`${this.key}: unsupported view`}).popover(el)
@@ -507,7 +562,7 @@ export class Filter {
         }
         
         // TODO: support `adjustForMobile`
-        new Popover(el, this.customView, {
+        new Popover(el, this.customView, Object.assign({
             width: this.attrs.width||null,
             maxHeight: this.attrs.maxHeight || '60vh',
             align: this.attrs.align || 'bottom',
@@ -519,7 +574,7 @@ export class Filter {
                     this.customView.onKeydown(...args)
                 }
             }
-        })
+        }, opts))
     }
 
     filterData(data){

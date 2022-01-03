@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
 import './spinner'
 import './icon'
+import {mediaQuery} from '../util/mediaQueries'
 
 export default class BtnElement extends LitElement {
 
@@ -8,6 +9,7 @@ export default class BtnElement extends LitElement {
         href: {type: String, reflect: true},
         value: {type: String, reflect: true},
         icon: { type: String },
+        tooltip: {type: String},
         spin: {type: Boolean, reflect: true, attribute: 'spin'}
     }}
 
@@ -51,8 +53,8 @@ export default class BtnElement extends LitElement {
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
-            font-size: .9rem;
-            line-height: 1rem;
+            font-size: var(--b-btn-font-size, .9rem);
+            line-height: var(--b-btn-line-height, 1rem);
             font-weight: bold;
             font-family: var(--b-btn-font);
             outline: none;
@@ -74,6 +76,11 @@ export default class BtnElement extends LitElement {
             :host {
                 display: none;
             }
+        }
+
+        :host([disabled]) {
+            pointer-events: none !important;
+            opacity: .5;
         }
 
         :host([hidden]) {
@@ -103,6 +110,7 @@ export default class BtnElement extends LitElement {
         main > span {
             display: inline-flex;
             justify-content: center;
+            line-height: 0;
         }
 
         slot {
@@ -138,10 +146,9 @@ export default class BtnElement extends LitElement {
             }
         }
 
-        /* b-icon,
-        ::slotted(b-icon) {
-            vertical-align: bottom;
-        } */
+        b-icon {
+            --size: 1em;
+        }
 
         b-spinner {
             opacity: 0;
@@ -219,25 +226,29 @@ export default class BtnElement extends LitElement {
             justify-content: center
         }
 
-        :host(:empty) {
-            --padding: .4em .5em;
+        :host(:empty),
+        :host([empty]) {
+            --padding: .4em .4em;
         }
 
-        :host(:empty) main b-icon {
+        :host(:empty) main b-icon ,
+        :host([empty]) main b-icon {
             margin-left: 0;
             margin-right: 0;
         }
 
         /* offset play icon to make it appear more centered */
-        :host(:empty) main b-icon[name="play"] {
+        :host(:empty) main b-icon[name="play"],
+        :host([empty]) main b-icon[name="play"] {
 			margin: 0 -.1em 0 .1em;
         }
 
-        :host([color^="primary"])  { --color: var(--color-primary); }
+        :host([color^="primary"])  { --color: var(--theme); }
         :host([color^="theme"])  { --color: var(--theme); }
-        :host([color^="black"])  { --color: var(--black); }
-        :host([color^="white"])  { --color: var(--text-bgd-accent2, #ddd); --textColor: var(--theme-text, #111); }
+        :host([color^="black"])  { --color: var(--theme-text-accent, #222); --textColor: var(--theme-bgd, #fff); }
+        :host([color^="white"])  { --color: var(--theme-bgd-accent2, #ddd); --textColor: var(--theme-text, #111); }
         :host([color^="orange"]) { --color: var(--orange); }
+        :host([color^="deep-orange"]) { --color: var(--deep-orange); }
         :host([color^="blue"])   { --color: var(--blue); }
         :host([color^="red"])    { --color: var(--red); }
         :host([color^="gray"])   { --color: var(--gray); }
@@ -295,6 +306,24 @@ export default class BtnElement extends LitElement {
             font-weight: normal;
         }
 
+        @media (max-width: 599px) {
+            :host([icon-only="mobile"]) slot.label {
+                display: none;
+            }
+        }
+
+        ${mediaQuery('sm', css`
+            :host([icon-only="sm"]) slot.label {
+                display: none;
+            }
+        `)}
+
+        ${mediaQuery('md', css`
+            :host([icon-only="md"]) slot.label {
+                display: none;
+            }
+        `)}
+
         @media (hover){
         :host([text]:hover),
         :host([clear]:hover) {
@@ -311,8 +340,17 @@ export default class BtnElement extends LitElement {
         :host([lg]) { font-size: 1.2rem; }
         :host([xl]) { font-size: 1.4rem; }
 
+        :host([fab][color="theme-gradient"]) {
+            background: var(--theme-gradient, var(--bgdColor))
+        }
+
+        :host([fab][color="theme-gradient"]) main {
+            border: none;
+        }
+
         /* floating action btn */
         :host([fab]) {
+            font-weight: normal;
             position: absolute;
             z-index: 100;
             box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2),
@@ -325,6 +363,10 @@ export default class BtnElement extends LitElement {
             height: 2em;
             --radius: 2em;
             overflow: hidden;
+        }
+
+        :host([fab][pill]) {
+            width: auto;
         }
 
         :host([fab]) b-spinner {
@@ -371,18 +413,26 @@ export default class BtnElement extends LitElement {
                     ${this.icon?html`<b-icon part="icon" name="${this.icon}"></b-icon>`:''}
                 </slot>
             </span>
-            <slot></slot>
+            <slot class="label"></slot>
+            ${this.tooltip?html`
+                <b-tooltip label>${this.tooltip}</b-tooltip>
+            `:''}
         </main>
     `}
 
 	constructor(){
 		super()
         this.icon = ''
+        this.tooltip = ''
         this.spin = false
 	}
 
     firstUpdated(){
         this.addEventListener('click', ()=>{
+
+            if( window.soundFX && soundFX.playIfMobile )
+                soundFX.playIfMobile('tinyTap', 0.3)
+
             if( this.href )
                 if( this.getAttribute('target') == '_blank' )
                     window.open(this.href)

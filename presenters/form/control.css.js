@@ -63,6 +63,9 @@ slot[name="after"]{
 	color: var(--selectionColor, #333);
 }
 
+/* auto hide unless content selected or within focus */
+:host([autohide][empty]:not(:focus-within)) { opacity: 0; margin-top: -100%; pointer-events: none; }
+
 /* :host(:not([disabled])) main {
 	cursor: text;
 } */
@@ -266,8 +269,7 @@ slot[name="help"] {
 }
 
 :host ::slotted(check-box),
-:host ::slotted(radio-btn),
-:host ::slotted(radio-group) {
+:host ::slotted(radio-btn) {
 	height: 1em;
 }
 
@@ -357,6 +359,23 @@ slot[name="help"] {
 	color: var(--invalidColor);
 }
 
+/*
+	Material hover
+*/
+
+:host([material="hover"]) {
+	--padY: .25em;
+}
+
+:host([material="hover"]:not(:hover)),
+:host([material="hover"][disabled]) {
+	--borderColor: transparent;
+}
+
+:host([material="hover"]:not(:focus-within):not([focused]):hover) main {
+	border-bottom-color: var(--borderColor);
+}
+
 
 /*
 	Material Outline
@@ -385,7 +404,7 @@ slot[name="help"] {
 }
 	
 :host([material="outline"]) main {
-	border: solid 1px var(--borderColor);
+	border: solid var(--fc-border-width, 1px) var(--borderColor);
 	padding-top: 0;
 	background: var(--bgd);
 }

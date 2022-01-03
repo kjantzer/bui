@@ -9,8 +9,11 @@ import '../../elements/hr'
 import '../form/controls/check-box'
 import '../form/controls/select-field'
 import device from '../../util/device';
+import {toMenu, isDivider} from './util'
 
 const styles = require('./style.less')
+
+export {Dialog, Popover, toMenu, isDivider}
 
 export const DefaultOpts = {
 	selected: false,
@@ -48,6 +51,8 @@ export default class Menu {
 		else if( !Array.isArray(args) )
 			args = [args]
 
+		args.push(selected)
+
 		if( selected.fn && typeof selected.fn == 'function'){
 			setTimeout(()=>{ // move to end of call stack
 				selected.fn.apply(handler, args)
@@ -66,6 +71,14 @@ export default class Menu {
 	}
 	
 	constructor(menu=[], opts={}){
+
+		if( menu.toMenu )
+			menu = menu.toMenu()
+		else if( menu.toOptions )
+			menu = menu.toOptions()
+
+		// remove null/empty values
+		menu = menu.filter(i=>i)
 		
 		this.el = document.createElement('div')
 		this.el.classList.add('b-menu')
@@ -126,6 +139,12 @@ export default class Menu {
 		if( typeof menu == 'function' )
 			menu = menu()
 
+		menu = menu.map(val=>{
+			if( !isDivider(val) && ['string', 'number'].includes(typeof val) )
+				return {label: val, val}
+			return val
+		})
+
 		this.__menu = menu
 
 		if( this.searchUrl && !this.__origMenu )
@@ -135,13 +154,13 @@ export default class Menu {
 		this.__fuse = new Fuse(this.__menu, {
 			keys: [{
 				name: 'dataTitle',
-				weight: 0.7
+				weight: 0.5
 			},{
 				name: 'label',
-				weight: 0.5
+				weight: 0.3
 			}, {
 				name: 'description',
-				weight: 0.3
+				weight: 0.2
 			}],
 			minMatchCharLength: 3,
 			threshold: 0.4,
@@ -159,7 +178,7 @@ export default class Menu {
 			return this.__filteredMenu
 		
 		if( this.searchIsOn && !this.searchShouldShowAll )
-			return []
+			return this.menu.filter(m=>m.alwaysShow===true || m.selected)
 
 		if( this.searchIsOn && this.hideUnselected )
 			return this.menu.filter(m=>m.label===undefined || m.selected)
@@ -266,21 +285,24 @@ export default class Menu {
 		return this.__searchSpinner = this.__searchSpinner || this.el.querySelector('.menu-search-bar b-spinner')
 	}
 
+	get searchOpts(){ return this.opts.search||{}}
+
 	async fetchResults(term){
 
 		// already in process of looking up this term
-		if( this._fetchingTerm === term )
+		if( term !== undefined && this._fetchingTerm === term )
 			return
 
 		this._fetchingTerm = term
 
 		let url = this.searchUrl
+		let encodedTerm = term === undefined ? '' : encodeURIComponent(term)
 
 		// URL can be a dynamic function
 		if( typeof url == 'function' )
-			url = url(encodeURIComponent(term))
+			url = url(encodedTerm)
 		else
-			url += encodeURIComponent(term)
+			url += encodedTerm
 
 		this.searchSpinner.hidden = false
 
@@ -288,7 +310,7 @@ export default class Menu {
 
 		// looks like we started searching for another term before we got
 		// this response back, so ignore the results
-		if( this._fetchingTerm !== term )
+		if( term !== undefined && this._fetchingTerm !== term )
 			return
 
 		let menu = []
@@ -328,10 +350,14 @@ export default class Menu {
 		render(html`
 
 			${this.searchIsOn?html`
-				<div class="menu-search-bar">
-					<b-icon name="${this.searchIcon}"></b-icon>
+				<div class="menu-search-bar" ?hidden=${this.searchOpts.input===false}>
 					<b-spinner hidden></b-spinner>
-					<input type="text" placeholder="${this.searchPlaceholder}" value=${this.opts.matching||''}>
+					${this.searchOpts.input!==false?html`
+						<b-icon name="${this.searchIcon}"></b-icon>
+						<input type="text" placeholder="${this.searchPlaceholder}" value=${this.opts.matching||''}>
+					`:html`
+						
+					`}
 				</div>
 			`:''}
 
@@ -357,7 +383,8 @@ export default class Menu {
 	
 	renderItem(m, i){
 		
-		if( m == 'divider' || (m.label == 'divider' && m.val == 'divider') )
+		if( isDivider(m) )
+		// if( m == 'divider' || (m.label == 'divider' && m.val == 'divider') )
 			return html`<b-hr></b-hr>`
 
 		if( m.divider !== undefined )
@@ -375,11 +402,11 @@ export default class Menu {
 		let icon = ''
 		
 		if( m.icon && typeof m.icon == 'string' )
-			icon = html`<b-icon name="${m.icon}"></b-icon>`
+			icon = html`<b-icon square name="${m.icon}"></b-icon>`
 		else if( m.icon ) 
 			icon = html`<span class="icon">${m.icon}</span>`
 
-		let checkbox = (this.opts.multiple && !m.clearsAll) || m.selected ? html`<check-box ?checked=${live(m.selected)}></check-box>` : ''
+		let checkbox = (this.opts.multiple && !m.clearsAll) || m.selected ? html`<check-box placement="left" ?checked=${live(m.selected)}></check-box>` : ''
 		let menuIcon = m.menu && this.opts.hasMenuIcon ? html`<b-icon class="has-menu" name="${this.opts.hasMenuIcon}"></b-icon>` :''
 
 		if( m.selections ){
@@ -424,7 +451,7 @@ export default class Menu {
 				?icon-only=${!m.label && !m.description} ?selected=${m.selected}>
 				${checkbox}
 				${icon}
-				${m.view&&m.view instanceof HTMLElement ?m.view:html`
+				${m.view&&(m.view instanceof HTMLElement||m.view.type=='html') ?m.view:html`
 					<span class="mi-content">
 						<div class="mi-label">${label}</div>
 						<div class="mi-description">${description}</div>
@@ -461,6 +488,9 @@ export default class Menu {
 		}
 		
 		if( target ){
+
+			if( window.soundFX && soundFX.playIfMobile )
+                soundFX.playIfMobile('tinyTap', 0.3)
 			
 			let data = this.displayMenu[target.getAttribute('index')]
 
@@ -526,7 +556,12 @@ export default class Menu {
 		if( (e.which >= 65 && e.which <= 90) // a-z
 		|| (e.which >= 48 && e.which <= 57) // 0-9
 		|| [8].includes(e.which) ){ // delete
-			this.onLetterPress(e)
+			if( e.metaKey || e.ctrlKey )
+				setTimeout(()=>{ // allow paste action to finish
+					this.onLetterPress(e)
+				},10)
+			else
+				this.onLetterPress(e)
 			return;
 		}
 		
@@ -540,7 +575,7 @@ export default class Menu {
 			return
 		
 		// stop processing the keypress unless it is one of these
-		if( !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Space'].includes(e.code) ) return
+		if( !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Space', 'Tab'].includes(e.code) ) return
 
 		if( !this.opts.multiple && e.code == 'Space' ) return
 		
@@ -561,7 +596,14 @@ export default class Menu {
 		}
 
 		if( this.opts.multiple && e.code == 'Enter' ){
-			this.resolve(this.selected)
+
+			// TODO: I think we should only click if item isn't already selected
+			if( activeItem )
+				activeItem.click()
+
+			if( e.ctrlKey || e.metaKey )
+				this.resolve(this.selected)
+
 			e.preventDefault()
 			e.stopPropagation()
 			return
@@ -579,7 +621,7 @@ export default class Menu {
 		if( this._active == null )
 			this._active = -1;
 		
-		this._active += ['ArrowUp', 'ArrowLeft'].includes(e.code) ? -1 : 1;
+		this._active += ['ArrowUp', 'ArrowLeft'].includes(e.code) || (e.code == 'Tab' && e.shiftKey) ? -1 : 1;
 		
 		if( this._active < 0 )
 			this._active = items.length - 1
@@ -629,7 +671,7 @@ export default class Menu {
 			this._active = items.indexOf(el)
 
 			el.setAttribute('active', '')
-			el.scrollIntoViewIfNeeded()
+			el.scrollIntoViewIfNeeded ? el.scrollIntoViewIfNeeded() : el.scrollIntoView()
 		}
 	}
 
@@ -664,9 +706,11 @@ export default class Menu {
 						return
 					}
 					
+					// no delay if paste keyboard shortcut
+					let delay = e.key == 'v' && (e.metaKey||e.ctrlKey) ? 0 : 700
 					this.__searchTermDelay = setTimeout(()=>{
 						this.fetchResults(val)
-					}, 700)
+					}, delay)
 
 				}else{
 					this.matching(val)
@@ -698,11 +742,18 @@ export default class Menu {
 		let menu = null
 		if( !val )
 			return menu = null
-		else
+
+		if( this.searchUrl ){
+			setTimeout(()=>{
+				this.fetchResults(val)
+			})
+		}else if( this.__fuse ){
+			
 			menu = this.__fuse.search(val)
 
-		if( this.opts.search && this.opts.search.extendResults )
-			this.opts.search.extendResults.call(this, menu, val)
+			if( this.opts.search && this.opts.search.extendResults )
+				this.opts.search.extendResults.call(this, menu, val)			
+		}
 
 		this.__filteredMenu = menu
 	}
@@ -714,8 +765,19 @@ export default class Menu {
 
 		let didHandle = false
 
-		if( this.opts.handler )
-			didHandle = Menu.handle(data, this.opts.handler, this.opts.handlerArgs)
+		if( this.opts.handler ){
+
+			let handler = this.opts.handler
+			let args = this.opts.handlerArgs
+
+			// handler = [handler, arg1, arg2]
+			if( Array.isArray(handler) ){
+				args = handler.slice(1)
+				handler = handler[0]
+			}
+
+			didHandle = Menu.handle(data, handler, args)
+		}
 
 		if( !didHandle && this._resolve ){
 			this._resolve(data)
@@ -755,7 +817,7 @@ export default class Menu {
 			return this.promise
 		}
 
-		if( opts.adjustForMobile && device.isMobile && !device.isiPad ){
+		if( opts.adjustForMobile && device.isMobile && !device.isTablet ){
 			let modalOpts = {btns: ['cancel','apply']}
 
 			if( this.searchIsOn )
@@ -768,6 +830,11 @@ export default class Menu {
 		}
 		
 		this.render()
+
+		// NOTE: this is rather hacky, but we'll leave for now
+		if( this.searchOpts.autoFetch ){
+			this.fetchResults()
+		}
 		
 		let onClose = opts.onClose
 		opts.onClose = ()=>{
@@ -780,7 +847,8 @@ export default class Menu {
 				this.resolve(false)
 		}
 		
-		opts.onKeydown = this.onKeydown.bind(this)
+		if( !opts.onKeydown)
+			opts.onKeydown = this.onKeydown.bind(this)
 		
 		this.presenter = new Popover(target, this.el, opts)
 
@@ -793,7 +861,7 @@ export default class Menu {
 	}
 	
 	modal(opts={}, mobileOpts){
-		if( mobileOpts && device.isMobile && device.minScreenSize <= 699 )
+		if( mobileOpts && device.isMobile && device.isSmallDevice )
 			return this.panel(mobileOpts)
 		else
 			return this.panel(opts)
@@ -814,7 +882,8 @@ export default class Menu {
 			// animation: 'scale'
 		}, opts)
 
-		opts.onKeydown = this.onKeydown.bind(this)
+		if( !opts.onKeydown )
+			opts.onKeydown = this.onKeydown.bind(this)
 		
 		let onClose = opts.onClose
 		opts.onClose = ()=>{
@@ -835,13 +904,13 @@ export default class Menu {
 			view: this.el,
 			btns: opts.btns||false
 		})
-		this.presenter = new Panel(dialog.el, opts)
+		this.presenter = new Panel(dialog, opts)
 		this.presenter.open()
 
 		// if dialog btn clicked, take action
 		dialog.promise.then(btn=>{
 
-			if( btn == 'apply' && this.opts.multiple )
+			if( ['apply', 'save'].includes(btn.val) && this.opts.multiple )
 				this.resolve(this.selected)
 
 			else if( btn )

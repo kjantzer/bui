@@ -1,4 +1,4 @@
-import onAppUpdated from 'bui/sw/on-app-updated'
+import onAppUpdated from 'bui/sw/client/on-app-updated'
 
 window.addEventListener('load', function() {
     navigator.serviceWorker.register('../sw.js').then(registration=>{

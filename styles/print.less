@@ -1,0 +1,36 @@
+
+@media print {
+
+    // always print with light theme styles
+    :root {
+        --theme-bgd: white !important;
+        --theme-bgd-accent: var(--light-bgd-accent) !important;
+        --theme-bgd-accent2: var(--light-bgd-accent2) !important;
+        --theme-text: black !important;
+        --theme-text-accent: var(--light-text-accent) !important;
+        --theme-text-accent2: var(--light-text-accent2) !important;
+    }
+
+    html, body {
+        display: block;
+        overflow: auto;
+        background-color: var(--theme-bgd);
+    }
+
+    b-panels {
+        background-color: var(--theme-bgd);
+    }
+
+    // if a panel is open, hide all other content on the page
+    // only show the panel on the very top
+    body.b-panel-open > *:not(b-panels),
+    b-panel:not([ontop]) {
+        display: none;
+    }
+}
+
+// default to letter page size
+@page {
+    size: 8.5in 11in;
+    margin: .5in;
+}

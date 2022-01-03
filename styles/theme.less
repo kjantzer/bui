@@ -1,11 +1,15 @@
 :root {
     // set initial theme colors
     --theme: var(--blue);
+    --theme-secondary: var(--blue-A700);
+    --theme-gradient: linear-gradient(var(--theme-gradient-direction, to right), var(--theme-secondary), var(--theme));
+    --theme-gradient-reverse: linear-gradient(var(--theme-gradient-direction, to left), var(--theme-secondary), var(--theme));
 
     --light-text-rgb: 34,34,34;
     --light-bgd-rgb: 255,255,255;
     --light-text: rgba(var(--light-text-rgb), 1);
     --light-text-accent: rgba(var(--light-text-rgb),.4);
+    --light-text-accent2: rgba(var(--light-text-rgb),.8);
     --light-bgd: white;
     --light-bgd-accent: #ebebeb;
     --light-bgd-accent2: var(--light);
@@ -15,6 +19,7 @@
     --dark-bgd-rgb: 0,0,0;
     --dark-text: rgba(var(--dark-text-rgb), 1);
     --dark-text-accent: rgba(var(--dark-text-rgb),.4);
+    --dark-text-accent2: rgba(var(--dark-text-rgb),.8);
     --dark-bgd: var(--dark);
     --dark-bgd-accent: var(--dark-black);
     --dark-bgd-accent2: #242729;
@@ -30,6 +35,7 @@
     --theme-bgd-rgb: var(--light-bgd-rgb);
     --theme-text: var(--light-text);
     --theme-text-accent: var(--light-text-accent);
+    --theme-text-accent2: var(--light-text-accent2);
     --theme-bgd: var(--light-bgd);
     --theme-bgd-accent: var(--light-bgd-accent);
     --theme-bgd-accent2: var(--light-bgd-accent2);
@@ -39,6 +45,7 @@
     --theme-inverse-bgd-rgb: var(--dark-bgd-rgb);
     --theme-inverse-text: var(--dark-text);
     --theme-inverse-text-accent: var(--dark-text-accent);
+    --theme-inverse-text-accent2: var(--dark-text-accent2);
     --theme-inverse-bgd: var(--dark-bgd);
     --theme-inverse-bgd-accent: var(--dark-bgd-accent);
     --theme-inverse-bgd-accent2: var(--dark-bgd-accent2);
@@ -51,6 +58,7 @@
     --theme-bgd-rgb: var(--dark-bgd-rgb);
     --theme-text: var(--dark-text);
     --theme-text-accent: var(--dark-text-accent);
+    --theme-text-accent2: var(--dark-text-accent2);
     --theme-bgd: var(--dark-bgd);
     --theme-bgd-accent: var(--dark-bgd-accent);
     --theme-bgd-accent2: var(--dark-bgd-accent2);
@@ -60,6 +68,7 @@
     --theme-inverse-bgd-rgb: var(--light-bgd-rgb);
     --theme-inverse-text: var(--light-text);
     --theme-inverse-text-accent: var(--light-text-accent);
+    --theme-inverse-text-accent2: var(--light-text-accent2);
     --theme-inverse-bgd: var(--light-bgd);
     --theme-inverse-bgd-accent: var(--light-bgd-accent);
     --theme-inverse-bgd-accent2: var(--light-bgd-accent2);
@@ -73,7 +82,6 @@
     --b-spinner-overlay-bgd: rgba(var(--theme-bgd-rgb), .6);
     --b-label-color: rgba(var(--theme-text-rgb), .3);
     --b-sub-color: rgba(var(--theme-text-rgb), .4);
-    --b-hr-bgd: var(--theme-bgd-accent);
 
     // BUI presenters
     --b-panel-bgd: var(--theme-bgd);
@@ -90,12 +98,7 @@
     --b-empty-state-color: rgba(var(--theme-text-rgb), .2);
     --list-search-bgd: var(--theme-bgd-accent);
     
-    --b-menu-hover-bgd: var(--theme-bgd-accent2);
     --b-menu-checkbox-color: var(--theme-chosen);
-    --b-menu-input-bgd: var(--theme-bgd-accent);
-    --b-menu-input-color: var(--theme-text);
-    --b-menu-color-accent: rgba(var(--theme-text-rgb), .5);
-    --b-menu-description-color: var(--theme-text-accent);
 
     --b-popover-bgd: var(--theme-bgd);
     --b-popover-color: var(--theme-text);
@@ -107,27 +110,32 @@
 
 // adjust colors of <b-paper> when in dark mode
 :root[dark] {
-    --b-paper-overshadow: rgba(0, 0, 0, 0.35) 0px 0px 20px;
+    // --b-paper-overshadow: rgba(0, 0, 0, 0.35) 0px 0px 20px;
+    --b-paper-overshadow:
+        0 0.7px 2.2px rgba(0, 0, 0, 0.019),
+        0 1.4px 5.3px rgba(0, 0, 0, 0.035),
+        0 2.4px 10px rgba(0, 0, 0, 0.048),
+        0 3.7px 17.9px rgba(0, 0, 0, 0.058),
+        0 6px 33.4px rgba(0, 0, 0, 0.7),
+        0 13px 80px rgba(0, 0, 0, 0.35);
+
     --b-paper-shadow: rgba(0,0,0,.35) 0 1px 5px;
     --b-paper-postit-color: var(--theme-bgd);
-    --b-paper-postit-bgd: var(--amber-200);
+    --b-paper-postit-bgd: #8c8161; // var(--amber-200);
+    --b-paper-postit-color: var(--theme-text);
     --b-paper-postit-bgd-accent: var(--orange);
     --b-paper-info-bgd: var(--blue-800);
     --b-paper-info-bgd-accent: var(--blue-400);
+}
+
+:root[dark] b-panel[type="modal"] {
+    --b-panel-shadow: var(--b-paper-overshadow);
 }
 
 b-panel {
     color: var(--theme-text);
 }
 
-b-panel:not([anchor="center"]) {
-    --b-panel-shadow: 0 0 0 1px var(--theme-bgd-accent);
-}
-
-.installed b-panel,
-.electron b-panel {
-    // border-top: solid 1px var(--theme-bgd-accent);
-}
 
 :root[dark] .popover { --border: var(--dark-black); }
 :root[dark] .popover .__view {

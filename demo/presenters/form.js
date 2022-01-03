@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit-element'
 import docs from 'bui/presenters/form/README.md'
 
 // must be deliberately imported
-import 'bui/presenters/form/controls/rich-text-field'
+import 'bui/presenters/form/controls/text-editor'
 
 customElements.define('demo-presenter-form', class extends LitElement{
 
@@ -101,9 +101,9 @@ customElements.define('demo-presenter-form', class extends LitElement{
                 <text-field multiline></text-field>
             </form-control>
 
-            <form-control colspan material="filled" key="rte" label="Rich Text Field">
-                <rich-text-field></rich-text-field>
-                <span slot="help">Rich text editing is enabled using quill.js</span>
+            <form-control colspan material="filled" key="rte" label="Text Editor (WYSIWYG)">
+                <text-editor></text-editor>
+                <span slot="help">Rich text editing is enabled with tiptap.js</span>
             </form-control>
 
             

@@ -26,6 +26,10 @@ export default class DataSource {
     }
     get coll(){ return this.__coll}
 
+    get isFiltered(){
+        return this.filters && !!(this.filters.areApplied || this.filters.term )
+    }
+
     async refilter(){
         this.lastFiltered = 0
         this._rawData = this.coll && this.coll.models || this.coll || []
@@ -76,6 +80,7 @@ export default class DataSource {
             await this.coll.fetchSync({
                 data:data,
                 merge: true,
+                remove: pageAt==0 ? true : false,
                 // for Backone 0.9.10/0.9.9, 'update' is needed to register change events on the model, rather than mass "reset" (see line 815 in backbone source)
                 update: true,
             })
@@ -117,7 +122,10 @@ export default class DataSource {
 
             if( this.lastFiltered < this.filters.lastChanged ){
                 this.data = await this.filters.filter(this._rawData)
-                await this.sort()
+                
+                if( this.sorts && !this.sorts.sortOnDB )
+                    await this.sort()
+
                 this._filteredData = this.data
             }
 

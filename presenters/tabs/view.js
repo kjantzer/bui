@@ -43,9 +43,11 @@ export default class TabView {
 
     render(onClick){
         return this.canDisplay?html`
+            <slot name="menu:before:${this.id}"></slot>
             <div class="tab-bar-item" ?active=${this.active} .tabView=${this} @click=${onClick}>
                 <slot name="menu:${this.id}">${this.title}</slot>
             </div>
+            <slot name="menu:after:${this.id}"></slot>
         `:''
     }
 

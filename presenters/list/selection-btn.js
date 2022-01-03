@@ -6,20 +6,35 @@ customElements.define('b-list-selection-btn', class extends Btn{
     constructor(){
         super()
         this.setAttribute('text', '')
-        this.setAttribute('pill', '')
         this.icon = 'check'
-        this.slot = 'toolbar:before'
+
+        if( this.parentElement.tagName == 'B-LIST')
+            this.slot = 'toolbar:before'
+
         this.title ="Select data"
 
         this.addEventListener('click', this.beginSelection)
     }
 
-    beginSelection(){
-        if( this.parentElement.tagName !== 'B-LIST' )
-            return console.warn('`b-list-selection-btn` must be a direct child of `b-list`')
+    get list(){
+        let el = this
+        let list = null
+        while(el.parentElement && !list ){
+            el = el.parentElement
+            if( el.tagName == 'B-LIST' )
+                list = el
+        }
 
-        let list = this.parentElement
+        return list
+    }
+
+    beginSelection(){
+
+        let list = this.list
         let data = list.dataSource.data
+
+        if( !list )
+            return console.warn('`b-list-selection-btn` must be a child of `b-list`')
 
         if( typeof this.data == 'function' )
             data = this.data()

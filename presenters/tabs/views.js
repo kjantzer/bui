@@ -120,7 +120,7 @@ export default class TabViews extends Map {
     }
 
     get active(){
-        let active = this.cache ? this.cache() : this.__active
+        let active = this.__active || (this.cache && this.cache())
         return active && this.get(active)
     }
     

@@ -1,5 +1,5 @@
 
-export default function range(start, stop, step=1) {
+function range(start, stop, step=1) {
 	start = parseFloat(start) || 0 
 	stop = parseFloat(stop) || 0 
 
@@ -15,3 +15,5 @@ range.alpha = (start, stop)=>{
     stop = stop.charCodeAt(0)
     return range(start, stop).map(code=>String.fromCharCode(code))
 }
+
+module.exports = range

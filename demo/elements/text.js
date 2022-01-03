@@ -3,6 +3,7 @@ import 'bui/elements/numeral'
 import dayjs from 'bui/helpers/day-js'
 import 'bui/elements/ts'
 import 'bui/elements/timer'
+import 'bui/elements/text-divider'
 
 export default html`
 <section title="Text">
@@ -30,6 +31,35 @@ export default html`
     <div><b-text ucase>uppercase text</b-text>, <b-text lcase>LOWERCASE text</b-text>, and <b-text capitalize>capitalize text</b-text></div>
 
 </b-paper>
+
+<b-paper>
+    <b-h1>Text Divider</b-h1>
+    <div>A subclass of <code>b-text</code>. The same attributes can be applied</div>
+
+    <br><br>
+
+    <b-text-divider>Text Divider</b-text-divider>
+    
+    <br><br>
+
+    <b-text-divider>
+        Text Divider
+        <b-text slot="right">Right slot</b-text>
+    </b-text-divider>
+
+    <br><br>
+
+    <b-text-divider thick lg bold>
+        Text Divider
+        <b-text slot="right">Right slot</b-text>
+    </b-text-divider>
+
+    <br><br>
+
+    <b-text-divider center>Text Divider</b-text-divider>
+
+</b-paper>
+
 <b-paper>
     <b-h1>Label</b-h1>
    

@@ -2,9 +2,15 @@ import { LitElement, html, css } from 'lit-element'
 
 customElements.define('b-text', class extends LitElement{
 
+    static get properties() { return {
+        tooltip: {type: String}
+    }}
+
     static get styles(){return css`
         :host {
             display: inline-block;
+            cursor: default;
+            line-height: 1em;
         }
 
         :host([block]) {
@@ -27,39 +33,59 @@ customElements.define('b-text', class extends LitElement{
             vertical-align: text-bottom;
         }
 
-        :host([monospace]) {
+        :host([clip]) ::slotted(b-text),
+        :host([clip]) ::slotted(span) {
+            display: contents;
+        }
+
+        :host([monospace]) .slot {
             font-family: var(--b-text-monospace, 'Source Code Pro', 'Courier New', Courier, monospace)
         }
 
-        :host([bold]) { font-weight: bold; }
-        :host([xbold]) { font-weight: 900; }
-        :host([italic]) { font-style: italic; }
+        :host([nobold]) .slot { font-weight: normal; }
+        :host([bold]) .slot { font-weight: bold; }
+        :host([xbold]) .slot { font-weight: 900; }
+        :host([italic]) .slot { font-style: italic; }
 
-        :host([capitalize]) { text-transform: capitalize; }
-        :host([ucase]) { text-transform: uppercase; }
-        :host([lcase]) { text-transform: lowercase }
+        :host([strike]) { text-decoration: line-through; }
 
-        :host([breakall]) { word-break: break-all; }
+        :host([capitalize]) .slot { text-transform: capitalize; }
+        :host([ucase]) .slot { text-transform: uppercase; }
+        :host([lcase]) .slot { text-transform: lowercase }
 
-        :host([align="left"]) { text-align: left; }
-        :host([align="right"]) { text-align: right; }
-        :host([align="center"]) { text-align: center; }
-        :host([align="justify"]) { text-align: justify; }
+        :host([breakall]) .slot { word-break: break-all; }
+
+        :host([align="left"]) .slot { text-align: left; }
+        :host([align="right"]) .slot { text-align: right; }
+        :host([align="center"]) .slot { text-align: center; }
+        :host([align="justify"]) .slot { text-align: justify; }
 
         /* https://spencermortensen.com/articles/typographic-scale/ */
-        :host([xs]) { font-size: .65em; line-height: 1.1em; }
-        :host([sm]) { font-size: .8409em; line-height: 1.1em; }
-        :host([md]) { font-size: 1.1892em; line-height: 1.1em; }
-        :host([lg]) { font-size: 1.4142em; line-height: 1.1em; }
-        :host([xl]) { font-size: 1.6818em; line-height: 1.1em; }
-        :host([xxl]) { font-size: 2em; line-height: 1.1em; }
+        :host([xs]) .slot { font-size: .65em; line-height: 1.1em; }
+        :host([sm]) .slot { font-size: .8409em; line-height: 1.1em; }
+        :host([md]) .slot { font-size: 1.1892em; line-height: 1.1em; }
+        :host([lg]) .slot { font-size: 1.4142em; line-height: 1.1em; }
+        :host([xl]) .slot { font-size: 1.6818em; line-height: 1.1em; }
+        :host([xxl]) .slot { font-size: 2em; line-height: 1.1em; }
 
         :host([tone="muted"]), :host([muted]) { color: rgba(var(--theme-text-rgb, 0,0,0),.4); }
+        :host([muted="some"]) { color: rgba(var(--theme-text-rgb, 0,0,0),.8); }
+        :host([muted="1"]) { color: rgba(var(--theme-text-rgb, 0,0,0),.8); }
+        :host([muted="2"]) { color: rgba(var(--theme-text-rgb, 0,0,0),.6); }
+        :host([tone="text"]) { color: var(--theme-text); }
         :host([tone="theme"]) { color: var(--theme); }
         :host([tone="critical"]) { color: var(--b-text-tone-critical, var(--red-A400, red)); }
         :host([tone="warning"]) { color: var(--b-text-tone-warning, var(--orange, orange)); }
         :host([tone="info"]) { color: var(--b-text-tone-info, var(--blue, blue)); }
         :host([tone="good"]) { color: var(--b-text-tone-good, var(--green, blue)); }
+
+        :host([color="theme"]) { color: var(--theme); }
+        :host([color="theme-accent"]) { color: var(--theme-secondary); }
+        :host([color="red"]) { color: var(--red, red); }
+        :host([color="orange"]) { color: var(--orange, orange); }
+        :host([color="blue"]) { color: var(--blue, blue); }
+        :host([color="green"]) { color: var(--green, blue); }
+        :host([color="purple"]) { color: var(--deep-purple, blue); }
 
         :host([link]),
         :host([href]) {
@@ -78,6 +104,8 @@ customElements.define('b-text', class extends LitElement{
         @media (hover){
             :host([link]:hover){
                 color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
+                /* for use in nested children */
+                --b-text-hover-color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
             }
 
             :host([href]:hover) {
@@ -98,6 +126,9 @@ customElements.define('b-text', class extends LitElement{
         ::slotted(b-icon) {
             vertical-align: bottom;
         }
+
+        ::slotted(p:first-child) {margin-top: 0;}
+        ::slotted(p:last-child) {margin-bottom: 0;}
     `}
 
     firstUpdated(){
@@ -105,7 +136,7 @@ customElements.define('b-text', class extends LitElement{
         this.addEventListener('click', this.onClick)
 
         if( this.hasAttribute('clip') && !this.hasAttribute('title') )
-            this.title = this.innerText
+            this.title = this.textContent.replace(/\s{2,}/g, ' ').trim()
     }
 
     onClick(){
@@ -117,7 +148,10 @@ customElements.define('b-text', class extends LitElement{
     }
 
     render(){return html`
-        <slot></slot>
+        <slot class="slot"></slot>
+        ${this.tooltip?html`
+            <b-tooltip>${this.tooltip}</b-tooltip>
+        `:''}
     `}
 
 })

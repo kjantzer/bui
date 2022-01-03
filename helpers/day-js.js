@@ -29,11 +29,20 @@ dayjs.prototype.calendarDate = function(formats={}){
     return this.calendar(null, formats)
 }
 
+dayjs.prototype.weeksInMonth = function(){
+    return Math.ceil((this.daysInMonth()+1+this.day()) / 7)
+}
+
 const DayJsFormat = dayjs.prototype.format
 dayjs.prototype.format = function(...args){
     // https://github.com/iamkun/dayjs/blob/dev/src/index.js#L252
     if (!this.isValid()) return ''
     return DayJsFormat.call(this, ...args)
+}
+
+dayjs.prototype.sortValue = function(invalidAddition=9){
+    if (!this.isValid()) return invalidAddition+99999999999999
+    return this.unix()
 }
 
 // let `.set` handle hash of changes

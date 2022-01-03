@@ -5,6 +5,7 @@ import setValueAttrs from '../util/setValueAttrs'
 import validatePattern from '../util/validatePattern'
 import stopMaxLength from '../util/stopMaxLength'
 import {htmlCleaner} from '../../../util'
+import dayjs from 'dayjs'
 
 const styles = css`
 :host {
@@ -45,6 +46,7 @@ main {
 	margin: -.1em 0;
 	border: none;
 	background: transparent;
+	color: inherit;
 	/* background: yellow; */
 }
 
@@ -163,7 +165,7 @@ class TextFieldElement extends HTMLElement {
 						name="${this.name||this.input}"
 						autocomplete="${this.autocomplete}">
 						
-				<b-icon name="calendar-3" class="calendar"></b-icon>
+				<!--<b-icon name="calendar-3" class="calendar"></b-icon>-->
 			</main>
 			<slot id="value"></slot>`
 			
@@ -179,14 +181,14 @@ class TextFieldElement extends HTMLElement {
 		this._editor = this.$('.editor')
 		this._input = this.$('.input')
 
-		if( this.type == 'date' ){
-			this._datePicker = new Datepicker({
-				value: this.value,
-				range: false,
-				inputs: false,
-				btns: false
-			})
-		}
+		// if( this.type == 'date' ){
+		// 	this._datePicker = new Datepicker({
+		// 		value: this.value,
+		// 		range: false,
+		// 		inputs: false,
+		// 		btns: false
+		// 	})
+		// }
 		
 		if( this._val ){
 			this._editor.innerHTML = htmlCleaner.clean(this._val, this.htmlClean||{})
@@ -210,7 +212,7 @@ class TextFieldElement extends HTMLElement {
 		this.shadowRoot.addEventListener('click', this._onClick.bind(this))
 		this.addEventListener('click', this._onClick.bind(this))
 
-		this.shadowRoot.querySelector('.calendar').addEventListener('click', this._onClick.bind(this))
+		// this.shadowRoot.querySelector('.calendar').addEventListener('click', this._onClick.bind(this))
     }
 	
 	$(str){ return this.shadowRoot.querySelector(str)}
@@ -218,9 +220,19 @@ class TextFieldElement extends HTMLElement {
 	
 	connectedCallback(){
 		this._setClassNames()
+
+		// make sure we dont have an empty input attribute
+		if( !this.input )
+			this.removeAttribute('input')
+
+		// TODO: how this applied needs improved
+		this._input.type = this.input
 	}
 	
-	disconnectedCallback(){}
+	disconnectedCallback(){
+		if( this._datePickerOpen )
+			this._datePickerOpen.close()
+	}
 	
 	static get observedAttributes() { return ['disabled', 'placeholder']; }
 	attributeChangedCallback(name, oldValue, newValue){
@@ -276,14 +288,17 @@ class TextFieldElement extends HTMLElement {
 
 			if( this.type == 'date' ){
 				
-				if( val === 'Invalid date' || val === '0000-00-00' || val === '0000-00-00 00:00:00')
+				if( val === 'Invalid date' 
+				|| val === '0000-00-00' 
+				|| val === '0000-00-00 00:00:00'
+				|| (val && val.isValid && !val.isValid()) )
 					val = null
 
 				try {
 					this._datePicker.value = val
 
 					if( val )
-						val = this._datePicker.value.format(this.format)
+						val = dayjs(val).format(this.format)
 
 				// if failed to set datepicker value, the val is invalid, reset to previous value
 				}catch(err){
@@ -311,9 +326,18 @@ class TextFieldElement extends HTMLElement {
 		this._setClassNames()
 	}
 
+	get _datePicker(){
+		return this.__datePicker = this.__datePicker || new Datepicker({
+			value: this.value,
+			range: false,
+			inputs: false,
+			btns: false
+		})
+	}
+
 	get dbValue(){
-		if( this._datePicker )
-			return this.value ? this._datePicker.value.format('YYYY-MM-DD') : this.value
+		if( this.type == 'date' )
+			return this.value ? this._datePicker.value : this.value
 		return this.value
 	}
 
@@ -363,14 +387,17 @@ class TextFieldElement extends HTMLElement {
 	_onClick(e){
 
 		// was calendar icon clicked?
-		if( e.target.classList.contains('calendar') ){
-			e.stopPropagation()
-			return this.pickDate()
-		}
+		// if( e.target.classList.contains('calendar') ){
+		// 	e.stopPropagation()
+		// 	return this.pickDate()
+		// }
 
 		if( e.target != this )
 			return
 
+		if( this.type == 'date' && !this.disabled && !this.hasAttribute('no-datepicker') )
+			this.pickDate()
+		
 		if( !e.target.isFocused )
 			this.focus()
 	}
@@ -381,20 +408,29 @@ class TextFieldElement extends HTMLElement {
 		this._datePicker.value = this.value
 
 		let apply = function(e){
-			p&&p.close();
+			this._datePickerOpen&&this._datePickerOpen.close()
 			this._changeValue(e.detail.date)
 		}.bind(this)
 
 		// apply the value once a date is selected
 		this._datePicker.addEventListener('date-selected', apply, {once: true})
 
-		let p = new Popover(this.$('.calendar'), this._datePicker, {
-			align: 'bottom-end', 
+		this._datePickerOpen = new Popover(this, this._datePicker, {
+			align: 'bottom', 
 			overflowBoundry: 'window',
 			maxHeight: false, 
 			adjustForMobile: true,
+			onKeydown: e=>{
+				// jump to "today" or selected "date"
+				if( e.key == 't' || e.key == 'd' ){
+					e.preventDefault()
+					e.stopPropagation()
+					this._datePicker.scrollToDate(e.key == 't' ? 'today' : 'start')
+				}
+			},
 			// NOTE: not called when p.close() is called
 			onClose:()=>{
+				this._datePickerOpen = null
 				this._datePicker.removeEventListener('date-selected', apply)
 			}
 		})
@@ -599,9 +635,14 @@ class TextFieldElement extends HTMLElement {
 	}
 
 	_onBlur(){
-		if( this._didPressKey )
+		if( this._didPressKey ){
 			this._updateValue()
-			
+
+			// if blur from enter/tab/esc...we should close the date picker
+			if( this._datePickerOpen )
+				this._datePickerOpen.close()
+		}
+
 		delete this._didPressKey
 	}
 	

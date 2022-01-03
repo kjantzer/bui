@@ -1,6 +1,8 @@
 import { LitElement, html, css } from 'lit-element';
 import AJAX from '../util/ajax.js';
 import '../util/file.ext.js'
+import resizeImg from '../util/resizeImg'
+import '../helpers/lit-element/events'
 
 export class UploaderElement extends LitElement {
 
@@ -11,6 +13,7 @@ export class UploaderElement extends LitElement {
         multiple: {type: Boolean},
         placeholder: {type: String},
         files: {type: Array},
+        resize: {type: Object},
         dragging: {type: Boolean, reflect: true },
         uploading: {type: Boolean, reflect: true }
     }}
@@ -27,7 +30,7 @@ export class UploaderElement extends LitElement {
             height: 100%;
             display: block;
             position: absolute;
-            z-index: 10000;
+            z-index: 1000;
             left: 0;
             top: 0;
             visibility: hidden;
@@ -90,21 +93,26 @@ export class UploaderElement extends LitElement {
         this.disabled = false
         this.accept = '';
         this.multiple = false
+        this.resize = false
         this.placeholder = 'Drop to upload';
         this.files = []
         this._numUploading = 0
         this._numUploaded = 0
         this._fileProgress = 0
-        this.dragging = false;
-        this.uploading = false;
+        this.dragging = false
+        this.uploading = false
 
-        ['dragenter', 'dragleave', 'dragover', 'drop'].forEach(fn=>{
+        ;['dragenter', 'dragleave', 'dragover', 'drop'].forEach(fn=>{
             this[fn] = this['_'+fn].bind(this)
         })
 	}
 
     get progress(){
-        let progress = this.files.length > 0 ? this._numUploaded * 100 : 0
+        
+        if( this.shouldUploadTogether )
+            return this._fileProgress
+
+        let progress = this.files.length > 0 ? this._numUploaded * 100 : 0    
         progress += this._fileProgress
         return progress > 0 ? (progress / (this.files.length * 100) * 100) : 0
     }
@@ -118,10 +126,21 @@ export class UploaderElement extends LitElement {
             <div class="bar" style="width:${this.progress}%"></div>
             <div>
                 <b-spinner></b-spinner>
-                Uploading ${this._numUploading} of ${this.files.length}
+                ${this.uploadMsg}
             </div>
         </div>
     `}
+
+    get uploadMsg(){
+        if( this.progress == 100 )
+            return 'Processing...'
+
+        if( this.shouldUploadTogether ){
+            return `Uploading ${this.files.length}`
+        }else{
+            return `Uploading ${this._numUploading} of ${this.files.length}`
+        }
+    }
 
     connectedCallback(){
         super.connectedCallback();
@@ -169,19 +188,22 @@ export class UploaderElement extends LitElement {
         e.preventDefault()
         this.dragging = false
         // let files = new Files(e.dataTransfer)
-        this._selectFiles(e.dataTransfer.files)
+        this._selectFiles(e.dataTransfer.files, {
+            append: (e.metaKey||e.ctrlKey)
+        })
     }
 
     _inputChange(e){
         this._selectFiles(e.target.files)
     }
 
-    _selectFiles(files){
+    _selectFiles(files, {append=false}={}){
 
         if( this.uploading ) return
 
         files = Array.from(files)
         
+        // NOTE: should we bail out with error?
         if( !this.multiple )
             files = files.slice(0,1)
 
@@ -189,26 +211,40 @@ export class UploaderElement extends LitElement {
         let invalid = []
 
         files.forEach(file=>{
-            if( this._acceptFile(file) )
+            if( !this._acceptFile(file) )
+                return invalid.push(file)
+
+            if( append ){
+                // attempt to skip duplicates
+                let dupe = this.files.find(_file=>{
+                    return file.name == _file.name
+                        && file.size == _file.size
+                        && file.lastModified == _file.lastModified
+                })
+
+                if( !dupe )
+                    valid.push(file)
+
+            }else{
                 valid.push(file)
-            else
-                invalid.push(file)
+            }
         })
 
-        this.files = valid
+        if( append )
+            this.files.push(...valid)
+        else
+            this.files = valid
 
-        this.dispatchEvent(new CustomEvent('change', {
-            bubbles: true,
-            composed: true,
-            detail: {
-                invalid: invalid.length > 0 ? invalid : false
-            }
-        }))
+        this.emitEvent('change', {invalid: invalid.length > 0 ? invalid : false})
 
         if( this.autoUpload && this.url ){
             this.upload()
         }
+    }
 
+    clear(){
+        this.files = []
+        this.emitEvent('change', {invalid: false})
     }
 
     _dragover(e){
@@ -229,6 +265,10 @@ export class UploaderElement extends LitElement {
         this.dragging = false
     }
 
+    get shouldUploadTogether(){
+        return this.getAttribute('multiple') == 'together'
+    }
+
     async upload({ url='', method='POST', fileKey='file', formData={} }={}){
 
         if( this.uploading )
@@ -245,11 +285,42 @@ export class UploaderElement extends LitElement {
         this.uploading = true
 
         let resp = []
+        
+        // upload all files together
+        // NOTE: long term I think I want this the default
+        if( this.shouldUploadTogether ){
+
+            let _formData = new FormData();
+
+            // append all files to form data for upload
+            for( let i in this.files ){
+                _formData.append(fileKey, this.files[i])
+            }
+
+            try{
+
+                let req = new AJAX(method, url)
+                
+                req.on('progress', e=>{
+                    this._fileProgress = Math.round(e.loaded / e.total * 100)
+                    this.requestUpdate()
+                })
+
+                resp = await req.send(_formData)
+
+            }catch(e){
+                resp.push({error: e, files: this.files})
+            }
+
+        }else{
 
         for( let i in this.files ){
 
             let file = this.files[i]
             let _formData = new FormData();
+                        
+            if( this.resize )
+                file = await resizeImg(file, this.resize)
 
             _formData.append(fileKey, file)
             _formData.append('totalFiles', this.files.length)
@@ -286,6 +357,7 @@ export class UploaderElement extends LitElement {
                 resp.push({error: e, file: file})
             }
         }
+        }
 
         this._numUploading = 0
         this._numUploaded = 0
@@ -293,13 +365,10 @@ export class UploaderElement extends LitElement {
         this.files = []
         this.uploading = false
 
-        this.dispatchEvent(new CustomEvent('upload-done', {
-            bubbles: true,
-            composed: true,
-            detail: resp
-        }))
+        this.emitEvent('upload-done', resp)
 
-        return this.multiple ? resp : resp[0]
+        // NOTE: is this really better than determining with `this.multiple`?
+        return this.files.length > 1 ? resp : resp[0]
     }
 
 }

@@ -1,7 +1,125 @@
 Realtime (via Socket.io)
 =========================
 
->NOTE: work in progress; subject to change
+Realtime functionality requires both client and server-side logic and is stored in `realtime/client` and `realtime/server` respectively.
+
+## Default Server Initialization
+
+```js
+// server
+// creates default `socket.io` connection and enables "Views"
+const io = require('bui/realtime/server')
+
+// then attach to node http server
+io.attach(server)
+```
+
+```js
+// client
+import realtime from 'bui/realtime/client'
+console.log(realtime.socket)
+```
+
+
+## Sync
+
+```js
+// server
+// More documentation needed
+
+const Sync = require('bui/realtime/server/sync')
+let sync = new Sync(io)
+
+class Book {
+    constructor(attrs){
+        this.id = attrs.id
+    }
+
+    update(attrs){
+        // update model...
+
+        // then sync the data to all clients
+        this.syncData(attrs)
+
+        // if you want to control which clients in the sync room you can like this:
+        this.syncData(attrs, {toClients:socket=>{
+            if( socket.id == 'someid' )
+                return true
+            return false
+        }})
+
+        // by default, the client who made the request does not get the sync
+        // use "all" to include the request client
+        this.syncData(attrs, {toClients:'all'})
+    }
+
+    // this method is added by Sync
+    // syncData(data, toClients){}
+
+    // the getter will defined by Sync unless you explicitly create it
+    // can be a single string or array of strings
+    // get syncPath(){ return '/sync/path' }
+
+    // optionally implement these methods to take action
+    syncClientDidJoin(socket){}
+    syncClientDidLeave(socket){}
+}
+
+sync.add('/api/book/:id', Book)
+```
+
+```js
+// client
+import sync from 'bui/realtime/client/sync'
+
+export class Book {
+
+    get url(){ return '/api/book'+this.id }
+
+    constructor(){
+        // super() // make sure to call this if subclassing
+        this.realtimeSync = sync(this.url, this)
+    }
+
+    // this will be called when the model gets sync data
+    onSync(sync){
+    }
+
+    get id(){ return this.__id }
+    set id(val){
+        this.__id = val
+        
+        // sync path can also be changed at a later time
+        this.realtimeSync.changePath(this.url)
+    }
+}
+
+let myModel = new MyModel()
+
+// must call `connect` to begin keeping the model in sync
+myModel.realtimeSync.connect()
+
+// ... later the connection can be closed to stop syncing
+myModel.realtimeSync.close()
+```
+
+### Backbone Sync
+There are two basic sync functions for Backbone models and collections
+```js
+import {syncBackboneCollection, syncBackboneModel} from 'bui/realtime/client/sync'
+
+class {
+    onSync(sync){
+        // for a Collection
+        syncBackboneCollection.call(this, sync)
+
+        // for a Model (supports relations)
+        syncBackboneModel.call(this, sync)
+    }
+}
+
+```
+
 
 ## Views
 Provides an easy way to keep track of views that are opened by clients
@@ -46,3 +164,24 @@ socketViews.close('view-name')
 let info = await socketViews.info('view-name') // {view info}
 let info = await socketViews.info('^view-') // [{view info}]
 ```
+
+
+## Realtime Users
+Tracks and shows which clients/users are looking at a particular view. Users are removed from a view when the element is removed from the DOM
+
+> Note: uses "Views" (see above) to track users
+
+```js
+import realtime from 'bui/realtime/client'
+import RealtimeUsers from 'bui/realtime/client/realtime-users'
+
+RealtimeUsers.realtime = realtime
+RealtimeUsers.currentUserID = 1 // 
+```
+
+```html
+<b-realtime-users key="my-uniq-view"></b-realtime-users>
+<b-realtime-users key="my-uniq-view" test></b-realtime-users>
+```
+
+> Note: adding `test` attribute will show current user and all duplicate user clients

@@ -1,10 +1,10 @@
 import {html} from 'lit-element'
 import Menu from '../../menu'
 import titleize from '../../../util/titleize'
-import device from '../../../util/device'
 import Emitter from 'component-emitter'
+import CollMap from '../../../util/collmap'
 
-export default class Sorts extends Map {
+export default class Sorts extends CollMap {
 
     get _storeKey(){ return 'b-list:'+this.key+':sort'}
 
@@ -18,6 +18,9 @@ export default class Sorts extends Map {
     }
 
     set value(val){
+
+        if( (!val || Object.keys(val).length == 0) && this.__defaultSort )
+            val = this.__defaultSort
 
         let didChange = JSON.stringify(this.__value) != JSON.stringify(val)
 
@@ -58,6 +61,8 @@ export default class Sorts extends Map {
                     desc: sorts[key].desc || false
                 }
             })
+
+            this.__defaultSort = defaultVals
 
             if( this.unset ){
                 this.__value = defaultVals
@@ -106,29 +111,57 @@ export default class Sorts extends Map {
 
         let oldVal = this.value
 
-        let menu = this.map(sort=>{
+        function toMenuItem(sort){
             return {
                 label: sort.label,
                 val: sort.key,
                 description: sort.description,
+                clearsAll: !!sort.attrs.preset,
                 desc: sort.isDesc,
-                extras: ['b-list-sort-dir-btn']
+                extras: sort.attrs.preset ? [] : ['b-list-sort-dir-btn'],
+                preset: sort.attrs.preset
             }
+        }
+
+        let menu = this.filter(sort=>!sort.attrs.preset).map(sort=>toMenuItem(sort))
+        menu.push({text: html`Sorts will be applied in the order they are chosen.`})
+
+        let presets = this.filter(sort=>!!sort.attrs.preset).map(sort=>{
+            let s = toMenuItem(sort)
+            let labels = Object.keys(s.preset).map(s=>this.get(s).label).join(', ')
+            s.extras = [html`<b-text muted sm italic>${labels}</b-text>`]
+            return s
         })
 
-        menu.push({text: html`Sorts will be applied in the order they are chosen.`})
+        if( this.__defaultSort ){
+            let labels = Object.keys(this.__defaultSort).map(s=>this.get(s).label).join(', ')
+            menu.push({
+                label: 'Default',
+                clearsAll: true,
+                preset: this.__defaultSort,
+                extras: [html`<b-text muted sm italic>${labels}</b-text>`]
+            })
+        }
+
+        if( presets )
+            menu = menu.concat(presets)
 
         let selected = await new Menu(menu, {
             className: 'b-list-sort-menu',
             multiple: true,
 			selected: Object.keys(oldVal)
-        }).popover(el, {adjustForMobile:true, maxHeight: '50vh'})
+        }).popover(el, {adjustForMobile:true})
 
         if( selected === false ) return
 
         // reformat selected values to what we need
         let val = {}
-        selected.forEach(s=>val[s.val]={desc:s.desc})
+
+        if( selected.length == 1 && selected[0].preset )
+            val = selected[0].preset
+        else
+            selected.forEach(s=>val[s.val]={desc:s.desc})
+
 		this.value = val
     }
 

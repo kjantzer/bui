@@ -105,11 +105,11 @@ customElements.define('b-cal', class extends LitElement{
 			this._dateSelected = this._date.clone()
 
 		}else if( val && typeof val == 'object' ){
-			this._dateSelected.set(val)
-			this._date.set(val)
+			this._dateSelected = this._dateSelected.set(val)
+			this._date = this._date.set(val)
         }
 
-		this._date.set({date: 1})
+		this._date = this._date.set({date: 1})
 
         if( oldDate && this._date.isSame(oldDate) )
             return

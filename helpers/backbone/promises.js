@@ -9,11 +9,15 @@ const fetchSync = function(opts={}){
     // a fetch is already happening
     if( this.__fetchSyncPromise ) return this.__fetchSyncPromise
 
+    if( opts.once && this.hasFetched )
+        return 
+
     return this.__fetchSyncPromise = new Promise((resolve, reject)=>{
         let model = this
         opts.success = function(){
             model.__fetchSyncPromise = null
             model.isFetching = false
+            model.hasFetched = new Date().getTime()
             resolve(arguments)
         }
         opts.error = function(model, xhr, opts){
@@ -29,6 +33,21 @@ const fetchSync = function(opts={}){
 
 Collection.prototype.fetchSync = fetchSync
 Model.prototype.fetchSync = fetchSync
+
+// DEPRECATED: use `fetchSync({once:true})`
+const fetchOnce = function(opts){
+    if( !this.hasFetched && !this.isFetching ){
+        this.fetchSync(opts)
+        return true
+    }else if( opts && opts.success ){
+        opts.success(this, this.models)
+        return false;
+    }
+}
+
+Collection.prototype.fetchOnce = fetchOnce
+Model.prototype.fetchOnce = fetchOnce
+
 
 Model.prototype.saveSync = function(key, val, opts){
     return new Promise((resolve, reject)=>{
@@ -90,6 +109,7 @@ Collection.prototype.getOrFetchSync = function(id, opts={}){
 }
 
 
+// TODO: update this with custom Error class and support bui/app/errors
 const xhrError = function(xhr, resp){
 
     let err = new Error()

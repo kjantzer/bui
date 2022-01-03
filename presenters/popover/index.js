@@ -32,7 +32,8 @@ const WatchClicks = function(e){
 	let target = e.path ? e.path.find(el=>el.popover) : e.target
 
 	// the clicked target already has a popover and has the "toggle" setting, so close the current popover
-	if( target && target.popover && target.popover.view != target && target.popover.opts.clickToggles ){
+	if( target && target.popover && typeof target.popover != 'function' 
+	&& target.popover.view != target && target.popover.opts.clickToggles ){
 		target.popover._close()
 		e.preventDefault()
 		e.stopPropagation()
@@ -56,6 +57,12 @@ const WatchClicks = function(e){
 const WatchKeyboard = function(e){
 	let popover = OpenPopovers.slice(0).pop()
 	popover._onKeydown(e)
+}
+
+export function closeAllPopovers(){
+	OpenPopovers.forEach(dd=>{
+		dd.close()
+	})
 }
 
 export default class Popover {
@@ -100,9 +107,14 @@ export default class Popover {
 		this.el.innerHTML = '<span class="__arrow" x-arrow><span class="__arrow" x-arrow></span></span>'
 		this.el.appendChild(view)
 		document.body.append(this.el)
+
+		if( this.opts.inverse )
+			this.el.classList.add('inverse')
 		
 		if( this.opts.className ){
-			this.opts.className.split(' ').forEach(className=>this.el.classList.add(className));
+			this.opts.className.trim()
+								.split(' ')
+								.forEach(className=> className ? this.el.classList.add(className.trim()) : null);
 		}
 		
 		this.el.popover = this
@@ -125,7 +137,9 @@ export default class Popover {
 
 		if( !target ) return
 
-		if( target instanceof MouseEvent || target instanceof KeyboardEvent ){
+		if( target instanceof MouseEvent 
+		|| target instanceof KeyboardEvent 
+		|| target instanceof PointerEvent ){
 			target = this.createInvisiblePlaceholderTarget(target)
 		}
 
@@ -173,11 +187,17 @@ export default class Popover {
 
 	createInvisiblePlaceholderTarget(e){
 		let target = document.createElement('div')
-		target._popoverTarget = e._popoverTarget = (e._popoverTarget || e.currentTarget)
+		target._popoverTarget = (e._popoverTarget || e.currentTarget)
 		target.classList.add('popover-invisible-placeholder')
 		target.style.position = 'absolute'
 		
-		if( e instanceof MouseEvent ){
+		if( e instanceof MouseEvent || e instanceof PointerEvent ){
+
+			if( !Object.isFrozen(e) ){
+				e._popoverTarget = target._popoverTarget
+				Object.freeze(e)
+			}
+
 			target.style.left = e.clientX+'px'
 			target.style.top = e.clientY+'px'
 
@@ -236,16 +256,20 @@ export default class Popover {
 
 		this.target.popover = null
 
-		if( this.target._popoverTarget ){
-			this.target._popoverTarget.classList.remove('popover-open')
+		if( this.target.classList.contains('popover-invisible-placeholder') ){
+			if( this.target._popoverTarget )
+				this.target._popoverTarget.classList.remove('popover-open')
+				
 			this.target.remove()
 		}else
 			this.target.classList.remove('popover-open')
+
+		this.target = null
 	}
 	
 	close(){
 		
-		if( !this.target.popover ) return;
+		if( !this.target || !this.target.popover ) return;
 		
 		this.el.popover = null
 		this.view.popover = null
@@ -303,11 +327,15 @@ export default class Popover {
 		data.instance.modifiers.forEach(m=>{
 			if( m.name == 'preventOverflow' && m.boundaries ){
 
-				// TODO: needs improvement when alignmen is not bottom-*
-				let h = (window.innerHeight) - bottom - (arrowH*2)
+				let offset = (window.outerHeight * .035)
 
-				if( bottom > window.innerHeight/2 )
-					h = top - (arrowH*2)	
+				// TODO: needs improvement when alignmen is not bottom-*
+				let h = (window.innerHeight) - bottom - (arrowH*2) - offset
+
+				// if the popover view becomes less than 1/4 of the screen
+				// calc height from the top (alignment will switch)
+				if( h <= window.innerHeight/4 )
+					h = top - (arrowH*2) - offset
 
 				this.maxHeight = h
 				this.view.style.width = this.opts.width||this.view.style.width

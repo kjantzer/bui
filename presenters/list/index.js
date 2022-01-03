@@ -9,6 +9,7 @@ import './infinite-list'
 import '../../elements/spinner-overlay'
 import '../../helpers/lit-element/selectors'
 import Selection from '../selection'
+import Scrollbars from '../../helpers/scrollbars'
 
 customElements.define('b-list', class extends LitElement {
 
@@ -102,24 +103,50 @@ customElements.define('b-list', class extends LitElement {
         :host {
             display: grid;
             grid-template-rows: auto auto 1fr auto;
+            grid-template-columns: auto 1fr auto;
             overflow: hidden;
             flex: 1;
             position: relative;
             z-index: 10;
+            grid-template-areas:
+                "toolbar toolbar toolbar"
+                "sidebarleft header sidebarright"
+                "sidebarleft list sidebarright"
+                "sidebarleft footer sidebarright";
+
         }
+
+        [part="list"] { grid-area: list; }
+        [part="toolbar"] { grid-area: toolbar; }
+        [part="header"] { grid-area: header; }
+        [part="footer"] { grid-area: footer; }
+        [part="sidebar:left"] { grid-area: sidebarleft; }
+        [part="sidebar:right"] { grid-area: sidebarright; }
 
         slot[name="header"],
         slot[name="footer"] {
-            display: block;
+            display: grid;
             overflow-x: auto;
         }
 
-        slot[name="header"]::-webkit-scrollbar,
-        slot[name="footer"]::-webkit-scrollbar {
+        slot[name="header"]::slotted(*),
+        slot[name="footer"]::slotted(*) {
+            overflow-y: auto;
+            order: 10;
+        }
+
+        /* this doesn't seem to work */
+        slot[name="header"]::slotted(*::-webkit-scrollbar),
+        slot[name="footer"]::slotted(*::-webkit-scrollbar) {
             display: none;
             width: 0 !important;
             height: 0 !important;
         }
+
+        [part="sidebar:left"],
+        [part="sidebar:right"] {
+            display: block;
+        } 
 
         b-spinner-overlay {
             --spinnerSize: 6em;
@@ -142,6 +169,8 @@ customElements.define('b-list', class extends LitElement {
             position: relative;
             -webkit-overflow-scrolling: touch;
         }
+
+        ${Scrollbars.styleWindows('b-infinite-list')}
 
         b-infinite-list[selection-on] {
             user-select: none;
@@ -194,6 +223,38 @@ customElements.define('b-list', class extends LitElement {
         :host([queuing]) .queuing-overlay {
             display: flex;
         } */
+
+        :host([toolbar="bottom"]) {
+            grid-template-rows: auto 1fr auto auto;
+        }
+
+        :host([toolbar="bottom"]) b-list-toolbar {
+            order: 3;
+        }
+
+        b-panels {
+            overflow: hidden;
+        }
+
+        b-panel {
+            --radius: 0
+        }
+
+        b-panel::part(main) {
+            box-shadow: none;
+            border-top: solid 1px var(--theme-bgd-accent);
+            background: var(--b-list-filter-overflow-bgd, var(--theme-bgd));
+        }
+
+        @media (max-width:599px){
+            :host([toolbar="bottom-mobile"]) {
+                grid-template-rows: auto 1fr auto auto;
+            }
+
+            :host([toolbar="bottom-mobile"]) b-list-toolbar {
+                order: 3;
+            }
+        }
     `}
 
     get spinner(){
@@ -210,12 +271,17 @@ customElements.define('b-list', class extends LitElement {
             <b-spinner-overlay></b-spinner-overlay>
         </slot>
         
-        <b-list-toolbar .filters=${this.filters} .sorts=${this.sorts} .layouts=${this.layouts}
-            @filter-term-changed=${this.onFilterTermChange} part="toolbar">
+        <b-list-toolbar 
+            .filters=${this.filters}
+            .sorts=${this.sorts}
+            .layouts=${this.layouts}
+            .listOptions=${this.listOptions}
+            @filter-term-changed=${this.onFilterTermChange} part="toolbar"
+        >
             <slot name="toolbar:before" slot="before"></slot>
             <slot name="toolbar:after" slot="after"></slot>
             <slot name="toolbar:refresh" slot="refresh-btn">
-                <b-btn text pill icon="arrows-ccw" @click=${this.refresh}></b-btn>
+                <b-btn text pill icon="refresh" @click=${this.refresh}></b-btn>
             </slot>
             <!-- <b-label slot="after" class="queuing-label">Queuing filters, release to apply</b-label> -->
             <b-list-selection-bar part="selectionbar">
@@ -224,7 +290,9 @@ customElements.define('b-list', class extends LitElement {
             </b-list-selection-bar>
         </b-list-toolbar>
 
-        <slot name="header" part="header-slot"></slot>
+        <slot name="sidebar:left" part="sidebar:left"></slot>
+
+        <slot name="header" part="header"></slot>
         <b-infinite-list
             part="list"
             .empty="${this.createEmptyElement}"
@@ -233,8 +301,13 @@ customElements.define('b-list', class extends LitElement {
             .dataSource=${this.dataSource}
             fetch-on-load=${(this.listOptions&&this.listOptions.fetchOnLoad)}
             layout="${this.layout}"
-        ></b-infinite-list>
-        <slot name="footer" part="footer-slot"></slot>
+        >
+        </b-infinite-list>
+        <slot name="footer" part="footer"></slot>
+
+        <slot name="sidebar:right" part="sidebar:right"></slot>
+
+        <b-panels name="b-list:${this.key}"></b-panels>
     `}
 
     connectedCallback(){
@@ -261,15 +334,73 @@ customElements.define('b-list', class extends LitElement {
             delete this.host
     }
 
+    focusSearchInput(){
+        let searchBar = this.toolbar.$$('b-list-search-bar')
+        if( searchBar )
+            searchBar.focus()
+    }
+
+    blurSearchInput(){
+        let searchBar = this.toolbar.$$('b-list-search-bar')
+        if( searchBar )
+            searchBar.blur()
+    }
+
     onKeydown(e){
-        if( e.target !== document.body ) return
-        if( !e.metaKey && !e.ctrlKey ) return
-        this.queuing = true
+
+        if( e.cancelBubble )
+            return
+
+        if( this.offsetParent // is this list visible?
+        && document.activeElement.tagName == 'BODY' // NOT inside an input
+        ){
+
+            // Like Google search results, focus search when `/` is pressed
+            if( e.key == '/'
+            && !e.ctrlKey && !e.metaKey && !e.shiftKey // ignore if extra keys pressed
+            ){
+                setTimeout(()=>{
+                    e.preventDefault()
+                    this.focusSearchInput()
+                })
+            }
+
+            if( e.shiftKey & e.key == 'R' ){
+                
+                // focus search so we can check `document.activeElement`
+                setTimeout(()=>{
+                    e.preventDefault()
+                    this.focusSearchInput()
+
+                    // traverse up the DOM to see if this list is in the activeElement
+                    setTimeout(()=>{
+                        let parent = this
+                        let isActive = false
+                        while( parent != undefined ){
+                            parent = parent.parentElement || parent.getRootNode().host
+                            if( isActive = parent == document.activeElement )
+                                break
+                        }
+
+                        // yep, active, so refresh
+                        if( isActive ){
+                            this.refresh()
+                            this.blurSearchInput()
+                        }
+                    })
+                })
+            }
+        }
+        // if( e.target !== document.body ) return
+        // if( !e.metaKey && !e.ctrlKey ) return
+        // console.log('here');
+        // this.queuing = true
     }
 
     onKeyup(e){
-        if( this.queuing && !this.filters.queuedChanges )
-            this.queuing =  false
+        // why was I doing this?
+        // if( this.queuing && !this.filters.queuedChanges )
+        //     this.queuing =  false
     }
 
     get queuing(){ return this.filters && this.filters.queuing }
@@ -308,6 +439,7 @@ customElements.define('b-list', class extends LitElement {
     createEmptyElement(){
         this.emptyView = this.emptyView || document.createElement(this.emptyElement)
         this.emptyView.part = 'empty-view'
+        this.emptyView.setAttribute('must-be', 'first')
         this.emptyView.list = this
         this.emptyView.dataSource = this.dataSource
         
@@ -324,13 +456,14 @@ customElements.define('b-list', class extends LitElement {
         let divider = this.getAttribute('divider')
         
         divider = divider && customElements.get(divider)
-
-        if( divider && divider.shouldDisplay && divider.shouldDisplay(prevModel, model, this) ){
-            divider = new divider(prevModel, model, this)
+        let shouldDisplay = divider && divider.shouldDisplay && divider.shouldDisplay(prevModel, model, this)
+        if( shouldDisplay ){
+            divider = new divider(prevModel, model, this, shouldDisplay)
             divider.part = 'divider'
             divider.list = this
             divider.model = model
             divider.prevModel = prevModel
+            divider.data = shouldDisplay
             return divider
         }
 
@@ -385,6 +518,17 @@ customElements.define('b-list', class extends LitElement {
             e.stopPropagation()
             this.selection.begin(e)
         })
+    }
+
+    get currentModels(){
+        return this.selection.isOn 
+        ? this.selection.result.models
+        : this.dataSource.data
+    }
+
+    get currentModelsOrAll(){
+        let models = this.currentModels
+        return models.length > 0 ? models : this.dataSource.data
     }
 
     async refresh(){

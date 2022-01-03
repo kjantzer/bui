@@ -8,9 +8,11 @@ import 'bui/elements/btn'
 import 'bui/elements/btn-group'
 import 'bui/elements/spinner'
 import 'bui/elements/spinner-overlay'
+import 'bui/elements/tooltip'
 import 'bui/elements/uploader'
 import 'bui/elements/paper'
 import 'bui/elements/grid'
+import 'bui/elements/flex'
 import 'bui/elements/timer'
 import 'bui/elements/empty-state'
 import 'bui/elements/label'
@@ -24,8 +26,8 @@ import 'bui/elements/embed'
 import 'bui/elements/audio'
 import 'bui/elements/carousel'
 import 'bui/elements/timeline-horz'
-import defineFileIcon from 'bui/elements/file-icon'
 import 'bui/helpers/day-js'
+import './elements/icons'
 
 import buttons from './elements/buttons'
 import text from './elements/text'
@@ -33,8 +35,6 @@ import specialty, {styles as specialtyStyles} from './elements/specialty'
 import iconDocs from '../docs/icons.md'
 
 import elementDocs, {allDocs} from './elements/docs'
-
-defineFileIcon()
 
 customElements.define('demo-elements', class extends LitElement{
 
@@ -51,9 +51,13 @@ customElements.define('demo-elements', class extends LitElement{
             overflow: hidden;
         }
 
-        b-grid > div {
-            background: var(--theme-bgd);
+        [view-id="Layout"] b-grid > div {
+            background: var(--theme-bgd-accent);
             padding: .25em;
+        }
+
+        [view-id="Layout"] b-flex > div {
+            background: var(--theme-bgd-accent);
         }
 
         b-paper {
@@ -104,7 +108,42 @@ customElements.define('demo-elements', class extends LitElement{
     render(){return html`
         <b-tabs-router path="elements/" key="elements" layout="left">
 
-            <section title="Grid">
+             <section title="Icons">
+
+                <b-paper>
+                <b-h1>Icons</b-h1>
+
+                <demo-markdown-docs notoc .docs=${iconDocs}></demo-markdown-docs>
+
+                <b-btn href="material-icons">View Available Material Icons</b-btn>
+                </b-paper>
+
+                <br><br>
+
+                <b-paper>
+                    <b-h1>File Icon</b-h1>
+                    <b-file-icon ext="pdf" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="docx" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="xlsx" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="psd" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="indd" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="ai" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="mp3" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="mp4" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="html" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="xml" style="--size:4em"></b-file-icon>
+                    <b-file-icon ext="zip" style="--size:4em"></b-file-icon>
+
+                    <br><br>
+                    <demo-markdown-docs notoc .docs=${elementDocs['file-icon']}></demo-markdown-docs>
+                </b-paper>
+            </section>
+
+            b-demo-icons
+
+            <section title="Layout">
+
+                <b-paper>
                 <h1>Grid</h1>
 
                 <b-grid cols="4">
@@ -118,7 +157,8 @@ customElements.define('demo-elements', class extends LitElement{
                     <div>Row 8</div>
                 </b-grid>
 
-                <b-hr></b-hr>
+                <b-hr short thick pad="lg"></b-hr>
+
                 <h2>Columns</h2>
                 <div>There are defaults columns, but if you need something custom, you can apply your own <code>grid-template-columns</code> style</div>
 
@@ -158,7 +198,8 @@ customElements.define('demo-elements', class extends LitElement{
                     <div>Row 8</div>
                 </b-grid>
 
-                <b-hr></b-hr>
+                <b-hr short thick pad="lg"></b-hr>
+                
                 <h2>Gap</h2>
 
                 <h3><code>gap="0"</code></h3>
@@ -184,6 +225,42 @@ customElements.define('demo-elements', class extends LitElement{
                     <div>Row 3</div>
                     <div>Row 4</div>
                 </b-grid>
+
+                </b-paper>
+
+                <b-paper>
+
+                    <h1>Flex</h1>
+
+                    <b-paper outline compact><b-flex left>
+                        <div>Flex box</div>
+                        <div>Flex box</div>
+                        <div>Flex box</div>
+                    </b-flex>
+                    </b-paper>
+
+                    <b-paper outline compact><b-flex right>
+                        <div>Flex box</div>
+                        <div>Flex box</div>
+                        <div>Flex box</div>
+                    </b-flex>
+                    </b-paper>
+
+                    <b-paper outline compact><b-flex stretch>
+                        <div>stretch</div>
+                        <div>stretch</div>
+                        <div>stretch</div>
+                    </b-flex>
+                    </b-paper>
+
+                    <b-paper outline compact><b-flex col>
+                        <div>coll</div>
+                        <div>coll</div>
+                        <div>coll</div>
+                    </b-flex>
+                    </b-paper>
+
+                </b-paper>
                 
             </section>
 
@@ -265,7 +342,8 @@ customElements.define('demo-elements', class extends LitElement{
 
             <section title="Spinner">
 
-                <h1>Spinners</h1>
+                <b-paper>
+                <b-h1>Spinners</b-h1>
 
                 Inline spinner <b-spinner></b-spinner>
                 
@@ -274,6 +352,42 @@ customElements.define('demo-elements', class extends LitElement{
                 <div style="position: relative; z-index: 0;">
                     <b-spinner-overlay show></b-spinner-overlay>
                     An overlay spinner. Sint ullamco sunt in officia sint. Ea ullamco ipsum anim fugiat anim officia eu sint. Laborum anim fugiat ipsum Lorem. Mollit et cupidatat incididunt pariatur mollit cillum ex ex.</div>
+
+                </b-paper>
+
+            </section>
+            
+            <section title="Tooltip">
+
+                <b-paper><b-text tooltip="Testing">tooltips</b-text>
+
+                    <b-h1>Tooltips</b-h1>
+
+                    <p>Hover over me and wait a second to see a tooltip.
+                        <b-tooltip>👋 Hey there!</b-tooltip>
+                    </p>
+
+                    <p>Hover over me and wait a 5 seconds to see a tooltip.
+                        <b-tooltip delay=5>⏱ I took a bit longer to show</b-tooltip>
+                    </p>
+
+                    <p>Tooltips have a few settings. Hover over the info icon to see how <b-code>delay</b-code>, <b-code>target</b-code>, and <b-code>align</b-code> can changed for a different effect.
+                        <b-icon name="info-circled"><b-tooltip delay=0 target="parent" align="top">Testing</b-tooltip></b-icon></p>
+
+                    <p>A preset attribute called <b-code>label</b-code> can be used as a shorthand for this ^</p>
+
+                    <div>
+                        <b-btn clear empty lg icon="home"><b-tooltip label>Home</b-tooltip></b-btn>
+                        <b-btn clear empty lg icon="user"><b-tooltip label>Account</b-tooltip></b-btn>
+                        <b-btn clear empty lg icon="cog" tooltip="Settings"></b-btn>
+                    </div>
+
+
+                    <p>Tooltips use the Popover presenter to show the tooltip.</p>
+
+                    <p><b-text tone="info">HTML<b-tooltip delay=500><b>Bold</b> text with an icon <b-icon name="blackstone"></b-icon></b-tooltip></b-text> is also supported in the <b-text tooltip="Testing">tooltips</b-text></p>
+
+                </b-paper>
 
             </section>
 
@@ -322,39 +436,6 @@ customElements.define('demo-elements', class extends LitElement{
             </section>
 
             ${specialty}
-
-
-            <section title="Icons">
-
-                <b-paper>
-                <b-h1>Icons</b-h1>
-
-                <demo-markdown-docs notoc .docs=${iconDocs}></demo-markdown-docs>
-
-                <h3>All Available BUI Icons</h3>
-                <b-icon-list cols="4"></b-icon-list>
-                </b-paper>
-
-                <br><br>
-
-                <b-paper>
-                    <b-h1>File Icon</b-h1>
-                    <b-file-icon ext="pdf" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="docx" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="xlsx" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="psd" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="indd" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="ai" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="mp3" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="mp4" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="html" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="xml" style="--size:4em"></b-file-icon>
-                    <b-file-icon ext="zip" style="--size:4em"></b-file-icon>
-
-                    <br><br>
-                    <demo-markdown-docs notoc .docs=${elementDocs['file-icon']}></demo-markdown-docs>
-                </b-paper>
-            </section>
 
             <section title="Docs">
 

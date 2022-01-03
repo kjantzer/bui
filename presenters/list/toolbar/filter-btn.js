@@ -1,5 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
+import {unsafeHTML} from 'lit-html/directives/unsafe-html'
 import '../../../elements/label'
+import device from '../../../util/device'
 
 customElements.define('b-list-filter-btn', class extends LitElement{
 
@@ -15,11 +17,15 @@ customElements.define('b-list-filter-btn', class extends LitElement{
         main {
             display: inline-grid;
             line-height: 1.2em;
+            margin-bottom: -.25em;
         }
 
         b-label {
             grid-area: unset;
             color: var(--toolbarTextColor);
+            margin: -0.5em 0px;
+            position: relative;
+            top: -0.5em;
             /* opacity: .4; */
         }
 
@@ -38,6 +44,41 @@ customElements.define('b-list-filter-btn', class extends LitElement{
         b-btn[active] {
             font-weight: bold;
         }
+
+        b-btn[active] b-label {
+            color: var(--theme);
+        }
+
+        :host([larger]) b-btn {
+            --padding: .5em;
+            opacity: 1;
+        }
+
+        :host([larger]) b-btn:not([active]) b-label {
+            opacity: .7;
+        }
+
+        :host([larger]) b-btn:not([active]) div {
+            opacity: .4;
+        }
+
+        :host([larger]) b-btn[active] {
+            box-shadow: 0 0 0 1px var(--theme) inset;
+        }
+
+        :host([larger]) b-btn[active] b-label {
+            color: var(--theme);
+        }
+
+        :host([larger]) b-label {
+            font-size: .8rem;
+            margin: 0;
+            line-height: 1em;
+        }
+
+        :host([larger]) div {
+            font-size: 1.2rem;
+        }
     `}
 
     render(){return html`
@@ -46,7 +87,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
                 <b-label xs>${this.filter.label}</b-label>
                 <div>
                     ${this.filter.icon?html`<b-icon name="${this.filter.icon}"></b-icon>`:''}
-                    ${this.filter.valueLabel}
+                    ${unsafeHTML(this.filter.valueLabel)}
                 </div>
             </main>
         </b-btn>
@@ -56,6 +97,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
         super.connectedCallback()
         this.update = this.update.bind(this)
         this.filter.on('change', this.update)
+        this.update()
         // this.addEventListener('filter-changed', this.update, true)
     }
 
@@ -66,7 +108,14 @@ customElements.define('b-list-filter-btn', class extends LitElement{
     }
 
     showMenu(e){
-        this.filter.showMenu(e.currentTarget)
+        let opts = {}
+
+        if( this.hasAttribute('larger') && !device.isSmallDevice ){
+            opts.align = 'right'
+            opts.overflowBoundry = 'window'
+        }
+
+        this.filter.showMenu(e.currentTarget, opts)
     }
 
 })

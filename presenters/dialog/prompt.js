@@ -5,6 +5,11 @@ import Dialog from './element'
 import { html, css } from 'lit-element'
 import device from '../../util/device'
 import mobileAsyncFocus from '../../util/mobileAsyncFocus'
+import '../form/controls/text-field'
+import '../form/controls/radio-group'
+import '../form/controls/radio-btn'
+import '../form/control'
+import '../form/handler'
 
 customElements.define('b-dialog-prompt', class extends Dialog{
 
@@ -17,16 +22,22 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 		:host(:not([notext])) form-handler {
 			margin-top: 1em;
 		}
+
+		radio-group {
+			margin-bottom: .25em;
+		}
     `]}
 
     constructor(opts={}){
 
 		opts = Object.assign({
 			material: 'filled',
-			btns: ['cancel', 'save']
+			btns: ['cancel', 'save'],
+			//onSubmit(val, control, blur){}
 		}, opts)
 
         super(opts)
+		this.opts = opts
 
 		if( opts.prompts )
 			this.prompts = opts.prompts.map((p,i)=>makePrompt(p, i, opts))
@@ -36,28 +47,56 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 
 		if( opts.autoFocus !== false ){
 
-			setTimeout(()=>{this.focus()}, 200)
+			setTimeout(()=>{
+				this.focus()
+				if( opts.autoFocus == 'select' )
+					this.selectAll()
+			}, 200)
 			
-			if( device.isiOS )
+			if( device.isMobile )
 				mobileAsyncFocus(this)
 		}
     }
 
     renderView(){return html`
-		<form-handler @submit=${this.onSubmit}>
+		<form-handler @submit=${this.onSubmit} .model=${this.opts.model}>
 			${this.prompts}
 		</form-handler>
 	`}
 
 	onSubmit(e){
+
+		if( e.target.isInvalid ) return
+
+		if( this.opts.onSubmit ){
+			let control = e.target
+			let blur = function(){ control.blur() }
+			return this.opts.onSubmit(this.value, control, blur)
+		}
+		
 		// if valid, blur the field so "enter" keypress fires correctly on Dialog
-		if( !e.target.isInvalid )
-			e.target.blur()
+		e.target.blur()
 	}
 
 	focus(){
 		if( this.formHandler.controls.length > 0 )
 			this.formHandler.controls[0].focus()
+	}
+
+	selectAll(){
+		if( this.formHandler.controls.length > 0 )
+			this.formHandler.controls[0].control.select('all')
+	}
+
+	get value(){
+		let vals = this.formHandler.values
+
+		if( this.formHandler.controls.length == 1 ){
+			let control = this.formHandler.controls[0]
+			vals = this.html ? control.value : ((control.control && control.control.textValue) || control.value)
+		}
+
+		return vals
 	}
 
     resolve(resp){
@@ -66,15 +105,10 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 			return false
 
 		let returnResp = this.btns.length > 2
-		let vals = this.formHandler.values
+		let vals = this.value
 
 		// no button selected
 		if( !resp ) return super.resolve(returnResp ? [resp] : resp)
-		
-		if( this.formHandler.controls.length == 1 ){
-			let control = this.formHandler.controls[0]
-			vals = this.html ? control.value : (control.control.textValue || control.value)
-		}
 
 		resp = returnResp ? [resp, vals] : vals
 
@@ -93,6 +127,9 @@ function makePrompt(opts, i=0, globalOpts){
 	if( opts.getHTML )
 		return opts
 
+	if( opts == 'divider' || opts == '-' )
+		return html`<b-hr></b-hr>`
+
     opts = Object.assign({
 		key: 'prompt-'+i,
 		val: '',
@@ -108,22 +145,72 @@ function makePrompt(opts, i=0, globalOpts){
 		type: '',
 		multiline: false,
 	}, opts)
+
+	if( ['int', 'decimal', 'float', 'number'].includes(opts.pattern) )
+		opts.type = 'number'
+
+	if( !opts.val && globalOpts.val && globalOpts.val[opts.key] )
+		opts.val = globalOpts.val[opts.key]
+
+	if( opts.type == 'switch' )
+	return html`
+	<div>
+		<check-box 
+			key="${opts.key}"
+			type="switch"
+			.value=${opts.val}
+			label="${opts.label}"
+		></check-box>
+	</div>
+	`
+
+	let control = html`
+		<text-field
+			pattern="${opts.pattern}"
+			placeholder="${opts.placeholder}"
+			type="${opts.type}"
+			input="${opts.type}"
+			?html=${opts.html}
+			?multiline=${opts.multiline}
+			?required=${opts.required}
+			.value=${opts.val}></text-field>
+	`
+
+	if( opts.options && opts.segment ){
+		return html`
+			<radio-group segment="theme" stacked
+			key="${opts.key}"
+			style="${opts.w?`width:${opts.w}px;`:''}">
+				
+				${opts.options.map(o=>html`
+					<radio-btn 
+						label=${o.label}
+						value=${o.val}
+						?disabled=${o.disabled}
+					></radio-btn>
+				`)}
+
+			</radio-group>
+		`
+	}
+
+	if( opts.options ){
+		control = html`
+			<select-field
+				placeholder="${opts.placeholder}"
+				.options=${opts.options}
+				.value=${opts.val}
+			></select-field>
+		`
+	}
 	
 	return html`
 	<form-control material="${globalOpts.material}"
 		key="${opts.key}"
 		show=${opts.label?'':'suffix prefix'}
-		prefix="${opts.prefix}"
-		suffix="${opts.suffix}"
 		style="${opts.w?`width:${opts.w}px;`:''}"
-	>
-		<text-field
-			pattern="${opts.pattern}"
-			placeholder="${opts.placeholder}"
-			?html=${opts.html}
-			?multiline=${opts.multiline}
-			?required=${opts.required}
-			.value=${opts.val}></text-field>
+	>	
+		${control}
 
 		${opts.helpText?html`<div slot="help">${opts.helpText}</div>`:''}
 		${opts.label?html`<span slot="label">${opts.label}</span>`:''}

@@ -12,7 +12,7 @@ The list of colors is pulled from [material.io](https://material.io/design/color
 }
 
 button {
-    background: var(--color-primary);
+    background: var(--theme);
     color: var(--white);
 }
 ```
@@ -20,8 +20,7 @@ button {
 #### Changing default colors
 ```css
 :root {
-    --color-primary: var(--teal-400);
-    --color-secondary: var(--amber);
+    --theme: var(--teal-400);
     --black: #222;
 }
 ```

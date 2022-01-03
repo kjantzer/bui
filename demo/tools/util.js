@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
 import '../markdown-docs'
 import docs from 'bui/util/README.md'
+import barcodeDocs from 'bui/util/barcodeScanner/README.md'
 
 customElements.define('demo-util', class extends LitElement{
 
@@ -33,6 +34,8 @@ customElements.define('demo-util', class extends LitElement{
     	<b-paper>
             <b-h1>Util</b-h1>
 			<demo-markdown-docs .docs=${docs}></demo-markdown-docs>
+
+            <demo-markdown-docs .docs=${barcodeDocs}></demo-markdown-docs>
 		</b-paper>
     `}
 

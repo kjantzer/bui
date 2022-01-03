@@ -3,7 +3,7 @@ import { LitElement, html, css } from 'lit-element'
 customElements.define('b-previewer-image', class extends LitElement{
 
     static useFor(ext){
-        return ['jpg', 'jpeg', 'png', 'gif'].includes(ext)
+        return ['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(ext)
     }
 
     static get styles(){return css`

@@ -5,7 +5,7 @@
 import styles from './control.css.js'
 import nativeInputHelper from './util/nativeInputHelper'
 
-const CONTROLS = '[slot="control"], .control, text-field, rich-text-field, select-field, check-box, radio-group, token-text-field'
+const CONTROLS = '[slot="control"], .control, text-field, text-editor, select-field, check-box, radio-group, token-text-field'
 const MIRROR_CONTROL_ATTRS = ['invalid', 'empty', 'no-value', 'falsy', 'focused', 'value']
 
 
@@ -31,7 +31,7 @@ class FormControlElement extends HTMLElement {
         temp.innerHTML = `
 			<style>${styles.cssText}</style>
 			<slot name="before"></slot>
-			<main>
+			<main part="main">
 				<slot name="control"></slot>
 				<slot name="main"></slot>
 				<div class="prefix" part="prefix">${prefix}</div>
@@ -51,13 +51,18 @@ class FormControlElement extends HTMLElement {
 			<slot id="value"></slot>`
 			
         this.shadowRoot.appendChild(temp.content.cloneNode(true));
-		
+
+		this.control = this.querySelector(CONTROLS)
+    }
+
+	firstUpdated(){
 		let value = this.$('#value')
 		this._val = value.assignedNodes().map(el=>el.textContent.trim()).join(' ')
 		this._val = this._val.replace(/^\n|\n$/g, '').trim()
 		
-		this.control = this.querySelector(CONTROLS)
-		
+		if( !this.control )
+			this.control = this.querySelector(CONTROLS)
+
 		if( this.control ){
 			
 			this.control.slot = 'control'
@@ -94,7 +99,7 @@ class FormControlElement extends HTMLElement {
 					slot.removeAttribute('hidden')
 			})
 		})
-    }
+	}
 	
 	_onChange(e){
 		
@@ -120,6 +125,12 @@ class FormControlElement extends HTMLElement {
 	$$(str){ return this.shadowRoot.querySelectorAll(str)}
 	
 	connectedCallback(){
+
+		if( !this.__firstUpdated ){
+			this.__firstUpdated = true
+			this.firstUpdated()
+		}
+
 		this._setClassNames()
 		
 		// hide slots that are empty
@@ -174,6 +185,13 @@ class FormControlElement extends HTMLElement {
 		let val = control.dbValue
 		return val !== undefined ? val : control.value
 	}
+
+	get textValue(){
+		let control = this.control
+		if( !control ) return undefined
+		let val = control.textValue
+		return val !== undefined ? val : control.value
+	}
 	
 	get options(){ return this.control && this.control.options}
 	
@@ -186,7 +204,7 @@ class FormControlElement extends HTMLElement {
 		return this.control&&this.control.isInvalid
 	}
 
-	get label(){ return this.$('.label').innerText }
+	get label(){ return this.$('.label').textContent }
 	set label(str){
 		this.$('.label').innerHTML = str
 		if( str ){

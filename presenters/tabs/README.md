@@ -131,7 +131,7 @@ There are are a few built-in tab bar variations. Once imported, you can use by s
 #### Badges
 A simplified tab bar that displays tabs as text buttons with the active one being a colored badge
 ```js
-import 'bui/tabs/tab-bar/badges'
+import 'bui/presenters/tabs/tab-bar/badges'
 
 let view = html`
     <b-list tab-bar="b-tab-bar-badges"></b-list>

@@ -34,8 +34,6 @@ customElements.define('b-previewer-iframe', class extends LitElement{
     onLoad(){
         // setTimeout(() => {
             // console.log(this.$$('iframe'));
-
-            console.log(this.$$('iframe').contentDocument.body);
             
             // doesn't work
             this.$$('iframe').contentDocument.body.style.background = 'transparent'    
@@ -43,6 +41,8 @@ customElements.define('b-previewer-iframe', class extends LitElement{
             this.$$('iframe').contentDocument.body.onclick = function(){
                 console.log('on click');
             }
+
+            this.emitEvent('loaded')
 
             // this.$$('iframe').addEventListener('click', e=>{
             //     console.log('clicked?', e);

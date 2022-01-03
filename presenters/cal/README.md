@@ -1,6 +1,8 @@
 Calendar
 ==========
 
+> !! DEPRECATED - see `/presenters/calendar`
+
 ```js
 import 'bui/presenters/cal'
 ```
@@ -39,4 +41,4 @@ import 'bui/presenters/cal'
 - `after-nav`
 
 ## TODO
-- refactor to use [lit-virtualizer](https://www.npmjs.com/package/lit-virtualizer)
+- ~~refactor to use [lit-virtualizer](https://www.npmjs.com/package/lit-virtualizer)~~ (see `../calendar`)

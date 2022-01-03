@@ -118,7 +118,7 @@ customElements.define('b-search', class extends LitElement{
             padding: 0;
         }
 
-        @media (max-width: 699px) {
+        @media (max-width: 599px) {
 
             :host {
                 --min-w: 140px;

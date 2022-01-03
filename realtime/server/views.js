@@ -2,12 +2,22 @@ const View = require('./view')
 
 class Views extends Map {
 	
-	connect(socket){
+	connect(io, socket){
 
-        this.io = socket.io
+        this.io = io
 
 		socket.on('view:open', (viewName, data)=>{
 			this.get(viewName).add(socket, data)
+		});
+
+		socket.on('view:emit', (viewName, opts, cb)=>{
+
+			let view = this.get(viewName)
+
+			if( !view )
+				return cb({error: 'Invalid view name'})
+
+			cb(view.emit(opts))
 		});
 
 		socket.on('view:info', (viewNamePattern, cb)=>{
@@ -48,7 +58,7 @@ class Views extends Map {
 		let view = super.get(viewName)
 
 		if( !view ){
-			view = new View(io, viewName)
+			view = new View(this.io, viewName)
 			this.set(viewName, view)
 		}
 

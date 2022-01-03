@@ -46,18 +46,29 @@
     },
     "dependencies": {
         "@fnando/sparkline": "^0.3.10",
+        "@material-icons/svg": "github:material-icons/material-icons#original",
+        "@tiptap/core": "2.0.0-beta.122",
+        "@tiptap/extension-character-count": "2.0.0-beta.13",
+        "@tiptap/extension-placeholder": "2.0.0-beta.33",
+        "@tiptap/extension-text-align": "2.0.0-beta.23",
+        "@tiptap/extension-typography": "^2.0.0-beta.15",
+        "@tiptap/starter-kit": "2.0.0-beta.123",
+        "@tiptap/suggestion": "2.0.0-beta.72",
+        "backbone": "^1.4.0",
         "component-emitter": "^1.3.0",
         "dayjs": "^1.8.35",
+        "fluent-ffmpeg": "^2.1.2",
         "fuse.js": "^3.4.5",
         "lit-element": "^2.4.0",
         "lit-html": "^1.3.0",
         "lit-virtualizer": "^0.4.2",
         "lodash": "^4.17.11",
+        "node-vibrant": "^3.2.1-alpha.1",
         "numeral": "^2.0.6",
         "popper.js": "^1.14.7",
-        "quill": "github:kjantzer/quill#shadow",
-        "workbox-recipes": "^6.1.0",
         "socket.io": "^2.3.0",
-        "url-pattern": "^1.0.3"
+        "tinycolor2": "^1.4.2",
+        "url-pattern": "^1.0.3",
+        "workbox-recipes": "^6.1.0"
     }
 }

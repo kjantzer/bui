@@ -3,7 +3,7 @@
 }
 
 .b-menu {
-	--hoverBgd: var(--b-menu-hover-bgd, rgba(0,0,0,.1));
+	--hoverBgd: var(--b-menu-hover-bgd, var(--theme-bgd-accent, rgba(0,0,0,.1)));
 	--hoverTextColor: inherit;
 	--checkboxColor: var(--b-menu-checkbox-color, #e10050);
 	--checkboxColorHover: var(--checkboxColor);
@@ -27,14 +27,18 @@
 		position: relative;
 		padding: .5em;
 
+		&[hidden] {
+			padding: 0;
+		}
+
 		input {
 			width: auto;
 			flex: 1;
 			min-width: 2em;
 			box-shadow: none;
 			border: none;
-			background: var(--b-menu-input-bgd, #eee) !important;
-			color: var(--b-menu-input-color);
+			background: var(--b-menu-input-bgd, var(--theme-bgd-accent, #eee)) !important;
+			color: var(--b-menu-input-color, var(--theme-text));
 			border-radius: var(--b-menu-input-radius, 30px);
 			font-size: var(--b-menu-input-font-size, 1rem);
 			padding-top: var(--b-menu-input-padding, .35em);
@@ -49,7 +53,7 @@
 		// }
 
 		input::placeholder {
-			color: var(--b-menu-color-accent, rgba(0,0,0,.3));
+			color: var(--b-menu-color-accent, rgba(var(--theme-text-rgb), .5));
 		}
 
 		b-icon {
@@ -75,8 +79,10 @@
 		transition: 120ms;
 		display: flex;
 		align-items: flex-start;
+		position: relative;
 
 		> b-icon:first-child,
+		> check-box + b-icon,
 		> .icon {
 			margin: .1em .5em 0 -.15em;
 		}
@@ -95,6 +101,7 @@
 
 		> .mi-content {
 			flex-grow: 1;
+			min-width: 1em;
 		}
 
 		.mi-label {
@@ -108,7 +115,7 @@
 		.mi-description {
 			font-size: .8em;
 			line-height: 1.2em;
-			color: var(--b-menu-description-color, rgba(0,0,0,.5));
+			color: var(--b-menu-description-color, rgba(var(--theme-text-rgb), .6));
 		}
 		
 		[selected] {
@@ -162,7 +169,8 @@
 		
 		> check-box {
 			--color: var(--checkboxColor) !important;
-			margin: -.5em .25em -.5em -.5em;
+			margin: -.25em -.5em -.25em .15em;
+			order: 2;
 		}
 
 		> select-field {
@@ -173,7 +181,7 @@
 		}
 
 		> select-field[value=""] {
-			color: var(--b-menu-description-color, rgba(0,0,0,.5));
+			color: var(--b-menu-description-color, var(--theme-text-accent));
 		}
 
 		> .mi-content ~ * {
@@ -202,7 +210,7 @@
 		font-weight: normal;
 		font-size: .9em;
 		border-top: solid 1px var(--b-hr-bgd, rgba(0,0,0,.1));
-		color: var(--b-menu-color-accent, rgba(0,0,0,.5));
+		color: var(--b-menu-color-accent, rgba(var(--theme-text-rgb), .5));
 	}
 
 	.menu-divider:first-child {
@@ -217,7 +225,7 @@
 		padding: .5em 1em;
 		font-size: .9em;
 		line-height: 1.2em;
-		color: var(--b-menu-color-accent, rgba(0,0,0,.5));
+		color: var(--b-menu-color-accent, rgba(var(--theme-text-rgb), .5));
 		background: var(--hoverBgd, #f5f5f5);
 		font-style: italic;
 	}
@@ -225,6 +233,13 @@
 
 .b-menu ~ .d-btns:empty {
 	display: none;
+}
+
+b-dialog .b-menu .menu-item {
+	padding-left: .5em;
+	padding-right: .15em;
+	margin-left: 0;
+	margin-right: 0;
 }
 
 /*

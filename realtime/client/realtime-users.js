@@ -2,16 +2,37 @@ import { LitElement, html, css } from 'lit-element'
 import '../../elements/avatar'
 
 let realtime = null
+let currentUserID = null
 
 customElements.define('b-realtime-users', class extends LitElement{
 
+    static set realtime(val){ realtime = val }
+    static set currentUserID(val){ currentUserID = val }
+
     static get properties(){return {
         key: {type: String, reflect: true},
-        max: {type: Number, reflect: true}
+        max: {type: Number, reflect: true},
+        test: {type: Boolean}
     }}
 
     parseData(data){
-        return data
+
+        if( this.test )
+            return Array.from(data.values())
+        
+        let uniq = new Map()
+
+        data.forEach(d=>{
+            let id = d.attrs.id || new Date().getTime()
+            
+            if( currentUserID == id )
+                return
+
+            if( !uniq.get(id) )
+                uniq.set(id, d)
+        })
+
+        return Array.from(uniq.values())
     }
 
     renderUser(m){
@@ -22,8 +43,11 @@ customElements.define('b-realtime-users', class extends LitElement{
             console.warn('`renderer` must return `lit-html`')
         }
 
-        if( !render )
-            render = html`<b-avatar class="avatar" initials="?"></b-avatar>`
+        if( !render ){
+            let name = m.attrs&&m.attrs.name
+            let initials = name ? name.split(' ').map(s=>s[0]).filter(s=>s).slice(0,2).join('') : '?'
+            render = html`<b-avatar part="avatar" class="avatar" initials="${initials}" title=${name}></b-avatar>`
+        }
 
         return render
     }
@@ -56,14 +80,17 @@ customElements.define('b-realtime-users', class extends LitElement{
 
         b-avatar,
         .avatar {
-            border-radius: var(--size);
-            --size: var(--size);
+            position: relative;
+            
+            border-radius: var(--size, 1em);
+            --size: var(--size, 1em);
             /* box-shadow: rgba(0,0,0,.2) 0 0 2px */
+            box-shadow:  0 0 0 1px var(--theme-bgd);
         }
 
         b-avatar:not(:first-child),
         .avatar:not(:first-child) {
-            margin-left: calc(var(--size) / -1.7);
+            margin-left: calc(var(--size, 1em) / -1.7);
         }
     `}
 
@@ -96,10 +123,6 @@ customElements.define('b-realtime-users', class extends LitElement{
         this.closeRealtime()
     }
 
-    static set realtime(val){
-        realtime = val
-    }
-
     openRealtime(){
         if( this.model )
             this.closeRealtime()
@@ -126,7 +149,7 @@ customElements.define('b-realtime-users', class extends LitElement{
     }
 
     render(){return html`
-        <main>
+        <main part="main">
             
             ${this.users.map((m,i)=>!this.showUser(i)?'':this.renderUser(m))}
             ${this.users.length>this.max?html`

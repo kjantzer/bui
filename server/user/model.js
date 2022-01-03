@@ -1,6 +1,8 @@
 const Model = require('../model')
 const bcrypt = require('bcrypt')
 var crypto = require("crypto");
+const AccessError = require('../errors').AccessError
+const CollMap = require(bui`util/collmap`)
 
 const serializedUsers = new Map()
 const MIN_PW_LEN = 8
@@ -35,8 +37,8 @@ module.exports = class User extends Model {
         return this.attrs.password_is_temp
     }
 
-    async saveNewPassword(user, pw, isTemp=false){
-        return user.update({
+    async saveNewPassword(pw, isTemp=false){
+        return this.update({
             password: pw,
             password_is_temp: isTemp,
             password_last_changed: new Date()
@@ -61,6 +63,16 @@ module.exports = class User extends Model {
 
 // ==============================================================
 
+    toJSON(){
+        let data = Object.assign({}, this.attrs)
+        // delete data.password
+        return data
+    }
+
+    toString(){
+        return JSON.stringify(this.toJSON())
+    }
+
     constructor(attrs={}, req){
 
         if( attrs.id == 'me' )
@@ -69,7 +81,7 @@ module.exports = class User extends Model {
         super(attrs, req)
         this.req = req
         this.attrs = attrs
-        this.sockets = new Map()
+        this.sockets = new CollMap()
 
         if( this.emailHashKey ){
             this[this.emailHashKey] = this.attrs[this.emailHashKey] = null
@@ -145,17 +157,17 @@ module.exports = class User extends Model {
         return bcrypt.compare(pw, this.attrs.password)
     }
 
-    async changePassword(){
+    async changePassword({temp=true}={}){
 
         // users can change their own passwords and admins can always change
         if( this.id != this.req.user.id && !this.req.user.isAdmin )
             throw new AccessError()
 
-        let user = await this.constructor.findBy('id', this.id)
+        await this.find()
         let {currentPW, newPW} = this.req.body
 
         // if NOT the logged in user, then only a temp password can be set
-        let doSetTemp = this.id != this.req.user.id
+        let doSetTemp = temp == false ? false : this.id != this.req.user.id
         let isResetting = !doSetTemp && !this.req.user.hasTempPassword
 
         if( currentPW == newPW )
@@ -164,13 +176,12 @@ module.exports = class User extends Model {
         if( !newPW || newPW.length < MIN_PW_LEN )
             throw new Error('too short')
 
-        if( !doSetTemp && isResetting && !await user.verifyPassword(currentPW) )
+        if( !doSetTemp && isResetting && this.attrs.password && !await this.verifyPassword(currentPW) )
             throw new Error('invalid current password')
 
         let newPWHash = await this.constructor.encryptPassword(newPW)
         
-        user.req = this.req
-        return this.saveNewPassword(user, newPWHash, doSetTemp)
+        return this.saveNewPassword(newPWHash, doSetTemp)
     }
 
     static async encryptPassword(pw){

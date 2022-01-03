@@ -72,7 +72,10 @@ let rows = [
     {num: 2, label: 'two'}
 ]
 
-let resp = await this.db.bulkInsert('table_name', rows)
+let resp = await this.db.bulkInsert('table_name', rows, {
+    ignore: true, // these are the default options
+    replace: false
+})
 ```
 
 ## Clauses
@@ -81,11 +84,13 @@ let resp = await this.db.bulkInsert('table_name', rows)
 Predefined clauses can be used to aid in creation of queries, particularly when clauses are optional or given from an outside source.
 
 ```js
-let clauses = new db.clauses.Group({
+let {Group, Between, Like} = db.clauses
+
+let clauses = new Group({
     'is_active': true,
-    'release_date': new db.clauses.Between('2020-01-01', '2020-01-31'),
-    'name': new db.clauses.Like('%Smith'),
-    'a-clause-group': new db.clauses.Group({
+    'release_date': new Between('2020-01-01', '2020-01-31'),
+    'name': new Like('%Smith'),
+    'a-clause-group': new Group({
         'category': ['Adventure', 'Science'],
         'genre': 'Non-Fiction'
     }, 'OR')
@@ -107,6 +112,11 @@ db.query(`SELECT * FROM table_name WHERE ${clause}`, values)
 - `Between(start, end, {addHours:false})`
 - `FullText(val)`
 - `FindInSet(val)`
+- `JsonContains(val, ?path='$')`
+- `JsonSearch(val, ?path='$')`
+- `IsEmpty({includeNull:false})`
+- `NotEmpty({includeNull:false})`
+- `UnsafeSQL(rawSql)` - unsafe to input uncleaned user data
 
 #### Custom Clauses
 ```js
@@ -127,6 +137,18 @@ class CustomClause extends db.clauses.Clause {
 }
 ```
 
+#### Conflicting Keys
+If you need to create a group that uses the same key (field) more than once, use `toSqlString`
+
+```js
+let group = new Group({}, 'OR')
+let key = {toSqlString:()=>'label'}
+
+group.set(key, 'some value')
+group.set(key, 'another value')
+// label = 'some value' OR label = 'another value'
+```
+
 ## Results
 Results are returned in a subclass of `array` that provides a few helpers:
 
@@ -135,4 +157,4 @@ Results are returned in a subclass of `array` that provides a few helpers:
 - `.last`
 - `.value` gets value of first column in first row
 - `.values` gets value of first column in all rows
-- `.groupBy(key)` groups results by a key
+- `.groupBy(key, {forceArray=false, deleteKeyedValue=false}={})` groups results by a key

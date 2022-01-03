@@ -1,3 +1,4 @@
+const related = require('./related')
 require('../util/promise.series')
 
 const defaultConfig = {
@@ -18,12 +19,15 @@ module.exports = class Model {
         // add or manipulate the where clause
     }
 
-    findSql(where, {select="*"}={}){
+    findJoins(){ return '' }
+
+    findSql(where, {select="*", join=''}={}){
 
         if( !this.config.table ) throw Error('missing config.table')
-        
+
         return /*sql*/`SELECT ${select} 
                         FROM ${this.config.table} ${this.config.tableAlias||''}
+                        ${join||''}
                         ${where}
                         ${this.findOrderBy()}
                         ${this.findLimit}`
@@ -41,8 +45,7 @@ module.exports = class Model {
         return  orderBy ? `ORDER BY ${orderBy}` : ''
     }
 
-    findParseRow(row, index, resultCount){
-        this.decodeFields(row)
+    findParseRow(row, index, resultCount, resp){
         return row
     }
 
@@ -52,10 +55,10 @@ module.exports = class Model {
     }
 
     async beforeAdd(attrs){ /* noop */ }
-    afterAdd(attrs){ /* noop */ }
+    afterAdd(attrs, beforeAddResp){ /* noop */ }
 
     async beforeUpdate(attrs, where){ /* noop */ }
-    afterUpdate(attrs){ /* noop */ }
+    afterUpdate(attrs, beforeUpdateResp){ /* noop */ }
 
     async beforeDestroy(where){ /* noop */ }
     afterDestroy(){ /* noop */ }
@@ -63,6 +66,8 @@ module.exports = class Model {
 // =================================================
     
     constructor(attrs, req, opts={}){
+
+        related.setup(this)
 
         if( !this.db )
             console.warn('Model.db has not been set yet')
@@ -75,13 +80,15 @@ module.exports = class Model {
             this[key] = attrs[key]
         }
 
-        this.decodeFields(attrs)
+        if( attrs )
+            this.decodeFields(attrs)
     }
 
     get config(){ return {} }
 
     get id(){ return this.__id || this.attrs[this.idAttribute] }
     set id(id){ this.__id = id }
+    get isSingular(){ return this.id }
     
     get idAttribute(){ return this.config.idAttribute || defaultConfig.idAttribute }
     get tableAlias(){ return this.config.tableAlias || this.config.table }
@@ -91,7 +98,7 @@ module.exports = class Model {
     }
 
     toJSON(){
-        return this.attrs||{}
+        return Object.assign({}, this.attrs||{})
     }
 
     get filters(){
@@ -146,11 +153,21 @@ module.exports = class Model {
     encodeFields(attrs){
         this.encodeJsonFields(attrs)
         this.encodeCsvFields(attrs)
+        this.encodeNullFields(attrs)
     }
     
     decodeFields(attrs){
         this.decodeJsonFields(attrs)
         this.decodeCsvFields(attrs)
+    }
+
+    encodeNullFields(attrs){
+        if( this.config.nullFields && Array.isArray(this.config.nullFields) ){
+            this.config.nullFields.forEach(fieldName=>{
+                if( attrs[fieldName] != undefined && !attrs[fieldName] )
+                    attrs[fieldName] = null
+            })
+        }
     }
 
     encodeCsvFields(attrs){
@@ -218,6 +235,7 @@ module.exports = class Model {
 
         // if no special WHERE given, default to querying for this model
         }else if( !where && this.id ) {
+            // NOTE: i feel if `this.id` is set, it should always be in the where
             where = {}
             id = this.id
             where[this.tableAlias+'.'+this.idAttribute] = this.id
@@ -231,6 +249,17 @@ module.exports = class Model {
         let [clause, clauseValues] = new this.db.clauses.Group(where).toSqlString(this.db)
         where = clause ? `WHERE ${clause}` : ''
 
+        opts.select = !opts.select || opts.select == '*' ? `${this.tableAlias}.*` : opts.select
+
+        let findJoins = this.findJoins()
+        let [join, joinSelect] = Array.isArray(findJoins) ? findJoins.reverse() : ([findJoins || '', ''])
+        
+        if( join )
+            opts.join = join
+
+        if( joinSelect )
+            opts.select += `, ${joinSelect}`
+
         let sql = this.findSql(where, opts)
         if( typeof sql != 'string' ) return sql
 
@@ -238,12 +267,19 @@ module.exports = class Model {
 
         // parse each row (for decoding JSON strings, etc)
         await Promise.series(resp, (row,i)=>{
-            return this.findParseRow(row, i, resp.length)
+            this.decodeFields(row)
+            return this.findParseRow(row, i, resp.length, resp)
         })
 
         // might need to activate this if too  many conflicts
         let convertToObject = true//this.config.resultsAsObject == true
         let ClassObj = Object.getPrototypeOf(this).constructor
+
+        if( this.isSingular && resp && resp[0] ){
+            id = this.id = resp[0][this.idAttribute]
+            if( resp.length > 1 )
+                console.warn('MODEL.isSingular returning more than one result')
+        }
         
         if( id && id == this.id ){
             this.attrs = resp[0]
@@ -262,12 +298,12 @@ module.exports = class Model {
         return resp;
     }
 
-    async add(attrs={}){
+    async add(attrs={}, {manualSync=false}={}){
 
         if( !this.config.table ) throw Error('missing config.table')
 
         this.encodeFields(attrs)
-        await this.beforeAdd(attrs)
+        let beforeAdd = await this.beforeAdd(attrs)
 
         if( !attrs || Object.keys(attrs).length == 0 )
             throw Error('no data to add')
@@ -280,17 +316,37 @@ module.exports = class Model {
 
         this.id = result.insertId || this.id
 
-        this.afterAdd&&this.afterAdd(attrs)
+        this.afterAdd&&this.afterAdd(attrs, beforeAdd)
 
-        return await this.find()
+        let resp = await this.find()
+
+        let syncData
+        if( this.config.sync && this.req && this.syncData )
+            syncData = ()=>{
+                this.syncData({
+                    action:'add',
+                    attrs:resp,
+                    syncData:attrs,
+                    method: this.req.method,
+                    url: this.apiPath
+                },{
+                    toClients: this.req.path==this.syncPath ? null : 'all'
+                })
+            }
+
+        if( syncData && !manualSync )
+                syncData()
+
+        return manualSync ? {resp, syncData} : resp
     }
 
-    async update(attrs={}){
+    async update(attrs={}, {manualSync=false}={}){
 
         // let subclass remove or modify attributes to be updated
         attrs = await this.validateUpdate(attrs)
         let where = {[this.idAttribute]:this.id}
-        await this.beforeUpdate(attrs, where)
+        
+        let beforeUpdate = await this.beforeUpdate(attrs, where)
 
         if( !this.config.table ) throw Error('missing config.table')
 
@@ -306,12 +362,29 @@ module.exports = class Model {
             
             this.decodeFields(attrs)
 
-            this.afterUpdate(attrs)
+            this.afterUpdate(attrs, beforeUpdate)
 
             if( this.id )
                 this.attrs = Object.assign(this.attrs||{}, attrs)
 
-            return attrs
+            let syncData
+            if( this.config.sync && this.req && this.syncData )
+                syncData = ()=>{
+                    this.syncData({
+                        action: 'update',
+                        attrs: this.toJSON(),
+                        syncData: attrs,
+                        method: this.req.method,
+                        url: this.apiPath
+                    },{
+                        toClients: this.req.path==this.syncPath ? null : 'all'
+                    })
+                }
+
+            if( syncData && !manualSync )
+                syncData()
+
+            return manualSync ? {attrs, syncData} : attrs
         }
         
         return false
@@ -320,7 +393,7 @@ module.exports = class Model {
     async destroy(){
 
         if( !this.config.table ) throw Error('missing config.table')
-        if( !this.id ) throw Error('missing id')
+        if( !this.isSingular ) throw Error('not a singular model')
 
         await this.find()
         
@@ -333,7 +406,17 @@ module.exports = class Model {
         
         let result = await this.db.q(/*sql*/`DELETE FROM ${this.config.table} WHERE ${clause}`, clauseValues)
 
-        this.afterDestroy(result)
+        await this.afterDestroy(result)
+
+        if( this.config.sync && this.req && this.syncData && result )
+            this.syncData({
+                action: 'destroy',
+                attrs: this.toJSON(),
+                method: this.req.method,
+                url: this.apiPath
+            },{
+                toClients: this.req.path==this.syncPath ? null : 'all'
+            })
 
         return String(result.affectedRows)
     }

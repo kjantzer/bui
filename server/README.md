@@ -1,11 +1,11 @@
-
+# Server Classes
 
 # API
 
 ```js
 const app = require('express')();
 const API = require('bui/server/api')
-const Sync = require('bui/server/realtime/server/sync')
+const Sync = require('bui/realtime/server/sync')
 
 new API(app, [
     MyClass,
@@ -44,16 +44,18 @@ class MyClass {
 }
 ```
 
-## Model
+# Model
 
-Models are only useful if they can query the database
+## Setup
+Models are generally only useful if they can query the database
 
 ```js
 const Model = require('bui/server/model')
 
-Model.setDB(requre('./my-db-class'))
+Model.db = requre('./my-db-class')
 ```
 
+## Define
 ```js
 const Model = require('bui/server/model')
 
@@ -74,8 +76,10 @@ module.exports = class MyModel extends Model {
         idAttribute: 'id',
         orderBy: '',
         limit: '',
-        jsonFields: [] // will parse and encode on find/update/create
-        csvFields: [] // ex: `1,2,3` => ['1', '2', '3']
+        jsonFields: [], // will parse and encode on find/update/create
+        csvFields: [], // ex: `1,2,3` => ['1', '2', '3']
+        nullFields: [], // make these keys null when value is "falsy"
+        sync: false, // if true, will call `this.syncData()` on update/add/destroy
     }}
 
     // alter the where clause
@@ -83,16 +87,33 @@ module.exports = class MyModel extends Model {
         // defaults to noop
     }
 
-    findSql(where, opts){
+    // hook into findSql
+    // return sql joinString
+    // or [additionalSelectString, joinString]
+    findJoins(){
+        return '' // default
+
+        // example with join only
+        return /*sql*/`JOIN table_name t ON t.id = ${this.tableAlias}.ref_id`
+
+        // example with join AND a select
+        return [
+            't.some_field',
+            /*sql*/`JOIN table_name t ON t.id = ${this.tableAlias}.ref_id`
+        ]
+    }
+
+    findSql(where, {select="*", join=''}={}){
         // this is the default query
-        return /*sql*/`SELECT * 
+        return /*sql*/`SELECT ${select}
                         FROM ${this.config.table} ${this.config.tableAlias||''}
+                        ${join||''}
                         ${where}
                         ${this.findOrderBy()}
                         ${this.findLimit}`
     }
 
-    findParseRow(row, index, resultCount){
+    findParseRow(row, index, resultCount, resp){
         // defaults to noop, only passing the row along as-is
         return row
     }
@@ -103,13 +124,76 @@ module.exports = class MyModel extends Model {
     }
 
     async beforeAdd(attrs){ /* noop */ }
-    afterAdd(attrs){ /* noop */ }
+    afterAdd(attrs, beforeAddResp){ /* noop */ }
 
     async beforeUpdate(attrs){ /* noop */ }
-    afterUpdate(attrs){ /* noop */ }
+    afterUpdate(attrs, beforeUpdateResp){ /* noop */ }
 
     async beforeDestroy(){ /* noop */ }
-    afterDestroy(){ /* noop */ }
+    async afterDestroy(){ /* noop */ }
+
+}
+```
+
+## Related
+
+The model class now supports "related" models
+
+```js
+const TypeModel = require('./type')
+
+class MyClass extends Model {
+
+    static related = {
+        // basic example
+        type: TypeModel,
+
+        // custom prop name
+        typeModel: {model: TypeModel, id: 'type'},
+
+        // JIT model import
+        type: {model: __dirname+'/type'},
+
+        files: {model: __dirname+'/files', relatedID: 'parent_id'}
+    }
+}
+
+const myclass = new MyClass({id: 1, type: 3451})
+console.log(myclass.type) // == TypeModel instance
+console.log(myclass.files) // == FilesModel instance
+
+// same as
+new TypeModel({id: 3451}, myclass.req)
+new Files({parent_id: 1}, myclass.req)
+```
+
+# FileManager
+
+More docs needed, especially for how it pairs with API
+
+```js
+// example of using FileManager with API
+const FileManager = require(bui`server/fileManager`)
+
+// create the default files table before using
+// db.query(FileManager.createTableSql())
+
+module.exports = class Attachements extends FileManager {
+
+    static get api(){return {
+        root: '/attachments',
+        routes: [
+            ['get', '/:id?', 'find'],
+            ['post', '/', 'upload'],
+            ['delete', '/:id?', 'destroy']
+        ]
+    }}
+
+    get ASSETS_PATH(){ return '/mnt/data' }
+    get group(){ return 'attachments' }
+    // get waitForPreviewGeneration(){ return false }
+    // get skipDuplicates(){ return false }
+    // get previewSize(){ return 800 } // set to false to disable preview generation
 
 }
 ```

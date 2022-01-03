@@ -14,15 +14,15 @@ import './dialog'
 import './menu'
 import './list'
 import './virtual-scroller'
-import './search-popup'
 import './previewer'
+import './calendar'
 import './datepicker'
 import dayjs from 'dayjs'
 
 customElements.define('demo-presenters', class extends LitElement{
 
     static get title(){ return 'Presenters' }
-    static get icon(){ return 'window' }
+    static get icon(){ return 'call_to_action' }
     static get path(){ return 'presenters(/:tab)' }
 
     static get styles(){return css`
@@ -54,7 +54,6 @@ customElements.define('demo-presenters', class extends LitElement{
             demo-presenter-list
             dmeo-presenter-virtual-scroller
             demo-presenter-datepicker
-            demo-presenter-search-popup
 
             <b-cal title="Calendar">
                 <div class="cal-event" style="font-size: .8em; line-height: 1em;">
@@ -64,6 +63,8 @@ customElements.define('demo-presenters', class extends LitElement{
                     <b-label badge="green" dot></b-label> Another event
                 </div>
             </b-cal>
+
+            demo-presenter-calendar
 
             demo-presenter-selection
             demo-presenter-mentions

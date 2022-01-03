@@ -15,7 +15,7 @@ class AvatarElement extends HTMLElement {
         let shadow = this.attachShadow({mode: 'open'})
         let temp = document.createElement('template')
 
-		let aspectRatio = this.getAttribute('cover') == 'false' ? '' : 'xMinYMin slice meet'
+		let aspectRatio = this.hasAttribute('cover') ? 'xMinYMin slice' : 'xMinYMin slice meet'
         
         temp.innerHTML = /*html*/`<style>
 			:host {
@@ -28,6 +28,7 @@ class AvatarElement extends HTMLElement {
 			    vertical-align: middle;
 				position: relative;
 				border-radius: var(--b-avatar-radius, 50%);
+				line-height: 0;
 
 				-webkit-touch-callout: none; /* iOS Safari */
 				-webkit-user-select: none; /* Safari */
@@ -167,8 +168,9 @@ class AvatarElement extends HTMLElement {
 	}
 	
 	set size(size){
-		this.style.width = size+'px'
-		this.style.height = size+'px'
+		// this.style.setProperty('--size', size+'px')
+		// this.style.width = size+'px'
+		// this.style.height = size+'px'
 		// reload the gravatar to get the correct size
 		this.gravatar = this.getAttr('gravatar')
 	}
@@ -197,7 +199,8 @@ class AvatarElement extends HTMLElement {
 		if( !this.isConnected || !guid ) return
 		// FIXME: accessing offsetHeight is a perf hit...as it requires a reflow
 		// https://www.sitepoint.com/10-ways-minimize-reflows-improve-performance/
-		let size = this.offsetHeight * 2
+		// let size = this.offsetHeight * 2
+		let size = this.size * 2
 		if( size < 80 ) size = 80
 		this.url = guid ? `//gravatar.com/avatar/${guid}?d=404&s=${size}` : ''
 	}
