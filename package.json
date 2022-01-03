@@ -12,7 +12,7 @@
         "start": "npm run build-sw && parcel demo/index.html --no-autoinstall --out-dir demo/dist",
         "build": "npm run build-sw && parcel build demo/index.html --no-autoinstall --out-dir public --public-url ./ --no-minify",
         "build-sw": "parcel build demo/sw/src/index.js --no-autoinstall --out-dir ./demo --out-file ./sw.js --no-minify",
-        "commit-pages": "cd ./public && git add -A && git commit -m 'publish docs' && git push origin HEAD:gh-pages",
+        "commit-pages": "cd ./public && git add -A && git commit -m 'publish docs' && git push origin HEAD:gh-pages --force",
         "publish-pages": "npm run build && npm run commit-pages"
     },
     "keywords": [
