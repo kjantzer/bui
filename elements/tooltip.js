@@ -2,7 +2,7 @@
     Tooltip (uses Popover to display)
 */
 import { LitElement, html, css } from 'lit-element'
-import Popover from 'popover'
+import Popover from '../presenters/popover'
 
 let mouseX = 0;
 let mouseY = 0;
