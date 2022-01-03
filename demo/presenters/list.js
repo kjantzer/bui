@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element'
-import Notif from 'notif'
+import Notif from 'bui/presenters/notif'
 import View from './view'
 import docs from 'bui/presenters/list/README.md'
 import 'bui/presenters/list'
