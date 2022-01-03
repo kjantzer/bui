@@ -372,7 +372,9 @@ export default class extends LitElement{
             result.setAttribute('active', '')
             
             if( scrollTo )
-                result.scrollIntoViewIfNeeded(false)
+                result.scrollIntoViewIfNeeded 
+                ? result.scrollIntoViewIfNeeded(false)
+                : result.scrollIntoView()
         }
     }
 

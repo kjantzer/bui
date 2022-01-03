@@ -671,7 +671,7 @@ export default class Menu {
 			this._active = items.indexOf(el)
 
 			el.setAttribute('active', '')
-			el.scrollIntoViewIfNeeded()
+			el.scrollIntoViewIfNeeded ? el.scrollIntoViewIfNeeded() : el.scrollIntoView()
 		}
 	}
 
