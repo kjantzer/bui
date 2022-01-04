@@ -1,3 +1,4 @@
+import Dialog from '../presenters/dialog'
 
 class AppInstaller {
 
@@ -33,6 +34,20 @@ class AppInstaller {
         }
 
         return false
+    }
+
+    promptIOS(){
+
+        new Dialog({
+            icon: 'install_mobile',
+            title: 'Install this webapp',
+            body: `Tap <b-text color="blue"><b-icon name="ios_share"></b-icon></b-text> and then <b>Add to Homescreen</b>`,
+            color: 'inverse',
+            btns: false
+        }).notif({
+            anchor: device.isTablet ? 'top-right' : 'bottom',
+            autoClose: false
+        })
     }
 }
 
