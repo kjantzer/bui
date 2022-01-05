@@ -3,7 +3,9 @@ import router from '../../router'
 
 export default class RoutedView extends LitElement {
 
-    get idAttribute(){ return 'id'}
+    get idAttribute(){ 
+        return (this.coll && this.coll.model.prototype.idAttribute) || 'id'
+    }
 
     static get styles(){return css`
         :host {
@@ -47,6 +49,17 @@ export default class RoutedView extends LitElement {
     `}
 
     get router(){ return router }
+
+    shouldUpdate(){
+        if( this.modelRequired !== true ) return true
+
+        if( !this.model ) return false
+
+        if( this.panel && !this.panel.toolbar ) 
+            this.panel._linkToolbar()
+            
+        return true
+    }
 
     updated(){
         this.toggleAttribute('in-panel', !!this.panel)
@@ -93,8 +106,11 @@ export default class RoutedView extends LitElement {
             return true
 
         }catch(err){
-            console.error(err);
             this.close()
+            if( err.handle )
+                throw err
+            else
+                console.error(err);
             return false
         }
     }
