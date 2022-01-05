@@ -176,8 +176,10 @@ needs to render one. A panel toolbar element has been created for such a task.
 
 - `left`
 - `right`
-- `middle` - next to title
+- `middle` - in place middle title block
 - `title` - in place of title
+- `title:before`
+- `title:after`
 - `close-btn` - use your own close button
 
 ```html
