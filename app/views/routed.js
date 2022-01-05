@@ -99,9 +99,9 @@ export default class RoutedView extends LitElement {
                 }
             }
 
-            this.model = model
+            await this.finishLoading(model, id, attrs, state)
 
-            this.finishLoading(id, attrs, state)
+            this.model = model
 
             return true
 
