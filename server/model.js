@@ -251,7 +251,7 @@ module.exports = class Model {
 
         opts.select = !opts.select || opts.select == '*' ? `${this.tableAlias}.*` : opts.select
 
-        let findJoins = this.findJoins()
+        let findJoins = this.findJoins(opts)
         let [join, joinSelect] = Array.isArray(findJoins) ? findJoins.reverse() : ([findJoins || '', ''])
         
         if( join )
