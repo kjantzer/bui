@@ -32,6 +32,15 @@ customElements.define('b-grid', class extends LitElement{
         :host([cols="7"]) { grid-template-columns: repeat(7, 1fr); }
         :host([cols="8"]) { grid-template-columns: repeat(8, 1fr); }
 
+        :host([rows="1"]) { grid-template-rows: 1fr; }
+        :host([rows="2"]) { grid-template-rows: repeat(2, 1fr); }
+        :host([rows="3"]) { grid-template-rows: repeat(3, 1fr); }
+        :host([rows="4"]) { grid-template-rows: repeat(4, 1fr); }
+        :host([rows="5"]) { grid-template-rows: repeat(5, 1fr); }
+        :host([rows="6"]) { grid-template-rows: repeat(6, 1fr); }
+        :host([rows="7"]) { grid-template-rows: repeat(7, 1fr); }
+        :host([rows="8"]) { grid-template-rows: repeat(8, 1fr); }
+
         /* two-thirds, one-third */
         :host([cols="2,1"]) { grid-template-columns: 2fr 1fr; }
         :host([cols="1,2"]) { grid-template-columns: 1fr 2fr; }
