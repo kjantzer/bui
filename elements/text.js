@@ -10,7 +10,7 @@ customElements.define('b-text', class extends LitElement{
         :host {
             display: inline-block;
             cursor: default;
-            line-height: 1em;
+            line-height: var(--b-text-line-height, 1em);
         }
 
         :host([block]) {
