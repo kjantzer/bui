@@ -39,6 +39,7 @@ function assign(Model, RelatedModel, prop, {
                     try{
                         RelatedModel = require(RelatedModel)
                     }catch(err){
+                        console.log(err);
                         throw new Error('Cannot import related model: '+RelatedModel)
                     }
                 }
