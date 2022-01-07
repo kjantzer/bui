@@ -21,7 +21,7 @@ module.exports = class Model {
 
     findJoins(){ return '' }
 
-    findSql(where, {select="*", join=''}={}){
+    findSql(where, {select="*", join='', limit=null}={}){
 
         if( !this.config.table ) throw Error('missing config.table')
 
@@ -30,10 +30,17 @@ module.exports = class Model {
                         ${join||''}
                         ${where}
                         ${this.findOrderBy()}
-                        ${this.findLimit}`
+                        ${this._findLimit(limit)}`
     }
 
-    get findLimit(){
+    // DEPRECATED - delete and rename _findLimit to findLimit
+    get findLimit(){ return this._findLimit()}
+
+    _findLimit(limit){
+
+        if( limit )
+            return `LIMIT ${limit}`
+
         if( this.req && this.req.query.perPage )
             return `LIMIT ${this.req.query.pageAt},${this.req.query.perPage}`
             
