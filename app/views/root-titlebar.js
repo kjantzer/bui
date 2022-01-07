@@ -8,7 +8,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
 
     constructor(){
         super()
-        this.slot = 'toolbar:before'
+        this.slot = this.slot || 'toolbar:before'
     }
 
     static get styles(){return css`
@@ -69,7 +69,13 @@ customElements.define('b-root-titlebar', class extends LitElement{
 
         <slot name="left"></slot>
 
-        <b-text lg xbold>${this.titleVal}</b-text>
+        <b-text lg xbold>
+            <slot name="title">
+                <slot name="title:before"></slot>
+                ${this.titleVal}
+                <slot name="title:after"></slot>
+            </slot>            
+        </b-text>
 
         <slot></slot>
     `}
