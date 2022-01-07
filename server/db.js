@@ -136,10 +136,20 @@ module.exports = class DB {
         return `ON DUPLICATE KEY UPDATE ${updates.join(', ')}`
     }
 
-    bulkInsert(table, rows, {ignore=true, replace=false}={}){
+    bulkInsert(table, rows, {ignore=true, replace=false, update=false}={}){
         let [cols, vals] = this.parseBulkInsert(rows)
-        let sql = `${replace?'REPLACE':'INSERT'} ${ignore&&!replace?'IGNORE':''} INTO ${table} (${cols}) VALUES ?`
+
+        let INSERT = replace?'REPLACE':'INSERT'
+        let IGNORE = ignore&&!update&&!replace?'IGNORE':''
+        let UPDATE_ON_DUPLICATE = update ? this.updateOnDuplicate(rows[0]) : ''
+
+        let sql = `${INSERT} ${IGNORE} INTO ${table} (${cols}) VALUES ? ${UPDATE_ON_DUPLICATE}`
+
         return this.query(sql, [vals])
+    }
+
+    bulkUpdate(table, rows){
+        return this.bulkInsert(table, rows, {update: true})
     }
 
     parseBulkInsert(rows=[]){
