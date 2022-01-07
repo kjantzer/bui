@@ -50,6 +50,10 @@ export default class RoutedView extends LitElement {
 
     get router(){ return router }
 
+    get route(){
+        return (this.panel || this.tabView)?.route
+    }
+
     shouldUpdate(){
         if( this.modelRequired !== true ) return true
 
