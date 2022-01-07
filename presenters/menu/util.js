@@ -5,7 +5,8 @@ export function toMenu({
     after=[],
     icon=true,
     description=true,
-    unset=false
+    unset=false,
+    label='label'
 }={}, fn){
 
     if( unset === true || ['clear', 'remove', 'unset'].includes(unset) )
@@ -30,7 +31,7 @@ export function toMenu({
 			return {label: m, val: m}
 
 		return {
-            label: m.get ? m.get('label') : (m.label || m.val || m.id),
+            label: m.get ? m.get(label) : (m[label] || m.val || m.id),
             icon: icon && (m.get ? m.get('icon') : m.icon),
             description: description && (m.get ? m.get('description') : m.description),
             val: String(m.val||m.id),
