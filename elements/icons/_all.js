@@ -195,7 +195,7 @@ Icon.register(
 	['mail-1', require('./mail-1.svg.html')],
 	// ['mail', require('./mail.svg.html')],
 	['megaphone', require('./megaphone.svg.html')],
-	['menu', require('./menu.svg.html')],
+	// ['menu', require('./menu.svg.html')],
 	// ['mic', require('./mic.svg.html')],
 	['minus-circled', require('./minus-circled.svg.html')],
 	['minus-squared-alt', require('./minus-squared-alt.svg.html')],
