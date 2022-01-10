@@ -341,7 +341,7 @@ module.exports = function(Orig){ return {
 		for( let key in attrs){
 			if( self.__childModels[key] ){
 				if( isModel(this.models[key], key) ){
-					self.__childModels[key].clear()
+					self.__childModels[key].clear({silent: true})
 					self.__childModels[key].set(attrs[key])
 				}else
 					delete self.__childModels[key];
