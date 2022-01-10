@@ -241,10 +241,22 @@ class SelectFieldElement extends HTMLElement {
 		// make sure `toOptions/toMenu` formatted values correctly
 		if( Array.isArray(opts) )
 			opts = opts.map(o=>{
-				if( typeof o != 'object' )
-					return {label: o, val: o}
-				else
-					return Object.assign({}, o, {val: String(o.val!==undefined?o.val:o)})
+				if( typeof o != 'object' ){
+
+					let val = o	
+					if( val !== undefined && val !== null )
+						val = String(val)
+
+					return {label: o, val}
+				}else{
+					let val = o.val
+					if( val !== undefined && val !== null )
+						val = String(val)
+
+					// String(o.val!==undefined?o.val:o)
+
+					return Object.assign({}, o, {val})
+				}
 			})
 		else if( typeof opts == 'object' ){
 			let _opts = []
@@ -295,8 +307,12 @@ class SelectFieldElement extends HTMLElement {
 
 		if( this.hasAttribute('summarize') ){
 			let summarize = this.getAttribute('summarize')
-			if( selected.length > 0 )
-				labels = `<span part="value">${selected.length} ${summarize||'item[s]'}</span>`
+			if( selected.length > 0 ){
+				let name = summarize || 'item'
+				if( selected.length != 1 ) name += 's'
+
+				labels = `<span part="value">${selected.length} ${name}</span>`
+			}
 			else
 				labels = ''
 		}
