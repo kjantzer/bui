@@ -49,6 +49,10 @@ class FormHandler extends HTMLElement {
 	}
 
 	set values(vals={}){
+
+		if( !this.controls )
+			return this._values = vals
+
 		this.controls.forEach(control=>{
 			if( control.key && vals[control.key] != undefined ){
 				control.value = vals[control.key]
@@ -70,8 +74,13 @@ class FormHandler extends HTMLElement {
 
 				if( this.autoGridArea )
 					el.style.gridArea = key
+
+				if( this._values && this._values[key] )
+					el.value = this._values[key]
 			}
 		})
+
+		delete this._values
 
 		if( this.disabled || this.hasAttribute('disabled') )
 			this.disabled = true
