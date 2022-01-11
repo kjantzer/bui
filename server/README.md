@@ -113,7 +113,7 @@ module.exports = class MyModel extends Model {
                         ${this.findLimit}`
     }
 
-    findParseRow(row, index, resultCount, resp){
+    findParseRow(row, index, resultCount, resp, opts){
         // defaults to noop, only passing the row along as-is
         return row
     }
