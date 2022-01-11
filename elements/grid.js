@@ -85,6 +85,13 @@ customElements.define('b-grid', class extends LitElement{
         ::slotted([colspan="5"]) { grid-column: span 5; }
         ::slotted([colspan="6"]) { grid-column: span 6; }
 
+        ::slotted([rowspan]) { grid-row: 1/-1; }
+        ::slotted([rowspan="2"]) { grid-row: span 2; }
+        ::slotted([rowspan="3"]) { grid-row: span 3; }
+        ::slotted([rowspan="4"]) { grid-row: span 4; }
+        ::slotted([rowspan="5"]) { grid-row: span 5; }
+        ::slotted([rowspan="6"]) { grid-row: span 6; }
+
         ${mediaQuery('sm', css`
             ::slotted([colspan-mobile]) { grid-column: 1/-1; }
             ::slotted([colspan-mobile="2"]) { grid-column: span 2; }
@@ -92,6 +99,13 @@ customElements.define('b-grid', class extends LitElement{
             ::slotted([colspan-mobile="4"]) { grid-column: span 4; }
             ::slotted([colspan-mobile="5"]) { grid-column: span 5; }
             ::slotted([colspan-mobile="6"]) { grid-column: span 6; }
+
+            ::slotted([rowspan-mobile]) { grid-row: 1/-1; }
+            ::slotted([rowspan-mobile="2"]) { grid-row: span 2; }
+            ::slotted([rowspan-mobile="3"]) { grid-row: span 3; }
+            ::slotted([rowspan-mobile="4"]) { grid-row: span 4; }
+            ::slotted([rowspan-mobile="5"]) { grid-row: span 5; }
+            ::slotted([rowspan-mobile="6"]) { grid-row: span 6; }
         `)}
     `}
 
