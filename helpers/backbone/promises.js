@@ -50,7 +50,7 @@ Model.prototype.fetchOnce = fetchOnce
 
 
 Model.prototype.saveSync = function(key, val, opts){
-    return new Promise((resolve, reject)=>{
+    return new Promise(async (resolve, reject)=>{
 
         let attrs;
 
@@ -59,6 +59,37 @@ Model.prototype.saveSync = function(key, val, opts){
             opts = val;
         } else if( key != null ){
             (attrs = {})[key] = val;
+        }
+
+        let childChanges = {}
+
+        /*  convert dot notation to object
+            {"traits.width": 6} => {traits: {width: 6}}
+        */
+        for( let k in attrs ){
+            
+            let [childKey, key] = k.split('.')
+
+            if( key ){
+                childChanges[childKey] = childChanges[childKey] || {}
+                childChanges[childKey][key] = attrs[k]
+                delete attrs[k]
+            }
+        }
+
+        // save each set of child changes (or merge with existing data to save on this object)
+        for( let childKey in childChanges ){
+
+            let child = this.get(childKey)
+            let childAttrs = childChanges[childKey]
+
+            // backbone model
+            if( child.save && child.url )
+                await child.saveSync(childAttrs, opts)
+            // standard object, merge with existing attrs (so we dont replace whats already there)
+            // if replacement is desired, dot notation saving should not be used
+            else
+                attrs[childKey] = Object.assign(child, childAttrs)
         }
 
         opts = opts ? Object.assign({}, opts) : {};
