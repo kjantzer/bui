@@ -4,7 +4,7 @@ import Dialog from '../../presenters/dialog'
 import download from '../../util/download'
 import Palette from './palette'
 
-customElements.define('c-file-row', class extends LitElement{
+customElements.define('b-file-row', class extends LitElement{
 
     static get properties(){return {
         layout: {type: String, reflect: true},
@@ -167,7 +167,7 @@ customElements.define('c-file-row', class extends LitElement{
 
 })
 
-export default customElements.get('c-file-row')
+export default customElements.get('b-file-row')
 
 // https://web.dev/datatransfer/
 // drag and drop outside of the browser!

@@ -46,6 +46,7 @@ customElements.define('b-file-manager', class extends LitElement{
 
     constructor(){
         super()
+        this.row = 'b-file-row'
         this.accept = '' // all files
         this.sort = true
         this.placeholder = 'No files'
