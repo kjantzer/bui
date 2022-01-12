@@ -3,16 +3,22 @@
 */
 import {LitElement} from 'lit-element'
 
-LitElement.prototype.$ = function(query){
-    return this.querySelector(query)
+LitElement.prototype.$ = function(query, cache=false){
+    if( cache && this[cache] ) return this[cache]
+    let el = this.querySelector(query)
+    if( cache ) this[cache] = el
+    return el
 }
 
 LitElement.prototype.$all = function(query){
     return this.querySelectorAll(query)
 }
 
-LitElement.prototype.$$ = function(query){
-    return this.shadowRoot ? this.shadowRoot.querySelector(query) : this.querySelector(query)
+LitElement.prototype.$$ = function(query, cache=false){
+    if( cache && this[cache] ) return this[cache]
+    let el = this.shadowRoot ? this.shadowRoot.querySelector(query) : this.querySelector(query)
+    if( cache ) this[cache] = el
+    return el
 }
 
 LitElement.prototype.$$all = function(query){
