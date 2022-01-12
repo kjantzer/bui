@@ -69,6 +69,11 @@ export default class RoutedView extends LitElement {
         this.toggleAttribute('in-panel', !!this.panel)
     }
 
+    // allow subclass override
+    get loadFetchData(){
+        return {initialLoad:true}
+    }
+
     async load(id, attrs={}, state){
 
         if( !id ){
@@ -92,7 +97,7 @@ export default class RoutedView extends LitElement {
         try{
             if( this.fetchOnLoad !== false ){
 
-                await model.fetchSync({data:{initialLoad:true}})
+                await model.fetchSync({data:this.loadFetchData})
 
                 if( Object.keys(model.attributes).length <= 1 ){
                     model.isInvalid = true
