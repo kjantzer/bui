@@ -106,6 +106,10 @@ slot[name="suffix"]::slotted(form-control) {
 	color: #333;
 }
 
+slot[name="prefix"]::slotted(b-icon) {
+	margin-right: .25em;
+}
+
 /* .control {
 	order: 20;
 	flex-grow: 1;
