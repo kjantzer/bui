@@ -76,9 +76,16 @@ export default class RoutedView extends LitElement {
 
     async load(id, attrs={}, state){
 
+        // this model already loaded
+        // NOTE: will this cause problems with existing code?
+        if( this.model && this.model.id == id ){
+            this.finishLoading(this.model, id, attrs, state)
+            return false
+        }
+
         if( !id ){
             this.model = null
-            this.finishLoading(id, attrs, state)
+            this.finishLoading(this.model, id, attrs, state)
             return false
         }
 
@@ -97,6 +104,7 @@ export default class RoutedView extends LitElement {
         try{
             if( this.fetchOnLoad !== false ){
 
+                // TODO: support skipping fetched if model.hasFetched
                 await model.fetchSync({data:this.loadFetchData})
 
                 if( Object.keys(model.attributes).length <= 1 ){
@@ -108,9 +116,10 @@ export default class RoutedView extends LitElement {
                 }
             }
 
-            await this.finishLoading(model, id, attrs, state)
+            let continueLoading = await this.finishLoading(model, id, attrs, state)
 
-            this.model = model
+            if( continueLoading !== false )
+                this.model = model
 
             return true
 
