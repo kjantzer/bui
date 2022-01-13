@@ -92,6 +92,9 @@ Model.prototype.saveSync = function(key, val, opts){
                 attrs[childKey] = Object.assign(child, childAttrs)
         }
 
+        if( Object.keys(attrs).length == 0 )
+            return resolve()
+
         opts = opts ? Object.assign({}, opts) : {};
 
         opts.success = function(){
