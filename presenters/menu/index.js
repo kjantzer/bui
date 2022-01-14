@@ -18,6 +18,7 @@ export {Dialog, Popover, toMenu, isDivider}
 export const DefaultOpts = {
 	selected: false,
 	multiple: false,
+	perpetual: false,
 	search: 20, // true (always show) or number of results for it to show
 	minW: false,
 	width: null,
@@ -242,9 +243,12 @@ export default class Menu {
 		}
 	}
 
-	focusSearch(){
+	focusSearch({selectAll=false}={}){
 		let input = this.el.querySelector('.menu-search-bar input')
-		input&&input.focus()
+		if( input ){
+			input.focus()
+			if( selectAll ) input.select()
+		}
 	}
 
 	get searchIsOn(){
@@ -500,7 +504,18 @@ export default class Menu {
 			if( data.menu )
 				return this._itemMenu(target, data)
 
-			if( this.opts.multiple ){
+			if( this.opts.perpetual ){
+
+				this.opts.onSelect&&this.opts.onSelect(data)
+				
+				// only perpetual in search mode...if menu is orig, then were't not showing search results
+				if( this.opts.perpetual == 'search' && this.__origMenu == this.menu )
+					this.resolve(data)
+				else{
+					this.focusSearch({selectAll:true})
+				}
+
+			} else if( this.opts.multiple ){
 
 				if( data.clearsAll || (this.opts.multiple !== 'always' && !didClickCheckbox) ){
 					this.opts.onSelect&&this.opts.onSelect([data])
