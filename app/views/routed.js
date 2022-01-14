@@ -74,11 +74,15 @@ export default class RoutedView extends LitElement {
         return {initialLoad:true}
     }
 
+    isLoadingSameModel(id){
+        return this.model && this.model.id == id 
+    }
+
     async load(id, attrs={}, state){
 
         // this model already loaded
         // NOTE: will this cause problems with existing code?
-        if( this.model && this.model.id == id ){
+        if( this.isLoadingSameModel(id) ){
             this.finishLoading(this.model, id, attrs, state)
             return false
         }
