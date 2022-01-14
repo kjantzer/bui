@@ -10,6 +10,7 @@ const PRESETS = {
 	'ok': {label: 'Okay', color: 'theme'},
     'continue': {label: 'Continue', color: 'theme'},
 	'yes': {label: 'Yes', color: 'theme'},
+    'add': {label: 'Add', color: 'theme'},
 	'save': {label: 'Save', color: 'theme'},
 	'create': {label: 'Create', color: 'theme'},
     'open': {label: 'Open', color: 'theme'},
