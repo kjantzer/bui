@@ -225,7 +225,8 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         }
 
         .title slot {
-            font-size: 1.2em;
+            font-size: 1.1em;
+            line-height: 1.1em;
             font-weight: bold;
         }
 
