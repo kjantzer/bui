@@ -17,6 +17,10 @@ customElements.define('b-text', class extends LitElement{
             display: block;
         }
 
+        :host([block]) ::slotted(form-control) {
+            display: block;
+        }
+
         :host([inline]) {
             display: inline;
         }
