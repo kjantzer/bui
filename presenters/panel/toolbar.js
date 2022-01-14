@@ -64,6 +64,14 @@ class PanelToolbar extends LitElement {
             min-width: 20%;
         }
 
+        :host([nomiddle]) {
+            grid-template-columns: 1fr auto;
+        }
+
+        :host([nomiddle]) .middle {
+            display: none;
+        }
+
         :host([overlay]) > div * {
             pointer-events: initial;
         }
