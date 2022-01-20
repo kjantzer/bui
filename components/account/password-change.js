@@ -37,7 +37,7 @@ customElements.defineShared('b-password-change', class extends LitElement{
     }
 
     get isTempPW(){
-        return this.opts.tempPW
+        return this.model && this.model.isMe ? false : this.opts.tempPW
     }
 
     static get styles(){return css`
@@ -72,7 +72,7 @@ customElements.defineShared('b-password-change', class extends LitElement{
 
             ${this.isTempPW?html`
 
-            ${this.model&&this.model.get('password')?html`
+            ${this.model&&this.model.get('password')&&!this.model.isMe?html`
                 <b-paper color="postit" dense outline>
                     <b-icon name="attention-1"></b-icon>
                     The user has a password set. You will be replacing their current password.
