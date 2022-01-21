@@ -49,12 +49,16 @@ class FormHandler extends HTMLElement {
 	}
 
 	set values(vals={}){
+		this.resetValues(vals, {reset: false})
+	}
+
+	resetValues(vals, {reset=true}={}){
 
 		if( !this.controls )
 			return this._values = vals
 
 		this.controls.forEach(control=>{
-			if( control.key && vals[control.key] != undefined ){
+			if( control.key && (reset || vals[control.key] != undefined) ){
 				control.value = vals[control.key]
 			}
 		})
@@ -62,6 +66,7 @@ class FormHandler extends HTMLElement {
 		this.setControlIfs()
 		this.store(vals)
 	}
+	
 
 	bindControls(){
 		// TODO: change to `controls`?
