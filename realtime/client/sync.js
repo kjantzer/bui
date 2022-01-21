@@ -79,14 +79,21 @@ export function enableSync(Class, {
 
     Object.defineProperty(Class.prototype, 'realtimeSync', {
         get: function realtimeSync() {
-            return this.__realtimeSync = this.__realtimeSync || sync(this[pathKey], this)
+            if( !this.__realtimeSync ){
+                let path = this[pathKey]
+                if( typeof path == 'function' ) path = path.call(this)
+                this.__realtimeSync = sync(path, this)
+            }
+
+            return this.__realtimeSync
         }
     });
 
     let syncData = Class.prototype.map ? syncBackboneCollection : syncBackboneModel
 
     Class.prototype.onSync = function(data){
-        syncData.call(this, data)
+        if( !syncData.call(this, data) )
+            this.onSyncFailed&&this.onSyncFailed(data)
     }
 }
 
