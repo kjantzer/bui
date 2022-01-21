@@ -90,6 +90,7 @@ export class Palette extends CollMap {
         opts.appendKey = true
 
         super(data, opts)
+        this.opts = opts
     }
 
     clearVars(el){
@@ -124,7 +125,7 @@ export class Palette extends CollMap {
     }
 
     get textAccent(){
-        let bgd = colorScheme.getCssVar('theme-bgd') || '#ffffff'
+        let bgd = this.opts.bgdColor || colorScheme.getCssVar('theme-bgd') || '#ffffff'
         let color = ['vibrant', 'lightvibrant', 'muted'].find(color=>{
             return tinycolor.isReadable(bgd, this.get(color)?.hex, {level:"AA",size:"large"})
         }) || 'darkvibrant'
