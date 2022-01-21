@@ -51,7 +51,8 @@ export default class RoutedView extends LitElement {
     get router(){ return router }
 
     get route(){
-        return (this.panel || this.tabView)?.route
+        let root = (this.panel || this.tabView)
+        return root ? root.route : undefined
     }
 
     shouldUpdate(){
