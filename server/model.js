@@ -94,7 +94,7 @@ module.exports = class Model {
     get config(){ return {} }
 
     get id(){ return this.__id || this.attrs[this.idAttribute] }
-    set id(id){ this.__id = id }
+    set id(id){ this.attrs[this.idAttribute] = this.__id = id }
     get isSingular(){ return this.id }
     
     get idAttribute(){ return this.config.idAttribute || defaultConfig.idAttribute }
@@ -227,10 +227,7 @@ module.exports = class Model {
         }
     }
 
-    async find(where=null, opts={}){
-
-        let id = null;
-
+    findWhereID(where, id){
         // make sure "id" is prefixed with correct table name/alias
         if( where && where[this.idAttribute] ){
             id = where[this.idAttribute]
@@ -248,7 +245,15 @@ module.exports = class Model {
             where[this.tableAlias+'.'+this.idAttribute] = this.id
         }
 
-        where = where || {}
+        return {where, id}
+    }
+
+    async find(where=null, opts={}){
+
+        let whereID = this.findWhereID(where)
+        
+        let id = whereID.id || null
+        where = whereID.where || {}
 
         // let subclassed model apply more to where clause
         await this.findWhere(where, opts)
