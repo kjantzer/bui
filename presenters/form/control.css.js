@@ -103,6 +103,11 @@ slot[name="after"]{
 	pointer-events: none;
 }
 
+.prefix ::slotted(b-btn),
+.suffix ::slotted(b-btn) {
+	pointer-events: all;
+}
+
 slot[name="prefix"]::slotted(form-control),
 slot[name="suffix"]::slotted(form-control) {
 	color: #333;
