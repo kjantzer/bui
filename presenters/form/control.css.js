@@ -110,7 +110,8 @@ slot[name="after"]{
 
 slot[name="prefix"]::slotted(form-control),
 slot[name="suffix"]::slotted(form-control) {
-	color: #333;
+	color: var(--theme-text);
+	pointer-events: all;
 }
 
 slot[name="prefix"]::slotted(b-icon) {
