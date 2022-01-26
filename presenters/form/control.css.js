@@ -78,7 +78,6 @@ slot[name="after"]{
 	white-space: nowrap;
 	font-family: var(--labelFontFamily);
 	font-size: var(--labelFontSize);
-	pointer-events: none;
 }
 
 :host([nolabel]) .label {
@@ -100,12 +99,10 @@ slot[name="after"]{
     color: var(--placeholderColor);
 	display: flex;
 	align-items: center;
-	pointer-events: none;
 }
 
-.prefix ::slotted(b-btn),
-.suffix ::slotted(b-btn) {
-	pointer-events: all;
+::slotted([nopointer]) {
+	pointer-events: none;
 }
 
 slot[name="prefix"]::slotted(form-control),
