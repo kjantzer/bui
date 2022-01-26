@@ -36,7 +36,8 @@ module.exports = class Comments extends Model {
         table: 'comments',
         tableAlias: 'c',
         jsonFields: ['meta'],
-        sync: true
+        sync: true,
+        orderBy: 'id desc'
     }}
 
     // never include `this.id` in the sync path
@@ -69,7 +70,14 @@ module.exports = class Comments extends Model {
             // comment mentions this user
             where['c.meta'] = new JsonContains(this.req.user.id, '$.mentions')
 
-        }else{
+        }else if(this.gid == 'history' ){
+
+            // comments NOT by this uer
+            // where['c.uid'] = new Value('!=', this.req.user.id)
+            where['c.meta'] = new JsonContains(this.req.user.id, '$.mentions')
+            where['c.type'] = 'user'
+
+        }else {
             where.gid = this.gid
         }
         
