@@ -213,9 +213,9 @@ function makePrompt(opts, i=0, globalOpts){
 		${control}
 
 		${opts.helpText?html`<div slot="help">${opts.helpText}</div>`:''}
-		${opts.label?html`<span slot="label">${opts.label}</span>`:''}
-		<span slot="prefix">${opts.prefix}</span>
-		<span slot="suffix">${opts.suffix}</span>
+		${opts.label?html`<span slot="label" nopointer>${opts.label}</span>`:''}
+		<span slot="prefix" nopointer>${opts.prefix}</span>
+		<span slot="suffix" nopointer>${opts.suffix}</span>
 		
 	</form-control>
 	`
