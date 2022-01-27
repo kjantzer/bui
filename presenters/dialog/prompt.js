@@ -169,7 +169,6 @@ function makePrompt(opts, i=0, globalOpts){
 			pattern="${opts.pattern}"
 			placeholder="${opts.placeholder}"
 			type="${opts.type}"
-			input="${opts.type}"
 			?html=${opts.html}
 			?multiline=${opts.multiline}
 			?required=${opts.required}
