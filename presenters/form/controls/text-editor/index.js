@@ -6,6 +6,7 @@ import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
 import CharacterCount from '@tiptap/extension-character-count'
 import Typography from '@tiptap/extension-typography'
+import TypographyPaste from './typography-paste'
 import './menubar'
 import style from './style'
 
@@ -53,6 +54,7 @@ customElements.define('text-editor', class extends LitElement{
                     alignments: ['left', 'center'],
                 }),
                 Typography,
+                TypographyPaste,
                 // SmartCharacterReplacer,
                 KeyboardEvents,
                 CharacterCount.configure({
