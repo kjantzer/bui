@@ -105,7 +105,9 @@ class FormHandler extends HTMLElement {
 	disconnectedCallback(){
 		this.controls = this.editors = []
 		this.controlsByKey = {}
-		this.model = null
+
+		if( this.retainModel !== true )
+			this.model = null
 
 		this.removeEventListener('change', this.onEditorChange)
 	}
