@@ -1,5 +1,6 @@
 import store from '../../util/store'
 import '../../helpers/backbone/promises'
+import '../../helpers/backbone/edited'
 
 class FormHandler extends HTMLElement {
 	
@@ -59,7 +60,7 @@ class FormHandler extends HTMLElement {
 
 		this.controls.forEach(control=>{
 			if( control.key && (reset || vals[control.key] != undefined) ){
-				control.value = vals[control.key]
+				control.value = vals ? vals[control.key] : undefined
 			}
 		})
 
@@ -132,6 +133,9 @@ class FormHandler extends HTMLElement {
 		this.model.on('sync', this.onModelSync, this)
 		this.model.on('change', this.onModelChange, this)
 		this.model.on('edited', this.onModelEdited, this)
+
+		if( this.hasAttribute('store') )
+			this.model.set(this.store(), {silent: true})
 
 		this._updateEditors()
 	}
