@@ -202,6 +202,17 @@ myclass.find(, {with:'related'})
 `/api/myclass/1?with=related`
 ```
 
+### Include by default
+Relations can default to be included "with" the parent model by adding `with:true` to the relation definition
+
+```js
+class MyClass extends Model {
+    static related = {
+        type: {model: __dirname+'/type', with: true}
+    }
+}
+```
+
 # FileManager
 
 More docs needed, especially for how it pairs with API

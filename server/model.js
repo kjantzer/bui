@@ -338,12 +338,14 @@ module.exports = class Model {
         let related = this.constructor.related
         let _with = opts.with || this.req?.query.with
 
-        if( !related || !_with ) return
+        if( !related ) return
 
         // for each relation, check for a `withRelationKey` option
         for( let relation in related ){
+
+            let relationOpts = related[relation]
             
-            if( _with == 'related' || _with[relation] != undefined ){
+            if( relationOpts.with || _with == 'related' || (_with && _with[relation] != undefined) ){
 
                 let RelatedModel = row[relation]
                 if( RelatedModel ){
