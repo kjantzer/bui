@@ -336,7 +336,7 @@ module.exports = class Model {
     async findExtendRowData(row, opts={}){
 
         let related = this.constructor.related
-        let _with = opts.with || this.req.query.with
+        let _with = opts.with || this.req?.query.with
 
         if( !related || !_with ) return
 
