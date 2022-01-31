@@ -178,8 +178,10 @@ When using the server Model, you can get data from relations by passing `with[Re
 
 ```js
 myclass.find(, {
-    withType: true, 
-    withFiles: [, {select: 'filename'}]
+    with: {
+        type: true,
+        files: [, {select: 'filename'}]
+    }
 })
 
 // same as
@@ -189,15 +191,15 @@ myclass.attrs.files = myclass.files.find(, {select: 'filename'})
 ```
 
 This can be done via API as well  
-`/api/myclass/1?withType&withFiles`
+`/api/myclass/1?with[type]&with[files]`
 
 Want data for all relations?
 
 ```js
-myclass.find(, {withRelated:true})
+myclass.find(, {with:'related'})
 
 // or
-`/api/myclass/1?withRelated`
+`/api/myclass/1?with=related`
 ```
 
 # FileManager

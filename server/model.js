@@ -248,7 +248,17 @@ module.exports = class Model {
         return {where, id}
     }
 
-    async find(where=null, opts={}){
+    async find(where=null, opts){
+
+        // NOTE: the preferre syntaxt is now:
+        // find(opts={where, [select, with]})
+        if( opts == undefined && where && (where.where || where.select || where.with) ){
+            opts = where
+            where = opts.where || null
+            delete opts.where
+        }else{
+            opts = opts || {}
+        }
 
         let whereID = this.findWhereID(where)
         
@@ -323,29 +333,31 @@ module.exports = class Model {
         return option ? [option] : []
     }
 
-    async findExtendRowData(row, opts){
+    async findExtendRowData(row, opts={}){
 
-        let related = this.constructor.related 
-        if( !related ) return
+        let related = this.constructor.related
+        let _with = opts.with || this.req.query.with
+
+        if( !related || !_with ) return
 
         // for each relation, check for a `withRelationKey` option
-        for( let key in related ){
+        for( let relation in related ){
             
-            let withKey = 'with'+key[0].toUpperCase()+key.slice(1)
+            if( _with == 'related' || _with[relation] != undefined ){
 
-            if( opts[withKey] || this.req.query[withKey] !== undefined
-            || this.req.query.withRelated !== undefined
-            ){
-                let relation = row[key]
-                if( relation ){
-                    let args = opts[withKey]
+                let RelatedModel = row[relation]
+                if( RelatedModel ){
+
+                    // NOTE: NOT using `_with[relation]` becase of sql injection
+                    let args = opts.with && opts.with[relation] || null
                     
                     // TODO: disabled cause we need to escape for sql injection
-                    // if( !args && this.req.query[withKey] )
-                    //     args = [, {select: this.req.query[withKey]}]
+                    // if( _with[relation] )
+                    //     args = [, {select: _with[relation]}]
 
                     args = this.findOptionToArgs(args)
-                    row.attrs[key] = await relation.find(...args)
+                    
+                    row.attrs[relation] = await RelatedModel.find(...args)
                 }
             }
                 
