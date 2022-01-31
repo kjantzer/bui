@@ -113,9 +113,15 @@ module.exports = class MyModel extends Model {
                         ${this.findLimit}`
     }
 
-    findParseRow(row, index, resultCount, resp, opts){
+    async findParseRow(row, index, resultCount, resp, opts){
         // defaults to noop, only passing the row along as-is
         return row
+    }
+
+    async findExtendRowData(row, opts){
+        // default is to fetch related models if any `opts.withRelated` keys are set
+        // more docs needed for this feature
+        // optionally override this method to disable that logic or add even more data
     }
 
     // alter the attributes before updating
@@ -165,6 +171,33 @@ console.log(myclass.files) // == FilesModel instance
 // same as
 new TypeModel({id: 3451}, myclass.req)
 new Files({parent_id: 1}, myclass.req)
+```
+
+### Find "with" related data
+When using the server Model, you can get data from relations by passing `with[RelationKey]` to the find method
+
+```js
+myclass.find(, {
+    withType: true, 
+    withFiles: [, {select: 'filename'}]
+})
+
+// same as
+myclass.find()
+myclass.attrs.type = myclass.type.find()
+myclass.attrs.files = myclass.files.find(, {select: 'filename'})
+```
+
+This can be done via API as well  
+`/api/myclass/1?withType&withFiles`
+
+Want data for all relations?
+
+```js
+myclass.find(, {withRelated:true})
+
+// or
+`/api/myclass/1?withRelated`
 ```
 
 # FileManager
