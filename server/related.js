@@ -62,6 +62,7 @@ function assign(Model, RelatedModel, prop, {
                     return undefined
 
                 this[__prop] = new RelatedModel(attrs, this.req)
+                this[__prop].relatedSrc = this
             }
 
             return this[__prop]

@@ -348,6 +348,13 @@ module.exports = class Model {
             if( relationOpts.with || _with == 'related' || (_with && _with[relation] != undefined) ){
 
                 let RelatedModel = row[relation]
+
+                // mitigate infinite loops
+                // relatedSrc is the model that created this one
+                // so stop if we're trying to get a relation the same as the creator
+                if( this.relatedSrc && this.relatedSrc.constructor == RelatedModel.constructor )
+                    return 
+
                 if( RelatedModel ){
 
                     // NOTE: NOT using `_with[relation]` becase of sql injection
