@@ -19,7 +19,7 @@ module.exports = class Model {
         // add or manipulate the where clause
     }
 
-    findJoins(){ return '' }
+    findJoins(opts){ return '' }
 
     findSql(where, {select="*", join='', limit=null}={}){
 
@@ -295,19 +295,61 @@ module.exports = class Model {
         
         if( id && id == this.id ){
             this.attrs = resp[0]
-            return this
+            resp = this
         }else if( id ){
             if( convertToObject )
-                return new ClassObj(resp[0], this.req)
+                resp = new ClassObj(resp[0], this.req)
             else
-                return resp[0]
-        }
-
+                resp = resp[0]
         // convert each row to a class object
-        if( convertToObject )
+        }else if( convertToObject )
             resp = resp.map(attrs=>new ClassObj(attrs, this.req))
 
+        if( this.findExtendRowData )
+            if( Array.isArray(resp) )
+                await Promise.series(resp, (row,i)=>{
+                    return this.findExtendRowData(row, opts)
+                })
+            else
+                await this.findExtendRowData(resp, opts)
+
+
         return resp;
+    }
+
+    findOptionToArgs(option){
+        if( option == true || option == 1 || option == '1' ) return []
+        if( Array.isArray(option) ) return option
+        return option ? [option] : []
+    }
+
+    async findExtendRowData(row, opts){
+
+        let related = this.constructor.related 
+        if( !related ) return
+
+        // for each relation, check for a `withRelationKey` option
+        for( let key in related ){
+            
+            let withKey = 'with'+key[0].toUpperCase()+key.slice(1)
+
+            if( opts[withKey] || this.req.query[withKey] !== undefined
+            || this.req.query.withRelated !== undefined
+            ){
+                let relation = row[key]
+                if( relation ){
+                    let args = opts[withKey]
+                    
+                    // TODO: disabled cause we need to escape for sql injection
+                    // if( !args && this.req.query[withKey] )
+                    //     args = [, {select: this.req.query[withKey]}]
+
+                    args = this.findOptionToArgs(args)
+                    row.attrs[key] = await relation.find(...args)
+                }
+            }
+                
+        }
     }
 
     async add(attrs={}, {manualSync=false}={}){
