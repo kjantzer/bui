@@ -156,6 +156,9 @@ module.exports = class API {
             res.set('Content-disposition', 'attachment; filename='+resp.filename);
 
         if( resp && resp.sendFile ){
+            if( resp.filename )
+                res.set('Filename', resp.filename);
+
             res.sendFile(resp.sendFile)
 
         }else if( req.query.downloadReq && req.headers['user-agent'].match('iPhone') ){
