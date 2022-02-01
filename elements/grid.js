@@ -63,7 +63,7 @@ customElements.define('b-grid', class extends LitElement{
             :host([cols-mobile="1,2"]) { grid-template-columns: 1fr 2fr; }
 
             :host([cols-mobile]) ::slotted([colspan]),
-            :host([cols-mobile]) [colspan] {grid-column: 1/-1;}
+            :host([cols-mobile]) [colspan] {grid-column: 1/-1 !important;}
 
             :host([rows-mobile="auto,1"]) { grid-template-rows: auto 1fr; }
             :host([rows-mobile="1,auto"]) { grid-template-rows: auto 1fr; }
