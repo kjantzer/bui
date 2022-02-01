@@ -14,7 +14,9 @@ if( navigator.serviceWorker ){
 
         // a new service worker is waiting to be used
         if( reg.waiting )
-            newUpdateNotif(reg.waiting)
+            setTimeout(()=>{ // delay to let DOM load
+                newUpdateNotif(reg.waiting)
+            })
 
         // a new service woker was found
         reg.addEventListener('updatefound', ()=>{
