@@ -177,6 +177,8 @@ customElements.define('token-text-field', class extends LitElement{
             this._value = html
 
         html&&html!='<br>' ? this.removeAttribute('empty') : this.setAttribute('empty', '')
+
+        this.emitChange()
     }
     
     get value(){ return this.toJSON() }
@@ -226,6 +228,7 @@ customElements.define('token-text-field', class extends LitElement{
 
         if( token ){
             this.insertHTML( this.makeToken(token) )
+            this.emitChange()
             // TODO: implement this? not needed atm
             // this.emitEvent('token-insert', {token: null})
         }
@@ -348,7 +351,19 @@ customElements.define('token-text-field', class extends LitElement{
 
         // make sure we end with a `<br>` tag.
         clearTimeout( this.keyupTimeout )
-        this.keyupTimeout = setTimeout(this.endWithBrTag.bind(this), 300);
+        this.keyupTimeout = setTimeout(e=>{
+
+            this.endWithBrTag()
+            this.emitChange()
+
+        }, 300);
+    }
+
+    emitChange(){
+        let text = this.main && this.main.textContent
+        if( this._lastTextContent == text ) return
+        this._lastTextContent = text
+        this.emitEvent('change')
     }
 
     onKeypress(e){
@@ -511,7 +526,7 @@ customElements.define('token-text-field', class extends LitElement{
         this.focus(range.toString().length);
     }
 
-    length(){
+    get length(){
         return this.main.textContent.trim().replace(/\n/g, '').length
     }
 
@@ -524,7 +539,7 @@ customElements.define('token-text-field', class extends LitElement{
 
     // focuses editor and sets caret position
     focus(atChar){
-        if( atChar === undefined || atChar < 0 || atChar > this.length() )
+        if( atChar === undefined || atChar < 0 || atChar > this.length )
             atChar = 0;
 
         this.setSelection(atChar, atChar);
@@ -532,10 +547,10 @@ customElements.define('token-text-field', class extends LitElement{
 
     // focuses editor at the end
     focusEnd(){
-        this.focus(this.length())
+        this.focus(this.length)
     }
 
-    selectAll(){ this.setSelection(0, this.length()) }
+    selectAll(){ this.setSelection(0, this.length) }
 
     setSelection(start, end) {
 
@@ -610,8 +625,8 @@ customElements.define('token-text-field', class extends LitElement{
 
         if( sel.type == 'None' )
             return {
-                start: this.length(),
-                end: this.length()
+                start: this.length,
+                end: this.length
             }
 
         var range = sel.getRangeAt(0);
