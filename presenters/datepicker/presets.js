@@ -3,6 +3,8 @@ import dayjs from 'dayjs'
 import '../../elements/btn'
 import '../../elements/hr'
 
+const DIVIDERS = ['divider', '-']
+
 export const Presets = {
     'today': { label: 'Today', value:d=>d },
     'yesterday': { label: 'Yesterday', value:d=>d.add(-1, 'day') },
@@ -93,7 +95,7 @@ customElements.define('b-datepicker-presets', class extends LitElement{
     render(){return html`
         ${this.presets&&this.presets.map(preset=>html`
 
-            ${preset=='divider'||preset.divider?html`
+            ${DIVIDERS.includes(preset)||preset.divider?html`
                 
                 <b-hr pad="xs"></b-hr>
                 ${preset.divider?html`
@@ -133,7 +135,7 @@ function formatPreset(p){
     // support presets
     if( typeof p == 'string' ){
 
-        if( p == 'divider')
+        if( DIVIDERS.includes(p) )
             return p
 
         let preset = Presets[p.toLowerCase()]
