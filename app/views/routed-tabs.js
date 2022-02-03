@@ -56,11 +56,11 @@ customElements.define('b-tabs-router', class extends TabsView {
             tabView.routeState = newState
             
             // reuse data from old state
-            if( oldState )
-                newState.update({
-                    path: oldState.path,
-                    title: oldState.title
-                })
+            // if( oldState ) // not sure why I was doing this...doesn't seem like we should do this anymore
+            //     newState.update({
+            //         path: oldState.path,
+            //         title: oldState.title
+            //     })
         }
         
         if( tabView == oldTabView && tabView.view.scrollToTop )
