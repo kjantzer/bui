@@ -55,6 +55,11 @@ export default class RoutedView extends LitElement {
         return root ? root.route : undefined
     }
 
+    get routePath(){
+        let route = this.route
+        return route ? route.makePath(route.params)+'/' : ''
+    }
+
     shouldUpdate(){
         if( this.modelRequired !== true ) return true
 
