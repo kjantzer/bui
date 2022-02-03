@@ -83,6 +83,10 @@ export default css`
 	font-size: 0.8rem;
 }
 
+.ProseMirror hr {
+    border-top: solid 1px rgba(var(--theme-text-rgb, 0, 0, 0), .2);
+}
+
 .ProseMirror p.is-editor-empty:first-child::before {
 	/* content: attr(data-placeholder); */
 	content: var(--placeholder);
