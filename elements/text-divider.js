@@ -13,6 +13,17 @@ customElements.define('b-text-divider', class extends Text{
             display: flex;
             align-items: center;
             gap: .5em;
+            position: relative;
+        }
+
+        :host([wrap]) {
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 599px) {
+            :host {
+                flex-wrap: wrap;
+            }
         }
 
         [name="divider:left"] { display: none; }
@@ -21,9 +32,24 @@ customElements.define('b-text-divider', class extends Text{
         b-icon {
             --size: .9em;
         }
+        
+        [name="right"]::slotted(:first-child) {
+            margin-left: auto;
+        }
 
         :host([pad]) {
             margin: 2rem 0 .5rem;
+        }
+
+        :host([bottom]) {
+            padding-bottom: .5em;
+        }
+
+        :host([bottom]) [name="divider"] {
+            position: absolute;
+            display: block;
+            width: 100%;
+            bottom: 0;
         }
     `]}
 
@@ -35,12 +61,14 @@ customElements.define('b-text-divider', class extends Text{
         
         <slot name="label">
             ${this.icon?html`
-            <b-icon name="${this.icon}" class="slot"></b-icon>
+            <b-icon name="${this.icon}" part="icon" class="slot"></b-icon>
             `:''}
             ${super.render()}
+
+            <slot name="label:after"></slot>
         </slot>
 
-        <slot name="divider"><b-hr ?thick=${this.thick} pad="none"></b-hr></slot>
+        <slot name="divider"><b-hr part="divider" ?thick=${this.thick} pad="none"></b-hr></slot>
 
         <slot name="right"></slot>
     `}
