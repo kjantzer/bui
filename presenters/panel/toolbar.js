@@ -155,7 +155,7 @@ class PanelToolbar extends LitElement {
     }
 
     render(){return html`
-        <div class="left">
+        <div class="left" part="left">
             <slot name="close-btn">
                 <b-btn ?outline=${this.closebtn!='arrow'} 
                     part="close-btn"
@@ -165,14 +165,14 @@ class PanelToolbar extends LitElement {
             </slot>
             <slot name="left"></slot>
         </div>
-        <div class="middle">
+        <div class="middle" part="middle">
             <slot name="middle">
                 <slot name="title:before"></slot>
                 <slot name="title"><b-text sm clip>${this.title}</b-text></slot>
                 <slot name="title:after"></slot>
             </slot>
         </div>
-        <div class="right">
+        <div class="right" part="right">
             <slot name="right"></slot>
         </div>
     `}
