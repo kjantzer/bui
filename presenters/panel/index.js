@@ -365,7 +365,7 @@ export class Panel extends LitElement {
             if( !this.isOpen && dir == 'forward' )
                 newState.update({didEnter: true})
             
-            this.open()
+            this.open({oldState, newState, dir})
             detail.opened = true
         }
 
@@ -541,12 +541,19 @@ export class Panel extends LitElement {
 
         this.panelController.add(this)
 
+        if( this.view.onRouteChange ){
+            if( args[0] && args[0].newState)
+                this.view.onRouteChange(args[0].oldState, args[0].newState, args[0].dir)
+            else
+                this.view.onRouteChange(undefined, this.route.state)
+        }
+
         setTimeout(()=>{
             this.setAttribute('open', '')
 
             if( this.view && this.view.onOpen ){
                 if( this.route )
-                    args.unshift(this.route.state)
+                    args.unshift(this.route.state) // DEPRECATED, view should implement `onRouteChange`
                 this.view.onOpen(...args)
             }
 
