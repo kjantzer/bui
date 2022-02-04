@@ -56,8 +56,14 @@ export default class RoutedView extends LitElement {
     }
 
     get routePath(){
+        let path = this.makePath()
+        return path ? path+'/' : ''
+    }
+
+    makePath(params={}){
         let route = this.route
-        return route ? route.makePath(route.params)+'/' : ''
+        params = Object.assign({}, route.params, params)
+        return route ? route.makePath(params) : ''
     }
 
     shouldUpdate(){
@@ -109,22 +115,13 @@ export default class RoutedView extends LitElement {
             return
         }
 
-        let model = coll.getOrCreate({[this.idAttribute]:id}, {add:false})
-
         try{
-            if( this.fetchOnLoad !== false ){
-
-                // TODO: support skipping fetched if model.hasFetched
-                await model.fetchSync({data:this.loadFetchData})
-
-                if( Object.keys(model.attributes).length <= 1 ){
-                    model.isInvalid = true
-                }else{
-                    let m = coll.add(model, {merge: true})
-                    if( m != coll ) // support for Backbone 0.9 in v5 :\
-                        model = m
-                }
-            }
+            
+            let model = await loadModel(coll, id, {
+                fetch: this.fetchOnLoad,
+                fetchData: this.loadFetchData,
+                idAttribute: this.idAttribute
+            })
 
             let continueLoading = await this.finishLoading(model, id, attrs, state)
 
@@ -151,20 +148,11 @@ export default class RoutedView extends LitElement {
         // optional
     }
 
-    async onOpen(state){
-
+    async onRouteChange(oldState, newState, dir){
+        
         // NOTE: disabling this could cause problems
         // but I think this should be removed. loadStateChange->load will take
         // care of clearing the model
-        // this.model = null
-
-        if( state && state.props.filters && this.list )
-            this.list.filters.reset(state.props.filters) // TODO: support `update` instead of reset?
-
-        this.loadStateChange(state)
-    }
-
-    async onRouteChange(oldState, newState, dir){
         // this.model = null
 
         if( newState && newState.props.filters && this.list )
@@ -190,4 +178,30 @@ export default class RoutedView extends LitElement {
             return this.tabView.route
     }
 
+}
+
+
+export async function loadModel(coll, id, {
+    fetch=true,
+    fetchData={initialLoad: true},
+    idAttribute= 'id'
+}={}){
+
+    let model = coll.getOrCreate({[idAttribute]:id}, {add:false})
+
+    if( fetch !== false ){
+
+        // TODO: support skipping fetched if model.hasFetched
+        await model.fetchSync({data:fetchData})
+
+        if( Object.keys(model.attributes).length <= 1 ){
+            model.isInvalid = true
+        }else{
+            let m = coll.add(model, {merge: true})
+            if( m != coll ) // support for Backbone 0.9 in v5 :\
+                model = m
+        }
+    }
+
+    return model
 }
