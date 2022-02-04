@@ -115,9 +115,20 @@ class PanelController extends LitElement {
         <slot></slot>
     `}
 
-    remove(panel){
+    remove(panel, {updateRoute=false}={}){
+        
         this.panels.delete(panel)
         this._updatePanels()
+
+        if( updateRoute )
+            this._updateRoute()
+
+        if( this.length == 0 )
+            this.dispatchEvent(new CustomEvent('panels-closed', {
+                bubbles: true,
+                composed: true,
+                detail: {controller: this}
+            }))
     }
 
     add(panel){
@@ -216,12 +227,6 @@ class PanelController extends LitElement {
             else
                 router.push('')
 
-            this.dispatchEvent(new CustomEvent('panels-closed', {
-                bubbles: true,
-                composed: true,
-                detail: {controller: this}
-            }))
-        
         }else
         this.panels.forEach((panel)=>{
 

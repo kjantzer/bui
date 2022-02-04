@@ -196,6 +196,7 @@ needs to render one. A panel toolbar element has been created for such a task.
 - `shadow`
 - `overlay`
 - `notitle`
+- `nomiddle` (hides the middle slot)
 
 ## Fullscreen Button
 
