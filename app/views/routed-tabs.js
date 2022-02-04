@@ -7,6 +7,11 @@ customElements.define('b-tabs-router', class extends TabsView {
     connectedCallback(){
         super.connectedCallback()
 
+        // NOTE: will this cause issues?
+        // I think it will be okay, only problem would be dynamic added/removed tabviews
+        if( this.hasSetup ) return
+        this.hasSetup = true
+        
         let rootPath = this.getAttribute('path') || ''
 
         this.addEventListener('menu-clicked', this.onMenuClick)
