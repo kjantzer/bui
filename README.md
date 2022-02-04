@@ -16,7 +16,6 @@ Web components for creating interfaces - built with [lit-html](https://lit-html.
 
 [![preview](./preview.jpg)](https://bui.js.org)
 
-
 ## 🎉 Features
 - 📱 Progressive scaling from desktop to mobile devices
 - 🌗 Dark/Light Mode
