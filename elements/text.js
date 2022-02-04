@@ -85,6 +85,7 @@ customElements.define('b-text', class extends LitElement{
 
         :host([color="theme"]) { color: var(--theme); }
         :host([color="theme-accent"]) { color: var(--theme-secondary); }
+        :host([color="text"]) { color: var(--theme-text); }
         :host([color="red"]) { color: var(--red, red); }
         :host([color="orange"]) { color: var(--orange, orange); }
         :host([color="blue"]) { color: var(--blue, blue); }
