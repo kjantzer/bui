@@ -568,6 +568,8 @@ export class Panel extends LitElement {
 
     async close(){
 
+        if( !this.isOpen ) return
+
         if( this.opts.onClose && await this.opts.onClose() === false )
             return
         
@@ -576,9 +578,6 @@ export class Panel extends LitElement {
 
         this.route&&this.route.update({didExit: true})
         this._close()
-
-        if( this.route && this.panelController )
-            this.panelController._updateRoute()
 
         // put the view back to it's original DOM location (if it had one)
         if( this.__viewOriginalPlacement ){
@@ -591,7 +590,7 @@ export class Panel extends LitElement {
 
     _close(immediate=false){
         window.removeEventListener('keydown', this._onKeydown, true)
-        this.panelController.remove(this)
+        this.panelController.remove(this, {updateRoute: !!this.route})
         this.removeAttribute('open')
         
         if( immediate )
