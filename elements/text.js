@@ -92,6 +92,16 @@ customElements.define('b-text', class extends LitElement{
         :host([color="green"]) { color: var(--green, blue); }
         :host([color="purple"]) { color: var(--deep-purple, blue); }
 
+        :host([gradient]) {
+            background-image: var(--theme-gradient,var(--theme-text, #000));
+            background-size: 100%;
+            background-repeat: repeat;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -moz-background-clip: text;
+            -moz-text-fill-color: transparent;
+        }
+
         :host([link]),
         :host([href]) {
             cursor: default;
