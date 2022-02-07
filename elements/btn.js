@@ -340,7 +340,7 @@ export default class BtnElement extends LitElement {
         :host([lg]) { font-size: 1.2rem; }
         :host([xl]) { font-size: 1.4rem; }
 
-        :host([fab][color="theme-gradient"]) {
+        :host([color="theme-gradient"]) {
             background: var(--theme-gradient, var(--bgdColor))
         }
 
