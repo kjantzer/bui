@@ -13,6 +13,15 @@ customElements.define('b-text', class extends LitElement{
             line-height: var(--b-text-line-height, 1em);
         }
 
+        /* body text */
+        :host([body]) {
+            line-height: var(--theme-body-line-height, 1.4em);
+        }
+
+        :host([header]) {
+            line-height: var(--theme-header-line-height, 1.2em);
+        }
+
         :host([block]) {
             display: block;
         }
@@ -46,6 +55,7 @@ customElements.define('b-text', class extends LitElement{
             font-family: var(--b-text-monospace, 'Source Code Pro', 'Courier New', Courier, monospace)
         }
 
+        :host([lighter]) .slot { font-weight: 300; }
         :host([nobold]) .slot { font-weight: normal; }
         :host([bold]) .slot { font-weight: bold; }
         :host([xbold]) .slot { font-weight: 900; }
