@@ -203,6 +203,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         main .body-wrap {
             padding-left: var(--pad);
             padding-right: var(--pad);
+            line-height: var(--theme-body-line-height, 1.2em);
         }
 
         main > slot::slotted(*:first-child) {
