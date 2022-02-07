@@ -13,6 +13,7 @@ export default css`
 	white-space: pre-wrap;
 	-webkit-font-variant-ligatures: none;
 	font-variant-ligatures: none;
+	line-height: var(--theme-body-line-height, 1.4em);
 }
 .ProseMirror [contenteditable="false"] {
 	white-space: normal;

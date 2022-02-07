@@ -57,7 +57,7 @@ main {
 	display: inline-block;
 	white-space: pre-wrap;
 	min-height: 1em;
-	line-height: 1.2em;
+	line-height: var(--theme-body-line-height, 1.4em);
 	margin: -.1em 0;
 }
 
