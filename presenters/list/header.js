@@ -75,7 +75,7 @@ customElements.define('b-list-header', class extends LitElement{
         :host > div,
         :host > b-text,
         :host > span {
-            font-size: .8em;
+            font-size: .75em;
             font-weight: bold;
         }
     `]}
