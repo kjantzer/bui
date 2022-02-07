@@ -31,8 +31,6 @@ slot[name="after"]{
 	--invalidColor: #ff1744;
 	--unsavedColor: transparent; /*#FFC107;*/
 	--disabledColor: var(--fc-disabled-color, rgba(0,0,0,.3));
-	--labelFontFamily: inherit;
-	--labelFontSize: inherit;
 	--padY: 0;
 	--padX: 0;
 }
@@ -76,8 +74,9 @@ slot[name="after"]{
 	box-sizing: border-box;
 	width: 100%;
 	white-space: nowrap;
-	font-family: var(--labelFontFamily);
-	font-size: var(--labelFontSize);
+	font-family: var(--labelFontFamily, var(--fc-label-font-family, inherit));
+	font-size: var(--labelFontSize, var(--fc-label-font-size, inherit));
+	/* font-weight: var(--fc-label-font-weight, 700); */
 }
 
 :host([nolabel]) .label {
@@ -315,9 +314,11 @@ slot[name="help"] {
 :host([material][show*="placeholder"]) .label,
 :host([material]:focus-within) .label,
 :host([material][focused]) .label {
+	/* color: var(--theme-text-accent2, inherit); */
 	color: inherit;
 	transform: translateY(calc(-50% - (var(--padY) / 2)));
 	z-index: 11;
+	font-weight: var(--fc-label-font-weight, 700);
 }
 
 :host([material][empty]:not([nolabel]):not(:focus-within)) [name="control"]::slotted(*),
@@ -415,7 +416,7 @@ slot[name="help"] {
 :host([material="outline"]) main {
 	border: solid var(--fc-border-width, 1px) var(--borderColor);
 	padding-top: 0;
-	background: var(--bgd);
+	background: var(--fc-outline-bgd, var(--bgd, #fff));
 }
 
 /* :host([material="outline"]) .control, */
@@ -451,7 +452,7 @@ slot[name="help"] {
 :host([material="outline"]:not([empty])) .label,
 :host([material="outline"]:focus-within) .label,
 :host([material="outline"][focused]) .label {
-	background: var(--bgd);
+	background: var(--fc-outline-bgd, var(--bgd, #fff));
 	padding: 0 .35em;
 	margin-left: var(--padX);
 	transform: translateY(-50%);
@@ -529,7 +530,7 @@ slot[name="help"] {
 }
 
 :host([material="filled"]) .label {
-	transform: translateY(-20%);
+	transform: translateY(-15%);
 	width: auto;
 }
 
