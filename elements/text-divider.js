@@ -37,9 +37,9 @@ customElements.define('b-text-divider', class extends Text{
             margin-left: auto;
         }
 
-        :host([pad]) {
-            margin: 2rem 0 .5rem;
-        }
+        :host([pad]) { margin: 2rem 0 .5rem; }
+        :host([pad="1"]) { margin: 2rem 0 1rem; }
+        :host([pad="2"]) { margin: 4rem 0 2rem; }
 
         :host([bottom]) {
             padding-bottom: .5em;
