@@ -158,9 +158,9 @@ class TextFieldElement extends HTMLElement {
         temp.innerHTML = `<style>${styles.cssText}</style>
 			<main>
 				
-				<div class="editor" contenteditable="true" data-placeholder="${placeholder}"></div>
+				<div class="editor" part="editor" contenteditable="true" data-placeholder="${placeholder}"></div>
 				
-				<input class="input" placeholder="${placeholder}" 
+				<input class="input" part="input" placeholder="${placeholder}" 
 						type="${this.input||'text'}" 
 						name="${this.name||this.input}"
 						autocomplete="${this.autocomplete}">
