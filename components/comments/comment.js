@@ -86,6 +86,10 @@ customElements.define('b-comment-row', class extends LitElement {
             gap: .5em;
         }
 
+        .comment {
+            font-size: var(--b-comment-font-size, .9em);
+        }
+
         .comment > :first-child {
             margin-top: 0;
         }
