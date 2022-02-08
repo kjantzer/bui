@@ -57,6 +57,7 @@ customElements.define('b-text', class extends LitElement{
 
         :host([lighter]) .slot { font-weight: 300; }
         :host([nobold]) .slot { font-weight: normal; }
+        :host([semibold]) .slot { font-weight: 600; }
         :host([bold]) .slot { font-weight: bold; }
         :host([xbold]) .slot { font-weight: 900; }
         :host([italic]) .slot { font-style: italic; }
