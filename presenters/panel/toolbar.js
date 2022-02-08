@@ -1,5 +1,6 @@
 import {LitElement, html, css} from 'lit-element'
 
+// TODO: rename to PanelTitlebar
 class PanelToolbar extends LitElement {
 
     static get properties(){return {
