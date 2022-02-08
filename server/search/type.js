@@ -7,6 +7,7 @@ module.exports = class SearchType {
         this.db = db
     }
 
+    // how to sort items with same score
     static finalSort(a, b){ return 0 }
     
     formatTerm(term){ return term }
