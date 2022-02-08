@@ -6,11 +6,6 @@ customElements.define('b-root-titlebar', class extends LitElement{
         title: {type: String},
     }}
 
-    constructor(){
-        super()
-        this.slot = this.slot || 'toolbar:before'
-    }
-
     static get styles(){return css`
         :host {
             display: flex;
@@ -48,6 +43,15 @@ customElements.define('b-root-titlebar', class extends LitElement{
         }
     `}
 
+    firstUpdated(){
+        if( this.slot ) return
+        
+        if( this.parentElement && this.parentElement.tagName == 'B-LIST' )
+            this.slot = 'toolbar:before'
+        else if( this.panel )
+            this.slot = 'close-btn'
+    }
+
     close(){
         this.panel&&this.panel.close()
     }
@@ -64,7 +68,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
     render(){return html`
 
         ${this.panel?html`
-            <b-btn text icon="down-open" @click=${this.close}></b-btn>
+            <b-btn text icon="down-open" part="close-btn" @click=${this.close}></b-btn>
         `:''}
 
         <slot name="left"></slot>
