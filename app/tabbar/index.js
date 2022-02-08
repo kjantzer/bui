@@ -115,6 +115,10 @@ customElements.define('b-app', class extends LitElement {
                 margin: -2em 0px -2em 1em;
                 top: -0.25em;
             }
+
+            b-root-titlebar::part(close-btn) {
+                width: 60px;
+            }
         `)}
     `}
 
@@ -125,7 +129,9 @@ customElements.define('b-app', class extends LitElement {
 
     render(){return html`
         ${this.panel?html`
-            <b-panel-toolbar shadow></b-panel-toolbar>
+            <b-panel-toolbar shadow notitle nomiddle>
+                <b-root-titlebar title=${this.panel.title}></b-root-titlebar>
+            </b-panel-toolbar>
         `:''}
 
         <b-tabs-router 
