@@ -89,4 +89,4 @@ const readFile = (filePath, {raw=false}={})=>{
     return contents
 }
 
-module.exports = {readDir, readFile, getFileInfo}
+module.exports = {readDir, readFile, getFileInfo, fs}
