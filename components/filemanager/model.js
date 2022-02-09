@@ -16,6 +16,10 @@ export default class FileModel extends Model {
     get previewURL(){ return this.url()+'?display=preview' }
     get downloadURL(){ return this.url()+'?download' }
 
+    get attrTypes(){return {
+        timestamp_created: 'date'
+    }}
+
     get traits(){ return this.attributes.traits || {} }
 
     saveTrait(key, val){
@@ -112,6 +116,15 @@ export class Palette extends CollMap {
         el.style.setProperty('--palette-gradient', 
             `linear-gradient(to right, 
                 rgb(var(--palette-vibrant)),
+                rgb(var(--palette-muted))
+            )`
+        )
+
+        el.style.setProperty('--palette-gradient-rainbow', 
+            `linear-gradient(to right, 
+                rgb(var(--palette-vibrant)),
+                rgb(var(--palette-lightvibrant)),
+                rgb(var(--palette-lightmuted)),
                 rgb(var(--palette-muted))
             )`
         )
