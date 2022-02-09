@@ -72,9 +72,10 @@ customElements.define('b-write-comment', class extends LitElement{
                 <text-editor placeholder="${this.placeholder}"
                     .extensions=${extensions}
                     @submit=${this.save}
-                    @esckey=${this.onEscape}></text-editor>
+                    @esckey=${this.onEscape}
+                    @blur=${this.onBlur}></text-editor>
 
-                <b-btn sm color="theme" @click=${this.save} icon="send" slot="suffix"></b-btn>
+                <b-btn sm color="theme" @click=${this.save} icon="${this.coll?'send':'ok'}" slot="suffix"></b-btn>
             </form-control>
 
         </form-handler>
@@ -97,9 +98,23 @@ customElements.define('b-write-comment', class extends LitElement{
             el.focus()
     }
 
+    onBlur(){
+        // emit cancel even when an empy "new comment" is blurred
+        if( this.coll && this.formHandler.get('comment').value == '' )
+            this.emitEvent('canceled', {model: this.model})
+    }
+
     onEscape(){
+        
+        // writing a new comment
         if( this.coll )
             this.formHandler.values = {comment:''}
+        
+        // editing an existing
+        if( this.model ){
+            this.model.resetEdited()
+            this.formHandler.values = {comment: this.model.get('comment')}
+        }
 
         this.emitEvent('canceled', {model: this.model})
     }

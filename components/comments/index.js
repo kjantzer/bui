@@ -3,6 +3,7 @@ import Coll, { markCommentRead } from './models'
 import Comment from './comment'
 import WriteComment from './write'
 import '../../helpers/lit-element/events'
+import '../../helpers/lit-element/listeners'
 
 customElements.define('b-comments', class extends LitElement{
 
@@ -13,7 +14,7 @@ customElements.define('b-comments', class extends LitElement{
     static set nameTag(val){ Comment.nameTag = val }
 
     static get listeners(){return {
-        coll: {'add remove change': 'updateView'}
+        coll: {'add remove sync': 'updateView'}
     }}
 
     static get properties(){return {
