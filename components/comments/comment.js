@@ -87,7 +87,7 @@ customElements.define('b-comment-row', class extends LitElement {
         }
 
         .comment {
-            font-size: var(--b-comment-font-size, .9em);
+            /* font-size: var(--b-comment-font-size, .9em); */
         }
 
         .comment > :first-child {
