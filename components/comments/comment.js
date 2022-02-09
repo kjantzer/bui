@@ -23,7 +23,7 @@ customElements.define('b-comment-row', class extends LitElement {
     static get properties(){return {
         editing: {type: Boolean, reflect: true},
         placeholderBtn: {type: String},
-        placeholder: {type: String},    
+        placeholder: {type: String},
         replies: {type: Boolean}
     }}
 

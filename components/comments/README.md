@@ -64,6 +64,12 @@ You can choose to add additional metadata by setting `.meta` (either an object o
 <b-comments group="book" gid="4805" .meta=${{title: 'Only Yesterday'}}></b-comments>
 ```
 
+#### placeholderBtn
+What should the "new comment" button show? Defaults to "Comment"
+
+#### placeholder
+What do show in an empty comment input. Defaults to "Write a comment"
+
 #### Model
 You can give the comment a model and the `GID` and `Meta` will be set using that model. Note: `group` must still be set
 

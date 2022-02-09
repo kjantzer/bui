@@ -21,6 +21,8 @@ customElements.define('b-comments', class extends LitElement{
         group: {type: String},
         gid: {type: Number},
         limit: {type: Number},
+        placeholderBtn: {type: String},
+        placeholder: {type: String},
         replies: {type: Boolean} // not supported yet
     }}
 
@@ -65,6 +67,8 @@ customElements.define('b-comments', class extends LitElement{
     constructor(){
         super()
         this.limit = 10
+        this.placeholderBtn = 'Comment'
+        this.placeholder = 'Write a comment'
     }
 
     set model(model){
@@ -147,13 +151,29 @@ customElements.define('b-comments', class extends LitElement{
     render(){return html`
 
         <!-- write new comment -->
-        <b-comment-row part="write-comment" .coll=${this.coll} .meta=${this.meta}></b-comment-row>
+        <b-comment-row 
+            part="write-comment" 
+            .coll=${this.coll} 
+            .meta=${this.meta}
+            placeholderBtn=${this.placeholderBtn}
+            placeholder=${this.placeholder}
+        ></b-comment-row>
 
         ${this.coll.map((m,i)=>html`
+
             ${this.limit&&i==this.coll.length-this.limit?html`
                 <b-btn color="white" block @click=${this.viewAllComments} class="view-all">View all comments</b-btn>
             `:''}
-            <b-comment-row part="comment" .model=${m} .meta=${this.meta} @mark-read=${this.markRead}></b-comment-row>
+            
+            <b-comment-row 
+                part="comment" 
+                .model=${m} 
+                .meta=${this.meta} 
+                placeholderBtn=${this.placeholderBtn}
+                placeholder=${this.placeholder}
+                @mark-read=${this.markRead}
+            ></b-comment-row>
+
         `).reverse()}
     `}
 
