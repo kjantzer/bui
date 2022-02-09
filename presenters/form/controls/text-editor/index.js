@@ -134,7 +134,6 @@ customElements.define('text-editor', class extends LitElement{
     }
 
     set value(val){
-        if( this.__val == val ) return
         this.__val = val
         if( this.editor )
             this.editor.commands.setContent(val)
