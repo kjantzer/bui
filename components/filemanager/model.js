@@ -56,6 +56,10 @@ export default class FileModel extends Model {
         return this.traits.duration||0
     }
 
+    get pages(){
+        return this.traits.pages||0
+    }
+
     get resolution(){
         let size = Math.max(this.width, this.height)+'x'+Math.min(this.width, this.height)
         return RESOLUTIONS[size] || ''
@@ -75,6 +79,10 @@ export default class FileModel extends Model {
 
     get isImg(){
         return this.get('type').match(/image/)
+    }
+
+    get isDocument(){
+        return this.get('type').match(/pdf/)
     }
 
     get palette(){

@@ -47,7 +47,7 @@ customElements.define('b-file-row', class extends LitElement{
             left: 2px;
         }
 
-        .res {
+        .res, .pages {
             position: absolute;
             top: 2px;
             right: 2px;
@@ -119,6 +119,12 @@ customElements.define('b-file-row', class extends LitElement{
 
                         <b-label xs class="res" filled="black" ?hidden=${!this.model.resolution}>
                             ${this.model.resolution}</b-label>
+
+                    `:''}
+
+                    ${this.model.isDocument?html`
+                    <b-label xs class="pages" filled="black" ?hidden=${!(this.model.pages>1)}>
+                            ${this.model.pages} pages</b-label>
                     `:''}
 
                     ${this.palette&&this.model.traits.palette?html`
