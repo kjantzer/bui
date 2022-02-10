@@ -180,9 +180,8 @@ export class UploaderElement extends LitElement {
     }
 
     // alias
-    selectFile(){
-        this.chooseFile()
-    }
+    selectFile(){ this.chooseFile() }
+    selectFiles(){ this.chooseFile() }
 
     _drop(e){
         e.preventDefault()
