@@ -246,7 +246,20 @@ customElements.define('b-list', class extends LitElement {
             background: var(--b-list-filter-overflow-bgd, var(--theme-bgd));
         }
 
+        :host([grid]) [part="list"] {
+            display: grid;
+            grid-template-columns: repeat( auto-fill, minmax(var(--grid-size, 240px), 1fr) );
+            padding: var(--gutter, 1em);
+            gap: var(--gutter, 1em);
+            align-content: flex-start;
+        }
+
         @media (max-width:599px){
+
+            :host([grid]) {
+                --grid-size: var(--grid-size-mobile, 1fr) !important;
+            }
+
             :host([toolbar="bottom-mobile"]) {
                 grid-template-rows: auto 1fr auto auto;
             }
@@ -500,6 +513,19 @@ customElements.define('b-list', class extends LitElement {
             else
                 this.setAttribute('scrolled-x', '')
         })
+
+        let grid = this.listOptions.grid
+        if( grid ){
+            this.setAttribute('grid', '')
+
+            if( typeof grid === 'string' )
+                this.style.setProperty('--grid-size', grid)
+            if( grid.size )
+                this.style.setProperty('--grid-size', grid.size)
+        
+            if( grid.sizeMobile )
+                this.style.setProperty('--grid-size-mobile', grid.sizeMobile)
+        }
 
         // TODO: unbind on disconnect?
         this.selection = new Selection(this.list, this.rowElement, Object.assign({
