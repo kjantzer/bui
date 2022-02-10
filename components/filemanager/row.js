@@ -3,6 +3,7 @@ import Previewer from '../../presenters/previewer'
 import Dialog from '../../presenters/dialog'
 import download from '../../util/download'
 import Palette from './palette'
+import './preview'
 
 customElements.define('b-file-row', class extends LitElement{
 
