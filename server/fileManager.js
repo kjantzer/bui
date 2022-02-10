@@ -2,6 +2,8 @@ const Model = require('./model')
 const mkdirp = require('mkdirp')
 const path = require('path')
 const fs = require('fs')
+const shellExec = require(bui`util/shellExec`)
+const {round} = require(bui`util/math`)
 const sharp = require('sharp')
 const exif = require('exif-reader')
 const msOfficeThumbnailer = require('./thumbnail/msOffice')
@@ -135,6 +137,7 @@ module.exports = class FileManager extends Model {
 
         let isImg = info.type.match(/image/) && !info.type.match(/photoshop/)
         let isVideo = info.type.match(/video/)
+        let isPDF = info.type.match(/pdf/)
         let sharpImg
         let metadata = {}
 
@@ -173,6 +176,17 @@ module.exports = class FileManager extends Model {
         })
 
         if( fileMoved === true ){
+
+            if( isPDF ){
+                try{
+                    let info = await pdfInfo(this.path)
+                    let traits = Object.assign(info, this.attrs.traits)
+                    await this.update({traits})
+                    
+                }catch(err){
+                    console.log('hmm...problem getting PDF info');
+                }
+            }
             
             let generatePreview = isVideo 
                 ? this.generateThumbnail() 
@@ -339,6 +353,61 @@ module.exports = class FileManager extends Model {
     }
 
 }
+
+async function pdfInfo(filepath, {withText=false}={}){
+
+    let infoStr = await shellExec('pdfinfo', `"${filepath}"`)
+
+    let lines = infoStr.trim().split(`\n`)
+
+    let info = {
+        pages: 0,
+        width: 0,
+        height: 0
+    }
+
+    lines.forEach(line=>{
+        let [key, val] = line.split(':')
+        info[key.trim().toLowerCase()] = (val||'').trim()
+    })
+
+    if( info['page size'] ){
+        try{
+            let [, w, h] = info['page size'].match(/^(\d+\.?\d+?) x (\d+\.?\d+?) pts/)
+            if( w ){
+                info.width = round(w / 72)
+                info.height = round(h / 72)
+            }
+        }catch(err){}
+    }
+
+    if( info.pages )
+        info.pages = parseInt(info.pages)
+
+    if( withText ){
+        try{
+            let text = await pdfText(filepath, withText)
+            info.text = text
+        }catch(err){}
+    }
+
+    return info
+}
+
+async function pdfText(filepath){
+    return await shellExec('pdftotext', [
+        '-raw', // keep content in raw data feed order
+        '-layout',
+        // `-f ${page}`, // first
+        // `-l ${page}`, // and last page
+        '-q', // dont print errors
+        `"${filepath}"`,
+        '-' // print to stdout
+    ])
+}
+
+module.exports.pdfInfo = pdfInfo
+module.exports.pdfText = pdfText
 
 module.exports.createTableSql = (tableName='files')=>{ return /*sql*/`
 CREATE TABLE ${tableName} (
