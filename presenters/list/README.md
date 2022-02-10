@@ -42,6 +42,7 @@ listOptions = {
     fetchOnLoad: true,
     perPage: 30,
     layouts: null // see below for details
+    grid: null
 }
 ```
 
@@ -55,6 +56,9 @@ when all available data has been displayed
 Also determines how many "more" rows are requested
 via fetch:more
 
+`grid: true` - use default grid width
+`grid: '400px'`
+`grid: {size: '100px', sizeMobile: '100px'}`
 
 ## Filters
 ```js
