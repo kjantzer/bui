@@ -7,14 +7,22 @@ customElements.define('b-inline-edit', class extends LitElement{
     static get styles(){return css`
 
         form-control {
-            box-shadow: 0 1px 0 1px var(--theme);
+            box-shadow: 0 1px 0 0px var(--theme);
             background: rgba(255,202,40, .2);
             min-width: 2em;
             vertical-align: text-bottom;
         }
+
+        :host([block]) form-control {
+            display: block;
+        }
+
+        text-field {
+            padding: .2em 0 0em; /* make up for .editor margin change */
+        }
     `}
 
-    static edit({value, target, placeholder='label', prefix, suffix}={}){
+    static edit({value, target, placeholder='label', prefix, suffix, block=false}={}){
 
         if( target.childNodes.length != 3 || target.childNodes[1].nodeName != '#text' )
             return console.log('editing already');
@@ -34,7 +42,9 @@ customElements.define('b-inline-edit', class extends LitElement{
             // el.prefix = prefix // caused a bug?? 
             // el.suffix = suffix
             el.resolve = resolve
-
+            
+            if( block )
+                el.setAttribute('block', '')
         })
     }
 
@@ -51,7 +61,8 @@ customElements.define('b-inline-edit', class extends LitElement{
                 placeholder=${this.placeholder}
                 .value=${this.value}
                 @enterkey=${this.saveEdit}
-                @blur=${this.doneEditing}
+                @esckey=${this.doneEditing}
+                @blur=${this.onBlur}
             ></text-field>
             <span slot="prefix">${this.prefix}</span>
             <span slot="suffix">${this.suffix}</span>
@@ -65,12 +76,33 @@ customElements.define('b-inline-edit', class extends LitElement{
         })
     }
 
+    get newValue(){
+        return (this.textField.value||'').trim()
+    }
+
     saveEdit(){
-        this.resolve(this.textField.value.trim())
+        this.value = this.newValue
+        this.resolve(this.value)
         this.textField.blur()
     }
 
-    doneEditing(){
+    onBlur(){
+        
+        if( this.value == this.newValue )
+            return this.doneEditing()
+        
+        setTimeout(_=>{
+            
+            if( this.parentElement && !localStorage.getItem('bui-form-inline-edit:enter-to-save-warning') ){
+                localStorage.setItem('bui-form-inline-edit:enter-to-save-warning', true)
+                throw new UIWarningError('Unsaved: press ENTER after editing and ESC to cancel')
+            }
+        })
+    }
+
+    doneEditing(e){
+        e&&e.stopPropagation()
+
         this.target.removeAttribute('editing-inline')
         this.replaceWith(this.textNode)
         this.resolve(false)
