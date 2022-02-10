@@ -514,7 +514,7 @@ customElements.define('b-list', class extends LitElement {
                 this.setAttribute('scrolled-x', '')
         })
 
-        let grid = this.listOptions.grid
+        let grid = this.listOptions&&this.listOptions.grid
         if( grid ){
             this.setAttribute('grid', '')
 
