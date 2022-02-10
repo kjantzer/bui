@@ -131,6 +131,8 @@ customElements.define('b-file-row', class extends LitElement{
                         <b-btn text icon="format-color-fill" class="palette" @click=${this.viewPalette}></b-btn>
                     `:''}
 
+                    <slot name="preview">${this.renderPreviewContent()}</slot>                    
+
                 </b-file-preview>
 
                 <section part="content"><slot name="content">${this.renderContent()}</slot></section>
@@ -139,6 +141,7 @@ customElements.define('b-file-row', class extends LitElement{
         </b-paper>
     `}
 
+    renderPreviewContent(){ return '' }
     renderContent(){ return ''}
 
     showMenu(){}
