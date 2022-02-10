@@ -74,7 +74,7 @@ module.exports = class FileManager extends Model {
         where['group_name'] = this.group
     }
 
-    async upload(file, src='', {traits={}}={}){
+    async upload(file, src='', {traits={}, description=null}={}){
 
         if( !file ){
             file = this.req.files.file
@@ -111,6 +111,7 @@ module.exports = class FileManager extends Model {
             dir_path: this.groupPath,
             orig_filename: file.name,
             user_id: this.req.user.id,
+            description,
             src: src,
             md5: file.md5,
             traits: traits,
