@@ -182,7 +182,7 @@ module.exports = class FileManager extends Model {
                 try{
                     let info = await pdfInfo(this.path)
                     let traits = Object.assign(info, this.attrs.traits)
-                    await this.update({traits})
+                    await this.update({traits}, {manualSync:true})
                     
                 }catch(err){
                     console.log('hmm...problem getting PDF info');
