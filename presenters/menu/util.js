@@ -55,6 +55,11 @@ export function toMenu({
 }
 
 export function isDivider(val){
-	val = val.val || val.label || val
+	let _val = val.val //|| val.label || val
+    if( _val == undefined )
+        _val = val.label
+    if( _val == undefined )
+        _val = val
+
 	return ['divider', '-', '–'].includes(val)
 }
