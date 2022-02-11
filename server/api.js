@@ -120,7 +120,7 @@ module.exports = class API {
                     console.log(err.lastQuery)
                 }
                 else{
-                    console.log(err.stack)
+                    console.log(err.stack||err)
                 }
                 
                 let code = err.name == 'Error' ? 400 : 500
