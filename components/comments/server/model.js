@@ -68,13 +68,13 @@ module.exports = class Comments extends Model {
             }, 'OR')
 
             // comment mentions this user
-            where['c.meta'] = new JsonContains(this.req.user.id, '$.mentions')
+            where['c.meta'] = new JsonContains(this.req.user.id, {path:'$.mentions'})
 
         }else if(this.gid == 'history' ){
 
             // comments NOT by this uer
             // where['c.uid'] = new Value('!=', this.req.user.id)
-            where['c.meta'] = new JsonContains(this.req.user.id, '$.mentions')
+            where['c.meta'] = new JsonContains(this.req.user.id, {path:'$.mentions'})
             where['c.type'] = 'user'
 
         }else {
