@@ -383,8 +383,12 @@ module.exports = class Model {
         if( !attrs || Object.keys(attrs).length == 0 )
             throw Error('no data to add')
 
+        let onDuplicate = ''
+        if( this.config.updateDuplicates !== false )
+            onDuplicate = this.db.updateOnDuplicate(attrs)
+
         let result = await this.db.q(/*sql*/`INSERT INTO ${this.config.table} 
-                                        SET ? ${this.db.updateOnDuplicate(attrs)}`, attrs)
+                                        SET ? ${onDuplicate}`, attrs)
         
         if( !result.insertId && !result.affectedRows )
             throw Error('failed to insert')
