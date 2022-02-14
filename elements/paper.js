@@ -80,6 +80,7 @@ export class PaperElement extends LitElement {
             --padding: 0;
         }
 
+        /* DEPRECATED - should use .bleed now */
         ::slotted(header:first-child) {
             border-radius: 3px 3px 0 0;
             margin: calc(var(--padding) * -1);
@@ -88,6 +89,21 @@ export class PaperElement extends LitElement {
             display: flex; 
             align-items: center;
             justify-content: space-between;
+        }
+
+        ::slotted(.bleed) {
+            margin: calc(var(--padding) * -1);
+            padding: var(--padding);
+        }
+
+        ::slotted(.bleed:first-child) {
+            margin-bottom: var(--padding);
+            border-radius: 3px 3px 0 0;
+        }
+
+        ::slotted(.bleed:last-child) {
+            margin-top: var(--padding);
+            border-radius: 0 0 3px 3px;
         }
 
         ::slotted(b-icon:first-of-type) {
