@@ -4,7 +4,7 @@ const {makePath} = require('./util')
 // https://dev.mysql.com/doc/refman/5.7/en/json-search-functions.html
 module.exports = class JsonContains extends Clause {
 
-    constructor(value, path='$', conjunction='AND'){
+    constructor(value, {path='$', conjunction='AND'}={}){
         super()
         this.value = value
         this.path = path
@@ -16,9 +16,9 @@ module.exports = class JsonContains extends Clause {
         let value = this.value
 
         if( !Array.isArray(value) )
-            value = [value]
+            value = value.split(',').map(s=>s.trim())
 
-        return value.map(val=>{
+        return '('+value.map(val=>{
 
             let path = makePath(this.path, db)
 
@@ -32,6 +32,6 @@ module.exports = class JsonContains extends Clause {
             
             return `JSON_CONTAINS(${key}, '${val}', '${path}' )`
 
-        }).join(' '+this.conjunction+' ')   
+        }).join(' '+this.conjunction+' ')+')'
     }
 }
