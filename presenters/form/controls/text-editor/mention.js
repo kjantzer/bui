@@ -82,7 +82,11 @@ export const Mention = Node.create({
 						search:false,
 						autoSelectFirst: true,
 						onSelect(item){
-							menu.command({uid: item.val, uname:item.label})
+							menu.command({
+								uid: item.val,
+								uname:item.label,
+								type:item.type
+							})
 						}
 					})
 
@@ -137,11 +141,7 @@ export const Mention = Node.create({
     return {
 		uid: {
 			default: null,
-			parseHTML: element => {
-				return {
-				uid: element.getAttribute('uid')
-				}
-			},
+			parseHTML: element => element.getAttribute('uid'),
 			renderHTML: attributes => {
 				if( !attributes.uid ){
 					return {}
@@ -154,11 +154,7 @@ export const Mention = Node.create({
 		},
 		uname: {
 			default: null,
-			parseHTML: element => {
-				return {
-				uname: element.getAttribute('uname')
-				}
-			},
+			parseHTML: element => element.getAttribute('uname'),
 			renderHTML: attributes => {
 				if( !attributes.uname ){
 					return {}
@@ -166,6 +162,19 @@ export const Mention = Node.create({
 
 				return {
 					'uname': attributes.uname,
+				}
+			}
+		},
+		type: {
+			default: null,
+			parseHTML: element => element.getAttribute('type'),
+			renderHTML: attributes => {
+				if( !attributes.type ){
+					return {}
+				}
+
+				return {
+					'type': attributes.type,
 				}
 			}
 		},
@@ -238,6 +247,8 @@ export class MentionElement extends LitElement {
 			.slice(0, this.maxItems)
 			.map(str=>{return {label: str, val: str}})
 	}
+
+	// example code
     static items(query){
 		console.warn('Mention: the `.items(query)` method is not implemented; using example')
         return this.filterItems(query, [
@@ -246,7 +257,8 @@ export class MentionElement extends LitElement {
 
     static get properties(){return {
         uid: {type: String, reflect:true},
-		uname: {type: String}
+		uname: {type: String},
+		type: {type: String}
     }}
 
     static get styles(){return css`
@@ -258,9 +270,17 @@ export class MentionElement extends LitElement {
             border-radius: 0.3rem;
             padding: 0.1rem 0.3rem;
             position: relation;
+			white-space: normal;
         }
     `}
 
+	constructor(){
+		super()
+		this.addEventListener('click', this.onClick)
+	}
+
     render(){return html`<slot></slot>`}
+
+	onClick(){}
 
 }
