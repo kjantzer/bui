@@ -132,7 +132,7 @@ customElements.define('b-write-comment', class extends LitElement{
 
         if( MENTION_TAG ){
             let mentions = Array.from(this.formHandler.get('comment').control.shadowRoot.querySelectorAll(MENTION_TAG))
-            meta.mentions = mentions.map(el=>parseInt(el.uid))
+            meta.mentions = mentions.map(el=>parseInt(el.uid)||null).filter(id=>id)
         }
 
         if( this.meta ){
