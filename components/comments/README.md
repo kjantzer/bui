@@ -102,10 +102,11 @@ b-comment::part(comment) {
 ### Will Take Action
 
 - `new-comment`
+- `show-menu` - right+click menu about to be shown
 - `edit`
 - `delete`
-- `resolve`
-- `react`
+- `resolve` - when comment "resolved" is toggled
+- `react` - when reactions is toggled
 
 > See `helpers/lit-element/will-take-action` for usability
 
