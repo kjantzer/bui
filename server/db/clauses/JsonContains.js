@@ -15,8 +15,10 @@ module.exports = class JsonContains extends Clause {
 
         let value = this.value
 
-        if( !Array.isArray(value) )
+        if( typeof value == 'string' )
             value = value.split(',').map(s=>s.trim())
+        else if( !Array.isArray(value) )
+            value = [value]
 
         return '('+value.map(val=>{
 
