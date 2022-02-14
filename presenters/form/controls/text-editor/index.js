@@ -74,6 +74,8 @@ customElements.define('text-editor', class extends LitElement{
             onBlur: this.onBlur.bind(this)
         })
 
+        this.editor.textEditor = this
+
         setTimeout(()=>{
             this.shadowRoot.querySelector('main').prepend(this.editor.options.element)
             if( this.menubar )
@@ -87,6 +89,7 @@ customElements.define('text-editor', class extends LitElement{
         super.disconnectedCallback()
         // delay cleanup in case quickly reconnected
         this._cleanupTimeout = setTimeout(()=>{
+            this.editor.textEditor = null
             this.editor.destroy()
             delete this.editor
         },10)
