@@ -33,6 +33,7 @@ customElements.defineShared('b-popover-view', class extends LitElement{
     close(){
         this.stopAutoClose()
         this.popover&&this.popover.close()
+        this.model = null
     }
 
     openIfHovered(id, target, {delay=700, opts}={}){
