@@ -339,9 +339,11 @@ module.exports = class Model {
         let _with = opts.with || this.req?.query.with
 
         // clear certain values that should only be used on first model
-        delete this.req.query.sorts
-        delete this.req.query.perPage
-        delete this.req.query.pageAt
+        if( this.req ){
+            delete this.req.query.sorts
+            delete this.req.query.perPage
+            delete this.req.query.pageAt
+        }
 
         if( !related ) return
 
