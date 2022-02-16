@@ -253,8 +253,8 @@ module.exports = class Model {
         // NOTE: the preferre syntaxt is now:
         // find(opts={where, [select, with]})
         if( opts == undefined && where && (where.where || where.select || where.with) ){
-            opts = where
-            where = opts.where || null
+            opts = Object.assign({}, where)
+            where = opts.where ? Object.assign({}, opts.where) : null
             delete opts.where
         }else{
             opts = opts || {}
@@ -338,6 +338,11 @@ module.exports = class Model {
         let related = this.constructor.related
         let _with = opts.with || this.req?.query.with
 
+        // clear certain values that should only be used on first model
+        delete this.req.query.sorts
+        delete this.req.query.perPage
+        delete this.req.query.pageAt
+
         if( !related ) return
 
         // for each relation, check for a `withRelationKey` option
@@ -359,7 +364,6 @@ module.exports = class Model {
 
                     // NOTE: NOT using `_with[relation]` becase of sql injection
                     let args = opts.with && opts.with[relation] || null
-                    
                     // TODO: disabled cause we need to escape for sql injection
                     // if( _with[relation] )
                     //     args = [, {select: _with[relation]}]
