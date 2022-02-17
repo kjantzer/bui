@@ -27,7 +27,7 @@ customElements.define('demo-view', class extends LitElement{
 
     render(){return html`
         <b-paper>
-            <b-h1>${this.tabView.title}</b-h1>
+            <b-h1>${this.viewTitle||this.tabView.title}</b-h1>
             
             ${this.renderContent()}
             
