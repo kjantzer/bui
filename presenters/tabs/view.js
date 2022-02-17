@@ -32,7 +32,7 @@ export default class TabView {
             if( view.hasAttribute('view-id') ){
                 this.__id = view.getAttribute('view-id')
             }else{
-                this.__id = this.__title
+                this.__id = this.__title.toLowerCase().replace(/ /g, '-')
                 this.__view.setAttribute('view-id', this.id)
             }
 
