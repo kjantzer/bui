@@ -91,9 +91,13 @@ customElements.define('demo-overview', class extends LitElement{
             padding: var(--view-gutter);
         }
 
+        header [xxl] {
+            filter: drop-shadow(0 0 2rem black);
+        }
+
         @media (min-width: 600px) {
-            header [xl] {
-                font-size: 3em;
+            header [xxl] {
+                font-size: 2.6em;
             }
         }
 
@@ -128,8 +132,9 @@ customElements.define('demo-overview', class extends LitElement{
 
                     <bui-logo></bui-logo>
                     
-                    <b-text xl align="center" block>
-                        Blackstone <b-text bold>UI</b-text>
+                    <b-text xxl align="center" block xbold>
+                        <b-text gradient>Blackstone</b-text> 
+                        <b-text xbold>UI</b-text>
                     </b-text>
 
                     <p><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">Web components</a> for creating applications – built by Blackstone Publishing using <a href="https://lit-html.polymer-project.org">lit-html</a> and <a href="https://lit-element.polymer-project.org">lit-element</a></p>

@@ -226,7 +226,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             color: inherit;
         }
 
-        .toc [level="1"]:first-of-type {
+        :host(:not(showTitle)) .toc [level="1"]:first-of-type {
             display: none;
         }
 
