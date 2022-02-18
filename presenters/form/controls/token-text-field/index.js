@@ -166,6 +166,9 @@ customElements.define('token-text-field', class extends LitElement{
     `}
 
     set value(val){
+
+        let emitTextChange = this.__value != undefined
+
         var html = typeof val == 'string' ? val : this.jsonToHTML(val)
 
         if( !html.match(/<br>$/) )
@@ -178,7 +181,8 @@ customElements.define('token-text-field', class extends LitElement{
 
         html&&html!='<br>' ? this.removeAttribute('empty') : this.setAttribute('empty', '')
 
-        this.emitChange()
+        if( emitTextChange )
+            this.emitTextChange()
     }
     
     get value(){ return this.toJSON() }
@@ -228,7 +232,7 @@ customElements.define('token-text-field', class extends LitElement{
 
         if( token ){
             this.insertHTML( this.makeToken(token) )
-            this.emitChange()
+            this.emitTextChange()
             // TODO: implement this? not needed atm
             // this.emitEvent('token-insert', {token: null})
         }
@@ -354,16 +358,16 @@ customElements.define('token-text-field', class extends LitElement{
         this.keyupTimeout = setTimeout(e=>{
 
             this.endWithBrTag()
-            this.emitChange()
+            this.emitTextChange()
 
         }, 300);
     }
 
-    emitChange(){
+    emitTextChange(){
         let text = this.main && this.main.textContent
         if( this._lastTextContent == text ) return
         this._lastTextContent = text
-        this.emitEvent('change')
+        this.emitEvent('text-change')
     }
 
     onKeypress(e){
