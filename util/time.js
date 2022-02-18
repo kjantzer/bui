@@ -8,7 +8,9 @@ function secondsToTime(secs){
     var divisor_for_seconds = divisor_for_minutes % 60;
     var s = Math.ceil(divisor_for_seconds);
 
-    var ms = Math.round((seconds % 1) * 100)
+    var ms = Math.round((secs % 1) * 100)
 
     return {h, m, s, ms}
 }
+
+module.exports = {secondsToTime}
