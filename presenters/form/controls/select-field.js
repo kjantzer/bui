@@ -247,6 +247,9 @@ class SelectFieldElement extends HTMLElement {
 					if( val !== undefined && val !== null )
 						val = String(val)
 
+					if( ['divider', '–'].includes(val) )
+						return val
+
 					return {label: o, val}
 				}else{
 					let val = o.val
