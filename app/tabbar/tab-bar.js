@@ -66,8 +66,14 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             flex-shrink: 0;
         }
 
+        b-btn::part(icon) {
+            --theme: currentColor;
+            --theme-secondary: currentColor;
+        }
+
         b-btn > span {
             margin-top: .25em;
+            font-weight: 700;
         }
         
         @media (min-width:900px) {
