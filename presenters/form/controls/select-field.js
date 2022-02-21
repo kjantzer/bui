@@ -109,9 +109,9 @@ class SelectFieldElement extends HTMLElement {
 		let arrow = this.hasAttribute('no-arrow') ? '' : '<svg focusable="false" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"></path></svg>'
 
         temp.innerHTML = `<style>${styles.cssText}</style>
-			<main>
+			<main part="main">
 				<input type="input" readonly="true"/>
-				<div id="value" data-placeholder="${placeholder}"></div>
+				<div id="value" part="values" data-placeholder="${placeholder}"></div>
 				${arrow}
 			</main>
 			<slot id="options"></slot>`
