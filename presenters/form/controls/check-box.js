@@ -27,6 +27,8 @@ customElements.define('check-box', class extends LitElement{
 			align-items: center;
 			cursor: pointer;
 			outline: none;
+
+			margin-bottom: -0.125em;
 		}
 
 		:host([hidden]) { display: none; }
@@ -63,8 +65,8 @@ customElements.define('check-box', class extends LitElement{
 
 		:host([placement="top"]) label { margin-bottom: var(--check-box-label-padding); }
 		:host([placement="bottom"]) label { margin-top: var(--check-box-label-padding); }
-		:host([placement="left"]) label { margin-right: var(--check-box-label-padding); }
-		:host([placement="right"]) label { margin-left: var(--check-box-label-padding); }
+		:host([placement="left"]) label { margin-right: var(--check-box-label-padding); margin-bottom: -0.125em; }
+		:host([placement="right"]) label { margin-left: var(--check-box-label-padding); margin-bottom: -0.125em; }
 
 		.icon {
 			transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
