@@ -1,5 +1,16 @@
 import {html} from 'lit-html'
 
+export function isDivider(val){
+	let _val = val.val //|| val.label || val
+    if( _val == undefined )
+        _val = val.label
+    if( _val == undefined )
+        _val = val
+
+	return ['divider', '-', '–'].includes(val)
+}
+
+
 export function toMenu({
     before=[],
     after=[],
@@ -27,6 +38,9 @@ export function toMenu({
 		if( fn )
 			return fn(m)
         
+        if( isDivider(m) )
+            return m
+            
 		if( typeof m == 'string' )
 			return {label: m, val: m}
 
@@ -52,14 +66,4 @@ export function toMenu({
     menu  = menu.concat(after)
 
     return menu 
-}
-
-export function isDivider(val){
-	let _val = val.val //|| val.label || val
-    if( _val == undefined )
-        _val = val.label
-    if( _val == undefined )
-        _val = val
-
-	return ['divider', '-', '–'].includes(val)
 }
