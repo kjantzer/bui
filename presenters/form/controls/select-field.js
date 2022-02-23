@@ -282,6 +282,7 @@ class SelectFieldElement extends HTMLElement {
 		else if( !Array.isArray(val) ) val = [String(val)]
 		
 		let selected = this.options.filter(m=>{
+			if( ['divider', '–'].includes(m) ) return false
 			return val.includes(m.val) || (val.length == 0 && !m.val)
 		})
 
