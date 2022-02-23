@@ -38,15 +38,19 @@ customElements.defineShared('b-popover-view', class extends LitElement{
 
     openIfHovered(id, target, {delay=700, opts}={}){
 
-        function onMouseOut(){ 
+        const onMouseOut = function(){ 
             this.autoClose()
-            clearTimeout(target._entityQuickViewTimeout)
-        }
+            clearTimeout(target._openIfHoveredTimeout)
+            target.removeEventListener('mouseout', onMouseOut)
+            target.removeEventListener('click', onMouseOut)
+        }.bind(this)
 
-        target.addEventListener('mouseout', onMouseOut.bind(this), {once: true})
+
+        target.addEventListener('mouseout', onMouseOut, {once: true})
+        target.addEventListener('click', onMouseOut, {once: true})
         this.addEventListener('mouseout', this.close.bind(this), {once: true})
 
-        target._entityQuickViewTimeout = setTimeout(()=>{
+        target._openIfHoveredTimeout = setTimeout(()=>{
             
             this.open(id, target, opts)
 
