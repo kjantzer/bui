@@ -379,7 +379,7 @@ module.exports = class Model {
         }
     }
 
-    async add(attrs={}, {manualSync=false}={}){
+    async add(attrs={}, {manualSync=false, updateDuplicates=true, ignoreDuplicates=false}={}){
 
         if( !this.config.table ) throw Error('missing config.table')
 
@@ -390,14 +390,16 @@ module.exports = class Model {
             throw Error('no data to add')
 
         let onDuplicate = ''
-        if( this.config.updateDuplicates !== false )
+        if( this.config.updateDuplicates !== false && updateDuplicates !== false )
             onDuplicate = this.db.updateOnDuplicate(attrs)
 
-        let result = await this.db.q(/*sql*/`INSERT INTO ${this.config.table} 
+        let result = await this.db.q(/*sql*/`INSERT ${ignoreDuplicates?'IGNORE':''} INTO ${this.config.table} 
                                         SET ? ${onDuplicate}`, attrs)
         
-        if( !result.insertId && !result.affectedRows )
+        if( !result.insertId && !result.affectedRows ){
+            if( ignoreDuplicates ) return
             throw Error('failed to insert')
+        }
 
         this.id = result.insertId || this.id
 
