@@ -91,11 +91,14 @@ customElements.define('b-comments', class extends LitElement{
             this.unbindListeners()
             this.coll.realtimeSync.close()
             this.__coll = null
-            this.bindListeners()
-            this.coll.realtimeSync.open()
-            
-            if( this.inViewport )
-                this.refresh()
+
+            if( this.gid && this.group ){
+                this.bindListeners()
+                this.coll.realtimeSync.open()
+                
+                if( this.inViewport )
+                    this.refresh()
+            }
         }
 
         return super.shouldUpdate(changedProps)
