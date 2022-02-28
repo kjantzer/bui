@@ -198,7 +198,7 @@ export async function loadModel(coll, id, {
             model.isInvalid = true
         }else{
             let m = coll.add(model, {merge: true})
-            if( m != coll ) // support for Backbone 0.9 in v5 :\
+            if( m && m != coll ) // support for Backbone 0.9 in v5 :\
                 model = m
         }
     }
