@@ -84,15 +84,17 @@ module.exports = class API {
             && !req.isAuthenticated() )
                 return res.status(401).send({error: 'session expired', code: 401})
 
-			// let c = this.init(Class)
-            let model = new Class(req.params, req)
-            model.req = req
-            model.res = res
+            try{
 
-            if( 'canAccess' in model && await model.canAccess === false )
-                return res.status(403).send({error: 'unauthorized', code: 403})
+                // let c = this.init(Class)
+                let model = new Class(req.params, req)
+                model.req = req
+                model.res = res
 
-			try{
+                if( 'canAccess' in model && await model.canAccess === false )
+                    return res.status(403).send({error: 'unauthorized', code: 403})
+
+			
                 let args = []
 
                 if( ['add', 'update', 'patch'].includes(fnName) )
