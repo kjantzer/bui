@@ -77,6 +77,10 @@ export default class FileModel extends Model {
         return this.get('type').match(/video/)
     }
 
+    get isAudio(){
+        return this.get('type').match(/audio/)
+    }
+
     get isImg(){
         return this.get('type').match(/image/)
     }

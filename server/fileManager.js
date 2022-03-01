@@ -27,6 +27,14 @@ module.exports = class FileManager extends Model {
     get waitForPreviewGeneration(){ return false }
     get previewSize(){ return 800 }
     get autoRotate(){ return false }
+    get audioWaveformPreview(){return { // return false to disable
+        size: '800x250',
+        colors: '#000000',
+        gain: -6,
+        clipAt: 1200, // 20 min // if 20 min
+        clipTo: '00:05:00.0', // then clip to 5 min and create waveform
+        clipGain: 0
+    }}
 
     get parent_id(){ return this.__parent_id }
     set parent_id(id){ this.__parent_id = id }
@@ -58,7 +66,9 @@ module.exports = class FileManager extends Model {
             return this.filePath
         }
 
-        let name = this.fileName ? this.fileName+'.preview.jpg' : ''
+        let ext = [, 'jpg', 'png'][this.attrs.has_preview]||'jpg'
+
+        let name = this.fileName ? this.fileName+'.preview.'+ext : ''
         return path.join(this.dirPath, name)
     }
 
@@ -138,6 +148,7 @@ module.exports = class FileManager extends Model {
 
         let isImg = info.type.match(/image/) && !info.type.match(/photoshop/)
         let isVideo = info.type.match(/video/)
+        let isAudio = info.type.match(/audio/)
         let isPDF = info.type.match(/pdf/)
         let sharpImg
         let metadata = {}
@@ -189,7 +200,7 @@ module.exports = class FileManager extends Model {
                 }
             }
             
-            let generatePreview = isVideo 
+            let generatePreview = isVideo || isAudio 
                 ? this.generateThumbnail() 
                 : this.generatePreview({metadata, sharpImg, filename})
 
@@ -217,12 +228,62 @@ module.exports = class FileManager extends Model {
         })
 
         let videoStream = metadata.streams.find(s=>s.codec_type=='video')
+        let audioStream = metadata.streams.find(s=>s.codec_type=='audio')
 
         let traits = this.attrs.traits || {}
         if( videoStream ){
             traits.width = videoStream.width
             traits.height = videoStream.height
             traits.duration = metadata.format.duration
+        }else if ( audioStream ){
+
+            traits = audioStream
+            let has_preview = false
+
+            let waveformOpts = this.audioWaveformPreview
+
+            if( waveformOpts ){
+                let thumbnailSrc = this.filePath
+                let thumbnailFromClippedSample = waveformOpts.clipAt && traits.duration > waveformOpts.clipAt
+
+                // create clipped version of orig to create waveform from
+                if( thumbnailFromClippedSample ){
+                    let clippedFile = this.filePath+'-clipped-for-waveform.mp3'
+
+                    await shellExec('ffmpeg', [
+                        '-ss 00:00:00.0',
+                        `-i "${thumbnailSrc}"`,
+                        '-c copy',
+                        '-t '+waveformOpts.clipTo,
+                        `"${clippedFile}"`,
+                    ]).then(r=>{
+                        if( waveformOpts.debug )
+                            console.log(r);
+                    })
+
+                    thumbnailSrc = clippedFile
+                    waveformOpts.gain = waveformOpts.clipGain
+                }
+
+                await shellExec('ffmpeg', [
+                    `-i "${thumbnailSrc}"`,
+                    '-filter_complex "[0:a]aformat=channel_layouts=mono,',
+                        `compand=gain=${waveformOpts.gain},`,
+                        `showwavespic=s=${waveformOpts.size}:colors=${waveformOpts.colors}"`,
+                    '-frames:v 1',
+                    `"${this.filePath+'.preview.png'}"`
+                ])
+
+                if( thumbnailFromClippedSample && fs.existsSync(thumbnailSrc) ){
+                    fs.unlinkSync(thumbnailSrc)
+                }
+
+                has_preview = 2
+            }
+
+            await this.update({traits, has_preview}) // 2 = png
+
+            return
         }
 
         let w = 0
@@ -351,6 +412,9 @@ module.exports = class FileManager extends Model {
         // small jpg previews of PDFs or large images
         if( fs.existsSync(file+'.preview.jpg') )
             fs.unlinkSync(file+'.preview.jpg')
+
+        if( fs.existsSync(file+'.preview.png') )
+            fs.unlinkSync(file+'.preview.png')
     }
 
 }

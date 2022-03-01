@@ -42,13 +42,13 @@ customElements.define('b-file-row', class extends LitElement{
             height: 100%;
         }
 
-        .duration {
+        .res {
             position: absolute;
-            bottom: 2px;
+            top: 2px;
             left: 2px;
         }
 
-        .res, .pages {
+        .pages, .duration {
             position: absolute;
             top: 2px;
             right: 2px;
@@ -120,6 +120,14 @@ customElements.define('b-file-row', class extends LitElement{
 
                         <b-label xs class="res" filled="black" ?hidden=${!this.model.resolution}>
                             ${this.model.resolution}</b-label>
+
+                    `:''}
+
+                    ${this.model.isAudio?html`
+                    
+                        <b-label filled="black" class="duration" xs>
+                            <b-timer time=${this.model.duration*1000}></b-timer>
+                        </b-label>
 
                     `:''}
 
