@@ -50,7 +50,7 @@ function assign(Model, RelatedModel, prop, {
                     id = relatedID == 'id' ? prop : 'id'
 
                 let attrs = {
-                    [relatedID]: this.attrs[id] || this[id] || this.req.params?.[id]
+                    [relatedID]: this.attrs?.[id] || this[id] || this.req.params?.[id]
                 }
 
                 if( getAttrs && typeof getAttrs == 'function' ){
