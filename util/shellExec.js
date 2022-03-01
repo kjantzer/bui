@@ -14,7 +14,7 @@ module.exports = function shellExec(cmd, args=''){
             async: true
         }, (code, stdout, stderr)=>{
 
-            if( cmd == 'pdfjam' ){
+            if( ['pdfjam', 'ffmpeg'].includes(cmd) ){
                 stdout = stdout || stderr
                 stderr = stdout ? null : stderr
             }
