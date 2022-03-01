@@ -1,5 +1,6 @@
 
 import { LitElement, html, css } from 'lit-element'
+import './text'
 
 export const fileIconColors = {
 
@@ -19,7 +20,7 @@ export const fileIconColors = {
     svg: css`:host([ext="svg"]){ --bgd: var(--cyan); }`,
 
     wav: css`:host([ext="wav"]){ --bgd: var(--deep-purple); }`,
-    mp3: css`:host([ext="mp3"]){ --bgd: var(--deep-purple); }`,
+    mp3: css`:host([ext="mp3"]){ --bgd: var(--deep-orange); }`,
     flac: css`:host([ext="flac"]){ --bgd: var(--deep-purple); }`,
     m4a: css`:host([ext="m4a"]){ --bgd: var(--deep-purple); }`,
 
@@ -89,19 +90,19 @@ export const fileIconLabels = {
     'json': html`<span>{ }</span>`,
     'mp4': html`<b-icon name="videocam"></b-icon>`,
     
-    'mp3': ext=>html`<b-icon name="music"></b-icon><sub>${ext}</sub>`,
-    'wav': ext=>html`<b-icon name="music"></b-icon><sub>${ext}</sub>`,
-    'flac': ext=>html`<b-icon name="music"></b-icon><sub>${ext}</sub>`,
+    'mp3': ext=>html`<b-icon name="music"></b-icon><b-text sm bold ucase>${ext}</b-text>`,
+    'wav': ext=>html`<b-icon name="music"></b-icon><b-text sm bold ucase>${ext}</b-text>`,
+    'flac': ext=>html`<b-icon name="music"></b-icon><b-text sm bold ucase>${ext}</b-text>`,
 
-    'html': ext=>html`<b-icon name="code"></b-icon><sub>${ext}</sub>`,
-    'xml': ext=>html`<b-icon name="code"></b-icon><sub>${ext}</sub>`,
-    'onix': ext=>html`<b-icon name="code"></b-icon><sub>${ext}</sub>`,
+    'html': ext=>html`<b-icon name="code"></b-icon><b-text sm bold ucase>${ext}</b-text>`,
+    'xml': ext=>html`<b-icon name="code"></b-icon><b-text sm bold ucase>${ext}</b-text>`,
+    'onix': ext=>html`<b-icon name="code"></b-icon><b-text sm bold ucase>${ext}</b-text>`,
     
     'dpl': html`<b-icon name="cd"></b-icon>`,
     'iso': html`<b-icon name="cd"></b-icon>`,
 
     'zip': html`<b-icon name="file-archive"></b-icon>`,
-    'epub': ext=>html`<b-icon name="book-open"></b-icon><sub>${ext}</sub>`,
+    'epub': ext=>html`<b-icon name="book-open"></b-icon><b-text sm bold ucase>${ext}</b-text>`,
 }
 
 
@@ -177,14 +178,9 @@ customElements.define('b-file-icon', class extends LitElement{
 
         label > span,
         label > b-icon {
-            font-size: 1.4em;
+            font-size: 1em;
         }
 
-        label sub {
-            font-size: .6em;
-            vertical-align: baseline;
-            line-height: 0em;
-        }
 
         ::slotted(b-icon) {
             /* font-size: 1em; */
