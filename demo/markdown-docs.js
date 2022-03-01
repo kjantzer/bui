@@ -14,6 +14,7 @@ marked.setOptions({
 window.marked = marked
 
 const rendererOverrides = {
+    
     blockquote(str){
         return `<b-paper outline blockquote>${str}</b-paper>`
     },
@@ -64,13 +65,24 @@ customElements.define('demo-markdown-docs', class extends LitElement{
                 text: text
             });
 
+            let size = [, 'xl', 'lg', 'md', ''][level] || ''
+            let bold = [, 'xbold', 'xbold', 'bold', 'semibold'][level] || 'semibold'
+            let tag = 'b-text'
+            let pad = '1'
+
+            if( level == 1 || level == 2 )
+                tag = 'b-text-divider'
+
+            if( level == 2)
+                pad = 2
+
              return `
-                <h${level}>
+                <${tag} block ${size} pad="${pad}" ${bold} header="h${level}" ${level==1?'thick':''}>
                 <a name="${slug}" class="anchor" href="#${slug}">
                     <span class="header-link"></span>
                 </a>
                 ${text}
-                </h${level}>`;
+                </${tag}>`;
         };
 
         this.content = marked(this.docs, {renderer})
