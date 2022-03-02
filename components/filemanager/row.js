@@ -40,6 +40,7 @@ customElements.define('b-file-row', class extends LitElement{
             position: absolute;
             width: 100%;
             height: 100%;
+            cursor: move;
         }
 
         .res {
