@@ -144,8 +144,18 @@ customElements.define('b-file-manager', class extends LitElement{
 
         if( !this.willTakeAction('upload-file').allowed ) return
 
+        let formData = null
+
+        try{
+            if( this.formData )
+                formData = await this.formData(this.model, this.coll, {uploader})
+
+        }catch(err){
+            return // bail on upload
+        }
+
         let url = typeof this.coll.url == 'function' ? this.coll.url() : this.coll.url
-        let resp = await uploader.upload({url})
+        let resp = await uploader.upload({url, formData})
 
         if( !resp || resp.error ){
             return Dialog.warn({msg: (resp&&resp.error)||'Error', btns: false, pretitle: ''}).notif()
