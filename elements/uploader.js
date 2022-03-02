@@ -328,6 +328,8 @@ export class UploaderElement extends LitElement {
             for( let key in formData ){
                 if( typeof formData[key] === 'function' )
                     _formData.append(key, formData[key](file))
+                else if( typeof formData[key] === 'object' )
+                    _formData.append(key, JSON.stringify(formData[key]))
                 else
                     _formData.append(key, formData[key])
             }
