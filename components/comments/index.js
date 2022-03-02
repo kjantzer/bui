@@ -123,6 +123,12 @@ customElements.define('b-comments', class extends LitElement{
     updateView(){
         clearTimeout(this._updateDelay)
         this._updateDelay = setTimeout(()=>{
+            
+            if( this.coll.length )
+                this.setAttribute('num', this.coll.length)
+            else
+                this.removeAttribute('num')
+
             this.update()
             if( this.model )
                 this.model.set('comments', this.coll.summarize())
