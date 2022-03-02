@@ -151,7 +151,10 @@ customElements.define('b-file-manager', class extends LitElement{
                 formData = await this.formData(this.model, this.coll, {uploader})
 
         }catch(err){
-            return // bail on upload
+            if( err instanceof Error )
+                throw err
+
+            return // bail on upload if non-error thrown
         }
 
         let url = typeof this.coll.url == 'function' ? this.coll.url() : this.coll.url
