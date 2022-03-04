@@ -19,7 +19,7 @@ customElements.define('b-file-manager', class extends LitElement{
     }}
 
     static get listeners(){return {
-        coll: {'add remove': 'update'}
+        coll: {'add remove reset': 'update'}
     }}
 
     static get styles(){return css`
