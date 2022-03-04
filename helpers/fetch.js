@@ -1,5 +1,5 @@
 
-globalThis.fetch.json = function(url, opts={}){
+export const fetchJSON = function(url, opts={}){
 
     opts.headers = opts.headers || {}
 
@@ -19,7 +19,7 @@ globalThis.fetch.json = function(url, opts={}){
 }
 
 
-globalThis.fetch.text = function(url, opts={}){
+export const fetchText = function(url, opts={}){
 
     opts.headers = opts.headers || {}
 
@@ -28,3 +28,16 @@ globalThis.fetch.text = function(url, opts={}){
 
     return fetch(url, opts).then(r=>r.text())
 }
+
+export default function bindFetchHelpers(object){
+    if( !object ) object = globalThis.fetch
+    object.json = fetchJSON
+    object.text = fetchText
+}
+
+bindFetchHelpers() // do this by default
+
+// lets export this function in case it needs to be called again
+// example: if some other code overrides fetch and it needs to be bound again
+export {bindFetchHelpers}
+
