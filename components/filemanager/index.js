@@ -90,6 +90,11 @@ customElements.define('b-file-manager', class extends LitElement{
             return model.saveSync({traits})
         }))
     }
+    
+    get uploader(){ return this.$$('b-uploader', '__uploader') }
+    
+    selectFiles(){ return this.uploader.selectFiles() }
+    selectFile(){ return this.selectFiles() }
 
     render(){return html`
         <b-uploader accept="${this.accept}" @change=${this.onUpload} ?multiple=${this.limit!=1}></b-uploader>
