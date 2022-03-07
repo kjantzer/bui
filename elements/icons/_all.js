@@ -99,7 +99,6 @@ Icon.register(
 	['comment', require('./comment.svg.html')],
 	['compass-1', require('./compass-1.svg.html')],
 	['compass', require('./compass.svg.html')],
-	['credit-card', require('./credit-card.svg.html')],
 	['cube', require('./cube.svg.html')],
 	['cubes', require('./cubes.svg.html')],
 	['cw', require('./cw.svg.html')],
