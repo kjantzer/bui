@@ -30,6 +30,8 @@ export const downloadContent = (content, filename, opts={})=>{
 }
 
 export const downloadCSV = (content, filename, opts={})=>{
+    if( typeof content != 'string' )
+        console.warn('Invalid csv content; Use `toCSV` to format a csv string');
     filename = filename || (new Date().getTime()+'.csv')
     opts.type = 'text/csv'
     downloadContent(content, filename, opts)
