@@ -374,6 +374,12 @@ const toggleIf = {
 		else
 			control.hidden = true
 	},
+	showIf(control, valid){ // alias of displayIf
+		if( valid )
+			control.hidden = false
+		else
+			control.hidden = true
+	},
 	hideIf(control, valid){
 		if( valid )
 			control.hidden = true

@@ -433,8 +433,10 @@ You can also choose to save changes in local storage instead of model by using t
 ```
 
 - `.displayIf`
+- `.showIf` - alias to displayIf
 - `.enableIf`
 - `.disableIf`
+- `.hideIf`
 
 
 ## Extras
