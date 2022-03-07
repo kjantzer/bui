@@ -51,6 +51,10 @@ customElements.define('b-text-divider', class extends Text{
             width: 100%;
             bottom: 0;
         }
+
+        :host ::slotted(*) {
+            align-self: unset;
+        }
     `]}
 
 
