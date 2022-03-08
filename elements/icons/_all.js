@@ -286,7 +286,7 @@ Icon.register(
 	['ups', require('./ups.svg.html')],
 	['upload-cloud', require('./upload-cloud.svg.html')],
 	['user-add', require('./user-add.svg.html')],
-	['user', require('./user.svg.html')],
+	// ['user', require('./user.svg.html')],
 	['users', require('./users.svg.html')],
 	['vcard', require('./vcard.svg.html')],
 	['video', require('./video.svg.html')],
