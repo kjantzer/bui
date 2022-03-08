@@ -477,7 +477,7 @@ module.exports = class Model {
         return false
     }
 
-    async destroy(){
+    async destroy(...args){
 
         if( !this.config.table ) throw Error('missing config.table')
         if( !this.isSingular ) throw Error('not a singular model')
@@ -487,13 +487,13 @@ module.exports = class Model {
         if( this.isInvalid ) throw Error('Cannot delete: model not found')
 
         let where = {[this.idAttribute]:this.id}
-        await this.beforeDestroy(where)
+        await this.beforeDestroy(where, ...args)
 
         let [clause, clauseValues] = new this.db.clauses.Group(where).toSqlString(this.db)
         
         let result = await this.db.q(/*sql*/`DELETE FROM ${this.config.table} WHERE ${clause}`, clauseValues)
 
-        await this.afterDestroy(result)
+        await this.afterDestroy(result, ...args)
 
         if( this.config.sync && this.req && this.syncData && result )
             this.syncData({
