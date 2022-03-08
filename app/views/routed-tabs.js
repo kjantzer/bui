@@ -54,7 +54,7 @@ customElements.define('b-tabs-router', class extends TabsView {
             let params = this.pathParams ? this.pathParams() : {}
 
             let [newState, oldStates] = router.push(tabView.route.makePath(params), {
-                title: tabView.title,
+                title: (this.title ? this.title+': ':'') +tabView.title,
                 fromMenuClick:new Date().getTime()
             })
 
