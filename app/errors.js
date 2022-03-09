@@ -32,10 +32,16 @@ export class UICustomError extends Error {
         let {presenter} = this
         
         if( this.detail&&this.detail.target ){
-            
-            this.detail.target.scrollIntoView()
+
+            if( this.detail.target.scrollIntoViewIfNeeded )
+                this.detail.target.scrollIntoViewIfNeeded()
+            else if( this.detail.target.scrollIntoView )
+                this.detail.target.scrollIntoView()
+
             presenter.popover(this.detail.target)
-            this.detail.target.focus()
+
+            if( this.detail.target.focus )
+                this.detail.target.focus()
         
         }else{
             presenter.notif(this.notifOpts)
