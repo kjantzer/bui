@@ -93,6 +93,25 @@ customElements.define('b-file-row', class extends LitElement{
                 width: 400px;
             }
         }
+
+        .drag-msg {
+            background: rgba(var(--theme-text-rgb), .7);
+            z-index: 10000;
+            color: var(--theme-bgd);
+            border-radius: var(--radius);
+        }
+
+        :host([sorting]) .drag-msg {
+            color: white;
+            background: rgba(var(--theme-rgb), .6);
+        }
+
+        :host(:not([sorting])) .sort { display: none; }
+        :host([sorting]) .drag { display: none; }
+
+        :host(:not(.dragging)) .drag-msg{
+            display: none;
+        }
     `}
 
     constructor(){
@@ -101,10 +120,22 @@ customElements.define('b-file-row', class extends LitElement{
         this.palette = false
 
         this.addEventListener('dragstart', this.onDragStart)
+        this.addEventListener('dragend', this.onDragEnd)
     }
 
     render(){return html`
         <b-paper compact ?overshadow=${this.overshadow}>
+
+            <b-empty-state class="drag-msg" md>
+                <b-text class="drag">
+                    <b-text xl><b-icon name="download"></b-icon></b-text>
+                    <br>
+                    Drag off window to download</b-text>
+                <b-text class="sort">
+                    <b-text xl><b-icon name="move"></b-icon></b-text>
+                    <br>
+                    Drag to reorder</b-text>
+            </b-empty-state>
 
             <main>
                 <b-file-preview class="img" part="preview" icon="${this.model.isVideo?'play':''}"
@@ -192,7 +223,12 @@ customElements.define('b-file-row', class extends LitElement{
 
     onDragStart(e){
         if( this.willTakeAction('download', {drag: true}).notAllowed ) return
+        this.classList.add('dragging')
         enableDragAndDropDownload(e.dataTransfer, this.model)   
+    }
+
+    onDragEnd(e){
+        this.classList.remove('dragging')
     }
 
 })

@@ -11,7 +11,7 @@ import '../../elements/empty-state'
 customElements.define('b-file-manager', class extends LitElement{
 
     static get properties(){return {
-        sort: {type: Boolean},
+        sorting: {type: Boolean, reflect: true},
         row: {type: String},
         accept: {type: String},
         placeholder: {type: String},
@@ -42,31 +42,67 @@ customElements.define('b-file-manager', class extends LitElement{
             grid-template-columns: 1;
             gap: 1em;
         }
+
+        :host(:not([sorting])) .drag {
+            display: none;
+        }
     `}
 
     constructor(){
         super()
         this.row = 'b-file-row'
         this.accept = '' // all files
-        this.sort = true
+        // this.sorting = true // turn of by default; should use `enableSorting
         this.placeholder = 'No files'
-        this.limit = 0        
+        this.limit = 0
+
+        this.cache = new Map()
     }
     
     get coll(){ return this.model && this.model.get('files') }
+
+    disconnectedCallback(){
+        super.disconnectedCallback()
+        this.disableSorting()
+    }
     
     async onModelChange(model){
+        
+        this.cache.clear()
+        this.disableSorting()
+
         if( model ){
             await this.coll.fetchSync()
         }
     }
 
     get shouldEnableSort(){
-        return !device.isTouch && this.sort && this.limit != 1        
+        return !device.isTouch && this.sorting && this.limit != 1
     }
 
     firstUpdated(){
         if( this.shouldEnableSort )
+            this.enableSort()
+    }
+
+    get sortingEnabled(){ return !!this.sortable }
+
+    disableSorting(){
+        if( this.sortable ){
+            this.sorting = false
+            this.sortable.destroy()
+            this.sortable = null
+
+            let rows = Array.from(this.$$all(this.row))
+            rows.forEach(row=>row.removeAttribute('sorting'))
+        }
+    }
+
+    enableSorting(){
+        
+        if( this.sortingEnabled ) return console.warn('Sorting already enabled')
+        if( this.limit == 1 ) return console.warn('Limited to 1 file, nothing to sort')
+        
         this.sortable = Sortable.create(this.$$('.files'), {
             draggable: this.row,
             handle: '.drag',
@@ -76,10 +112,18 @@ customElements.define('b-file-manager', class extends LitElement{
             // direction: 'vertical',
             onUpdate: this.onSort.bind(this)
         })
+
+        let rows = Array.from(this.$$all(this.row))
+        rows.forEach(row=>row.setAttribute('sorting', ''))
+
+        this.sorting = true
+    }
+
+    toggleSorting(){
+        this.sortingEnabled ? this.disableSorting() : this.enableSorting()
     }
 
     async onSort(e){
-        console.log('on sort');
         let {item, oldIndex, newIndex} = e
         let coll = this.coll
         coll.models.splice(newIndex, 0, coll.models.splice(oldIndex, 1)[0] );
@@ -116,14 +160,19 @@ customElements.define('b-file-manager', class extends LitElement{
     renderAfterFiles(){return ''}
 
     renderFile(m){ 
-        let row = document.createElement(this.row)
+        
+        let row = this.cache.get(String(m.id)) 
+        
+        if( !row )
+            row = document.createElement(this.row)
+
         row.part = 'file'
         row.model = m
+        row.innerHTML = '<div class="drag" slot="drag"></div>'
+        row.draggable = true
 
-        if( this.shouldEnableSort)
-            row.innerHTML = '<div class="drag" slot="drag"></div>'
-        else
-            row.draggable = true
+        // cache so we dont keep recreating
+        this.cache.set(String(m.id), row)
 
         return row
     }
