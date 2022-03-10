@@ -91,7 +91,7 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 	get value(){
 		let vals = this.formHandler.values
 
-		if( this.formHandler.controls.length == 1 ){
+		if( !this.opts.prompts ){
 			let control = this.formHandler.controls[0]
 			vals = this.html ? control.value : ((control.control && control.control.textValue) || control.value)
 		}
