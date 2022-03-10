@@ -379,6 +379,13 @@ module.exports = class Model {
         }
     }
 
+    findRelated(){
+        if( this.id && this.relation && this.constructor.related[this.relation] )
+            return this[this.relation].find()
+
+        throw new Error('Unknown relation')
+    }
+
     async add(attrs={}, {manualSync=false, updateDuplicates=true, ignoreDuplicates=false}={}){
 
         if( !this.config.table ) throw Error('missing config.table')
