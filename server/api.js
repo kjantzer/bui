@@ -161,7 +161,10 @@ module.exports = class API {
             if( resp.filename )
                 res.set('Filename', resp.filename);
 
-            res.sendFile(resp.sendFile)
+            if( resp.sendFile.startsWith('http') )
+                res.redirect(resp.sendFile)
+            else
+                res.sendFile(resp.sendFile)
 
         }else if( req.query.downloadReq && req.headers['user-agent'].match('iPhone') ){
             let path = (req.query.download === 'preview' && resp.previewPath) || resp.path
