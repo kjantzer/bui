@@ -196,7 +196,7 @@ customElements.define('check-box', class extends LitElement{
 		})
 		
 		this.addEventListener('focus', e=>{
-			if( e.relatedTarget && e.relatedTarget != this)
+			if( e.relatedTarget && e.relatedTarget != this && !this.disabled)
 				this.ripple.enter()
 		})
 		
