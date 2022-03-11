@@ -176,7 +176,7 @@ module.exports = class API {
             res.download(path, (req.query.filename||resp.downloadFilename))
 
         }else if( req.query.display !== undefined && resp && resp.path ){
-            let path = (req.query.display === 'preview' && resp.previewPath) || (resp.displayPath || resp.path)
+            let path = (req.query.display != '' && resp.previewPath) || (resp.displayPath || resp.path)
             if( resp.name )
                 res.set('Filename', resp.name);
 
