@@ -16,7 +16,7 @@ module.exports = class FileManager extends Model {
 
     get config(){ return {
         table: 'files',
-        jsonFields: ['traits']
+        jsonFields: ['sizes', 'traits']
     }}
 
     get ASSETS_PATH(){ return '/mnt/data' }
@@ -70,6 +70,9 @@ module.exports = class FileManager extends Model {
             return path.join(this.dirPath, filename)
         }
 
+        if( this.req.query.size || this.req.query.display )
+            return this.previewPath
+
         return this.filePath
     }
 
@@ -80,8 +83,13 @@ module.exports = class FileManager extends Model {
         }
 
         let ext = [, 'jpg', 'png'][this.attrs.has_preview]||'jpg'
+        let size = parseInt(this.req.query.size||this.req.query.display) || false
 
-        let name = this.fileName ? this.fileName+'.preview.'+ext : ''
+        if( !size || !this.attrs.sizes || !this.attrs.sizes.includes(size)){
+            size = 'preview'
+        }
+
+        let name = this.fileName ? this.fileName+`.${size}.`+ext : ''
         return path.join(this.dirPath, name)
     }
 
@@ -344,6 +352,9 @@ module.exports = class FileManager extends Model {
 
     async generatePreview({metadata, sharpImg, filename}={}){
 
+        // keep track of attrs we want to change at the end of this routine
+        let updateAttrs = {}
+
         // resave the image with proper rotation (iPhone, etc)
         if( sharpImg && this.autoRotate
         && metadata.exif && metadata.exif.image.Orientation != 1){
@@ -353,11 +364,12 @@ module.exports = class FileManager extends Model {
             sharpImg.rotate(rotate).toFile(this.dirPath+'/'+filename)
         }
 
-        // constrain ratio?
+        // apply aspect ratio if set
         if( sharpImg && this.aspectRatio ){
 
             let arOpts = Object.assign({}, this.aspectRatioDefaults, this.aspectRatio)
             
+            // get background color from palette
             if( arOpts.background == 'auto' ){
                 let palette = await this.getColorPalette({fromPreview:false})
                 this.attrs.traits.palette = palette
@@ -368,8 +380,9 @@ module.exports = class FileManager extends Model {
             }
 
             let {width, height} = metadata
+            let ratio = arOpts.ratio || this.aspectRatio
 
-            if( this.aspectRatio == 'square' ){
+            if( ratio == 'square' ){
                 width = height = Math.max(width, height)
             }else {
                 // TODO: write logic for other aspect ratios
@@ -380,23 +393,24 @@ module.exports = class FileManager extends Model {
             await sharpImg.resize(width, height, arOpts).toFile(this.dirPath+'/'+filename)
 
             sharpImg = sharp(this.dirPath+'/'+filename)
+
+            this.attrs.traits.width = width
+            this.attrs.traits.height = height
+            updateAttrs.traits = this.attrs.traits
         }
 
-        // preview generation turned off
-        if( this.previewSize === false )
-            return false
-
         // if office doc, create PDF preview and jpg thumbnail
-        if( msOfficeThumbnailer.extensions.includes(this.attrs.ext) ){
+        if( this.previewSize  && msOfficeThumbnailer.extensions.includes(this.attrs.ext) ){
             await msOfficeThumbnailer.generate(this.filePath)
             .then(async resp=>{
-                this.update({has_preview: true})
+                updateAttrs.has_preview = true
             }).catch(err=>{
                 console.log('thumbnail FAILED', err);
             })
         }
 
-        if( sharpImg ){
+        // create preview for image file
+        if( this.previewSize && sharpImg ){
             await sharpImg
                 .resize(this.previewSize, this.previewSize, {
                         fit:'inside',
@@ -406,7 +420,7 @@ module.exports = class FileManager extends Model {
                 .flatten({background:'#ffffff'}) // in case png with transparency is uploaded
                 .toFile(this.dirPath+'/'+filename+'.preview.jpg')
             
-            let updateAttrs = {has_preview: true}
+            updateAttrs.has_preview = true
             
             try{
                 if( !this.attrs.traits.palette )
@@ -416,9 +430,38 @@ module.exports = class FileManager extends Model {
             }catch(err){
                 console.log('could not find palette', err);
             }
-
-            this.update(updateAttrs)
         }
+
+        // create additional sizes if specified
+        if( sharpImg && this.sizes ){
+            let sizes = []
+
+            // wait for all the sizes to finish
+            await Promise.all(this.sizes.map(async size=>{
+
+                // skip creating sizes that are bigger than source file
+                if( Math.max(metadata.width, metadata.height) < size )
+                    return
+
+                await sharpImg.clone()
+                .resize(size, size, {
+                    fit:'inside',
+                    withoutEnlargement: true,
+                    background:'#ffffff'
+                })
+                .flatten({background:'#ffffff'}) // in case png with transparency is uploaded
+                .toFile(this.dirPath+'/'+filename+`.${size}.jpg`)
+                
+                sizes.push(size)
+            }))
+
+            // track which sizes were created
+            if( sizes.length > 0 )
+                updateAttrs.sizes = sizes
+        }
+
+        if( Object.keys(updateAttrs).length > 0 )
+            this.update(updateAttrs)
     }
 
     async getColorPalette({returnSwatches=false, fromPreview=true, filePath=null}={}){
@@ -445,6 +488,7 @@ module.exports = class FileManager extends Model {
     // delete the files after the DB record is removed
     afterDestroy(){
         let file = this.filePath
+        let sizes = this.attrs.sizes
 
         if( fs.existsSync(file) )
             fs.unlinkSync(file)
@@ -459,6 +503,12 @@ module.exports = class FileManager extends Model {
 
         if( fs.existsSync(file+'.preview.png') )
             fs.unlinkSync(file+'.preview.png')
+
+        if( sizes && Array.isArray(sizes) )
+            for( let size of sizes ){
+                if( fs.existsSync(file+`.${size}.jpg`) )
+                    fs.unlinkSync(file+`.${size}.jpg`)
+            }
     }
 
 }
