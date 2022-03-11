@@ -23,18 +23,31 @@ module.exports = class FileManager extends Model {
     get rootDir(){ return ''}
     get group(){ return '' }
 
-    get skipDuplicates(){ return false } // only for same parent_id
-    get waitForPreviewGeneration(){ return false }
-    get previewSize(){ return 800 }
-    get autoRotate(){ return false }
-    get audioWaveformPreview(){return { // return false to disable
+    skipDuplicates = false // only applies when same parent_id
+    waitForPreviewGeneration = false // upload response wont return until preview saved
+    autoRotate = false
+    previewSize = 800
+
+    // TODO: 
+    // capturePalette = true // make this an opt-out?
+    // sizes = false // add an array of sizes to save, in addition to preview
+
+    audioWaveformPreview = { // return false to disable
         size: '800x250',
         colors: '#000000',
         gain: -6,
         clipAt: 1200, // 20 min // if 20 min
         clipTo: '00:05:00.0', // then clip to 5 min and create waveform
         clipGain: 0
-    }}
+    }
+
+    // constratin to aspect ratio on upload?
+    // only `square` supported currently
+    aspectRatio = false // = dont apply, use original file
+    aspectRatioDefaults = {
+        fit:'contain',
+        background: 'auto' // = use color palette
+    }
 
     get parent_id(){ return this.__parent_id }
     set parent_id(id){ this.__parent_id = id }
@@ -337,9 +350,36 @@ module.exports = class FileManager extends Model {
 
             let rotate = (metadata.exif.image.Orientation-1) * 90
 
-            sharpImg
-            .rotate(rotate)
-            .toFile(this.dirPath+'/'+filename)
+            sharpImg.rotate(rotate).toFile(this.dirPath+'/'+filename)
+        }
+
+        // constrain ratio?
+        if( sharpImg && this.aspectRatio ){
+
+            let arOpts = Object.assign({}, this.aspectRatioDefaults, this.aspectRatio)
+            
+            if( arOpts.background == 'auto' ){
+                let palette = await this.getColorPalette({fromPreview:false})
+                this.attrs.traits.palette = palette
+
+                // get most color with most population
+                let color = Object.values(palette).sort((a,b)=>a.pop-b.pop).pop()
+                arOpts.background = color.hex
+            }
+
+            let {width, height} = metadata
+
+            if( this.aspectRatio == 'square' ){
+                width = height = Math.max(width, height)
+            }else {
+                // TODO: write logic for other aspect ratios
+                throw new Error('Only square aspect ratio is currently supported')
+            }
+
+            // constrain image to aspect ratio
+            await sharpImg.resize(width, height, arOpts).toFile(this.dirPath+'/'+filename)
+
+            sharpImg = sharp(this.dirPath+'/'+filename)
         }
 
         // preview generation turned off
@@ -369,7 +409,9 @@ module.exports = class FileManager extends Model {
             let updateAttrs = {has_preview: true}
             
             try{
-                this.attrs.traits.palette = await this.getColorPalette()
+                if( !this.attrs.traits.palette )
+                    this.attrs.traits.palette = await this.getColorPalette()
+
                 updateAttrs.traits = this.attrs.traits
             }catch(err){
                 console.log('could not find palette', err);
@@ -379,8 +421,10 @@ module.exports = class FileManager extends Model {
         }
     }
 
-    async getColorPalette({returnSwatches=false}={}){
-        let palette = await Vibrant.from(this.filePath+'.preview.jpg').getPalette()
+    async getColorPalette({returnSwatches=false, fromPreview=true, filePath=null}={}){
+        
+        filePath = filePath || this.filePath+(fromPreview?'.preview.jpg': '')
+        let palette = await Vibrant.from(filePath).getPalette()
 
         if( returnSwatches )
             return palette

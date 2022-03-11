@@ -238,9 +238,9 @@ module.exports = class Attachements extends FileManager {
 
     get ASSETS_PATH(){ return '/mnt/data' }
     get group(){ return 'attachments' }
-    // get waitForPreviewGeneration(){ return false }
-    // get skipDuplicates(){ return false }
-    // get previewSize(){ return 800 } // set to false to disable preview generation
+    // waitForPreviewGeneration = false
+    // skipDuplicates = false
+    // previewSize = 800 // set to false to disable preview generation
 
 }
 ```
