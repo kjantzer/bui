@@ -70,11 +70,13 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             let tag = 'b-text'
             let pad = '1'
 
-            if( level == 1 || level == 2 )
+            if( level == 1 || level == 2 ){
                 tag = 'b-text-divider'
-
-            if( level == 2)
                 pad = 2
+            }
+
+            // if( level == 2)
+            //     pad = 2
 
              return `
                 <${tag} block ${size} pad="${pad}" ${bold} header="h${level}" ${level==1?'thick':''}>
@@ -154,6 +156,9 @@ customElements.define('demo-markdown-docs', class extends LitElement{
         :host *:first-child {
             margin-top: 0;
         }
+
+        [header="h3"] { margin: 2em 0 .5em;}
+        [header="h4"] { margin: 1.5em 0 .25em;}
 
         a, a:visited {
           color: var(--theme);
