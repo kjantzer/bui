@@ -56,7 +56,7 @@ customElements.define('b-draggable', class extends LitElement{
     }
 
     disconnectedCallback(){
-        this.disconnectedCallback()
+        super.disconnectedCallback()
         this.unbind()
     }
 
