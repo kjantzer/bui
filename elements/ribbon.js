@@ -95,7 +95,7 @@ customElements.define('b-ribbon', class extends LitElement{
 
     firstUpdated(){
         // TODO: update this when content changes?
-        this.style.setProperty('--char-len', this.textContent.length)
+        this.style.setProperty('--char-len', this.textContent.trim().length)
     }
 
     render(){return html`
