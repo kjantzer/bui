@@ -42,7 +42,8 @@ export default class FileModel extends Model {
 
         this.save('traits', traits, {patch:true})
 
-        if( val )
+        // if changed a single trait
+        if( val !== undefined )
             this.trigger('change:traits:'+key, this, {traits})
 
         this.trigger('change', this, {traits})
