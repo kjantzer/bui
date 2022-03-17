@@ -58,6 +58,14 @@ customElements.define('b-file-manager', class extends LitElement{
 
         this.cache = new Map()
     }
+    set row(val){
+        let oldVal = this.row
+        this.__row = val
+    
+        this.requestUpdate('row', oldVal)
+    }
+    
+    get row(){ return this.__row || 'b-file-row'}
     
     get coll(){ return this.model && this.model.get('files') }
 
