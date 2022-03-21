@@ -10,6 +10,9 @@ const fetchSync = function(opts={}){
     if( this.__fetchSyncPromise ) return this.__fetchSyncPromise
 
     if( opts.once && this.hasFetched )
+        return
+
+    if( opts.stale && this.hasFetched && new Date().getTime() - this.hasFetched < opts.stale )
         return 
 
     return this.__fetchSyncPromise = new Promise((resolve, reject)=>{
