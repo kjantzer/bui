@@ -94,8 +94,8 @@ module.exports = class User extends Model {
     async find(where){
 
         if( this.id 
-        && this.id == this.req.user.id 
-        && this.constructor == this.req.user.constructor)
+        && this.id == this.req?.user?.id 
+        && this.constructor == this.req.user?.constructor)
             return this.req.user
         
         let resp = await super.find(where)
@@ -125,7 +125,7 @@ module.exports = class User extends Model {
             attrs[this.emailHashKey] = crypto.createHash('md5').update(attrs.email).digest("hex")
 
         // only existing admins can update these values
-        if( !this.req.user.isAdmin ){
+        if( !this.req.user?.isAdmin ){
             this.adminOnlyUpdates.map(k=>{
                 delete attrs[k]
             })
