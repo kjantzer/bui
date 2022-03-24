@@ -126,8 +126,11 @@ module.exports = class Model {
 
     get sorts(){    
         try{
-            let sorts = this.req.query.sorts ? JSON.parse(this.req.query.sorts) : {}
-            return new Map(Object.entries(sorts));
+            let sorts = this.req.query.sorts 
+            if( typeof sorts == 'string' )
+                sorts = JSON.parse(this.req.query.sorts)
+
+            return new Map(Object.entries(sorts||{}));
         }catch(err){
             console.log('Malformed sorts:', this.req.query.sorts);
             return new Map()
@@ -144,7 +147,7 @@ module.exports = class Model {
         // for(let key in sorts ){
             
             // let sortOpts = sorts[key]
-            let desc = sortOpts.desc ? 'DESC' : 'ASC'
+            let desc = sortOpts.desc && sortOpts.desc != 'false' ? 'DESC' : 'ASC'
 
             if( !fn || fn(key, sortOpts) === undefined )
                 orderBy.push(`${this.db.escapeId(key)} ${desc}`)
