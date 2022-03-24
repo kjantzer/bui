@@ -417,10 +417,10 @@ export default class Menu {
 			let selections = m.selections
 			
 			if( this.opts.multiple)
-				selections = [{label: 'unset', val:''}].concat(selections)
+				selections = [{label: 'unset', val:'', clearsAll: true}, 'divider'].concat(selections)
 
 			checkbox = html`<select-field 
-							.options=${selections} 
+							.options=${selections}
 							placeholder="unset"
 							@change=${this.selectOptionsChanged.bind(this)}
 							.selected=${m.selection}
