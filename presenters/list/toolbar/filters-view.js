@@ -2,6 +2,10 @@ import { LitElement, html, css } from 'lit-element'
 import device from '../../../util/device'
 import './filter-btn'
 import FiltersPanel from './filters-panel'
+import Dialog from '../../../presenters/dialog'
+import {DownloadContent} from '../../../elements/draggable'
+import readFile from '../../../util/readFile'
+import '../../../elements/uploader'
 
 customElements.define('b-list-filters', class extends LitElement{
 
@@ -21,7 +25,8 @@ customElements.define('b-list-filters', class extends LitElement{
             display: flex;
             align-items: center;
             overflow: -moz-scrollbars-none;
-            flex: 1;
+            flex-shrink: 1;
+            position: relative;
         }
 
         [icon='backspace'] { display: none; }
@@ -75,6 +80,9 @@ customElements.define('b-list-filters', class extends LitElement{
 
     render(){return html`
 
+        <b-draggable @will-take-action=${this.onDrag}>Export</b-draggable>
+        <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
+
         ${this.showOverflow?html`
 
             <b-btn text @click=${this.openFiltersPanel} style="flex-shrink: 0;" class="show-filters" _icon="filter">
@@ -98,6 +106,47 @@ customElements.define('b-list-filters', class extends LitElement{
 
         <b-btn color="hover-red" title="Clear filters" icon="backspace" text @click=${this.resetFilters}></b-btn>
     `}
+
+    onDrag(e){
+        let {action} = e.detail
+
+        if( this.filters.length == 0 )
+            return action.allowed = false
+        
+        let filters = this.filters.value()
+        let filename = `filters-${this.filters.length}-${this.filters.key}.bui`
+        
+        DownloadContent(action.evt, filename, {
+            key: this.filters.key,
+            filters
+        })
+    }
+
+    async onUpload(e){
+        let uploader = e.currentTarget
+        let [file] = uploader.files
+        if( !file ) return
+        let data = await readFile(file)
+        data = JSON.parse(data)
+
+        if( !data.filters ) throw new UIWarningError('No filters found')
+        if( this.filters.key != data.key ) throw new UIWarningError('Wrong filters for this list')
+
+        if( this.filters.length == 0 )
+            return this.filters.reset(data.filters)
+
+        let how = await new Dialog({
+            noContent: true,
+            btns: [{label: 'Merge', color: 'blue'}, {label: 'Replace', color: 'red'}]
+        }).popover(uploader.parent)
+
+        if( !how ) return
+
+        if( how.val == 'Merge' )
+            this.filters.update(data.filters)
+        else
+            this.filters.reset(data.filters)
+    }
 
     showFilter(filter){
         return !this.showOverflow || (filter.isActive || filter.attrs.alwaysShow)
