@@ -36,7 +36,12 @@ customElements.define('b-draggable', class extends LitElement{
 
     firstUpdated(){
         if( !this.target )
-            this.target = this.parentElement || this.getRootNode()?.host
+            this.target = this.parentElement
+
+        if( !this.target ){
+            let root = this.getRootNode()
+            this.target = root && root.host
+        }
     }
 
     set target(val){
