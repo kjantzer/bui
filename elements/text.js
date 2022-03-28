@@ -18,8 +18,9 @@ customElements.define('b-text', class extends LitElement{
             line-height: var(--theme-body-line-height, 1.4em);
         }
 
-        :host([header]) {
-            line-height: var(--theme-header-line-height, 1.2em);
+        :host([header]), /* DEPRECATED - use heading*/
+        :host([heading]) {
+            line-height: var(--theme-heading-line-height, 1.2em);
         }
 
         :host([block]) {
