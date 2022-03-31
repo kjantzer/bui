@@ -87,7 +87,7 @@ customElements.define('b-hardcover-book-2d', class extends LitElement{
 
     render(){return html`
         <div class="spine"></div>
-        <img src="${this.src}" @error=${this.onError} @load=${this.onLoad}>
+        <img src="${this.src}" loading="lazy" @error=${this.onError} @load=${this.onLoad}>
         <slot name="fallback"></slot>
         <slot></slot>
     `}
