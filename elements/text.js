@@ -1,9 +1,11 @@
 import { LitElement, html, css } from 'lit-element'
+import {unsafeHTML} from 'lit-html/directives/unsafe-html'
 
 customElements.define('b-text', class extends LitElement{
 
     static get properties() { return {
-        tooltip: {type: String}
+        tooltip: {type: String},
+        html: {type: String}
     }}
 
     static get styles(){return css`
@@ -175,6 +177,7 @@ customElements.define('b-text', class extends LitElement{
     }
 
     render(){return html`
+        ${this.html?unsafeHTML(this.html):''}
         <slot class="slot"></slot>
         ${this.tooltip?html`
             <b-tooltip>${this.tooltip}</b-tooltip>
