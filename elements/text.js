@@ -162,7 +162,7 @@ customElements.define('b-text', class extends LitElement{
 
         this.addEventListener('click', this.onClick)
 
-        if( this.hasAttribute('clip') && !this.hasAttribute('title') )
+        if( this.hasAttribute('clip') && this.getAttribute('clip') != 'notitle' && !this.hasAttribute('title') )
             this.title = this.textContent.replace(/\s{2,}/g, ' ').trim()
     }
 
