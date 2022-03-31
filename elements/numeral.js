@@ -61,7 +61,7 @@ customElements.define('b-numeral', class extends LitElement{
     }
 
     render(){return html`
-        ${this.numeral}
+        ${this.numeral}<slot></slot>
     `}
 
 })
