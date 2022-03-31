@@ -916,3 +916,33 @@ export class Panel extends LitElement {
 customElements.define('b-panel', Panel)
 
 export default customElements.get('b-panel')
+
+export const insetPanelControllerStyles = (size='400px') => css`
+    b-panels {
+        position: relative;
+        height: 100%;
+        display: none;
+    }
+
+    @media (min-width: 1000px) {
+        b-panels {
+            display: grid;
+        }
+    }
+
+    b-panels[num] {
+        width: ${unsafeCSS(size)};
+    }
+    
+    b-panel {
+        background: none !important;
+    }
+
+    b-panel[height="100%"][anchor="right"]::part(main){
+        height: calc(100% - 1em);
+        width: calc(100% - .5em);
+        right: .5em;
+        top: .5em;
+        border-radius: .5em;
+    }
+`
