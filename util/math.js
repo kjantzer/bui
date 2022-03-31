@@ -11,6 +11,9 @@ round(num, decimals=2){
 	return Math.round(num * divisor) / divisor 
 },
 
+inToMM(val, decimals=1){ return this.round(val * 25.4, decimals) },
+mmToIn(val, decimals=1){ return this.round(val / 25.4, decimals) },
+
 /**
  * The "median" is the "middle" value in the list of numbers.
  *
