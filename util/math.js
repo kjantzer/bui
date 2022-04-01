@@ -1,6 +1,6 @@
 // https://jonlabelle.com/snippets/view/javascript/calculate-mean-median-mode-and-range-in-javascript
 
-module.exports = {
+const BMath = {
 
 round(num, decimals=2){
     if( typeof num == 'string' )
@@ -11,8 +11,8 @@ round(num, decimals=2){
 	return Math.round(num * divisor) / divisor 
 },
 
-inToMM(val, decimals=1){ return this.round(val * 25.4, decimals) },
-mmToIn(val, decimals=1){ return this.round(val / 25.4, decimals) },
+inToMM(val, decimals=1){ return BMath.round(val * 25.4, decimals) },
+mmToIn(val, decimals=1){ return BMath.round(val / 25.4, decimals) },
 
 /**
  * The "median" is the "middle" value in the list of numbers.
@@ -91,3 +91,5 @@ prettyDecimal(val='', ratio=null){
 }
 
 }
+
+module.exports = BMath
