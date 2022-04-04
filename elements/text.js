@@ -116,6 +116,10 @@ customElements.define('b-text', class extends LitElement{
             -moz-text-fill-color: transparent;
         }
 
+        :host([gradient="reverse"]) {
+            background-image: var(--theme-gradient-reverse, var(--theme-gradient ,var(--theme-text, #000)));
+        }
+
         :host([link]),
         :host([href]) {
             cursor: default;
