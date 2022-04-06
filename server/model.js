@@ -357,6 +357,7 @@ module.exports = class Model {
             
             if( relationOpts.with || _with == 'related' || (_with && _with[relation] != undefined) ){
 
+                try{
                 let RelatedModel = row[relation]
 
                 // mitigate infinite loops
@@ -376,6 +377,10 @@ module.exports = class Model {
                     args = this.findOptionToArgs(args)
                     
                     row.attrs[relation] = await RelatedModel.find(...args)
+                }
+                }catch(err){
+                    // I think this would be bad design
+                    // row.attrs[relation] = {error: err.message}
                 }
             }
                 
