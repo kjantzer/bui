@@ -102,7 +102,7 @@ export default class {
 
 		if( ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter'].includes(e.code) ) return
 
-		if( this.menu )
+		if( this.menu && this.menu.presenter )
 			this.menu.presenter.close()
 
 		if( !cursorContext ) return
