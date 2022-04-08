@@ -41,6 +41,10 @@ customElements.define('b-text-editor-menubar', class extends LitElement{
             color: rgba(var(--theme-text-rgb),.5)
         }
 
+        b-btn::part(icon) {
+            --size: 1.2em;
+        }
+
         b-btn[active] {
             /* background-color: rgba(var(--theme-text-rgb), .1);
             color: var(--theme); */
@@ -83,15 +87,17 @@ customElements.define('b-text-editor-menubar', class extends LitElement{
         <div>
             <slot name="left"></slot>
             <span class="btns" @click=${this.format}>
-                <b-btn action="toggleBold" clear ?active=${this.isActive('bold')} icon="bold"></b-btn>
-                <b-btn action="toggleItalic" clear ?active=${this.isActive('italic')} icon="italic"></b-btn>
+                <b-btn action="toggleBold" clear ?active=${this.isActive('bold')} icon="format_bold"></b-btn>
+                <b-btn action="toggleItalic" clear ?active=${this.isActive('italic')} icon="format_italic"></b-btn>
                 
                 <b-btn action="setTextAlign" .args=${'center'}
-                    clear ?active=${this.isActive({'textAlign':'center'})} icon="paragraph-center"></b-btn>
+                    clear ?active=${this.isActive({'textAlign':'center'})} icon="format_align_center"></b-btn>
 
-                <b-btn action="toggleBulletList" clear ?active=${this.isActive('bulletList')} icon="list2"></b-btn>
+                <b-btn action="toggleBulletList" clear ?active=${this.isActive('bulletList')} icon="format_list_bulleted"></b-btn>
 
-                <b-btn action="toggleOrderedList" clear ?active=${this.isActive('orderedList')} icon="list-numbered"></b-btn>
+                <b-btn action="toggleOrderedList" clear ?active=${this.isActive('orderedList')} icon="format_list_numbered"></b-btn>
+
+                <b-btn action="toggleSuperscript" clear ?active=${this.isActive('superscript')} icon="superscript" title="Superscript"></b-btn>
 
             </span>
         </div>

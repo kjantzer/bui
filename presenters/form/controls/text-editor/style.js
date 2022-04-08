@@ -108,4 +108,10 @@ export default css`
 	line-height: 1em;
 }
 
+.ProseMirror sup {
+	vertical-align: super;
+    font-size: .85em;
+	line-height: .85em;
+}
+
 `

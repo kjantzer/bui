@@ -4,6 +4,7 @@ import StarterKit from '@tiptap/starter-kit'
 import { KeyboardEvents } from './keyboard-events'
 import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
+import Superscript from '@tiptap/extension-superscript'
 import CharacterCount from '@tiptap/extension-character-count'
 import Typography from '@tiptap/extension-typography'
 import TypographyPaste from './typography-paste'
@@ -53,6 +54,7 @@ customElements.define('text-editor', class extends LitElement{
                     types: ['heading', 'paragraph'],
                     alignments: ['left', 'center'],
                 }),
+                Superscript,
                 Typography,
                 TypographyPaste,
                 // SmartCharacterReplacer,
