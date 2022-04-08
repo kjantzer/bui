@@ -130,7 +130,7 @@ customElements.define('b-text', class extends LitElement{
         }
 
         :host([link].popover-open),
-        :host([href]){
+        :host([href]:not([color])){
             color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
         }
 
