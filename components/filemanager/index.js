@@ -13,6 +13,7 @@ customElements.define('b-file-manager', class extends LitElement{
     static get properties(){return {
         sorting: {type: Boolean, reflect: true},
         row: {type: String},
+        layout: {type: String},
         accept: {type: String},
         placeholder: {type: String},
         limit: {type: Number}
@@ -174,6 +175,7 @@ customElements.define('b-file-manager', class extends LitElement{
         if( !row )
             row = document.createElement(this.row)
 
+        row.layout = this.layout
         row.part = 'file'
         row.model = m
         row.innerHTML = '<div class="drag" slot="drag"></div>'
