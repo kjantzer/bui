@@ -19,8 +19,13 @@ customElements.define('b-file-row', class extends LitElement{
             position:relative;
         }
 
-        img {
+        .img {
             background: var(--theme-text-accent);
+            padding: .5em;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        img {
             position: relative;
             display: flex;
             justify-content: center;
@@ -30,7 +35,6 @@ customElements.define('b-file-row', class extends LitElement{
             min-height: var(--img-height, var(--img-min-height, 240px));
             max-height: var(--img-height, var(--img-max-height, 100%));
             border-radius: var(--radius) var(--radius) 0 0;
-            padding: .5em;
             box-sizing: border-box;
             object-fit: contain;
             pointer-events: none;
