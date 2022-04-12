@@ -94,6 +94,12 @@ export default class FileModel extends Model {
         return this.get('type').match(/pdf/)
     }
 
+    get isNonStandardDocument(){
+        let min = Math.min(this.width, this.height)
+        let max = Math.max(this.width, this.height)
+        return this.isDocument && min && max && (min != 8.5 || max != 11)
+    }
+
     get palette(){
         return this.__palette = this.__palette || new Palette(this.traits.palette)
     }

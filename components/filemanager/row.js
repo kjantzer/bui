@@ -175,6 +175,17 @@ customElements.define('b-file-row', class extends LitElement{
 
                     `:''}
 
+                    ${this.model.isNonStandardDocument?html`
+                    
+                        <b-label filled="black" class="res" xs>
+                            ${this.model.width}
+                            &nbsp;<b-text muted=2>x</b-text>&nbsp;
+                            ${this.model.height}
+                            &nbsp;<b-text muted=2>in</b-text>
+                        </b-label>
+
+                    `:''}
+
                     ${this.model.isDocument?html`
                     <b-label xs class="pages" filled="black" ?hidden=${!(this.model.pages>1)}>
                             ${this.model.pages} pages</b-label>
