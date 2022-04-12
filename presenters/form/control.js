@@ -143,8 +143,15 @@ class FormControlElement extends HTMLElement {
 		
 		// defer - then make sure the form-control remains as wide as the label
 		setTimeout(()=>{
-			if( this.style.minWidth == '' )
-				this.style.minWidth = this.$('.label').offsetWidth
+			if( this.style.minWidth == '' ){
+				let labelNodel = this.$('.label').childNodes[0]
+
+				if( labelNodel && labelNodel.assignedNodes )
+					labelNodel = labelNodel.assignedNodes()[0]
+
+				this.style.setProperty('--fc-min-width', labelNodel?.offsetWidth+'px')
+			}
+				
 
 			if( this.control )
 				this.control.disabled = this.disabled

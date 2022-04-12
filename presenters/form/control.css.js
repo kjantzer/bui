@@ -35,6 +35,14 @@ slot[name="after"]{
 	--padX: 0;
 }
 
+:host {
+	min-width: var(--fc-min-width);
+}
+
+:host(:not([empty])) {
+	min-width: calc(.75 * var(--fc-min-width));
+}
+
 :host main {
 	grid-area: main;
 	width: 100%;
