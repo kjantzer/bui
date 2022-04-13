@@ -37,6 +37,10 @@ customElements.define('b-tabs-router', class extends TabsView {
             if( matchedState ){
                 this.active = tab
                 tab.route.state = matchedState
+
+                // NOTE: could cause issues with existing code that does it's own "initial" loading
+                if( tab.view.onRouteChange )
+                    tab.view.onRouteChange(null, matchedState, null)
             }
         })
     }
