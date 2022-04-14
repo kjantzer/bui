@@ -35,14 +35,26 @@ customElements.define('b-previewer-iframe', class extends LitElement{
         // setTimeout(() => {
             // console.log(this.$$('iframe'));
             
-            // doesn't work
-            this.$$('iframe').contentDocument.body.style.background = 'transparent'    
+            let doc = this.$$('iframe').contentDocument
+            let body = doc.body
 
-            this.$$('iframe').contentDocument.body.onclick = function(){
+            // doesn't work (sort of works?)
+            body.style.background = 'transparent'    
+
+            body.onclick = function(){
                 console.log('on click');
             }
 
             this.emitEvent('loaded')
+
+            // see if url/api returned a JSON error
+            if( body.children.length == 1 && body.children[0].tagName == 'PRE' ){
+                let err
+                try{ err = JSON.parse(body.textContent)}catch(err){}
+                if( err && err.error ){
+                    throw new UIError(err.error)
+                }
+            }
 
             // this.$$('iframe').addEventListener('click', e=>{
             //     console.log('clicked?', e);
