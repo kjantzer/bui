@@ -151,6 +151,9 @@ customElements.define('b-text', class extends LitElement{
             margin-top: -1em;
         }
 
+        /* Inter font feature */
+        :host([tnum]) { font-feature-settings: 'tnum';}
+
         :host([sub]) {
             vertical-align: sub;
             margin-bottom: -1em;
