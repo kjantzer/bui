@@ -78,8 +78,8 @@ module.exports = class Model {
 
         if( !this.db )
             console.warn('Model.db has not been set yet')
-            
-        this.req = req
+        
+        this.req = req || {query:{}}
         this.attrs = attrs || {}
         this.opts = opts
 
@@ -89,6 +89,10 @@ module.exports = class Model {
 
         if( attrs )
             this.decodeFields(attrs)
+    }
+
+    get(attr){
+        return this.attrs?.[attr]
     }
 
     get config(){ return {} }
