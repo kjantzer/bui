@@ -84,7 +84,9 @@ module.exports = class Model {
         this.opts = opts
 
         for(let key in attrs){
-            this[key] = attrs[key]
+            try{
+                this[key] = attrs[key]
+            }catch(err){}
         }
 
         if( attrs )
