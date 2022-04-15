@@ -15,6 +15,23 @@ const fetchSync = function(opts={}){
     if( opts.stale && this.hasFetched && new Date().getTime() - this.hasFetched < opts.stale )
         return 
 
+    if( this.filters ){
+
+        if( !opts.data )
+            opts.data = {filters: {}}
+        
+        opts.data.filters = Object.assign({}, opts.data.filters, this.filters)
+
+        // optionally limit results by search
+        // example: all products for a particular book ID
+        // term='epx4'; searchTypes='products'
+        // TODO: support this
+        // if( this.search ){
+        //     opts.data.term = this.search
+        //     opts.data.searchTypes = this.searchTypes
+        // }
+    }
+
     return this.__fetchSyncPromise = new Promise((resolve, reject)=>{
         let model = this
         opts.success = function(){
