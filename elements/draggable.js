@@ -37,6 +37,11 @@ customElements.define('b-draggable', class extends LitElement{
     firstUpdated(){
         if( !this.target )
             this.target = this.parentElement
+
+        if( !this.target ){
+            let root = this.getRootNode()
+            this.target = root && root.host
+        }
     }
 
     set target(val){
@@ -112,6 +117,27 @@ export function DownloadURL(e, filename, url){
         `application/octet-stream:${filename}:${url}`
     ]);
 }
+
+// TODO: set mimetype by extension?
+export function DownloadContent(e, filename, content, {mimetype}={}){
+    
+    if( !mimetype && typeof content == 'object' && !Array.isArray(content) ){
+        mimetype = 'application/json'
+        content = JSON.stringify(content)
+
+    }else if( !mimetype && Array.isArray(content) ){
+        mimetype = 'text/csv'
+        content = JSON.stringify(content)
+    }
+
+    if( !mimetype )
+        mimetype = 'text/plain'
+
+    let b64 = btoa(content)
+        
+    return DownloadURL(e, filename, `data:${mimetype};base64,${b64}`)
+}
+
 
 export function PlainText(e, text){
     e.dataTransfer.setData('text/plain', text);

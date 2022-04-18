@@ -52,6 +52,14 @@ customElements.define('b-text-divider', class extends Text{
             bottom: 0;
         }
 
+        :host([gradient]) b-hr {
+            --bgd: var(--theme-gradient);
+        }
+
+        :host([gradient="reverse"]) b-hr {
+            --bgd: var(--theme-gradient-reverse, var(--theme-gradient));
+        }
+
         :host ::slotted(*) {
             align-self: unset;
         }

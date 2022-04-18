@@ -78,17 +78,23 @@ module.exports = class Model {
 
         if( !this.db )
             console.warn('Model.db has not been set yet')
-            
-        this.req = req
+        
+        this.req = req || {query:{}}
         this.attrs = attrs || {}
         this.opts = opts
 
         for(let key in attrs){
-            this[key] = attrs[key]
+            try{
+                this[key] = attrs[key]
+            }catch(err){}
         }
 
         if( attrs )
             this.decodeFields(attrs)
+    }
+
+    get(attr){
+        return this.attrs?.[attr]
     }
 
     get config(){ return {} }
@@ -126,8 +132,11 @@ module.exports = class Model {
 
     get sorts(){    
         try{
-            let sorts = this.req.query.sorts ? JSON.parse(this.req.query.sorts) : {}
-            return new Map(Object.entries(sorts));
+            let sorts = this.req.query.sorts 
+            if( typeof sorts == 'string' )
+                sorts = JSON.parse(this.req.query.sorts)
+
+            return new Map(Object.entries(sorts||{}));
         }catch(err){
             console.log('Malformed sorts:', this.req.query.sorts);
             return new Map()
@@ -144,7 +153,7 @@ module.exports = class Model {
         // for(let key in sorts ){
             
             // let sortOpts = sorts[key]
-            let desc = sortOpts.desc ? 'DESC' : 'ASC'
+            let desc = sortOpts.desc && sortOpts.desc != 'false' ? 'DESC' : 'ASC'
 
             if( !fn || fn(key, sortOpts) === undefined )
                 orderBy.push(`${this.db.escapeId(key)} ${desc}`)
@@ -354,6 +363,7 @@ module.exports = class Model {
             
             if( relationOpts.with || _with == 'related' || (_with && _with[relation] != undefined) ){
 
+                try{
                 let RelatedModel = row[relation]
 
                 // mitigate infinite loops
@@ -373,6 +383,10 @@ module.exports = class Model {
                     args = this.findOptionToArgs(args)
                     
                     row.attrs[relation] = await RelatedModel.find(...args)
+                }
+                }catch(err){
+                    // I think this would be bad design
+                    // row.attrs[relation] = {error: err.message}
                 }
             }
                 

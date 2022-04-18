@@ -1,9 +1,11 @@
 import { LitElement, html, css } from 'lit-element'
+import {unsafeHTML} from 'lit-html/directives/unsafe-html'
 
 customElements.define('b-text', class extends LitElement{
 
     static get properties() { return {
-        tooltip: {type: String}
+        tooltip: {type: String},
+        html: {type: String}
     }}
 
     static get styles(){return css`
@@ -18,8 +20,9 @@ customElements.define('b-text', class extends LitElement{
             line-height: var(--theme-body-line-height, 1.4em);
         }
 
-        :host([header]) {
-            line-height: var(--theme-header-line-height, 1.2em);
+        :host([header]), /* DEPRECATED - use heading*/
+        :host([heading]) {
+            line-height: var(--theme-heading-line-height, 1.2em);
         }
 
         :host([block]) {
@@ -113,6 +116,10 @@ customElements.define('b-text', class extends LitElement{
             -moz-text-fill-color: transparent;
         }
 
+        :host([gradient="reverse"]) {
+            background-image: var(--theme-gradient-reverse, var(--theme-gradient ,var(--theme-text, #000)));
+        }
+
         :host([link]),
         :host([href]) {
             cursor: default;
@@ -123,7 +130,7 @@ customElements.define('b-text', class extends LitElement{
         }
 
         :host([link].popover-open),
-        :host([href]){
+        :host([href]:not([color])){
             color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
         }
 
@@ -144,6 +151,9 @@ customElements.define('b-text', class extends LitElement{
             margin-top: -1em;
         }
 
+        /* Inter font feature */
+        :host([tnum]) { font-feature-settings: 'tnum';}
+
         :host([sub]) {
             vertical-align: sub;
             margin-bottom: -1em;
@@ -161,7 +171,7 @@ customElements.define('b-text', class extends LitElement{
 
         this.addEventListener('click', this.onClick)
 
-        if( this.hasAttribute('clip') && !this.hasAttribute('title') )
+        if( this.hasAttribute('clip') && this.getAttribute('clip') != 'notitle' && !this.hasAttribute('title') )
             this.title = this.textContent.replace(/\s{2,}/g, ' ').trim()
     }
 
@@ -174,6 +184,7 @@ customElements.define('b-text', class extends LitElement{
     }
 
     render(){return html`
+        ${this.html?unsafeHTML(this.html):''}
         <slot class="slot"></slot>
         ${this.tooltip?html`
             <b-tooltip>${this.tooltip}</b-tooltip>

@@ -20,7 +20,7 @@ module.exports = (file)=>{
             '--stdout',
             '--port='+port,
             '--user-profile='+userProfilePath,
-            file
+            `"${file}"`
         ]
         const worker = childProcess.spawn('sh', ['-c', `unoconv ${args.join(' ')} | wc -w`]);
 

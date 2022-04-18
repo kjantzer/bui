@@ -497,10 +497,14 @@ export class Filter {
             el.spin = false
         }
             
-
-        let selected = await new Menu(this.values, {
+        let values = this.values
+        let selected = await new Menu(values, {
             selected: this.value,
             multiple: this.isMulti,
+            search: values.length > 40 ? {
+                placeholder: `Search (${values.length})`,
+                showAll: false
+            } : 20,
             width: this.attrs.width||null
         }).popover(el, Object.assign({
             overflowBoundry: this.attrs.overflowBoundry || 'scrollParent',

@@ -280,7 +280,7 @@ from the parent model's attributes or a specificed lookup collection.
 ***
 
 ## Scrollbars
-Make scrollbars look more like stock Mac/iOS. Also provides a few utiliesi
+Make scrollbars look more like stock Mac/iOS. Also provides a few utilities
 
 ### Style
 ```js
@@ -297,9 +297,12 @@ css`
 ```
 
 ### Hide 
+Defaults to hiding scrollbar on `:host`. Pass a css selector to target child element.
+
 ```js
 css`
     ${scrollbars.hide()}
+    ${scrollbars.hide('.selector')}
 `
 ```
 

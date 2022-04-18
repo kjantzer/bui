@@ -91,6 +91,12 @@ customElements.define('b-tooltip', class extends LitElement{
         trigger: {type: String} // what should trigger the tooltip? (parent, offset)
     }}
 
+    static styles = css`
+        :host {
+            display: none !important;
+        }
+    `
+
     constructor(){
         super()
 

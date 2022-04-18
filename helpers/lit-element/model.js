@@ -6,7 +6,7 @@ import {LitElement} from 'lit-element'
 
 Object.defineProperty(LitElement.prototype, 'model', {
 
-    set: function(val){
+    set: async function(val){
         const oldVal = this.model
         
         if( oldVal != val ){
@@ -18,8 +18,10 @@ Object.defineProperty(LitElement.prototype, 'model', {
             
             this.bindListeners&&this.bindListeners()
 
+            // does this "need" to be after request update?
+            this.onModelChange && await this.onModelChange(val, oldVal)
             this.requestUpdate('model', oldVal)
-            this.onModelChange&&this.onModelChange(val, oldVal)
+            // this.onModelChange&&this.onModelChange(val, oldVal)
         }
     },
 

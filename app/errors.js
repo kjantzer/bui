@@ -123,3 +123,19 @@ export class UIDeniedError extends UICustomError {
     }
 }
 
+export class UIError extends UICustomError {
+    
+    constructor(msg='Something went wrong', ...args){
+        super(msg, ...args)
+        this.name = 'UIDeniedError'
+    }
+
+    get presenter(){
+        return Dialog.error({
+            pretitle: '',
+            body: this.message,
+            btns: false
+        })
+    }
+}
+

@@ -106,7 +106,7 @@ export class PaperElement extends LitElement {
             border-radius: 0 0 3px 3px;
         }
 
-        ::slotted(b-icon:first-of-type) {
+        ::slotted(b-icon:first-of-type:not(:last-child)) {
             /* color: var(--bgdAccent); */
             color: #000;
             opacity: .5;
