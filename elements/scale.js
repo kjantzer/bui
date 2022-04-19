@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import hidDevice from '../util/hidDevice'
-import '../helpers/lit-element/events'
+import '../helpers/lit/events'
 
 customElements.define('b-scale', class extends LitElement{
 

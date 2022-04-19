@@ -7,7 +7,7 @@ import './toolbar'
 import './toolbar/selection-bar'
 import './infinite-list'
 import '../../elements/spinner-overlay'
-import '../../helpers/lit-element/selectors'
+import '../../helpers/lit/selectors'
 import Selection from '../selection'
 import Scrollbars from '../../helpers/scrollbars'
 

@@ -3,7 +3,7 @@
 require('./helpers/backbone')
 
 // extend LitElement to fit our needs
-require('./helpers/lit-element')
+require('./helpers/lit')
 
 require('./elements/icon')
 require('./elements/btn')

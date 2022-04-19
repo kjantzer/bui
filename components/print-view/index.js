@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
 import Panel from 'panel'
 import Menu from 'menu'
-import '../../helpers/lit-element/shared'
+import '../../helpers/lit/shared'
 
 customElements.defineShared('b-print-view', class extends LitElement{
 

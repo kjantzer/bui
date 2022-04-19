@@ -3,7 +3,7 @@ import {unsafeHTML} from 'lit-html/directives/unsafe-html'
 import {mediaQuery} from '../../util/mediaQueries'
 import Button from './btn'
 import '../../elements/spinner'
-import '../../helpers/lit-element/events'
+import '../../helpers/lit/events'
 
 const basicConverter = { 
     toAttribute: (value, type) => { 

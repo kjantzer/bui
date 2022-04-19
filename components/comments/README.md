@@ -108,7 +108,7 @@ b-comment::part(comment) {
 - `resolve` - when comment "resolved" is toggled
 - `react` - when reactions is toggled
 
-> See `helpers/lit-element/will-take-action` for usability
+> See `helpers/lit/will-take-action` for usability
 
 ## Server Model
 ```js

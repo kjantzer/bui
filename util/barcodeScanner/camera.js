@@ -19,7 +19,7 @@
 import { LitElement, html, css } from 'lit-element'
 import {Parsers, emit} from './index'
 import device from '../device'
-import '../../helpers/lit-element/shared'
+import '../../helpers/lit/shared'
 import Dialog from '../../presenters/dialog'
 
 customElements.defineShared('b-barcode-camera-scanner', class extends LitElement{

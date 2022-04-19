@@ -107,7 +107,7 @@ import device from 'bui/util/device'
 import colorScheme from 'bui/util/color-scheme'
 
 // import all the lit-element helpers 
-import 'bui/helpers/lit-element'
+import 'bui/helpers/lit'
 
 // updates global window.open to better support installed PWA
 import 'bui/util/window.open'

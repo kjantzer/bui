@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
 import Panel from 'panel'
 import Dialog from 'dialog'
-import '../../helpers/lit-element/shared'
+import '../../helpers/lit/shared'
 import '../../elements/spinner-overlay'
 import '../../elements/paper'
 import '../../elements/grid'

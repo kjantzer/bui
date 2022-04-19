@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit-element';
 import AJAX from '../util/ajax.js';
 import '../util/file.ext.js'
 import resizeImg from '../util/resizeImg'
-import '../helpers/lit-element/events'
+import '../helpers/lit/events'
 
 export class UploaderElement extends LitElement {
 

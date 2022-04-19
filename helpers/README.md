@@ -10,13 +10,13 @@ Extend LitElement to fit our needs. I like doing this so that we dont have to cr
 
 ```js
 // include all lit-element helpers
-import 'bui/helpers/lit-element'
+import 'bui/helpers/lit'
 ```
 
 ### Listeners
 
 ```js
-import 'bui/helpers/lit-element/listeners'
+import 'bui/helpers/lit/listeners'
 ```
 
 Adds support for listening to Backbone Model/Collection/ChildCollection
@@ -41,7 +41,7 @@ this.model.get('child-collection').on('reset', this.update.bind(this))
 ### Events
 
 ```js
-import 'bui/helpers/lit-element/events'
+import 'bui/helpers/lit/events'
 ```
 
 #### `emitEvent`
@@ -91,7 +91,7 @@ onAction(e){
 ### Get
 
 ```js
-import 'bui/helpers/lit-element/get'
+import 'bui/helpers/lit/get'
 ```
 Shortcut to `this.model.get()` that also supports `defaultValue`
 ```js
@@ -101,8 +101,8 @@ this.get('some_key', 'default Value')
 ### Model / Coll
 
 ```js
-import 'bui/helpers/lit-element/model'
-import 'bui/helpers/lit-element/coll'
+import 'bui/helpers/lit/model'
+import 'bui/helpers/lit/coll'
 ```
 
 A common pattern is to pass a model object to the custom element. This extension
@@ -118,7 +118,7 @@ onModelChange(model){
 
 ### Shared
 ```js
-import 'bui/helpers/lit-element/shared'
+import 'bui/helpers/lit/shared'
 ```
 
 Define a custom element with a "shared" singleton feature. Useful for when a view will be used in multiple places but only needs to be intialized once and then reused.
@@ -139,7 +139,7 @@ console.log(MyElement.shared == new MyElement() ) // false
 ### Event Target Model
 
 ```js
-import 'bui/helpers/lit-element/event-target-model'
+import 'bui/helpers/lit/event-target-model'
 ```
 
 A pattern at Blackstone when using lit-html is to render 
@@ -171,7 +171,7 @@ takeAction(e){
 > Considering DEPRECATION
 
 ```js
-import 'bui/helpers/lit-element/sv'
+import 'bui/helpers/lit/sv'
 ```
 
 Sometimes a linked subview needs to be created and we'd like to keep

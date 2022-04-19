@@ -6,7 +6,7 @@
     https://schema.org/
 */
 import { LitElement, html, css } from 'lit-element'
-import '../helpers/lit-element/will-take-action'
+import '../helpers/lit/will-take-action'
 
 customElements.define('b-draggable', class extends LitElement{
 

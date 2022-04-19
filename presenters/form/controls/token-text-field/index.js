@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
-import '../../../../helpers/lit-element/events'
-import '../../../../helpers/lit-element/selectors'
+import '../../../../helpers/lit/events'
+import '../../../../helpers/lit/selectors'
 import './token'
 import autoComplete from './auto-complete'
 import ContentEditableHistory from './history'
