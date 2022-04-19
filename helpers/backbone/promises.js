@@ -15,7 +15,7 @@ const fetchSync = function(opts={}){
     if( opts.stale && this.hasFetched && new Date().getTime() - this.hasFetched < opts.stale )
         return 
 
-    if( this.filters ){
+    if( this.filters && !(this.filters instanceof Map) ){
 
         if( !opts.data )
             opts.data = {filters: {}}
