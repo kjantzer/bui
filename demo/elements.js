@@ -51,12 +51,12 @@ customElements.define('demo-elements', class extends LitElement{
             overflow: hidden;
         }
 
-        [view-id="Layout"] b-grid > div {
+        [view-id="layout"] b-grid > div {
             background: var(--theme-bgd-accent);
             padding: .25em;
         }
 
-        [view-id="Layout"] b-flex > div {
+        [view-id="layout"] b-flex > div {
             background: var(--theme-bgd-accent);
         }
 
@@ -70,12 +70,12 @@ customElements.define('demo-elements', class extends LitElement{
             overflow: auto;
         }
 
-        section:not([view-id="Paper"]) > b-paper {
-            padding: var(--view-gutter);
+        section:not([view-id="paper"]) > b-paper {
+            padding: 1em;
         }
 
         section > b-paper ~ b-paper {
-            margin-top: var(--view-gutter);
+            margin-top: 1em;
         }
 
         b-h1 {
@@ -86,6 +86,10 @@ customElements.define('demo-elements', class extends LitElement{
 
         b-h1 ~ b-h1 {
             margin-top: var(--view-gutter);
+        }
+
+        b-avatar {
+            --size: 3em;
         }
 
         ${specialtyStyles}
@@ -378,7 +382,7 @@ customElements.define('demo-elements', class extends LitElement{
 
                     <div>
                         <b-btn clear empty lg icon="home"><b-tooltip label>Home</b-tooltip></b-btn>
-                        <b-btn clear empty lg icon="user"><b-tooltip label>Account</b-tooltip></b-btn>
+                        <b-btn clear empty lg icon="person"><b-tooltip label>Account</b-tooltip></b-btn>
                         <b-btn clear empty lg icon="cog" tooltip="Settings"></b-btn>
                     </div>
 

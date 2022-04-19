@@ -9,11 +9,12 @@
         "url": "https://github.com/kjantzer/bui"
     },
     "scripts": {
-        "start": "npm run build-sw && parcel demo/index.html --no-autoinstall --out-dir demo/dist",
-        "build": "npm run build-sw && parcel build demo/index.html --no-autoinstall --out-dir public --public-url ./ --no-minify",
+        "start": "npm run build-icons && npm run build-sw && parcel demo/index.html --no-autoinstall --out-dir demo/dist",
+        "build": "npm run build-icons && npm run build-sw && parcel build demo/index.html --no-autoinstall --out-dir public --public-url ./ --no-minify",
         "build-sw": "parcel build demo/sw/src/index.js --no-autoinstall --out-dir ./demo --out-file ./sw.js --no-minify",
         "commit-pages": "cd ./public && git add -A && git commit -m 'publish docs' && git push origin HEAD:gh-pages --force",
-        "publish-pages": "npm run build && npm run commit-pages"
+        "publish-pages": "npm run build && npm run commit-pages",
+        "build-icons": "node generate-all-material-icons.js"
     },
     "keywords": [
         "custom elements",
@@ -42,7 +43,8 @@
         "less": "^3.11.1",
         "marked": "^2.0.0",
         "parcel-bundler": "^1.12.5",
-        "parcel-plugin-markdown-string": "^1.4.2"
+        "parcel-plugin-markdown-string": "^1.4.2",
+        "parcel-plugin-svg-as-inline-string": "github:kjantzer/parcel-plugin-svg-as-inline-string"
     },
     "dependencies": {
         "@fnando/sparkline": "^0.3.10",
@@ -50,8 +52,8 @@
         "@tiptap/core": "2.0.0-beta.144",
         "@tiptap/extension-character-count": "2.0.0-beta.18",
         "@tiptap/extension-placeholder": "2.0.0-beta.44",
-        "@tiptap/extension-text-align": "2.0.0-beta.29",
         "@tiptap/extension-superscript": "^2.0.0-beta.10",
+        "@tiptap/extension-text-align": "2.0.0-beta.29",
         "@tiptap/extension-typography": "2.0.0-beta.19",
         "@tiptap/starter-kit": "2.0.0-beta.146",
         "@tiptap/suggestion": "2.0.0-beta.83",

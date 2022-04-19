@@ -1,29 +1,23 @@
 import { LitElement, html, css } from 'lit-element'
 import Icon from 'bui/elements/icon'
-import AllIcons from '@material-icons/svg/data.json'
+import MaterialIcons from '@material-icons/svg/data.json'
+import AllMaterialIcons from './all-material-icons'
 import {Collection} from '../../app/models'
 import '../../elements/flex'
 import uniq from '../../util/uniq'
 import copyText from '../../util/copyText'
 
 const RegisteredIcons = Icon.registeredIconNames()
-const MaterialIcons = AllIcons.icons.map(icon=>[
-    icon.name,
-    require(`@material-icons/svg/svg/${icon.name}/baseline.svg`), {className: 'material'}
-])
-
-console.log(RegisteredIcons);
-window.Icon = Icon
-
-const Categories = uniq(AllIcons.icons.flatMap(icon=>icon.categories))
+const Categories = uniq(MaterialIcons.icons.flatMap(icon=>icon.categories))
 
 // mark which icons are in use by the main application
-AllIcons.icons.forEach(icon=>{
+// TODO
+MaterialIcons.icons.forEach(icon=>{
     icon.isRegistered = RegisteredIcons.includes(icon.name)
 })
 
 // register material icons
-Icon.register(...MaterialIcons)
+Icon.register(...AllMaterialIcons)
 
 customElements.define('b-demo-icons', class extends LitElement{
 
@@ -50,7 +44,7 @@ customElements.define('b-demo-icons', class extends LitElement{
 
     constructor(){
         super()
-        this.coll = new Collection(AllIcons.icons)
+        this.coll = new Collection(MaterialIcons.icons)
     }
 
     render(){return html`

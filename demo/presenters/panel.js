@@ -39,12 +39,13 @@ customElements.define('demo-presenter-panel', class extends View{
 export default customElements.get('demo-presenter-panel')
 
 Panel.register('view-1', ()=>html`
+    <b-flex col stretch gap=0>
     <b-panel-toolbar shadow>
         <b-btn slot="right" text>Btn</b-btn>
         <span slot="left">
             <b-btn outline>Btn</b-btn>
         </span>
-        <span slot="middle"> <b-label badge="red" style="vertical-align: top;" dot></b-label></span>
+        <span slot="title:after"> <b-label badge="red" style="vertical-align: top;" dot></b-label></span>
     </b-panel-toolbar>
     <main style="flex:1">
         <b-tabs layout="left">
@@ -52,6 +53,7 @@ Panel.register('view-1', ()=>html`
             <div title="View 2">View 2 content</div>
         </b-tabs>
     </main>
+    </b-flex>
 `, {title: 'View 1'})
 
 
@@ -109,11 +111,13 @@ customElements.define('view-animate', class extends LitElement{
     `}
 
     render(){return html`
+        <b-flex col stretch gap=0>
         <b-panel-toolbar  noshadow></b-panel-toolbar>
         <main>
             <b-btn @click=${this.animate}>bounce</b-btn>
             <b-btn @click=${this.animate}>shake</b-btn>
         </main>
+        </b-flex>
     `}
 
     animate(e){

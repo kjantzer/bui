@@ -6,6 +6,7 @@ router.config({
 })
 
 import 'bui/util/window.open'
+import 'bui/app/error-handler'
 import '../elements/icons/_all'
 import './markdown-docs'
 

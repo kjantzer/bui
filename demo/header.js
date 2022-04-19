@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import 'bui/elements/text'
+import AppInstaller from 'bui/app/installer'
 import Menu from 'bui/presenters/menu'
 import device, {colorScheme} from 'bui/util/device'
 import 'bui/elements/logo'
@@ -71,6 +72,9 @@ customElements.define('demo-header', class extends LitElement{
         </b-text>
 
         <div class="right">
+            
+            <b-btn text icon="install_desktop" color="theme" lg @click=${AppInstaller.install} ?hidden=${AppInstaller.canInstall}>Install</b-btn>
+
             <b-btn text lg icon="invert-colors-on" title="Change theme" @click=${this.changeTheme}></b-btn>
             <b-btn text lg icon="github" title="Go to GitHub repo" href="https://github.com/kjantzer/bui"></b-btn>
             

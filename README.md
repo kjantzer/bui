@@ -7,7 +7,7 @@
 
 <h1 align="center">Blackstone UI (BUI)</h1>
 
-Web components for creating interfaces - built with [lit-html](https://lit-html.polymer-project.org/) and [lit-element](https://lit-element.polymer-project.org/) by [Blackstone Publishing](https://blackstonepublishing.com)
+Web components for creating interfaces - built with [Lit](https://lit.dev/) by [Blackstone Publishing](https://blackstonepublishing.com)
 
 <div align="center">
 

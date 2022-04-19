@@ -137,7 +137,7 @@ customElements.define('demo-overview', class extends LitElement{
                         <b-text xbold>UI</b-text>
                     </b-text>
 
-                    <p><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">Web components</a> for creating applications – built by Blackstone Publishing using <a href="https://lit-html.polymer-project.org">lit-html</a> and <a href="https://lit-element.polymer-project.org">lit-element</a></p>
+                    <p><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">Web components</a> for creating applications – built with <a href="https://lit.dev">Lit</a> by Blackstone Publishing</p>
 
                 </header>
 

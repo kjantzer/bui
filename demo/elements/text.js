@@ -9,26 +9,68 @@ export default html`
 <section title="Text">
 <b-paper>
     <b-h1>Text</b-h1>
-    
-    <div><b-text muted>Muted</b-text>, <b-text muted sm>Muted Small</b-text>, <b-text muted xs>Muted Extra Small</b-text></div>
 
-    <div>
-        <b-text md>Medium</b-text>, <b-text lg>Large</b-text>, <b-text xl>Extra Large</b-text>
-    </div>
+        <b-grid gap="2">
 
-    <div>
-        <b-text bold>Bold</b-text>, <b-text italic>Italics</b-text>
-    </div>
-    
-    <div><b-text tone="critical" italic>Critical Italic</b-text>, <b-text tone="warning">Warning text</b-text>, and <b-text tone="info">Info text</b-text></div>
-    
-    <div>Text with<b-text xs sup muted>Super</b-text> Text with<b-text xs sub muted>sub</b-text></div>
-    
-    <div style="width:160px"><b-text clip>Text with clipping enabled</b-text></div>
-    
-    <div><b-text link>Link (hover me)</b-text></div>
-    
-    <div><b-text ucase>uppercase text</b-text>, <b-text lcase>LOWERCASE text</b-text>, and <b-text capitalize>capitalize text</b-text></div>
+            <b-flex col gap=".5">
+                <b-text-divider ucase bold>Sizes</b-text-divider>
+                <b-text xs>Extra Small</b-text>
+                <b-text sm>Small</b-text>
+                <b-text>Normal</b-text>
+                <b-text md>Medium</b-text>
+                <b-text lg>Large</b-text>
+                <b-text xl>Extra Large</b-text>
+            </b-flex>
+
+            <b-flex col gap=".5">
+                <b-text-divider ucase bold>Weights</b-text-divider>
+                <b-text lighter>Lighter</b-text>
+                <b-text>Default</b-text>
+                <b-text semibold>Semi-bold</b-text>
+                <b-text bold>Bold</b-text>
+                <b-text xbold>Extra Bold</b-text>
+            </b-flex>
+
+            <b-flex col gap=".5">
+                <b-text-divider ucase bold>Accents</b-text-divider>
+                <b-text>Normal</b-text>
+                <b-text muted>Muted</b-text>
+                <b-text muted=1>Muted 1</b-text>
+                <b-text muted=2>Muted 2</b-text>
+                <b-text color="theme">Theme</b-text>
+                <b-text gradient>Theme Gradient</b-text>
+                <b-text gradient="reverse">Theme Gradient (Reverse)</b-text>
+            </b-flex>
+
+            <b-flex col stretch>
+                <b-text-divider ucase bold>Speciality</b-text-divider>
+
+                <b-text block>Normal text, Labore consectetur quis laborum elit. Aliqua officia dolore nisi minim eu voluptate. Irure proident exercitation esse sunt est in deserunt velit elit commodo. In ut dolor incididunt ex. Adipisicing duis cillum laborum ex dolor do commodo consequat quis cupidatat ea.</b-text>
+                
+                <b-text block body>Body text, Labore consectetur quis laborum elit. Aliqua officia dolore nisi minim eu voluptate. Irure proident exercitation esse sunt est in deserunt velit elit commodo. In ut dolor incididunt ex. Adipisicing duis cillum laborum ex dolor do commodo consequat quis cupidatat ea.</b-text>
+            </b-flex>
+
+            <b-flex col gap=".5">
+
+                <b-text-divider ucase bold>Other Variations</b-text-divider>
+
+                <div>
+                    <b-text bold>Bold</b-text> and <b-text italic>Italic</b-text>
+                </div>
+                
+                <div><b-text tone="critical" italic>Critical Italic</b-text>, <b-text tone="warning">Warning text</b-text>, and <b-text tone="info">Info text</b-text></div>
+                
+                <div>Text with<b-text xs sup>Super</b-text> Text with<b-text xs sub>sub</b-text></div>
+                
+                <div style="width:160px"><b-text clip>Text with clipping enabled</b-text></div>
+                
+                <div><b-text link>Link (hover me)</b-text></div>
+                
+                <div><b-text ucase>uppercase text</b-text>, <b-text lcase>LOWERCASE text</b-text>, and <b-text capitalize>capitalize text</b-text></div>
+
+            </b-flex>
+
+    </b-grid>
 
 </b-paper>
 
