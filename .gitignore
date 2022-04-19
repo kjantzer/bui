@@ -4,4 +4,3 @@ demo/dist
 .DS_Store
 .cache
 /public
-demo/elements/all-material-icons.js
