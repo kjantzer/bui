@@ -4,9 +4,23 @@
   "version": "2.0.0",
   "tasks": [
       {
-        "label": "🚀Start Demo",
+        "label": "🚀 Start Demo",
         "type": "shell",
         "command": "npm start",
+        "problemMatcher": [],
+        "group": {
+            "kind": "build",
+            "isDefault": true
+        },
+        "presentation": {
+            "reveal": "always",
+            "panel": "dedicated",
+        }
+    },
+    {
+        "label": "📃 Publish Pages",
+        "type": "shell",
+        "command": "npm run publish-pages",
         "problemMatcher": [],
         "group": {
             "kind": "build",
