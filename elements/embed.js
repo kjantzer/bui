@@ -14,6 +14,7 @@ customElements.define('b-embed', class Embed extends LitElement {
         :host {
             display: block;
             position:relative;
+            overflow: hidden;
         }
 
         :host([aspect="video"]) main {
