@@ -12,6 +12,7 @@ customElements.define('b-text-divider', class extends Text{
         :host {
             display: flex;
             align-items: center;
+            align-self: stretch;
             gap: .5em;
             position: relative;
         }
