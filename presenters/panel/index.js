@@ -541,7 +541,7 @@ export class Panel extends LitElement {
 
         this.panelController.add(this)
 
-        if( this.view.onRouteChange ){
+        if( this.view && this.view.onRouteChange ){
             if( args[0] && args[0].newState)
                 this.view.onRouteChange(args[0].oldState, args[0].newState, args[0].dir)
             else
@@ -824,6 +824,16 @@ export class Panel extends LitElement {
 
         .inlinehtml > * {
             pointer-events: all;
+        }
+
+        .inlinehtml > *:first-child {
+            border-top-left-radius: var(--radius);
+            border-top-right-radius: var(--radius);
+        }
+
+        .inlinehtml > *:last-child {
+            border-bottom-left-radius: var(--radius);
+            border-bottom-right-radius: var(--radius);
         }
 
         @media print {
