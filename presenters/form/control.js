@@ -60,6 +60,30 @@ class FormControlElement extends HTMLElement {
 		this._val = value.assignedNodes().map(el=>el.textContent.trim()).join(' ')
 		this._val = this._val.replace(/^\n|\n$/g, '').trim()
 		
+		this._setupControl()
+		
+		this.addEventListener('click', this._onClick.bind(this), true)
+		
+		this.addEventListener('change', this._onChange)
+
+		this.$$('slot').forEach(slot=>{
+			slot.addEventListener('slotchange', e=>{
+
+				// check the control to see if it was removed from slot
+				if( this.control && !this.control.parentElement ){
+					this._cleanupOldControl()
+					this._setupControl() // attempt to setup a new control
+				}
+
+				if( slot.assignedNodes().length == 0 )
+					slot.setAttribute('hidden', '')
+				else
+					slot.removeAttribute('hidden')
+			})
+		})
+	}
+
+	_setupControl(){
 		if( !this.control )
 			this.control = this.querySelector(CONTROLS)
 
@@ -67,6 +91,13 @@ class FormControlElement extends HTMLElement {
 			
 			this.control.slot = 'control'
 			this.setAttribute('control-type', this.control.tagName.toLowerCase())
+
+			MIRROR_CONTROL_ATTRS.forEach(attr=>{
+				if( this.control.hasAttribute(attr) )
+					this.setAttribute(attr, this.control.getAttribute(attr))
+				else
+					this.removeAttribute(attr)
+			})
 
 			this.mutationObserver = new MutationObserver(mutations=>{
 				mutations.forEach(m=>{
@@ -86,19 +117,12 @@ class FormControlElement extends HTMLElement {
 			if( this.control.tagName == 'INPUT' )
 				nativeInputHelper(this.control)
 		}
-		
-		this.addEventListener('click', this._onClick.bind(this), true)
-		
-		this.addEventListener('change', this._onChange)
+	}
 
-		this.$$('slot').forEach(slot=>{
-			slot.addEventListener('slotchange', e=>{
-				if( slot.assignedNodes().length == 0 )
-					slot.setAttribute('hidden', '')
-				else
-					slot.removeAttribute('hidden')
-			})
-		})
+	_cleanupOldControl(){
+		if( this.mutationObserver )
+			this.mutationObserver.disconnect()
+		this.control = null
 	}
 	
 	_onChange(e){
