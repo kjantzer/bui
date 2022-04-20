@@ -404,8 +404,8 @@ module.exports = class Model {
 
         if( !this.config.table ) throw Error('missing config.table')
 
-        this.encodeFields(attrs)
         let beforeAdd = await this.beforeAdd(attrs)
+        this.encodeFields(attrs) // NOTE: this moved to after ^, could cause problems with existing code
 
         if( !attrs || Object.keys(attrs).length == 0 )
             throw Error('no data to add')
