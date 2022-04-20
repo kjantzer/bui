@@ -12,6 +12,8 @@ const RESOLUTIONS = {
 
 export default class FileModel extends Model {
 
+    name = 'file'
+
     get displayURL(){ return this.url()+'?display' }
     get previewURL(){ return this.url()+'?display=preview' }
     get downloadURL(){ return this.url()+'?download' }
