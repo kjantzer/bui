@@ -81,7 +81,7 @@ customElements.define('b-file-manager', class extends LitElement{
         this.disableSorting()
 
         if( model && model.collection ){
-            await this.coll.fetchSync()
+            this.coll.fetchSync()
         }
     }
 
