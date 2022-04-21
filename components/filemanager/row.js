@@ -47,18 +47,6 @@ customElements.define('b-file-row', class extends LitElement{
             cursor: move;
         }
 
-        .res {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-        }
-
-        .pages, .duration {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-        }
-
         section {
             padding: 1rem;
             box-sizing: border-box;
@@ -151,18 +139,18 @@ customElements.define('b-file-row', class extends LitElement{
                     
                     ${this.model.isVideo?html`
                     
-                        <b-label filled="black" class="duration" xs>
+                        <b-label slot="top-right" filled="black" xs>
                             <b-timer time=${this.model.duration*1000}></b-timer>
                         </b-label>
 
-                        <b-label xs class="res" filled="black" ?hidden=${!this.model.resolution}>
+                        <b-label slot="top-left" xs filled="black" ?hidden=${!this.model.resolution}>
                             ${this.model.resolution}</b-label>
 
                     `:''}
 
                     ${this.model.isAudio?html`
                     
-                        <b-label filled="black" class="duration" xs>
+                        <b-label slot="top-right" filled="black" xs>
                             <b-timer time=${this.model.duration*1000}></b-timer>
                         </b-label>
 
@@ -170,7 +158,7 @@ customElements.define('b-file-row', class extends LitElement{
 
                     ${this.model.isImg?html`
                     
-                        <b-label filled="black" class="res" xs>
+                        <b-label filled="black" xs slot="top-left">
                             ${this.model.width}
                             &nbsp;<b-text muted=2>x</b-text>&nbsp;
                             ${this.model.height}
@@ -181,7 +169,7 @@ customElements.define('b-file-row', class extends LitElement{
 
                     ${this.model.isNonStandardDocument?html`
                     
-                        <b-label filled="black" class="res" xs>
+                        <b-label filled="black" xs slot="top-left">
                             ${this.model.width}
                             &nbsp;<b-text muted=2>x</b-text>&nbsp;
                             ${this.model.height}
@@ -191,7 +179,7 @@ customElements.define('b-file-row', class extends LitElement{
                     `:''}
 
                     ${this.model.isDocument?html`
-                    <b-label xs class="pages" filled="black" ?hidden=${!(this.model.pages>1)}>
+                    <b-label xs class="pages" filled="black" ?hidden=${!(this.model.pages>1)} slot="top-right">
                             ${this.model.pages} pages</b-label>
                     `:''}
 
@@ -199,7 +187,8 @@ customElements.define('b-file-row', class extends LitElement{
                         <b-btn text icon="format-color-fill" class="palette" @click=${this.viewPalette}></b-btn>
                     `:''}
 
-                    <slot name="preview">${this.renderPreviewContent()}</slot>                    
+                    ${this.renderPreviewContent()}
+                    <slot name="preview"></slot>
 
                 </b-file-preview>
 

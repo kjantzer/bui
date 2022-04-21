@@ -45,11 +45,44 @@ customElements.define('b-file-preview', class extends LitElement{
             opacity: 1;
             visibility: visible;
         }
+
+        slot[name] {
+            flex-wrap: wrap;
+            gap: 2px;
+            line-height: 0;
+            position: absolute;
+        }
+
+        [name="top-left"] {
+            top: 2px;
+            left: 2px;
+        }
+
+        [name="top-right"] {
+            top: 2px;
+            right: 2px;
+        }
+
+        [name="bottom-left"] {
+            bottom: 2px;
+            left: 2px;
+        }
+
+        [name="bottom-right"] {
+            bottom: 2px;
+            right: 2px;
+        }
+
     `}
 
     render(){return html`
         <slot></slot>
         <b-icon name="${this.icon||'search'}" @click=${this.onClick}></b-icon>
+
+        <slot name="top-left"></slot>
+        <slot name="top-right"></slot>
+        <slot name="bottom-left"></slot>
+        <slot name="bottom-right"></slot>
     `}
 
     onClick(){
