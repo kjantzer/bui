@@ -85,20 +85,20 @@ export default class UserAvatar extends LitElement {
         
         ${!this.model||this.model.id==0?html`
             
-            <b-avatar title="${this.model?this.model.name:''}"
+            <b-avatar title="${this.name}"
                 size=${this.getAttribute('size')||24}
                 initials="${this.fallback}" color="#555" bgd="#ddd"></b-avatar>
 
         `:this._model.get('avatar')?html`
             
-            <b-avatar title="${this._model.name}"
+            <b-avatar title="${this.name}"
                 size=${this.getAttribute('size')||24}
                 initials="${this.initials}"
                 url="${this._model.url+'/avatar?display=preview&id='+this._model.get('avatar')}"></b-avatar>
         
         `:html`
             
-            <b-avatar title="${this._model.name}"
+            <b-avatar title="${this.name}"
                 size=${this.getAttribute('size')||24}
                 initials="${this.initials}"
                 gravatar="${this._model.get('email_hash')}"></b-avatar>
@@ -124,6 +124,12 @@ export default class UserAvatar extends LitElement {
                     :this.model.get('name')
 
         return name
+    }
+
+    get name(){
+        let val = (this._model && this._model.name) || ''
+        if( typeof val == 'function' ) val = val.call(this._model)
+        return val
     }
 
     get initials(){
