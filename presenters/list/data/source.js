@@ -77,6 +77,12 @@ export default class DataSource {
             if( this.sorts )
                 data.sorts = this.sorts.value
 
+            if( this.opts.fetchData ){
+                let fetchData = this.opts.fetchData
+                if( typeof fetchData == 'string' ) fetchData = {[fetchData]:true}
+                data = Object.assign(fetchData, data)
+            }
+
             await this.coll.fetchSync({
                 data:data,
                 merge: true,
