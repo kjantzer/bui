@@ -50,7 +50,8 @@ export default class Comments extends Collection {
         if( !Backbone.$ ) return
 
         if( !this.group || !this.gid )
-            throw new Error('Missing group/ID')
+            return
+            // throw new Error('Missing group/ID')
 
         return super.fetch(...args)
     }
