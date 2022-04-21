@@ -47,6 +47,7 @@ customElements.define('b-file-preview', class extends LitElement{
         }
 
         slot[name] {
+            display: inline-flex;
             flex-wrap: wrap;
             gap: 2px;
             line-height: 0;
