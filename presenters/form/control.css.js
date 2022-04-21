@@ -118,6 +118,11 @@ slot[name="suffix"]::slotted(form-control) {
 	pointer-events: all;
 }
 
+slot[name="prefix"]::slotted(b-btn),
+slot[name="suffix"]::slotted(b-btn) {
+	pointer-events: all;
+}
+
 slot[name="prefix"]::slotted(b-icon) {
 	margin-right: .25em;
 }
@@ -394,6 +399,11 @@ slot[name="help"] {
 	border-bottom-color: var(--borderColor);
 }
 
+:host([note]:not([empty])) {
+	background: var(--b-paper-postit-bgd, var(--amber-100));
+	padding: .5em;
+	--selectionBgd: white;
+}
 
 /*
 	Material Outline
