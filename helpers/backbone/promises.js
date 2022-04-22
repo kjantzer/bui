@@ -10,10 +10,10 @@ const fetchSync = function(opts={}){
     if( this.__fetchSyncPromise ) return this.__fetchSyncPromise
 
     if( opts.once && this.hasFetched )
-        return
+        return Promise.resolve()
 
     if( opts.stale && this.hasFetched && new Date().getTime() - this.hasFetched < opts.stale )
-        return 
+        return Promise.resolve()
 
     if( this.filters && !(this.filters instanceof Map) ){
 
