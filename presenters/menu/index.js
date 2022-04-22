@@ -237,6 +237,17 @@ export default class Menu {
 			this.__selected.splice(index, 1)
 			return false
 		}else{
+
+			// remove any items marked as "clearsAll"
+			this.__selected = this.__selected.filter(item=>{
+				if( item.clearsAll ){
+					item.selected = false
+					let checkbox = this.el.querySelector(`[index="${item.index}"] check-box`)
+					if( checkbox ) checkbox.hidden = true
+				}
+				return !item.clearsAll
+			})
+
 			item.selected = true
 			this.__selected.push(item)
 			return true
