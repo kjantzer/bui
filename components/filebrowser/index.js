@@ -56,7 +56,7 @@ customElements.define('b-filebrowser', class extends RoutedView{
 
     load(id, attrs, state){        
         this.coll.path = state.params._ || []
-        this.list.refresh()
+        if( this.list ) this.list.refresh()
         this.route.update({
             title: this.constructor.title+': '+this.coll.pathString
         })
@@ -67,7 +67,7 @@ customElements.define('b-filebrowser', class extends RoutedView{
         <b-list
             key="${this.key}"
             row="${this.row}"
-            .listOptions=${{fetchOnLoad: false}}
+            .listOptions=${{_fetchOnLoad: false}}
             .sorts=${sorts}
             .filters=${this.filters}
             .coll=${this.coll}
