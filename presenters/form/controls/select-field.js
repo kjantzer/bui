@@ -196,10 +196,13 @@ class SelectFieldElement extends HTMLElement {
 	get showEmpty(){ return this.hasAttribute('show-empty') }
 	
 	get value(){
-		if( this.multiple )
-			return this.selected && this.selected.map(m=>m.val)
-		else
-			return this.selected && this.selected.val
+		let selected = this.selected
+		if( this.multiple ){
+			if( selected && selected.length == 1 && (selected[0].val===''||selected[0].val==null) )
+				return null
+			return selected && selected.map(m=>m.val)
+		}else
+			return selected && selected.val
 	}
 	
 	set value(val){
@@ -207,8 +210,7 @@ class SelectFieldElement extends HTMLElement {
 	}
 	
 	get isEmpty(){
-		let val = this.value
-		return this.multiple ? val.length <= 1 && !val[0] : !val
+		!this.value
 	}
 	
 	set isInvalid(invalid){
