@@ -360,8 +360,12 @@ module.exports = class Model {
         for( let relation in related ){
 
             let relationOpts = related[relation]
+            let shouldInclude = relationOpts.with || _with == 'related' || (_with && _with[relation] != undefined)
             
-            if( relationOpts.with || _with == 'related' || (_with && _with[relation] != undefined) ){
+            if( typeof shouldInclude == 'function' )
+                shouldInclude = shouldInclude(row, opts)
+            
+            if( shouldInclude ){
 
                 try{
                 let RelatedModel = row[relation]
