@@ -87,7 +87,9 @@ customElements.define('b-comments', class extends LitElement{
     get model(){ return this._model }
 
     shouldUpdate(changedProps){
-        if( changedProps.get('group') != undefined || changedProps.get('gid') != undefined ){
+        if( changedProps.get('group') != undefined 
+        || changedProps.get('gid') != undefined 
+        || (this.gid && this.gid != changedProps.get('gid') )){
             
             this.unbindListeners()
             this.coll.realtimeSync.close()
@@ -107,16 +109,13 @@ customElements.define('b-comments', class extends LitElement{
 
     get coll(){
         this.__coll = this.__coll || new Coll({group: this.group, gid: this.gid})
-        this.__coll.gid = this.gid
-        this.__coll.group = this.group
         return this.__coll
     }
 
     firstUpdated(){
         
         this.intersectionObserver = new IntersectionObserver((entries)=>{
-
-            this.inViewport = entries[0].isIntersecting
+            this.inViewport = !!entries.find(e=>e.isIntersecting)
             if( !this.inViewport ) return
             this.refresh()
         });
