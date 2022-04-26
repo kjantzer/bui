@@ -142,10 +142,29 @@ export class UploaderElement extends LitElement {
         }
     }
 
+    getParentElement(){
+        let parent = this.parentElement || this.getRootNode().host
+        let target = parent
+
+        // the parent we care about is the one with relative/absolute position
+        while(parent){
+
+            target = parent
+            let {position} = window.getComputedStyle(target)
+            
+            if( ['relative', 'absolute'].includes(position) )
+                return target
+            
+            parent = target.parentElement
+        }
+
+        return target
+    }
+
     connectedCallback(){
         super.connectedCallback();
         if( this.parent ) return
-        this.parent = this.parentElement || this.getRootNode().host
+        this.parent = this.getParentElement()
         this.parent.addEventListener('dragenter', this.dragenter, true)
         this.addEventListener('dragleave', this.dragleave, true)
         this.addEventListener('dragover', this.dragover, true)
@@ -238,6 +257,14 @@ export class UploaderElement extends LitElement {
 
         if( this.autoUpload && this.url ){
             this.upload()
+        }
+    }
+
+    removeFile(file){
+        let i = this.files.indexOf(file)
+        if( i > -1 ){
+            this.files.splice(i, 1)
+            this.emitEvent('change', {invalid: false})
         }
     }
 
