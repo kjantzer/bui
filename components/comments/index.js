@@ -23,6 +23,7 @@ customElements.define('b-comments', class extends LitElement{
         limit: {type: Number},
         placeholderBtn: {type: String},
         placeholder: {type: String},
+        uploads: {type: Object},
         replies: {type: Boolean} // not supported yet
     }}
 
@@ -105,7 +106,10 @@ customElements.define('b-comments', class extends LitElement{
     }
 
     get coll(){
-        return this.__coll = this.__coll || new Coll({group: this.group, gid: this.gid})
+        this.__coll = this.__coll || new Coll({group: this.group, gid: this.gid})
+        this.__coll.gid = this.gid
+        this.__coll.group = this.group
+        return this.__coll
     }
 
     firstUpdated(){
@@ -164,6 +168,7 @@ customElements.define('b-comments', class extends LitElement{
             part="write-comment" 
             .coll=${this.coll} 
             .meta=${this.meta}
+            .uploads=${this.uploads}
             placeholderBtn=${this.placeholderBtn}
             placeholder=${this.placeholder}
         ></b-comment-row>

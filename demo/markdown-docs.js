@@ -84,7 +84,10 @@ customElements.define('demo-markdown-docs', class extends LitElement{
                     <span class="header-link"></span>
                 </a>
                 ${text}
-                </${tag}>`;
+                </${tag}>
+                ${level==1?`
+                <slot name="${slug}"></slot>
+                `:''}`;
         };
 
         this.content = marked(this.docs, {renderer})
@@ -145,11 +148,13 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             min-width: 0;
         }
 
-        :host > main > h1:first-of-type {
+        :host > main > h1:first-of-type,
+        :host > main > [header="h1"]:first-of-type {
             display: none;
         }
 
-        :host > main > h1:first-of-type + * {
+        :host > main > h1:first-of-type + *,
+        :host > main > [header="h1"]:first-of-type + * {
             margin-top: 0;
         }
 

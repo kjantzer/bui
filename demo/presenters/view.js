@@ -15,10 +15,8 @@ customElements.define('demo-view', class extends LitElement{
             padding: var(--view-gutter);
         }
 
-        b-h1 {
-            border-bottom: solid 4px var(--theme-bgd-accent);
-            padding-bottom: .15em;
-            margin-bottom: 1em;
+        b-paper > b-text-divider {
+            margin-bottom: var(--gutter);
         }
     `}
 
@@ -27,7 +25,7 @@ customElements.define('demo-view', class extends LitElement{
 
     render(){return html`
         <b-paper>
-            <b-h1>${this.viewTitle||this.tabView.title}</b-h1>
+            <b-text-divider bottom thick xbold xl heading>${this.viewTitle||this.tabView.title}</b-text-divider>
             
             ${this.renderContent()}
             

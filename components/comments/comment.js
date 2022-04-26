@@ -7,6 +7,7 @@ import '../../elements/ts'
 import '../../elements/new-badge'
 import '../../elements/hr'
 import '../../elements/btn'
+import './file'
 
 let avatarTag
 let nameTag
@@ -181,6 +182,9 @@ customElements.define('b-comment-row', class extends LitElement {
             font-weight: bold;
         }
 
+        .files > *:first-child { margin-top: .25em; }
+        .files > *:last-child { margin-bottom: .25em; }
+
     `, styles]}
 
     renderAvatar(){
@@ -258,6 +262,12 @@ customElements.define('b-comment-row', class extends LitElement {
                     <section class="comment ProseMirror" @dblclick=${this.beginEditing}>${unsafeHTML(this.model.get('comment'))}</section>
                 `}
 
+                <b-flex col gap=".25" class="files" stretch>
+                ${this.model.get('files').map(file=>html`
+                    <b-comment-file draggable="true" .model=${file} layout="mini-row"></b-comment-file>
+                `)}
+                </b-flex>
+
                 ${this.replies?html`
                     <b-comments class="replies" group="thread" gid=${this.model.id}></b-comments>
                 `:''}
@@ -279,7 +289,7 @@ customElements.define('b-comment-row', class extends LitElement {
 
             ${this.renderAvatar()}
 
-            <b-write-comment .coll=${this.coll} .meta=${this.meta} auto-focus
+            <b-write-comment .coll=${this.coll} .meta=${this.meta} .uploads=${this.uploads} auto-focus
                 placeholder=${this.placeholder}
                 @saved=${this.doneEditing}
                 @canceled=${this.doneEditing}></b-write-comment>

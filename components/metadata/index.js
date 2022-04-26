@@ -49,7 +49,7 @@ customElements.define('b-metadata', class extends LitElement{
     }
 
     get data(){
-        return this.model.get(this.attr) || {}
+        return this.model?.get(this.attr) || {}
     }
 
     render(){return html`

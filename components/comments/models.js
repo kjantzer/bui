@@ -3,6 +3,7 @@ import sync, {syncBackboneCollection} from '../../realtime/client/sync'
 import '../../helpers/day-js'
 import '../../helpers/backbone/promises'
 import {summarize} from './util'
+import FileModel from '../filemanager/model'
 
 let API_ROOT = '/api'
 let User = window.User
@@ -67,6 +68,10 @@ class Comment extends Model {
         ts_created: 'date',
         ts_updated: 'date',
         ts_read: 'date'
+    }}
+
+    get collections(){return {
+        files: CommentFiles
     }}
 
     get isByMe(){ return userID() == this.get('uid')}
@@ -144,4 +149,10 @@ export function markCommentRead(model){
         ReadComments.clear()
 
     }, 1000);
+}
+
+
+class CommentFiles extends Collection {
+    get url(){ return this.parentModel.url()+'/files' }
+    get model(){ return FileModel}
 }

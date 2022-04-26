@@ -25,12 +25,19 @@ customElements.define('demo-components', class extends LitElement{
 
     render(){return html`
         <b-tabs-router path="components/" key="components" layout="left" >
+            
             <div title="About">
                 <b-paper>
-                    <b-h1>Components</b-h1>
+                    <b-text-divider bottom thick>
+                        <b-text gradient xbold xxl>Components</b-text>
+                    </b-text-divider>
+                    <br>
+                    
                     <demo-markdown-docs notoc .docs=${docs}></demo-markdown-docs>
+
                 </b-paper>
             </div>
+
             demo-presenter-search
             demo-components-comments
             demo-components-filemanager

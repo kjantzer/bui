@@ -1,11 +1,15 @@
 const Model = require('../../../server/model')
 const {summarize} = require('../util')
+const Files = require('./files')
 
 let PushMsg
 
 module.exports = class Comments extends Model {
 
     static set PushMsg(val){ PushMsg = val }
+    static set FileOpts(val){
+        Files.opts = val
+    }
 
     static forModel(model, group=null){
         return new Comments({
@@ -23,6 +27,10 @@ module.exports = class Comments extends Model {
         routes: [
             ['get', '/:id?', 'find'],
             ['post', '', 'add'],
+            
+            ['get', '/:id/files/:fileid?', 'findFiles'],
+            ['post', '/:id/files', 'uploadFile'],
+            
             ['put', '/:id', 'update'],
             ['patch', '/:id', 'update'],
             ['delete', '/:id', 'destroy'],
@@ -31,6 +39,21 @@ module.exports = class Comments extends Model {
         ],
         sync: true
     }}
+
+    static related = {
+        files: {
+            relatedID: 'parent_id',
+            model: __dirname+'/files', 
+            getAttrs(){return {
+                id: this.fileid,
+                parent_id: this.id,
+                parent_group: this.group,
+                gid: this.gid
+            }},
+            // auto include files with this model if it has files
+            with(row){ return row.attrs.meta?.files }
+        }
+    }
 
     get config(){ return {
         table: 'comments',
@@ -134,6 +157,13 @@ module.exports = class Comments extends Model {
 
     async destroy(...args){
 
+        if( this.id ){
+            let files = await this.files.find()
+            for( let file of files ){
+                await file.destroy()
+            }
+        }
+
         // delete all comments for a group/gid
         if( !this.id && this.group && this.gid ){
             return await this.db.q(/*sql*/`DELETE FROM ${this.config.table} 
@@ -156,5 +186,40 @@ module.exports = class Comments extends Model {
         this.db.bulkInsert('comment_reads', rows)
 
         new Comments({group: '_', gid: 'unread'}).syncData({ids})
+    }
+
+    findFiles(){
+        return this.files.find()
+    }
+
+    async uploadFile(){
+
+        await this.find()
+        let file = await this.files.upload()
+        
+        let meta = this.attrs.meta
+        meta.files = meta.files || []
+
+        meta.files.push(file.id)
+
+        await this.update({meta}, {manualSync: true})
+
+        // in case uploading more than one file, we need to sync all files
+        this.files.id = null
+        let files = await this.files.find()
+
+        this.syncData({
+            action: 'update',
+            attrs: {
+                id: this.id,
+                files
+            },
+            method: this.req.method,
+            url: this.apiPath
+        },{
+            toClients: this.req.path==this.syncPath ? null : 'all'
+        })
+
+        return file
     }
 }

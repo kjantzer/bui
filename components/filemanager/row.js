@@ -63,9 +63,13 @@ customElements.define('b-file-row', class extends LitElement{
             grid-template-columns: auto 1fr;
         }
 
-        :host([layout="mini-row"]) img {
+        :host([layout="mini-row"]) b-file-preview {
             border-radius: var(--radius) 0 0 var(--radius);
             width: 6em;
+        }
+
+        :host([layout="mini-row"]) .drag-msg {
+            font-size: 1em;
         }
 
         .palette {
@@ -139,18 +143,18 @@ customElements.define('b-file-row', class extends LitElement{
                     
                     ${this.model.isVideo?html`
                     
-                        <b-label slot="top-right" filled="black" xs>
+                        <b-label slot="top-right" filled="black" xs part="duration">
                             <b-timer time=${this.model.duration*1000}></b-timer>
                         </b-label>
 
-                        <b-label slot="top-left" xs filled="black" ?hidden=${!this.model.resolution}>
+                        <b-label slot="top-left" xs filled="black" part="resolution" ?hidden=${!this.model.resolution}>
                             ${this.model.resolution}</b-label>
 
                     `:''}
 
                     ${this.model.isAudio?html`
                     
-                        <b-label slot="top-right" filled="black" xs>
+                        <b-label slot="top-right" filled="black" xs part="duration">
                             <b-timer time=${this.model.duration*1000}></b-timer>
                         </b-label>
 
@@ -158,7 +162,7 @@ customElements.define('b-file-row', class extends LitElement{
 
                     ${this.model.isImg?html`
                     
-                        <b-label filled="black" xs slot="top-left">
+                        <b-label filled="black" xs slot="top-left" part="size">
                             ${this.model.width}
                             &nbsp;<b-text muted=2>x</b-text>&nbsp;
                             ${this.model.height}
@@ -169,7 +173,7 @@ customElements.define('b-file-row', class extends LitElement{
 
                     ${this.model.isNonStandardDocument?html`
                     
-                        <b-label filled="black" xs slot="top-left">
+                        <b-label filled="black" xs slot="top-left" part="size">
                             ${this.model.width}
                             &nbsp;<b-text muted=2>x</b-text>&nbsp;
                             ${this.model.height}
@@ -179,12 +183,8 @@ customElements.define('b-file-row', class extends LitElement{
                     `:''}
 
                     ${this.model.isDocument?html`
-                    <b-label xs class="pages" filled="black" ?hidden=${!(this.model.pages>1)} slot="top-right">
+                    <b-label xs class="pages" filled="black" ?hidden=${!(this.model.pages>1)} slot="top-right" part="pages">
                             ${this.model.pages} pages</b-label>
-                    `:''}
-
-                    ${this.palette&&this.model.traits.palette?html`
-                        <b-btn text icon="format-color-fill" class="palette" @click=${this.viewPalette}></b-btn>
                     `:''}
 
                     ${this.renderPreviewContent()}

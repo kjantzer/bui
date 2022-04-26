@@ -68,6 +68,7 @@ module.exports = class API {
         let fnName = args.pop()
         let opts = {}
 
+        // api function should generally be last arg, but an "options" object could be last
         if( typeof fnName == 'object' ){
             opts = fnName
             fnName = args.pop()

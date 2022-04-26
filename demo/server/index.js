@@ -2,6 +2,8 @@ import { LitElement, html, css } from 'lit-element'
 import './db'
 import './api'
 import './realtime'
+import './model'
+import './filemanager'
 
 customElements.define('demo-server', class extends LitElement{
 
@@ -23,6 +25,8 @@ customElements.define('demo-server', class extends LitElement{
         <b-tabs-router path="server/" key="server" layout="left" >
             demo-server-db
             demo-server-api
+            demo-server-model
+            demo-server-filemanager
             demo-server-realtime
         </b-tabs-router>
     `}

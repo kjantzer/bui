@@ -1,6 +1,8 @@
 Comments
 ============
 
+# Client
+
 Allows for realtime comments to be added to any view/section. Comments are grouped under a "group" and "ID" for that group (`gid`)
 
 ## Setup
@@ -80,6 +82,19 @@ You can give the comment a model and the `GID` and `Meta` will be set using that
 <b-comments group="book" .model=${this.model}></b-comments>
 ```
 
+## File Attachments
+Comments can support attaching files with the `.uploads` option. When writing a new comment, files can be dropped onto the input to attach. The file(s) will be uploaded when the comment is submitted.
+
+```html
+<b-comments 
+	group="book" 
+	.model=${this.model}
+	.uploads=${true}
+></b-comments>
+```
+
+> In the future, `.uploads` may support a hash of options such as `.uploads=${{accept:".pdf"}}`
+
 ## Styling
 
 ### Parts
@@ -110,22 +125,66 @@ b-comment::part(comment) {
 
 > See `helpers/lit/will-take-action` for usability
 
-## Server Model
+***
+
+# Server
+
 ```js
 const Comments = require(bui`components/comments/server/model`)
-
-// Optionally add a PushMsg class that will be intialized when a new comment is added
-// Comments.PushMsg = PushMsg
-
-// or subclass with own logic
-// class MyComments extends Comments(){
-// 	sendPushMsg(){ /* implement own logic */}
-// }
 
 // add class to your API init
 new API(app, [
 	Comments
 ], {root: '/api'})
+```
+
+## Push Messages
+
+Comments support a push msg hook for when new comments are added. By default, nothing happens. Add a `PushMsg` class to enable this feature.
+
+```js
+const Comments = require(bui`components/comments/server/model`)
+
+Comments.PushMsg = class PushMsg {
+	constructor(msgData){
+		this.msgData = msgData
+	}
+
+	sendTo(mentions){
+		// send msgData to each mention
+	}
+}
+```
+
+Whenever a new comment is added, the PushMsg class will be inoked as so:
+
+```js
+new PushMsg(msg).sendTo(mentions)
+```
+
+Alternatively, you can subclass the comments class to override the `sendPushMsg`
+
+```js
+or subclass with own logic
+class MyComments extends Comments(){
+	sendPushMsg(){
+		let {comment_plain, meta} = this.attrs
+		let {mentions} = meta
+		/* implement own logic */
+	}
+}
+```
+
+## Files
+Comments can support uploaded attachments. You can override the default upload location if desired:
+
+```js
+const Comments = require(bui`components/comments/server/model`)
+
+Comments.FileOpts = {
+	ASSETS_PATH: '/mnt/data', // default
+	dirRoot: 'attachments' // default is ''
+}
 ```
 
 ## Notes

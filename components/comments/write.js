@@ -5,6 +5,7 @@ import '../../presenters/form/controls/text-editor'
 import '../../helpers/lit/will-take-action'
 import device from '../../util/device'
 import mobileAsyncFocus from '../../util/mobileAsyncFocus'
+import '../../elements/uploader-preview'
 
 let extensions = []
 let MENTION_TAG
@@ -25,7 +26,8 @@ customElements.define('b-write-comment', class extends LitElement{
     }
 
     static get properties(){return {
-        placeholder: {type: String}
+        placeholder: {type: String},
+        uploads: {type: Object}
     }}
 
     constructor(){
@@ -37,6 +39,7 @@ customElements.define('b-write-comment', class extends LitElement{
         :host {
             display: block;
             position:relative;
+            min-width: 0;
         }
 
         form-handler {
@@ -62,6 +65,10 @@ customElements.define('b-write-comment', class extends LitElement{
             /* padding-top: 0; */
             /* align-self: flex-end; */
         }
+
+        b-uploader-preview {
+            margin-top: .25em;
+        }
     `}
 
     render(){return html`
@@ -77,6 +84,12 @@ customElements.define('b-write-comment', class extends LitElement{
 
                 <b-btn sm color="theme" @click=${this.save} icon="${this.coll?'send':'ok'}" slot="suffix"></b-btn>
             </form-control>
+
+            ${this.model||!this.uploads?'':html`
+            <b-uploader-preview>
+                <b-uploader multiple placeholder="Drop to attach"></b-uploader>
+            </b-uploader-preview>
+            `}
 
         </form-handler>
     `}
@@ -119,7 +132,7 @@ customElements.define('b-write-comment', class extends LitElement{
         this.emitEvent('canceled', {model: this.model})
     }
 
-    save(){
+    async save(){
         let {comment} = this.formHandler.values
         
         if( !comment ) return
@@ -142,7 +155,21 @@ customElements.define('b-write-comment', class extends LitElement{
         if( this.model ){
             this.model.saveSync({comment, comment_plain, meta}, {patch: true})
         }else{
-            this.coll.createSync({comment, comment_plain, meta}, {wait: true})   
+            let [model] = await this.coll.createSync({comment, comment_plain, meta}, {wait: true})
+            let uploader = this.$$('b-uploader')
+
+            // upload any files attached; realtime sync will push the file data to all clients (including this one)
+            if( uploader && uploader.files.length > 0 ){
+                let resp = await uploader.upload({url: model.url()+'/files'})
+
+                // if upload failed, delete the saved comment and display error
+                // the typed comment will still be in the "write comment" box so nothing is lost
+                if( !resp || resp.error ){
+                    await model.destroySync()
+                    throw new UIError(resp.error||'Hmm...upload error')
+                }
+            }
+            
             this.formHandler.values = {comment:''}
         }
 
