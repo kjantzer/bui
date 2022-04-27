@@ -210,7 +210,7 @@ class SelectFieldElement extends HTMLElement {
 	}
 	
 	get isEmpty(){
-		!this.value
+		return !this.value
 	}
 	
 	set isInvalid(invalid){
