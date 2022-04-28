@@ -29,6 +29,7 @@ module.exports = class Model {
                         FROM ${this.config.table} ${this.config.tableAlias||''}
                         ${join||''}
                         ${where}
+                        ${this.findGroupBy()}
                         ${this.findOrderBy()}
                         ${this._findLimit(limit)}`
     }
@@ -50,6 +51,11 @@ module.exports = class Model {
     findOrderBy(){
         let orderBy = this.config.orderBy
         return  orderBy ? `ORDER BY ${orderBy}` : ''
+    }
+
+    findGroupBy(){
+        let groupBy = this.config.groupBy
+        return  groupBy ? `GROUP BY ${groupBy}` : ''
     }
 
     findParseRow(row, index, resultCount, resp){
