@@ -40,9 +40,10 @@ Options passed along to the infinite-list
 listOptions = {
     fetch: true, // true,false, 'more'
     fetchOnLoad: true,
+    fetchData: null, // optionally add more data to each fetch request
     perPage: 30,
     layouts: null // see below for details
-    grid: null
+    grid: null,
 }
 ```
 
