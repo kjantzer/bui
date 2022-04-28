@@ -152,7 +152,7 @@ customElements.define('b-text', class extends LitElement{
         }
 
         /* Inter font feature */
-        :host([tnum]) { font-feature-settings: 'tnum';}
+        :host([tnum]) { font-feature-settings: 'tnum', 'ss01', 'ss02', 'ss03';}
 
         :host([sub]) {
             vertical-align: sub;
