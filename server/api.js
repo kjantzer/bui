@@ -29,10 +29,10 @@ module.exports = class API {
 
     initClassAPI(Class){
         if( !Class.name )
-            return console.warn('! API: not a valid class')
+            return console.warn('! API: not a valid class', Class)
 
         if( !Class.api || !Class.api.routes )
-            return console.warn('! API: class must specify `api.routes`')
+            return console.warn('! API: class `'+Class.name+'` must specify `api.routes`')
 
         let path = Class.api.root
         if( this.opts.root )
