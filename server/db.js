@@ -39,32 +39,63 @@ module.exports = class DB {
         })
     }
 
-    query(sql, data, {timeout=30000, debug=false, logFailure=false}={}){
-		return new QueryPromise((resolve, reject)=>{
+    query(sql, data, {timeout=30000, debug=false, logFailure=false, preSql=null}={}){
+		return new QueryPromise(async (resolve, reject)=>{
 
 			sql = mysql.format(sql, data)
 
             if( debug )
                 console.log(sql);
 
-            // gets connection, queries, then releases connection
-			this.pool.query({sql, timeout}, (err, results, fields)=>{
-				if( err ){
-                    if( logFailure )
-					    console.info('QUERY FAILED: '+sql);
-                    err.lastQuery = sql
-					reject(err)
-                    return
+            let conn = await this.getConnection()
+
+            try{
+
+                if( preSql ){
+
+                    if( typeof preSql == 'String')
+                        preSql = [preSql]
+
+                    preSql = preSql.filter(sql=>typeof sql == 'string')
+
+                    // run each presql query
+                    for( let sql of preSql ){
+                        await new Promise((resolve, reject)=>{
+                            conn.query({sql, timeout}, (err, results, fields)=>{
+                                if( err ) return reject(err)
+                                resolve(results)
+                            })
+                        })
+                    }
                 }
 
-                if( Array.isArray(results) ){
-                    results = DBResults.loadLargeArray(results)
-                }
+                // now run the main query on the same connection (in case preSql created some temp tables)
+                await conn.query({sql, timeout}, (err, results, fields)=>{
+                    if( err ){
+                        if( logFailure )
+                            console.info('QUERY FAILED: '+sql);
+                        err.lastQuery = sql
+                        reject(err)
+                        return
+                    }
 
-                results.fromQuery = sql
+                    if( Array.isArray(results) ){
+                        results = DBResults.loadLargeArray(results)
+                    }
 
-                resolve(results)
-			})
+                    results.fromQuery = sql
+
+                    resolve(results)
+                })
+
+                conn.release()
+
+            }catch(err){
+                // make sure we release the connection, even if failed
+                conn.release()
+                throw err
+            }
+
 		})
 	}
 
