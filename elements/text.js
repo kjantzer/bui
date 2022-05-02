@@ -103,8 +103,10 @@ customElements.define('b-text', class extends LitElement{
         :host([color="red"]) { color: var(--red, red); }
         :host([color="orange"]) { color: var(--orange, orange); }
         :host([color="blue"]) { color: var(--blue, blue); }
-        :host([color="green"]) { color: var(--green, blue); }
-        :host([color="purple"]) { color: var(--deep-purple, blue); }
+        :host([color="green"]) { color: var(--green, green); }
+        :host([color="purple"]) { color: var(--deep-purple, purple); }
+        :host([color="pink"]) { color: var(--pink, pink); }
+        :host([color="brown"]) { color: var(--brown, brown); }
 
         :host([gradient]) {
             background-image: var(--theme-gradient,var(--theme-text, #000));
