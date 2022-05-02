@@ -5,6 +5,8 @@ const defaultConfig = {
     idAttribute: 'id'
 }
 
+// const TempTablesCache = {}
+
 module.exports = class Model {
 
     // DEPRECATED
@@ -300,13 +302,19 @@ module.exports = class Model {
         let sql = this.findSql(where, opts)
         if( typeof sql != 'string' ) return sql
 
-        let resp = await this.db.query(sql, clauseValues)
+        if( opts.returnSql )
+            return this.db.format(sql, clauseValues)
+            
+        let resp = await this.db.query(sql, clauseValues, {preSql:opts.preSql})
 
         // parse each row (for decoding JSON strings, etc)
         await Promise.series(resp, (row,i)=>{
             this.decodeFields(row)
             return this.findParseRow(row, i, resp.length, resp, opts)
         })
+
+        // filter out null values that `findParseRow` may have cleared
+        resp = resp.filter(r=>r)
 
         // might need to activate this if too  many conflicts
         let convertToObject = true//this.config.resultsAsObject == true

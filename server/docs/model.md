@@ -1,6 +1,6 @@
 # Model
 
-## Setup
+# Setup
 Models are generally only useful if they can query the database
 
 ```js
@@ -9,7 +9,7 @@ const Model = require('bui/server/model')
 Model.db = requre('./my-db-class')
 ```
 
-## Define
+# Example
 ```js
 const Model = require('bui/server/model')
 
@@ -96,7 +96,104 @@ module.exports = class MyModel extends Model {
 }
 ```
 
-## Related
+# Methods
+
+### `find()`
+```js
+find(where, opts){}
+```
+
+#### opts.returnSql
+Returns the formatted SQL query that _would_ be run
+
+#### opts.with
+See "related" feature below
+
+#### opts.preSql
+One or more SQL queries to run before the main find query. Can be used to create a temp table that the main query will run
+
+### `findSql()`
+Defines the default query. Uses the `config.table`. Before overrrides this, see about using `findJoins`
+
+### `findJoins()`
+This can be used to hook into the default `findSql` method to join with more tables and optionally select more data.
+
+```js
+findJoins(){
+    // simple join with no extra data selected
+    return 'JOIN some_table ON...'
+}
+
+findJoins(){
+    return [
+        'some_table.field_name', // select more data
+        'JOIN some_table' // table join
+    ]
+}
+```
+
+### `findParseRow()`
+Use this hook to parse the data from the DB query (before it is converted into classes)
+
+### `findExtendRowData()`
+Default extends data with any requested "related" data. The data at this stage are in model/class form.
+
+### `add()`
+```js
+async add(attrs={}, {
+    manualSync=false, 
+    updateDuplicates=true, 
+    ignoreDuplicates=false
+}={})
+```
+
+#### updateDuplicates
+Default query is set to update records on duplicate found
+
+#### igoreDuplicates
+Set to `true` to ignore and stop errors from being thrown
+
+#### opts.manualSync
+Data with be synced via realtime if `config.sync =true` is. If you do not want this to happen, change `manualSync` to false. The method response will change to `{resp, syncData}` where `syncData` is a function that can be called to sync the data (optional)
+
+### `beforeAdd()`
+
+```js
+async beforeAdd(attrs){ /* noop */ }
+```
+
+### `afterAdd()`
+```js
+afterAdd(attrs, beforeAddResp){ /* noop */ }
+```
+
+`beforeAddResp` will be set if `beforeAdd` returns anything
+
+### `beforeUpdate()`
+```js
+async beforeUpdate(attrs){ /* noop */ }
+```
+
+### `afterUpdate()`
+```js
+afterUpdate(attrs, beforeUpdateResp){ /* noop */ }
+```
+
+If `beforeUpdate` returns any data, it will be accessible in `beforeUpdateResp`
+
+### `beforeDestroy()`
+```js
+async beforeDestroy(where, ...args){ /* noop */ }
+```
+
+### `afterDestroy()`
+```js
+async afterDestroy(result, ...args){ /* noop */ }
+```
+
+`result` = the DB response after the delete. For example: `result.affectedRows`
+
+# Related
 
 The model class now supports "related" models
 
