@@ -576,7 +576,8 @@ customElements.define('b-list', class extends LitElement {
     }
 
     get shouldFetchData(){
-        return this.dataSource.hasFetched || this.listOptions&&this.listOptions.fetchOnLoad
+        // fetchOnLoad defaults to true for infinite list
+        return this.dataSource.hasFetched || this.listOptions?.fetchOnLoad !== false
     }
 
     set term(term){
