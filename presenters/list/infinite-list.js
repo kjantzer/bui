@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import '../../elements/empty-state'
+import './fetching-content'
 
 customElements.define('b-infinite-list', class extends LitElement {
 
@@ -37,6 +38,7 @@ customElements.define('b-infinite-list', class extends LitElement {
         this.pageAt = 0
         this.scrollTop = 0
         this.prevModel = null
+        this.contentDone = false
         
         if( andLoadContent )
             await this.getContent({clear:true})
@@ -68,7 +70,20 @@ customElements.define('b-infinite-list', class extends LitElement {
         this._fetching = true
         this._fetchFailed = false
         try{
+
+            // TODO: allow for custom fetching more view?
+            let fetchingMoreMsg = document.createElement('b-list-fetching-content-row')
+            fetchingMoreMsg.msg = pageAt == 0 ? 'Fetching data...' : 'Fetching more...'
+            this.appendChild(fetchingMoreMsg)
+
             let models = await this.dataSource.fetch(pageAt)
+
+            fetchingMoreMsg.remove()
+
+            // if no more content was found, flag it so we dont keep attempting to load more data
+            if( models.length == 0 )
+                this.contentDone = true
+
             this.addContent(models, {clear:clear})
         }catch(err){
             this._fetchFailed = err
@@ -125,7 +140,8 @@ customElements.define('b-infinite-list', class extends LitElement {
     }
 
     checkNotEnoughContent(){
-        if( this.offsetHeight > 0 && this.scrollHeight <= this.offsetHeight ){
+        // if view has a height, and it's bigger (or same) as the scroll height, attempt to get more content
+        if( !this.contentDone && this.offsetHeight > 0 && this.scrollHeight <= this.offsetHeight ){
             this.getContent()
         }
     }
