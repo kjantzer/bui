@@ -40,8 +40,8 @@ dayjs.prototype.format = function(...args){
     return DayJsFormat.call(this, ...args)
 }
 
-dayjs.prototype.sortValue = function(invalidAddition=9){
-    if (!this.isValid()) return invalidAddition+99999999999999
+dayjs.prototype.sortValue = function(invalidAddition=9, {invalidVal=99999999999999}={}){
+    if (!this.isValid()) return invalidAddition+invalidVal
     return this.unix()
 }
 
