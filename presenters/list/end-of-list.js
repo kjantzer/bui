@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 
-customElements.define('b-list-fetching-content-row', class extends LitElement{
+customElements.define('b-list-end-of-row', class extends LitElement{
 
     static properties = {
         msg: {type: String}
@@ -30,4 +30,4 @@ customElements.define('b-list-fetching-content-row', class extends LitElement{
 
 })
 
-export default customElements.get('b-list-fetching-content-row')
+export default customElements.get('b-list-end-of-row')

@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import '../../elements/empty-state'
-import './fetching-content'
+import './end-of-list'
 
 customElements.define('b-infinite-list', class extends LitElement {
 
@@ -59,6 +59,14 @@ customElements.define('b-infinite-list', class extends LitElement {
             this.getContent()
     }
 
+    // TODO: allow for custom fetching more view?
+    get endOfListRow(){
+        if( !this._endOfListRow ){
+            this._endOfListRow = document.createElement('b-list-end-of-row')
+        }
+        return this._endOfListRow
+    }
+
     async getContent({clear=false}={}){
         
         if( !this.dataSource ) return
@@ -71,18 +79,17 @@ customElements.define('b-infinite-list', class extends LitElement {
         this._fetchFailed = false
         try{
 
-            // TODO: allow for custom fetching more view?
-            let fetchingMoreMsg = document.createElement('b-list-fetching-content-row')
-            fetchingMoreMsg.msg = pageAt == 0 ? 'Fetching data...' : 'Fetching more...'
-            this.appendChild(fetchingMoreMsg)
+            this.endOfListRow.msg = pageAt == 0 ? 'Fetching data...' : 'Fetching more...'
+            this.appendChild(this.endOfListRow)
 
             let models = await this.dataSource.fetch(pageAt)
 
-            fetchingMoreMsg.remove()
-
             // if no more content was found, flag it so we dont keep attempting to load more data
-            if( models.length == 0 )
+            if( models.length == 0 ){
                 this.contentDone = true
+                this.endOfListRow.msg = 'End of list'
+            }else
+                this.endOfListRow.remove()
 
             this.addContent(models, {clear:clear})
         }catch(err){
