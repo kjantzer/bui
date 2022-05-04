@@ -276,6 +276,10 @@ customElements.define('b-list', class extends LitElement {
                             || this.shadowRoot.querySelector('b-spinner-overlay')
     }
 
+    get refreshBtn(){
+        return this.$$('[slot="refresh-btn"] > b-btn', '__refreshBtn')
+    }
+
     render(){return html`
 
         <style>${this.customStyles||''}</style>
@@ -544,6 +548,13 @@ customElements.define('b-list', class extends LitElement {
             e.stopPropagation()
             this.selection.begin(e)
         })
+
+        this.dataSource.on('fetching', this.onDataSourceFetching.bind(this))
+    }
+
+    onDataSourceFetching(isFetching){
+        if( this.refreshBtn )
+            this.refreshBtn.spinicon = isFetching
     }
 
     get currentModels(){

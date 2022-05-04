@@ -95,8 +95,31 @@ customElements.define('b-list-toolbar', class extends LitElement{
         }
 
         [name="before"] { order: 1; }
+        .count { order: 2; }
         .scroller { order: 3; }
         .after { order: 4; }
+
+        @media (max-width: 599px) {
+            
+            :host {
+                display: grid;
+                grid-template-columns: auto auto 1fr;
+            }
+
+            slot {
+                display: flex;
+            }
+
+            .scroller {
+                grid-row-start: 2;
+                grid-column: 1/-1;
+                margin-left: -0.5em;
+                margin-right: -0.5em;
+                margin-top: 0.25em;
+                border-top: solid 1px var(--theme-bgd-accent);
+            }
+
+        }
     `}
 
     render(){return html`

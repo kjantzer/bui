@@ -101,10 +101,13 @@ export default class DataSource {
 
                 this._pageFetched = pageAt
 
-                if( this.opts.fetch )
+                if( this.opts.fetch ){
+                    this.emit('fetching', true)
                     await this._fetchFromServer(pageAt).catch(err=>{
                         reject(err)
                     })
+                    this.emit('fetching', false)
+                }
                 
                 await this.refilter()
             }

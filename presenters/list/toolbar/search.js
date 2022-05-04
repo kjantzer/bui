@@ -65,17 +65,54 @@ customElements.define('b-list-search-bar', class extends LitElement{
         form-control:focus-within b-icon {
             color: var(--theme);
         }
+
+        b-btn[clear] {
+            display: none;
+            margin: -1em -0.5em -1em 0;
+        }
+
+        form-control[empty] b-btn[clear] {
+            visibility: hidden;
+        }
+
+        form-control:not([falsy]) b-btn[clear],
+        form-control:focus-within b-btn[clear] {
+            display: inline-block
+        }
+
+        @media (max-width: 599px) {
+
+            :host(:focus-within),
+            :host([value]) {
+                position: absolute;
+                left: 2px;
+                right: 3em; /* let refresh btn be visible */
+                z-index: 1000000000;
+                background: var(--theme-bgd);
+            }
+
+            :host(:focus-within) form-control,
+            :host([value]) form-control {
+                box-sizing: border-box;
+                width: 100%;
+            }
+        }
     `}
 
     render(){return html`
         <form-control>
-            <text-field placeholder="${this.placeholder}" bubble-keypress single-line></text-field>
+            <text-field placeholder="${this.placeholder}" bubble-keypress single-line @keydown=${this.onKeyDown}></text-field>
             <b-icon @click=${this.focus} name="search" slot="prefix"></b-icon>
+            <b-btn clear pill slot="suffix" icon="backspace" @click=${this.clear}></b-btn>
         </form-control>
     `}
 
     focus(){
         this.shadowRoot.querySelector('form-control').focus()
+    }
+
+    onKeyDown(e){
+        this.toggleAttribute('value', e.target.currentValue )
     }
 
     get value(){
@@ -86,6 +123,12 @@ customElements.define('b-list-search-bar', class extends LitElement{
     set value(val){
         this.textField = this.textField || this.shadowRoot.querySelector('text-field')
         this.textField.value = val
+    }
+
+    clear(){
+        this.value = ''
+        this.emitEvent('keydown')
+        this.toggleAttribute('value', false)
     }
 
 })
