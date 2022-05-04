@@ -16,12 +16,17 @@ customElements.define('b-list-header', class extends LitElement{
             border-bottom: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .1));
         }
         
-        :host > [sep] {
-            border-left: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .1));
+        :host > [sep]:not([sep="right"]),
+        :host > [sep="left"] {
+            border-left: solid var(--row-sep-width, 1px) var(--border-color, rgba(var(--theme-text-rgb), .1));
         }
 
         :host > [sep="after"] {
-            border-right: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .1));
+            border-right: solid var(--row-sep-width, 1px) var(--border-color, rgba(var(--theme-text-rgb), .1));
+        }
+
+        :host > [sep][thick] {
+            --row-sep-width: 4px;
         }
 
         :host > *:first-child {
