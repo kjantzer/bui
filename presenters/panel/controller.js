@@ -163,6 +163,26 @@ class PanelController extends LitElement {
         return onTop
     }
 
+    topMostPanel(){
+        let topPanels = []
+
+        // go though all panel controllers looking for the top panel with a route
+        for( let key in PanelControllers ){
+            let controller = PanelControllers[key]
+            let panel = controller.panelOnTopWithRoute
+
+            // found a top panel with route
+            if( panel )
+                topPanels.push(panel)
+
+            // stop looking at controllers created AFTER this one (since it's more likely to be nested)
+            if( controller == this )
+                break;
+        }
+
+        return topPanels.pop()
+    }
+
     _updatePanels(updateRoutes=false){
         let i = 0
 
@@ -221,11 +241,19 @@ class PanelController extends LitElement {
 
         if( this.length == 0 ){
             
-            // TEMP - improve interoperability with Groundwork
+            // TEMP - legacy support for Blackstone Catalog v5
             if( window.app && window.app.sv && app.sv('sheets').sheets.length > 0 )
                 app.sv('sheets').setHash()
-            else
-                router.push('')
+            else{
+
+                let topPanel = this.topMostPanel()
+                let path = ''
+
+                if( topPanel )
+                    path = topPanel.route.makePath() // FIXME: this should be able to use params (or view override)
+
+                router.push(path)
+            }
 
         }else
         this.panels.forEach((panel)=>{
