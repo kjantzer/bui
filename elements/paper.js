@@ -18,7 +18,7 @@ export class PaperElement extends LitElement {
             box-sizing: border-box;
             display: block;
             background: var(--bgd);
-            box-shadow: var(--b-paper-shadow, rgba(0,0,0,.1) 0 1px 5px);
+            box-shadow: var(--b-paper-shadow, var(--theme-shadow-0));
             border: solid 1px transparent;
             --radius: var(--b-paper-radius, 3px);
             border-radius: var(--radius);
@@ -33,14 +33,13 @@ export class PaperElement extends LitElement {
             display: none;
         }
 
-        :host([overshadow]) {
-            /* box-shadow: var(--b-paper-overshadow, rgba(0, 0, 0, 0.1) 0px 0px 20px); */
-            box-shadow: var(--b-paper-overshadow, 0 0.7px 2.2px rgba(0, 0, 0, 0.007),
-                0 1.4px 5.3px rgba(0, 0, 0, 0.012),
-                0 2.4px 10px rgba(0, 0, 0, 0.017),
-                0 3.7px 17.9px rgba(0, 0, 0, 0.02),
-                0 6px 33.4px rgba(0, 0, 0, 0.025),
-                0 13px 80px rgba(0, 0, 0, 0.07));
+        :host([shadow="2"]) {
+            box-shadow: var(--theme-shadow-2);
+        }
+
+        :host([overshadow]),
+        :host([shadow="3"]) {
+            box-shadow: var(--theme-shadow-3);
         }
 
         :host([inline]) {

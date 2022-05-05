@@ -15,6 +15,16 @@
     --light-bgd-accent2: var(--light);
     --light-bgd-hc: white; // high contrast
     --light-shadow: rgba(0,0,0,.2);
+    --light-shadow-0: rgba(0,0,0,.1) 0 1px 5px;
+    --light-shadow-1: rgba(0,0,0,0.2) 0 3px 10px;
+    --light-shadow-2: rgba(0,0,0,0.3) 0 3px 30px;
+    --light-shadow-3: /* https://shadows.brumm.af */
+         0 0.7px 2.2px rgba(0, 0, 0, 0.007),
+        0 1.4px 5.3px rgba(0, 0, 0, 0.012),
+        0 2.4px 10px rgba(0, 0, 0, 0.017),
+        0 3.7px 17.9px rgba(0, 0, 0, 0.02),
+        0 6px 33.4px rgba(0, 0, 0, 0.025),
+        0 13px 80px rgba(0, 0, 0, 0.07);
 
     --dark-text-rgb: 255,255,255;
     --dark-bgd-rgb: 0,0,0;
@@ -26,7 +36,16 @@
     --dark-bgd-accent2: #242729;
     --dark-bgd-hc: #141618; // high contrast
     --dark-shadow: rgba(0,0,0,.4);
-
+    --dark-shadow-0: rgba(0,0,0,.35) 0 1px 5px;
+    --dark-shadow-1: rgba(0,0,0,0.4) 0 3px 10px;
+    --dark-shadow-2: rgba(0,0,0,0.5) 0 3px 30px;
+    --dark-shadow-3: 
+        0 0.7px 2.2px rgba(0, 0, 0, 0.019),
+        0 1.4px 5.3px rgba(0, 0, 0, 0.035),
+        0 2.4px 10px rgba(0, 0, 0, 0.048),
+        0 3.7px 17.9px rgba(0, 0, 0, 0.058),
+        0 6px 33.4px rgba(0, 0, 0, 0.7),
+        0 13px 80px rgba(0, 0, 0, 0.35);
 }
 
 // default to light
@@ -43,6 +62,10 @@
     --theme-bgd-accent2: var(--light-bgd-accent2);
     --theme-bgd-hc: var(--light-bgd-hc);
     --theme-shadow: var(--light-shadow);
+    --theme-shadow-0: var(--light-shadow-0);
+    --theme-shadow-1: var(--light-shadow-1);
+    --theme-shadow-2: var(--light-shadow-2);
+    --theme-shadow-3: var(--light-shadow-3);
 
     --theme-inverse-text-rgb: var(--dark-text-rgb);
     --theme-inverse-bgd-rgb: var(--dark-bgd-rgb);
@@ -54,6 +77,10 @@
     --theme-inverse-bgd-accent2: var(--dark-bgd-accent2);
     --theme-inverse-bgd-hc: var(--dark-bgd-hc);
     --theme-inverse-shadow: var(--dark-shadow);
+    --theme-inverse-shadow-0: var(--dark-shadow-0);
+    --theme-inverse-shadow-1: var(--dark-shadow-1);
+    --theme-inverse-shadow-2: var(--dark-shadow-2);
+    --theme-inverse-shadow-3: var(--dark-shadow-3);
 }
 
 :root[dark]
@@ -68,6 +95,10 @@
     --theme-bgd-accent2: var(--dark-bgd-accent2);
     --theme-bgd-hc: var(--dark-bgd-hc);
     --theme-shadow: var(--dark-shadow);
+    --theme-shadow-0: var(--dark-shadow-0);
+    --theme-shadow-1: var(--dark-shadow-1);
+    --theme-shadow-2: var(--dark-shadow-2);
+    --theme-shadow-3: var(--dark-shadow-3);
 
     --theme-inverse-text-rgb: var(--light-text-rgb);
     --theme-inverse-bgd-rgb: var(--light-bgd-rgb);
@@ -79,6 +110,10 @@
     --theme-inverse-bgd-accent2: var(--light-bgd-accent2);
     --theme-inverse-bgd-hc: var(--light-bgd-hc);
     --theme-inverse-shadow: var(--light-shadow);
+    --theme-inverse-shadow-0: var(--light-shadow-0);
+    --theme-inverse-shadow-1: var(--light-shadow-1);
+    --theme-inverse-shadow-2: var(--light-shadow-2);
+    --theme-inverse-shadow-3: var(--light-shadow-3);
 }
 
 // set colors and styles for BUI elements and presenters
@@ -116,16 +151,6 @@
 
 // adjust colors of <b-paper> when in dark mode
 :root[dark] {
-    // --b-paper-overshadow: rgba(0, 0, 0, 0.35) 0px 0px 20px;
-    --b-paper-overshadow:
-        0 0.7px 2.2px rgba(0, 0, 0, 0.019),
-        0 1.4px 5.3px rgba(0, 0, 0, 0.035),
-        0 2.4px 10px rgba(0, 0, 0, 0.048),
-        0 3.7px 17.9px rgba(0, 0, 0, 0.058),
-        0 6px 33.4px rgba(0, 0, 0, 0.7),
-        0 13px 80px rgba(0, 0, 0, 0.35);
-
-    --b-paper-shadow: rgba(0,0,0,.35) 0 1px 5px;
     --b-paper-postit-color: var(--theme-bgd);
     --b-paper-postit-bgd: #8c8161; // var(--amber-200);
     --b-paper-postit-color: var(--theme-text);
