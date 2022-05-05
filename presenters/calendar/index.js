@@ -53,6 +53,16 @@ customElements.define('b-calendar', class extends LitElement{
 
         this.applyMonths()
     }
+    
+    connectedCallback(){
+        super.connectedCallback(...arguments)
+        if( this.selectedRange ){
+            this.scrollToDate(this.selectedRange.active)
+            setTimeout(()=>{
+                this.update()
+            },300) // NOTE: kind of hacky
+        }
+    }
 
     set value(val){
 
