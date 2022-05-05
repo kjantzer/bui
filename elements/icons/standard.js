@@ -2,6 +2,7 @@
 export default [
     ['trash', require(`@material-icons/svg/svg/delete/baseline.svg`)],
     ['search', require(`@material-icons/svg/svg/search/baseline.svg`)],
+    ['backspace', require(`@material-icons/svg/svg/backspace/baseline.svg`)],
     ['plus', require(`@material-icons/svg/svg/add/baseline.svg`)],
     ['print', require(`@material-icons/svg/svg/print/baseline.svg`)],
     ['refresh', require(`@material-icons/svg/svg/refresh/baseline.svg`)],
