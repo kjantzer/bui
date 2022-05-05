@@ -2,7 +2,6 @@ import { LitElement, html, css } from 'lit-element'
 import 'bui/helpers/colors-list'
 import 'bui/presenters/form'
 import 'bui/presenters/list'
-import 'bui/presenters/cal'
 import './form'
 import './notif'
 import './tabs'
@@ -54,16 +53,6 @@ customElements.define('demo-presenters', class extends LitElement{
             demo-presenter-list
             dmeo-presenter-virtual-scroller
             demo-presenter-datepicker
-
-            <b-cal title="Calendar">
-                <div class="cal-event" style="font-size: .8em; line-height: 1em;">
-                    <b-label badge="orange" dot></b-label> A calendar event
-                </div>
-                <div class="cal-event2" style="font-size: .8em; line-height: 1em;">
-                    <b-label badge="green" dot></b-label> Another event
-                </div>
-            </b-cal>
-
             demo-presenter-calendar
 
             demo-presenter-selection
@@ -71,12 +60,6 @@ customElements.define('demo-presenters', class extends LitElement{
 
         </b-tabs-router>
     `}
-
-    firstUpdated(){
-        // setting the event slots this way so they always show for the current month
-        this.shadowRoot.querySelector('.cal-event').slot=dayjs().set('date', 12).format('YYYY-MM-DD')
-        this.shadowRoot.querySelector('.cal-event2').slot=dayjs().set('date', 24).format('YYYY-MM-DD')
-    }
 
 })
 

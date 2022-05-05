@@ -305,6 +305,30 @@ customElements.define('demo-presenter-form', class extends LitElement{
 
             <br><br>
 
+            <b-text block bold ucase>Hover</b-text><br>
+            <b-grid cols=3 cols-mobile=1>
+
+                <form-control material="hover" label="Text Field">
+                    <text-field></text-field>
+                    <span slot="prefix"><b-icon name="mail"></b-icon>&nbsp;</span>
+                </form-control>
+
+                <form-control material="hover" label="Prefixed" prefix="$" suffix=".00">
+                    <text-field></text-field>
+                </form-control>
+
+                <form-control material="hover" label="Select Field">
+                    <select-field>
+                        <option value="">—</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                    </select-field>
+                </form-control>
+
+            </b-grid>
+
+            <br><br>
+
             <b-text block bold ucase>Plain</b-text><br>
             <b-grid cols=3 cols-mobile=1>
 

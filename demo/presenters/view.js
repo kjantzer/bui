@@ -20,17 +20,24 @@ customElements.define('demo-view', class extends LitElement{
         }
     `}
 
+    renderTitleRight(){ return '' }
     renderContent(){ return '' }
     renderAfter(){ return '' }
+    renderDocsHeader(){ return '' }
 
     render(){return html`
         <b-paper>
-            <b-text-divider bottom thick xbold xl heading>${this.viewTitle||this.tabView.title}</b-text-divider>
+            <b-text-divider bottom thick xbold xl heading>
+                ${this.viewTitle||this.tabView.title}
+                <b-flex slot="right">${this.renderTitleRight()}</b-flex>
+            </b-text-divider>
             
             ${this.renderContent()}
             
             ${this.docs?html`
-            <demo-markdown-docs .docs=${this.docs}></demo-markdown-docs>
+            <demo-markdown-docs .docs=${this.docs}>
+                <div slot="header">${this.renderDocsHeader()}</div>
+            </demo-markdown-docs>
             `:''}
 
         </b-paper>

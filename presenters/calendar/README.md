@@ -32,6 +32,13 @@ html`
 - `weekends` - mini, small
 - `display` - biweekly, weekly
 
+## Slots
+
+- `before-title`
+- `after-title`
+- `before-nav`
+- `after-nav`
+
 ## Events
 
 ### `move-to`
