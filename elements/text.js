@@ -68,6 +68,7 @@ customElements.define('b-text', class extends LitElement{
         :host([strike]) { text-decoration: line-through; }
 
         :host([capitalize]) .slot { text-transform: capitalize; }
+        :host([caps]) .slot { text-transform: capitalize; }
         :host([ucase]) .slot { text-transform: uppercase; }
         :host([lcase]) .slot { text-transform: lowercase }
 
