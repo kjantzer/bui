@@ -134,6 +134,7 @@ customElements.define('b-file-icon', class extends LitElement{
             width: calc(.8 * var(--size));
             height: var(--size);
             text-transform: uppercase;
+            vertical-align: top;
         }
 
         main {
@@ -179,6 +180,7 @@ customElements.define('b-file-icon', class extends LitElement{
         label > span,
         label > b-icon {
             font-size: 1em;
+            --size: 1em;
         }
 
 
