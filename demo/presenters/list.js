@@ -7,6 +7,7 @@ import 'bui/presenters/list/export-btn'
 import 'bui/presenters/list/selection-btn'
 import ListHeader from 'bui/presenters/list/header'
 import copyText from 'bui/util/copyText'
+import '../../elements/flex'
 
 customElements.define('demo-presenter-list', class extends View{
 
@@ -36,10 +37,9 @@ customElements.define('demo-presenter-list', class extends View{
                 <b-list-selection-btn></b-list-selection-btn>
                 <b-list-export-btn></b-list-export-btn>
 
-                <span slot="actions:left">
-                    &nbsp;
-                    <b-btn @click=${this.copy} slot="actions:left">Copy IDs</b-btn>
-                </span>
+                <b-flex slot="actions:left">
+                    <b-btn @click=${this.copy} clear color="theme">Copy IDs</b-btn>
+                </b-flex>
 
                 <b-list-header></b-list-header>
 

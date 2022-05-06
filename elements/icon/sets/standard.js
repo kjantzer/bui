@@ -14,6 +14,6 @@ export default [
     ['left-open', require(`@material-icons/svg/svg/chevron_left/baseline.svg`)],
     ['right-open', require(`@material-icons/svg/svg/chevron_right/baseline.svg`)],
 
-    ['check-box', require('./check-box.svg.html')],
-	['check-box-active', require('./check-box-active.svg.html')]
+    ['check-box', require('../legacy/check-box.svg.html')],
+	['check-box-active', require('../legacy/check-box-active.svg.html')]
 ]

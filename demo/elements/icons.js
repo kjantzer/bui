@@ -4,8 +4,10 @@ import MaterialIcons from '@material-icons/svg/data.json'
 import AllMaterialIcons from './all-material-icons'
 import {Collection} from '../../app/models'
 import '../../elements/flex'
+import '../../elements/animate'
 import uniq from '../../util/uniq'
 import copyText from '../../util/copyText'
+import '../../helpers/lit/events'
 
 const RegisteredIcons = Icon.registeredIconNames()
 const Categories = uniq(MaterialIcons.icons.flatMap(icon=>icon.categories))
@@ -48,15 +50,20 @@ customElements.define('b-demo-icons', class extends LitElement{
     }
 
     render(){return html`
+
         <b-list
             key="demo-icons"
             row="b-demo-icons-row"
             .filters=${filters}
             .coll=${this.coll}
+            @row-click=${this.onRowClick}
         >
 
-        <b-list-selection-btn></b-list-selection-btn>
-        <b-btn text color="theme" slot="actions:left" @click=${this.copy}>Copy Import Code</b-btn>
+            <b-list-selection-btn></b-list-selection-btn>
+            <b-btn text color="theme" slot="actions:left" @click=${this.copy}>Copy Import Code</b-btn>
+
+            <b-btn slot="toolbar:after" icon="github" color="theme" clear
+                href="https://github.com/material-icons/material-icons">Source</b-btn>
 
         </b-list>
     `}
@@ -66,15 +73,28 @@ customElements.define('b-demo-icons', class extends LitElement{
         if( this.list.currentModels.length == 0 )
             throw new UIAlertError('No icons selected')
 
-        let code = this.list.currentModels.map(d=>{
-            return `['${d.name}', require('@material-icons/svg/svg/${d.name}/baseline.svg')]`
-        })
+        copyImportCode(this.list.currentModels)
+    }
 
-        copyText(code.join(`,\n`))
-        throw new UIAlertError('Copied')
+    onRowClick(e){
+        let {model} = e.detail
+        copyImportCode([model])
     }
 
 })
+
+function copyImportCode(models){
+    let code = models.map(d=>{
+        return formatImportCode(d)
+    })
+
+    copyText(code.join(`,\n`))
+    throw new UIAlertError('Import code copied')
+}
+
+function formatImportCode(d){
+    return `['${d.name}', require('@material-icons/svg/svg/${d.name}/baseline.svg')]`
+}
 
 const filters = {
     search: {
@@ -127,9 +147,15 @@ customElements.define('b-demo-icons-row', class extends LitElement{
         this.toggleAttribute('registered', this.model.isRegistered)
     }
 
+    onClick(){
+        this.emitEvent('row-click', this)
+    }
+
     render(){return html`
         <b-flex col center>
-            <b-icon name=${this.model.name}></b-icon>
+            <b-animate scale="1.2" @click=${this.onClick}>
+                <b-icon name=${this.model.name}></b-icon>
+            </b-animate>
             <b-text sm>${this.model.name}</b-text>
         </b-flex>
     `}
