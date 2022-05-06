@@ -101,7 +101,7 @@ export function enableSync(Class, {
 // NOTE: do we really need different sync methods for coll/vs model?
 // maybe can refactor to one?
 export function syncBackboneCollection(data, {
-    addUpdates=true,
+    addUpdates=true, // TODO: rename to `addMissingUpdates`
     triggerDestroy=false
 }={}){
 
@@ -124,7 +124,7 @@ export function syncBackboneCollection(data, {
         model = this.get(path)
 
         if( !model && addUpdates ){
-            data.action = 'add'
+            action = data.action = 'add'
             path = path.replace(/\.\d+$/,'')
             model = this.get(path) || this
         }
@@ -167,7 +167,7 @@ export function syncBackboneModel(data, {addMissingUpdates=true}={}){
         model = this.get(path)
 
         if( !model && addMissingUpdates ){
-            data.action = 'add'
+            action = data.action = 'add'
             path = path.replace(/\.\d+$/,'')
             model = this.get(path)
         }
