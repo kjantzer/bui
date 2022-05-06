@@ -1,6 +1,4 @@
 import { LitElement, html, css } from 'lit-element'
-import dayjs from 'dayjs'
-import Dialog from 'bui/presenters/dialog'
 import 'bui/presenters/tabs'
 import 'bui/elements/icon'
 import 'bui/elements/text'
@@ -9,7 +7,6 @@ import 'bui/elements/btn-group'
 import 'bui/elements/spinner'
 import 'bui/elements/spinner-overlay'
 import 'bui/elements/tooltip'
-import 'bui/elements/uploader'
 import 'bui/elements/paper'
 import 'bui/elements/grid'
 import 'bui/elements/flex'
@@ -28,6 +25,7 @@ import 'bui/elements/carousel'
 import 'bui/elements/timeline-horz'
 import 'bui/helpers/day-js'
 import './elements/icons'
+import './elements/uploader'
 
 import buttons from './elements/buttons'
 import text from './elements/text'
@@ -95,19 +93,7 @@ customElements.define('demo-elements', class extends LitElement{
         ${specialtyStyles}
     `}
 
-    async onUpload(e){
-        let uploader = e.currentTarget
-        let filenames = uploader.files.map(f=>f.name)
-        
-        console.log('upload the file', uploader.files);
-
-        if( await Dialog.confirm({
-            title: 'Confirm Upload',
-            msg: filenames.join('<br>'),
-            btns: ['cancel', {label: 'Upload', color: 'theme'}]
-        }).modal() )
-            console.log('yes, upload');
-    }
+    
 
     render(){return html`
         <b-tabs-router path="elements/" key="elements" layout="left">
@@ -401,14 +387,7 @@ customElements.define('demo-elements', class extends LitElement{
 
             </section>
 
-            <section title="Uploader" style="position: relative;">
-                <h1>Uploader</h1>
-                <b-uploader multiple @change=${this.onUpload}></b-uploader>
-                
-                <div>Drag and drop a file here to upload<br><br></div>
-
-                <b-btn onclick="this.previousElementSibling.previousElementSibling.chooseFile()">Or select a file</b-btn>
-            </section>
+            demo-elements-uploader
 
             <section title="Media">
                 <h1>Media</h1>
