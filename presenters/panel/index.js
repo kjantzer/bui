@@ -52,7 +52,7 @@ class RegisteredPanels {
         }
 
         if( !path )
-            return console.error('Missing path')
+            return console.error('Panel.register - missing path for:', view)
 
         if( this.get(path) ){
             return console.warn(`A panel is already registered for ${path}`)
