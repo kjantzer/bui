@@ -40,9 +40,14 @@ dayjs.prototype.format = function(...args){
     return DayJsFormat.call(this, ...args)
 }
 
-dayjs.prototype.sortValue = function(invalidAddition=9, {invalidVal=99999999999999}={}){
+dayjs.prototype.sortValue = function(invalidAddition=9, {invalidVal=99999999999999, desc=false}={}){
     if (!this.isValid()) return invalidAddition+invalidVal
-    return this.unix()
+    let val = this.unix()
+
+    if( desc )
+        val = Math.round((new Date('2099-01-01').getTime()/1000)) - val
+
+    return val
 }
 
 // let `.set` handle hash of changes
