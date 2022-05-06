@@ -77,3 +77,11 @@ customElements.define('b-bytes', class extends Numeral{
 customElements.define('b-currency', class extends Numeral{
     get defaultFormat(){ return '$0,0.00' }
 })
+
+customElements.define('b-num', class extends Numeral{
+    get defaultFormat(){ return '0,0' }
+})
+
+customElements.define('b-decimal', class extends Numeral{
+    get defaultFormat(){ return '0,0.00' }
+})
