@@ -11,8 +11,8 @@ export default [
     
     // TODO: update BUI code to use real icon name
     ['cancel-circled', require(`@material-icons/svg/svg/cancel/baseline.svg`)],
-    ['left-open', require(`@material-icons/svg/svg/chevron_left/baseline.svg`)],
-    ['right-open', require(`@material-icons/svg/svg/chevron_right/baseline.svg`)],
+    ['chevron_left', require(`@material-icons/svg/svg/chevron_left/baseline.svg`)],
+    ['chevron_right', require(`@material-icons/svg/svg/chevron_right/baseline.svg`)],
 
     ['check-box', require('../legacy/check-box.svg.html')],
 	['check-box-active', require('../legacy/check-box-active.svg.html')]
