@@ -1,5 +1,5 @@
 
-import Icon from '../icon'
+import Icon from '../index'
 
 export default Icon
 

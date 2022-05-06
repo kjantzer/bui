@@ -45,7 +45,7 @@ let hasWarnedNoIcons = false
 function warnNoIcons(){
 	if( hasWarnedNoIcons ) return
 	hasWarnedNoIcons = true
-	console.warn('No icons have been registered. Do so with `IconElement.register()` – Or import `bui/elements/icons/_all`')
+	console.warn('No icons have been registered. Do so with `IconElement.register()` – Or import `bui/elements/icon/legacy/_all`')
 }
 
 export default class IconElement extends HTMLElement {

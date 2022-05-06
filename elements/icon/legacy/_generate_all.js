@@ -19,7 +19,7 @@ files.forEach(file=>{
 })
 
 fs.writeFileSync(__dirname+'/_all.js', `
-import {IconElement} from '../icon'
+import {IconElement} from '../index'
 
 IconElement.register(
     ${imports.join(`,\n\t`)}

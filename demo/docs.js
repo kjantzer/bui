@@ -26,7 +26,7 @@ import '../presenters/cal'
 import '../helpers/colors-list'
 import '../styles/colors.less';
 
-import '../elements/icons/_all'
+import '../elements/icon/legacy/_all'
 import defineFileIcon from '../elements/file-icon'
 defineFileIcon()
 
