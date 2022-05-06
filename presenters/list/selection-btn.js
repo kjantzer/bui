@@ -6,7 +6,7 @@ customElements.define('b-list-selection-btn', class extends Btn{
     constructor(){
         super()
         this.setAttribute('text', '')
-        this.icon = 'check'
+        this.icon = 'library_add_check'
 
         if( this.parentElement.tagName == 'B-LIST')
             this.slot = 'toolbar:before'
