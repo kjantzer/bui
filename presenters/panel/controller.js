@@ -249,8 +249,12 @@ class PanelController extends LitElement {
                 let topPanel = this.topMostPanel()
                 let path = ''
 
-                if( topPanel )
-                    path = topPanel.route.makePath() // FIXME: this should be able to use params (or view override)
+                if( topPanel ){
+                    if( topPanel.view.makePath )
+                        path = topPanel.view.makePath()
+                    else
+                        path = topPanel.route.makePath() // FIXME: this should be able to use params (or view override)
+                }
 
                 router.push(path)
             }
