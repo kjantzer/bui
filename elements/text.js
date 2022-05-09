@@ -168,6 +168,16 @@ customElements.define('b-text', class extends LitElement{
 
         ::slotted(p:first-child) {margin-top: 0;}
         ::slotted(p:last-child) {margin-bottom: 0;}
+
+        :host([body]) p:first-of-type,
+        :host([body]) ::slotted(p:first-of-type) {
+            margin-top: 0;
+        }
+
+        :host([body]) p:last-of-type,
+        :host([body]) ::slotted(p:last-of-type) {
+            margin-bottom: 0;
+        }
     `}
 
     firstUpdated(){
