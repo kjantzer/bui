@@ -1,6 +1,8 @@
 import { LitElement, html, css } from 'lit-element'
 import router from '../../router'
 
+export {LitElement, html, css}
+
 export default class RoutedView extends LitElement {
 
     get idAttribute(){ 
