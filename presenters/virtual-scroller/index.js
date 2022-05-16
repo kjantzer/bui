@@ -16,7 +16,11 @@ customElements.define('b-virtual-scroller', class extends LitElement{
             position:relative;
         }
 
-        lit-virtualizer {
+        main {
+            overflow: auto;
+        }
+
+        main, lit-virtualizer {
             width: 100%;
             height: 100%;
         }
@@ -27,14 +31,16 @@ customElements.define('b-virtual-scroller', class extends LitElement{
     `}
 
     get scroller(){
-        return this.__scroller = this.__scroller || this.shadowRoot.querySelector('@lit-labs/virtualizer')
+        return this.__scroller = this.__scroller || this.shadowRoot.querySelector('lit-virtualizer')
     }
 
     render(){return html`
+        <main>
         <lit-virtualizer
             .items=${this.items}
             .renderItem=${this.renderItem}
         ></lit-virtualizer>
+        </main>
         <b-virtual-scroller-skipper
             .letters=${this.skipperLetters}
             @scroll-to=${this.skipperScrollTo}

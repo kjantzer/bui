@@ -51,7 +51,7 @@ customElements.define('demo-presenters', class extends LitElement{
             demo-presenter-notif
             demo-presenter-tabs
             demo-presenter-list
-            dmeo-presenter-virtual-scroller
+            demo-presenter-virtual-scroller
             demo-presenter-datepicker
             demo-presenter-calendar
 

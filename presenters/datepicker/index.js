@@ -114,7 +114,7 @@ customElements.define('b-datepicker', class extends LitElement{
     }
 
     firstUpdated(){
-        this.monthsList = this.$$('@lit-labs/virtualizer')
+        this.monthsList = this.$$('lit-virtualizer')
         this.selectedRange.on('change', this.onSelectedRangeChange.bind(this))
     }
 
@@ -173,12 +173,14 @@ customElements.define('b-datepicker', class extends LitElement{
             <div>${day}</div>
         `)}</div>
         
+        <main>
         <lit-virtualizer
             part="months"
             .items=${this.months}
             .renderItem=${this.renderMonth.bind(this)}
             @date-selected=${this.onDateSelected}
         ></lit-virtualizer>
+        </main>
 
         <footer>
             <b-btn clear @click=${this.cancelDate}>Cancel</b-btn>

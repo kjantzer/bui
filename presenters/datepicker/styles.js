@@ -65,21 +65,29 @@ export default css`
         padding: var(--gap);
         text-align: right;
     }
+    
+    main {
+        width: calc((7 * var(--size)) + (2 * var(--pad)) + (6 * var(--gap)));
+        height: 100%;
+        overflow: auto;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
 
     lit-virtualizer {
-        width: calc((7 * var(--size)) + (2 * var(--pad)) + (6 * var(--gap)));
+        width: 100%;
         height: 100%;
         box-sizing: border-box;
         padding: 0 var(--pad);
         overflow-x: hidden;
     }
 
-    lit-virtualizer::-webkit-scrollbar {
+    main::-webkit-scrollbar {
         display: none;
     }
 
     /* Hide scrollbar for IE, Edge and Firefox */
-    lit-virtualizer {
+    main {
         -ms-overflow-style: none;  /* IE and Edge */
         scrollbar-width: none;  /* Firefox */
     }

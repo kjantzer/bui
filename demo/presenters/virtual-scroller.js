@@ -18,7 +18,7 @@ while(i++ < 25000 ){
     })
 }
 
-customElements.define('dmeo-presenter-virtual-scroller', class extends View{
+customElements.define('demo-presenter-virtual-scroller', class extends View{
 
     static get title(){ return 'Virtual Scroller' }
     static get id(){ return 'virtual-scroller'}
@@ -51,7 +51,7 @@ customElements.define('dmeo-presenter-virtual-scroller', class extends View{
 
 })
 
-export default customElements.get('dmeo-presenter-virtual-scroller')
+export default customElements.get('demo-presenter-virtual-scroller')
 
 
 

@@ -122,7 +122,7 @@ customElements.define('b-calendar', class extends LitElement{
     }
 
     firstUpdated(){
-        this.scroller = this.$$('@lit-labs/virtualizer')
+        this.scroller = this.$$('lit-virtualizer')
         this.selectedRange.on('change', this.onSelectedRangeChange.bind(this))
     }
 
@@ -171,6 +171,7 @@ customElements.define('b-calendar', class extends LitElement{
             <div>${day}</div>
         `)}</div>
         
+        <main>
         <lit-virtualizer
             part="months"
             .items=${this.months}
@@ -178,6 +179,7 @@ customElements.define('b-calendar', class extends LitElement{
             @date-selected=${this.onDateSelected}
             @month-in-view=${this.onMonthInView}
         ></lit-virtualizer>
+        </main>
 
         <footer>
         </footer>
