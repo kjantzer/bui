@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css } from 'lit-element'
 import View from './view'
 import docs from 'bui/presenters/dialog/README.md'
 import Dialog from 'bui/presenters/dialog'
@@ -39,7 +39,7 @@ customElements.define('demo-presenter-dialog', class extends View{
                 <span slot="body">Body of the dialog with <b-text tone="info" italic ucase>custom</b-text> html using slots</span>
             </b-dialog>
 
-            <b-dialog stack accent="red" icon="trash" 
+            <b-dialog stack accent="red" icon="delete" 
                 title="Delete Item?" 
                 body="This action cannot be undone"
                 .btns=${['delete']}
@@ -85,16 +85,10 @@ customElements.define('demo-presenter-dialog', class extends View{
 
         let val = await new Prompt({
             title: 'Account Details',
-            icon: 'user',
+            icon: 'person',
             prompts: [
                 {label: 'Name', key: 'name', required: true, val: 'Kevin'},
-                {label: 'Email', key: 'email', pattern:'email', prefix:html`<b-icon name="mail"></b-icon>&nbsp;`},
-                html`
-                    <radio-group segment key="gender">
-                        <radio-btn value="male">Male</radio-btn>
-                        <radio-btn value="female">Female</radio-btn>
-                    </radio-group>
-                `
+                {label: 'Email', key: 'email', pattern:'email', prefix:html`<b-icon name="mail"></b-icon>&nbsp;`}
             ]
         }).modal()
 
