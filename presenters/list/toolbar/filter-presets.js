@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import { Notif } from '../../dialog'
 import Menu, { Dialog } from '../../menu'
 

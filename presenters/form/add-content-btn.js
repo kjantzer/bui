@@ -1,5 +1,5 @@
 import Btn from '../../elements/btn'
-import {css} from 'lit-html'
+import {css} from 'lit'
 
 customElements.define('b-form-add-content-btn', class extends Btn{
 

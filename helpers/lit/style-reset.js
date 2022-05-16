@@ -2,7 +2,7 @@
    v2.0 | 20110126
    License: none (public domain)
 */
-import {css} from 'lit-element'
+import {css} from 'lit'
 
 export default css`
 html, body, div, span, applet, object, iframe,

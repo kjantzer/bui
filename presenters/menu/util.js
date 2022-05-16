@@ -1,4 +1,4 @@
-import {html} from 'lit-html'
+import {html} from 'lit'
 
 export function isDivider(val){
 	let _val = val.val //|| val.label || val

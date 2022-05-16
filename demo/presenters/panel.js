@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import View from './view'
 import docs from 'bui/presenters/panel/README.md'
 import Panel, {Modal} from 'bui/presenters/panel'

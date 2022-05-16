@@ -2,7 +2,7 @@
 	A subclass of Dialog that supports variable prompt inputs
 */
 import Dialog from './element'
-import { html, css } from 'lit-element'
+import { html, css } from 'lit'
 import device from '../../util/device'
 import mobileAsyncFocus from '../../util/mobileAsyncFocus'
 import '../form/controls/text-field'

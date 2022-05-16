@@ -2,7 +2,7 @@
     TODO: support keyboard shortcuts for moving up and down list and enter to select/nav
     this ^ feature maybe should be part of b-list?
 */
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import RoutedView from '../../app/views/routed'
 import '../../app/views/root-titlebar'
 import '../../presenters/list'

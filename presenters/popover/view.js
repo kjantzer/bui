@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Popover from './index'
 
 customElements.defineShared('b-popover-view', class extends LitElement{

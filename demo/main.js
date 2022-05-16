@@ -1,4 +1,4 @@
-import {html} from 'lit-element'
+import {html} from 'lit'
 import App from 'bui/app/tabbar'
 import './overview'
 import './elements'

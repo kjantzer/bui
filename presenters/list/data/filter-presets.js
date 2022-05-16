@@ -1,4 +1,4 @@
-import {html} from 'lit-html'
+import {html} from 'lit'
 import Emitter from 'component-emitter'
 import CollMap from '../../../util/collmap'
 import store from '../../../util/store'

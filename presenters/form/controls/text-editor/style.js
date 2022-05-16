@@ -1,4 +1,4 @@
-import {css} from 'lit-element'
+import {css} from 'lit'
 
 // https://github.com/ueberdosis/tiptap/blob/main/packages/core/src/style.ts
 export default css`

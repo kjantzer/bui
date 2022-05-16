@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import './numeral'
 import './flex'
 import '../util/file.ext'
@@ -69,7 +69,7 @@ export default customElements.get('b-uploader-preview')
 
 
 
-// import { LitElement, html, css } from 'lit-element'
+// import { LitElement, html, css } from 'lit'
 
 customElements.define('b-native-file-preview', class extends LitElement{
 

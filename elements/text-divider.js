@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Text from './text'
 
 customElements.define('b-text-divider', class extends Text{

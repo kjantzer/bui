@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 // import dayjs from 'dayjs'
 
 customElements.define('b-search-popup-results-divider', class extends LitElement{

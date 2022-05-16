@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css } from 'lit';
 import AJAX from '../util/ajax.js';
 import '../util/file.ext.js'
 import resizeImg from '../util/resizeImg'

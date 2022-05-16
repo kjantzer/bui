@@ -16,7 +16,7 @@
     - toggle torch/light if supported
     - zoom support?
 */
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import {Parsers, emit} from './index'
 import device from '../device'
 import '../../helpers/lit/shared'

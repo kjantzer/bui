@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Previewer from '../../presenters/previewer'
 import Dialog from '../../presenters/dialog'
 import download from '../../util/download'

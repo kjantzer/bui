@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import '../../../../elements/text'
 
 customElements.define('b-text-editor-menubar', class extends LitElement{

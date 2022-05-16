@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit-element'
-import {unsafeHTML} from 'lit-html/directives/unsafe-html'
+import { LitElement, html, css } from 'lit'
+import {unsafeHTML} from 'lit/directives/unsafe-html'
 import {mediaQuery} from '../../util/mediaQueries'
 import Button from './btn'
 import '../../elements/spinner'

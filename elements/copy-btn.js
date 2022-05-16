@@ -1,4 +1,4 @@
-import {css} from 'lit-element'
+import {css} from 'lit'
 import Btn from './btn'
 import copyText from '../util/copyText'
 import Notif from '../presenters/notif'

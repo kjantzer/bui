@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import './bgd-overlay'
 
 customElements.define('b-comment', class extends LitElement{

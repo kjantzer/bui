@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit-element'
-import 'lit-virtualizer'
+import { LitElement, html, css } from 'lit'
+import '@lit-labs/virtualizer'
 import './skipper'
 
 customElements.define('b-virtual-scroller', class extends LitElement{
@@ -27,7 +27,7 @@ customElements.define('b-virtual-scroller', class extends LitElement{
     `}
 
     get scroller(){
-        return this.__scroller = this.__scroller || this.shadowRoot.querySelector('lit-virtualizer')
+        return this.__scroller = this.__scroller || this.shadowRoot.querySelector('@lit-labs/virtualizer')
     }
 
     render(){return html`

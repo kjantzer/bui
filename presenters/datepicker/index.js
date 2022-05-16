@@ -1,6 +1,6 @@
-import { LitElement, html } from 'lit-element'
-import {live} from 'lit-html/directives/live'
-import 'lit-virtualizer'
+import { LitElement, html } from 'lit'
+import {live} from 'lit/directives/live'
+import '@lit-labs/virtualizer'
 import dayjs from 'dayjs'
 import styles from './styles'
 import './month'
@@ -114,7 +114,7 @@ customElements.define('b-datepicker', class extends LitElement{
     }
 
     firstUpdated(){
-        this.monthsList = this.$$('lit-virtualizer')
+        this.monthsList = this.$$('@lit-labs/virtualizer')
         this.selectedRange.on('change', this.onSelectedRangeChange.bind(this))
     }
 

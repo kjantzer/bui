@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import docs from 'bui/components/filemanager/README.md'
 
 customElements.define('demo-components-filemanager', class extends LitElement{

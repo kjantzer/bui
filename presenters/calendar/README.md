@@ -6,7 +6,7 @@ A slick, infinite scrolling, calendar view – inspired partially by the MacOS C
 >NOTE: still in the early stages of development and lacks some customization options that may be desired.
 
 ```js
-import {html} from 'lit-html'
+import {html} from 'lit'
 import 'bui/presenters/calendar'
 
 // will be called when a month is close be being in the viewport

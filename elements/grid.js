@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import {mediaQuery} from '../util/mediaQueries'
 
 customElements.define('b-grid', class extends LitElement{

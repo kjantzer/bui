@@ -1,4 +1,4 @@
-import {css, unsafeCSS} from 'lit-element'
+import {css, unsafeCSS} from 'lit'
 import device from '../util/device'
 
 const styles = (el='')=>css`

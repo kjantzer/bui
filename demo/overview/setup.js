@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import docs from '../../docs/setup.md'
 
 customElements.define('demo-setup', class extends LitElement{

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Panel, {register as panelRegister} from '../../presenters/panel'
 import Notif from '../../presenters/notif'
 import Popover from '../../presenters/popover'

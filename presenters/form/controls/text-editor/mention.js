@@ -22,7 +22,7 @@
 */
 import { Node, mergeAttributes } from '@tiptap/core'
 import Suggestion, { SuggestionOptions } from '@tiptap/suggestion'
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Menu from 'menu'
 
 export default function mentionPlugin(tagName){

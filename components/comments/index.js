@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Coll, { markCommentRead } from './models'
 import Comment from './comment'
 import WriteComment from './write'

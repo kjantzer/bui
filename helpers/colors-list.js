@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 
 customElements.define('b-list-of-colors', class extends LitElement{
 

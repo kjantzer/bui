@@ -1,6 +1,6 @@
-import { LitElement, html } from 'lit-element'
-import {until} from 'lit-html/directives/until'
-import 'lit-virtualizer'
+import { LitElement, html } from 'lit'
+import {until} from 'lit/directives/until'
+import '@lit-labs/virtualizer'
 import dayjs from 'dayjs'
 import styles from './styles'
 import './month'
@@ -122,7 +122,7 @@ customElements.define('b-calendar', class extends LitElement{
     }
 
     firstUpdated(){
-        this.scroller = this.$$('lit-virtualizer')
+        this.scroller = this.$$('@lit-labs/virtualizer')
         this.selectedRange.on('change', this.onSelectedRangeChange.bind(this))
     }
 

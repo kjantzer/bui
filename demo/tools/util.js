@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import '../markdown-docs'
 import docs from 'bui/util/README.md'
 import barcodeDocs from 'bui/util/barcodeScanner/README.md'

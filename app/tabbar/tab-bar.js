@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import device from '../../util/device'
 import {mediaQuery} from '../../util/mediaQueries'
 import scrollbars from '../../helpers/scrollbars'

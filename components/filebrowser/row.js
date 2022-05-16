@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import ListHeader from '../../presenters/list/header'
 
 customElements.define('b-filebrowser-file', class extends LitElement{

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Label from '../../../../elements/label'
 import '../../../form/controls/token-text-field'
 

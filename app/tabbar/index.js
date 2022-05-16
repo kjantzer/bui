@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import router from 'bui/router'
 import '../views/routed-tabs'
 import './tab-bar'

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import hidDevice from '../util/hidDevice'
 import '../helpers/lit/events'
 
