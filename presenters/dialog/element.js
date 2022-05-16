@@ -353,7 +353,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             this.__btns = btns
         
         if( doUpdate ){
-            this.update()
+            this.requestUpdate()
             this.updated()
         }
     }
