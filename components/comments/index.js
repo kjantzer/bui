@@ -87,9 +87,13 @@ customElements.define('b-comments', class extends LitElement{
     get model(){ return this._model }
 
     shouldUpdate(changedProps){
-        if( changedProps.get('group') != undefined 
-        || changedProps.get('gid') != undefined 
-        || (this.gid && this.gid != changedProps.get('gid') )){
+
+        // hmmm...this change broke syncing...need to revaluate why I did this
+        // if( changedProps.get('group') != undefined 
+        // || changedProps.get('gid') != undefined 
+        // || (this.gid && this.gid != changedProps.get('gid') )){
+
+        if( changedProps.get('group') != undefined || changedProps.get('gid') != undefined ){
             
             this.unbindListeners()
             this.coll.realtimeSync.close()
