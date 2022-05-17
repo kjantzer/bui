@@ -38,7 +38,6 @@
         "last 1 chrome versions"
     ],
     "devDependencies": {
-        "docpress": "github:kjantzer/docpress#prod",
         "highlight.js": "^10.0.3",
         "less": "^3.11.1",
         "marked": "4.0.16",
