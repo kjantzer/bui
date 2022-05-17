@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit'
-import {live} from 'lit/directives/live'
+import {live} from 'lit/directives/live.js'
 import '@lit-labs/virtualizer'
 import dayjs from 'dayjs'
 import styles from './styles'

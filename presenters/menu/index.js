@@ -1,6 +1,6 @@
 import {html, render} from 'lit'
-import {unsafeHTML} from 'lit/directives/unsafe-html'
-import {live} from 'lit/directives/live'
+import {unsafeHTML} from 'lit/directives/unsafe-html.js'
+import {live} from 'lit/directives/live.js'
 import Popover from '../popover'
 import Dialog from '../dialog'
 import Panel from '../panel'
@@ -12,6 +12,8 @@ import device from '../../util/device';
 import {toMenu, isDivider} from './util'
 
 const styles = require('./style.less')
+
+function isLitHTML(val){ return val && val['_$litType$'] }
 
 export {Dialog, Popover, toMenu, isDivider}
 
@@ -456,8 +458,8 @@ export default class Menu {
 
 		let dataTitle = (m.dataTitle || m.label+' '+m.description).trim().toLowerCase()
 
-		let label = m.label && m.label.getHTML ? m.label : unsafeHTML(m.label||'')
-		let description = m.description && m.description.getHTML ? m.description : unsafeHTML(m.description||'')
+		let label = isLitHTML(m.label) ? m.label : unsafeHTML(m.label||'')
+		let description = isLitHTML(m.description) ? m.description : unsafeHTML(m.description||'')
 
 		return html`
 			<div class="menu-item ${m.className}" val=${m.val} index=${i}

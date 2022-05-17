@@ -1,9 +1,11 @@
 import { LitElement, html, css } from 'lit'
-import {unsafeHTML} from 'lit/directives/unsafe-html'
+import {unsafeHTML} from 'lit/directives/unsafe-html.js'
 import {mediaQuery} from '../../util/mediaQueries'
 import Button from './btn'
 import '../../elements/spinner'
 import '../../helpers/lit/events'
+
+function isLitHTML(val){ return val && val['_$litType$'] }
 
 const basicConverter = { 
     toAttribute: (value, type) => { 
@@ -394,7 +396,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
     `}
 
     _renderStr(str){
-        if( str && str.getHTML ) // lit-html
+        if( isLitHTML(str) ) // lit-html
             return str
         if( str ) // TODO: make developer opt-in to using unsafeHTML?
             return unsafeHTML(str)
@@ -407,7 +409,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         if( this.icon == 'spinner' )
             return html`<b-spinner></b-spinner>`
 
-        if( this.icon && this.icon.getHTML )
+        if( isLitHTML(this.icon) )
             return this.icon
         
         if( this.icon )

@@ -11,6 +11,8 @@ import '../form/controls/radio-btn'
 import '../form/control'
 import '../form/handler'
 
+function isLitHTML(val){ return val && val['_$litType$'] }
+
 customElements.define('b-dialog-prompt', class extends Dialog{
 
     static get styles(){return [super.styles, css`
@@ -124,7 +126,7 @@ export default customElements.get('b-dialog-prompt')
 function makePrompt(opts, i=0, globalOpts){
 
 	// must be custom lit-html
-	if( opts.getHTML )
+	if( isLitHTML(opts) )
 		return opts
 
 	if( opts == 'divider' || opts == '-' )

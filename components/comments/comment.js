@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit'
-import {unsafeHTML} from 'lit/directives/unsafe-html'
+import {unsafeHTML} from 'lit/directives/unsafe-html.js'
 import Menu, {Dialog} from '../../presenters/menu'
 import styles from '../../presenters/form/controls/text-editor/style'
 import '../../elements/text'

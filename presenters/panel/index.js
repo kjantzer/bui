@@ -484,7 +484,7 @@ export class Panel extends LitElement {
             if( this.view && this.view.shadowRoot )
                 this.toolbar = this.view.shadowRoot.querySelector('b-panel-toolbar')
             else
-                this.toolbar = this.shadowRoot.querySelector('b-panel-toolbar') || this.querySelector('b-panel-toolbar')
+                this.toolbar = this.shadowRoot?.querySelector('b-panel-toolbar') || this.querySelector('b-panel-toolbar')
             
             if( this.toolbar ){
                 

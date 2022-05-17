@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit'
-import {repeat} from 'lit/directives/repeat'
+import {repeat} from 'lit/directives/repeat.js'
 import Sortable from 'sortablejs'
 import Dialog, { Notif } from '../../presenters/dialog'
 import device from '../../util/device'

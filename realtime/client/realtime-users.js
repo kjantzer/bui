@@ -1,6 +1,8 @@
 import { LitElement, html, css } from 'lit'
 import '../../elements/avatar'
 
+function isLitHTML(val){ return val && val['_$litType$'] }
+
 let realtime = null
 let currentUserID = null
 
@@ -38,7 +40,7 @@ customElements.define('b-realtime-users', class extends LitElement{
     renderUser(m){
         let render = this.renderer && this.renderer(m)
 
-        if( render && render.constructor.name !== 'TemplateResult'){
+        if( !isLitHTML(render) ){
             render = null
             console.warn('`renderer` must return `lit-html`')
         }

@@ -234,6 +234,8 @@ customElements.define('b-notif', class extends LitElement{
 
 export default customElements.get('b-notif')
 
+function isLitHTML(val){ return val && val['_$litType$'] }
+
 let notifClass = customElements.get('b-notif')
 
 for( let key in TYPES ){
@@ -241,7 +243,7 @@ for( let key in TYPES ){
         notifClass[key] = (msg, opts={})=>{
             
             // string or lit-html
-            if( typeof msg == 'string' || msg.constructor.name == 'TemplateResult' ){
+            if( typeof msg == 'string' || isLitHTML(msg) ){
                 opts = opts || {}
                 opts.msg = msg
             }
