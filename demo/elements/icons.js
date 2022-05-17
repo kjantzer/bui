@@ -42,6 +42,13 @@ customElements.define('b-demo-icons', class extends LitElement{
             padding: 1em;
             gap: 1em;
         }
+
+        @media (max-width: 599px) {
+
+            b-list::part(list) {
+                --grid-size: 74px;
+            }
+        }
     `}
 
     constructor(){

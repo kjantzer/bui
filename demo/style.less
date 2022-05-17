@@ -40,3 +40,13 @@ demo-main {
 b-panels[name="root"] {
     z-index: 200;
 }
+
+@media (max-width: 599px) {
+    :root {
+        --b-app-tab-bar-active-color: rgba(var(--dark-bgd-rgb), .3);
+        --b-app-tab-bar-active-color-text: var(--dark-text);
+        --b-app-tab-bar-bgd: var(--theme-gradient);
+        --b-app-tab-bar-text-color: var(--dark-text);
+        --b-app-tab-bar-bgd-stacked-icon-opacity: .75;
+    }
+}
