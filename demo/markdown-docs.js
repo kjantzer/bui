@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import {unsafeHTML} from 'lit/directives/unsafe-html.js'
-import marked from 'marked'
+import {marked} from 'marked'
 import hljs from 'highlight.js'
 import {codeHightlighStyle} from './code-hightlight-style'
 
