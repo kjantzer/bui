@@ -26,20 +26,20 @@ Web components for creating interfaces - built with [Lit](https://lit.dev/) by [
 - 🔗 Extensible and interoperable with other frameworks
 - ⚓️ URL route management
 
-> NOTE: Upgrading to [Lit 2.0](https://lit.dev/) is on the horizon, but not ready yet.
-
 ## ℹ️ Overview
 
-The stable release of v1 [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) with the addition of [lit-html](https://lit-html.polymer-project.org) and [lit-element](https://lit-element.polymer-project.org) make for an incredible framework for writing user interface components.
+The stable release of v1 [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) with the addition of [lit](https://lit.dev) make for an incredible framework for writing user interface components.
 
 Shadow DOM, CSS [custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties), and css ["parts"](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) makes encapsulation easy yet still customizable.
 
-**BUI is a library** of low level custom elements, full featured "presenters", useful utility functions, application router, code extension "helpers", node.js server classes (for creating RESTful APIs), and more. Import and use a select few components or use most of it to create a full featured application.
+**BUI is a library** of low level custom elements, full featured "presenters", useful utility functions, application router, code extension "helpers", node.js server classes (for creating RESTful APIs), and more. 
 
-The [demo/documention](http://bui.js.org/) is an example of what can be built with BUI and a good resource for reading more about what the library offers.
+**Import and use a select few components or use most of it to create a full featured application.**
+
+⭐️ The [demo/documention](http://bui.js.org/) is an example of what can be built with BUI and a good resource for reading more about what the library offers.
 
 ## ⬇️ Installation
-BUI is actively developed on a daily basis by [Blackstone Publishing](https://www.blackstonepublishing.com). It is used in multiple internal application production environments. New features, changes, and bug fixes occur weekly.
+BUI is actively developed on a daily basis by [Blackstone Publishing](https://www.blackstonepublishing.com). It is used in multiple internal application production environments. New features, changes, and bug fixes occur weekly - however, it may be slower to reach this public repo.
 
 Although BUI is available as an [npm package](https://www.npmjs.com/package/blackstone-ui), the library is updated too frequently to publish consistent versions. 
 
@@ -71,7 +71,7 @@ $ npm start
 You should then be able to view the demo at:  
 http://localhost:1234
 
-## ⚠️ Notice
+## 🚨 Notice
 
 Since BUI is actively developed nearly every day and done so by a small team, the documentation likely won't be 100% up to date. You may need to reference the physical code to discover some options/settings.
 

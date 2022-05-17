@@ -5,6 +5,8 @@ import Menu from 'bui/presenters/menu'
 import device, {colorScheme} from 'bui/util/device'
 import 'bui/elements/logo'
 
+window.AppInstaller = AppInstaller
+
 window.colorScheme = colorScheme
 
 const themeAccents = [
@@ -31,6 +33,8 @@ customElements.define('demo-header', class extends LitElement{
 
         // document.documentElement.toggleAttribute('dark', this.isDarkMode)
         colorScheme.apply({colorizeFaviconComposition: 'source-in'})
+
+        AppInstaller.canInstallPromise.then(e=>this.update())
     }
 
     static get styles(){return css`
@@ -46,7 +50,7 @@ customElements.define('demo-header', class extends LitElement{
         }
 
         bui-logo {
-            margin: 0 .5rem 0 .5rem;
+            margin: 0 .75rem;
             --size: 2.2em;
             /* color: var(--theme-chosen); */
         }
@@ -67,13 +71,13 @@ customElements.define('demo-header', class extends LitElement{
 
         <bui-logo></bui-logo>
 
-        <b-text lg>
-            Blackstone <b-text bold>UI</b-text>
+        <b-text md>
+            Blackstone <b-text xbold>UI</b-text>
         </b-text>
 
         <div class="right">
             
-            <b-btn text icon="install_desktop" color="theme" lg @click=${AppInstaller.install} ?hidden=${AppInstaller.canInstall}>Install</b-btn>
+            <b-btn text icon="install_desktop" color="theme" lg @click=${AppInstaller.install} ?hidden=${!AppInstaller.canInstall}>Install</b-btn>
 
             <b-btn text lg icon="invert-colors-on" title="Change theme" @click=${this.changeTheme}></b-btn>
             <b-btn text lg icon="github" title="Go to GitHub repo" href="https://github.com/kjantzer/bui"></b-btn>

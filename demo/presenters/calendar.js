@@ -17,7 +17,7 @@ customElements.define('demo-presenter-calendar', class extends View{
 
 
     renderTitleRight(){ return html`
-        <b-btn @click=${this.openDemo} color="theme">Calendar Demo</b-btn>
+        <b-btn @click=${this.openDemo} color="theme-gradient">Calendar Demo</b-btn>
     `}
 
     openDemo(){
