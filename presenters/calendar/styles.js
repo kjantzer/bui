@@ -58,11 +58,6 @@ export default css`
         text-align: right;
     }
 
-    lit-virtualizer{
-        position: static;
-    }
-
-    main,
     lit-virtualizer {
         width: 100%;
         height: 100%;
@@ -71,17 +66,17 @@ export default css`
         overflow-x: hidden;
     }
 
-    main {
+    lit-virtualizer {
         overflow: auto;
         min-height: 0;
     }
 
-    main::-webkit-scrollbar {
+    lit-virtualizer::-webkit-scrollbar {
         display: none;
     }
 
     /* Hide scrollbar for IE, Edge and Firefox */
-    main {
+    lit-virtualizer {
         -ms-overflow-style: none;  /* IE and Edge */
         scrollbar-width: none;  /* Firefox */
     }

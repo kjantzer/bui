@@ -171,15 +171,14 @@ customElements.define('b-calendar', class extends LitElement{
             <div>${day}</div>
         `)}</div>
         
-        <main>
         <lit-virtualizer
+            scroller
             part="months"
             .items=${this.months}
             .renderItem=${this.renderMonth.bind(this)}
             @date-selected=${this.onDateSelected}
             @month-in-view=${this.onMonthInView}
         ></lit-virtualizer>
-        </main>
 
         <footer>
         </footer>
