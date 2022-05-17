@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import scrollbars from '../../helpers/scrollbars'
 
 customElements.define('b-filebrowser-breadcrumbs', class extends LitElement{

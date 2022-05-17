@@ -1,11 +1,11 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import '../../helpers/lit/events'
 import scrollbars from '../../helpers/scrollbars'
 
 customElements.define('b-calendar-month', class extends LitElement{
 
     static get properties(){return {
-        date: {type: Date},
+        date: {type: Object},
         // inViewport: {type: Boolean, reflect: true}
     }}
 
@@ -17,13 +17,13 @@ customElements.define('b-calendar-month', class extends LitElement{
             /* gap: var(--gap); */
             text-align: center;
             width: 100%;
-            --height: 80%;
+            --height: 80vh;
             height: var(--height);
             pointer-events: none;
         }
 
         :host([weeks="6"]) {
-            --height: 100%;
+            --height: 100vh;
             grid-auto-rows: 20%;
         }
 

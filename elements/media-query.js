@@ -1,4 +1,4 @@
-import { LitElement, html, css, unsafeCSS } from 'lit-element'
+import { LitElement, html, css, unsafeCSS } from 'lit'
 import {MediaQueries, mediaQuery} from '../util/mediaQueries'
 window.MediaQueries = MediaQueries
 

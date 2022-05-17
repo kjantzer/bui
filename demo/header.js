@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import 'bui/elements/text'
 import AppInstaller from 'bui/app/installer'
 import Menu from 'bui/presenters/menu'

@@ -1,7 +1,7 @@
 /*
     Tooltip (uses Popover to display)
 */
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Popover from '../presenters/popover'
 
 let mouseX = 0;

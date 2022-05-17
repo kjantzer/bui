@@ -3,7 +3,7 @@
 
     DEPRECATED
 */
-import {LitElement} from 'lit-element'
+import {LitElement} from 'lit'
 
 LitElement.prototype.sv = function(viewName, elementName){
     this.__subviews = this.__subviews || {}

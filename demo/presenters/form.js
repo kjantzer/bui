@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import docs from 'bui/presenters/form/README.md'
 
 // must be deliberately imported
@@ -103,7 +103,7 @@ customElements.define('demo-presenter-form', class extends LitElement{
 
             <form-control colspan material="filled" key="rte" label="Text Editor (WYSIWYG)">
                 <text-editor></text-editor>
-                <span slot="help">Rich text editing is enabled with tiptap.js</span>
+                <span slot="help">Rich text editing is enabled with tiptap.js. Try using keyboard shortcuts or markdown syntax.</span>
             </form-control>
 
             

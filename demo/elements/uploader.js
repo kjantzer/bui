@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import View from '../presenters/view'
 import Dialog from 'bui/presenters/dialog'
 import 'bui/elements/uploader'

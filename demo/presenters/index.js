@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import 'bui/helpers/colors-list'
 import 'bui/presenters/form'
 import 'bui/presenters/list'
@@ -51,7 +51,7 @@ customElements.define('demo-presenters', class extends LitElement{
             demo-presenter-notif
             demo-presenter-tabs
             demo-presenter-list
-            dmeo-presenter-virtual-scroller
+            demo-presenter-virtual-scroller
             demo-presenter-datepicker
             demo-presenter-calendar
 

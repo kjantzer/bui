@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import TextView from './text'
 import csvToArray from 'bui/util/csvToArray'
 

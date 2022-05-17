@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Icon from 'bui/elements/icon'
 import MaterialIcons from '@material-icons/svg/data.json'
 import AllMaterialIcons from './all-material-icons'

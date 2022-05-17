@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Datepicker from '../../../datepicker'
 
 customElements.define('b-list-filter-view-date', class extends LitElement{

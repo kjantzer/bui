@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import FileRow from '../filemanager/row'
 
 customElements.define('b-comment-file', class extends FileRow{

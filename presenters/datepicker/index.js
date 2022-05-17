@@ -1,6 +1,6 @@
-import { LitElement, html } from 'lit-element'
-import {live} from 'lit-html/directives/live'
-import 'lit-virtualizer'
+import { LitElement, html } from 'lit'
+import {live} from 'lit/directives/live'
+import '@lit-labs/virtualizer'
 import dayjs from 'dayjs'
 import styles from './styles'
 import './month'
@@ -173,12 +173,14 @@ customElements.define('b-datepicker', class extends LitElement{
             <div>${day}</div>
         `)}</div>
         
+        <main>
         <lit-virtualizer
             part="months"
             .items=${this.months}
             .renderItem=${this.renderMonth.bind(this)}
             @date-selected=${this.onDateSelected}
         ></lit-virtualizer>
+        </main>
 
         <footer>
             <b-btn clear @click=${this.cancelDate}>Cancel</b-btn>

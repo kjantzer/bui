@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit-element'
-import 'lit-virtualizer'
+import { LitElement, html, css } from 'lit'
+import '@lit-labs/virtualizer'
 import './skipper'
 
 customElements.define('b-virtual-scroller', class extends LitElement{
@@ -16,7 +16,11 @@ customElements.define('b-virtual-scroller', class extends LitElement{
             position:relative;
         }
 
-        lit-virtualizer {
+        main {
+            overflow: auto;
+        }
+
+        main, lit-virtualizer {
             width: 100%;
             height: 100%;
         }
@@ -31,10 +35,12 @@ customElements.define('b-virtual-scroller', class extends LitElement{
     }
 
     render(){return html`
+        <main>
         <lit-virtualizer
             .items=${this.items}
             .renderItem=${this.renderItem}
         ></lit-virtualizer>
+        </main>
         <b-virtual-scroller-skipper
             .letters=${this.skipperLetters}
             @scroll-to=${this.skipperScrollTo}

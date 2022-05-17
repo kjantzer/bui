@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 
 // placeholder example
 customElements.define('b-search-result', class extends LitElement{

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import '../../elements/grid'
 import '../../elements/label'
 import '../../elements/grid'

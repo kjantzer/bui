@@ -9,7 +9,7 @@
 
     NOTE: this does make some assumptions regarding the user models
 */
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css } from 'lit';
 import './avatar'
 
 let user

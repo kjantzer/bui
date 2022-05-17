@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import './touch-ripple'
 
 customElements.define('check-box', class extends LitElement{

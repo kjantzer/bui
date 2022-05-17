@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import device from '../../../util/device'
 
 customElements.define('range-slider', class extends LitElement{
@@ -29,6 +29,14 @@ customElements.define('range-slider', class extends LitElement{
 
         this.addEventListener('keydown', this._onKeyDown)
 		
+		this.addEventListener('blur', e=>{
+            this._mouseDown = false
+            this._active = null
+            this.update()
+		})
+    }
+
+    firstUpdated(){
         // respond to the "thumbs" gaining focus
 		this.shadowRoot.addEventListener('focus', e=>{
 
@@ -43,12 +51,6 @@ customElements.define('range-slider', class extends LitElement{
             this.update()
 
 		}, true)
-		
-		this.addEventListener('blur', e=>{
-            this._mouseDown = false
-            this._active = null
-            this.update()
-		})
     }
 
     static get styles(){return css`

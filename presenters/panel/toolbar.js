@@ -1,4 +1,4 @@
-import {LitElement, html, css} from 'lit-element'
+import {LitElement, html, css} from 'lit'
 
 // TODO: rename to PanelTitlebar
 class PanelToolbar extends LitElement {

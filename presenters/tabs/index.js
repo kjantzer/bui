@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Menu from '../menu'
 import TabViews from './views'
 import TabView from './view'

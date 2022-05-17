@@ -1,4 +1,4 @@
-import { html } from 'lit-element'
+import { html } from 'lit'
 import docs from './docs'
 
 export default html`

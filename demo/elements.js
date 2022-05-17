@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import 'bui/presenters/tabs'
 import 'bui/elements/icon'
 import 'bui/elements/text'

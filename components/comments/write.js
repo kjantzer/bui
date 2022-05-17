@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import '../../presenters/form/handler'
 import '../../presenters/form/control'
 import '../../presenters/form/controls/text-editor'

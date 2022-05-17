@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Panel from 'panel'
 import Dialog from 'dialog'
 import '../../helpers/lit/shared'

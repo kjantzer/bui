@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css } from 'lit';
 // https://brumm.af/shadows
 export class PaperElement extends LitElement {
 

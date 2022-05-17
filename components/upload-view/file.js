@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import '../../elements/numeral'
 import '../../elements/ts'
 import '../../elements/text'

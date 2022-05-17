@@ -1,4 +1,4 @@
-import { css } from 'lit-element'
+import { css } from 'lit'
 import Header from './header'
 
 customElements.define('b-list-footer', class extends Header{

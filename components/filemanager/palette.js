@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import Popover from '../../presenters/popover'
 
 customElements.defineShared('b-palette', class extends LitElement{

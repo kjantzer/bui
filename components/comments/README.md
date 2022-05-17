@@ -22,7 +22,7 @@ Comments.nameTag = 'name-tag-element' // defaults to avatar if not set
 If you want support for mentions, you need to do additional setup
 
 ```js
-import {html} from 'lit-html'
+import {html} from 'lit'
 import mentionPlugin, {MentionElement}  from 'bui/components/comments/mentions'
 
 // create the custom "mention" element

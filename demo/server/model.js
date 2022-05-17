@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit-element'
+import { LitElement, html, css } from 'lit'
 import View from '../presenters/view'
 import docs from '../../server/docs/model.md'
 

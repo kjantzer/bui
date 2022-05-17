@@ -1,6 +1,6 @@
-import { LitElement, html } from 'lit-element'
-import {until} from 'lit-html/directives/until'
-import 'lit-virtualizer'
+import { LitElement, html } from 'lit'
+import {until} from 'lit/directives/until'
+import '@lit-labs/virtualizer'
 import dayjs from 'dayjs'
 import styles from './styles'
 import './month'
@@ -171,6 +171,7 @@ customElements.define('b-calendar', class extends LitElement{
             <div>${day}</div>
         `)}</div>
         
+        <main>
         <lit-virtualizer
             part="months"
             .items=${this.months}
@@ -178,6 +179,7 @@ customElements.define('b-calendar', class extends LitElement{
             @date-selected=${this.onDateSelected}
             @month-in-view=${this.onMonthInView}
         ></lit-virtualizer>
+        </main>
 
         <footer>
         </footer>

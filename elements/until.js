@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit-element'
-import {until} from 'lit-html/directives/until.js';
+import { LitElement, html, css } from 'lit'
+import {until} from 'lit/directives/until.js';
 
 customElements.define('b-until', class extends LitElement{
 
