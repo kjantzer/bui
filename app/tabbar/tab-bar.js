@@ -174,10 +174,15 @@ customElements.define('b-app-tab-bar', class extends LitElement{
                 <slot name="before:${v.id}"></slot>
 
                 <b-btn text vid=${v.id} stacked icon="${typeof v.icon==='string'?v.icon:''}" ?active=${v.active} .tabView=${v} @click=${this.onClick}>
+
+                    ${v._viewClass?.tabBarBtn?html`
+                        ${v._viewClass.tabBarBtn}
+                    `:html`
                     ${typeof v.icon !== 'string'?html`
                         <span slot="icon">${v.icon}</span>
                     `:''}
                     <span>${v.title}</span>
+                    `}
                 </b-btn>
 
                 <slot name="after:${v.id}"></slot>
