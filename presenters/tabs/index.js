@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit'
 import Menu from '../menu'
 import TabViews from './views'
 import TabView from './view'
-import debounce from 'lodash/debounce'
+import debounce from '../../util/debounce'
 
 customElements.define('b-tabs', class extends LitElement {
 

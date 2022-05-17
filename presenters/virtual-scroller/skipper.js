@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit'
-import throttle from 'lodash/throttle'
+import throttle from '../../util/throttle'
 
 const LETTERS = ['#'].concat(Array
 	.apply(null, {length: 26})

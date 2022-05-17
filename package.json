@@ -41,7 +41,7 @@
         "docpress": "github:kjantzer/docpress#prod",
         "highlight.js": "^10.0.3",
         "less": "^3.11.1",
-        "marked": "^2.0.0",
+        "marked": "4.0.16",
         "parcel-bundler": "^1.12.5",
         "parcel-plugin-markdown-string": "^1.4.2",
         "parcel-plugin-svg-as-inline-string": "github:kjantzer/parcel-plugin-svg-as-inline-string"
@@ -65,7 +65,6 @@
         "fuse.js": "^3.4.5",
         "lit": "^2.2.3",
         "lit-element": "^3.2.0",
-        "lodash": "^4.17.11",
         "node-vibrant": "^3.2.1-alpha.1",
         "numeral": "^2.0.6",
         "popper.js": "^1.14.7",
