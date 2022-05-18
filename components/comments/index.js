@@ -34,6 +34,10 @@ customElements.define('b-comments', class extends LitElement{
             position:relative;
             gap: .5em;
         }
+        
+        :host([newest]) {
+            flex-direction: column;
+        }
 
         :host([group="thread"]) {
             border-left: solid 1px var(--theme-text-accent);
