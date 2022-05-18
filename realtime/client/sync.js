@@ -123,12 +123,15 @@ export function syncBackboneCollection(data, {
 
         model = this.get(path)
 
-        if( !model && addUpdates ){
+        if( !model && addUpdates && action == 'update' ){
             action = data.action = 'add'
             path = path.replace(/\.\d+$/,'')
             model = this.get(path) || this
         }
     }
+
+    if( !model && action == 'destroy' )
+        return
 
     if( !model )
         return addUpdates ? console.warn('Sync: unsure how to handle, ', data) : false
@@ -166,12 +169,15 @@ export function syncBackboneModel(data, {addMissingUpdates=true}={}){
 
         model = this.get(path)
 
-        if( !model && addMissingUpdates ){
+        if( !model && addMissingUpdates && action == 'update' ){
             action = data.action = 'add'
             path = path.replace(/\.\d+$/,'')
             model = this.get(path)
         }
     }
+
+    if( !model && action == 'destroy' )
+        return
 
     if( !model )
         return console.warn('Sync: unsure how to handle, ', data)
