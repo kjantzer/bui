@@ -9,6 +9,7 @@ import '../../elements/uploader-preview'
 
 let extensions = []
 let MENTION_TAG
+let HASHTAG_TAG
 
 customElements.define('b-write-comment', class extends LitElement{
 
@@ -20,6 +21,8 @@ customElements.define('b-write-comment', class extends LitElement{
         val.forEach(ext=>{
             if( ext.name == 'mention' )
                 MENTION_TAG = ext.options.tag
+            if( ext.name == 'hashtag' )
+                HASHTAG_TAG = ext.options.tag
         })
 
         extensions = val
@@ -146,6 +149,13 @@ customElements.define('b-write-comment', class extends LitElement{
         if( MENTION_TAG ){
             let mentions = Array.from(this.formHandler.get('comment').control.shadowRoot.querySelectorAll(MENTION_TAG))
             meta.mentions = mentions.map(el=>parseInt(el.uid)||null).filter(id=>id)
+        }
+
+        if( HASHTAG_TAG ){
+            let hashtags = Array.from(this.formHandler.get('comment').control.shadowRoot.querySelectorAll(HASHTAG_TAG))
+            hashtags = hashtags.map(el=>el.tag||null).filter(tag=>tag)
+            if( hashtags.length > 0 )
+                meta.hashtags = hashtags
         }
 
         if( this.meta ){
