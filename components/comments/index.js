@@ -21,8 +21,11 @@ customElements.define('b-comments', class extends LitElement{
         group: {type: String},
         gid: {type: Number},
         limit: {type: Number},
+        unread: {type: Boolean},
         placeholderBtn: {type: String},
         placeholder: {type: String},
+        singular: {type: String},
+        plural: {type: String},
         uploads: {type: Object},
         replies: {type: Boolean} // not supported yet
     }}
@@ -72,6 +75,8 @@ customElements.define('b-comments', class extends LitElement{
     constructor(){
         super()
         this.limit = 10
+        this.singular = 'comment'
+        this.plural = 'comments'
         this.placeholderBtn = 'Comment'
         this.placeholder = 'Write a comment'
     }
@@ -146,11 +151,19 @@ customElements.define('b-comments', class extends LitElement{
         },10)
     }
 
-    refresh(){
+    async refresh(){
         this.markRead()
-            
-        if( !this.coll.hasFetched && !this.coll.isFetching )
-            this.coll.fetchSync()
+        
+        if( !this.coll.hasFetched && !this.coll.isFetching ){
+
+            let data = {}
+
+            // only fetch unread
+            if( this.unread )
+                data.unread = true
+
+            await this.coll.fetchSync({data})
+        }
     }
 
     connectedCallback(){
@@ -180,10 +193,16 @@ customElements.define('b-comments', class extends LitElement{
             placeholder=${this.placeholder}
         ></b-comment-row>
 
+        ${this.coll.length==0&&this.unread?html`
+            <b-empty-state static sm>
+                <slot name="unread-empty">No unread ${this.plural}</slot>
+            </b-empty-state>
+        `:''}
+
         ${this.coll.map((m,i)=>html`
 
             ${this.limit&&i==this.coll.length-this.limit?html`
-                <b-btn color="white" block @click=${this.viewAllComments} class="view-all">View all comments</b-btn>
+                <b-btn sm color="white" block @click=${this.viewAllComments} class="view-all">View all ${this.plural}</b-btn>
             `:''}
             
             <b-comment-row 
@@ -196,10 +215,25 @@ customElements.define('b-comments', class extends LitElement{
             ></b-comment-row>
 
         `).reverse()}
+
+        ${this.unread?html`
+            <b-btn sm color="white" block @click=${this.viewAllComments} class="view-all">Fetch all</b-btn>
+        `:''}
     `}
 
-    viewAllComments(e){
-        e.currentTarget.remove()
+    async viewAllComments(e){
+        
+        let btn = e.currentTarget
+
+        if( this.unread ){
+            this.unread = false
+            this.coll.hasFetched = false
+            btn.spin = true
+            await this.refresh()
+            btn.remove()
+        }else{
+            btn.remove()
+        }
     }
 
     markRead(e){

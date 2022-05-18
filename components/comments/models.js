@@ -78,14 +78,14 @@ class Comment extends Model {
         super(...arguments)
 
         // do this so we can keep the "new" badge shown a little longer
-        if( this.isUnread )
+        if( !this.isNew() && this.isUnread )
             this.wasUnread = true
     }
 
     get isByMe(){ return userID() == this.get('uid')}
     get meta(){ return this.attributes.meta || {} }
     
-    get isUnread(){ return !this.isByMe && !this.get('ts_read').isValid() }
+    get isUnread(){ return !this.isByMe && !this.get('ts_read')?.isValid() }
     get isResolved(){ return !!this.meta.resolved }
     
     get reactions(){ return this.meta.reactions || [] }

@@ -71,6 +71,10 @@ module.exports = class Comments extends Model {
         return summarize(data)
     }
 
+    get onlyUnread(){
+        return this.gid == 'unread' || this.req.query.unread != undefined
+    }
+
     findWhere(where){
         let {Value, JsonContains, Group, UnsafeSQL} = this.db.clauses
 
@@ -78,20 +82,30 @@ module.exports = class Comments extends Model {
             where.group = this.group
 
         // if requesting unread comments (with mentions)
-        if( this.gid == 'unread' ){
+        if( this.onlyUnread ){
 
             // comments NOT by this uer
             where['c.uid'] = new Value('!=', this.req.user.id)
             
             // NOT marked read or new comment
             where.unread = new Group({
-                'cr.id': 'IS NULL',
-                // NOTE: should this be opt-in?
-                recent: new UnsafeSQL('c.ts_created >= CURDATE() - INTERVAL 2 DAY')
+                'cr.id': 'IS NULL'
             }, 'OR')
 
-            // comment mentions this user
-            where['c.meta'] = new JsonContains(this.req.user.id, {path:'$.mentions'})
+            // if requesting the "unread" report
+            if( this.gid == 'unread' ){
+
+                // also include recent comments even if read
+                // NOTE: should this be opt-in?
+                where.unread.set('recent', 
+                    new UnsafeSQL('c.ts_created >= CURDATE() - INTERVAL 2 DAY'))
+
+                // comment must mention this user
+                where.mentioned = new Group({
+                    'c.meta': new JsonContains(this.req.user.id, {path:'$.mentions'}),
+                    'c.group': 'changelog'
+                }, 'OR')
+            }
 
         }else if(this.gid == 'history' ){
 
