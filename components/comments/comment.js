@@ -231,7 +231,7 @@ customElements.define('b-comment-row', class extends LitElement {
 
                         <b-text sm muted><b-ts .date=${this.model.get('ts_created')}></b-ts></b-text>
                     
-                        ${this.model.isUnread?html`
+                        ${this.model.wasUnread?html`
                             <b-new-badge xs>NEW</b-new-badge>
                         `:''}
 

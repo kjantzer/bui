@@ -74,6 +74,14 @@ class Comment extends Model {
         files: CommentFiles
     }}
 
+    constructor(){
+        super(...arguments)
+
+        // do this so we can keep the "new" badge shown a little longer
+        if( this.isUnread )
+            this.wasUnread = true
+    }
+
     get isByMe(){ return userID() == this.get('uid')}
     get meta(){ return this.attributes.meta || {} }
     
