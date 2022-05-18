@@ -56,7 +56,7 @@ customElements.define('b-write-comment', class extends LitElement{
 
         form-control b-btn {
             margin: -.5em 0 -.5em 0;
-            align-self: stretch;
+            align-self: flex-end;
         }
 
         [empty] b-btn {
@@ -85,7 +85,7 @@ customElements.define('b-write-comment', class extends LitElement{
                     @esckey=${this.onEscape}
                     @blur=${this.onBlur}></text-editor>
 
-                <b-btn sm color="theme" @click=${this.save} icon="${this.coll?'send':'ok'}" slot="suffix"></b-btn>
+                <b-btn sm color="theme-gradient" @click=${this.save} icon="${this.coll?'send':'pencil'}" slot="suffix"></b-btn>
             </form-control>
 
             ${this.model||!this.uploads?'':html`
