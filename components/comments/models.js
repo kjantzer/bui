@@ -26,7 +26,7 @@ export default class Comments extends Collection {
 
     comparator(m){
         // show newest first when listing "unread"
-        if( this.gid == 'unread' )
+        if( ['unread', 'history'].includes(this.gid) )
             return -1 * m.get('ts_created').sortValue()
         
         return m.get('ts_created').sortValue()
