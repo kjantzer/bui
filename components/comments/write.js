@@ -142,7 +142,7 @@ customElements.define('b-write-comment', class extends LitElement{
 
         let comment_plain = this.formHandler.get('comment').textValue
 
-        let meta = {
+        let meta = this.model.get('meta') || {
             path: location.pathname
         }
 
