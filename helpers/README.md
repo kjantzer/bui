@@ -4,16 +4,16 @@ Helpers extend existing tools and libraries with added functionality. Typically 
 
 ***
 
-## LitElement
+# Lit
 
-Extend LitElement to fit our needs. I like doing this so that we dont have to create unnecessary subclasses
+Extend [LitElement](http://lit.dev) to fit our needs. I like doing this so that we dont have to create unnecessary subclasses
 
 ```js
 // include all lit-element helpers
 import 'bui/helpers/lit'
 ```
 
-### Listeners
+## Listeners
 
 ```js
 import 'bui/helpers/lit/listeners'
@@ -38,7 +38,7 @@ this.model.on('change reset', this.update.bind(this))
 this.model.get('child-collection').on('reset', this.update.bind(this))
 ```
 
-### Events
+## Events
 
 ```js
 import 'bui/helpers/lit/events'
@@ -88,7 +88,7 @@ onAction(e){
 ```
 
 
-### Get
+## Get
 
 ```js
 import 'bui/helpers/lit/get'
@@ -98,7 +98,7 @@ Shortcut to `this.model.get()` that also supports `defaultValue`
 this.get('some_key', 'default Value')
 ```
 
-### Model / Coll
+## Model / Coll
 
 ```js
 import 'bui/helpers/lit/model'
@@ -116,7 +116,7 @@ onModelChange(model){
 }
 ```
 
-### Shared
+## Shared
 ```js
 import 'bui/helpers/lit/shared'
 ```
@@ -136,7 +136,7 @@ console.log(MyElement.shared == MyElement.shared) // true
 console.log(MyElement.shared == new MyElement() ) // false
 ```
 
-### Event Target Model
+## Event Target Model
 
 ```js
 import 'bui/helpers/lit/event-target-model'
@@ -166,7 +166,7 @@ takeAction(e){
 }
 ```
 
-### Subviews
+## Subviews
 
 > Considering DEPRECATION
 
@@ -188,12 +188,12 @@ this.sv('edit', 'my-edit-view')
 
 ***
 
-## Backbone.js
+# Backbone.js
 
 If you want to use Backbone.js for managing data (models/collections) there are some helpers
 to improve the workflow.
 
-### Singleton
+## Singleton
 Export a a Collection as a singleton
 
 ```js
@@ -205,7 +205,7 @@ class Coll extends Collection{}
 export default singleton(Coll)
 ```
 
-### Promises
+## Promises
 Crud methods in promise form
 ```js
 import 'helpers/backbone/promises'
@@ -218,7 +218,7 @@ await collection.fetchSync()
 await collection.createSync()
 ```
 
-### Attribute Types
+## Attribute Types
 Make sure `.get()` attributes returns data in the expected type (e.g. a number or date object rather than a string)
 
 ```js
@@ -270,7 +270,7 @@ Backbone.registerModelAttrType('date', val=>{
 myModel.get('ts_created').format('l')
 ```
 
-### Relations
+## Relations
 Any non-trivial app will require models contain nested children. This helper aids in the implementation
 of related models and collections. Children classes are only created when accessed and will pull data
 from the parent model's attributes or a specificed lookup collection.
@@ -279,10 +279,10 @@ from the parent model's attributes or a specificed lookup collection.
 
 ***
 
-## Scrollbars
+# Scrollbars
 Make scrollbars look more like stock Mac/iOS. Also provides a few utilities
 
-### Style
+## Style
 ```js
 import scrollbars from 'bui/helpers/scrollbars'
 
@@ -296,7 +296,7 @@ css`
 `
 ```
 
-### Hide 
+## Hide 
 Defaults to hiding scrollbar on `:host`. Pass a css selector to target child element.
 
 ```js
@@ -306,7 +306,7 @@ css`
 `
 ```
 
-### Disable Wheel Scroll
+## Disable Wheel Scroll
 ```js
 firstUpdated(){
     scrollbars.stopWheelScrolling(this)
@@ -315,7 +315,7 @@ firstUpdated(){
 
 ***
 
-## Error Handler
+# Error Handler
 A catch-all error handler with support for custom UI errors. 
 
 ```js
@@ -341,7 +341,7 @@ if( !label )
     throw new UIDeniedError('A label is required', {target: inputEl})
 ```
 
-### Custom Errors
+## Custom Errors
 
 #### `UIAlertError`
 Generic alert. Defaults to `Dialog.alert`

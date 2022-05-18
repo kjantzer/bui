@@ -158,6 +158,13 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             margin-top: 0;
         }
 
+        :host > main > [header="h1"] {
+            background: var(--theme-bgd);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
         :host *:first-child {
             margin-top: 0;
         }
