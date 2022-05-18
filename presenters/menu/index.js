@@ -458,8 +458,8 @@ export default class Menu {
 
 		let dataTitle = (m.dataTitle || m.label+' '+m.description).trim().toLowerCase()
 
-		let label = isLitHTML(m.label) ? m.label : unsafeHTML(m.label||'')
-		let description = isLitHTML(m.description) ? m.description : unsafeHTML(m.description||'')
+		let label = isLitHTML(m.label) ? m.label : unsafeHTML(String(m.label||''))
+		let description = isLitHTML(m.description) ? m.description : unsafeHTML(String(m.description||''))
 
 		return html`
 			<div class="menu-item ${m.className}" val=${m.val} index=${i}
