@@ -1,24 +1,27 @@
 /*
-    Mentions for Text Editor
+    Hashtags for Text Editor
 
 	Modeled after the tiptiap "mention" extension
 
     https://github.com/ueberdosis/tiptap/blob/main/packages/extension-mention/src/mention.ts
 
 	Example:
-	import mentionPlugin, {MentionElement} from 'bui/presenters/form/controls/text-editor/mention'
+	import hashtagPlugin, {HashtagElement} from 'bui/presenters/form/controls/text-editor/hashtag'
 
-	customElements.define('user-mention', class extends MentionElement {
+	customElements.define('user-hashtag', class extends HashtagElement {
 		static items(query){
 			return this.filterItems(query, ['John Doe', 'Jane Dear'])
 		}
-		// optionally change how the mention is rendered
+		// optionally change how the hashtag is rendered
 		// render(){}
 	})
 
-	const userMentions = mentionPlugin('user-mention')
+	const userHashtags = hashtagPlugin('user-hashtag')
 
-	<text-editor .extensions=${userMentions}></text-editor>
+	<text-editor .extensions=${userHashtags}></text-editor>
+
+  NOTE: this largely duplicates mention.js
+  - consider creating a base class and extend both 
 */
 import { Node, mergeAttributes } from '@tiptap/core'
 import Suggestion from '@tiptap/suggestion'
@@ -26,41 +29,42 @@ import { PluginKey } from 'prosemirror-state'
 import { LitElement, html, css } from 'lit'
 import Menu from 'menu'
 
-export default function mentionPlugin(tagName){
-    let mentionTag = customElements.get(tagName)
-    if( !mentionTag ) throw new Error(`Mention cannot find '${tagName}'`)
-    if( typeof mentionTag.items != 'function' ) throw new Error(`Mention: ${tagName} is missing the '.items(query)' method`)
+export default function hashtagPlugin(tagName){
+    let hashtagTag = customElements.get(tagName)
+    if( !hashtagTag ) throw new Error(`Hashtag cannot find '${tagName}'`)
+    if( typeof hashtagTag.items != 'function' ) throw new Error(`Hashtag: ${tagName} is missing the '.items(query)' method`)
     
-	return Mention.configure({
+	return Hashtag.configure({
 		tag: tagName,
         suggestion: {
-            items: query => mentionTag.items(query) || []
+            items: query => hashtagTag.items(query) || []
         }
     })
 }
 
-export const MentionsPluginKey = new PluginKey('mentions')
+export const HashtagsPluginKey = new PluginKey('hashtags')
 
-export const Mention = Node.create({
+export const Hashtag = Node.create({
 
-  name: 'mention',
+  name: 'hashtag',
 
   addOptions(){ return {
     
-    tag: 'b-mention',
+    tag: 'b-hashtag',
 
     HTMLAttributes: {},
     
     suggestion: {
-		pluginKey: MentionsPluginKey,
-        char: '@',
+		pluginKey: HashtagsPluginKey,
+		// allowSpaces: true,
+        char: '#',
         command: ({ editor, range, props }) => {
             editor
             .chain()
             .focus()
             .insertContentAt(range, [
                 {
-                    type: 'mention',
+                    type: 'hashtag',
                     attrs: props,
                 },
                 {
@@ -71,7 +75,7 @@ export const Mention = Node.create({
             .run()
         },
         allow: ({ editor, range }) => {
-            return editor.can().insertContentAt(range, { type: 'mention' })
+            return editor.can().insertContentAt(range, { type: 'hashtag' })
         },
         render: () => {
 
@@ -81,15 +85,13 @@ export const Mention = Node.create({
 			return {
 				onStart: props => {
 
-					// create a menu to show mention items
+					// create a menu to show hashtag items
 					menu = new Menu(props.items, {
 						search:false,
 						autoSelectFirst: true,
 						onSelect(item){
 							menu.command({
-								uid: item.val,
-								uname:item.label,
-								type:item.type
+								tag: item.val
 							})
 						}
 					})
@@ -125,8 +127,10 @@ export const Mention = Node.create({
 						menu.onKeydown(props.event)	
 				},
 				onExit() {
-					menu.close()
-					menu = null
+					if( menu ){
+						menu.close()
+						menu = null
+					}
 				}
 			}
 		},
@@ -143,42 +147,16 @@ export const Mention = Node.create({
 
   addAttributes() {
     return {
-		uid: {
+		tag: {
 			default: null,
-			parseHTML: element => element.getAttribute('uid'),
+			parseHTML: element => element.getAttribute('tag'),
 			renderHTML: attributes => {
-				if( !attributes.uid ){
+				if( !attributes.tag ){
 					return {}
 				}
 
 				return {
-					'uid': attributes.uid,
-				}
-			}
-		},
-		uname: {
-			default: null,
-			parseHTML: element => element.getAttribute('uname'),
-			renderHTML: attributes => {
-				if( !attributes.uname ){
-					return {}
-				}
-
-				return {
-					'uname': attributes.uname,
-				}
-			}
-		},
-		type: {
-			default: null,
-			parseHTML: element => element.getAttribute('type'),
-			renderHTML: attributes => {
-				if( !attributes.type ){
-					return {}
-				}
-
-				return {
-					'type': attributes.type,
+					'tag': attributes.tag,
 				}
 			}
 		},
@@ -197,18 +175,18 @@ export const Mention = Node.create({
 	return [
 		this.options.tag,
 		mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
-		`${this.options.suggestion.char}${node.attrs.uname||node.attrs.uid}`,
+		`${this.options.suggestion.char}${node.attrs.tag}`,
 	]
   },
 
   renderText({ node }) {
-    return `${this.options.suggestion.char}${node.attrs.uname||node.attrs.uid}`
+    return `${this.options.suggestion.char}${node.attrs.tag}`
   },
 
   addKeyboardShortcuts() {
     return {
       Backspace: () => this.editor.commands.command(({ tr, state }) => {
-        let isMention = false
+        let isHashtag = false
         const { selection } = state
         const { empty, anchor } = selection
 
@@ -218,14 +196,14 @@ export const Mention = Node.create({
 
         state.doc.nodesBetween(anchor - 1, anchor, (node, pos) => {
           if (node.type.name === this.name) {
-            isMention = true
+            isHashtag = true
             tr.insertText(this.options.suggestion.char || '', pos, pos + node.nodeSize)
 
             return false
           }
         })
 
-        return isMention
+        return isHashtag
       }),
     }
   },
@@ -241,7 +219,7 @@ export const Mention = Node.create({
 })
 
 
-export class MentionElement extends LitElement {
+export class HashtagElement extends LitElement {
 
 	static get maxItems(){ return 5 }
 
@@ -254,15 +232,13 @@ export class MentionElement extends LitElement {
 
 	// example code
     static items(query){
-		console.warn('Mention: the `.items(query)` method is not implemented; using example')
+		console.warn('Hashtag: the `.items(query)` method is not implemented; using example')
         return this.filterItems(query, [
 			'Lea Thompson', 'Cyndi Lauper', 'Tom Cruise', 'Madonna', 'Jerry Hall', 'Joan Collins', 'Winona Ryder', 'Christina Applegate', 'Alyssa Milano', 'Molly Ringwald', 'Ally Sheedy', 'Debbie Harry', 'Olivia Newton-John', 'Elton John', 'Michael J. Fox', 'Axl Rose', 'Emilio Estevez', 'Ralph Macchio', 'Rob Lowe', 'Jennifer Grey', 'Mickey Rourke', 'John Cusack', 'Matthew Broderick', 'Justine Bateman', 'Lisa Bonet'])
     }
 
     static get properties(){return {
-        uid: {type: String, reflect:true},
-		uname: {type: String},
-		type: {type: String}
+        tag: {type: String, reflect:true},
     }}
 
     static get styles(){return css`
@@ -272,7 +248,7 @@ export class MentionElement extends LitElement {
             color: var(--theme);
             background-color: rgba(var(--theme-rgb), .1);
             border-radius: .3rem;
-            padding: 0.1rem 0.2rem;
+            padding: .1rem 0.2rem;
             position: relation;
 			white-space: normal;
         }
