@@ -15,6 +15,6 @@ View.prototype.props = function(){
 // see default `render` method in Backbone.Subviews
 View.prototype.renderHTML = function(){
     if( this.html ){
-        render(this.html(this.props()||{}), this.el, {eventContext: this})
+        render(this.html(this.props()||{}), this.el, {host: this})
     }
 }
