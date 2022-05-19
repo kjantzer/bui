@@ -399,7 +399,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         if( isLitHTML(str) ) // lit-html
             return str
         if( str ) // TODO: make developer opt-in to using unsafeHTML?
-            return unsafeHTML(str)
+            return unsafeHTML(String(str))
         return ''
     }
 
