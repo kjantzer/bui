@@ -142,12 +142,26 @@ export default class RoutedView extends LitElement {
         }
     }
 
+    onClose(){
+        if( this.model && this.model.get('isViewing') )
+            this.model.set('isViewing', false)
+    }
+
     close(){
         this.panel&&this.panel.close()
     }
 
-    finishLoading(){
-        // optional
+    finishLoading(model, id, attrs, state){
+
+        if( this.model && this.model.get('isViewing') )
+            this.model.set('isViewing', false)
+
+        if( model && model.isInvalid ){
+            throw new UIWarningError('Invalid ID: '+id)
+        }
+        
+        if( model )
+            model.set('isViewing', true)
     }
 
     async onRouteChange(oldState, newState, dir){
