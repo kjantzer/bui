@@ -15,6 +15,14 @@ customElements.define('b-list-header', class extends LitElement{
             box-sizing: border-box;
             border-bottom: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .1));
         }
+
+        :host([viewing]) > * {
+            background-color: var(--list-cell-viewing-bgd, transparent)
+        }
+        
+        :host(:hover) > * {
+            background-color: var(--list-cell-hover-bgd, transparent)
+        }
         
         :host > [sep]:not([sep="right"]),
         :host > [sep="left"] {
