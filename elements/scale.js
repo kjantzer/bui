@@ -51,7 +51,11 @@ customElements.define('b-scale', class extends LitElement{
     }
 
     render(){return html`
-        <b-text ?link=${!this.scale.isConnected} @click=${this.requestDevice} title="${this.scale.isConnected?'':'Scale Offline'}">
+        <b-text ?link=${!this.scale.isConnected} @click=${this.requestDevice}>
+
+            ${this.scale.isConnected?'':html`
+                <b-tooltip label>Scale Offline</b-tooltip>
+            `}
             
             <span part="weight">${this.weightFormated}</span> <b-text muted part="unit">${this.unit}</b-text>
 
