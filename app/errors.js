@@ -100,8 +100,8 @@ export class UIWarningError extends UICustomError {
 
     get presenter(){
         return Dialog.warn({
-            pretitle: '',
-            body: this.message,
+            pretitle: this.detail?.pretitle||'',
+            body: this.detail?.body||this.message,
             btns: false
         })
     }
@@ -116,8 +116,8 @@ export class UIDeniedError extends UICustomError {
 
     get presenter(){
         return Dialog.error({
-            pretitle: '',
-            body: this.message,
+            pretitle: this.detail?.pretitle||'',
+            body: this.detail?.body||this.message,
             btns: false
         })
     }
@@ -132,8 +132,8 @@ export class UIError extends UICustomError {
 
     get presenter(){
         return Dialog.error({
-            pretitle: '',
-            body: this.message,
+            pretitle: this.detail?.pretitle||'',
+            body: this.detail?.body||this.message,
             btns: false
         })
     }
