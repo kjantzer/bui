@@ -1,5 +1,6 @@
 require('./listeners')
 require('./events')
+require('./contextmenu')
 require('./will-take-action')
 require('./model')
 require('./coll')

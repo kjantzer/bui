@@ -87,6 +87,24 @@ onAction(e){
 }
 ```
 
+## Contextmenu
+```js
+import 'bui/helpers/lit/contextmenu'
+```
+
+Will automatically bind event listeners if `contextMenu` or `clickMenu` is set on the element.
+
+
+```js
+class Element extends LitElement {
+
+    // triggered on right+click
+    contextMenu(){}
+
+    // triggered on click
+    clickMenu(){}
+}
+```
 
 ## Get
 
