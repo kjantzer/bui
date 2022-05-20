@@ -92,7 +92,7 @@ export class Router {
     // pushes new path/state and triggers route change
     goTo(path, props){
         let [newState, oldStates] = this.push(path, props)
-        this._changeRoute(oldStates, newState)
+        return this._changeRoute(oldStates, newState)
     }
 
     _changeRoute(oldStates, newState){
@@ -107,7 +107,9 @@ export class Router {
 
         // if none of the routes matched, change current state path back to the root
         if( !didMatch )
-            config.handleInvalidRoute(this.states.current, config)
+            return config.handleInvalidRoute(this.states.current, config)
+        
+        return true
     }
 
     add(path, onChange){
