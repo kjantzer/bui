@@ -8,6 +8,7 @@ const PRESETS = {
 	'apply': {label: 'Apply', color: 'theme'},
     'undo': {label: 'Undo', color: 'theme'},
 	'ok': {label: 'Okay', color: 'theme'},
+    'skip': {label: 'Skip', color: 'theme'},
     'continue': {label: 'Continue', color: 'theme'},
 	'yes': {label: 'Yes', color: 'theme'},
     'add': {label: 'Add', color: 'theme'},
@@ -16,6 +17,7 @@ const PRESETS = {
     'open': {label: 'Open', color: 'theme'},
     'submit': {label: 'Submit', color: 'theme'},
     'upload': {label: 'Upload', color: 'theme'},
+    'import': {label: 'Import', color: 'theme'},
 	'delete': {label: 'Delete', color: 'red'},
 	'x': {label: '', icon:'cancel-1', doesCancel:true},
     '...': {label: '', icon:'dot-3'}
