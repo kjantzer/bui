@@ -7,6 +7,14 @@ customElements.define('b-btn-group', class extends LitElement{
             display: inline-flex;
         }
 
+        :host([block]) {
+            display: flex;
+        }
+
+        ::slotted([block]) {
+            flex-grow: 1;
+        }
+
         :host([hidden]) {
             display: none;
         }
