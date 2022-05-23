@@ -54,6 +54,8 @@ module.exports = class FileManager extends Model {
 
     // example on how to change default download filename
     // get downloadFilename(){ return this.attrs.orig_filename }
+
+    async beforeResize(sharpImg, {width, height, metadata}){ }
     
     // shouldn't need to override these
     get groupPath(){ return this.group.toLowerCase() }
@@ -388,6 +390,8 @@ module.exports = class FileManager extends Model {
                 // TODO: write logic for other aspect ratios
                 throw new Error('Only square aspect ratio is currently supported')
             }
+
+            await this.beforeResize(sharpImg, {width, height, metadata})
 
             // constrain image to aspect ratio
             await sharpImg.resize(width, height, arOpts).toFile(this.dirPath+'/'+filename)
