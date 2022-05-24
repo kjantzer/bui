@@ -120,10 +120,13 @@ export default class BtnElement extends LitElement {
         }
 
         slot::slotted(*) {
-            display: inline-block;
             margin-top: 0;
             margin-bottom: 0;
         }
+
+        slot::slotted(:where(span, div, main, aside, section)) {
+            display: inline-block;
+        } 
 
         .hover {
             position: absolute;
@@ -408,13 +411,13 @@ export default class BtnElement extends LitElement {
     render(){ return html`
         <div class="hover" part="hover"></div>
         <main part="main">
-            <span>
+            <span part="icon-area">
                 <b-spinner></b-spinner>
                 <slot name="icon">
                     ${this.icon?html`<b-icon part="icon" name="${this.icon}" ?spin=${this.spinicon}></b-icon>`:''}
                 </slot>
             </span>
-            <slot class="label"></slot>
+            <slot class="label" part="label"></slot>
             ${this.tooltip?html`
                 <b-tooltip label>${this.tooltip}</b-tooltip>
             `:''}
