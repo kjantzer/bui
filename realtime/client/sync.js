@@ -127,6 +127,10 @@ export function syncBackboneCollection(data, {
             action = data.action = 'add'
             path = path.replace(/\.\d+$/,'')
             model = this.get(path) || this
+
+            // found, but appears to be a model, not a collection, so reverte back to "update"
+            if( model && !model.add || model.set )
+                action = data.action = 'update'
         }
     }
 
