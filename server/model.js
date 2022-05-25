@@ -429,8 +429,10 @@ module.exports = class Model {
             throw Error('no data to add')
 
         let onDuplicate = ''
-        if( this.config.updateDuplicates !== false && updateDuplicates !== false )
-            onDuplicate = this.db.updateOnDuplicate(attrs)
+        if( this.config.updateDuplicates !== false && updateDuplicates !== false ){
+            let updateDupeOpts = this.config.updateDuplicates === true ? {} : this.config.updateDuplicates
+            onDuplicate = this.db.updateOnDuplicate(attrs, updateDupeOpts)
+        }
 
         let result = await this.db.q(/*sql*/`INSERT ${ignoreDuplicates?'IGNORE':''} INTO ${this.config.table} 
                                         SET ? ${onDuplicate}`, attrs)
