@@ -158,11 +158,19 @@ module.exports = class DB {
 		return mysql.escapeId.apply(mysql, args)
 	}
 
-    updateOnDuplicate(attrs){
+    updateOnDuplicate(attrs, {add=[]}={}){
         let updates = []
         for( let key in attrs ){
-            key = this.escapeId(key)
-            updates.push(`${key} = VALUES(${key})`)
+
+            let _key = this.escapeId(key)
+
+            let val = `${_key} = VALUES(${_key})`
+
+            // update should add to existing value
+            if( add.includes(key) )
+                val += ` + ${_key}`
+            
+            updates.push(val)
         }
         return `ON DUPLICATE KEY UPDATE ${updates.join(', ')}`
     }
