@@ -38,7 +38,7 @@ customElements.define('b-text', class extends LitElement{
         }
 
         :host([hidden]) {
-            display: none;
+            display: none !important;
         }
 
         :host([clip]) {
