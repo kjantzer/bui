@@ -32,6 +32,27 @@ class PanelController extends LitElement {
             bottom: 0;
             pointer-events: none;
         }
+
+        :host([inset]) {
+            position: relative;
+            height: 100%;
+            display: none;
+        }
+
+        @media (min-width: 1000px) {
+            :host([inset]) {
+                display: grid;
+            }
+        }
+
+        :host([inset][num]) {
+            width: var(--inset-width, 400px);
+        }
+        
+        :host([inset]) ::slotted(b-panel) {
+            background: none !important;
+        }
+
     `}
 
     get isVisible(){
@@ -50,6 +71,9 @@ class PanelController extends LitElement {
 
     connectedCallback(){
         super.connectedCallback()
+
+        if( this.getAttribute('inset') )
+            this.style.setProperty('--inset-width', this.getAttribute('inset') )
         
         if( this.name ){
             if( PanelControllers[this.name] )
@@ -138,6 +162,8 @@ class PanelController extends LitElement {
 
         this.panels.delete(panel)
         this.panels.set(panel, panel)
+
+        panel.toggleAttribute('inset', this.hasAttribute('inset'))
 
         if( !this.contains(panel) )
             this.append(panel)
