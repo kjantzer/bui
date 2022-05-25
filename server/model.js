@@ -447,10 +447,14 @@ module.exports = class Model {
         let resp = await this.find()
 
         let syncData
-        if( this.config.sync && this.req && this.syncData )
+        if( this.config.sync && this.req && this.syncData ){
+            // appears duplicate updates return affected rows greater than 1 (2 in my tests)
+            // update the action for realtime sync
+            let action = result.affectedRows > 1 ? 'update' : 'add'
+            
             syncData = ()=>{
                 this.syncData({
-                    action:'add',
+                    action,
                     attrs:resp,
                     syncData:attrs,
                     method: this.req.method,
@@ -459,6 +463,7 @@ module.exports = class Model {
                     toClients: this.req.path==this.syncPath ? null : 'all'
                 })
             }
+        }
 
         if( syncData && !manualSync )
                 syncData()
