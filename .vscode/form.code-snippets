@@ -1,0 +1,31 @@
+{
+"Form Control Text Field": {
+  "prefix": "formtext",
+  "body": [
+    "<form-control key=\"$1\" material=\"${2:filled}\">",
+    "    <text-field></text-field>",
+    "</form-control>"
+  ],
+  "description": "Form Control Text Field"
+},
+"Form Control Select Field": {
+  "prefix": "formselect",
+  "body": [
+    "<form-control key=\"$1\" material=\"${2:filled}\">",
+    "    <select-field .options=${$3}></select-field>",
+    "</form-control>"
+  ],
+  "description": "Form Control Text Field"
+},
+"Form Handler": {
+  "prefix": "formhandler",
+  "body": [
+    "<form-handler .model=${this.model} ${1:autosave=\"patch\"}>",
+    "",
+    "    $2",
+    "",
+    "</form-handler>"
+  ],
+  "description": "Form Handler"
+}
+}
