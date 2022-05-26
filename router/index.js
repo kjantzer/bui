@@ -57,13 +57,18 @@ export class Router {
             this._changeRoute(oldStates, newState)
         })
 
-        // trigger initial route
-        this._changeRoute([], this.states.current)
+        // timeout delay to let routes add first (since they also use setTimeout - see `add()`)
+        setTimeout(()=>{
 
-        // update current state if no path
-        if( !this.states.current.path && opts.currentState ){
-            this.states.current.update(opts.currentState)
-        }
+            // trigger initial route
+            this._changeRoute([], this.states.current)
+
+            // update current state if no path
+            if( !this.states.current.path && opts.currentState ){
+                this.states.current.update(opts.currentState)
+            }
+
+        })
     }
 
     // pushes new path/state onto stack (does not trigger route change)
@@ -114,7 +119,21 @@ export class Router {
 
     add(path, onChange){
         let route = new Route(path, onChange, config)
-        ROUTES.push(route)
+
+        let delay = route.patt.names.length
+
+        // reduce delay if pattern contains wildcard
+        // wildcards routes should be added first followed by routes with longer path params
+        // this is a common UX pattern:
+        // `list-of-things(/*)`     - the list view
+        // `list-of-things/:id(/*)` - the view of a single item (often inside of the list view)
+        if( delay > 0 && route.patt.names.includes('_') )
+            delay -= 1
+
+        setTimeout(()=>{
+            ROUTES.push(route)
+        }, delay*10)
+
         return route
     }
 
