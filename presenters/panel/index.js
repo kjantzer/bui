@@ -527,8 +527,18 @@ export class Panel extends LitElement {
             this.controller = this.route.state.props.controller
 
         // else attempt to use the controller in the opts again
-        else if( this.opts.controller )
+        else if( this.opts.controller ){
             this.controller = this.opts.controller
+
+            // if custom controller doesn't exists yet, delay for 300ms, then try again
+            // this is because the controller is likely embeded in another view that 
+            // is in the process of opening (like in another panel)
+            if( !this.panelController )
+                await new Promise(resolve=>setTimeout(_=>resolve(), 300))
+
+            // now try to set controller again
+            this.controller = this.opts.controller
+        }
 
         // if no controller set (or doesn't exist) or it's currently NOT visible
         // , use the root controller
