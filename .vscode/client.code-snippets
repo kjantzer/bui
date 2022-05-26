@@ -1,0 +1,131 @@
+{
+"LitElement": {
+  "prefix": "le",
+  "body": [
+    "import { LitElement, html, css } from 'lit'",
+    "",
+    "customElements.define('${1:element-name}', class extends LitElement{",
+    "",
+    "    static styles = css`",
+    "        :host {",
+    "            display: block;",
+    "            position:relative;",
+    "        }",
+    "    `",
+    "",
+    "    render(){return html`",
+    "        render here",
+    "    `}",
+    "",
+    "})",
+    "",
+    "export default customElements.get('${1:element-name}')"
+  ],
+  "description": "LitElement"
+},
+"Routed View": {
+  "prefix": "routedview",
+  "body": [
+    "import { LitElement, html, css } from 'lit'",
+    "import RoutedView from 'bui/app/views/routed'",
+    "import Panel from 'panel'",
+    "",
+    "Panel.register('c-${1:element-name}', {closeBtn: 'arrow', shortcut: true})",
+    "",
+    "customElements.define('c-${1:element-name}', class extends RoutedView {",
+    "",
+    "    static title = '$2'",
+    "    static icon = '$3'",
+    "    static path = '$4'",
+    "",
+    "    static styles = [RoutedView.styles, css`",
+    "        ",
+    "    `]",
+    "",
+    "    render(){return html`",
+    "        <b-panel-toolbar></b-panel-toolbar>",
+    "        ",
+    "        render here",
+    "    `}",
+    "",
+    "})",
+    "",
+    "export default customElements.get('c-${1:element-name}')"
+  ],
+  "description": "Routed View"
+},
+"b-list row": {
+  "prefix": "row",
+  "body": [
+    "import { LitElement, html, css } from 'lit'",
+    "import ListHeader from 'bui/presenters/list/header'",
+    "",
+    "customElements.define('c-${1:element-name}-row', class extends LitElement{",
+    "",
+    "    static styles = [ListHeader.sharedStyles, css`",
+    "        ",
+    "    `]",
+    "",
+    "    static header(){ return html`",
+    "        <div w=\"1fr\">Label</div>",
+    "    `}",
+    "",
+    "    render(){return html`",
+    "        <div>Label</div>",
+    "    `}",
+    "",
+    "})",
+    "",
+    "export default customElements.get('c-${1:element-name}-row')"
+  ],
+  "description": "b-list row"
+},
+	"Attribute Types": {
+		"scope": "javascript,typescript",
+		"prefix": "attrT",
+		"body": [
+			"get attrTypes(){return {\n\t$1\n}}",
+		],
+		"description": ""
+	},
+	"Listeners": {
+		"scope": "javascript,typescript",
+		"prefix": "liste",
+		"body": [
+			"static listeners = {\n\t$1\n}",
+		],
+		"description": ""
+	},
+	"Properties": {
+		"scope": "javascript,typescript",
+		"prefix": "prop",
+		"body": [
+			"static properties = {\n\t$1\n}",
+		],
+		"description": ""
+	},
+	"Styles": {
+		"scope": "javascript,typescript",
+		"prefix": "styles",
+		"body": [
+			"static styles = css`\n\t$1\n`",
+		],
+		"description": ""
+	},
+	"set/get": {
+		"scope": "javascript,typescript",
+		"prefix": "set",
+		"body": [
+			"set $1(val){\n\tlet oldVal = this.$1\n\tthis.__$1 = val\n\n\tthis.requestUpdate('$1', oldVal)\n}\n\nget $1(){ return this.__$1}",
+		],
+		"description": "setter/getter"
+	},
+	"Material Icon": {
+		"scope": "javascript,typescript",
+		"prefix": "maticon",
+		"body": [
+			"['$1', require(`@material-icons/svg/svg/$1/baseline.svg`)],",
+		],
+		"description": ""
+	},
+}

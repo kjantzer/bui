@@ -1,0 +1,30 @@
+{
+"UIAlertError": {
+  "prefix": "UIAlertError",
+  "body": [
+    "UIAlertError('$1')"
+  ],
+  "description": "UIAlertError"
+},
+"UIWarningError": {
+  "prefix": "UIWarningError",
+  "body": [
+    "UIWarningError('$1')"
+  ],
+  "description": "UIWarningError"
+},
+"UIDeniedError": {
+  "prefix": "UIDeniedError",
+  "body": [
+    "UIDeniedError('$1')"
+  ],
+  "description": "UIDeniedError"
+},
+"UIError": {
+  "prefix": "UIError",
+  "body": [
+    "UIError('$1')"
+  ],
+  "description": "UIError"
+}
+}

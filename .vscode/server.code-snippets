@@ -1,0 +1,24 @@
+{
+"API Model": {
+  "prefix": "apimodel",
+  "body": [
+    "const Model = require(bui`/server/model`)",
+    "",
+    "module.exports = class ${1:ClassName} extends Model {",
+    "",
+    "    static api = {",
+    "        root: '/${2:apipath}',",
+    "        routes: [",
+    "            ['get', '/:id?', 'find']",
+    "        ]",
+    "    }",
+    "",
+    "    config = {",
+    "        table: '${2:table_name}',",
+    "        tableAlias: '$3',",
+    "    }",
+    "}"
+  ],
+  "description": "API Model"
+}
+}
