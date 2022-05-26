@@ -133,7 +133,7 @@ class PanelToolbar extends LitElement {
         @media
         screen and (orientation:landscape) and (max-width:999px) and (max-height:599px)
         {
-            :host {
+            :host(:not([alwaysshow])) {
                 min-height: 0;
                 padding: 0;
                 height: 0;
