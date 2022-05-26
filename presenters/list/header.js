@@ -17,11 +17,15 @@ customElements.define('b-list-header', class extends LitElement{
         }
 
         :host([viewing]) > * {
-            background-color: var(--list-cell-viewing-bgd, transparent)
+            background-color: var(--list-cell-viewing-bgd, rgba(var(--theme-rgb), .1))
         }
         
-        :host(:hover) > * {
-            background-color: var(--list-cell-hover-bgd, transparent)
+        :host(:hover:not([viewing])) > * {
+            background-color: var(--list-cell-hover-bgd, var(--theme-bgd-accent2))
+        }
+
+        :host([viewing]:hover) > * {
+            background-color: var(--list-cell-viewing-bgd, rgba(var(--theme-rgb), .12))
         }
         
         :host > [sep]:not([sep="right"]),
