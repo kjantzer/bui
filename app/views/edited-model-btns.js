@@ -28,6 +28,10 @@ customElements.define('b-edited-model-btns', class extends LitElement{
         }
     }}
 
+    firstUpdated(){
+        this.shouldChangeSlot = !this.slot
+    }
+
     onModelChange(){
         this.refresh()
     }
@@ -35,7 +39,7 @@ customElements.define('b-edited-model-btns', class extends LitElement{
     refresh(){
         this.changed = this.model && this.model.numberEditedAttrs()
 
-        if( this.parentElement && this.parentElement.tagName == 'B-PANEL-TOOLBAR' )
+        if( this.shouldChangeSlot && this.parentElement && this.parentElement.tagName == 'B-PANEL-TOOLBAR' )
             this.slot = this.changed ? 'close-btn' : ''
     }
 
