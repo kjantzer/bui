@@ -12,6 +12,7 @@ module.exports = class SearchType {
     
     formatTerm(term){ return term }
     parseRow(row){ /* noop */ }
+    finalFormat(row, {term}={}){ /* noop */ }
 
     get limit(){ return 100 }
     get threshold(){ return 0.2 }
@@ -32,13 +33,13 @@ module.exports = class SearchType {
         })
     }
 
-    hydrate(ids){
+    hydrate(ids, {term}={}){
         let type = this.constructor.name || 'unknown'
-        return this.db.query(this.fillSql, [ids]).then(rows=>{
-            rows.forEach(row=>{
+        return this.db.query(this.fillSql, [ids]).then(async rows=>{
+            await Promise.all(rows.map(async (row,i)=>{
                 row.type=row.type||this.type
-                this.parseRow(row)
-            })
+                await this.parseRow(row, i, {term, ids})
+            }))
             return rows
         })
     }

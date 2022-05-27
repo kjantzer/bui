@@ -86,12 +86,13 @@ class SearchAPI {
         // hydrate the IDs with real data
         for( let type in byType ){
             let SearchType = SearchTypes.get(type)
-            let typeData = await new SearchType(this.req, this.db).hydrate(byType[type])
+            let typeData = await new SearchType(this.req, this.db).hydrate(byType[type], {term:this.term})
             byType[type] = typeData.groupBy('id')
         }
 
         // add the hydrated data to the sorted results
         let res = result.map(row=>{
+
             let rowData = byType[row.item.type][row.item.id]
 
             if( rowData )
@@ -135,6 +136,11 @@ class SearchAPI {
             
             return 0
         })
+
+        await Promise.all(res.map(async (row, i)=>{
+            let SearchType = new (SearchTypes.get(row.type))(this.req, this.db)
+            await SearchType.finalFormat(row, i, {term: this.term})
+        }))
         
         if( this.limit > 0 )
             res = res.slice(0, this.limit)
