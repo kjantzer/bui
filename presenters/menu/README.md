@@ -46,11 +46,13 @@ let selected = await new Menu([], {
 }
 
 // title
-{title: 'Menu Title'}
+{title: 'A Title'},
+{heading: 'A Heading'}, // currently same as a title
 
 // divider
-{divider: 'A divider with label'}
-'divider' // a line divider with no label
+{divider: 'A divider with label'},
+'divider', // a line divider with no label
+'-' // ^ alias 
 
 // text
 {text: 'A block of text'}
@@ -63,6 +65,7 @@ let selected = await new Menu([], {
 
 ```js
 {
+    header: '', // string or html`` - shows at top, above input
 	selected: false, // value or array of values
 	multiple: false, // more than one value selectable?
     perpetual: false, // keep menu open after selection?

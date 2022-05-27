@@ -365,6 +365,9 @@ export default class Menu {
 		// 	this.opts.search.extendResults.call(this, menu, term)
 		this.searchExtendResults(menu, term)
 
+		if( menu.length == 0 )
+			menu.push({text: `No results`})
+
 		this.menu = menu
 
 		this._fetchingTerm = null
@@ -389,6 +392,12 @@ export default class Menu {
 		this._active = this.opts.autoSelectFirst ? 0 : null
 
 		render(html`
+
+			${this.opts.header?html`
+			<header ?no-input=${this.searchOpts.input===false}>
+				${this.opts.header}
+			</header>
+			`:''}
 
 			${this.searchIsOn?html`
 				<div class="menu-search-bar" ?hidden=${this.searchOpts.input===false}>
@@ -432,10 +441,13 @@ export default class Menu {
 			return html`<div class="menu-divider">${m.divider}</div>`
 		
 		if( m.text !== undefined )
-			return html`<div class="menu-text">${m.text}</div>`
+			return html`<b-text body block sm muted=2 class="menu-text">${m.text}</b-text>`
 		
 		if( m.title )
-			return html`<div class="menu-title"><h2>${m.title}</h2></div>`
+			return html`<b-text heading block xbold class="menu-title">${m.title}</b-text>`
+		
+		if( m.heading )
+			return html`<b-text heading block xbold class="menu-heading">${m.heading}</b-text>`
 
 		// capture menu item index for use in resolve (if so desired)
 		m.index = i
