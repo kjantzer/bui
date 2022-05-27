@@ -304,6 +304,29 @@ export default class Menu {
 
 	get searchOpts(){ return this.opts.search||{}}
 
+	searchExtendResults(menu, term){
+
+		if( this.opts.search.extendResults )
+			this.opts.search.extendResults.call(this, menu, term)
+
+		let allowCreate = this.opts.search?.allowCreate
+
+		if( allowCreate && term.length >= (allowCreate.termLength||4) ){
+			let extras = ['divider',
+						{   icon: allowCreate.icon||'add_box',
+							label: allowCreate.label||html`<b-text muted=2>Create:</b-text> <b>${term}</b>`,
+							val: term,
+							type: 'create'
+						},
+						'divider']
+
+			if( menu.length > 6 )
+				menu.splice(1, 0, ...extras)
+			else
+				menu.push(...extras)
+		}
+	}
+
 	async fetchResults(term){
 
 		// already in process of looking up this term
@@ -338,8 +361,9 @@ export default class Menu {
 		else
 			menu = []
 
-		if( this.opts.search.extendResults )
-			this.opts.search.extendResults.call(this, menu, term)
+		// if( this.opts.search.extendResults )
+		// 	this.opts.search.extendResults.call(this, menu, term)
+		this.searchExtendResults(menu, term)
 
 		this.menu = menu
 
@@ -779,12 +803,14 @@ export default class Menu {
 			
 			menu = this.__fuse.search(val)
 
-			if( this.opts.search && this.opts.search.extendResults )
-				this.opts.search.extendResults.call(this, menu, val)			
+			// if( this.opts.search && this.opts.search.extendResults )
+			// 	this.opts.search.extendResults.call(this, menu, val)	
+			this.searchExtendResults(menu, val)		
 		}
 
 		this.__filteredMenu = menu
 	}
+	
 	
 	resolve(data){
 		

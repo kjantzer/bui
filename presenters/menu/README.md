@@ -110,6 +110,7 @@ search: {
     input: true, // disable input (use `matching` to presearch)
     showAll: true, // should all results be displayed when nothing is searched
     hideUnselected: false,
+    allowCreate: true,
     placeholder: 'Search',
 
     // a default parser will be used if none given
