@@ -1,5 +1,7 @@
 import { LitElement, html, css } from 'lit'
 
+export {html, css}
+
 customElements.define('demo-view', class extends LitElement{
 
     static get title(){ return 'Tabs' }

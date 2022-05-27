@@ -1,3 +1,8 @@
+/*
+    DEPRECATED
+
+    See b-uploader-preview
+*/
 import { LitElement, html, css } from 'lit'
 import '../../elements/uploader'
 import './file'

@@ -3,6 +3,7 @@ import './search'
 import './comments'
 import './filebrowser'
 import './filemanager'
+import './tag-list'
 import docs from '../../components/README.md'
 import printViewDocs from '../../components/print-view/README.md'
 import metadataDocs from '../../components/metadata/README.md'
@@ -42,6 +43,7 @@ customElements.define('demo-components', class extends LitElement{
             demo-components-comments
             demo-components-filemanager
             demo-components-filebrowser
+            demo-components-tag-list
 
             <div title="Print View" path="print-view" id="print-view">
                 <b-paper>

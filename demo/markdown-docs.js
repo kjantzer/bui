@@ -146,6 +146,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
 
         main {
             min-width: 0;
+            line-height: 1.4em;
         }
 
         :host > main > h1:first-of-type,
