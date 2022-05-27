@@ -163,7 +163,7 @@ customElements.define('b-text', class extends LitElement{
         }
 
         ::slotted(b-icon) {
-            vertical-align: bottom;
+            vertical-align: middle;
         }
 
         ::slotted(p:first-child) {margin-top: 0;}
