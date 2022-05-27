@@ -8,6 +8,7 @@
 	color: var(--b-popover-color, #333);
 	// transition: margin 200ms, opacity 200ms;
 	// opacity: 0;
+	--arrow-w: 0;
 
 	&.no-arrow {
 		--arrow-w: 0;
@@ -46,8 +47,7 @@
 		background: var(--bgd, #fff);
 		overflow: auto;
 		border: solid 1px var(--border);
-		box-shadow: rgba(0,0,0,.2) 0 2px 8px;
-		// min-width: 300px;
+		box-shadow: var(--b-popover-shadow, var(--theme-shadow-2, rgba(0,0,0,.2) 0 2px 8px));
 		border-radius: 5px;
 	}
 
