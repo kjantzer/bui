@@ -423,6 +423,7 @@ export default class BtnElement extends LitElement {
                 <b-tooltip label>${this.tooltip}</b-tooltip>
             `:''}
         </main>
+        <slot name="outer"></slot>
     `}
 
 	constructor(){
