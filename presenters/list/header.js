@@ -1,54 +1,62 @@
-import { LitElement, html, css } from 'lit'
+import { LitElement, html, css, unsafeCSS } from 'lit'
 import scrollbars from '../../helpers/scrollbars'
+
+export function sharedStyles(host=':host'){return css`
+    ${unsafeCSS(host)} {
+        display: grid;
+        grid-template-columns: var(--grid-template-cols);
+    }
+
+    ${unsafeCSS(host)} > * {
+        position: relative;
+        padding: var(--list-cell-padding-y, .5rem) var(--list-cell-padding-x, .5rem);
+        box-sizing: border-box;
+        border-bottom: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .1));
+    }
+
+    
+    ${host==':host'
+    ?unsafeCSS(`${host}([viewing])`)
+    :unsafeCSS(`${host}[viewing]`)} > * {
+        background-color: var(--list-cell-viewing-bgd, rgba(var(--theme-rgb), .1))
+    }
+    
+    ${host==':host'
+    ?unsafeCSS(`${host}(:hover:not([viewing]))`)
+    :unsafeCSS(`${host}:hover:not([viewing])`)} > *{
+        background-color: var(--list-cell-hover-bgd, var(--theme-bgd-accent2))
+    }
+
+    :host([viewing]:hover) > * {
+        background-color: var(--list-cell-viewing-bgd, rgba(var(--theme-rgb), .12))
+    }
+    
+    ${unsafeCSS(host)} > [sep]:not([sep="right"]),
+    ${unsafeCSS(host)} > [sep="left"] {
+        border-left: solid var(--row-sep-width, 1px) var(--border-color, rgba(var(--theme-text-rgb), .1));
+    }
+
+    ${unsafeCSS(host)} > [sep="after"] {
+        border-right: solid var(--row-sep-width, 1px) var(--border-color, rgba(var(--theme-text-rgb), .1));
+    }
+
+    ${unsafeCSS(host)} > [sep][thick] {
+        --row-sep-width: 4px;
+    }
+
+    ${unsafeCSS(host)} > *:first-child {
+        padding-left: calc(var(--list-cell-padding-x, .5rem) * 2);
+    }
+
+    ${unsafeCSS(host)} > *:last-child {
+        padding-right: calc(var(--list-cell-padding-x, .5rem) * 2);
+    }
+`
+}
 
 customElements.define('b-list-header', class extends LitElement{
 
-    static get sharedStyles(){ return css`
-        :host {
-            display: grid;
-            grid-template-columns: var(--grid-template-cols);
-        }
-
-        :host > * {
-            position: relative;
-            padding: var(--list-cell-padding-y, .5rem) var(--list-cell-padding-x, .5rem);
-            box-sizing: border-box;
-            border-bottom: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .1));
-        }
-
-        :host([viewing]) > * {
-            background-color: var(--list-cell-viewing-bgd, rgba(var(--theme-rgb), .1))
-        }
-        
-        :host(:hover:not([viewing])) > * {
-            background-color: var(--list-cell-hover-bgd, var(--theme-bgd-accent2))
-        }
-
-        :host([viewing]:hover) > * {
-            background-color: var(--list-cell-viewing-bgd, rgba(var(--theme-rgb), .12))
-        }
-        
-        :host > [sep]:not([sep="right"]),
-        :host > [sep="left"] {
-            border-left: solid var(--row-sep-width, 1px) var(--border-color, rgba(var(--theme-text-rgb), .1));
-        }
-
-        :host > [sep="after"] {
-            border-right: solid var(--row-sep-width, 1px) var(--border-color, rgba(var(--theme-text-rgb), .1));
-        }
-
-        :host > [sep][thick] {
-            --row-sep-width: 4px;
-        }
-
-        :host > *:first-child {
-            padding-left: calc(var(--list-cell-padding-x, .5rem) * 2);
-        }
-
-        :host > *:last-child {
-            padding-right: calc(var(--list-cell-padding-x, .5rem) * 2);
-        }
-    `}
+    static get sharedStyles(){ return sharedStyles() }
 
     static get sharedFinderStyles(){ return css`
 
