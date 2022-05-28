@@ -117,11 +117,21 @@ export function syncBackboneCollection(data, {
         // `/api/book/1/elements/2` => `elements.2`
         let path = url.replace(thisUrl+'/', '').replace(/\//g, '.')
 
-        // remove trailing ID `model.1` => `model`
-        if( data.action == 'add' )
+        // remove trailing ID `childColl.1` => `childColl`
+        // we do this so we can attempt to get the nested child collection this model may be added to
+        if( data.action == 'add' ){
+            let oldPath = path
             path = path.replace(/\.\d+$/,'')
 
-        model = this.get(path)
+            // if no trailing ID was removed, we must be adding to this collection directly
+            if( oldPath != path )
+                model = this.get(path)
+            else
+                model = this
+
+        }else{
+            model = this.get(path)
+        }
 
         if( !model && addUpdates && action == 'update' ){
             action = data.action = 'add'
