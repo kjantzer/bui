@@ -183,6 +183,9 @@ customElements.define('b-app-tab-bar', class extends LitElement{
                     `:''}
                     <span>${v.title}</span>
                     `}
+
+                    <slot slot="outer" name="inside:${v.id}"></slot>
+
                 </b-btn>
 
                 <slot name="after:${v.id}"></slot>
