@@ -13,12 +13,15 @@ customElements.define('b-metadata', class extends LitElement{
         attr: {type: String},
         values: {type: Array},
         custom: {type: String},
+        opts: {type: Object},
         add: {type: String},
+        save: {type: Boolean}
     }}
 
     constructor(){
         super()
         this.attr = 'metadata'
+        this.save = true
     }
 
     get allowCustom(){
@@ -52,13 +55,19 @@ customElements.define('b-metadata', class extends LitElement{
         return this.model?.get(this.attr) || {}
     }
 
+    labelFor(key){
+        return this.opts.formatLabel ? this.opts.formatLabel(key) : key
+    }
+
     render(){return html`
     
         ${this.metadata.map(t=>html`
         
             <form-control key="${t.key}" material="filled">
-                <text-field .value=${t.val} @blur=${this.clearMeta}></text-field>
-                <b-text capitalize slot="label">${t.key}</b-text>
+                <text-field .value=${t.val} 
+                    placeholder=${this.opts.placeholder}
+                    @blur=${this.clearMeta}></text-field>
+                <b-text capitalize slot="label">${this.labelFor(t.key)}</b-text>
             </form-control>
         `)}
 
@@ -85,7 +94,8 @@ customElements.define('b-metadata', class extends LitElement{
 
         if( !key || key == 'custom' )
             key = await Dialog.prompt({
-                placeholder: (this.custom||'Metadata')+' label/name'
+                placeholder: (this.custom||'Metadata')+' label/name',
+                btns: ['cancel', 'add']
             }).popover(e.clickTarget)
 
         key = key && key.trim()
@@ -107,6 +117,9 @@ customElements.define('b-metadata', class extends LitElement{
     }
 
     metaExists(key){
+        if( key.val )
+            key = key.val
+
         return this.data[key.toLowerCase()] != undefined
     }
 
@@ -137,7 +150,10 @@ customElements.define('b-metadata', class extends LitElement{
         if( Object.keys(data).length == 0 )
             data = null
 
-        this.model.saveSync({[this.attr]:data}, {patch:true})
+        if( this.save === false )
+            this.model.editAttr({[this.attr]:data})
+        else
+            this.model.saveSync({[this.attr]:data}, {patch:true})
 
         // meta will be removed
         if( !val )
