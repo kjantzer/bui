@@ -55,11 +55,13 @@ export default class EmptyState extends LitElement {
         :host([md]) { font-size: 1.4em; }
         :host([lg]) { font-size: 3em; }
 
-        :host([must-be="first"]:not(:first-child)) {
+        :host([must-be="first"]:not(:first-child)),
+        :host([if="first"]:not(:first-child)) {
             display: none !important;
         }
 
-        :host([must-be="last"]:not(:last-child)) {
+        :host([must-be="last"]:not(:last-child)),
+        :host([if="last"]:not(:last-child)) {
             display: none !important;
         }
     `}
