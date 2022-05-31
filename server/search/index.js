@@ -138,7 +138,10 @@ class SearchAPI {
         })
 
         await Promise.all(res.map(async (row, i)=>{
-            let SearchType = new (SearchTypes.get(row.type))(this.req, this.db)
+            let SearchType = SearchTypes.get(row.type)
+            if( !SearchType ) return 
+            
+            new SearchType(this.req, this.db)
             await SearchType.finalFormat(row, i, {term: this.term})
         }))
         
