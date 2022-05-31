@@ -141,7 +141,7 @@ class SearchAPI {
             let SearchType = SearchTypes.get(row.type)
             if( !SearchType ) return 
             
-            new SearchType(this.req, this.db)
+            SearchType = new SearchType(this.req, this.db)
             await SearchType.finalFormat(row, i, {term: this.term})
         }))
         
