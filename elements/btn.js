@@ -114,17 +114,17 @@ export default class BtnElement extends LitElement {
             line-height: 0;
         }
 
-        slot {
+        main slot {
             display: block;
             margin-bottom: -.1em; /* remove descender line to make it look more centered*/
         }
 
-        slot::slotted(*) {
+        main slot::slotted(*) {
             margin-top: 0;
             margin-bottom: 0;
         }
 
-        slot::slotted(:where(span, div, main, aside, section)) {
+        main slot::slotted(:where(span, div, main, aside, section)) {
             display: inline-block;
         } 
 
