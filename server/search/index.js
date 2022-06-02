@@ -1,5 +1,7 @@
-require('../../util/promise.series')
 const Fuse = require('fuse.js')
+const Model = require('../model')
+const ModelFindWhereTerm = require('./model-findWhereTerm')
+require('../../util/promise.series')
 
 const SearchTypes = new Map()
 
@@ -8,9 +10,14 @@ class SearchAPI {
     constructor(attrs, req){
         Object.assign(this, attrs)
         this.req = req
+        this.db = Model.db
     }
 
     get limit(){ return 100 }
+
+    static enableFindWhereTerm(){
+        ModelFindWhereTerm(this)
+    }
 
     static get api(){return {
 		routes: [
@@ -20,6 +27,10 @@ class SearchAPI {
 	}}
 
     static add(type){
+
+        if( Array.isArray(type) )
+            return type.forEach(t=>this.add(t))
+
         if( !type.name )
             return console.error('SearchType must have a `name`')
 
@@ -45,9 +56,10 @@ class SearchAPI {
         return this.searchTypes(types)
     }
 
-    async searchTypes(types=['book'], {hydrate=true}={}){
+    async searchTypes(types=[], {hydrate=true}={}){
 
         if( !this.db ) throw new Error('Missing `this.db`')
+        if( !types || types.length == 0 ) throw new Error('No search types given')
         
         let data = []
         let threshold

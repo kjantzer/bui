@@ -4,6 +4,7 @@ import './api'
 import './realtime'
 import './model'
 import './filemanager'
+import './search'
 
 customElements.define('demo-server', class extends LitElement{
 
@@ -26,6 +27,7 @@ customElements.define('demo-server', class extends LitElement{
             demo-server-db
             demo-server-api
             demo-server-model
+            demo-server-search
             demo-server-filemanager
             demo-server-realtime
         </b-tabs-router>

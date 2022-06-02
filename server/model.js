@@ -282,6 +282,10 @@ module.exports = class Model {
         let id = whereID.id || null
         where = whereID.where || {}
 
+        // see `bui/server/search`
+        if( this.findWhereTerm )
+            await this.findWhereTerm(where, opts)
+
         // let subclassed model apply more to where clause
         await this.findWhere(where, opts)
 
