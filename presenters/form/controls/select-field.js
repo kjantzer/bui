@@ -59,6 +59,11 @@ main input {
 	vertical-align: bottom;
 }
 
+:host([nowrap]) #value {
+	white-space: nowrap;
+    overflow: hidden;
+}
+
 :host(:not([chip])) #value > span:not(:last-child):after {
 	content: ', ';
 	margin-right: .5em;
