@@ -53,6 +53,10 @@ customElements.define('b-text-divider', class extends Text{
             bottom: 0;
         }
 
+        :host([bottom]) [name="right"]::slotted(*) {
+            margin-left: auto;
+        }
+
         :host([gradient]) b-hr {
             --bgd: var(--theme-gradient);
         }
