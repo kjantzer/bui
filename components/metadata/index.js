@@ -22,6 +22,7 @@ customElements.define('b-metadata', class extends LitElement{
         super()
         this.attr = 'metadata'
         this.save = true
+        this.opts = {}
     }
 
     get allowCustom(){
