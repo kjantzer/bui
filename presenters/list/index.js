@@ -184,8 +184,8 @@ customElements.define('b-list', class extends LitElement {
         b-infinite-list > [isselected]:before {
             position: absolute;
             content: '';
-            background: var(--theme, #2196F3);
-            opacity: .1;
+            /* opacity: .1; */
+            background: var(--b-list-selected-row-bgd, rgba(var(--theme-rgb), .1));
             /* border: solid 1.4em #E3F2FD;
             border-left-width: 2em; */
             top: 0;
