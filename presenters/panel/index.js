@@ -764,6 +764,7 @@ export class Panel extends LitElement {
             margin-top: 0 !important;
             transform: translateY(-100px);
             border-radius: 0 0 var(--radius) var(--radius);
+            padding-top: var(--gutter-safe-top);
         }
 
         :host([anchor="bottom"]) > main {
