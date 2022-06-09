@@ -122,7 +122,8 @@ export const colorScheme = {
             html.style.removeProperty('--theme-secondary');
             html.style.removeProperty('--theme-secondary-chosen');
 
-            colorizeFavicon(false)
+            if( colorizeFaviconComposition )
+                colorizeFavicon(false)
         }
 
 		let themeHex = this.getCssVar('theme')
