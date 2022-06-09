@@ -48,8 +48,10 @@ class AppInstaller {
 
         new Dialog({
             icon: 'install_mobile',
-            title: 'Install this webapp',
-            body: `Tap <b-text color="blue"><b-icon name="ios_share"></b-icon></b-text> and then <b>Add to Homescreen</b>`,
+            title: 'Install this App',
+            body: !device.isIosSafari?
+                /*html*/`<b-text block>Open this app in the default Safari browser to install.</b-text>`
+                :/*html*/`Tap <b-text color="blue"><b-icon name="ios_share"></b-icon></b-text> and then <b>Add to Homescreen</b>`,
             color: 'inverse',
             btns: false
         }).notif({
