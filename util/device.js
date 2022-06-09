@@ -61,8 +61,15 @@ const device = {
     },
 
     // https://developer.chrome.com/multidevice/user-agent
-    get isiOSChrome(){
-        return /CriOS/.test(UA)
+    get isIosChrome(){ return /CriOS/.test(UA) },
+    get isiOSChrome(){return this.isIosChrome},
+
+    get isIosSafari(){
+        return navigator.vendor.match(/apple/i) &&
+            // but NOT other browsers on iOS
+             !navigator.userAgent.match(/crios/i) &&
+             !navigator.userAgent.match(/fxios/i) &&
+             !navigator.userAgent.match(/Opera|OPT\//)
     },
 
     get chromeVersion(){
