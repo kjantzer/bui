@@ -10,6 +10,7 @@ customElements.define('b-list-end-of-row', class extends LitElement{
         :host {
             display: block;
             position:relative;
+            grid-column: 1/-1;
         }
 
         b-text {
