@@ -80,6 +80,13 @@
   ],
   "description": "b-list row"
 },
+"Set model": {
+  "prefix": ".model=${}",
+  "body": [
+    ".model=${${1:this.model}}"
+  ],
+  "description": "Set model"
+},
 	"Attribute Types": {
 		"scope": "javascript,typescript",
 		"prefix": "attrT",
