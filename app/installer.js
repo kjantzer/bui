@@ -1,4 +1,5 @@
 import Dialog from '../presenters/dialog'
+import device from '../util/device'
 
 class AppInstaller {
 
@@ -36,7 +37,14 @@ class AppInstaller {
         return false
     }
 
-    promptIOS(){
+    async promptIOS({once=false, delay=0}={}){
+
+        if( !device.isiOS || device.isInstalled ) return
+
+        if( once && localStorage.getItem('has-prompted-ios-install') )
+            return
+
+        await new Promise(resolve=>setTimeout(_=>resolve(), delay))
 
         new Dialog({
             icon: 'install_mobile',
@@ -48,6 +56,8 @@ class AppInstaller {
             anchor: device.isTablet ? 'top-right' : 'bottom',
             autoClose: false
         })
+
+        localStorage.setItem('has-prompted-ios-install', new Date().getTime())
     }
 }
 
