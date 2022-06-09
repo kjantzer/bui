@@ -1,3 +1,4 @@
+import {css} from 'lit'
 import Btn from '../../elements/btn'
 
 const PRESETS = {
@@ -30,6 +31,15 @@ export function registerPreset(name, opts){
 
 customElements.define('b-dialog-btn', class extends Btn{
 
+    static styles = [Btn.styles, css`
+        :host(.spacer) {
+            visibility: hidden;
+            pointer-events: none;
+            width: 0;
+            margin-right: auto;
+        }
+    `]
+
     get isCancelBtn(){
         return this.opts.doesCancel
     }
@@ -49,6 +59,11 @@ customElements.define('b-dialog-btn', class extends Btn{
         super()
 
         if( typeof opts == 'string' ){
+
+            if( opts == 'spacer' || opts == ' ' || opts == '' ){
+                this.classList.add('spacer')
+                return
+            }
 
             if( !PRESETS[opts] )
                 opts = {

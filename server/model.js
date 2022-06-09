@@ -292,7 +292,8 @@ module.exports = class Model {
         let [clause, clauseValues] = new this.db.clauses.Group(where).toSqlString(this.db)
         where = clause ? `WHERE ${clause}` : ''
 
-        opts.select = !opts.select || opts.select == '*' ? `${this.tableAlias}.*` : opts.select
+        let select = opts.select || this.config.select
+        opts.select = select == undefined || select == '*' ? `${this.tableAlias}.*` : select
 
         let findJoins = this.findJoins(opts)
         let [join, joinSelect] = Array.isArray(findJoins) ? findJoins.reverse() : ([findJoins || '', ''])

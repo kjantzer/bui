@@ -14,7 +14,8 @@ customElements.define('b-numeral', class extends LitElement{
 
     static get properties(){return {
         format: {type: String, reflect: true},
-        num: {type: Number, reflect: true}
+        num: {type: Number, reflect: true},
+        placeholder: {type: String}
     }}
 
     set num(val){
@@ -56,7 +57,7 @@ customElements.define('b-numeral', class extends LitElement{
 
     get numeral(){
         let num = this.num
-        if( !num ) return num
+        if( !num ) return this.placeholder || num
         return numeral(num).format(this.format)
     }
 
@@ -75,7 +76,19 @@ customElements.define('b-bytes', class extends Numeral{
 })
 
 customElements.define('b-currency', class extends Numeral{
-    get defaultFormat(){ return '$0,0.00' }
+    get defaultFormat(){ return '0,0.00' }
+
+    render(){return html`
+        <slot name="currency"><b-text muted nobold sup sm>$</b-text></slot>${this.numeral}<slot></slot>
+    `}
+})
+
+customElements.define('b-currency-large', class extends Numeral{
+    get defaultFormat(){ return '0a' }
+
+    render(){return html`
+        <slot name="currency"><b-text muted nobold sup sm>$</b-text></slot>${this.numeral}<slot></slot>
+    `}
 })
 
 customElements.define('b-num', class extends Numeral{

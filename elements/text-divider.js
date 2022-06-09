@@ -46,11 +46,26 @@ customElements.define('b-text-divider', class extends Text{
             padding-bottom: .5em;
         }
 
-        :host([bottom]) [name="divider"] {
+        :host([top]) {
+            padding-top: .5em;
+        }
+
+        :host([bottom]) [name="divider"],
+        :host([top]) [name="divider"] {
             position: absolute;
             display: block;
             width: 100%;
             bottom: 0;
+        }
+
+        :host([top]) [name="divider"] {
+            bottom: auto;
+            top: 0;
+        }
+
+        :host([bottom]) [name="right"]::slotted(*),
+        :host([top]) [name="right"]::slotted(*) {
+            margin-left: auto;
         }
 
         :host([gradient]) b-hr {

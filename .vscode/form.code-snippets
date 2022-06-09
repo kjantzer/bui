@@ -2,7 +2,7 @@
 "Form Control Text Field": {
   "prefix": "formtext",
   "body": [
-    "<form-control key=\"$1\" material=\"${2:filled}\">",
+    "<form-control key=\"$1\" material=\"${2:filled}\" ${3:label=\"${4}\"}>",
     "    <text-field></text-field>",
     "</form-control>"
   ],
@@ -11,11 +11,11 @@
 "Form Control Select Field": {
   "prefix": "formselect",
   "body": [
-    "<form-control key=\"$1\" material=\"${2:filled}\">",
+    "<form-control key=\"$1\" material=\"${2:filled}\" ${3:label=\"${4}\"}>",
     "    <select-field .options=${$3}></select-field>",
     "</form-control>"
   ],
-  "description": "Form Control Text Field"
+  "description": "Form Control Select Field"
 },
 "Form Handler": {
   "prefix": "formhandler",

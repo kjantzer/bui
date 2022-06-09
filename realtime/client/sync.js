@@ -102,6 +102,7 @@ export function enableSync(Class, {
 // maybe can refactor to one?
 export function syncBackboneCollection(data, {
     addUpdates=true, // TODO: rename to `addMissingUpdates`
+    addToRoot=true, // true in MOST cases
     triggerDestroy=false
 }={}){
 
@@ -126,7 +127,7 @@ export function syncBackboneCollection(data, {
             // if no trailing ID was removed, we must be adding to this collection directly
             if( oldPath != path )
                 model = this.get(path)
-            else
+            else if( addToRoot !== false )
                 model = this
 
         }else{

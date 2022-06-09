@@ -42,6 +42,10 @@ export default class EmptyState extends LitElement {
             min-height: 1em;
         }
 
+        :host([nopad]) {
+            padding: 0;
+        }
+
         :host([hidden]) {
             display: none;
         }

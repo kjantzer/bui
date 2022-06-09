@@ -163,6 +163,10 @@ module.exports = function(Orig){ return {
 		
 		// create and store reference to this collection
 		var Coll = this.__childCollections[cacheKey] = new ChildColl(models, opts)
+
+		// more-or-less the same as having "fetched"
+		if( models.length > 0 )
+			Coll.hasFetched = new Date().getTime()
 		
 		// if the collection got its data from a model attribute, listen for when that attribute changes and update the collection 
 		// if( this.attributes[key] )
