@@ -254,9 +254,20 @@ class FormHandler extends HTMLElement {
 		let changes = {}
 		changes[key] = val
 		
-		if( this.validateChange && await this.validateChange(m, changes, key, val) === false ){
-			el.value = changes[key] !== undefined ? changes[key] : el.value
-			return
+		if( this.validateChange ){
+
+			try{
+				let resp = await this.validateChange(m, changes, key, val)
+				if( resp===false ) throw new Error('')
+			}catch(err){
+
+				// allow for resetting, changing the value
+				el.value = changes[key] !== undefined ? changes[key] : el.value
+
+				// if message, error was thrown by `validateChange` - probably a UIError
+				if( err.message ) throw err
+				return
+			}
 		}
 
 		// optionally make other changes based on this change
