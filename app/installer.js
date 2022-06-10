@@ -37,19 +37,19 @@ class AppInstaller {
         return false
     }
 
-    async promptInstall(){
-        this.promptIOS()
+    async promptInstall(opts){
+        this.promptIOS(opts)
 
         // iOS can't "install" so we can just test for this
         if( await this.canInstallPromise )
-            this._promptInstall()
+            this._promptInstall(opts)
     }
 
     async promptMobileInstall(opts){
         this.promptIOS(opts)
         this.promptAndroid(opts)
 
-        this._promptInstall() // TEMP
+        this._promptInstall(opts) // TEMP
     }
 
     async promptIOS(opts={}){
