@@ -265,13 +265,21 @@ class FormHandler extends HTMLElement {
 				el.value = changes[key] !== undefined ? changes[key] : el.value
 
 				// if message, error was thrown by `validateChange` - probably a UIError
-				if( err.message ) throw err
+				if( err.message ){
+					
+					// also, if error is thrown, the editor value will be reset
+					if( m && m.has(key) )
+						el.value = m.get(key)
+
+					throw err
+				}
 				return
 			}
 		}
 
 		// optionally make other changes based on this change
 		// TODO: think of a way to implement this again for the custom element?
+		// ^ what did I mean by this? idk
 		// if( this.opts.onEditorChange && this.opts.onEditorChange(m, changes, key, val) === false )
 		// 	return
 		// if other changes where made from validate, propagate to other controls
@@ -286,6 +294,12 @@ class FormHandler extends HTMLElement {
 		// ugh, this is hacky and should be solved a better way
 		if( el.control && el.control.type=='date' && val ){
 			changes[key] = el.dbValue
+		}
+
+		// prevent save requests to server when nothing actually changed
+		// particullary important if the save request triggers another action
+		if( m && m.get(key) === changes[key] ){
+			delete changes[key]
 		}
 
 		this.store(changes)
