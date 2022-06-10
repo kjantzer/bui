@@ -4,7 +4,7 @@ const documentHeight = () => {
     document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`)
 }
 
-if( device.isiOS && !device.isInstalled ){
+if( (device.isiOS || device.isAndroid) && !device.isInstalled ){
     window.addEventListener('resize', documentHeight)
     documentHeight()
 }
