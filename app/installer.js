@@ -37,30 +37,66 @@ class AppInstaller {
         return false
     }
 
-    async promptIOS({once=false, delay=0}={}){
+    async promptInstall(){
+        this.promptIOS()
 
-        if( !device.isiOS || device.isInstalled ) return
+        // iOS can't "install" so we can just test for this
+        if( await this.canInstallPromise )
+            this._promptInstall()
+    }
 
-        if( once && localStorage.getItem('has-prompted-ios-install') )
+    async promptMobileInstall(opts){
+        this.promptIOS(opts)
+        this.promptAndroid(opts)
+
+        this._promptInstall() // TEMP
+    }
+
+    async promptIOS(opts={}){
+
+        if( !device.isiOS ) return
+        
+        return this._promptInstall({
+            ...opts,
+            msg: !device.isIosSafari?
+                /*html*/`<b-text block>Open this app in the default Safari browser to install.</b-text>`
+                :/*html*/`Tap <b-text color="blue"><b-icon name="ios_share"></b-icon></b-text> and then <b>Add to Homescreen</b>`
+        })
+    }
+
+    async promptAndroid(opts={}){
+        if( !device.isAndroid ) return
+        return this._promptInstall(opts)
+    }
+
+    async _promptInstall({msg=null, once=false, delay=0}={}){
+
+        if( device.isInstalled ) return
+
+        if( once && localStorage.getItem('has-prompted-install') )
             return
 
         await new Promise(resolve=>setTimeout(_=>resolve(), delay))
 
         new Dialog({
-            icon: 'install_mobile',
+            icon: device.isTouch ? 'install_mobile' : 'install',
             title: 'Install this App',
-            body: !device.isIosSafari?
-                /*html*/`<b-text block>Open this app in the default Safari browser to install.</b-text>`
-                :/*html*/`Tap <b-text color="blue"><b-icon name="ios_share"></b-icon></b-text> and then <b>Add to Homescreen</b>`,
+            body: msg||/*html*/`
+                Tap here to install for the best experience
+            `,
             color: 'inverse',
             btns: false
         }).notif({
-            anchor: device.isTablet ? 'top-right' : 'bottom',
-            autoClose: false
+            anchor: device.isSmall ? 'bottom' : 'top-right',
+            autoClose: false,
+            onClick: (notif, btn)=>{
+                this.install()
+            }
         })
 
-        localStorage.setItem('has-prompted-ios-install', new Date().getTime())
+        localStorage.setItem('has-prompted-install', new Date().getTime())
     }
+
 }
 
 // singleton
