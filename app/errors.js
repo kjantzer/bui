@@ -23,9 +23,11 @@ export class UICustomError extends Error {
     }
 
     handle(){
-        this.playSound()
         this.logToConsole()
-        this.display()
+        if( this.detail?.silent !== true ){
+            this.playSound()
+            this.display()
+        }
     }
 
     display(){
