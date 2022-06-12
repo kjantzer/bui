@@ -105,6 +105,8 @@ export const colorScheme = {
             html.style.setProperty('--theme', `var(--${accent}, #${accent})`);
             html.style.setProperty('--theme-chosen', `var(--${accent}, #${accent})`);
 
+            html.setAttribute('theme-accent', accent)
+
             if( !secondary )
                 secondary = changeHue(this.getCssVar('theme'), 10).substr(1)
 
@@ -121,6 +123,8 @@ export const colorScheme = {
             html.style.removeProperty('--theme-chosen');
             html.style.removeProperty('--theme-secondary');
             html.style.removeProperty('--theme-secondary-chosen');
+
+            html.removeAttribute('theme-accent')
 
             if( colorizeFaviconComposition )
                 colorizeFavicon(false)
@@ -170,6 +174,12 @@ export const colorScheme = {
 
 export default colorScheme
 
+export const Themes = [
+    {label: 'Auto', val: '', description: 'Light during the day, dark mode at night'},
+    {label: 'System', val: 'system'},
+    {label: 'Light', val: 'light'},
+    {label: 'Dark', val: 'dark'},
+]
 
 export const ThemeColors = [
     {label: 'Default', val:''},
