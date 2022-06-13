@@ -198,6 +198,30 @@ customElements.define('range-slider', class extends LitElement{
         return val
     }
 
+    set min(val){
+        let oldVal = this.min
+        this.__min = val
+    
+        if( this.value < val )
+            this.value = val
+
+        this.requestUpdate('min', oldVal)
+    }
+    
+    get min(){ return this.__min}
+
+    set max(val){
+        let oldVal = this.max
+        this.__max = val
+
+        if( this.value > val )
+            this.value = val
+    
+        this.requestUpdate('max', oldVal)
+    }
+    
+    get max(){ return this.__max}
+
     set value(val){
 
         let oldVal = this.value
