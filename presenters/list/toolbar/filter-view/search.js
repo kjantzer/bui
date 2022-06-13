@@ -179,7 +179,7 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
         if( !val || val.length == 0 )
             return '–'
         
-        return val.map(d=>d.label).join(', ')
+        return val.map(d=>d.toolbarLabel||d.label).join(', ')
     }
 
     // OPTIONAL
