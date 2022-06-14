@@ -483,7 +483,7 @@ export class Filter {
                 return [v.selection, v.val].filter(s=>s).join(' ')
             }).join(', ')
 
-        return val
+        return String(val)
     }
 
     async showMenu(el, opts={}){
