@@ -37,6 +37,7 @@ customElements.define('b-virtual-scroller', class extends LitElement{
     render(){return html`
         <main>
         <lit-virtualizer
+            scroller
             .items=${this.items}
             .renderItem=${this.renderItem}
         ></lit-virtualizer>
