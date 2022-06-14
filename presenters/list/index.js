@@ -449,6 +449,9 @@ customElements.define('b-list', class extends LitElement {
             row.model = model
             row.list = this
             row.part = 'row'
+            // NOTE: will this ever cause lag when lots of rows loaded?
+            // if so, change to an opt-in feature
+            row.innerHTML = `<slot name="row-${model.id}"></slot>`
             return row
         }
     }
