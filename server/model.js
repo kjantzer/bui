@@ -423,7 +423,7 @@ module.exports = class Model {
         throw new Error('Unknown relation')
     }
 
-    async add(attrs={}, {manualSync=false, updateDuplicates=true, ignoreDuplicates=false}={}){
+    async add(attrs={}, {manualSync=false, updateDuplicates=true, ignoreDuplicates=false, merge=true}={}){
 
         if( !this.config.table ) throw Error('missing config.table')
 
@@ -451,9 +451,17 @@ module.exports = class Model {
 
         this.afterAdd&&this.afterAdd(attrs, beforeAdd)
 
-        // since we dont set `this.id`, find should return a new class instance
+        // NOTE: I think merge should default to true, but to minimize legacy issues, 
+        // keep original logic in place
+        if( merge )
+            this.id = id
+
+        // since we dont set `this.id`, find should return a new class instance (unless merge:true)
         // we need to do this to allow for  `add` to be called multiple times
         let model = await this.find({[this.idAttribute]:id})
+
+        if( merge )
+            model = this
 
         let syncData
         if( this.config.sync && this.req && model.syncData ){
@@ -464,7 +472,7 @@ module.exports = class Model {
             syncData = ()=>{
                 model.syncData({
                     action,
-                    attrs:resp,
+                    attrs:model.attrs,
                     syncData:attrs,
                     method: model.req.method,
                     url: model.apiPath
