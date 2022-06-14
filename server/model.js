@@ -447,27 +447,29 @@ module.exports = class Model {
             throw Error('failed to insert')
         }
 
-        this.id = result.insertId || this.id
+        let id = result.insertId || this.id
 
         this.afterAdd&&this.afterAdd(attrs, beforeAdd)
 
-        let resp = await this.find()
+        // since we dont set `this.id`, find should return a new class instance
+        // we need to do this to allow for  `add` to be called multiple times
+        let model = await this.find({[this.idAttribute]:id})
 
         let syncData
-        if( this.config.sync && this.req && this.syncData ){
+        if( this.config.sync && this.req && model.syncData ){
             // appears duplicate updates return affected rows greater than 1 (2 in my tests)
             // update the action for realtime sync
             let action = result.affectedRows > 1 ? 'update' : 'add'
             
             syncData = ()=>{
-                this.syncData({
+                model.syncData({
                     action,
                     attrs:resp,
                     syncData:attrs,
-                    method: this.req.method,
-                    url: this.apiPath
+                    method: model.req.method,
+                    url: model.apiPath
                 },{
-                    toClients: this.req.path==this.syncPath ? null : 'all'
+                    toClients: model.req.path==model.syncPath ? null : 'all'
                 })
             }
         }
@@ -475,7 +477,7 @@ module.exports = class Model {
         if( syncData && !manualSync )
                 syncData()
 
-        return manualSync ? {resp, syncData} : resp
+        return manualSync ? {resp: model, syncData} : model
     }
 
     async update(attrs={}, {manualSync=false}={}){
