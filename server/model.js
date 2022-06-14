@@ -449,16 +449,16 @@ module.exports = class Model {
 
         let id = result.insertId || this.id
 
-        this.afterAdd&&this.afterAdd(attrs, beforeAdd)
-
         // NOTE: I think merge should default to true, but to minimize legacy issues, 
         // keep original logic in place
         if( merge )
             this.id = id
 
+        this.afterAdd&&this.afterAdd(attrs, beforeAdd)
+
         // since we dont set `this.id`, find should return a new class instance (unless merge:true)
         // we need to do this to allow for  `add` to be called multiple times
-        let model = await this.find({[this.idAttribute]:id})
+        let model = await (merge ? this.find() : this.find({[this.idAttribute]:id}))
 
         if( merge )
             model = this
