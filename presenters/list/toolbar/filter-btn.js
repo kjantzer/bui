@@ -97,7 +97,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
         super.connectedCallback()
         this.update = this.update.bind(this)
         this.filter.on('change', this.update)
-        this.update()
+        this.requestUpdate()
         // this.addEventListener('filter-changed', this.update, true)
     }
 
