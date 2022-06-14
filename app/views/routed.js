@@ -16,7 +16,7 @@ export default class RoutedView extends LitElement {
             position:relative;
             height: 100%;
             --bgd-color: var(--theme-bgd-accent2, #fff);
-            --border-color: rgba(var(--theme-text-rgb, 0,0,0), .05);
+            /* --border-color: rgba(var(--theme-text-rgb, 0,0,0), .1); */
         }
 
         b-panel-toolbar {
