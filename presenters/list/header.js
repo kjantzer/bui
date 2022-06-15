@@ -22,8 +22,14 @@ export function sharedStyles(host=':host'){return css`
     }
     
     ${host==':host'
-    ?unsafeCSS(`${host}(:hover:not([viewing]):not([isselected])`)
-    :unsafeCSS(`${host}:hover:not([viewing]):not([isselected]`)} > *{
+    ?unsafeCSS(`${host}(:hover:not([viewing]):not([isselected]))`)
+    :unsafeCSS(`${host}:hover:not([viewing]):not([isselected])`)} > * {
+        background-color: var(--list-cell-hover-bgd, var(--theme-bgd-accent2))
+    }
+
+    ${host==':host'
+    ?unsafeCSS(`${host}(.popover-open)`)
+    :unsafeCSS(`${host}.popover-open`)} > * {
         background-color: var(--list-cell-hover-bgd, var(--theme-bgd-accent2))
     }
 

@@ -92,9 +92,13 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         }
 
         :host([color="inverse"]) {
-            --theme-bgd: var(--theme-inverse-text);
+            --theme-bgd: var(--theme-inverse-bgd);
+            --theme-bgd-accent: var(--theme-inverse-bgd-accent);
+            --theme-bgd-accent2: var(--theme-inverse-bgd-accent2);
             --color: var(--theme-inverse-bgd);
             --theme-text: var(--theme-inverse-text);
+            --theme-text-accent: var(--theme-inverse-text-accent);
+            --theme-text-accent2: var(--theme-inverse-text-accent2);
             --theme-text-rgb: var(--theme-inverse-text-rgb);
         }
 

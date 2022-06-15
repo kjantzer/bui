@@ -264,6 +264,7 @@ export default class BtnElement extends LitElement {
         :host([color^="pink"])   { --color: var(--pink); }
 
         @media (hover){
+        :host([color*="hover-theme"]:hover)  { --color: var(--theme); }
         :host([color*="hover-black"]:hover)  { --color: var(--black); }
         :host([color*="hover-orange"]:hover) { --color: var(--orange); }
         :host([color*="hover-blue"]:hover)   { --color: var(--blue); }

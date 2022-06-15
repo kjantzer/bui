@@ -8,6 +8,7 @@ customElements.define('b-flex', class extends LitElement{
             align-items: center;
             justify-content: space-between;
             gap: 1em;
+            min-width: 0;
         }
 
         :host([hidden]) {
