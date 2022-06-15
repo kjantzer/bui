@@ -27,6 +27,12 @@ export function sharedStyles(host=':host'){return css`
         background-color: var(--list-cell-hover-bgd, var(--theme-bgd-accent2))
     }
 
+    ${host==':host'
+    ?unsafeCSS(`${host}(.popover-open)`)
+    :unsafeCSS(`${host}.popover-open`)} > * {
+        background-color: var(--list-cell-hover-bgd, var(--theme-bgd-accent2))
+    }
+
     :host([viewing]:hover) > * {
         background-color: var(--list-cell-viewing-bgd, rgba(var(--theme-rgb), .12))
     }
