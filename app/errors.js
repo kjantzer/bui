@@ -89,7 +89,11 @@ export class UIPermissionError extends UICustomError {
     }
 
     get presenter(){
-        return Dialog.stopped(this.message)
+        return Dialog.stopped({
+            pretitle: this.detail?.pretitle||'',
+            body: this.detail?.body||this.message,
+            btns: false
+        })
     }
 }
 
