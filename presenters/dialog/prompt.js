@@ -61,8 +61,11 @@ customElements.define('b-dialog-prompt', class extends Dialog{
     }
 
     renderView(){return html`
-		<form-handler @submit=${this.onSubmit} .model=${this.opts.model}>
+		<form-handler @submit=${this.onSubmit} .model=${this.opts.model}
+		style="${this.opts.gridArea?`grid-template-areas: "${this.opts.gridArea.join('"\n"')}"`:''}">
+
 			${this.prompts}
+
 		</form-handler>
 	`}
 
@@ -154,9 +157,11 @@ function makePrompt(opts, i=0, globalOpts){
 	if( !opts.val && globalOpts.val && globalOpts.val[opts.key] )
 		opts.val = globalOpts.val[opts.key]
 
+	let gridArea = globalOpts.gridArea ? `grid-area: ${opts.key};` : ''
+
 	if( opts.type == 'switch' )
 	return html`
-	<div>
+	<div style="${gridArea}">
 		<check-box 
 			key="${opts.key}"
 			type="switch"
@@ -209,7 +214,7 @@ function makePrompt(opts, i=0, globalOpts){
 	<form-control material="${globalOpts.material}"
 		key="${opts.key}"
 		show=${opts.label?'':'suffix prefix'}
-		style="${opts.w?`width:${opts.w}px;`:''}"
+		style="${opts.w?`width:${opts.w}px;`:''}; ${gridArea}"
 	>	
 		${control}
 
