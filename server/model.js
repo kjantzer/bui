@@ -457,7 +457,7 @@ module.exports = class Model {
         if( merge )
             this.id = id
 
-        this.afterAdd&&this.afterAdd(attrs, beforeAdd)
+        this.afterAdd&&await this.afterAdd(attrs, beforeAdd)
 
         // since we dont set `this.id`, find should return a new class instance (unless merge:true)
         // we need to do this to allow for  `add` to be called multiple times
