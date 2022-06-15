@@ -33,6 +33,7 @@ module.exports = class MyModel extends Model {
         jsonFields: [], // will parse and encode on find/update/create
         csvFields: [], // ex: `1,2,3` => ['1', '2', '3']
         nullFields: [], // make these keys null when value is "falsy"
+        userID: null, // field name to add user.id to upon row add
         updateDuplicates: true, // turn off to throw errors on duplicate inserts
         sync: false, // if true, will call `this.syncData()` on update/add/destroy
     }}

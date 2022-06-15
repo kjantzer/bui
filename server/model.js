@@ -427,6 +427,9 @@ module.exports = class Model {
 
         if( !this.config.table ) throw Error('missing config.table')
 
+        if( this.config.userID && this.req?.user )
+            attrs[this.config.userID] = this.req.user.id
+
         let beforeAdd = await this.beforeAdd(attrs)
         this.encodeFields(attrs) // NOTE: this moved to after ^, could cause problems with existing code
 
