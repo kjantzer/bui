@@ -33,7 +33,6 @@ customElements.define('b-flex', class extends LitElement{
 
         :host([right]) {
             justify-content: flex-end;
-            flex-shrink: 0;
         }
 
         :host([center]) {
