@@ -107,6 +107,7 @@ customElements.define('b-tag-list', class extends LitElement{
         this.name = 'tag'
         this.icon = 'tag'
         this.value = []
+        this.saveDelay = 1500
     }
 
     render(){return html`
@@ -199,7 +200,7 @@ customElements.define('b-tag-list', class extends LitElement{
         clearTimeout(this._saveDelay)
         this._saveDelay = setTimeout(()=>{
             this.emitEvent('change', {value: this.value})
-        },1500)
+        }, this.saveDelay)
     }
 
     copy(e){
