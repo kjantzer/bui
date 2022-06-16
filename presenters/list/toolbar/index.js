@@ -121,6 +121,12 @@ customElements.define('b-list-toolbar', class extends LitElement{
                 border-top: solid 1px var(--theme-bgd-accent);
             }
 
+            b-list-sort-btn {
+                border-left: none;
+                margin-left: 0;
+                padding-left: 0;
+            }
+
         }
     `}
 

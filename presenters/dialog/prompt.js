@@ -206,6 +206,7 @@ function makePrompt(opts, i=0, globalOpts){
 				placeholder="${opts.placeholder}"
 				.options=${opts.options}
 				.value=${opts.val}
+				adjust-for-mobile=false
 			></select-field>
 		`
 	}

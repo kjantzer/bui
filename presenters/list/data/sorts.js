@@ -150,7 +150,11 @@ export default class Sorts extends CollMap {
             className: 'b-list-sort-menu',
             multiple: true,
 			selected: Object.keys(oldVal)
-        }).popover(el, {adjustForMobile:true})
+        }).popover(el, {adjustForMobile:{
+            title: 'Sort',
+            anchor: 'top',
+            type: 'actionsheet'
+        }})
 
         if( selected === false ) return
 

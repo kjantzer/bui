@@ -473,6 +473,7 @@ export default class Menu {
 							placeholder="unset"
 							@change=${this.selectOptionsChanged.bind(this)}
 							.selected=${m.selection}
+							adjust-for-mobile=false
 							></select-field>`
 		}
 

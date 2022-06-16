@@ -463,7 +463,8 @@ export class Panel extends LitElement {
     get view(){ return this.__view}
 
     get isOpen(){ return this.hasAttribute('open')}
-    get onTop(){ return this.hasAttribute('ontop') || (this.type == 'modal' && this.parentElement.lastElementChild == this) }
+    get onTop(){ return this.hasAttribute('ontop') 
+            || (['modal', 'actionsheet'].includes(this.type) && this.parentElement.lastElementChild == this) }
 
     firstUpdated(){
         this._linkToolbar()

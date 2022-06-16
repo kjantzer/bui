@@ -510,7 +510,11 @@ export class Filter {
             overflowBoundry: this.attrs.overflowBoundry || 'scrollParent',
             maxHeight: this.attrs.maxHeight || '60vh',
             align: this.attrs.align || 'bottom',
-            adjustForMobile: true
+            adjustForMobile: {
+                title: this.label,
+                anchor: 'top',
+                type: 'actionsheet'
+            }
         }, opts))
 
         let oldVal = this.value
