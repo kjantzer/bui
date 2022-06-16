@@ -11,7 +11,8 @@ export default class BtnElement extends LitElement {
         icon: { type: String },
         tooltip: {type: String},
         spin: {type: Boolean, reflect: true, attribute: 'spin'},
-        spinicon: {type: Boolean, reflect: true}
+        spinicon: {type: Boolean, reflect: true},
+        squareicon: {type: Boolean}
     }}
 
     static get styles(){ return css`
@@ -416,7 +417,10 @@ export default class BtnElement extends LitElement {
             <span part="icon-area">
                 <b-spinner></b-spinner>
                 <slot name="icon">
-                    ${this.icon?html`<b-icon part="icon" name="${this.icon}" ?spin=${this.spinicon}></b-icon>`:''}
+                    ${this.icon?html`
+                        <b-icon part="icon" name="${this.icon}" 
+                            ?spin=${this.spinicon} ?square=${this.squareicon}></b-icon>
+                    `:''}
                 </slot>
             </span>
             <slot class="label" part="label"></slot>
