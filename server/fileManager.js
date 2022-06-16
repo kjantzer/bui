@@ -507,6 +507,10 @@ module.exports = class FileManager extends Model {
 
         if( fs.existsSync(file+'.preview.png') )
             fs.unlinkSync(file+'.preview.png')
+        
+        // optional sidecar info file
+        if( fs.existsSync(file+'.json') )
+            fs.unlinkSync(file+'.json')
 
         if( sizes && Array.isArray(sizes) )
             for( let size of sizes ){
