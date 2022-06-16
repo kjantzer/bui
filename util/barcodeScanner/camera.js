@@ -166,10 +166,15 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         let track = this.stream.getVideoTracks()[0]
         let supports = track.getCapabilities()
 
-        if( supports.focusDistance )
-        track.applyConstraints({
-            advanced: [{ focusMode: 'manual', focusDistance}]
-        })
+        if( supports.focusDistance ){
+            try{
+                track.applyConstraints({
+                    advanced: [{ focusMode: 'manual', focusDistance}]
+                })
+            }catch(err){
+
+            }
+        }
     }
 
     // alias
