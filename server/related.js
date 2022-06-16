@@ -57,8 +57,8 @@ function assign(Model, RelatedModel, prop, {
                     attrs = getAttrs.call(this)
                     if( !attrs ) return undefined
 
-                // do not return a related model if necessary attributes aren't present
-                }else if( attrs[relatedID] === undefined )
+                // do not return a related model if necessary attributes aren't present (unless asking for relations details)
+                }else if( attrs[relatedID] === undefined && this.req.query?.relations === undefined )
                     return undefined
 
                 this[__prop] = new RelatedModel(attrs, this.req)

@@ -267,6 +267,9 @@ module.exports = class Model {
 
     async find(where=null, opts){
 
+        if( this.req.query.relations !== undefined )
+            return this.relationChain()
+
         // NOTE: the preferre syntaxt is now:
         // find(opts={where, [select, with]})
         if( opts == undefined && where && (where.where || where.select || where.with) ){
@@ -361,10 +364,50 @@ module.exports = class Model {
         return option ? [option] : []
     }
 
+    relationChain({chain=[]}={}){
+
+        let related = this.constructor.related
+        let details = {}
+        
+        if( !related ) return details
+
+        for( let relation in related ){
+
+            if( chain.includes(relation) )
+                continue
+            
+            chain.push(relation)
+
+            let RelatedModel = this[relation]
+
+            if( !RelatedModel ){
+                details[relation] = null
+                continue
+            }
+
+            details[relation] = RelatedModel
+        }
+
+        for( let relation in details ){
+            if( details[relation])
+                details[relation] = details[relation].relationChain?.({chain: [].concat(chain)})
+        }
+
+        return details
+    }
+
     async findExtendRowData(row, opts={}){
 
         let related = this.constructor.related
         let _with = opts.with || this.req?.query.with
+        
+        // support comma delimited `with=related,related2`
+        if( _with && typeof _with == 'string' ){
+            _with = Object.fromEntries(_with.split(',').map(s=>[s,'']))
+            
+            if( this.req?.query.with )
+                this.req.query.with = _with
+        }
 
         // clear certain values that should only be used on first model
         if( this.req ){
