@@ -196,6 +196,11 @@ customElements.define('b-list', class extends LitElement {
             z-index: -1;
         }
 
+        b-infinite-list > * {
+            /* keeps any sticky columns working properly  */
+            min-width: fit-content;
+        }
+
         contract-draft-row { /* FIXME: remove? */
             padding: 2em;
         }
@@ -261,7 +266,7 @@ customElements.define('b-list', class extends LitElement {
             }
 
             :host([toolbar="bottom-mobile"]) {
-                grid-template-rows: auto 1fr auto auto;
+                grid-template-rows: auto auto 1fr auto;
             }
 
             :host([toolbar="bottom-mobile"]) b-list-toolbar {
