@@ -402,7 +402,7 @@ export class Panel extends LitElement {
     render(){return html`
         <div part="backdrop" class="backdrop"></div>
         <main part="main" style="${this.width?`width:${this.width};`:''}${this.height?`height:${this.height};`:''}">
-            <b-btn icon="cancel-1" pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closebtn!==true}></b-btn>
+            <b-btn icon="close" squareicon pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closebtn!==true}></b-btn>
             <slot></slot>
             <div class="inlinehtml">
                 ${this.html}

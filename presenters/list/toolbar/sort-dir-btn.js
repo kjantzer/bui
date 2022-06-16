@@ -17,6 +17,10 @@ customElements.define('b-list-sort-dir-btn', class extends LitElement{
             --bgdColor: none !important;
             --textColor: var(--primaryColor)
         }
+
+        b-btn[rotate180]::part(icon) {
+            transform: rotate(180deg);
+        }
     `}
 
     firstUpdated(){
@@ -24,7 +28,7 @@ customElements.define('b-list-sort-dir-btn', class extends LitElement{
     }
 
     render(){return html`
-        <b-btn clear icon="${this.item.desc?'sort-alt-down':'sort-alt-up'}" @click=${this.onClick}></b-btn>
+        <b-btn clear icon="filter_list" ?rotate180=${!this.item.desc} @click=${this.onClick}></b-btn>
     `}
 
     onClick(e){

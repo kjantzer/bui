@@ -164,8 +164,6 @@ class TextFieldElement extends HTMLElement {
 						type="${this.input||'text'}" 
 						name="${this.name||this.input}"
 						autocomplete="${this.autocomplete}">
-						
-				<!--<b-icon name="calendar-3" class="calendar"></b-icon>-->
 			</main>
 			<slot id="value"></slot>`
 			

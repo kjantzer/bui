@@ -13,7 +13,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
             gap: .35em;
             position:relative;
             padding-left: .35em;
-            padding-right: 1em;
+            /* padding-right: 1em; */
             /* margin-right: .5em; */
             align-self: stretch;
             /* border-right: solid 2px var(--theme-bgd-accent); */

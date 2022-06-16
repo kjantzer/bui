@@ -22,6 +22,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
             align-items: center;
             min-width: 0;
             position: relative;
+            gap: .25em;
         }
 
         :host(.selection-bar-shown) > * {
@@ -48,6 +49,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
         .scroller::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
 
+        b-list-sort-btn,
         b-list-sort-btn + b-list-filters {
             border-left: solid 2px rgba(0,0,0,.1);
             margin-left: .25em;

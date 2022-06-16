@@ -170,18 +170,22 @@ export default class extends LitElement{
             transition-delay: 300ms;
         }
 
-        text-field[empty] ~ [name="cancel-circled"] {
+        text-field[empty] ~ [icon="close"] {
             display: none;
         }
 
-        /* increase hit size */
-        .searchbox [name="cancel-circled"]{
-            padding: .5em;
-            margin: -.5em;
+        .searchbox [icon="close"]:after {
+            content: '';
+            display: block;
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            left: -25%;
+            top: -25%;
         }
 
-        .searchbox [name="cancel-circled"]:not(:hover) {
-            opacity: .5
+        .searchbox [icon="close"]:not(:hover) {
+            opacity: .3;
         }
 
         .searchbox b-spinner {
@@ -234,7 +238,7 @@ export default class extends LitElement{
                     @change=${this.onChange}
                 ></text-field>
                 <b-icon name="search" slot="prefix"></b-icon>
-                <b-icon name="cancel-circled" slot="suffix" @click=${this.clear}></b-icon>
+                <b-btn icon="close" pill squareicon sm slot="suffix" @click=${this.clear}></b-btn>
                 <b-spinner slot="prefix"></b-spinner>
             </form-control>
 

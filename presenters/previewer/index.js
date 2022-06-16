@@ -158,7 +158,7 @@ customElements.define('b-previewer', class extends LitElement{
 
     render(){return html`
         <b-panel-toolbar overlay>
-            <b-btn slot="close-btn" @click=${this.close} pill lg color="black" icon="cancel-1"></b-btn>
+            <b-btn slot="close-btn" @click=${this.close} pill lg color="black" icon="close" squareicon></b-btn>
             <div slot="title">
                 <b-file-icon ext=${this.model.ext||this.model.get('ext')}></b-file-icon>
                 ${this.model.label}

@@ -49,10 +49,11 @@ customElements.define('b-list-sort-btn', class extends LitElement{
         }
 
         b-icon {
-            font-size: .8em;
-            vertical-align: baseline;
+            /* font-size: .8em; */
+            /* vertical-align: baseline; */
             color: var(--toolbarTextColor);
             opacity: .5;
+            margin-right: .25ch;
         }
 
         /* b-icon:hover {
@@ -66,11 +67,11 @@ customElements.define('b-list-sort-btn', class extends LitElement{
             <main>
                 <b-label xs>Sort</b-label>
 
-                <div>
+                <b-flex gap=" " left>
                     ${this.sorts.active.map(sort=>html`
-                        <span class="sort" .sort=${sort}>
-                            <b-icon name="${sort.isDesc?'sort-alt-down':'sort-alt-up'}"></b-icon> ${sort.label}
-                        </span>
+                        <b-flex inline gap="0" left class="sort" .sort=${sort}>
+                            <b-icon name="filter_list" ?rotate180=${!sort.isDesc}></b-icon> ${sort.label}
+                        </b-flex>
                     `)}
                     
                     <span class="none">None</span>
@@ -78,7 +79,7 @@ customElements.define('b-list-sort-btn', class extends LitElement{
                     <span class="count" val="${this.sorts.active.length-1}">
                         +${this.sorts.active.length-1}
                     </span>
-                </div>
+                </b-flex>
             </main>
         </b-btn>
     `}

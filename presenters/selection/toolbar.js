@@ -43,7 +43,7 @@ customElements.define('b-selection-bar', class extends LitElement{
 
     render(){return html`
         ${this.selection?html`
-            <b-btn class="cancel-btn" icon="cancel-1" @click=${this.end} outline></b-btn>
+            <b-btn class="cancel-btn" icon="cancel" @click=${this.end} outline></b-btn>
 
             ${this.selection.result.size} selected
 
