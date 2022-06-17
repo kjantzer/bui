@@ -99,6 +99,16 @@ module.exports = class FileManager extends Model {
         return mkdirp.sync(this.dirPath)
     }
 
+    removeDirIfEmpty(dir){
+        dir = dir || this.dirPath
+        
+        let files = fs.readdirSync(dir)
+        files = files.filter(s=>!['.DS_Store'].includes(s)) // likely not needed in production, this is a mac thing
+
+        if( files.length == 0 )
+            fs.rmdirSync(dir)
+    }
+
     findWhere(where){
         // if asking for a set of files, parent_id must be given
         if( !this.id )
