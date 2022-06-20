@@ -76,7 +76,7 @@ customElements.define('b-bytes', class extends Numeral{
 })
 
 customElements.define('b-currency', class extends Numeral{
-    get defaultFormat(){ return '0,0.00' }
+    get defaultFormat(){ return '0,0.[00]' }
 
     render(){return html`
         <slot name="currency"><b-text muted nobold sup sm>$</b-text></slot>${this.numeral}<slot></slot>
@@ -84,7 +84,7 @@ customElements.define('b-currency', class extends Numeral{
 })
 
 customElements.define('b-currency-large', class extends Numeral{
-    get defaultFormat(){ return '0a' }
+    get defaultFormat(){ return '0.[0]a' }
 
     render(){return html`
         <slot name="currency"><b-text muted nobold sup sm>$</b-text></slot>${this.numeral}<slot></slot>
