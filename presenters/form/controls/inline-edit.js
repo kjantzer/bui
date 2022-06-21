@@ -24,15 +24,17 @@ customElements.define('b-inline-edit', class extends LitElement{
 
     static edit({value, target, placeholder='label', prefix, suffix, block=false}={}){
 
-        if( target.childNodes.length != 3 || target.childNodes[1].nodeName != '#text' )
-            return console.log('editing already');
+        if( target.querySelector('b-inline-edit') )
+            return console.log('editing already'); // NOTE: should error be thrown?
 
         return new Promise(resolve=>{
 
             let el = new (customElements.get('b-inline-edit'))
 
             el.target = target
-            el.textNode = target.childNodes[1]
+
+            let textNodes = Array.from(target.childNodes).filter(n=>n.nodeName=='#text')
+            el.textNode = textNodes.find(n=>n.textContent.trim()) || textNodes[0]
 
             target.setAttribute('editing-inline', '')
             el.textNode.replaceWith(el)
