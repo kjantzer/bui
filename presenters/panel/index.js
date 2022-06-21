@@ -326,7 +326,7 @@ export class Panel extends LitElement {
         }
 
         this.opts.onKeydown&&this.opts.onKeydown(e)
-        this.view.onKeydown&&this.view.onKeydown(e)
+        this.view?.onKeydown&&this.view.onKeydown(e)
     }
 
     // DEPRECATED: hash changed to path
@@ -803,6 +803,7 @@ export class Panel extends LitElement {
             z-index: 10000;
             flex-shrink: 0;
             transform: translate(50%, -50%);
+            pointer-events: all;
         }
 
         main > slot::slotted(*) {
