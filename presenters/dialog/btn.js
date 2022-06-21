@@ -41,7 +41,7 @@ customElements.define('b-dialog-btn', class extends Btn{
     `]
 
     get isCancelBtn(){
-        return this.opts.doesCancel
+        return this.opts?.doesCancel
     }
 
     get value(){
