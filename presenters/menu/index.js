@@ -609,6 +609,14 @@ export default class Menu {
 		let menu = new Menu(data.menu, data.menuOpts||{})
 
 		let popoverOpts = data.menuOpts && data.menuOpts.popover || {}
+
+		// use same overflow boundry as top level menu
+		if( !popoverOpts.overflowBoundry )
+			popoverOpts.overflowBoundry = this.presenter.popper?.state?.scrollElement || 'window'
+
+		if( !popoverOpts.align )
+			popoverOpts.align = 'right-start'
+
 		let val = await menu.popover(target, popoverOpts) 
 		if( val ){
 			data.menuSelected = val
