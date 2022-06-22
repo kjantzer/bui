@@ -814,7 +814,7 @@ export default class Menu {
 	matching(val){
 		let menu = null
 		if( !val )
-			return menu = null
+			return this.__filteredMenu = menu = null
 
 		if( this.searchUrl ){
 			setTimeout(()=>{
