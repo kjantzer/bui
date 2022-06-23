@@ -15,11 +15,13 @@ customElements.define('b-metadata', class extends LitElement{
         custom: {type: String},
         opts: {type: Object},
         add: {type: String},
-        save: {type: Boolean}
+        save: {type: Boolean},
+        material: {type: String}
     }}
 
     constructor(){
         super()
+        this.material = 'filled'
         this.attr = 'metadata'
         this.save = true
         this.opts = {}
@@ -60,15 +62,20 @@ customElements.define('b-metadata', class extends LitElement{
         return this.opts.formatLabel ? this.opts.formatLabel(key) : key
     }
 
+    contentFor(key){
+        return this.opts.contentFor ? this.opts.contentFor(key) : ''
+    }
+
     render(){return html`
     
         ${this.metadata.map(t=>html`
         
-            <form-control key="${t.key}" material="filled">
+            <form-control key="${t.key}" material="${this.material}">
                 <text-field .value=${t.val} 
                     placeholder=${this.opts.placeholder}
                     @blur=${this.clearMeta}></text-field>
                 <b-text capitalize slot="label">${this.labelFor(t.key)}</b-text>
+                ${this.contentFor(t.key)}
             </form-control>
         `)}
 
