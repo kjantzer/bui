@@ -51,6 +51,14 @@ export default class TabView {
         `:''
     }
 
+    set model(model){
+        // if view is created and NOT hidden
+        // NOTE: generally that means this view is "active", but special cases may have multiple
+        // tab views visible
+        if( this.__view && !this.view.hidden )
+            this.view.model = model
+    }
+
     get active(){ return this.__active }
     set active(isActive){
         let didChange = this.__active != isActive

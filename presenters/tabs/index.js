@@ -427,7 +427,7 @@ customElements.define('b-tabs', class extends LitElement {
         this._propagateModel = true
 
         if( this.__views )
-            this.views.active.view.model = this.model
+            this.views.model = this.model
     }
 
     get active(){

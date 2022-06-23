@@ -82,6 +82,12 @@ export default class TabViews extends Map {
             this.active = this.first
     }
 
+    set model(model){
+        this.forEach(view=>{
+            view.model = model
+        })
+    }
+
     set active(view){
         
         if( view instanceof HTMLElement )
