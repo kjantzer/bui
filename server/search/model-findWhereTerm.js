@@ -15,6 +15,9 @@ module.exports = function(SearchAPI){
 
         if( !term || !termSearch ) return
 
+        // dont let this term be used on related models
+        delete this.req.query.term
+
         if( !this.findWhereTermResultsMatch )
             return console.warn('`findWhereTermResultsMatch` is missing')
 
