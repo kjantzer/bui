@@ -314,7 +314,7 @@ export default class Menu {
 		if( allowCreate && term.length >= (allowCreate.termLength||4) ){
 			let extras = ['divider',
 						{   icon: allowCreate.icon||'add_box',
-							label: allowCreate.label||html`<b-text muted=2>Create:</b-text> <b>${term}</b>`,
+							label: allowCreate.label||html`<b-text muted=2>Create:</b-text> <b-text xbold color="theme">${term}</b-text>`,
 							val: term,
 							type: 'create'
 						},
