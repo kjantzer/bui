@@ -80,6 +80,19 @@ export class UIAlertError extends UICustomError {
     }
 }
 
+export class UIAlertMsg extends UICustomError {
+
+    constructor(msg='', ...args){
+        super(msg, ...args)
+        this.name = 'UIAlertMsg'
+        this.animation = 'slide'
+    }
+
+    get presenter(){
+        return Dialog.alert(this.message)
+    }
+}
+
 export class UIPermissionError extends UICustomError {
     
     constructor(msg='You do not have permission', ...args){
