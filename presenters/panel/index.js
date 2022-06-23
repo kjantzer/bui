@@ -541,6 +541,31 @@ export class Panel extends LitElement {
             this.controller = this.opts.controller
         }
 
+        if( this.route && this.route.state.props.width ){
+            this.width = this.route.state.props.width
+            
+            if( this.animation != 'slide ')
+                this._animationOrig = this.animation
+            
+            if( this.anchor != 'bottom' )
+                this._anchorOrig = this.anchor
+
+            this.animation = 'slide'
+            this.anchor = 'bottom'
+
+        }else{
+
+            if( this._animationOrig ){
+                this.animation = this._animationOrig
+                delete this._animationOrig
+            }
+
+            if( this._anchorOrig ){
+                this.anchor = this._anchorOrig
+                delete this._anchorOrig
+            }
+        }
+
         // if no controller set (or doesn't exist) or it's currently NOT visible
         // , use the root controller
         if( !this.panelController || !this.panelController.isVisible )
