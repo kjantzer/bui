@@ -4,7 +4,7 @@ More docs needed, especially for how it pairs with API
 
 ```js
 // example of using FileManager with API
-const FileManager = require(bui`server/fileManager`)
+const FileManager = require(bui`server/files/manager`)
 
 // create the default files table before using
 // db.query(FileManager.createTableSql())
