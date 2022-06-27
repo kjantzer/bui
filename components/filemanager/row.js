@@ -86,7 +86,7 @@ customElements.define('b-file-row', class extends LitElement{
 
             :host([layout="row"]) img {
                 border-radius: var(--radius) 0 0 var(--radius);
-                width: 400px;
+                width: var(--preview-width, 400px);
             }
         }
 
