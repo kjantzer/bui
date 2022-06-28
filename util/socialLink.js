@@ -6,13 +6,16 @@ export const SocialPlatforms = {
     tiktok: 'https://www.tiktok.com/@'
 }
 
-export default function(platform, handle, {fallback=null}={}){
+export default function(platform, handle, {fallback=false}={}){
 
     platform = String(platform).toLowerCase()
 
     let platformLink = SocialPlatforms[platform]
 
-    if( !platformLink ) return fallback
+    if( handle.match(/^http/) )
+        return handle
+
+    if( !platformLink ) return fallback === false ? handle : fallback
 
     if( typeof platformLink == 'function' )
         return platformLink(handle)
