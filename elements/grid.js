@@ -50,10 +50,10 @@ customElements.define('b-grid', class extends LitElement{
         :host([cols="1,1,2"]) { grid-template-columns: 1fr 1fr 2fr; }
 
         :host([cols="auto,1"]) { grid-template-columns: auto 1fr; }
-        :host([cols="1,auto"]) { grid-template-columns: auto 1fr; }
+        :host([cols="1,auto"]) { grid-template-columns: 1fr auto; }
 
         :host([rows="auto,1"]) { grid-template-rows: auto 1fr; }
-        :host([rows="1,auto"]) { grid-template-rows: auto 1fr; }
+        :host([rows="1,auto"]) { grid-template-rows: 1fr auto; }
 
         ${mediaQuery('sm', css`
             :host([cols-mobile="1"]) { grid-template-columns: 1fr; }
