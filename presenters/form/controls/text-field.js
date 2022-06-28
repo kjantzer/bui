@@ -76,6 +76,11 @@ main {
 .editor p:first-child{ margin-top: 0;}
 .editor p:last-child{ margin-bottom: 0;}
 
+:host([nowrap]) .editor {
+	white-space: nowrap;
+    overflow: hidden;
+}
+
 /* :host([single-line]) .editor {
 	white-space: nowrap;
 	overflow-x: auto;
