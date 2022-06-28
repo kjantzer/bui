@@ -100,7 +100,7 @@ customElements.define('b-tabs', class extends LitElement {
             --inactiveColor: var(--b-tabs-inactive-color, rgba(0,0,0,.4));
             --activeColor:  var(--b-tabs-active-color, var(--theme));
             --border-color: var(--b-tabs-border-color, rgba(0, 0, 0, 0.1));
-            --contentBgd: none;
+            /* --contentBgd: none; */
             --contentShadow: none;
             --contentRadius: 0;
         }

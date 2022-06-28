@@ -24,7 +24,7 @@ customElements.define('b-tab-bar-manila', class extends LitElement{
         }
 
         b-btn[active] {
-            --bgdColor: var(--contentBgd, none);
+            --bgdColor: var(--contentBgd, var(--theme-bgd, none));
             box-shadow: 0 0px 2px var(--theme-shadow);
         }
 
