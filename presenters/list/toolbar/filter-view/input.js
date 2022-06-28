@@ -84,7 +84,7 @@ customElements.define('b-list-filter-view-input', class extends LitElement{
         the easy to scan while taking up the least amount of space
     */
     get label(){
-        return this.value || this.get('defaultLabel', 'unset')
+        return this.value || this.get('toolbarLabel', this.get('defaultLabel', 'unset'))
     }
 
     onEnter(){
