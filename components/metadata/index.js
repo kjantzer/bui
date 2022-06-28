@@ -72,6 +72,7 @@ customElements.define('b-metadata', class extends LitElement{
         
             <form-control key="${t.key}" material="${this.material}">
                 <text-field .value=${t.val} 
+                    nowrap
                     placeholder=${this.opts.placeholder}
                     @blur=${this.clearMeta}></text-field>
                 <b-text capitalize slot="label">${this.labelFor(t.key)}</b-text>
