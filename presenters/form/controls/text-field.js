@@ -7,6 +7,14 @@ import stopMaxLength from '../util/stopMaxLength'
 import {htmlCleaner} from '../../../util'
 import dayjs from 'dayjs'
 
+// consider moving to util
+const stringToHTML = function(str){
+	if( str && !str.includes('</p>') )
+		str = '<p>'+str.split(`\n\n`).join(`</p><p>`).split(`\n`).join('<br>')+'</p>'
+
+	return str
+}
+
 const styles = css`
 :host {
 	display: inline-block;
@@ -310,7 +318,7 @@ class TextFieldElement extends HTMLElement {
 			if( this._editor.innerHTML != val ){
 				
 				if( this.isMultiline && !this.isPlain )
-					val = val || '<p><br></p>'
+					val = stringToHTML(val) || '<p><br></p>'
 				else
 					val = val || ''
 
@@ -449,10 +457,10 @@ class TextFieldElement extends HTMLElement {
 			val = e.clipboardData.getData('text')
 			
 			// remove excessive line breaks
-			val = val.replace(/\n{2,}/g, "\n")
+			val = val.replace(/\n{3,}/g, `\n\n`)
 
 			if( this.isHTML )
-				val = '<p>'+val.split(`\n`).join(`</p>\n<p>`)+'</p>'
+				val = stringToHTML(val)
 			else
 				val = val.split(`\n`).join(`<br>\n`)
 		}
