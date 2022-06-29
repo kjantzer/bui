@@ -92,6 +92,7 @@ customElements.define('b-tooltip', class extends LitElement{
     }}
 
     static styles = css`
+        /* this element is ever actually displayed, it is used to trigger the tooltip and presents with popoover */
         :host {
             display: none !important;
         }
