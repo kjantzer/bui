@@ -71,7 +71,7 @@ customElements.define('b-list-filter-view-input', class extends LitElement{
         if( !this.input )
             return this.filter.value
 
-        return this.input.value
+        return this.input.value || null
     }
 
     set value(val){
