@@ -34,7 +34,11 @@ const WatchClicks = function(e){
 	// the clicked target already has a popover and has the "toggle" setting, so close the current popover
 	if( target && target.popover && typeof target.popover != 'function' 
 	&& target.popover.view != target && target.popover.opts.clickToggles ){
-		target.popover._close()
+
+		// tooltips should be shown on mouseover, so dont close on a click
+		if( !target.popover.isTooltip )
+			target.popover._close()
+
 		e.preventDefault()
 		e.stopPropagation()
 		return false
@@ -42,7 +46,7 @@ const WatchClicks = function(e){
 	
 	// close all popovers not part (nested) within the clicked target
 	OpenPopovers.slice(0).reverse().forEach(dd=>{
-		if( !found && (!target || !dd.contains(target)) ){
+		if( !found && ( !dd.contains(target)) ){
 			close.push(dd)
 			
 		// as soon as one of the popovers is nested, all others that follow will be nested, no reason to continue testing
@@ -128,6 +132,10 @@ export default class Popover {
 		
 		// keep track of open popovers so we can remove them later
 		OpenPopovers.push(this)
+	}
+
+	get isTooltip(){
+		return this.opts.className.includes('tooltip') 
 	}
 
 	positionOver(target){
@@ -283,9 +291,16 @@ export default class Popover {
 		
 		// remove this from the list of open popovers as well as all popovers after it
 		var indx = OpenPopovers.indexOf(this)
-	    if( indx > -1){
+	    if( indx > -1 ){
+
+			// if tooltip, then only remove this popover
+			if( this.isTooltip )
+				OpenPopovers.splice(indx, 1)
+			else
 	        OpenPopovers.splice(indx).forEach((dd,i)=>{
-				if( i > 0 ) dd._close() // close all popovers nested inside of this one
+				if( i > 0 ){
+					dd._close() // close all popovers nested inside of this one
+				}
 			})
 		}
 		
