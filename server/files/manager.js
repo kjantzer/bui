@@ -12,6 +12,12 @@ const {pdfInfo, pdfText} = require('./pdf')
 
 ffmpeg.setFfmpegPath('/usr/bin/ffmpeg');
 
+function ThrowError(name, msg){
+    let err = new Error(msg)
+    err.name = name
+    throw err
+}
+
 module.exports = class FileManager extends Model {
 
     get config(){ return {
@@ -139,7 +145,7 @@ module.exports = class FileManager extends Model {
             return resp
         }
 
-        if( !file ) throw new Error('No file found')
+        if( !file ) ThrowError('NoFile', 'No file found')
 
         let filename = file.name
         let ext = file.name.split('.').pop()
@@ -166,8 +172,10 @@ module.exports = class FileManager extends Model {
                 WHERE IFNULL(parent_id,'') = ? AND group_name = ? AND dir_path = ? AND md5 = ?
             `, [info.parent_id||'', this.group, info.dir_path, info.md5]).then(r=>r.first)
 
-            if( dupe )
-                throw new Error('Duplicate file: '+dupe.filename)
+            if( dupe ){
+                ThrowError('DuplicateFile', 'Duplicate file: '+dupe.filename)
+            }
+                
         }
 
         // only one file allowed for this group/parent_id
@@ -207,7 +215,7 @@ module.exports = class FileManager extends Model {
         let {syncData} = await this.add(info, {manualSync:true})
 
         if( !this.id )
-            throw new Error('failed to insert file record')
+            ThrowError('FileRecordFail', 'failed to insert file record')
 
         // change filename to include the DB record ID so each is uniquely named
         filename = `${this.id}-${filename}`
@@ -398,7 +406,7 @@ module.exports = class FileManager extends Model {
                 width = height = Math.max(width, height)
             }else {
                 // TODO: write logic for other aspect ratios
-                throw new Error('Only square aspect ratio is currently supported')
+                ThrowError('ApsectRatio', 'Only square aspect ratio is currently supported')
             }
 
             await this.beforeResize(sharpImg, {width, height, metadata})
