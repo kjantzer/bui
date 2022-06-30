@@ -27,7 +27,8 @@ customElements.defineShared('b-popover-view', class extends LitElement{
     }
 
     load(id){
-
+        if( id && id.url && id.fetch )
+            this.model = id
     }
 
     close(){

@@ -42,7 +42,7 @@ const WatchClicks = function(e){
 	
 	// close all popovers not part (nested) within the clicked target
 	OpenPopovers.slice(0).reverse().forEach(dd=>{
-		if( !found && !dd.contains(target) ){
+		if( !found && (!target || !dd.contains(target)) ){
 			close.push(dd)
 			
 		// as soon as one of the popovers is nested, all others that follow will be nested, no reason to continue testing
@@ -269,7 +269,8 @@ export default class Popover {
 	
 	close(){
 		
-		if( !this.target || !this.target.popover ) return;
+		// if( !this.target || !this.target.popover ) return; // why was I doing this?
+		if( !this.target ) return;
 		
 		this.el.popover = null
 		this.view.popover = null

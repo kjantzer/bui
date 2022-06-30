@@ -603,6 +603,17 @@ customElements.define('b-list', class extends LitElement {
         this.toolbar.term = term
     }
 
+    async _onChangeReset(){
+        try{
+            this.list.reset(this.shouldFetchData)
+            this.toolbar.count = await this.dataSource.length()
+        }catch(err){
+            throw new UIError(err.message||err.name)
+        }finally{
+            this.spinner.show = false
+        }
+    }
+
     async onFilterTermChange(){
 
         // TODO: probably need an opt in feature
@@ -611,8 +622,7 @@ customElements.define('b-list', class extends LitElement {
         }
 
         this.dataSource.applyFilters()
-        this.list.reset(this.shouldFetchData)
-        this.toolbar.count = await this.dataSource.length()
+        this._onChangeReset()
     }
 
     async onFilterChange(changes){
@@ -623,9 +633,7 @@ customElements.define('b-list', class extends LitElement {
         }
 
         this.dataSource.applyFilters()
-        this.list.reset(this.shouldFetchData)
-        this.toolbar.count = await this.dataSource.length()
-        this.spinner.show = false
+        this._onChangeReset()
     }
 
     async onSortChange(){
@@ -637,9 +645,7 @@ customElements.define('b-list', class extends LitElement {
             this.dataSource.sort()
         }
         
-        this.list.reset(this.shouldFetchData)
-        this.toolbar.count = await this.dataSource.length()
-        this.spinner.show = false
+        this._onChangeReset()
     }
 
 })
