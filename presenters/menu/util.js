@@ -26,6 +26,7 @@ export function toMenu({
             toolbarLabel: '–',
             // icon: 'erase',
 			val: '',
+            clearsAll: true,
             extras:[html`<b-icon name="erase"></b-icon>`]
         }
     else if( unset && typeof unset == 'string' )
