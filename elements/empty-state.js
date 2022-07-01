@@ -64,6 +64,10 @@ export default class EmptyState extends LitElement {
             display: none !important;
         }
 
+        :host([if="second"]:not(:nth-child(2))){
+            display: none !important;
+        }
+
         :host([must-be="last"]:not(:last-child)),
         :host([if="last"]:not(:last-child)) {
             display: none !important;
