@@ -1,7 +1,9 @@
+
 module.exports = function(id, opts){
 
 	opts = opts || {}
-	var success = typeof opts == 'object' ? opts.success : opts;
+	let success = typeof opts == 'object' ? opts.success : opts;
+	let promise = null
 	
 	if( !id ){
 		if( success ) success(null)
@@ -9,6 +11,12 @@ module.exports = function(id, opts){
 	}
 
 	var model = this.getOrCreate.apply(this, arguments)
+
+	if( opts.sync && !success ){
+		let _resolve
+		promise = new Promise(resolve=>_resolve=resolve)
+		success = function(resp){ _resolve(model) }
+	}
 
 	// model has not fetched yet (via getOrFetch)
 	if( model.needsFetching ){
@@ -45,5 +53,5 @@ module.exports = function(id, opts){
 		if( success ) success(model)
 	}
 
-	return model;
+	return promise || model;
 }
