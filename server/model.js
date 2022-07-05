@@ -109,7 +109,7 @@ module.exports = class Model {
 
     get id(){ return this.__id || this.attrs[this.idAttribute] }
     set id(id){ this.attrs[this.idAttribute] = this.__id = id }
-    get isSingular(){ return this.id }
+    get isSingular(){ return this.id && !Array.isArray(this.id) }
     
     get idAttribute(){ return this.config.idAttribute || defaultConfig.idAttribute }
     get tableAlias(){ return this.config.tableAlias || this.config.table }
@@ -337,7 +337,7 @@ module.exports = class Model {
         if( id && id == this.id ){
             this.attrs = resp[0]
             resp = this
-        }else if( id ){
+        }else if( id && !Array.isArray(id) ){
             if( convertToObject )
                 resp = new ClassObj(resp[0], this.req)
             else
