@@ -249,6 +249,9 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             color: rgba(var(--theme-text-rgb, 0,0,0), .8);
         }
 
+        [name="body"] :first-child { margin-top: 0; }
+        [name="body"] :last-child { margin-bottom: 0; }
+
         footer {
             display: flex;
             justify-content: flex-end;
