@@ -124,7 +124,7 @@ export default class Sorts extends CollMap {
         }
 
         let menu = this.filter(sort=>!sort.attrs.preset).map(sort=>toMenuItem(sort))
-        menu.push({text: html`Sorts will be applied in the order they are chosen.`})
+        menu.unshift({text: html`Sorts will be applied in the order they are chosen.`})
 
         let presets = this.filter(sort=>!!sort.attrs.preset).map(sort=>{
             let s = toMenuItem(sort)
@@ -135,7 +135,7 @@ export default class Sorts extends CollMap {
 
         if( this.__defaultSort ){
             let labels = Object.keys(this.__defaultSort).map(s=>this.get(s).label).join(', ')
-            menu.push({
+            menu.unshift({
                 label: 'Default',
                 clearsAll: true,
                 preset: this.__defaultSort,
