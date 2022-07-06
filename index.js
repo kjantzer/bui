@@ -1,24 +1,19 @@
+import './helpers/lit'
 
-// extend Backbone for lit-html support
-require('./helpers/backbone')
+// core elements
+import './elements/btn'
+import './elements/text'
+import './elements/empty-state'
+import './elements/hr'
+import './elements/flex'
+import './elements/grid'
 
-// extend LitElement to fit our needs
-require('./helpers/lit')
+// core presenters
+import router from './router'
+import Panel from './presenters/panel'
+import Menu from './presenters/menu'
+import Dialog from './presenters/dialog'
+import Notif from './presenters/notif'
+import Popover from './presenters/popover'
 
-require('./elements/icon')
-require('./elements/btn')
-require('./elements/spinner')
-require('./elements/spinner-overlay')
-require('./elements/uploader')
-require('./elements/paper')
-require('./elements/timer')
-require('./elements/empty-state')
-require('./elements/label')
-require('./elements/hr')
-require('./elements/sub')
-require('./elements/carousel')
-
-export const router = require('./router').default
-
-// I dont think I want to do this here
-export const Panel = require('./presenters/panel').Panel
+export {router, Panel, Menu, Dialog, Notif, Popover}
