@@ -22,12 +22,17 @@ class Views extends Map {
 
 		socket.on('view:info', (viewNamePattern, cb)=>{
 
+			if( !cb ){
+				cb = viewNamePattern
+				viewNamePattern = ''
+			}
+
 			let resp = []
 			let patt = new RegExp(viewNamePattern)
 
 			this.forEach((view, name)=>{
 				
-				if( name.match(patt) ){
+				if( name.match(patt) && view.clients.size > 0 ){
 					resp.push({
 						name: name,
 						data: view.clientData
