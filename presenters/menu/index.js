@@ -44,7 +44,25 @@ const SearchDefaults = {
 	}
 }
 
+const ItemPreset = function(defaultOpts){
+	return function(opts){
+		opts = {...defaultOpts, ...opts}
+		
+		if( !opts.fn )
+			delete opts.fn
+
+		return opts
+	}
+}
+
+const ItemsPresets = {
+	edit: ItemPreset({label: 'Edit', icon: 'pencil', fn: 'edit'}),
+	destroy: ItemPreset({label: 'Delete', icon: 'trash', fn: 'destroy'})
+}
+
 export default class Menu {
+
+	static Items = ItemsPresets
 
 	static handle(selected, handler, args){
 		if( !selected ) return true
@@ -143,8 +161,13 @@ export default class Menu {
 			menu = menu()
 
 		menu = menu.map(val=>{
+			
+			if( typeof val == 'string' && ItemsPresets[val] )
+				return ItemsPresets[val]()
+
 			if( !isDivider(val) && ['string', 'number'].includes(typeof val) )
 				return {label: val, val}
+
 			return val
 		})
 
