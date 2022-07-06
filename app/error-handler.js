@@ -24,7 +24,7 @@ const GlobalErrorHandler = (evt)=>{
         return
     }
 
-    let msg = error && error.message
+    let msg = error && (error.message || error.name)
     if( !msg ) return
 
     let notif = {
