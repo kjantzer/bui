@@ -22,10 +22,14 @@ module.exports = class View {
 	}
 
 	sync(){
-        this.io.emit('view:sync', {
-            name: this.name,
-            data: this.clientData
-        })
+		// reduce number of sync emits when clients reconnecting
+		clearTimeout(this._syncDelay)
+		this._syncDelay = setTimeout(()=>{
+			this.io.emit('view:sync', {
+				name: this.name,
+				data: this.clientData
+			}, 200)
+		})
 	}
 
 	emit(opts){
