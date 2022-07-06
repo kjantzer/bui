@@ -20,7 +20,7 @@ module.exports = class SearchType {
 
     termForBoolean(term){
         // remove characters that boolean mode doesn't like
-        return term.replace(/[\(\)\*-+]/g, ' ').replace(/\s{2,}/g, ' ')
+        return term.replace(/[\(\)\*\-+]/g, ' ').replace(/\s{2,}/g, ' ')
     }
 
     query(term){
