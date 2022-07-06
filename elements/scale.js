@@ -93,7 +93,8 @@ customElements.define('b-scale', class extends LitElement{
         this.emitEvent('stable', result)
     }
 
-    requestDevice(){
+    requestDevice(e){
+        e.stopPropagation()
         this.scale.requestDevice()
     }
 
