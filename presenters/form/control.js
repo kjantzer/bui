@@ -261,8 +261,8 @@ class FormControlElement extends HTMLElement {
 		// 	this.focus()
 	}
 	
-	focus(){
-		this.control && this.control.focus()
+	focus(opts){
+		this.control && this.control.focus(opts)
 	}
 
 }

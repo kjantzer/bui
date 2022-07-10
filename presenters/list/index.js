@@ -356,10 +356,10 @@ customElements.define('b-list', class extends LitElement {
             delete this.host
     }
 
-    focusSearchInput(){
+    focusSearchInput(opts){
         let searchBar = this.toolbar.$$('b-list-search-bar')
         if( searchBar )
-            searchBar.focus()
+            searchBar.focus(opts)
     }
 
     blurSearchInput(){
@@ -383,7 +383,7 @@ customElements.define('b-list', class extends LitElement {
             ){
                 setTimeout(()=>{
                     e.preventDefault()
-                    this.focusSearchInput()
+                    this.focusSearchInput({select:true})
                 })
             }
 

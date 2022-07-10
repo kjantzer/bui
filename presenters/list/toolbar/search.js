@@ -107,8 +107,8 @@ customElements.define('b-list-search-bar', class extends LitElement{
         </form-control>
     `}
 
-    focus(){
-        this.shadowRoot.querySelector('form-control').focus()
+    focus(opts){
+        this.shadowRoot.querySelector('form-control').focus(opts)
     }
 
     onKeyDown(e){

@@ -638,11 +638,14 @@ class TextFieldElement extends HTMLElement {
 		}
 	}
 	
-	focus(){
+	focus(opts={}){
 		if( this.input )
 			this._input.focus()
 		else
 			this.select('end')
+
+		if( opts && opts.select )
+			this.select(opts.select===true?'all':opts.select)
 	}
 
 	_onBlur(){
