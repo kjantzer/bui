@@ -1,4 +1,3 @@
-import './helpers/backbone'
 import './helpers/lit'
 
 // core elements
