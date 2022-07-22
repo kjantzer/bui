@@ -7,6 +7,10 @@ const ROUTES = []
 export class Router {
 
     // NOTE: this must be setup before anything uses router.add()
+
+    // have not seen you use pvt properties yet but it was mentioned recently
+    #delay
+    
     config(opts){
         if( opts.root != undefined ){
             config.PATH_ROOT = opts.root
@@ -38,6 +42,7 @@ export class Router {
         this.states = new HistoryStates()
 
         // listen for state changes and change routes accordingly
+        // I tried to add an async with this cb method but it takes quite a while
         window.addEventListener('popstate', e=>{
             
             if( opts.requireState && !e.state ) return // probably a sheetview change, ignore
@@ -59,7 +64,6 @@ export class Router {
 
         // timeout delay to let routes add first (since they also use setTimeout - see `add()`)
         setTimeout(()=>{
-
             // trigger initial route
             this._changeRoute([], this.states.current)
 
@@ -67,9 +71,11 @@ export class Router {
             if( !this.states.current.path && opts.currentState ){
                 this.states.current.update(opts.currentState)
             }
-
-        })
+        }, this.#delay)
+        // this does seem to work, but I imagine there is a better way
+        // will try other ways
     }
+    _post
 
     // pushes new path/state onto stack (does not trigger route change)
     push(path, props={}){
@@ -120,19 +126,22 @@ export class Router {
     add(path, onChange){
         let route = new Route(path, onChange, config)
 
-        let delay = route.patt.names.length
+        let delay = route.patt.names.length * 10
+        // thinking is that reset delay every time
+        // then maike it available for the setTimeout...
+        this.#delay = delay
 
         // reduce delay if pattern contains wildcard
         // wildcards routes should be added first followed by routes with longer path params
         // this is a common UX pattern:
         // `list-of-things(/*)`     - the list view
         // `list-of-things/:id(/*)` - the view of a single item (often inside of the list view)
-        if( delay > 0 && route.patt.names.includes('_') )
-            delay -= 1
+        if( this.#delay > 0 && route.patt.names.includes('_') )
+            this.#delay -= 1
 
         setTimeout(()=>{
             ROUTES.push(route)
-        }, delay*10)
+        }, this.#delay)
 
         return route
     }
