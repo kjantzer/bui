@@ -7,9 +7,6 @@ const ROUTES = []
 export class Router {
 
     // NOTE: this must be setup before anything uses router.add()
-
-    // have not seen you use pvt properties yet but it was mentioned recently
-    #delay
     
     config(opts){
         if( opts.root != undefined ){
@@ -71,11 +68,8 @@ export class Router {
             if( !this.states.current.path && opts.currentState ){
                 this.states.current.update(opts.currentState)
             }
-        }, this.#delay)
-        // this does seem to work, but I imagine there is a better way
-        // will try other ways
+        })
     }
-    _post
 
     // pushes new path/state onto stack (does not trigger route change)
     push(path, props={}){
@@ -124,24 +118,35 @@ export class Router {
     }
 
     add(path, onChange){
-        let route = new Route(path, onChange, config)
 
-        let delay = route.patt.names.length * 10
-        // thinking is that reset delay every time
-        // then maike it available for the setTimeout...
-        this.#delay = delay
+        let route = new Route(path, onChange, config)
+        let ordinal = route.patt.names.length
+
+        this._routesToAdd = this._routesToAdd || {}
 
         // reduce delay if pattern contains wildcard
         // wildcards routes should be added first followed by routes with longer path params
         // this is a common UX pattern:
         // `list-of-things(/*)`     - the list view
         // `list-of-things/:id(/*)` - the view of a single item (often inside of the list view)
-        if( this.#delay > 0 && route.patt.names.includes('_') )
-            this.#delay -= 1
+        if( ordinal > 0 && route.patt.names.includes('_') ){
+            ordinal -= 1
+        }
 
-        setTimeout(()=>{
-            ROUTES.push(route)
-        }, this.#delay)
+        this._routesToAdd[ordinal] = this._routesToAdd[ordinal] || []
+        this._routesToAdd[ordinal].push(route)
+
+        // we delay pushing routes to the stack to let catch more routes being added
+        // we are going to push them onto the stack in order of number of params in the route
+        // from smallest (none) to most params
+        clearTimeout(this._addRoutes)
+        this._addRoutes = setTimeout(()=>{
+            // officially add the routes to the stack
+            for( let ordinal in this._routesToAdd ){
+                ROUTES.push(...this._routesToAdd[ordinal])
+            }
+            this._routesToAdd = null // dont add the same routes again
+        }, 10)
 
         return route
     }
