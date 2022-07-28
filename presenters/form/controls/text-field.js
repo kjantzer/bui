@@ -64,7 +64,7 @@ main {
 	width: 100%;
 	display: inline-block;
 	white-space: pre-wrap;
-	min-height: 1em;
+	min-height: var(--theme-body-line-height, 1.4em);
 	line-height: var(--theme-body-line-height, 1.4em);
 	margin: -.1em 0;
 }
