@@ -155,7 +155,7 @@ export function syncBackboneCollection(data, {
         model.set(attrs)
 
     if( ['insert', 'add'].includes(action) )
-        model.add(attrs)
+        model.add ? model.add(attrs) : model.set(attrs) // .set used if model is a Backbone.Model
     
     if( ['destroy', 'delete'].includes(action) ){
 
