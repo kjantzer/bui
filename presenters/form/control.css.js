@@ -262,7 +262,7 @@ slot[name="help"] {
 	border-radius: var(--fc-border-radius, 0px);
 }
 
-:host([material=""]:not(:focus-within):not([focused]):hover) main {
+:host([material=""]:not([disabled]):not(:focus-within):not([focused]):hover) main {
 	/* background: var(--bgd); */
 	border-bottom-color: var(--focusColor);
 }
@@ -395,7 +395,7 @@ slot[name="help"] {
 	--borderColor: transparent;
 }
 
-:host([material="hover"]:not(:focus-within):not([focused]):hover) main {
+:host([material="hover"]:not([disabled]):not(:focus-within):not([focused]):hover) main {
 	border-bottom-color: var(--borderColor);
 }
 
