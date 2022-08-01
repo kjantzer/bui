@@ -30,6 +30,24 @@
             "reveal": "always",
             "panel": "dedicated",
         }
+    },
+    {
+        "label": "🌎 Expose Localhost",
+        "type": "shell",
+        "command": "export $(grep -v '^#' .env | xargs) && $NGROK http $LOCAL_PORT",
+        "problemMatcher": [],
+        "group": "build",
+        "presentation": {
+            "reveal": "always",
+            "panel": "dedicated",
+            "focus": true,
+            "close": true
+        },
+        "options": {
+            "statusbar": {
+                "hide" : true
+            }
+        }
     }
 ]
 }
