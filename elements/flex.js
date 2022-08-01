@@ -7,7 +7,7 @@ customElements.define('b-flex', class extends LitElement{
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 1em;
+            gap: 1rem;
             min-width: 0;
         }
 
@@ -71,24 +71,24 @@ customElements.define('b-flex', class extends LitElement{
 
         :host([gap="0"]), :host([gap="none"]) { gap: 0; }
         :host([gap=" "]) { gap: .5ch; }
-        :host([gap=".25"]) { gap: .25em; }
-        :host([gap=".5"]) { gap: .5em; }
-        :host([gap="1"]) { gap: 1em; }
-        :host([gap="2"]) { gap: 2em; }
+        :host([gap=".25"]) { gap: .25rem; }
+        :host([gap=".5"]) { gap: .5rem; }
+        :host([gap="1"]) { gap: 1rem; }
+        :host([gap="2"]) { gap: 2rem; }
 
         :host([gap-col="0"]), :host([gap-col="none"]) { column-gap: 0; }
         :host([gap-col=" "]) { column-gap: .5ch; }
-        :host([gap-col=".25"]) { column-gap: .25em; }
-        :host([gap-col=".5"]) { column-gap: .5em; }
-        :host([gap-col="1"]) { column-gap: 1em; }
-        :host([gap-col="2"]) { column-gap: 2em; }
+        :host([gap-col=".25"]) { column-gap: .25rem; }
+        :host([gap-col=".5"]) { column-gap: .5rem; }
+        :host([gap-col="1"]) { column-gap: 1rem; }
+        :host([gap-col="2"]) { column-gap: 2rem; }
 
         :host([gap-row="0"]), :host([gap-row="none"]) { row-gap: 0; }
         :host([gap-row=" "]) { row-gap: .5ch; }
-        :host([gap-row=".25"]) { row-gap: .25em; }
-        :host([gap-row=".5"]) { row-gap: .5em; }
-        :host([gap-row="1"]) { row-gap: 1em; }
-        :host([gap-row="2"]) { row-gap: 2em; }
+        :host([gap-row=".25"]) { row-gap: .25rem; }
+        :host([gap-row=".5"]) { row-gap: .5rem; }
+        :host([gap-row="1"]) { row-gap: 1rem; }
+        :host([gap-row="2"]) { row-gap: 2rem; }
 
         :host ::slotted(*) {
             min-width: 0;
