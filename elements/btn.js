@@ -90,7 +90,7 @@ export default class BtnElement extends LitElement {
         }
 
         main {
-            border-radius: var(--radius);
+            border-radius: inherit;// var(--radius);
             position: relative;
             display: inline-flex;
             justify-content: center;
@@ -140,7 +140,7 @@ export default class BtnElement extends LitElement {
             visibility: hidden;
             opacity: 0;
             /* mix-blend-mode: saturation; */
-            border-radius: var(--radius);
+            border-radius: inherit;// var(--radius);
             /* transition: 120ms; */
         }
 
