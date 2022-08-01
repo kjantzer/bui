@@ -71,6 +71,8 @@ customElements.define('b-ts', class extends LitElement{
             return this.date.isValid() ? this.date.fromNow() : this.fallback
         if( this.format == 'calendar' && this.date.calendarDate )
             return this.date.calendarDate() || this.fallback
+        if( this.format == 'date' )
+            return this.date.format('M/D/YY')
         else
             return this.date.format(this.format) || this.fallback
     }
