@@ -280,7 +280,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
     }
 
     tocClick(e){
-        this.scrollTo(e.currentTarget.getAttribute('slug'))
+        this.scrollTo(e.currentTarget.getAttribute('slug'), {block: 'center' })
     }
 
     jumpToPrev(){
