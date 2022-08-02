@@ -29,6 +29,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         toast: {type: Boolean, reflect:true},
         stack: {type: Boolean, reflect:true},
         noContent: {type: Boolean, reflect:true},
+        fill: {type: Boolean, reflect:true},
         keyboardShortcuts: {type: Boolean}
     }}
 
@@ -51,6 +52,10 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             --pad: 1em;
 
             border: solid 1px var(--theme-bgd-accent); /* temp */
+        }
+
+        :host([fill]) {
+            --pad: 0;
         }
 
         :host([in-panel]),
@@ -95,6 +100,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             --theme-bgd: var(--theme-inverse-bgd);
             --theme-bgd-accent: var(--theme-inverse-bgd-accent);
             --theme-bgd-accent2: var(--theme-inverse-bgd-accent2);
+            --theme-bgd-rgb: var(--theme-inverse-bgd-rgb);
             --color: var(--theme-inverse-bgd);
             --theme-text: var(--theme-inverse-text);
             --theme-text-accent: var(--theme-inverse-text-accent);
