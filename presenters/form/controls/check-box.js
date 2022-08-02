@@ -28,7 +28,7 @@ customElements.define('check-box', class extends LitElement{
 			cursor: pointer;
 			outline: none;
 
-			margin-bottom: -0.125em;
+			/* margin-bottom: -0.125em; */
 		}
 
 		:host([hidden]) { display: none; }
