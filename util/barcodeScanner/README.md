@@ -54,7 +54,7 @@ if( BarcodeCamera.isSupported ){
     BarcodeCamera.open({
         anchor: 'top-right',
         scanner: {
-            continous: false, // closes after first scan
+            continuous: false, // closes after first scan
             formats: ['qr_code', 'ean_13', 'code_128'],
             facingMode: 'environment',
             width: 640,

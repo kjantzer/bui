@@ -8,7 +8,7 @@
     import CameraScanner from 'bui/util/barcodeScanner/camera
 
     CameraScanner.open() // closes after first scan
-    CameraScanner.open({continous: true})
+    CameraScanner.open({continuous: true})
     ```
 
     TODO:
@@ -21,11 +21,14 @@ import {Parsers, emit} from './index'
 import device from '../device'
 import '../../helpers/lit/shared'
 import Dialog from '../../presenters/dialog'
+import '../../elements/empty-state'
+import '../../elements/flex'
+import '../../elements/text'
 
 customElements.defineShared('b-barcode-camera-scanner', class extends LitElement{
 
     static get properties(){return {
-        continous: {Boolean: String}
+        continuous: {Boolean: String}
     }}
 
     static async open({
@@ -43,7 +46,8 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         camScanner.presenter = new Dialog({
             view: camScanner,
             btns: false,
-            color: 'inverse'
+            color: 'inverse',
+            fill: true
         })
         
        camScanner.presenter.notif({
@@ -58,7 +62,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
 
     static get styles(){return css`
         :host {
-            display: inline-block;
+            display: block;
             position:relative;
             width: var(--width, 300px);
             height: calc(var(--width, 300px) / var(--aspect-ratio, 1.7777777778));
@@ -74,12 +78,43 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
             height: auto;
             width: auto;
             max-width: 100%;
+            position: relative;
+            z-index: 10;
         }
 
         canvas {
             width: 100%;
             height: 100%;
             position: absolute;
+        }
+
+        .marks {
+            z-index: 20;
+            margin: .5em;
+            width: calc(100% - 1em);
+            height: calc(100% - 1em);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .marks > div {
+            border-color: red;
+            border-style: solid;
+            position: absolute;
+            height: 1.5em;
+            width: 1.5em;
+        }
+
+        .marks > div:nth-child(1){ border-width: 4px 0 0 4px; top: 0; left: 0;}
+        .marks > div:nth-child(2){ border-width: 4px 4px 0 0; top: 0; right: 0;}
+        .marks > div:nth-child(3){ border-width: 0 4px 4px 0; bottom: 0; right: 0;}
+        .marks > div:nth-child(4){ border-width: 0 0 4px 4px; bottom: 0; left: 0;}
+
+        b-empty-state {
+            z-index: 0;
+            color: var(--theme-text-accent);
+            opacity: 1;
         }
     `}
 
@@ -91,6 +126,16 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
     render(){return html`
         <canvas></canvas>
         <video autoplay></video>
+        <div class="marks">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <b-flex center>
+                <b-text ucase xbold xs>Barcode Scanner</b-text>
+            </b-flex>
+        </div>
+        <b-empty-state sm>Initializing...</b-empty-state>
     `}
 
     constructor(){
@@ -121,7 +166,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
     }
 
     async start({
-        continous=false,
+        continuous=false,
         formats=['qr_code', 'ean_13', 'code_128'],
         facingMode='environment',
         width=640,
@@ -132,7 +177,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
 
         this.checkFeatures()
 
-        this.continous = continous
+        this.continuous = continuous
         this.detector = new BarcodeDetector({formats});
 
         this.style.setProperty('--aspect-ratio', aspectRatio)
@@ -166,10 +211,21 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         let track = this.stream.getVideoTracks()[0]
         let supports = track.getCapabilities()
 
+        // throw new UIAlertError(`${supports.focusDistance.min} - ${supports.focusDistance.max}`)
         if( supports.focusDistance ){
+
+            if( focusDistance < supports.focusDistance.min )
+                focusDistance = supports.focusDistance.min
+            
+            if( focusDistance > supports.focusDistance.max )
+                focusDistance = supports.focusDistance.max
+
             try{
                 track.applyConstraints({
-                    advanced: [{ focusMode: 'manual', focusDistance}]
+                    advanced: [{
+                        focusMode: 'manual', 
+                        focusDistance,
+                    }]
                 })
             }catch(err){
 
@@ -240,7 +296,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
 
         window.soundFX&&soundFX.play('scan')
 
-        if( !this.continous )
+        if( !this.continuous )
             this.stop()
 
         // this.value = JSON.stringify(codes, null, 4)
