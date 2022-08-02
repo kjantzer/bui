@@ -136,8 +136,16 @@ findJoins(){
 ### `findParseRow()`
 Use this hook to parse the data from the DB query (before it is converted into classes)
 
+```js
+findParseRow(row, index, resultCount, resp)
+```
+
 ### `findExtendRowData()`
 Default extends data with any requested "related" data. The data at this stage are in model/class form.
+
+```js
+findExtendRowData(row, opts)
+```
 
 ### `add()`
 ```js
