@@ -310,6 +310,15 @@ export class Panel extends LitElement {
     }
 
     onKeydown(e){
+
+        let _lastKeyDown = new Date().getTime()
+
+        // too fast of data entry, must be a barcode scanner
+        if( this._lastKeyDown && _lastKeyDown - this._lastKeyDown <= 50 )
+            return
+
+        this._lastKeyDown = _lastKeyDown
+
         if( !this.onTop ) return
 
         if( this.opts.closeOnEsc && e.key == 'Escape' )
