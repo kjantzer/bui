@@ -80,6 +80,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
             max-width: 100%;
             position: relative;
             z-index: 10;
+            /*transform: scaleX(-1);*/ /* enable if facing self desktop*/
         }
 
         canvas {
