@@ -97,7 +97,11 @@ customElements.define('b-flex', class extends LitElement{
 
         :host ::slotted([noshrink]) {
             flex-shrink: 0;
-        } 
+        }
+
+        :host ::slotted([grow]) {
+            flex-grow: 1;
+        }
     `}
 
     render(){return html`
