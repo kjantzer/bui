@@ -39,6 +39,9 @@ customElements.define('b-scale', class extends LitElement{
         this.unit = 'lb'
     }
 
+    // alias
+    get value(){ return this.weight }
+
     get weightFormated(){
         return (this.weight||0)
             .toFixed(this.decimals)
