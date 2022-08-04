@@ -14,7 +14,16 @@ export const downloadContent = (content, filename, opts={})=>{
     let url;
     if (!(content instanceof Blob)) {
 
-        if (!opts.type)
+        if( !opts.type ){
+            if( filename.match(/\.json$/) ){
+                opts.type = 'application/json'
+
+                if( typeof content !== 'string' )
+                    content = JSON.stringify(content)
+
+            }else
+                opts.type = 'text/plain'    
+        }
             opts.type = 'text/plain'
 
         content = new Blob([content], {type: opts.type})
