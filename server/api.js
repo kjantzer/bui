@@ -120,7 +120,7 @@ module.exports = class API {
                     console.error(err.message)
                     console.log(err.lastQuery)
                 }
-                else{
+                else if( process.env.ENV == 'development' || err.name == 'Error' ){
                     console.log(err.stack||err)
                 }
                 
