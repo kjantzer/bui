@@ -108,8 +108,14 @@ class PanelToolbar extends LitElement {
             display: none;
         }
 
+        .left, .right, .middle {
+            display: flex;
+            align-items: center;
+            gap: var(--b-panel-toolbar-content-gap, .5em);
+        }
+
         .right {
-            text-align: right;
+            justify-content: flex-end;
         }
 
         [part="close-btn"][icon="chevron_right"] {
