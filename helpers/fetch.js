@@ -12,8 +12,13 @@ export const fetchJSON = function(url, opts={}){
     return fetch(url, opts)
     .then(r=>r.json())
     .then(r=>{
-        if( r && r.error )
-            throw new Error(r.error)
+        if( r && r.error ){
+            if( Error.fromAPI )
+                throw new Error.fromAPI(r)
+            else
+                throw new Error(r.error)
+        }
+            
         return r
     })
 }

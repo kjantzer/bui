@@ -37,19 +37,36 @@ export default class AJAX {
     _onDone(e){
         let resp = this.xhr.responseText
 
-        if( this.xhr.status != 200 ){
-            let err = new Error(this.xhr.statusText||'Unknown error')
-            err.errorCode = this.xhr.status
-            return this.reject&&this.reject(err)
-        }
-
         // parse JSON if it looks like it
         if( resp && (resp[0] == '{' || resp[0] == '[') ){
             try{
                 resp = JSON.parse(resp)
+
             }catch(err){
-                return this.reject&&this.reject(err)
+
+                if( this.xhr.status == 200 ){
+                    this.xhr.status = 400
+                    this.xhr.statusText = err.message
+                }
             }
+        }
+
+        if( this.xhr.status != 200 ){
+
+            let err = new Error(this.xhr.statusText||'Unknown error')
+            err.errorCode =  this.xhr.status
+            
+            if( resp && resp.error ){
+                err.message = resp.error
+
+                if( resp.type )
+                    err.name = resp.type
+
+                if( resp.data )
+                    err.data = resp.data
+            }
+            
+            return this.reject&&this.reject(err)
         }
 
         this.resolve&&this.resolve(resp)

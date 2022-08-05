@@ -115,9 +115,6 @@ module.exports = class API {
 
 			}catch(err){
 
-                if( err.name == 'AccessError' )
-                    return res.status(err.code).send({error: err.message, code: err.code})
-
                 // database error
                 if( err.lastQuery ){
                     console.error(err.message)
@@ -127,12 +124,13 @@ module.exports = class API {
                     console.log(err.stack||err)
                 }
                 
-                let code = err.name == 'Error' ? 400 : 500
+                let code = err.name == 'Error' ? 400 : (err.code || 500)
                 res.statusMessage = err.code == 'ER_PARSE_ERROR' ? err.code : err.message
                 res.status(code).json({
                     error: err.message,
                     code: code,
-                    type: err.name
+                    type: err.name,
+                    data: err.data
                 })
 			}
 		})

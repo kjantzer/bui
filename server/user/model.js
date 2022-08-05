@@ -1,7 +1,6 @@
 const Model = require('../model')
 const bcrypt = require('bcrypt')
 var crypto = require("crypto");
-const AccessError = require('../errors').AccessError
 const CollMap = require(bui`util/collmap`)
 
 const serializedUsers = new Map()
@@ -138,7 +137,7 @@ module.exports = class User extends Model {
 
         // only internal users can update other users accounts
         if( this.id != this.req.user.id && !this.canUpdateOtherUsers )
-            throw new AccessError()
+            throw new APIAccessError()
         
         let resp = await super.update(attrs)
 
@@ -161,7 +160,7 @@ module.exports = class User extends Model {
 
         // users can change their own passwords and admins can always change
         if( this.id != this.req.user.id && !this.req.user.isAdmin )
-            throw new AccessError()
+            throw new APIAccessError()
 
         await this.find()
         let {currentPW, newPW} = this.req.body

@@ -1,5 +1,14 @@
 import Dialog from '../presenters/dialog'
 
+// formats an error from the API response
+Error.fromAPI = function(resp){
+    let err = new Error(resp.error)
+    err.name = resp.type
+    err.data = resp.data
+    err.errorCode = resp.code
+    return err
+}
+
 export class UICustomError extends Error {
     
     constructor(msg='Error', detail){

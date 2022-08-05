@@ -29,7 +29,7 @@ avatar(){
     async upload_avatar(){
 
         if( this.id != this.req.user.id && !this.req.user.isInternal )
-            throw new AccessError()
+            throw new APIAccessError()
 
         let file = this.req.files.file
         let dir = this.avatarPath
