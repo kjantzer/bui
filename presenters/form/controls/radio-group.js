@@ -14,10 +14,11 @@ customElements.define('radio-group', class extends LitElement{
 			outline: none;
 			border-radius: 4px;
 			vertical-align: middle;
+			box-sizing: border-box;
 		}
 
 		:host([hidden]) {
-			display: none;
+			display: none !important;
 		}
 
 		:host(:not([slot="control"])[focused]) {
