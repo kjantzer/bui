@@ -52,6 +52,7 @@ customElements.define('check-box', class extends LitElement{
 			display: inherit;
 			padding: 0.25em;
     		margin: -.25em;
+			align-self: flex-start;
 		}
 
 		touch-ripple {
