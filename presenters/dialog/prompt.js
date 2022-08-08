@@ -166,8 +166,9 @@ function makePrompt(opts, i=0, globalOpts){
 			key="${opts.key}"
 			type="switch"
 			.value=${opts.val}
-			label="${opts.label}"
-		></check-box>
+		>
+			<b-text .html=${opts.label}></b-text>
+		</check-box>
 	</div>
 	`
 
