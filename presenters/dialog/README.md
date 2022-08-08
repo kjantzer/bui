@@ -85,6 +85,9 @@ let opts = {
 	helpText: '',
 	w: false,
 	multiline: false,
+	// will focus first item
+	// set to `autoFocus: 'select' to select all text in first input
+	autoFocus: true
 }
 ```
 
