@@ -186,7 +186,8 @@ function makePrompt(opts, i=0, globalOpts){
 		return html`
 			<radio-group segment="theme" stacked
 			key="${opts.key}"
-			style="${opts.w?`width:${opts.w}px;`:''}">
+			style="${opts.w?`width:${opts.w}px;`:''}"
+			.value=${opts.val}>
 				
 				${opts.options.map(o=>html`
 					<radio-btn 
