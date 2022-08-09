@@ -194,7 +194,11 @@ customElements.define('range-slider', class extends LitElement{
         .labels {
             display: flex;
             justify-content: space-between;
-            margin-top: .75em;
+            margin-top: calc(var(--size) + .25em);
+        }
+
+        :host([label*="top"]) .labels {
+            margin-top: calc((var(--size) + .25em) * -1);
         }
     `}
 
