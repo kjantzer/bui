@@ -114,6 +114,14 @@ class PanelToolbar extends LitElement {
             gap: var(--b-panel-toolbar-content-gap, .5em);
         }
 
+        slot::slotted(b-btn[lg]) {
+            margin: -0.25em 0;
+        }
+
+        slot::slotted(b-btn[lg]:last-of-type) {
+            margin-right: -0.25em;
+        }
+
         .right {
             justify-content: flex-end;
         }
