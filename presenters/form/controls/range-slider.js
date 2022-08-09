@@ -9,7 +9,8 @@ customElements.define('range-slider', class extends LitElement{
         step: {type: Number},
         range: {type: Boolean, reflect: true},
         value: {type: Object},
-        label: {type: String, reflect: true}
+        label: {type: String, reflect: true},
+        disabled: {type: Boolean}
     }}
 
     constructor(){
@@ -57,7 +58,7 @@ customElements.define('range-slider', class extends LitElement{
         :host {
             --size: 8px;
             --thumbSize: 18px;
-            --color: var(--fc-theme);
+            --color: var(--range-slider-color, var(--theme));
             --thumbColor: var(--color);
             --bgd: rgba(var(--theme-text-rgb, 0,0,0,), .2);
             --padding: 10px;
@@ -75,12 +76,24 @@ customElements.define('range-slider', class extends LitElement{
             --label-rotation: 45deg;
         }
 
+        :host([hidden]) {
+            display: none;
+        }
+
+        :host([disabled]) {
+            pointer-events: none;
+        }
+
+        :host([nothumb]) {
+            --thumbSize: 0;
+        }
+
         rail, track {
             display: block;
             height: var(--size);
             width: 100%;
             background: var(--color);
-            border-radius: var(--size);
+            border-radius: var(--range-slider-track-radius, var(--size));
             position: absolute;
             top: var(--padding);
             left: 0;
