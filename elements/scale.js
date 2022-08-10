@@ -92,8 +92,8 @@ customElements.define('b-scale', class extends LitElement{
             this.unit = unit
     }
 
-    onStable(result){
-        this.emitEvent('stable', result)
+    onStable(result, prevResult){
+        this.emitEvent('stable', result, prevResult)
     }
 
     requestDevice(e){
