@@ -6,6 +6,7 @@ customElements.define('check-box', class extends LitElement{
 	static get properties(){return {
 		key: {type: String},
 		label: {type: String},
+		helpText: {type: String},
 		disabled: {type: Boolean},
 		checked: {type: Boolean, reflect: true},
 		placement: {type: String, reflect: true},
@@ -68,10 +69,10 @@ customElements.define('check-box', class extends LitElement{
 		:host([placement="left"]) { flex-direction: row-reverse; }
 		:host([placement="right"]) { flex-direction: row; }
 
-		:host([placement="top"]) label { margin-bottom: var(--check-box-label-padding); }
-		:host([placement="bottom"]) label { margin-top: var(--check-box-label-padding); }
-		:host([placement="left"]) label { margin-right: var(--check-box-label-padding); margin-bottom: -0.125em; }
-		:host([placement="right"]) label { margin-left: var(--check-box-label-padding); margin-bottom: -0.125em; }
+		:host([placement="top"]) aside { margin-bottom: var(--check-box-label-padding); text-align: center; }
+		:host([placement="bottom"]) aside { margin-top: var(--check-box-label-padding); text-align: center; }
+		:host([placement="left"]) aside { margin-right: var(--check-box-label-padding); margin-bottom: -0.125em; text-align: right; }
+		:host([placement="right"]) aside { margin-left: var(--check-box-label-padding); margin-bottom: -0.125em; text-align: left; }
 
 		.icon {
 			transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
@@ -101,11 +102,11 @@ customElements.define('check-box', class extends LitElement{
 			fill: var(--colorDisabled)
 		}
 
-		:host([disabled]) label {
+		:host([disabled]) aside {
 			color: var(--colorDisabled);
 		}
 
-		main label {
+		main, aside {
 			cursor: pointer;
 		}
 
@@ -182,7 +183,15 @@ customElements.define('check-box', class extends LitElement{
 			<touch-ripple></touch-ripple>
 		</main>
 
-		<label part="label"><slot>${this.label}</slot></label>
+		<aside>
+			<label part="label">
+				<slot>${this.label}</slot>
+			</label>
+			<b-text part="help" block sm italic muted>
+				<slot name="help">${this.helpText}</slot>
+			</b-text>
+		</aside>
+		
 	`}
 
 	firstUpdated(){

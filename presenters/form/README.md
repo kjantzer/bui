@@ -234,6 +234,7 @@ select-field::part(value):after {
 
 - `checked`
 - `label`
+- `helpText`
 - `placement="right"` - placement of label
 - `type="switch"`
 - `icon` - see custom icons below
@@ -250,6 +251,7 @@ select-field::part(value):after {
 <!-- html label -->
 <check-box>
 	<b-text bold>Active</b-text>
+	<b-text slot="help">Custom help text element</b-text>
 </check-box>
 ```
 
