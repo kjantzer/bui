@@ -144,13 +144,20 @@ class HidDevice {
     }
 
     _change(val){
+
+        let prevVal = this.value
         this.value = val
         this.emit('change', val)
 
         if( this.stable > 0 ){
+
+            if( this._stableValPrev === undefined )
+                this._stableValPrev = prevVal
+                
             clearTimeout(this._stableTimeout)
             this._stableTimeout = setTimeout(()=>{
-                this.emit('stable', val)
+                this.emit('stable', val, this._stableValPrev)
+                this._stableValPrev = undefined
             }, this.stable)
         }
     }
