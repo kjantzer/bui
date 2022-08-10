@@ -41,6 +41,7 @@ class BarcodeScanner {
 			// this element will be selected (makes it active and in focus) when the F9 key is hit,
 			// thus accepting the textInput/input events
             this.textInputEl = document.createElement('div')
+			this.textInputEl.id = 'bacode-scanner-text-input-fix'
             this.textInputEl.contentEditable = true
             this.textInputEl.style.zIndex = -1
             this.textInputEl.style.position = 'absolute'
