@@ -28,6 +28,11 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 		radio-group {
 			margin-bottom: .25em;
 		}
+
+		/* keep from tiny overscroll happening due to touch-ripple clipping */
+		form-handler > div:last-child > check-box {
+			margin-bottom: .5em;
+		}
     `]}
 
     constructor(opts={}){
@@ -125,7 +130,8 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 
 export default customElements.get('b-dialog-prompt')
 
-
+// NOTE: this logic should probabaly be moved to be part of `form`
+// so other code can generate form controls via JS
 function makePrompt(opts, i=0, globalOpts){
 
 	// must be custom lit-html
@@ -159,15 +165,21 @@ function makePrompt(opts, i=0, globalOpts){
 
 	let gridArea = globalOpts.gridArea ? `grid-area: ${opts.key};` : ''
 
-	if( opts.type == 'switch' )
+	if( opts.type == 'switch' || opts.type == 'check-box' )
 	return html`
 	<div style="${gridArea}">
 		<check-box 
 			key="${opts.key}"
-			type="switch"
+			type=${opts.type}
 			.value=${opts.val}
+			.hideIf=${opts.hideIf}
+			.disableIf=${opts.disableIf}
 		>
 			<b-text .html=${opts.label}></b-text>
+			${opts.helpText?html`
+				<b-text slot="help" .html=${opts.helpText}></b-text>
+			`:''}
+			
 		</check-box>
 	</div>
 	`
@@ -183,17 +195,19 @@ function makePrompt(opts, i=0, globalOpts){
 			.value=${opts.val}></text-field>
 	`
 
-	if( opts.options && opts.segment ){
+	if( opts.options && (opts.segment || opts.type == 'segment') ){
 		return html`
-			<radio-group segment="theme" stacked
+			<radio-group segment="theme" ?stacked=${opts.segment?.stacked!==false}
 			key="${opts.key}"
 			style="${opts.w?`width:${opts.w}px;`:''}"
-			.value=${opts.val}>
+			.value=${opts.val}
+			.hideIf=${opts.hideIf}
+			.disableIf=${opts.disableIf}>
 				
 				${opts.options.map(o=>html`
 					<radio-btn 
-						label=${o.label}
-						value=${o.val}
+						label=${o.label||o}
+						value=${o.val||o}
 						?disabled=${o.disabled}
 					></radio-btn>
 				`)}
@@ -218,6 +232,8 @@ function makePrompt(opts, i=0, globalOpts){
 	<form-control material="${globalOpts.material}"
 		key="${opts.key}"
 		show=${opts.label?'':'suffix prefix'}
+		.hideIf=${opts.hideIf}
+		.disableIf=${opts.disableIf}
 		style="${opts.w?`width:${opts.w}px;`:''}; ${gridArea}"
 	>	
 		${control}
