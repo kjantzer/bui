@@ -4,6 +4,7 @@ import {mediaQuery} from '../../util/mediaQueries'
 import Button from './btn'
 import '../../elements/spinner'
 import '../../helpers/lit/events'
+import scollbars from '../../helpers/scrollbars'
 
 function isLitHTML(val){ return val && val['_$litType$'] }
 
@@ -246,6 +247,8 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         .body-wrap {
             overflow: auto;
         }
+
+        ${scollbars.styleWindows('.body-wrap')}
 
         .body {
             color: rgba(var(--theme-text-rgb, 0,0,0), .6);
