@@ -19,7 +19,7 @@ export const downloadContent = (content, filename, opts={})=>{
                 opts.type = 'application/json'
 
                 if( typeof content !== 'string' )
-                    content = JSON.stringify(content)
+                    content = JSON.stringify(content, null, 2)
 
             }else
                 opts.type = 'text/plain'    
