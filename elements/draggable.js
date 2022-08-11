@@ -11,7 +11,8 @@ import '../helpers/lit/will-take-action'
 customElements.define('b-draggable', class extends LitElement{
 
     static properties = {
-        disabled: {type: Boolean}
+        disabled: {type: Boolean},
+        url: {type: String}
     }
 
     static styles = css`
@@ -99,6 +100,10 @@ customElements.define('b-draggable', class extends LitElement{
             e.stopPropagation()
             return
         }
+
+        if( this.url )
+            URL(e, this.url)
+
         this.target.classList.add('dragging')
         this.classList.add('dragging')
     }
@@ -145,6 +150,8 @@ export function PlainText(e, text){
 
 // Navigates to the URL when dropping on the URL bar or browser page
 export function URL(e, url){
+    if( url[0] == '/' )
+        url = location.protocol+'//'+location.host+url
     e.dataTransfer.setData('text/uri-list', url);
 }
 
