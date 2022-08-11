@@ -144,8 +144,6 @@ customElements.define('b-file-manager', class extends LitElement{
         }))
     }
     
-    get uploader(){ return this.$$('b-uploader', '__uploader') }
-    
     selectFiles(){ return this.uploader.selectFiles() }
     selectFile(){ return this.selectFiles() }
 
