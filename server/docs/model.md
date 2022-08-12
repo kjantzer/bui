@@ -152,7 +152,8 @@ findExtendRowData(row, opts)
 async add(attrs={}, {
     manualSync=false, 
     updateDuplicates=true, 
-    ignoreDuplicates=false
+    ignoreDuplicates=false,
+    merge=true
 }={})
 ```
 
@@ -162,8 +163,11 @@ Default query is set to update records on duplicate found
 #### igoreDuplicates
 Set to `true` to ignore and stop errors from being thrown
 
-#### opts.manualSync
+#### manualSync
 Data with be synced via realtime if `config.sync =true` is. If you do not want this to happen, change `manualSync` to false. The method response will change to `{resp, syncData}` where `syncData` is a function that can be called to sync the data (optional)
+
+#### merge
+By default, the add method creates a new model with the instantiated one, merging the added attributes. Turn this off to make the `add()` method return a new model (useful for when iterating over an object to create multiple models)
 
 ### `beforeAdd()`
 

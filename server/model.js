@@ -344,7 +344,7 @@ module.exports = class Model {
                 resp = resp[0]
         // convert each row to a class object
         }else if( convertToObject )
-            resp = resp.map(attrs=>new ClassObj(attrs, this.req))
+            this.models = resp = resp.map(attrs=>new ClassObj(attrs, this.req))
 
         if( this.findExtendRowData )
             if( Array.isArray(resp) )
