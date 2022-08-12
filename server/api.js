@@ -44,7 +44,7 @@ module.exports = class API {
 
         Object.defineProperty(Class.prototype, 'apiPath', {
             get: function apiPath() {
-                let params = {...this, ...(this.attrs || {})}
+                let params = {...this, id: this.id, ...(this.attrs || {})}
                 return this.apiPathPattern.stringify(params)
             }
         });
