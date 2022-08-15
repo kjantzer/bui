@@ -11,6 +11,7 @@ class HidDevice {
     static get scale(){ return this.fairbanksScale }
     static get fairbanksScale(){ 
         return this.shared('fairbanksScale', {
+            stable: 500,
             vendorID: 0x0b67,
             productID: 0x555e,
             defaultValue: {weight: 0, unit: 'lb', isNegative:false},
