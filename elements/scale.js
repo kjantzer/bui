@@ -90,6 +90,8 @@ customElements.define('b-scale', class extends LitElement{
         this.weight = weight
         if( unit )
             this.unit = unit
+        
+        this.emitEvent('change', arguments[0])
     }
 
     onStable(result, prevResult){
