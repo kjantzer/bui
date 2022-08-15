@@ -20,6 +20,19 @@ import Emmitter from 'component-emitter'
 import {median} from '../math'
 import Parsers from './parsers'
 
+let IGNORE_INPUT_TAG_NAMES = ['TEXT-FIELD', 'INPUT', 'TEXTAREA']
+
+function shouldIngoreKeyPress(e){
+	// dont track keypress when using an input/textarea
+	if( IGNORE_INPUT_TAG_NAMES.includes(document.activeElement.tagName) )
+		return true
+
+	if( e.composedPath().find(el=>IGNORE_INPUT_TAG_NAMES.includes(el.tagName)) )
+		return true
+
+	return false
+}
+
 class BarcodeScanner {
 
 	constructor(opts={}){
@@ -177,7 +190,7 @@ class BarcodeScanner {
 		var now = (new Date()).getTime();
 
 		// dont track keypress when using an input/textarea
-		if( document.activeElement.tagName == 'INPUT' || document.activeElement.tagName == 'TEXTAREA' )
+		if( shouldIngoreKeyPress(e) )
 			return;
 
 		if( !this._lastTime ){
