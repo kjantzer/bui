@@ -156,7 +156,8 @@ class HidDevice {
                 
             clearTimeout(this._stableTimeout)
             this._stableTimeout = setTimeout(()=>{
-                this.emit('stable', val, this._stableValPrev)
+                // NOTE: this could be a problem if `val` is not an object
+                this.emit('stable', {...val, prevVal: this._stableValPrev})
                 this._stableValPrev = undefined
             }, this.stable)
         }
