@@ -40,9 +40,17 @@ const GlobalErrorHandler = (evt)=>{
 
     // UsbPrinter
     if( msg == 'No device selected.' ){
-        notif.type = 'alert',
+        notif.type = 'alert'
         notif.icon = 'block'
         notif.width = 'auto'
+    }
+
+    if( msg == `Failed to execute 'claimInterface' on 'USBDevice': Unable to claim interface.` ){
+        notif.type = 'alert'
+        notif.icon = 'print' // NOTE: change to usb icon?
+        notif.autoClose = false
+        notif.msg = `<b>Cannot Use USB Printer</b>
+                    <br>Only one tab can use the USB printer`
     }
 
     if( msg == 'forbidden' ){
