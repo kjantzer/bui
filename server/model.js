@@ -119,6 +119,7 @@ module.exports = class Model {
     }
 
     toJSON(){
+        // TODO: support returning `this.models`
         return Object.assign({}, this.attrs||{})
     }
 

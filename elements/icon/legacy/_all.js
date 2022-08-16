@@ -130,7 +130,6 @@ Icon.register(
 	['equalizer', require('./equalizer.svg.html')],
 	['erase', require('./erase.svg.html')],
 	['export', require('./export.svg.html')],
-	['eye-1', require('./eye-1.svg.html')],
 	['eye-off', require('./eye-off.svg.html')],
 	['facebook', require('./facebook.svg.html')],
 	['fast-bw', require('./fast-bw.svg.html')],
