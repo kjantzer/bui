@@ -48,6 +48,10 @@ class PanelController extends LitElement {
         :host([inset][num]) {
             width: var(--inset-width, 400px);
         }
+
+        :host([inset][num]) {
+            max-width: 90vw;
+        }
         
         :host([inset]) ::slotted(b-panel) {
             background: none !important;
