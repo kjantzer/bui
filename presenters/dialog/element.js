@@ -286,6 +286,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         }
 
         footer b-dialog-btn {
+            order: 99;
             line-height: 0;
             align-self: center;
             font-size: var(--b-dialog-btn-size, var(--b-btn-font-size));

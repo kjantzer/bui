@@ -88,7 +88,8 @@ customElements.define('b-dialog-btn', class extends Btn{
             icon: '',
             text: true,
             block: false,
-            size: ''
+            size: '',
+            order: null
         }, opts)
   
         this.tabIndex = 0
@@ -104,6 +105,9 @@ customElements.define('b-dialog-btn', class extends Btn{
         
         if( this.opts.block )
             this.setAttribute('block', '')
+
+        if( this.opts.order )
+            this.style.order = this.opts.order
 
         this.innerHTML = this.opts.label
     }
