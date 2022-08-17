@@ -268,6 +268,11 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             margin-top: auto;
         }
 
+        :host([wrapbtns]) footer {
+            flex-wrap: wrap;
+            row-gap: .5em;
+        }
+
         :host([nocontent][notext][in-popover]) footer {
             padding: .25rem;
         }
@@ -281,10 +286,13 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         }
 
         footer b-dialog-btn {
-            text-transform: uppercase;
             line-height: 0;
             align-self: center;
-            font-size: var(--b-dialog-btn-size, .9rem);
+            font-size: var(--b-dialog-btn-size, var(--b-btn-font-size));
+        }
+
+        footer b-dialog-btn[clear] {
+            text-transform: uppercase;
         }
 
         ${mediaQuery('tablet', css`
@@ -359,6 +367,8 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             this.removeAttribute('notext')
 
         this.toggleAttribute('nobtns', this.btns.length==0)
+
+        this.toggleAttribute('wrapbtns', this.btns?.find(btn=>btn.block))
     }
 
     set btns(btns){

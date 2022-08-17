@@ -38,6 +38,10 @@ customElements.define('b-dialog-btn', class extends Btn{
             width: 0;
             margin-right: auto;
         }
+
+        :host([block]) {
+            width: 100%;
+        }
     `]
 
     get isCancelBtn(){
@@ -82,16 +86,24 @@ customElements.define('b-dialog-btn', class extends Btn{
             className: '',
             color: '',
             icon: '',
-            text: true
+            text: true,
+            block: false,
+            size: ''
         }, opts)
   
         this.tabIndex = 0
         this.setAttribute('class', this.opts.className)
         this.setAttribute('color', this.opts.color)
         this.setAttribute('icon', this.opts.icon)
+
+        if( this.opts.size )
+            this.setAttribute(this.opts.size, '')
         
         if( this.opts.text )
             this.setAttribute('clear', '')
+        
+        if( this.opts.block )
+            this.setAttribute('block', '')
 
         this.innerHTML = this.opts.label
     }
