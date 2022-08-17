@@ -5,11 +5,12 @@ customElements.define('b-code', class extends LitElement{
     static get styles(){return css`
 
         :host {
-            background: var(--theme-bgd-accent, #ccc);
+            background: rgba(var(--theme-text-rgb, 0,0,0), .2);// var(--theme-bgd-accent, #ccc);
             color: var(--theme-text, inherit);
             border-radius: 3px;
             padding: 0 .3em;
             display: inline-block;
+            line-height: 1em;
         }
 
         code {
