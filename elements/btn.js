@@ -342,10 +342,10 @@ export default class BtnElement extends LitElement {
             box-shadow: 0 0 0 1px var(--theme) inset; /* border outline */
         }
 
-        :host([xs]) { font-size: .6rem; }
-        :host([sm]) { font-size: .8rem; }
-        :host([lg]) { font-size: 1.2rem; }
-        :host([xl]) { font-size: 1.4rem; }
+        :host([xs]) { --b-btn-font-size: .6rem; }
+        :host([sm]) { --b-btn-font-size: .8rem; }
+        :host([lg]) { --b-btn-font-size: 1.2rem; }
+        :host([xl]) { --b-btn-font-size: 1.4rem; }
 
         :host([color="theme-gradient"]) {
             background: var(--theme-gradient, var(--bgdColor))
