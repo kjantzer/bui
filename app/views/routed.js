@@ -9,6 +9,8 @@ export default class RoutedView extends LitElement {
         return (this.coll && this.coll.model.prototype.idAttribute) || 'id'
     }
 
+    closeInvalid = true
+
     static get styles(){return css`
         :host {
             display: grid;
@@ -158,6 +160,9 @@ export default class RoutedView extends LitElement {
 
         if( model && model.isInvalid ){
             throw new UIWarningError('Invalid ID: '+id)
+
+            if( this.closeInvalid )
+                this.close()
         }
         
         if( model )
