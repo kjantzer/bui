@@ -25,7 +25,10 @@ LitElement.prototype.willTakeAction = function(name, detail={}){
         target: this
     }, detail, {name: name, allowed: true})
 
-    this.emitEvent('will-take-action', {action})
+    this.emitEvent(name, {action})
+
+    if( action.allowed )
+        this.emitEvent('will-take-action', {action})
     
     // add alias
     action.notAllowed = !action.allowed
