@@ -86,7 +86,10 @@ class UsbPrinter {
         if( !this.isSupported )
             throw new Error('USB devices not supported')
         
-        if( this.isConnected ) return this.device
+        if( this.isConnected ){
+            await this.device.claimInterface(0);
+            return this.device
+        }
 
         this.tsRequestedDevice = new Date().getTime()
 
@@ -94,6 +97,7 @@ class UsbPrinter {
             if( !await this.connectToDevice() ){
                 let device = await navigator.usb.requestDevice({ filters: [{ vendorId: this.vendorID }]});
                 await this.setupDevice(device)
+                await this.device.claimInterface(0);
             }
         }catch(err){
             throw err
@@ -104,7 +108,6 @@ class UsbPrinter {
         if (device) {
             await device.open();
             await device.selectConfiguration(1);
-            await device.claimInterface(0);
 
             this.device = device
             return device
@@ -131,10 +134,13 @@ class UsbPrinter {
 
         try {
             const res = await this.device.transferOut(1, data);
+            this.device.releaseInterface(0)
         } catch (err) {
 
             if( err.message == 'The device was disconnected.' )
                 this.device = null
+            else
+                this.device?.releaseInterface?.(0)
 
             throw err
         }
