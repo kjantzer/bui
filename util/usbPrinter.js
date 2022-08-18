@@ -118,6 +118,7 @@ class UsbPrinter {
     }
 
     async print(text=''){
+
         if( !text ) throw new Error('Nothing to print')
         
         // connect to device if not already
@@ -125,24 +126,29 @@ class UsbPrinter {
 
         if( !this.device ) throw new Error('No device connected')
 
+        let pages = Array.isArray(text) ? text : [text]
         // support printing multiple "pages"
-        if( Array.isArray(text) )
-            return text.forEach(txt=>this.print(txt))
+        
+        // print each page, then release the printer at the end
+        try{
+            for( let txt of pages ){
 
-        const encoder = new TextEncoder();
-        const data = encoder.encode(text);
+                const encoder = new TextEncoder();
+                const data = encoder.encode(txt);
 
-        try {
-            const res = await this.device.transferOut(1, data);
-            this.device.releaseInterface(0)
-        } catch (err) {
+                try {
+                    const res = await this.device.transferOut(1, data);
+                } catch (err) {
 
-            if( err.message == 'The device was disconnected.' )
-                this.device = null
-            else
-                this.device?.releaseInterface?.(0)
+                    if( err.message == 'The device was disconnected.' )
+                        this.device = null
 
-            throw err
+                    throw err
+                }
+            }
+        }finally{
+            // try to release the printer after done
+            this.device?.releaseInterface?.(0)
         }
     }
 }
