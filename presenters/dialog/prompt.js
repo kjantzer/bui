@@ -144,6 +144,7 @@ function makePrompt(opts, i=0, globalOpts){
     opts = Object.assign({
 		key: 'prompt-'+i,
 		val: '',
+		icon: '', // only works if no prefix
 		prefix: '',
 		suffix: '',
 		pattern: '',
@@ -162,6 +163,9 @@ function makePrompt(opts, i=0, globalOpts){
 
 	if( !opts.val && globalOpts.val && globalOpts.val[opts.key] )
 		opts.val = globalOpts.val[opts.key]
+
+	if( opts.icon && !opts.prefix )
+		opts.prefix = html`<b-icon name="${opts.icon}"></b-icon>`
 
 	let gridArea = globalOpts.gridArea ? `grid-area: ${opts.key};` : ''
 
