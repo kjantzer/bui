@@ -237,6 +237,7 @@ function makePrompt(opts, i=0, globalOpts){
 		key="${opts.key}"
 		show=${opts.label?'':'suffix prefix'}
 		.hideIf=${opts.hideIf}
+		.showIf=${opts.showIf}
 		.disableIf=${opts.disableIf}
 		style="${opts.w?`width:${opts.w}px;`:''}; ${gridArea}"
 	>	
