@@ -147,6 +147,9 @@ export default class RoutedView extends LitElement {
     onClose(){
         if( this.model && this.model.get('isViewing') )
             this.model.set('isViewing', false)
+        
+        if( this.route )
+            delete this.route.state.params[this.idAttribute]
     }
 
     close(){
