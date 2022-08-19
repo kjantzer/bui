@@ -94,6 +94,7 @@ class FormHandler extends HTMLElement {
 		this.addEventListener('change', this.onEditorChange, true)
 
 		this._updateEditors()
+		this.setControlIfs()
 	}
 
 	static get observedAttributes(){ return ['disabled'] }
