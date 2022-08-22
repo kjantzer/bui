@@ -999,6 +999,7 @@ export default class Menu {
 		let dialog = new Dialog({
 			icon: opts.icon||'',
 			title: opts.title||'',
+			body: opts.body||'',
 			view: this.el,
 			btns: opts.btns||false
 		})
