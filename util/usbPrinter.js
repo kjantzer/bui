@@ -148,7 +148,7 @@ class UsbPrinter {
             }
         }finally{
             // try to release the printer after done
-            this.device?.releaseInterface?.(0)
+            await this.device?.releaseInterface?.(0)
         }
     }
 }
