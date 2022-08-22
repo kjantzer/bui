@@ -325,7 +325,9 @@ export class Panel extends LitElement {
             this.close()
 
         if( !this.opts.disableBackdropClick && document.activeElement.tagName == 'BODY'){
-            if( e.shiftKey && e.key == 'W' )
+
+            // Mac=option key; Windows=alt key
+            if( e.altKey && (e.key == 'w' || e.key == '∑') )
                 this.close()
 
             if( e.shiftKey && e.key == 'Tab' ){
