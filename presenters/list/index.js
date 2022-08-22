@@ -387,8 +387,8 @@ customElements.define('b-list', class extends LitElement {
                 })
             }
 
-            // disabled for now - causes issues with barcode scanners
-            if( false && e.shiftKey & e.key == 'R' ){
+            // Mac=option key; Windows=alt key
+            if( e.altKey & (e.key == 'r' || e.key == '®') ){
                 
                 // focus search so we can check `document.activeElement`
                 setTimeout(()=>{
