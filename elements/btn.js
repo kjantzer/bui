@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import './spinner'
 import './icon'
+import './tooltip'
 import {mediaQuery} from '../util/mediaQueries'
 
 export default class BtnElement extends LitElement {
