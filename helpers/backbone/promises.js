@@ -171,6 +171,8 @@ const xhrError = function(xhr, resp){
     if( !xhr ){
         let [model, _xhr, opts] = resp
         err.name = opts.errorThrown && opts.errorThrown.error ? opts.errorThrown.error : opts.errorThrown
+        err.message = opts.errorThrown && opts.errorThrown.error ? opts.errorThrown.error : opts.errorThrown
+        err.type = opts.errorThrown?.type
         return err
     }
 
