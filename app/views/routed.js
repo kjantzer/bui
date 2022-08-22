@@ -182,6 +182,9 @@ export default class RoutedView extends LitElement {
         if( newState && newState.props.filters && this.list )
             this.list.filters.reset(newState.props.filters)
 
+        if( newState && newState.props.searchTerm && this.list )
+            this.list.term = newState.props.searchTerm
+
         if( !newState )
             return
 
