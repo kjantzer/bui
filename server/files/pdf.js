@@ -24,6 +24,8 @@ async function pdfInfo(filepath, {withText=false}={}){
             if( w ){
                 info.width = round(w / 72)
                 info.height = round(h / 72)
+                info.page_width = parseFloat(w)
+                info.page_height = parseFloat(h)
             }
         }catch(err){}
     }
