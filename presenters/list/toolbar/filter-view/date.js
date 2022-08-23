@@ -38,7 +38,8 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         if( !this.__datepicker ){
             this.__datepicker = new Datepicker({
                 value: this.value,
-                presets: this.opts.presets
+                presets: this.opts.presets,
+                applyPresetSelect: true // will apply the selected preset when clicked
             })
 
             this.datepicker.addEventListener('done', e=>{
