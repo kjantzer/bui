@@ -19,7 +19,8 @@ customElements.define('b-datepicker', class extends LitElement{
         inputs: {type: Boolean, reflect: true},
         btns: {type: Boolean, reflect: true},
         active: {type: String, reflect: true},
-        presets: {type: Array}
+        presets: {type: Array},
+        applyPresetSelect: {type: Boolean}
     }}
     
     constructor({
@@ -30,6 +31,7 @@ customElements.define('b-datepicker', class extends LitElement{
         min = '1975-01-01',
         max = '2099-12-31',
         presets = [],
+        applyPresetSelect = false
     }={}){
         super()
 
@@ -41,6 +43,7 @@ customElements.define('b-datepicker', class extends LitElement{
         this.max = max
         this.active = 'start'
         this.presets = range ? presets : false
+        this.applyPresetSelect = applyPresetSelect
 
         this.onSelectedRangeChange.bind(this)
         this.daysHeader = dayjs.weekdaysMin()
@@ -216,9 +219,13 @@ customElements.define('b-datepicker', class extends LitElement{
         let {start, end} = e.detail
         this.selectedRange.range = [start, end]
         this.selectedRange.active = 'end'
-        setTimeout(()=>{
-            this.scrollToDate('end')
-        },100)
+
+        if( this.applyPresetSelect )
+            this.applyDate()
+        else
+            setTimeout(()=>{
+                this.scrollToDate('end')
+            },100)
     }
 
     /* calendar */
