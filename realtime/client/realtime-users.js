@@ -1,7 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import '../../elements/avatar'
-
-function isLitHTML(val){ return val && val['_$litType$'] }
+import isLitHTML from '../../helpers/lit/is-lit-html'
 
 let realtime = null
 let currentUserID = null

@@ -1,0 +1,1 @@
+export default function isLitHTML(val){ return val && val['_$litType$'] }

@@ -5,8 +5,7 @@ import Button from './btn'
 import '../../elements/spinner'
 import '../../helpers/lit/events'
 import scollbars from '../../helpers/scrollbars'
-
-function isLitHTML(val){ return val && val['_$litType$'] }
+import isLitHTML from '../../helpers/lit/is-lit-html'
 
 const basicConverter = { 
     toAttribute: (value, type) => { 

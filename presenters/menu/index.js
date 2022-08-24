@@ -10,10 +10,9 @@ import '../form/controls/check-box'
 import '../form/controls/select-field'
 import device from '../../util/device';
 import {toMenu, isDivider} from './util'
+import isLitHTML from '../../helpers/lit/is-lit-html'
 
 const styles = require('./style.less')
-
-function isLitHTML(val){ return val && val['_$litType$'] }
 
 export {Dialog, Popover, toMenu, isDivider}
 
