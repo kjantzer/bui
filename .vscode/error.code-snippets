@@ -26,5 +26,12 @@
     "UIError('$1')"
   ],
   "description": "UIError"
+},
+"APIError": {
+  "prefix": "APIError",
+  "body": [
+    "APIError('$1')"
+  ],
+  "description": "APIError"
 }
 }
