@@ -78,6 +78,14 @@ customElements.define('b-scale', class extends LitElement{
         super.connectedCallback()
         this.scale.on('change', this.onChange)
         this.scale.on('stable', this.onStable)
+
+        let {weight, unit, isNegative} = this.scale.value || {}
+
+        // update to current weight if already set
+        this.weight = weight || 0
+
+        if( unit )
+            this.unit = unit
     }
 
     disconnectedCallback(){
