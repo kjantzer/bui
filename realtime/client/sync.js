@@ -200,7 +200,13 @@ export function syncBackboneModel(data, {addMissingUpdates=true}={}){
     let didSync = false
 
     if( action == 'add' && attrs ){
-        let m = model.add(attrs)
+        if( model.add )
+            model.add(attrs)
+        // there are occasions where an "add" action performs an update to existing model
+        // rather than create a new record (eg: "insert ignore")
+        else if( model.set )
+            model.set(attrs)
+            
         didSync = true
     }
     
