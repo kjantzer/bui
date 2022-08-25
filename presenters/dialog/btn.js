@@ -20,6 +20,7 @@ const PRESETS = {
     'upload': {label: 'Upload', color: 'theme'},
     'import': {label: 'Import', color: 'theme'},
 	'delete': {label: 'Delete', color: 'red'},
+    'remove': {label: 'Remove', color: 'red'},
 	'x': {label: '', icon:'cancel-1', doesCancel:true},
     '...': {label: '', icon:'dot-3'}
 }
