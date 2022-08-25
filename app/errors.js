@@ -1,4 +1,5 @@
 import Dialog from '../presenters/dialog'
+import vibrate from '../util/vibrate'
 
 // formats an error from the API response
 Error.fromAPI = function(resp){
@@ -18,6 +19,9 @@ export class UICustomError extends Error {
         
         if( detail && detail.sound )
             this.sound = detail.sound
+        
+        if( detail?.vibrate )
+            this.vibrate = detail.vibrate
     }
 
     get presenter(){
@@ -34,7 +38,7 @@ export class UICustomError extends Error {
     handle(){
         this.logToConsole()
         if( this.detail?.silent !== true ){
-            this.playSound()
+            this.playFeedback()
             this.display()
         }
     }
@@ -59,9 +63,12 @@ export class UICustomError extends Error {
         }
     }
 
-    playSound(){
+    playFeedback(){
         if( this.sound && window.soundFX )
-            soundFX.play(this.sound)
+            soundFX.play(this.sound, 2) // boost the volume (NOTE: ok in most cases?)
+        
+        if( this.vibrate )
+            vibrate(this.vibrate)
     }
 
     logToConsole(){
