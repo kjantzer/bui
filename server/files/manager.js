@@ -391,7 +391,15 @@ module.exports = class FileManager extends Model {
             
             // get background color from palette
             if( arOpts.background == 'auto' ){
-                let palette = await this.getColorPalette({fromPreview:false})
+                
+                let tempFileForPalette = `/tmp/aspect-palette-${filename}`
+                await sharpImg.clone().resize(5, 200, {
+                    fit: 'cover',
+                    position: 'left'
+                }).toFile(tempFileForPalette)
+
+                let palette = await this.getColorPalette({filePath:tempFileForPalette})
+
                 this.attrs.traits.palette = palette
 
                 // get most color with most population
