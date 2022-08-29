@@ -136,8 +136,11 @@ search: {
 }
 ```
 
+##### `threshold`
+Default is `0.6`; set to `0` to only match exact values. [See docs](https://fusejs.io/api/options.html#threshold)
+
 ##### `hideIcon: true`
-Somes you may wish to hide the search icon/input but keep the "term search" functionality.
+Sometimes you may wish to hide the search icon/input but keep the "term search" functionality.
 You can do this by setting `hideIcon: true`
 
 You can then programmatically search by term using `list.term = 'some value'`
