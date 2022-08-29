@@ -388,24 +388,6 @@ module.exports = class FileManager extends Model {
         if( sharpImg && this.aspectRatio ){
 
             let arOpts = Object.assign({}, this.aspectRatioDefaults, this.aspectRatio)
-            
-            // get background color from palette
-            if( arOpts.background == 'auto' ){
-                
-                let tempFileForPalette = `/tmp/aspect-palette-${filename}`
-                await sharpImg.clone().resize(5, 200, {
-                    fit: 'cover',
-                    position: 'left'
-                }).toFile(tempFileForPalette)
-
-                let palette = await this.getColorPalette({filePath:tempFileForPalette})
-
-                this.attrs.traits.palette = palette
-
-                // get most color with most population
-                let color = Object.values(palette).sort((a,b)=>a.pop-b.pop).pop()
-                arOpts.background = color.hex
-            }
 
             let {width, height} = metadata
             let ratio = arOpts.ratio || this.aspectRatio
@@ -417,16 +399,38 @@ module.exports = class FileManager extends Model {
                 ThrowError('ApsectRatio', 'Only square aspect ratio is currently supported')
             }
 
-            await this.beforeResize(sharpImg, {width, height, metadata})
+            // does aspect ratio resizing need to be done?
+            if( metadata.width != width || metadata.height != height ){
 
-            // constrain image to aspect ratio
-            await sharpImg.resize(width, height, arOpts).toFile(this.dirPath+'/'+filename)
+                // get background color from palette
+                if( arOpts.background == 'auto' ){
+                    
+                    let tempFileForPalette = `/tmp/aspect-palette-${filename}`
+                    await sharpImg.clone().resize(5, 200, {
+                        fit: 'cover',
+                        position: 'left'
+                    }).toFile(tempFileForPalette)
 
-            sharpImg = sharp(this.dirPath+'/'+filename)
+                    let palette = await this.getColorPalette({filePath:tempFileForPalette})
 
-            this.attrs.traits.width = width
-            this.attrs.traits.height = height
-            updateAttrs.traits = this.attrs.traits
+                    this.attrs.traits.palette = palette
+
+                    // get most color with most population
+                    let color = Object.values(palette).sort((a,b)=>a.pop-b.pop).pop()
+                    arOpts.background = color.hex
+                }
+
+                await this.beforeResize(sharpImg, {width, height, metadata})
+
+                // constrain image to aspect ratio
+                await sharpImg.resize(width, height, arOpts).toFile(this.dirPath+'/'+filename)
+
+                sharpImg = sharp(this.dirPath+'/'+filename)
+
+                this.attrs.traits.width = width
+                this.attrs.traits.height = height
+                updateAttrs.traits = this.attrs.traits
+            }
         }
 
         // if office doc, create PDF preview and jpg thumbnail
