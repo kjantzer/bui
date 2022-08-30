@@ -49,6 +49,10 @@ export default class UserAvatar extends LitElement {
             height: var(--size);
             min-width: var(--size);
         }
+
+        :host([nameonly]) {
+            vertical-align: baseline; /* note: should be default? */
+        }
     `}
 
     set uid(val){
