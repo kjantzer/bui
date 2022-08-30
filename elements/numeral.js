@@ -15,7 +15,9 @@ customElements.define('b-numeral', class extends LitElement{
     static get properties(){return {
         format: {type: String, reflect: true},
         num: {type: Number, reflect: true},
-        placeholder: {type: String}
+        placeholder: {type: String},
+        prefix: {type: String},
+        suffix: {type: String}
     }}
 
     set num(val){
@@ -62,7 +64,9 @@ customElements.define('b-numeral', class extends LitElement{
     }
 
     render(){return html`
+        <b-text muted nobold ?hidden=${!this.prefix}>${this.prefix}</b-text>
         ${this.numeral}<slot></slot>
+        <b-text muted nobold ?hidden=${!this.suffix}>${this.suffix}</b-text>
     `}
 
 })
