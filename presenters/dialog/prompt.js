@@ -155,6 +155,7 @@ function makePrompt(opts, i=0, globalOpts){
 		w: false,
 		type: '',
 		multiline: false,
+		disabled: false
 	}, opts)
 
 	if( ['int', 'decimal', 'float', 'number'].includes(opts.pattern) )
@@ -174,6 +175,7 @@ function makePrompt(opts, i=0, globalOpts){
 		<check-box 
 			key="${opts.key}"
 			type=${opts.type}
+			?disabled=${opts.disabled}
 			.value=${opts.val}
 			.hideIf=${opts.hideIf}
 			.disableIf=${opts.disableIf}
@@ -201,6 +203,7 @@ function makePrompt(opts, i=0, globalOpts){
 	if( opts.options && (opts.segment || opts.type == 'segment') ){
 		return html`
 			<radio-group segment="theme" ?stacked=${opts.segment?.stacked!==false}
+			?disabled=${opts.disabled}
 			key="${opts.key}"
 			style="${opts.w?`width:${opts.w}px;`:''}"
 			.value=${opts.val}
@@ -235,6 +238,7 @@ function makePrompt(opts, i=0, globalOpts){
 	<form-control material="${globalOpts.material}"
 		key="${opts.key}"
 		show=${opts.label?'':'suffix prefix'}
+		?disabled=${opts.disabled}
 		.hideIf=${opts.hideIf}
 		.showIf=${opts.showIf}
 		.disableIf=${opts.disableIf}
