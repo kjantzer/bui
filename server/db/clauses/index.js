@@ -8,6 +8,7 @@ module.exports = {
     Between: require('./Between'),
     FindInSet: require('./FindInSet'),
     JsonContains: require('./JsonContains'),
+    JsonMergePatch: require('./JsonMergePatch'),
     JsonSearch: require('./JsonSearch'),
     IsEmpty: require('./IsEmpty'),
     NotEmpty: require('./NotEmpty'),

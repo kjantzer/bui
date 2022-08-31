@@ -1,4 +1,5 @@
 
+// TODO: rename to makeJsonPath ?
 function makePath(path, db){
     
     // escape each part of the path 
@@ -18,4 +19,27 @@ function makePath(path, db){
     return path.join('.')
 }
 
-module.exports = {makePath}
+function composeClauses(db, clauses){
+
+    if( typeof clauses == 'object' )
+    for( let k in clauses ){
+        
+        let v = clauses[k]
+
+        if( v && v.toSqlString ){
+
+            // format the clause
+            let s = v.toSqlString(db, k)
+
+            // return as a formatted sql string
+            // mysql.format wont escape or do anthing special to the value
+            clauses[k] = {
+                toSqlString(){ return s },
+                toJSON(){ return v.value }
+            }
+        }
+    }
+
+}
+
+module.exports = {makePath, composeClauses}
