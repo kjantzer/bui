@@ -35,7 +35,8 @@ function composeClauses(db, clauses){
             // mysql.format wont escape or do anthing special to the value
             clauses[k] = {
                 toSqlString(){ return s },
-                toJSON(){ return v.value }
+                toJSON(){ return v.toJSON ? v.toJSON() : v.value },
+                toString(){ return v.toString ? v.toString() : v.value }
             }
         }
     }
