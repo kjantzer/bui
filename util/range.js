@@ -1,5 +1,11 @@
 
 function range(start, stop, step=1) {
+
+    if( start && stop == undefined ){
+        stop = start
+        start = 1
+    }
+
 	start = parseFloat(start) || 0 
 	stop = parseFloat(stop) || 0 
 
