@@ -221,8 +221,15 @@ module.exports = class Model {
     encodeJsonFields(attrs){
         if( this.config.jsonFields && Array.isArray(this.config.jsonFields) ){
             this.config.jsonFields.forEach(fieldName=>{
-                if( attrs[fieldName] != undefined )
-                    attrs[fieldName] = attrs[fieldName] ? JSON.stringify(attrs[fieldName]) : null
+                if( attrs[fieldName] != undefined && !attrs[fieldName].toSqlString ){
+
+                    // if special "_merge" flag is set, convert to a JsonMergePatch clause
+                    if( attrs[fieldName] && attrs[fieldName]._merge ){
+                        delete attrs[fieldName]._merge
+                        attrs[fieldName] = new this.db.clauses.JsonMergePatch(attrs[fieldName])
+                    }else
+                        attrs[fieldName] = attrs[fieldName] ? JSON.stringify(attrs[fieldName]) : null
+                }
             })
         }
     }
