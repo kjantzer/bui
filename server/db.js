@@ -3,6 +3,7 @@ const groupBy = require('../util/array.groupBy')
 require('../util/promise.series')
 
 const clauses = require('./db/clauses')
+const {composeClauses} = require('./db/clauses/util')
 
 module.exports = class DB {
 
@@ -41,6 +42,11 @@ module.exports = class DB {
 
     query(sql, data, {timeout=30000, debug=false, logFailure=false, preSql=null}={}){
 		return new QueryPromise(async (resolve, reject)=>{
+
+            if( Array.isArray(data) )
+                for( let d of data ){ composeClauses(this, d) }
+            else
+                composeClauses(this, data)
 
 			sql = mysql.format(sql, data)
 
