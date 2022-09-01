@@ -463,7 +463,7 @@ export default class Menu {
 			return html`<div class="menu-divider">${m.divider}</div>`
 		
 		if( m.text !== undefined )
-			return html`<b-text body block sm muted=2 class="menu-text">${m.text}</b-text>`
+			return html`<b-text heading block sm muted=2 class="menu-text">${m.text}</b-text>`
 		
 		if( m.title )
 			return html`<b-text heading block xbold class="menu-title">${m.title}</b-text>`
