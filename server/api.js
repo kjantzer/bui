@@ -124,7 +124,7 @@ module.exports = class API {
                     console.log(err.stack||err)
                 }
                 
-                let code = err.name == 'Error' ? 400 : (err.code || 500)
+                let code = ['Error', 'DBError'].includes(err.name) ? 400 : (err.code || 500)
                 res.statusMessage = err.code == 'ER_PARSE_ERROR' ? err.code : err.message
                 res.status(code).json({
                     error: err.message,

@@ -57,6 +57,14 @@ const GlobalErrorHandler = (evt)=>{
         notif.icon = 'lock'
         notif.msg = 'You DO NOT have permission for that'
     }
+
+    if( error.type == 'DBError' ){
+        notif.pretitle = 'Database Error'
+        notif.edge = true
+        notif.accent = true
+        notif.icon = 'alert'
+        notif.width = 'auto'
+    }
     
     new Notif(notif)
 }

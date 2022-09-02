@@ -80,7 +80,10 @@ module.exports = class DB {
                     if( err ){
                         if( logFailure )
                             console.info('QUERY FAILED: '+sql);
-                        err.lastQuery = sql
+                        
+                        humanifyError(err)
+
+                        err.lastQuery = sql // NOTE: I don think I need this, err.sql is already present
                         reject(err)
                         return
                     }
@@ -305,4 +308,21 @@ class DBResults extends Array {
         return results;
     }
     
+}
+
+function humanifyError(err){
+
+    if( err.name == 'Error' )
+        err.name = 'DBError'
+
+    // simplify foreign key restraint errors
+    if( err.code == 'ER_ROW_IS_REFERENCED_2' ){
+
+        let [,fkTable, fk] = err.sqlMessage.match(/key constraint fails \(`.+`(.+)`, CONSTRAINT (.+)\)/) || []
+
+        if( fkTable ){
+            err.message = `Not allowed, record is linked to "${fkTable}"`
+        }
+    }
+
 }
