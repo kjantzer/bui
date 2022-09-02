@@ -18,10 +18,13 @@ customElements.define('b-notif', class extends LitElement{
     static get properties(){ return {
         nid: {type: String, reflect: true},
         msg: {type: String},
+        title: {type: String},
+        pretitle: {type: String},
         btns: {type: Array},
         icon: {type: String},
         color: {type: String, reflect: true},
         accent: {type: String, reflect: true},
+        edge: {type: Boolean},
         width: {type: String},
         animation: {type: String, reflect: true},
     }}
@@ -40,6 +43,7 @@ customElements.define('b-notif', class extends LitElement{
             icon: '',
             btns: [],
             color: 'inverse',
+            edge: false,
 
             animation: device.isSmallDevice ? 'grow' : 'slide',
             animationForReplace: 'grow',
@@ -211,9 +215,12 @@ customElements.define('b-notif', class extends LitElement{
                 toast
                 ?nocontent=${!this.msg}
                 .icon=${this.icon}
+                .pretitle=${this.pretitle}
+                .title=${this.title}
                 .body=${this.msg}
                 .btns=${this.btns}
                 .color=${this.color}
+                .edge=${this.edge}
                 .accent=${this.accent}
                 ?edge=${!!this.accent}
                 @chosen=${this.onDialogBtnChoose}
