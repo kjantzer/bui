@@ -124,7 +124,11 @@ customElements.define('b-app', class extends LitElement {
 
     get key(){ return 'app-view' }
     get tabBar(){ return 'b-app-tab-bar' }
-    get tabsPath(){ return this.panel?this.panel.route.makePath(this.panel.route.params)+'/':'' }
+    get tabsPath(){
+        let params = this.panel ? {...this.panel.route.params} : {}
+        delete params._ // remove wildcards *
+        return this.panel?this.panel.route.makePath(params)+'/':''
+    }
     get shouldShowSearch(){ return true }
 
     render(){return html`
