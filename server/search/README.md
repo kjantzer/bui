@@ -88,15 +88,34 @@ class MyModel extends Model {
         // class must opt-in too
         termSearch: {
             types: ['my-table'],
-            resultID: 'id',
-            key: 'id'
+            key: 'ref_id',
+            resultID: 'id' // optional, defaults to `id`
         }
     }}
 
     // override this if you need to customize
-    findWhereTermResultsMatch(whereGroup, ids, {type, results, where, opts}){
+    findWhereTermResultsMatch(whereGroup, ids, {key, type, results, where, opts}){
         // default logic is effectively:
         // whereGroup[this.config.termSearch.key] = ids
     }
 }
+```
+
+#### Multiple search terms
+
+```js
+get config(){ return {
+    //...
+    
+    termSearch: [
+        {
+            types: ['my-table'],
+            key: 'ref_id',
+        },
+        {
+            types: ['second-table'],
+            key: 'ref_id2'
+        }
+    ]
+}}
 ```

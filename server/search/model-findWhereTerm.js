@@ -21,23 +21,39 @@ module.exports = function(SearchAPI){
         if( !this.findWhereTermResultsMatch )
             return console.warn('`findWhereTermResultsMatch` is missing')
 
-        let results = await new SearchAPI({term}, this.req).searchTypes(termSearch.types, {hydrate: false})
+        // convert to an array of term searching
+        if( !Array.isArray(termSearch) )
+            termSearch = [termSearch]
 
-        results = groupBy.call(results.map(r=>r.item), 'type', {forceArray: true})
+        let termSearchGroups = []
 
-        let groups = new Group({}, 'OR')
-        let types = Object.keys(results)
+        // perform term search for each type
+        for( let _termSearch of termSearch ){
 
-        await Promise.all(types.map(async type=>{
+            // search the term, but do not hydrate with record data, just return the IDs
+            let results = await new SearchAPI({term}, this.req).searchTypes(_termSearch.types, {hydrate: false})
 
-            let typeResults = results[type]
-            let ids = typeResults.map(item=>item[termSearch.resultID||'id']) // NOTE: support function
+            // the search type may have been multiple, so lets group the results so we can 
+            // query where with an OR
+            results = groupBy.call(results.map(r=>r.item), 'type', {forceArray: true})
 
-            await this.findWhereTermResultsMatch(groups, ids, {type, results: typeResults, where, opts})
-        }))
+            let groups = new Group({}, 'OR')
+            let types = Object.keys(results)
 
-        if( groups.size > 0  )
-            where.term = groups
+            await Promise.all(types.map(async type=>{
+
+                let typeResults = results[type]
+                let ids = typeResults.map(item=>item[_termSearch.resultID||'id']) // NOTE: support function
+
+                await this.findWhereTermResultsMatch(groups, ids, {type, key:_termSearch.key, results: typeResults, where, opts})
+            }))
+
+            if( groups.size > 0  )
+                termSearchGroups.push(groups)
+        }
+
+        if( termSearchGroups.length > 0 )
+            where.term = new Group(Object.fromEntries(termSearchGroups.entries()), 'OR')
         else
             where.noresults = new UnsafeSQL('true = false')
     }
