@@ -145,7 +145,7 @@ customElements.define('b-list', class extends LitElement {
 
         [part="sidebar:left"],
         [part="sidebar:right"] {
-            display: block;
+            display: flex;
         } 
 
         b-spinner-overlay {
