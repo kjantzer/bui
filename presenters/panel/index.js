@@ -644,8 +644,8 @@ export class Panel extends LitElement {
 
     _close(immediate=false){
         window.removeEventListener('keydown', this._onKeydown, true)
-        this.panelController.remove(this, {updateRoute: !!this.route})
         this.removeAttribute('open')
+        this.panelController.remove(this, {updateRoute: !!this.route})
         
         if( immediate )
             this.remove()
