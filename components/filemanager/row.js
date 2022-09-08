@@ -40,6 +40,18 @@ customElements.define('b-file-row', class extends LitElement{
             pointer-events: none;
         }
 
+        img[hidden] { visibility: hidden; }
+
+        b-file-icon {
+            display: none;
+            position: absolute;
+            --size: calc(.5 * var(--img-height, var(--img-min-height, 240px)));
+        }
+        
+        img[hidden] ~ b-file-icon {
+            display: inline-block;
+        }
+
         [name="drag"]::slotted(*){
             position: absolute;
             width: 100%;
@@ -139,7 +151,9 @@ customElements.define('b-file-row', class extends LitElement{
                 @preview=${this.preview}
                 @contextmenu=${this.showMenu}>
                     <slot name="drag"></slot>
-                    <img src="${this.model.previewURL}" draggable="false">
+
+                    <img src="${this.model.previewURL}" draggable="false" onerror="this.hidden=true" onload="this.hidden=false">
+                    <b-file-icon ext=${this.model.get('ext')}></b-file-icon>
                     
                     ${this.model.isVideo?html`
                     
