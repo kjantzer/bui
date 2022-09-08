@@ -166,6 +166,12 @@ function makePrompt(opts, i=0, globalOpts){
 
 	if( opts.icon && !opts.prefix )
 		opts.prefix = html`<b-icon name="${opts.icon}"></b-icon>`
+		
+	if( opts.prefix )
+		opts.prefix = opts.prefix.replace(/\s$/, '&nbsp;')
+	
+	if( opts.suffix )
+		opts.suffix = opts.suffix.replace(/^\s/, '&nbsp;')
 
 	let gridArea = globalOpts.gridArea ? `grid-area: ${opts.key};` : ''
 
@@ -179,6 +185,7 @@ function makePrompt(opts, i=0, globalOpts){
 			.value=${opts.val}
 			.hideIf=${opts.hideIf}
 			.disableIf=${opts.disableIf}
+			.enableleIf=${opts.enableIf}
 		>
 			<b-text .html=${opts.label}></b-text>
 			${opts.helpText?html`
@@ -208,7 +215,8 @@ function makePrompt(opts, i=0, globalOpts){
 			style="${opts.w?`width:${opts.w}px;`:''}"
 			.value=${opts.val}
 			.hideIf=${opts.hideIf}
-			.disableIf=${opts.disableIf}>
+			.disableIf=${opts.disableIf}
+			.enableleIf=${opts.enableIf}>
 				
 				${opts.options.map(o=>html`
 					<radio-btn 
@@ -242,14 +250,15 @@ function makePrompt(opts, i=0, globalOpts){
 		.hideIf=${opts.hideIf}
 		.showIf=${opts.showIf}
 		.disableIf=${opts.disableIf}
+		.enableleIf=${opts.enableIf}
 		style="${opts.w?`width:${opts.w}px;`:''}; ${gridArea}"
 	>	
 		${control}
 
 		${opts.helpText?html`<div slot="help">${opts.helpText}</div>`:''}
 		${opts.label?html`<span slot="label" nopointer>${opts.label}</span>`:''}
-		<span slot="prefix" nopointer>${opts.prefix}</span>
-		<span slot="suffix" nopointer>${opts.suffix}</span>
+		<b-text slot="prefix" nopointer .html=${opts.prefix}></b-text>
+		<b-text slot="suffix" nopointer .html=${opts.suffix}></b-text>
 		
 	</form-control>
 	`
