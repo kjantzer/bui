@@ -27,7 +27,11 @@ module.exports = class Value extends Clause {
     toSqlString(db, key){
         if( Array.isArray(this.value) )
             return `${key} ${this.oper} IN(${db.escape(this.value)})`
-        else
+        else{
+            if( this.oper == 'NOT' )
+                this.oper = '!='
+                
             return `${key} ${this.oper} ${db.escape(this.value)}`
+        }
     }
 }
