@@ -22,7 +22,9 @@ module.exports = class FileManager extends Model {
 
     get config(){ return {
         table: 'files',
-        jsonFields: ['sizes', 'traits']
+        tableAlias: 'f',
+        jsonFields: ['sizes', 'traits'],
+        groupBy: 'f.id'
     }}
 
     get ASSETS_PATH(){ return '/mnt/data' }
