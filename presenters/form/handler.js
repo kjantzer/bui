@@ -348,7 +348,10 @@ class FormHandler extends HTMLElement {
 						// prefer the model, but 
 						let val = this.model ? this.model.get(key) : this.get(key).value
 
-						if( Array.isArray(allowedVal) ){
+						if( typeof allowedVal == 'function' ){
+							valid = allowedVal(val) == true
+
+						}else if( Array.isArray(allowedVal) ){
 							if( !allowedVal.includes(val) )
 								valid = false
 						}else{
