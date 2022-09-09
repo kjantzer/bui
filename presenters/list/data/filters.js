@@ -498,13 +498,27 @@ export class Filter {
         }
             
         let values = this.values
+
+        
+        values.forEach(value=>{
+
+            if( this.isMulti )
+                delete value.menu // delete any submenus, not supported in multiselect mode
+            else if( value && value.menu )
+                value.menuOpts = {
+                    ...(value.menuOpts||{}), 
+                    popover: {overflowBoundry: 'window'}
+                }
+        })
+        
+
         let selected = await new Menu(values, {
             selected: this.value,
             multiple: this.isMulti,
             search: values.length > 40 ? {
                 placeholder: `Search (${values.length})`,
                 showAll: false
-            } : 20,
+            } : (this.attrs.search||20),
             width: this.attrs.width||null
         }).popover(el, Object.assign({
             overflowBoundry: this.attrs.overflowBoundry || 'scrollParent',
@@ -518,6 +532,8 @@ export class Filter {
         }, opts))
 
         let oldVal = this.value
+
+        // TODO: support selected.menuSelected?
 
         if( selected === false || selected.length == 0  ) return
             // this.value = null
