@@ -167,10 +167,10 @@ function makePrompt(opts, i=0, globalOpts){
 	if( opts.icon && !opts.prefix )
 		opts.prefix = html`<b-icon name="${opts.icon}"></b-icon>`
 		
-	if( opts.prefix )
+	if( opts.prefix && opts.prefix.replace )
 		opts.prefix = opts.prefix.replace(/\s$/, '&nbsp;')
 	
-	if( opts.suffix )
+	if( opts.suffix && opts.suffix.replace )
 		opts.suffix = opts.suffix.replace(/^\s/, '&nbsp;')
 
 	let gridArea = globalOpts.gridArea ? `grid-area: ${opts.key};` : ''
