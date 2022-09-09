@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import {unsafeHTML} from 'lit/directives/unsafe-html.js'
-import '../../../elements/label'
+import '../../../elements/text'
 import device from '../../../util/device'
 
 customElements.define('b-list-filter-btn', class extends LitElement{
@@ -20,12 +20,14 @@ customElements.define('b-list-filter-btn', class extends LitElement{
             margin-bottom: -.25em;
         }
 
-        b-label {
+        .label {
             grid-area: unset;
             color: var(--toolbarTextColor);
             margin: -0.5em 0px;
             position: relative;
             top: -0.5em;
+            line-height: 1em;
+            font-size: .9em;
             /* opacity: .4; */
         }
 
@@ -45,7 +47,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
             font-weight: bold;
         }
 
-        b-btn[active] b-label {
+        b-btn[active] .label {
             color: var(--theme);
         }
 
@@ -54,7 +56,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
             opacity: 1;
         }
 
-        :host([larger]) b-btn:not([active]) b-label {
+        :host([larger]) b-btn:not([active]) .label {
             opacity: .7;
         }
 
@@ -66,11 +68,11 @@ customElements.define('b-list-filter-btn', class extends LitElement{
             box-shadow: 0 0 0 1px var(--theme) inset;
         }
 
-        :host([larger]) b-btn[active] b-label {
+        :host([larger]) b-btn[active] .label {
             color: var(--theme);
         }
 
-        :host([larger]) b-label {
+        :host([larger]) .label {
             font-size: .8rem;
             margin: 0;
             line-height: 1em;
@@ -84,11 +86,11 @@ customElements.define('b-list-filter-btn', class extends LitElement{
     render(){return html`
         <b-btn text ?active=${this.filter.isActive} @click=${this.showMenu}>
             <main>
-                <b-label xs>${this.filter.label}</b-label>
-                <div>
+                <b-text xs ucase bold class="label">${this.filter.label}</b-text>
+                <b-text block caps>
                     ${this.filter.icon?html`<b-icon name="${this.filter.icon}"></b-icon>`:''}
                     ${unsafeHTML(this.filter.valueLabel)}
-                </div>
+                </b-text>
             </main>
         </b-btn>
     `}
