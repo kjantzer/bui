@@ -312,8 +312,11 @@ module.exports = class Model {
         if( join )
             opts.join = Array.isArray(join) ? join.join(`\n`) : join
 
-        if( joinSelect )
-            opts.select += `,`+( Array.isArray(joinSelect) ? joinSelect.join(', ') : joinSelect)
+        if( joinSelect ){
+            joinSelect = ( Array.isArray(joinSelect) ? joinSelect.join(', ') : joinSelect)
+            if( joinSelect)
+                opts.select += `,`+joinSelect
+        }
 
         let sql = this.findSql(where, opts)
         if( typeof sql != 'string' ) return sql
