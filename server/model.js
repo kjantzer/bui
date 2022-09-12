@@ -459,6 +459,7 @@ module.exports = class Model {
                     row.attrs[relation] = await RelatedModel.find(...args)
                 }
                 }catch(err){
+                    console.log('Related:', err);
                     // I think this would be bad design
                     // row.attrs[relation] = {error: err.message}
                 }
