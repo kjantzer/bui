@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import {unsafeHTML} from 'lit/directives/unsafe-html.js'
+import isLitHTML from '../helpers/lit/is-lit-html'
 
 customElements.define('b-text', class extends LitElement{
 
@@ -201,7 +202,7 @@ customElements.define('b-text', class extends LitElement{
     }
 
     render(){return html`
-        ${this.html?unsafeHTML(this.html):''}
+        ${this.html?(isLitHTML(this.html)?this.html:unsafeHTML(this.html)):''}
         <slot class="slot"></slot>
         ${this.tooltip?html`
             <b-tooltip>${this.tooltip}</b-tooltip>
