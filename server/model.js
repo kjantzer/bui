@@ -50,8 +50,8 @@ module.exports = class Model {
         return this.config.limit ? `LIMIT ${this.config.limit}` : ''
     }
     
-    findOrderBy(){
-        let orderBy = this.config.orderBy
+    findOrderBy(orderBy){
+        orderBy = orderBy || this.config.orderBy
         return  orderBy ? `ORDER BY ${orderBy}` : ''
     }
 
