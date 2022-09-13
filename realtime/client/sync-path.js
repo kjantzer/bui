@@ -1,3 +1,5 @@
+import CollMap from "../../util/collmap"
+
 export default class SyncPath extends Map {
 
     constructor(syncHandler, path){
@@ -10,6 +12,8 @@ export default class SyncPath extends Map {
 
         this.onSync = this.onSync.bind(this)
     }
+
+    refObjects = new CollMap()
 
     changePath(path){
         if( path != this.path )
@@ -25,19 +29,36 @@ export default class SyncPath extends Map {
         this.connect()
     }
     
-    connect(){
+    connect(refObject){
+
+        // track the object that requested the connection
+        if( refObject )
+            this.refObjects.set(refObject, refObject)
+
+        // already connected, no need to connect again
+        if( refObject && this.isConnected )
+            return
+
         this.isConnected = true
         this.socket.emit('join', this.path)
     }
 
-    disconnect(){
+    disconnect(refObject){
+
+        if( refObject )
+            this.refObjects.delete(refObject)
+
+        // do not disconnect, other ref objects are still relying on the connection
+        if( this.refObjects.size > 0 )
+            return
+
         this.isConnected = false
         this.socket.emit('leave', this.path)
     }
 
     // aliases
-    open(){ return this.connect() }
-    close(){ return this.disconnect() }
+    open(){ return this.connect(...arguments) }
+    close(){ return this.disconnect(...arguments) }
 
     onSync(data){
         // this.emit('change', data)
