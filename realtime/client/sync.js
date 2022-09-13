@@ -1,5 +1,6 @@
 import io from 'socket.io-client'
 import SyncPath from './sync-path'
+import CollMap from '../../util/collmap'
 
 let MainSync
 
@@ -74,15 +75,33 @@ export class Sync extends Map {
 }
 
 export function enableSync(Class, {
-    pathKey='url'
+    pathKey='url',
+    group=false
 }={}){
 
     Object.defineProperty(Class.prototype, 'realtimeSync', {
         get: function realtimeSync() {
+
             if( !this.__realtimeSync ){
+
                 let path = this[pathKey]
                 if( typeof path == 'function' ) path = path.call(this)
-                this.__realtimeSync = sync(path, this)
+
+                if( group ){
+                    let self = this
+                    self.constructor.groupSync = GroupSync.init(path)
+
+                    // mimic open/close methods
+                    this.__realtimeSync = {
+                        open(refObject){ self.constructor.groupSync.add(self, self, refObject) },
+                        close(refObject){ self.constructor.groupSync.remove(self, refObject) },
+                        get path(){ return self.constructor.groupSync.path },
+                        get groupSync(){ return self.constructor.groupSync }
+                    }
+                    
+                }else{
+                    this.__realtimeSync = sync(path, this)
+                }
             }
 
             return this.__realtimeSync
@@ -91,10 +110,13 @@ export function enableSync(Class, {
 
     let syncData = Class.prototype.map ? syncBackboneCollection : syncBackboneModel
 
-    Class.prototype.onSync = function(data){
+    // allows for onSync to be overriden but then still call the default sync method
+    Class.prototype.onSyncDefault = function(data){
         if( !syncData.call(this, data) )
             this.onSyncFailed&&this.onSyncFailed(data)
     }
+
+    Class.prototype.onSync = function(data){ return this.onSyncDefault.call(this, data) }
 }
 
 
@@ -107,7 +129,7 @@ export function syncBackboneCollection(data, {
 }={}){
 
     let {action, attrs, url} = data
-    let thisUrl = typeof this.url == 'function' ? this.url() : this.url
+    let thisUrl = this.realtimeSync.path// typeof this.url == 'function' ? this.url() : this.url
     let model = this.get(attrs.id)
     
     action = action.toLowerCase()
@@ -134,13 +156,14 @@ export function syncBackboneCollection(data, {
             model = this.get(path)
         }
 
-        if( !model && addUpdates && action == 'update' ){
+        if( !model && addUpdates && ['update', 'add', 'insert'].includes(action)){
             action = data.action = 'add'
             path = path.replace(/\.\d+$/,'')
             model = this.get(path) || this
 
-            // found, but appears to be a model, not a collection, so reverte back to "update"
-            if( model && !model.add || model.set )
+            // found, but appears to be a model, not a collection, so revert back to "update"
+            // NOTE: why was I testing for `model.set`? both collections and models have that
+            if( model && !model.add /*|| model.set*/ )
                 action = data.action = 'update'
         }
     }
@@ -171,12 +194,13 @@ export function syncBackboneModel(data, {addMissingUpdates=true}={}){
     
     let model = this
     let {action, attrs, syncData, url} = data
+    let thisURL = this.realtimeSync.path
     
     // sync url is different, so use it to try and find the correct child model
-    if( url && url != this.url() ){
+    if( url && url != thisURL ){
         
         // `/api/book/1/elements/2` => `elements.2`
-        let path = url.replace(this.url()+'/', '').replace(/\//g, '.')
+        let path = url.replace(thisURL+'/', '').replace(/\//g, '.')
 
         // remove trailing ID `model.1` => `model`
         if( data.action == 'add' )
@@ -227,4 +251,47 @@ export function syncBackboneModel(data, {addMissingUpdates=true}={}){
         model.trigger('realtime-sync', data)
 
     return didSync
+}
+
+// lets many objects setup and use the same SyncPath
+export class GroupSync extends CollMap {
+
+    static paths = new CollMap()
+
+    static init(path){
+        if( !this.paths.get(path) ){
+            this.paths.set(path, new GroupSync(path))
+        }
+
+        return this.paths.get(path)
+    }
+
+    constructor(path){
+        super()
+        this.realtimeSync = sync(path, this)
+    }
+
+    onSync(data){
+        // forward sync data to all "asset collections"
+        this.forEach(coll=>{
+            if( coll.onSync )
+                coll.onSync.call(coll, data)
+        })
+    }
+
+    get path(){ return this.realtimeSync.path }
+
+    add(key, val, refObject){
+        this.set(refObject||key, val)
+        if( this.size > 0 ){
+            this.realtimeSync.open(refObject)
+        }
+    }
+
+    remove(key, refObject){
+        this.delete(refObject||key)
+        if( this.size == 0 ){
+            this.realtimeSync.close(refObject)
+        }
+    }
 }
