@@ -5,6 +5,7 @@ export default class HistoryState {
     constructor(parent, props={}){
 
         this.parent = parent
+        this.params = {}
 
         if( !props )
             props = {}
