@@ -144,6 +144,13 @@ class PanelController extends LitElement {
     `}
 
     remove(panel, {updateRoute=false}={}){
+
+        if( panel.onTop ){
+            panel.removeAttribute('ontop')
+
+            if( panel.view && panel.view.didBecomeInactive )
+                setTimeout(()=>{panel.view.didBecomeInactive()})
+        }
         
         this.panels.delete(panel)
         this._updatePanels()
@@ -213,7 +220,7 @@ class PanelController extends LitElement {
         return topPanels.pop()
     }
 
-    _updatePanels(updateRoutes=false){
+    _updatePanels(){
         let i = 0
 
         // if( this.length == 0 && updateRoutes )
