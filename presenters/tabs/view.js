@@ -19,7 +19,10 @@ export default class TabView {
                 this.__id = this._viewName
             }
 
-            if( this._viewClass.id )
+            if( !this._viewClass )
+                console.warn('Could not find tabview:', view)
+
+            if( this._viewClass?.id )
                 this.__id = this._viewClass.id
 
         // HTML element
@@ -29,10 +32,12 @@ export default class TabView {
             this.__title = view.title
             this.__icon = view.getAttribute('icon')
 
-            if( view.hasAttribute('view-id') ){
-                this.__id = view.getAttribute('view-id')
+            // NOTE: `view-id` is DEPRECATED
+            if( view.hasAttribute('tab-id') || view.hasAttribute('view-id') ){
+                this.__id = view.getAttribute('tab-id') || view.getAttribute('view-id')
             }else{
                 this.__id = this.__title.toLowerCase().replace(/ /g, '-')
+                this.__view.setAttribute('tab-id', this.id)
                 this.__view.setAttribute('view-id', this.id)
             }
 
@@ -90,7 +95,8 @@ export default class TabView {
                 this.__view.innerHTML = `<b-paper color="red" border dense><b>${this._viewName}</b> is not a custom element</b-paper>`
             }
 
-            this.__view.setAttribute('view-id', this.id)
+            this.__view.setAttribute('tab-id', this.id)
+            this.__view.setAttribute('view-id', this.id) // DEPRECATED
         }
         return this.__view 
     }
