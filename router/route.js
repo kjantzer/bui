@@ -3,11 +3,12 @@ import {normalizePath} from './config'
 
 export default class Route {
     
-    constructor(path, onChange, config={}){
+    constructor(path, onChange, {config={}, refObject}={}){
         
         path = normalizePath(path)
         this.path = path
         this.patt = new UrlPattern(path, config.urlPattern)
+        this.refObject = refObject
 
         this.onChange = onChange
     }
@@ -25,6 +26,13 @@ export default class Route {
     }
 
     makePath(params){
+        
+        // make sure we have any required params set
+        let emptyParams = Object.fromEntries(this.patt.names.map(v=>[v,'']))
+        delete emptyParams._ // wildcard
+        
+        params = {...emptyParams, ...params}
+
         return this.patt.stringify(params)
     }
 
@@ -62,9 +70,9 @@ export default class Route {
         oldState = this.matches(oldState)
         newState = this.matches(newState)
 
-        // TODO: change signature to pass newState first
+        // TODO: change signature to pass newState first, also, move `dir` to last object param
         if( oldState || newState )
-            this.onChange(oldState, newState, dir)
+            this.onChange(oldState, newState, dir, {refObject: this.refObject})
 
         return !!newState
     }

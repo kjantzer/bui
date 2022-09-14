@@ -29,6 +29,8 @@ export class Router {
         }
     }
 
+    get pathRoot(){ return config.PATH_ROOT }
+
     start(opts={}){
 
         opts = Object.assign({
@@ -117,9 +119,9 @@ export class Router {
         return true
     }
 
-    add(path, onChange){
+    add(path, onChange, opts={}){
 
-        let route = new Route(path, onChange, config)
+        let route = new Route(path, onChange, {config, ...opts})
         let ordinal = route.patt.names.length
 
         this._routesToAdd = this._routesToAdd || {}
