@@ -135,4 +135,11 @@
 		],
 		"description": ""
 	},
+  "import BUI": {
+    "prefix": "importbui",
+    "body": [
+      "import {$1} from 'bui'"
+    ],
+    "description": "import BUI"
+  }
 }
