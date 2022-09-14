@@ -22,6 +22,10 @@ customElements.define('b-media-query', class extends LitElement{
 
     static get styles(){return [css`
 
+        :host {
+            display: contents;
+        }
+
         :host([show]) {
             display: none;
         }
