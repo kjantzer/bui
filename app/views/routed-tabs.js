@@ -55,7 +55,12 @@ customElements.define('b-tabs-router', class extends TabsView {
         if( tabView != oldTabView ){
             let oldState = tabView.routeState
 
-            let params = this.pathParams ? this.pathParams() : {}
+            let params = {}
+            
+            if( tabView.view.pathParams )
+                params = tabView.view.pathParams()
+            else if( this.pathParams )
+                params = this.pathParams()
 
             let [newState, oldStates] = router.push(tabView.route.makePath(params), {
                 title: (this.title ? this.title+': ':'') +tabView.title,
