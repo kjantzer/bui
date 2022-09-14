@@ -41,6 +41,12 @@ html.ios.installed {
     height: calc( 100% + (env(safe-area-inset-top) / 4));
 }
 
+html.installed.ios,
+html.installed.android {
+    /* make things more "app" like: disable text selection */
+    -webkit-user-select: none;
+}
+
 html, body {
     height: 100%;
     width: 100%;
