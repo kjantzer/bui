@@ -58,7 +58,7 @@ class RegisteredPanels {
             return console.warn(`A panel is already registered for ${path}`)
         }
 
-        if( path && router.routes.includes('/'+path) )
+        if( path && router.routes.includes(router.pathRoot+path) )
             return console.warn('Ignorning panel registration, route already in use')
 
         if( typeof view == 'string' ){
@@ -72,9 +72,15 @@ class RegisteredPanels {
         this.set(path, {view, opts})
 
         if( opts.route !== false )
-        this.get(path).route = router.add(path, (oldState, newState, dir)=>{
+        this.get(path).route = router.add(path, (oldState, newState, dir, opts)=>{
+
+            if( router.routes.filter(route=>route==router.pathRoot+path).length > 1 )
+                return console.warn('Ignorning panel open, route already in use')
+
             if( this._initiate(path) )
                 this.get(path).panel._routeChange(oldState, newState, dir)
+        }, {
+            refObject: this.get(path)
         })
     }
 
