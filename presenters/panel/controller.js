@@ -61,7 +61,7 @@ class PanelController extends LitElement {
 
     get isVisible(){
         let style = window.getComputedStyle(this)
-        return style.display != 'none' && !this.hidden
+        return style.display != 'none' && !this.hidden && this.parentElement?.clientHeight
     }
 
     get name(){
