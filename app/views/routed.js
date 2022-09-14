@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import router from '../../router'
+import {cache} from 'lit/directives/cache.js'
 
 export {LitElement, html, css}
 
@@ -71,15 +72,25 @@ export default class RoutedView extends LitElement {
     }
 
     shouldUpdate(){
-        if( this.modelRequired !== true ) return true
-
-        if( !this.model ) return false
 
         if( this.panel && !this.panel.toolbar ) 
             this.panel._linkToolbar()
+
+        if( this.modelRequired !== true || this.renderEmpty ) return true
+
+        if( !this.model ) return false
+
+        // if( this.panel && !this.panel.toolbar ) 
+        //     this.panel._linkToolbar()
             
         return true
     }
+
+    render(){return html`
+        ${cache(this.renderEmpty&&!this.model?this.renderEmpty():this.renderModel())}
+    `}
+
+    renderModel(){ return html`` }
 
     updated(){
         this.toggleAttribute('in-panel', !!this.panel)
