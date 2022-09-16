@@ -165,10 +165,11 @@ module.exports = class API {
                 res.redirect(resp.sendFile)
             else
                 res.sendFile(resp.sendFile, err=>{
-                    res.status(err.status).json({
-                        error: err.message,
-                        code: err.code
-                    })
+                    if( err )
+                        res.status(err.status).json({
+                            error: err.message,
+                            code: err.code
+                        })
                 })
 
         }else if( req.query.downloadReq && req.headers['user-agent'].match('iPhone') ){
@@ -189,6 +190,7 @@ module.exports = class API {
                 res.redirect(path)
             else
                 res.sendFile(path, err=>{
+                    if( err )
                     res.status(err.status).json({
                         error: err.message,
                         code: err.code
