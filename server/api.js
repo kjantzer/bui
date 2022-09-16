@@ -164,7 +164,12 @@ module.exports = class API {
             if( resp.sendFile.startsWith('http') )
                 res.redirect(resp.sendFile)
             else
-                res.sendFile(resp.sendFile)
+                res.sendFile(resp.sendFile, err=>{
+                    res.status(err.status).json({
+                        error: err.message,
+                        code: err.code
+                    })
+                })
 
         }else if( req.query.downloadReq && req.headers['user-agent'].match('iPhone') ){
             let path = (req.query.download === 'preview' && resp.previewPath) || resp.path
@@ -183,7 +188,12 @@ module.exports = class API {
             if( path.startsWith('http') )
                 res.redirect(path)
             else
-                res.sendFile(path)
+                res.sendFile(path, err=>{
+                    res.status(err.status).json({
+                        error: err.message,
+                        code: err.code
+                    })
+                })
         
         }else{
             if( res.headersSent )
