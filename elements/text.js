@@ -81,12 +81,12 @@ customElements.define('b-text', class extends LitElement{
         :host([align="justify"]) .slot { text-align: justify; }
 
         /* https://spencermortensen.com/articles/typographic-scale/ */
-        :host([xs]) .slot { font-size: .65em; line-height: 1.1em; }
-        :host([sm]) .slot { font-size: .8409em; line-height: 1.1em; }
-        :host([md]) .slot { font-size: 1.1892em; line-height: 1.1em; }
-        :host([lg]) .slot { font-size: 1.4142em; line-height: 1.1em; }
-        :host([xl]) .slot { font-size: 1.6818em; line-height: 1.1em; }
-        :host([xxl]) .slot { font-size: 2em; line-height: 1.1em; }
+        :host([xs]) .slot { font-size: var(--font-size-xs, .65em); line-height: 1.1em; }
+        :host([sm]) .slot { font-size: var(--font-size-sm, .8409em); line-height: 1.1em; }
+        :host([md]) .slot { font-size: var(--font-size-md, 1.1892em); line-height: 1.1em; }
+        :host([lg]) .slot { font-size: var(--font-size-lg, 1.4142em); line-height: 1.1em; }
+        :host([xl]) .slot { font-size: var(--font-size-xl, 1.6818em); line-height: 1.1em; }
+        :host([xxl]) .slot { font-size: var(--font-size-xxl, 2em); line-height: 1.1em; }
 
         :host([tone="muted"]), :host([muted]) { color: rgba(var(--theme-text-rgb, 0,0,0),.4); }
         :host([muted="some"]) { color: rgba(var(--theme-text-rgb, 0,0,0),.8); }
