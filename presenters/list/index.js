@@ -181,6 +181,10 @@ customElements.define('b-list', class extends LitElement {
             z-index: 0;
         }
 
+        b-infinite-list > [isselected] {
+            --list-cell-viewing-bgd: var(--b-list-selected-row-bgd, rgba(var(--theme-rgb), .1));
+        }
+
         b-infinite-list > [isselected]:before {
             position: absolute;
             content: '';

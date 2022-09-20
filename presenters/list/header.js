@@ -57,6 +57,29 @@ export function sharedStyles(host=':host'){return css`
     ${unsafeCSS(host)} > *:last-child {
         padding-right: calc(var(--list-cell-padding-x, .5rem) * 2);
     }
+
+    ${unsafeCSS(host)} > [sticky] {
+        position: sticky;
+        left: 0;
+        background: var(--theme-bgd);
+        z-index: 5;
+    }
+
+    ${host==':host'
+    ?unsafeCSS(`${host}([viewing])`)
+    :unsafeCSS(`${host}[viewing]`)} > [sticky]:before,
+    ${host==':host'
+    ?unsafeCSS(`${host}([isselected])`)
+    :unsafeCSS(`${host}[isselected]`)} > [sticky]:before {
+        content: '';
+        width: 100%;
+        height: 100%;
+        background-color: var(--list-cell-viewing-bgd, rgba(var(--theme-rgb), .1));
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: -1;
+    }
 `
 }
 
