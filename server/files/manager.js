@@ -70,7 +70,7 @@ module.exports = class FileManager extends Model {
     get fileName(){ return this.attrs.id ? (this.attrs.filename) : '' }
     get dirPath(){ return [this.ASSETS_PATH, this.rootDir, this.groupPath].filter(s=>s).join('/')}
     get path(){ return this.dirPath+'/'+this.fileName }
-    get filePath(){ return path.join(this.dirPath, this.fileName) }
+    get filePath(){ return path.join(this.dirPath, this.fileName||'') }
 
     get displayPath(){
         if( this.attrs.has_preview
