@@ -5,7 +5,8 @@ customElements.define('b-list-selection-btn', class extends Btn{
 
     constructor(){
         super()
-        this.setAttribute('text', '')
+        this.setAttribute('clear', '')
+        this.setAttribute('lg', '')
         this.icon = 'library_add_check'
 
         if( this.parentElement.tagName == 'B-LIST')

@@ -87,7 +87,7 @@ customElements.define('b-list-selection-bar', class extends LitElement{
         ${this.selection?html`
 
             <div>
-                <b-btn class="cancel-btn" icon="library_add_check" color="theme" @click=${this.end} text></b-btn>
+                <b-btn class="cancel-btn" icon="library_add_check" color="theme" @click=${this.end} clear lg></b-btn>
 
                 <span class="count">
                     <span>${this.selection.result.size}&nbsp;<span>selected</span></span>
