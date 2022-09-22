@@ -146,8 +146,7 @@ customElements.define('b-comments', class extends LitElement{
                 this.removeAttribute('num')
 
             this.update()
-            if( this.model )
-                this.model.set('comments', this.coll.summarize())
+            this.propagateSummary()
         },10)
     }
 
@@ -251,7 +250,11 @@ customElements.define('b-comments', class extends LitElement{
             this.coll.forEach(m=>markCommentRead(m))
         }
 
-        if( this.model )
+        this.propagateSummary()
+    }
+
+    propagateSummary(){
+        if( this.model && !Array.isArray(this.model.get('comments')) && !this.model.get('comments')?.fetch )
             this.model.set('comments', this.coll.summarize())
     }
 
