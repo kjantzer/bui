@@ -207,6 +207,7 @@ customElements.define('b-comments', class extends LitElement{
             
             <b-comment-row 
                 part="comment" 
+                .renderMeta=${this.renderMeta}
                 .model=${m} 
                 .meta=${this.meta} 
                 placeholderBtn=${this.placeholderBtn}

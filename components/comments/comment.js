@@ -260,6 +260,8 @@ customElements.define('b-comment-row', class extends LitElement {
                         @canceled=${this.doneEditing}></b-write-comment>
                 `:html`
                     <section class="comment ProseMirror" @dblclick=${this.beginEditing}>${unsafeHTML(this.model.get('comment'))}</section>
+                    
+                    ${this._renderMeta()}
                 `}
 
                 <b-flex col gap=".25" class="files" stretch>
@@ -279,7 +281,10 @@ customElements.define('b-comment-row', class extends LitElement {
             ${this.renderAvatar()}
 
             <main>
-                <b-text italic sm class="comment sytem">${unsafeHTML(this.model.get('comment'))}</b-text>
+                <b-text italic sm class="comment sytem" ?hidden=${this.model.get('comment')}>
+                    ${unsafeHTML(this.model.get('comment'))}
+                </b-text>
+                ${this._renderMeta()}
                 <b-text xs muted><b-ts .date=${this.model.get('ts_created')}></b-ts></b-text>
             </main>
         
@@ -302,6 +307,10 @@ customElements.define('b-comment-row', class extends LitElement {
         
         `}
     `}
+
+    _renderMeta(){
+        return this.renderMeta ? this.renderMeta(this.model) : ''
+    }
 
     updated(){
         if( !this.model ) return
