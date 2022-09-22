@@ -161,7 +161,13 @@ customElements.define('b-list-header', class extends LitElement{
 
         }).filter(w=>w!==false)
 
-        this.parentElement.style.setProperty('--grid-template-cols', widths.join(' '))
+        let gridTemplate = widths.map((width,i)=>{
+            let prop = `--grid-col-${i+1}-width`
+            this.parentElement.style.setProperty(prop, width)    
+            return `var(${prop})`
+        }).join(' ')
+
+        this.parentElement.style.setProperty('--grid-template-cols', gridTemplate)
     }
 
     render(){return html`
