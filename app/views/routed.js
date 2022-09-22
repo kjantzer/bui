@@ -67,7 +67,7 @@ export default class RoutedView extends LitElement {
 
     makePath(params={}){
         let route = this.route
-        params = Object.assign({}, route.params, params)
+        params = params === null ? {} : Object.assign({}, route.params, params)
         return route ? route.makePath(params) : ''
     }
 
