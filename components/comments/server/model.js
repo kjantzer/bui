@@ -19,7 +19,7 @@ module.exports = class Comments extends Model {
     }
 
     static systemCommentFor(model, attrs){
-        return this.forModel(model, attrs.group).add(Object.assign({type: 'system'}, attrs))
+        return this.forModel(model, attrs.group).addSystem(attrs)
     }
 
     static get api(){return {
@@ -129,6 +129,10 @@ module.exports = class Comments extends Model {
                         ${where}
                         ${this.findOrderBy()}
                         ${this.findLimit}`
+    }
+
+    addSystem(attrs){
+        return this.add({type: 'system', ...attrs})
     }
 
     beforeAdd(attrs){
