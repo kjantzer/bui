@@ -134,6 +134,10 @@ customElements.define('b-list-header', class extends LitElement{
 
         ${scrollbars.hide()}
 
+        :host {
+            --list-cell-hover-bgd: transparent;
+        }
+
         :host > div,
         :host > b-text,
         :host > span {
