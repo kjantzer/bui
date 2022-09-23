@@ -21,3 +21,10 @@ The tag list can be used with form-control and form-handler
 
 </form-handler>
 ```
+
+## Options
+
+### Presets
+```html
+<b-tag-list .presets=${['Bug', 'Feature', 'Task']}></b-tag-list>
+```

@@ -126,6 +126,8 @@ customElements.define('b-tag-list', class extends LitElement{
 
     async addTag(e){
 
+        e.stopPropagation?.()
+
         let btn = e.currentTarget
         let didAdd = false
 
@@ -178,6 +180,8 @@ customElements.define('b-tag-list', class extends LitElement{
     }
 
     async removeTag(e){
+
+        e.stopPropagation?.()
 
         let tagEl = e.currentTarget
 
