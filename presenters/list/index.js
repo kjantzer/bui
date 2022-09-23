@@ -639,9 +639,11 @@ customElements.define('b-list', class extends LitElement {
 
         this.dataSource.applyFilters()
         this._onChangeReset()
+
+        this.emitEvent('filter-change', {changes})
     }
 
-    async onSortChange(){
+    async onSortChange(sorts){
 
         if( this.sorts.sortOnDB === true ){
             this.spinner.show = true
@@ -651,6 +653,8 @@ customElements.define('b-list', class extends LitElement {
         }
         
         this._onChangeReset()
+
+        this.emitEvent('sort-change', {sorts})
     }
 
 })

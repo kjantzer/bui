@@ -594,6 +594,15 @@ list.sorts.on('change', selectedSorts=>{})
 list.dataSource.on('changed', ()=>{})
 ```
 
+List also emits filter and sort changes
+
+```html
+<b-list
+    @filter-change=${this.onFilterChange}
+    @sort-change=${this.onSortChange}
+></b-list>
+```
+
 The list dispatches a DOM event when the content changes (this would happen when applied filters change, sort changes, or content is fetched from the server)
 
 ```
