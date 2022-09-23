@@ -111,6 +111,10 @@ customElements.define('b-flex', class extends LitElement{
         :host ::slotted([grow]) {
             flex-grow: 1;
         }
+
+        :host ::slotted([end]) {
+            margin-left: auto;
+        }
     `}
 
     render(){return html`
