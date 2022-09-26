@@ -27,7 +27,8 @@ customElements.define('b-comments', class extends LitElement{
         singular: {type: String},
         plural: {type: String},
         uploads: {type: Object},
-        replies: {type: Boolean} // not supported yet
+        replies: {type: Boolean}, // not supported yet
+        nosummary: {type: Boolean}
     }}
 
     static get styles(){return css`
@@ -182,6 +183,8 @@ customElements.define('b-comments', class extends LitElement{
 
     render(){return html`
 
+        <slot name="before"></slot>
+
         <!-- write new comment -->
         <b-comment-row 
             part="write-comment" 
@@ -219,6 +222,8 @@ customElements.define('b-comments', class extends LitElement{
         ${this.unread?html`
             <b-btn sm color="white" block @click=${this.viewAllComments} class="view-all">Fetch all</b-btn>
         `:''}
+
+        <slot name="after"></slot>
     `}
 
     async viewAllComments(e){
@@ -254,7 +259,8 @@ customElements.define('b-comments', class extends LitElement{
     }
 
     propagateSummary(){
-        if( this.model && !Array.isArray(this.model.get('comments')) && !this.model.get('comments')?.fetch )
+        if( !this.nosummary && this.model 
+        && !Array.isArray(this.model.get('comments')) && !this.model.get('comments')?.fetch )
             this.model.set('comments', this.coll.summarize())
     }
 
