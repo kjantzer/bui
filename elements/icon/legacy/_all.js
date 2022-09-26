@@ -9,7 +9,7 @@ Icon.register(
 	['paperback', require('./paperback.svg.html')],
 	['endsheet', require('./endsheet.svg.html')],
 	['book-insert', require('./book-insert.svg.html')],
-	['timeline', require('./timeline.svg.html')],
+	// ['timeline', require('./timeline.svg.html')],
 	['partner', require('./partner.svg.html')],
 	['directory-files', require('./directory-files.svg.html')],
 	['glue', require('./glue.svg.html')],
