@@ -191,8 +191,12 @@ export default class RoutedView extends LitElement {
         // care of clearing the model
         // this.model = null
 
-        if( newState && newState.props.filters && this.list )
-            this.list.filters.reset(newState.props.filters)
+        if( newState && newState.props.filters && this.list ){
+            if( newState.props.mergeFilters )
+                this.list.filters.update(newState.props.filters)
+            else
+                this.list.filters.reset(newState.props.filters)
+        }
 
         if( newState && newState.props.searchTerm && this.list )
             this.list.term = newState.props.searchTerm
