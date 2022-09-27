@@ -18,6 +18,9 @@ main {
 	align-items: center;
 	min-width: 1em;
 	position: relative;
+	/* matching text-field */
+	line-height: var(--theme-body-line-height, 1.4em);
+    margin: -0.1em 0;
 }
 
 main > svg {
