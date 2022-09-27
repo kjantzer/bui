@@ -86,7 +86,7 @@ const filters = {
         width: '160px', // exact width of menu
         multi: false, // can more than one value be selected?
         db: false, // true will make the filterBy happen on server instead
-        alwaysShow: false, // see "overflow panel"
+        show: null, // set to false to hide; also see "overflow panel"
         onFirstLoad: async (list, filter)=>{
             // use this to fetch data before showing menu for the first time
         },
@@ -262,7 +262,7 @@ const filters = {
 }
 ```
 
-When the overflow is activated, only "active" filters are shown in the toolbar. If you wish to keep certain filters in the toolbar at all times, add `alwaysShow: true` to the desired filters
+When the overflow is activated, only "active" filters are shown in the toolbar. If you wish to keep certain filters in the toolbar at all times, add `show: true` to the desired filters
 
 ### Presets
 You can create predefined presets that will apply multiple filters at once. The `filters` defined for a preset are expected to be the same format as what `list.filters.value()` returns (or what `list.filters.reset()` expects).

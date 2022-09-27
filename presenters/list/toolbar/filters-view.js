@@ -149,7 +149,9 @@ customElements.define('b-list-filters', class extends LitElement{
     }
 
     showFilter(filter){
-        return !this.showOverflow || (filter.isActive || filter.attrs.alwaysShow)
+        if( filter.attrs.show === false ) return false
+        // NOTE: alwaysShow is legacy and DEPRECATED
+        return !this.showOverflow || (filter.isActive || filter.attrs.alwaysShow || filter.attrs.show === true )
     }
 
     openFiltersPanel(){
