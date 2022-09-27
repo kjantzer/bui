@@ -35,12 +35,16 @@ customElements.define('b-list-filter-btn', class extends LitElement{
             font-size: .8em;
             vertical-align: baseline;
             color: var(--toolbarTextColor);
-            opacity: .4;
+            opacity: .8;
         }
 
         b-btn:not([active]) {
             color: var(--toolbarTextColor);
-            opacity: .4;
+            opacity: .8;
+        }
+
+        b-btn:not([active]).popover-open {
+            opacity: 1;
         }
 
         b-btn[active] {
@@ -61,7 +65,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
         }
 
         :host([larger]) b-btn:not([active]) div {
-            opacity: .4;
+            opacity: .8;
         }
 
         :host([larger]) b-btn[active] {

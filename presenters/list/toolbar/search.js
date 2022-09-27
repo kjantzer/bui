@@ -22,7 +22,7 @@ customElements.define('b-list-search-bar', class extends LitElement{
             padding: .5em .65em;
             background: var(--searchBgd, #f5f5f5); /* backwards comp */
             background: var(--list-search-bgd, var(--searchBgd));
-            border-radius: 30px;
+            border-radius: 4px;
             /* max-width: 140px; */
         }
 
@@ -49,7 +49,9 @@ customElements.define('b-list-search-bar', class extends LitElement{
 
         b-icon {
             color: var(--theme-text,#444);
-            margin-right: .5em;
+            font-size: 1.2em;
+            margin-right: .35em;
+            margin-left: -.1em;
         }
 
         form-control:focus-within {
