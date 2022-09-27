@@ -223,8 +223,6 @@ customElements.define('check-box', class extends LitElement{
 	_onClick(e){
 
 		if( this.disabled ) return
-
-		e.stopPropagation?.()
 		
 		this.ripple.burst()
 		
