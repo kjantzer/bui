@@ -83,6 +83,9 @@ What should the "new comment" button show? Defaults to `Comment`
 #### placeholder
 What do show in an empty comment input. Defaults to `Write a comment`
 
+#### limit
+Defaults to 10. Change to limit how many comments are shown A "show all" button will be displayed when limit is reached
+
 #### Model
 You can give the comment a model and the `GID` and `Meta` will be set using that model. Note: `group` must still be set
 
