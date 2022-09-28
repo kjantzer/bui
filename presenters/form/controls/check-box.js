@@ -74,6 +74,10 @@ customElements.define('check-box', class extends LitElement{
 		:host([placement="left"]) aside { margin-right: var(--check-box-label-padding); margin-bottom: -0.125em; text-align: right; }
 		:host([placement="right"]) aside { margin-left: var(--check-box-label-padding); margin-bottom: -0.125em; text-align: left; }
 
+		:host([nolabel]) aside {
+			display: none;
+		}
+
 		.icon {
 			transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 			user-select: none;
