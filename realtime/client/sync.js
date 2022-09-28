@@ -76,7 +76,8 @@ export class Sync extends Map {
 
 export function enableSync(Class, {
     pathKey='url',
-    group=false
+    group=false,
+    syncOpts={}
 }={}){
 
     Object.defineProperty(Class.prototype, 'realtimeSync', {
@@ -112,7 +113,7 @@ export function enableSync(Class, {
 
     // allows for onSync to be overriden but then still call the default sync method
     Class.prototype.onSyncDefault = function(data){
-        if( !syncData.call(this, data) )
+        if( !syncData.call(this, data, syncOpts) )
             this.onSyncFailed&&this.onSyncFailed(data)
     }
 
@@ -175,18 +176,18 @@ export function syncBackboneCollection(data, {
         return addUpdates ? console.warn('Sync: unsure how to handle, ', data) : false
 
     if( ['update', 'patch'].includes(action) )
-        model.set(attrs)
+        model.set(attrs, {fromSync: true})
 
     if( ['insert', 'add'].includes(action) )
-        model.add ? model.add(attrs) : model.set(attrs) // .set used if model is a Backbone.Model
+        model.add ? model.add(attrs, {fromSync: true}) : model.set(attrs) // .set used if model is a Backbone.Model
     
     if( ['destroy', 'delete'].includes(action) ){
 
         if( model.collection )
-            model.collection.remove(model)
+            model.collection.remove(model, {fromSync: true})
 
         if( triggerDestroy )
-            model.trigger('destroy', model, model.collection, {})
+            model.trigger('destroy', model, model.collection, {fromSync: true})
     }
 }
 
@@ -225,25 +226,25 @@ export function syncBackboneModel(data, {addMissingUpdates=true}={}){
 
     if( action == 'add' && attrs ){
         if( model.add )
-            model.add(attrs)
+            model.add(attrs, {fromSync: true})
         // there are occasions where an "add" action performs an update to existing model
         // rather than create a new record (eg: "insert ignore")
         else if( model.set )
-            model.set(attrs)
+            model.set(attrs, {fromSync: true})
             
         didSync = true
     }
     
     if( action == 'update' ){
         didSync = true
-        model.set(syncData||attrs)
+        model.set(syncData||attrs, {fromSync: true})
     }
 
     if( action == 'destroy' && model.collection ){
         didSync = true
         // can't call `model.destroy` as that would send a request to the server
-        model.collection.remove(model)
-        model.trigger('destroy', model, model.collection, {})
+        model.collection.remove(model, {fromSync: true})
+        model.trigger('destroy', model, model.collection, {fromSync: true})
     }
 
     // let views know when sync changes happen
