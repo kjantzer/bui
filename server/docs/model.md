@@ -110,6 +110,9 @@ Returns the formatted SQL query that _would_ be run
 #### opts.with
 See "related" feature below
 
+#### opts.noJoins
+Disables `findJoin` method
+
 #### opts.preSql
 One or more SQL queries to run before the main find query. Can be used to create a temp table that the main query will run
 
