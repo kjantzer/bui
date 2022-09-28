@@ -215,7 +215,7 @@ Icon.register(
 	['phone', require('./phone.svg.html')],
 	['photo_size_select_small', require('./photo_size_select_small.svg.html')],
 	['picture', require('./picture.svg.html')],
-	['pin', require('./pin.svg.html')],
+	// ['pin', require('./pin.svg.html')],
 	['play', require('./play.svg.html')],
 	['plus-1', require('./plus-1.svg.html')],
 	['plus-circled', require('./plus-circled.svg.html')],
