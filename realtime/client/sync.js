@@ -112,12 +112,13 @@ export function enableSync(Class, {
     let syncData = Class.prototype.map ? syncBackboneCollection : syncBackboneModel
 
     // allows for onSync to be overriden but then still call the default sync method
-    Class.prototype.onSyncDefault = function(data){
-        if( !syncData.call(this, data, syncOpts) )
+    Class.prototype.onSyncDefault = function(data, opts={}){
+        if( !syncData.call(this, data, {...syncOpts, ...opts}) )
             this.onSyncFailed&&this.onSyncFailed(data)
     }
 
-    Class.prototype.onSync = function(data){ return this.onSyncDefault.call(this, data) }
+    if( !Class.prototype.onSync )
+        Class.prototype.onSync = function(data){ return this.onSyncDefault.call(this, data) }
 }
 
 
