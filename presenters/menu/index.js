@@ -1,6 +1,7 @@
 import {html, render} from 'lit'
 import {unsafeHTML} from 'lit/directives/unsafe-html.js'
 import {live} from 'lit/directives/live.js'
+import { repeat } from 'lit/directives/repeat.js';
 import Popover from '../popover'
 import Dialog from '../dialog'
 import Panel from '../panel'
@@ -11,6 +12,7 @@ import '../form/controls/select-field'
 import device from '../../util/device';
 import {toMenu, isDivider} from './util'
 import isLitHTML from '../../helpers/lit/is-lit-html'
+import '../../helpers/lit/events'
 
 const styles = require('./style.less')
 
@@ -159,6 +161,9 @@ export default class Menu {
 		if( typeof menu == 'function' )
 			menu = menu()
 
+		if( !menu )
+			menu = []
+
 		menu = menu.map(val=>{
 			
 			if( typeof val == 'string' && ItemsPresets[val] )
@@ -172,7 +177,7 @@ export default class Menu {
 
 		this.__menu = menu
 
-		if( this.searchUrl && !this.__origMenu )
+		if( this.searchIsOn && !this.__origMenu )
 			this.__origMenu = menu || []
 
 		if( !this.searchUrl )
@@ -335,8 +340,10 @@ export default class Menu {
 
 		if( allowCreate && term.length >= (allowCreate.termLength||4) ){
 			let extras = ['divider',
-						{   icon: allowCreate.icon||'add_box',
-							label: allowCreate.label||html`<b-text muted=2>Create:</b-text> <b-text xbold color="theme">${term}</b-text>`,
+						{   icon: allowCreate.icon!==undefined?allowCreate.icon:'add_box',
+							label: allowCreate.label
+								? (typeof allowCreate.label == 'function' ? allowCreate.label(term) : allowCreate.label)
+								: html`<b-text muted=2>Create:</b-text> <b-text xbold color="theme">${term}</b-text>`,
 							val: term,
 							type: 'create'
 						},
@@ -441,7 +448,8 @@ export default class Menu {
 					</alphabet-jump-nav>`
 				:''}
 
-				${this.displayMenu.map((m,i)=>this.renderItem(m,i))}
+				
+				${repeat(this.displayMenu, m=>m.val, (m,i)=>this.renderItem(m,i))}
 			</div>
 
 		`, this.el)
@@ -624,7 +632,8 @@ export default class Menu {
 			input.value = ''
 		
 		this.menu = this.__origMenu
-		this.render()	
+		this.__filteredMenu = this.__origMenu || null
+		this.render()
 	}
 
 	async _itemMenu(target, data){
@@ -695,6 +704,8 @@ export default class Menu {
 			// TODO: I think we should only click if item isn't already selected
 			if( activeItem )
 				activeItem.click()
+			else
+				window.emitEvent('enter-on-no-item', {value: e.target.value, menu: this}, {context: this.el})
 
 			if( e.ctrlKey || e.metaKey )
 				this.resolve(this.selected)
@@ -707,6 +718,8 @@ export default class Menu {
 		if( e.code == 'Enter' ){
 			if( activeItem )
 				activeItem.click()
+			else
+				window.emitEvent('enter-on-no-item', {value: e.target.value, menu: this}, {context: this.el})
 			
 			e.preventDefault()
 			e.stopPropagation()
