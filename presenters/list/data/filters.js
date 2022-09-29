@@ -54,7 +54,9 @@ export default class Filters extends Map {
 
         let resetData = {}
         this.map(filter=>{
-            resetData[filter.key] = values[filter.key] !== undefined ? values[filter.key] : filter.defaultVal
+            resetData[filter.key] = values[filter.key] !== undefined 
+                ? values[filter.key] 
+                : (filter.attrs.neverReset?filter.value:filter.defaultVal)
         })
 
         this.value(resetData, {silent})
