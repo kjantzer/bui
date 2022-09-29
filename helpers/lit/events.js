@@ -8,7 +8,8 @@ export const emitEvent = function(eventName, detail=null, overrides={}){
         detail: detail
     }, overrides));
     
-    return this.dispatchEvent(event)
+    let _this = overrides.context || this
+    return _this.dispatchEvent?.(event)
 }
 
 LitElement.prototype.emitEvent = emitEvent
