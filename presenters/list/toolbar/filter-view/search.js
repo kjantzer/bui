@@ -35,8 +35,17 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
 
     onSelect(item){
 
-        this._values.push(item)
-        this.value = this._values
+        if( item.type == 'create' )
+            item = {
+                label: item.val,
+                val: item.val
+            }
+
+        // check for duplicates
+        if( !this._values.find(_item=>_item.val==item.val) ){
+            this._values.push(item)
+            this.value = this._values
+        }
 
         this.menu.clear()
         this.focus()
@@ -60,11 +69,15 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
         let selected = this._values.map(d=>d.val)
 
         if( this._values.length > 0 ){
-            menu.push({label: 'Any', val: '', clearsAll: true}, 'divider')
+
+            menu.push({label: 'Clear', icon: 'backspace', val: '', clearsAll: true}, 'divider')
+            
             menu.push(...this._values.map(d=>{
                 d.selected = true
                 return d
             }))
+
+            menu.push('-')
         }
 
         return [menu, selected]
@@ -100,12 +113,13 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
                     this.opts.extendResults.call(this, menu, term)
             }
 
-        this.menu = new Menu([], {
+        this.menu = new Menu( this.opts.defaultMenu||[], {
             typeDelay: 200,
             autoSelectFirst: true,
             onSelect: this.onSelect.bind(this),
             search: {
                 url: this.opts.url,
+                allowCreate: !this.opts.url? this.opts.allowCreate||true : false,
                 placeholder: this.opts.placeholder || 'Search',
                 parse: this.opts.parseResult,
                 extendResults,
@@ -117,6 +131,10 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
 
         this.appendChild(this.menu.el)
         this.menu.render()
+
+        this.menu.el.addEventListener('enter-on-no-item', e=>{
+            this.close()
+        })
     }
 
     didClose(){
