@@ -3,11 +3,11 @@ import {html} from 'lit'
 export function isDivider(val){
 	let _val = val.val //|| val.label || val
     if( _val == undefined )
-        _val = val.label
+        _val = val.label || val.divider
     if( _val == undefined )
         _val = val
 
-	return ['divider', '-', '–'].includes(val)
+	return ['divider', '-', '–'].includes(_val)
 }
 
 
