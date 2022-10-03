@@ -355,7 +355,10 @@ class FormHandler extends HTMLElement {
 							if( !allowedVal.includes(val) )
 								valid = false
 						}else{
-							if( allowedVal != val )
+							if( allowedVal == 'falsey' )
+								valid = !val
+
+							else if( allowedVal != val )
 								valid = false
 						}
 					}
