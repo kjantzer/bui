@@ -68,6 +68,9 @@ customElements.define('b-datepicker-presets', class extends LitElement{
     set presets(val){
         let oldVal = this.presets
 
+        if( typeof val == 'function' )
+            val = val()
+
         // default to all presets if empty array given
         if( Array.isArray(val) && val.length == 0 ){
             val = Object.keys(Presets)
