@@ -283,9 +283,10 @@ module.exports = class Model {
         if( opts == undefined && where && (where.where || where.select || where.with) ){
             opts = Object.assign({}, where)
             where = opts.where ? Object.assign({}, opts.where) : null
-            delete opts.where
+            // delete opts.where
         }else{
             opts = opts || {}
+            opts.where = where
         }
 
         let whereID = this.findWhereID(where)
