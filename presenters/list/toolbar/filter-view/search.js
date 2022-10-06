@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import Menu from '../../../menu'
+import isLitHTML from '../../../../helpers/lit/is-lit-html'
 
 customElements.define('b-list-filter-view-search', class extends LitElement{
 
@@ -161,6 +162,11 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
         return this._values.map(d=>{
             d = Object.assign({}, d)
             delete d.view // do not save custom element/views
+
+            // do not save lit HTML values
+            if( isLitHTML(d.label) )
+				d.label = d.cacheLabel || d.toolbarLabel || d.val
+
             return d
         })
     }
@@ -197,7 +203,15 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
         if( !val || val.length == 0 )
             return '–'
         
-        return val.map(d=>d.toolbarLabel||d.label).join(', ')
+        return val.map(d=>{
+            let label = d.toolbarLabel||d.label
+
+            if( d.selection && !['any', 'is', 'yes'].includes(d.selection.toLowerCase()) )
+                label = d.selection+' '+label
+
+            return label
+            
+        }).join(', ')
     }
 
     // OPTIONAL
