@@ -475,14 +475,19 @@ export class Filter {
             return false
         })
 
+        let yesSelections = ['has', 'yes', 'is']
+        let showSelection = selection=>{
+            return yesSelections.includes(selection?.toLowerCase()) ? '' : selection
+        }
+
         if( matchedVal&&matchedVal.length>0 )
             return matchedVal.map(f=>{
-                return [f.selection, f.toolbarLabel||f.label].filter(s=>s).join(' ')
+                return [showSelection(f.selection), f.toolbarLabel||f.label].filter(s=>s).join(' ')
             }).join(', ')
         
         if( Array.isArray(val) )
             return this.value.map(v=>{
-                return [v.selection, v.val].filter(s=>s).join(' ')
+                return [showSelection(v.selection), v.val].filter(s=>s).join(' ')
             }).join(', ')
 
         return String(val)
