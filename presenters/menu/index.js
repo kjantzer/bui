@@ -632,7 +632,7 @@ export default class Menu {
 			input.value = ''
 		
 		this.menu = this.__origMenu
-		this.__filteredMenu = this.__origMenu || null
+		this.__filteredMenu = null
 		this.render()
 	}
 
