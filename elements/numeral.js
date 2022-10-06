@@ -17,7 +17,8 @@ customElements.define('b-numeral', class extends LitElement{
         num: {type: Number, reflect: true},
         placeholder: {type: String},
         prefix: {type: String},
-        suffix: {type: String}
+        suffix: {type: String},
+        ranges: {type: Array}
     }}
 
     set num(val){
@@ -29,7 +30,8 @@ customElements.define('b-numeral', class extends LitElement{
         if( !this._title && this.title )
             this._title = this.title||''
 
-        this.title = ((this._title||'')+` `+val).trim()
+        this.title = ((this._title||'')+` `+(val||'')).trim()
+        this.applyRange()
     }
     
     get num(){ return this.__num}
@@ -68,6 +70,21 @@ customElements.define('b-numeral', class extends LitElement{
         ${this.numeral}<slot></slot>
         <b-text muted nobold ?hidden=${!this.suffix}>${this.suffix}</b-text>
     `}
+
+    applyRange(){
+        let num = this.num
+        let range = null
+
+        this.ranges?.forEach((v,i)=>{
+            if( num >= v )
+                range = i+1
+        })
+        
+        if( range )
+            this.setAttribute('range', range)
+        else
+            this.removeAttribute('range')
+    }
 
 })
 
