@@ -61,8 +61,14 @@ export function sharedStyles(host=':host'){return css`
     ${unsafeCSS(host)} > [sticky] {
         position: sticky;
         left: 0;
-        background: var(--theme-bgd);
+        background: var(--list-cell-bgd, var(--theme-bgd));
         z-index: 5;
+    }
+
+    ${unsafeCSS(host)} > [sticky="right"] {
+        left: auto;
+        right: 0;
+        z-index: 4;
     }
 
     ${host==':host'
