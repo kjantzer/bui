@@ -10,7 +10,7 @@ customElements.define('b-list-filters-panel', class extends LitElement{
             display: grid;
             position:relative;
             box-sizing: border-box;
-            grid-template-rows: auto 1fr;
+            grid-template-rows: 1fr auto;
         }
 
         main {
@@ -22,11 +22,17 @@ customElements.define('b-list-filters-panel', class extends LitElement{
         }
 
         header {
-            padding: .5em 1em .5em 1.5em;
-            border-bottom: solid 1px var(--theme-bgd-accent);
+            padding: .5em 1em .5em;
+            border-top: solid 1px var(--theme-bgd-accent);
+            order: 2;
             display: flex;
             align-items: center;
             justify-content: space-between;
+        }
+
+        b-list-filter-presets {
+            width: 400px;
+            max-width: 100%;
         }
 
         @media (max-height: 599px) and (orientation:landscape) {
@@ -48,9 +54,10 @@ customElements.define('b-list-filters-panel', class extends LitElement{
         new Panel(this, {
             title: 'Filters',
             controller: 'b-list:'+filters.key,
-            animation: device.isSmallDevice ? 'drop': 'slide',
-            anchor: device.isSmallDevice ? 'top': 'left',
-            width: device.isSmallDevice ? '100%' : '400px',
+            animation: 'drop',// device.isSmallDevice ? 'drop': 'slide',
+            anchor: 'top', //device.isSmallDevice ? 'top': 'left',
+            width: '100%', // device.isSmallDevice ? '100%' : '400px',
+            height: 'auto'
             // height: device.isSmallDevice ? '80%' : '100% '
         }).open()
         
@@ -82,17 +89,15 @@ customElements.define('b-list-filters-panel', class extends LitElement{
         <header>
 
             <div>
-                <b-icon name="filter"></b-icon>
-                <b-text slot="left">Filters</b-text>
+                <b-btn sm clear ucase color="theme" bold @click=${this.close}>APPLY</b-btn>
+                <b-media-query hide="sm">
+                    <b-text sm italic muted>or click the overlay to apply</b-text>
+                </b-media-query>
             </div>
 
             <span>
                 <b-btn sm clear ucase bold @click=${this.reset}>RESET</b-btn>
                 <b-hr vert></b-hr>
-                
-                ${device.isSmallDevice?html`
-                <b-btn sm clear ucase bold @click=${this.close}>APPLY</b-btn>
-                `:''}
                 
                 <b-btn sm clear ucase bold @click=${this.cancel}>CANCEL</b-btn>
 
@@ -101,7 +106,7 @@ customElements.define('b-list-filters-panel', class extends LitElement{
         
         <main>
 
-            <b-grid _cols-mobile=1>
+            <b-flex wrap left _cols-mobile=1>
 
                 ${this.filters.opts.presets?html`
                 <b-list-filter-presets colspan=2 .filters=${this.filters}></b-list-filter-presets>
@@ -111,7 +116,7 @@ customElements.define('b-list-filters-panel', class extends LitElement{
                 <b-list-filter-btn larger ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
             `)}
 
-            </b-grid>
+            </b-flex>
 
         </main>
     `}

@@ -77,7 +77,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
         }
 
         :host([larger]) .label {
-            font-size: .8rem;
+            font-size: 1rem;
             margin: 0;
             line-height: 1em;
         }
@@ -117,7 +117,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
         let opts = {}
 
         if( this.hasAttribute('larger') && !device.isSmallDevice ){
-            opts.align = 'right'
+            // opts.align = 'right'
             opts.overflowBoundry = 'window'
         }
 

@@ -243,6 +243,9 @@ customElements.define('b-list', class extends LitElement {
 
         b-panels {
             overflow: hidden;
+            position: relative !important;
+            grid-row: 2/-1;
+            grid-column: 1/-1;
         }
 
         b-panel {
