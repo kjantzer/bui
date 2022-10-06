@@ -18,6 +18,7 @@ export default class Label extends LitElement {
             font-weight: bold;
             font-size: 1rem;
             line-height: 1rem;
+            min-height: 1em !important;
             --dividerThickness: 1px;
             vertical-align: middle;
             border-radius: var(--radius, 0);
