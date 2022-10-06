@@ -13,6 +13,8 @@ import device from '../../util/device';
 import {toMenu, isDivider} from './util'
 import isLitHTML from '../../helpers/lit/is-lit-html'
 import '../../helpers/lit/events'
+import store from '../../util/store'
+import uniq from '../../util/uniq'
 
 const styles = require('./style.less')
 
@@ -213,6 +215,13 @@ export default class Menu {
 		if( this.searchIsOn && this.hideUnselected )
 			return this.menu.filter(m=>m.label===undefined || m.selected)
 
+		// show search cache if empty menu
+		if( this.searchIsOn && this.opts.search.cache && this.menu.length == 0 ){
+			let menu = this.opts.search.cache()
+			if( menu.length > 0 ) menu = [{divider: 'Recents'}].concat(menu)
+			return menu
+		}
+
 		return this.menu
 	}
 
@@ -278,7 +287,11 @@ export default class Menu {
 			})
 
 			item.selected = true
-			this.__selected.push(item)
+
+			// if not already selected, select it now
+			if( index == -1 )
+				this.__selected.push(item)
+
 			return true
 		}
 	}
@@ -299,7 +312,14 @@ export default class Menu {
 	}
 
 	get searchUrl(){
-		return this.opts.search&&this.opts.search.url
+		if( this.opts.search && this.opts.search.url){
+			
+			// enable search cache by default unless turned off
+			if( this.opts.search.cache !== false )
+				this.opts.search.cache = this.opts.search.cache || store.create('menu:'+this.opts.search.url, [])
+
+			return this.opts.search.url
+		}
 	}
 
 	get searchShouldShowAll(){
@@ -494,6 +514,21 @@ export default class Menu {
 
 		if( m.selections ){
 			let selections = m.selections
+
+			// if only two selections,
+			// let's add a description telling the user they can ctrl+click to select section option
+			if( selections.length == 2 ){
+
+				// could be a string, so convert to standard label/val (needed so we can add description)
+				if( !selections[1].val )
+					selections[1] = {
+						label: selections[1],
+						val: selections[1]
+					}
+				
+				selections[1].description = 'ctrl/cmd click'
+			}
+				
 			
 			if( this.opts.multiple)
 				selections = [{label: 'unset', val:'', clearsAll: true}, 'divider'].concat(selections)
@@ -552,10 +587,13 @@ export default class Menu {
 		let data = this.displayMenu[e.currentTarget.parentElement.getAttribute('index')]
 		data.selection = val
 
-		if( !this.opts.multiple )
+		if( !this.opts.multiple ){
+			this._onSelect(data)
 			this.resolve(data)
-		else
+		}else{
 			this.toggleSelected(data)
+			this._onSelect(this.selected)
+		}
 	}
 	
 	onClick(e){
@@ -578,15 +616,18 @@ export default class Menu {
 			
 			let data = this.displayMenu[target.getAttribute('index')]
 
-			if( data.selections && !data.selection )
-				data.selection = data.selections[0]&&data.selections[0].val||data.selections[0]
+			if( data.selections && !data.selection ){
+				// select second option if ctrl/cmd key held on click (but only if 2 options)
+				let index = data.selections.length == 2 && (e.metaKey||e.ctrlKey) ? 1 : 0;
+				data.selection = data.selections[index]&&data.selections[index].val||data.selections[index]
+			}
 			
 			if( data.menu )
 				return this._itemMenu(target, data)
 
 			if( this.opts.perpetual ){
 
-				this.opts.onSelect&&this.opts.onSelect(data)
+				this._onSelect(data)
 				
 				// only perpetual in search mode...if menu is orig, then were't not showing search results
 				if( this.opts.perpetual == 'search' && this.__origMenu == this.menu )
@@ -598,7 +639,7 @@ export default class Menu {
 			} else if( this.opts.multiple ){
 
 				if( data.clearsAll || (this.opts.multiple !== 'always' && !didClickCheckbox) ){
-					this.opts.onSelect&&this.opts.onSelect([data])
+					this._onSelect([data])
 					return this.resolve([data])
 				}
 
@@ -611,19 +652,44 @@ export default class Menu {
 						this.presenter._updatePosition()
 				}else if( isSelected ){
 					target.classList.add('selected')
-					target.querySelector('check-box').checked = true
+					if( !data.selections )
+						target.querySelector('check-box').checked = true
 				}else{
 					target.classList.remove('selected')
-					target.querySelector('check-box').checked = false
+					if( !data.selections )
+						target.querySelector('check-box').checked = false
 				}
 				
-				this.opts.onSelect&&this.opts.onSelect(this.selected)
+				this._onSelect(this.selected)
 				
 			}else{
-				this.opts.onSelect&&this.opts.onSelect(data)
+				this._onSelect(data)
 				this.resolve(data)
 			}
 		}
+	}
+
+	_onSelect(data){
+
+		// cache the selected result if 
+		if( this.opts.search?.cache ){
+
+			let cache = this.opts.search.cache()
+			let cacheData = {...data}
+
+			// make sure we dont save lit-html to local storage, it wont work right when we render
+			if( isLitHTML(cacheData.label) )
+				cacheData.label = cacheData.cacheLabel || cacheData.toolbarLabel || cacheData.val
+
+			// track up to 10 items
+			cache.push(cacheData)
+			cache = uniq(cache, (a, b)=>a.val===b.val).reverse().slice(0,10)
+			
+			// save to cache
+			this.opts.search.cache(cache)
+		}
+
+		this.opts.onSelect&&this.opts.onSelect(data)
 	}
 
 	clear(){
