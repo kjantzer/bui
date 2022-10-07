@@ -124,16 +124,21 @@ module.exports = class Model {
     }
 
     get filters(){
+
+        if( this.__filters !== undefined ) return this.__filters
+
         try {
             let filters = this.req.query.filters
 
             if( filters && typeof filters == 'string')
-                return JSON.parse(filters)
-            else if( filters )
-                return filters
-            else
-                return {}
+                filters = JSON.parse(filters)
+
+            this.__filters = filters || {}
+
+            return this.__filters
+            
         }catch(err){
+            this.__filters = undefined
             console.log('Malformed filters:', this.req.query.filters);
             return {}
         }
