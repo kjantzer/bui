@@ -115,7 +115,8 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
                 menu.unshift({
                     label: term,
                     description: 'Fuzzy match',
-                    val: term
+                    val: term,
+                    noCache: true
                 },'divider')
             })
 
@@ -130,7 +131,8 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
                 menu.unshift({
                     label: `Bulk Search: ${values.length} IDs`,
                     val: values,
-                    type: 'bulk'
+                    type: 'bulk',
+                    noCache: true
                 })
             })
 
