@@ -36,6 +36,11 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
 
     onSelect(item){
 
+        if( item.type == 'bulk' ){
+            this._bulkSearch = item.val
+            return this._bulkSearchNext()
+        }
+
         if( item.type == 'create' )
             item = {
                 label: item.val,
@@ -95,25 +100,52 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
         this.valueMenu = new Menu(menu, {
             multiple: 'always',
             selected: selected,
+            search: false,
             onSelect: this.onDeselect.bind(this),
         })
         this.appendChild(this.valueMenu.el)
         this.valueMenu.render()
         
-        let extendResults = this.opts.extendResults
+        let _extendResults = []
 
+        // NOTE: what is the purpose of this? can't find in code anywhere
+        // doesn't seem to do anything uniq
         if( this.opts.allowFuzzy )
-            extendResults = function(menu, term){
+            _extendResults.push(function(menu, term){
                 menu.unshift({
                     label: term,
                     description: 'Fuzzy match',
                     val: term
                 },'divider')
+            })
 
-                if( this.opts.extendResults )
-                    this.opts.extendResults.call(this, menu, term)
-            }
+        // bulk search features
+        if( this.opts.allowBulkSearch !== false )
+            _extendResults.push((menu, term)=>{
 
+                let values = term.split(/[\n\t\s]/).map(s=>s.trim()).filter(s=>s)
+                let sameLength = values.filter(v=>v.length==values[0].length).length == values.length
+                
+                if( values.length >= 3 && sameLength )
+                menu.unshift({
+                    label: `Bulk Search: ${values.length} IDs`,
+                    val: values,
+                    type: 'bulk'
+                })
+            })
+
+        let extendResults = function(menu, term){
+
+            _extendResults.forEach(_extend=>{
+                _extend(menu, term)
+            })
+
+            if( this.opts.extendResults )
+                this.opts.extendResults.call(this, menu, term)
+        }
+        
+
+        let _this = this
         this.menu = new Menu( this.opts.defaultMenu||[], {
             typeDelay: 200,
             autoSelectFirst: true,
@@ -124,8 +156,9 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
                 placeholder: this.opts.placeholder || 'Search',
                 parse: this.opts.parseResult,
                 extendResults,
-                onResultsFetched: ()=>{
-                    this.popover._updatePosition()
+                onResultsFetched: (...args)=>{
+                    this.popover?._updatePosition()
+                    _this.onResultsFetched(...args)
                 }
             }
         })
@@ -136,6 +169,23 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
         this.menu.el.addEventListener('enter-on-no-item', e=>{
             this.close()
         })
+    }
+
+    _bulkSearchNext(){
+        if( this._bulkSearch && this._bulkSearch.length > 0 ){
+            let id = this._bulkSearch.shift()
+            this.menu.matching(id)
+        }else{
+            this._bulkSearch = null
+        }
+    }
+
+    onResultsFetched(e){
+        if( this._bulkSearch ){
+            // NOTE: assumes first item is correct
+            this.menu.clickItem(0)
+            this._bulkSearchNext()
+        }
     }
 
     didClose(){

@@ -201,6 +201,7 @@ const filters = {
             },
             // optional
             placeholder: 'Search',
+            allowBulkSearch: true, // default
             allowFuzzy: false,
             extendResults(menu, term){}
         }
