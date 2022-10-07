@@ -448,8 +448,8 @@ class SelectFieldElement extends HTMLElement {
 		&& this.parentElement.tagName == 'FORM-CONTROL'
 		&& this.parentElement.hasAttribute('material')
 		&& this.parentElement.getAttribute('material') != 'hover' ){
-			target = this.parentElement
-			popoverOpts.width = target.clientWidth+'px'
+			target = this.assignedSlot.parentElement
+			popoverOpts.width = target.clientWidth+4+'px'
 			popoverOpts.className += ' no-arrow'
 		}
 
