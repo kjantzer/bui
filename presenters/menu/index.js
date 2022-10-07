@@ -218,7 +218,10 @@ export default class Menu {
 		// show search cache if empty menu
 		if( this.searchIsOn && this.opts.search.cache && this.menu.length == 0 ){
 			let menu = this.opts.search.cache()
-			if( menu.length > 0 ) menu = [{divider: 'Recents'}].concat(menu)
+			if( menu.length > 0 ) menu = [{divider: 'Recents'}].concat(menu.map(item=>{
+				item.noCache = true
+				return item
+			}))
 			return menu
 		}
 
@@ -359,15 +362,24 @@ export default class Menu {
 		let allowCreate = this.opts.search?.allowCreate
 
 		if( allowCreate && term.length >= (allowCreate.termLength||4) ){
-			let extras = ['divider',
-						{   icon: allowCreate.icon!==undefined?allowCreate.icon:'add_box',
-							label: allowCreate.label
-								? (typeof allowCreate.label == 'function' ? allowCreate.label(term) : allowCreate.label)
-								: html`<b-text muted=2>Create:</b-text> <b-text xbold color="theme">${term}</b-text>`,
-							val: term,
-							type: 'create'
-						},
-						'divider']
+
+			let label = allowCreate.label
+						? (typeof allowCreate.label == 'function' ? allowCreate.label(term) : allowCreate.label)
+						: html`<b-text muted=2>Create:</b-text> <b-text xbold color="theme">${term}</b-text>`
+				
+			let extras = [
+				'divider',
+				{   icon: allowCreate.icon!==undefined?allowCreate.icon:'add_box',
+					label,
+					val: term,
+					type: allowCreate.type || 'create',
+					noCache: true
+				},
+				'divider'
+			]
+
+			if( label === false )
+				extras = []
 
 			if( menu.length > 6 )
 				menu.splice(1, 0, ...extras)
@@ -595,6 +607,12 @@ export default class Menu {
 			this._onSelect(this.selected)
 		}
 	}
+
+	clickItem(index){
+		let el = this.el.querySelector(`.menu-item:nth-child(${index+1})`)
+		if( el )
+			el.click()
+	}
 	
 	onClick(e){
 		
@@ -672,7 +690,7 @@ export default class Menu {
 	_onSelect(data){
 
 		// cache the selected result if 
-		if( this.opts.search?.cache ){
+		if( this.opts.search?.cache && !data.noCache ){
 
 			let cache = this.opts.search.cache()
 			let cacheData = {...data}
