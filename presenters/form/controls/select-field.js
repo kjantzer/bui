@@ -297,6 +297,39 @@ class SelectFieldElement extends HTMLElement {
 			return val.includes(m.val) || (val.length == 0 && !m.val)
 		})
 
+		// if tried to set a value that is not in the options and the "search" feature is enabled
+		// lookup the value with search, add it to the options, then reapply the selected value
+		if( !this._didSearchSelected && val.length == 1 && val[0] && selected.length == 0 && this.search ){
+
+			// the `?id` flag tells the search API we know the exact ID, no fuzzy searching needed
+			fetch.json(this.search.url+val[0]+'?id').then(r=>{
+
+				// no value or an array of values...both are not valid responses
+				if( !r || r.length )
+					return
+				
+				// support two different parse functions
+				if( this.search.parseResult )
+					r = this.search.parseResult(r)
+				else if( this.search.parse )
+					r = this.search.parse(r)
+				
+				r.val = String(r.val) // make sure value is a string
+
+				// add to the options for future
+				this.__options.push(r)
+
+				// reapply the selected value
+				this._didSearchSelected = true // mitigate infinite loops
+				this.selected = val
+				delete this._didSearchSelected
+				
+			// soft-warning on errors
+			}).catch(err=>{
+				console.log('select-field:', err);
+			})
+		}
+
 		// keep selected values in the order that they were selected
 		selected = selected.sort((a,b)=>{
 			return val.indexOf(a.val) - val.indexOf(b.val)
@@ -386,14 +419,16 @@ class SelectFieldElement extends HTMLElement {
 			selected: this._selected,
 			multiple: this.multiple ? 'always' : false,
 			jumpNav: this.hasAttribute('jump-nav'),
-			
-			// only called when in multiple mode
 			onSelect: selected=>{
-				this.selected = Array.isArray(selected) ? selected.map(m=>m.val) : selected.val
+				// called even if not multiple, but this can conflict with the search features
+				// so only do this in multiple mode
+				if( this.multiple )
+					this.selected = Array.isArray(selected) ? selected.map(m=>m.val) : selected.val
 			}
 		}
 
-		if( this.search && typeof this.search == "object" ){
+		// a function is supported as that may be a class
+		if( this.search && ['object', 'function'].includes(typeof this.search) ){
 			if( !this.search.url )
 				console.warn('select-field .search=${} must contain a `url`')
 			else
@@ -470,8 +505,10 @@ class SelectFieldElement extends HTMLElement {
 			let optionVals = this.options.map(o=>o.val)
 			
 			val.forEach(v=>{
-				if( !optionVals.includes(v.val) )
+				v.val = String(v.val)
+				if( !optionVals.includes(v.val) ){
 					this.__options.push(v)
+				}
 			})
 		}
 		

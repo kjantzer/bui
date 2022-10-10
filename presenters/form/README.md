@@ -170,6 +170,7 @@ Creates a select field that uses `Menu` and `Popover` to display options.
 - `multiple`
 - `summarize` - to be used with `multiple`
 - `placeholder`
+- `search` - see below
 - `show-empty` - by default, the selected empty value will NOT be shown
 - `menu-max-height`
 - `menu-align`
@@ -210,9 +211,32 @@ html`<form-control material="filled" label="Select an option">
 When using `multiple`, adding `summarize` attribute will display the number of selected items rather than the label of all items. Most useful when the number of selected items is large.
 
 ```html
-/* ex: `3 items` */
+<!-- ex: `3 items` -->
 <select-field multiple summarize="items"></select-field>
 ```
+
+##### `search`
+Uses the `search` option in the `Menu` presenter to look up options via API (instead of setting `.options`). The applied `value` will be fetched from the server when set.
+
+```js
+let searchOpts = {
+	// required
+	url: '/api/search/',
+
+	// optional - select-field requires {label, val} for options
+	parse(row){
+		return {
+			label: row.name,
+			val: row.id
+		}
+	}
+}
+
+html`<select-field value="1" .search=${searchOpts}></select-field>`
+```
+
+When the `value` is fetched via API, it will append the value as `term` and append `?id` - ex: `/api/search/1?id`
+This lets the API know a specific known ID is being requested and not a fuzzy value search.
 
 #### Parts
 - `value`
