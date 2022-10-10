@@ -196,9 +196,10 @@ customElements.define('b-text', class extends LitElement{
             this.title = this.textContent.replace(/\s{2,}/g, ' ').trim()
     }
 
-    onClick(){
+    onClick(e){
         let href = this.getAttribute('href')
         if( href ){
+            e.stopPropagation()
             if( !href.match(/^mailto/) && href.match(/@/) ) href = 'mailto:'+href
             window.open(href)
         }
