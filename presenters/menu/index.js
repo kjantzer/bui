@@ -311,6 +311,7 @@ export default class Menu {
 		let s = this.opts.search
 		return s === true 
 		|| (typeof s == 'object')
+		|| (typeof s == 'function')
 		|| (typeof s == 'number' && this.menu.length >= s)
 	}
 
@@ -334,7 +335,7 @@ export default class Menu {
 	}
 
 	get searchParse(){
-		let parse = this.opts.search&&this.opts.search.parse
+		let parse = this.opts.search&&(this.opts.search.parse||this.opts.search.parseResult)
 		if( typeof parse !== 'function' )
 			parse = SearchDefaults.parse
 		return parse
