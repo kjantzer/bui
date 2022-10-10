@@ -28,7 +28,8 @@ export default class Route {
     makePath(params){
         
         // make sure we have any required params set
-        let emptyParams = Object.fromEntries(this.patt.names.map(v=>[v,'']))
+        let emptyParams = this.patt.ast.filter(d=>d.tag=='named').map(d=>[d.value, ''])
+
         delete emptyParams._ // wildcard
         
         params = {...emptyParams, ...params}
