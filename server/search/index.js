@@ -62,38 +62,51 @@ class SearchAPI {
         if( !types || types.length == 0 ) throw new Error('No search types given')
         
         let data = []
+        let byType = {} // get list of IDs, grouped by type
+        let result = []
         let threshold
+        let lookupGivenID = types.length == 1 && this.req.query.id !== undefined
 
-        // perform searches for each "type"
-        await Promise.series(types, async type=>{
-            let SearchType = SearchTypes.get(type)
-            if( SearchType ){
-                let st = new SearchType(this.req, this.db)
-                let res = await st.query(this.term)
-                if( !threshold || st.threshold < threshold )
-                    threshold = st.threshold
-                data.push(...res)
-            }
-        })
+        // requested a specific known ID
+        if( lookupGivenID ){
+            
+            // spoof expected responses
+            byType[types[0]] = [this.term]
+            result = [{item: {type: types[0], id: this.term}}]
+            
 
-        // further reduce and sort the results from a string search
-        // by matching the `term` agaist the `label` returned from the search types
-        let fuse = new Fuse(data, {
-            threshold: threshold,
-            includeScore: true,
-            keys: ["label"]
-        })
-        let result = fuse.search(this.term)
+        }else{
 
-        if( !hydrate )
-            return result
+            // perform searches for each "type"
+            await Promise.series(types, async type=>{
+                let SearchType = SearchTypes.get(type)
+                if( SearchType ){
+                    let st = new SearchType(this.req, this.db)
+                    let res = await st.query(this.term)
+                    if( !threshold || st.threshold < threshold )
+                        threshold = st.threshold
+                    data.push(...res)
+                }
+            })
 
-        // get list of IDs, grouped by type
-        let byType = {}
-        result.forEach(row=>{
-            byType[row.item.type] = byType[row.item.type] || []
-            byType[row.item.type].push(row.item.id)
-        })
+            // further reduce and sort the results from a string search
+            // by matching the `term` agaist the `label` returned from the search types
+            let fuse = new Fuse(data, {
+                threshold: threshold,
+                includeScore: true,
+                keys: ["label"]
+            })
+
+            result = fuse.search(this.term)
+
+            if( !hydrate )
+                return result
+
+            result.forEach(row=>{
+                byType[row.item.type] = byType[row.item.type] || []
+                byType[row.item.type].push(row.item.id)
+            })
+        }
 
         // hydrate the IDs with real data
         for( let type in byType ){
@@ -160,7 +173,7 @@ class SearchAPI {
         if( this.limit > 0 )
             res = res.slice(0, this.limit)
 
-        return res
+        return lookupGivenID ? res[0] : res
     }
 
     get filters(){
