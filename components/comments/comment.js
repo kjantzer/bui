@@ -281,7 +281,7 @@ customElements.define('b-comment-row', class extends LitElement {
             ${this.renderAvatar()}
 
             <main>
-                <b-text italic sm class="comment sytem" ?hidden=${this.model.get('comment')}>
+                <b-text italic sm class="comment sytem" ?hidden=${!this.model.get('comment')}>
                     ${unsafeHTML(this.model.get('comment'))}
                 </b-text>
                 ${this._renderMeta()}
