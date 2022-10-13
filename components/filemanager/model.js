@@ -67,6 +67,10 @@ export default class FileModel extends Model {
         return this.traits.pages||0
     }
 
+    get chapters(){
+        return this.traits.toc?.navMap?.navPoint?.length||0
+    }
+
     get resolution(){
         let size = Math.max(this.width, this.height)+'x'+Math.min(this.width, this.height)
         return RESOLUTIONS[size] || ''
@@ -94,6 +98,10 @@ export default class FileModel extends Model {
 
     get isDocument(){
         return this.get('type').match(/pdf/)
+    }
+
+    get isEpub(){
+        return this.get('ext') == 'epub'
     }
 
     get isNonStandardDocument(){

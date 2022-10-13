@@ -198,8 +198,16 @@ customElements.define('b-file-row', class extends LitElement{
 
                     ${this.model.isDocument?html`
                     <b-label xs class="pages" filled="black" ?hidden=${!(this.model.pages>1)} slot="top-right" part="pages">
-                            ${this.model.pages} pages</b-label>
+                        ${this.model.pages} pages
+                    </b-label>
                     `:''}
+
+                    ${this.model.isEpub?html`
+                    <b-label xs filled="black" ?hidden=${!(this.model.chapters>1)} slot="top-right" part="pages">
+                        ${this.model.chapters} chapters
+                    </b-label>
+                    `:''}
+                    
 
                     ${this.renderPreviewContent()}
                     <slot name="preview"></slot>
