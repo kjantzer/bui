@@ -58,6 +58,7 @@ customElements.define('check-box', class extends LitElement{
 		:host([placement="left"]) main,
 		:host([placement="right"]) main {
 			align-self: flex-start;
+			margin-top: -.5em; /* align with first line */
 		}
 
 		touch-ripple {
