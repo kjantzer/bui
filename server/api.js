@@ -186,7 +186,20 @@ module.exports = class API {
             res.download(path, (req.query.filename||resp.downloadFilename))
 
         }else if( req.query.display !== undefined && resp && resp.path ){
-            let path = (req.query.display != '' && resp.previewPath) || (resp.displayPath || resp.path)
+
+            let path = ''
+
+            if( req.query.display != '' )
+                path = resp.previewPath
+            else
+                path = (resp.displayPath || resp.path)
+
+            if( !path ) 
+                return res.status(404).json({
+                    error: 'No preview',
+                    code: 404
+                })
+
             if( resp.name )
                 res.set('Filename', resp.name);
 
