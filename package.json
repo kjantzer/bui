@@ -62,14 +62,17 @@
         "dayjs": "^1.8.35",
         "fluent-ffmpeg": "^2.1.2",
         "fuse.js": "^3.4.5",
+        "jszip": "^3.10.1",
         "lit": "^2.2.3",
         "lit-element": "^3.2.0",
         "node-vibrant": "^3.2.1-alpha.1",
         "numeral": "^2.0.6",
         "popper.js": "^1.14.7",
+        "puppeteer": "13.5.1",
         "socket.io": "^2.3.0",
         "tinycolor2": "^1.4.2",
         "url-pattern": "^1.0.3",
-        "workbox-recipes": "^6.1.0"
+        "workbox-recipes": "^6.1.0",
+        "xml2js": "^0.4.23"
     }
 }

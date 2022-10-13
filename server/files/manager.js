@@ -49,6 +49,10 @@ module.exports = class FileManager extends Model {
         clipGain: 0
     }
 
+    // set to false to disable
+    // requires jszip, puppeteer, and xml2js
+    epubPreview = {}
+
     // constratin to aspect ratio on upload?
     // only `square` supported currently
     aspectRatio = false // = dont apply, use original file
@@ -89,7 +93,12 @@ module.exports = class FileManager extends Model {
     get previewPath(){
 
         if( !this.attrs.has_preview ){
-            return this.filePath
+
+            // fallback to full size image
+            if( ['jpg', 'jpeg', 'png', 'gif', 'tif', 'heic'].includes(this.attrs.ext) ) 
+                return this.filePath
+            else 
+                return null
         }
 
         let ext = [, 'jpg', 'png'][this.attrs.has_preview]||'jpg'
@@ -376,6 +385,29 @@ module.exports = class FileManager extends Model {
 
         // keep track of attrs we want to change at the end of this routine
         let updateAttrs = {}
+
+        if( this.epubPreview && filename.match(/\.epub$/) ){
+
+            const epubPreview = require('./epubPreview')
+
+            try{
+                let {previewFilePath, contents, toc} = await epubPreview.call(this, filename)
+
+                // grab the just created full-size preview image, it will be used futher below
+                sharpImg = sharp(previewFilePath)
+
+                // save contents and TOC to traits
+                this.attrs.traits.contents = contents
+                this.attrs.traits.toc = toc
+                updateAttrs.traits = this.attrs.traits
+
+            }catch(err){
+                // graceful fail, no reason to bail if preview fails to create
+                console.log(err);
+                return
+            }
+
+        }
 
         // resave the image with proper rotation (iPhone, etc)
         if( sharpImg && this.autoRotate
