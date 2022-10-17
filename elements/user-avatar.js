@@ -123,9 +123,17 @@ export default class UserAvatar extends LitElement {
         if( this._model.isMe)
             return 'Me'
 
-        let name = this.withName=='short'||this.nameOnly=='short'
-                    ?this.model.shortName||this.model.get('name')
-                    :this.model.get('name')
+        let name = ''
+        let nameType = this.withName || this.nameOnly
+
+        if( nameType == 'first' )
+            name = this.model.firstName
+        
+        if( nameType == 'short' )
+            name = this.model.shortName
+
+        if( !name )
+            name = this.model.get('name')
 
         return name
     }
