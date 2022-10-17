@@ -85,16 +85,16 @@ module.exports = class DB {
 
                         err.lastQuery = sql // NOTE: I don think I need this, err.sql is already present
                         reject(err)
-                        return
+                    }else{
+
+                        if( Array.isArray(results) ){
+                            results = DBResults.loadLargeArray(results)
+                        }
+
+                        results.fromQuery = sql
+
+                        resolve(results)
                     }
-
-                    if( Array.isArray(results) ){
-                        results = DBResults.loadLargeArray(results)
-                    }
-
-                    results.fromQuery = sql
-
-                    resolve(results)
                 })
 
                 conn.release()
