@@ -195,7 +195,8 @@ customElements.define('b-file-manager', class extends LitElement{
         let uploader = e.currentTarget
         let {invalid} = e.detail
 
-        if( this.limit > 0 && this.coll.length == this.limit )
+        // NOTE: if limit is 1, the server should destroy the old file and replace with this one
+        if( this.limit > 1 && this.coll.length == this.limit )
             return Dialog.stopped(`File limit of ${this.limit} already reached`).notif()
 
         if( invalid )
