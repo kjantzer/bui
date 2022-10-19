@@ -184,7 +184,7 @@ module.exports = class FileManager extends Model {
             `, [info.parent_id||'', this.group, info.dir_path, info.md5]).then(r=>r.first)
 
             if( dupe ){
-                ThrowError('DuplicateFile', 'Duplicate file: '+dupe.filename)
+                ThrowError('DuplicateFile', 'file already uploaded')
             }
                 
         }
