@@ -217,7 +217,7 @@ export default class Menu {
 
 		// show search cache if empty menu
 		if( this.searchIsOn && this.opts.search.cache && this.menu.length == 0 ){
-			let menu = this.opts.search.cache()
+			let menu = this.opts.search.cacheStore()
 			if( menu.length > 0 ) menu = [{divider: 'Recents'}].concat(menu.map(item=>{
 				item.noCache = true
 				return item
@@ -319,8 +319,18 @@ export default class Menu {
 		if( this.opts.search && this.opts.search.url){
 			
 			// enable search cache by default unless turned off
-			if( this.opts.search.cache !== false )
-				this.opts.search.cache = this.opts.search.cache || store.create('menu:'+this.opts.search.url, [])
+			if( !this.opts.search.cacheStore && this.opts.search.cache !== false ){
+
+				let cacheName = this.opts.search.url
+
+				if( typeof this.opts.search.cache == 'string' )
+					cacheName = this.opts.search.cache
+
+				if( typeof cacheName == 'function') cacheName = cacheName()
+
+				this.opts.search.cacheStore = this.opts.search.cacheStore || store.create('menu:'+cacheName, [])
+			}
+				
 
 			return this.opts.search.url
 		}
@@ -693,7 +703,7 @@ export default class Menu {
 		// cache the selected result if 
 		if( this.opts.search?.cache && !data.noCache ){
 
-			let cache = this.opts.search.cache()
+			let cache = this.opts.search.cacheStore()
 			let cacheData = {...data}
 
 			// make sure we dont save lit-html to local storage, it wont work right when we render
@@ -705,7 +715,7 @@ export default class Menu {
 			cache = uniq(cache, (a, b)=>a.val===b.val).reverse().slice(0,10)
 			
 			// save to cache
-			this.opts.search.cache(cache)
+			this.opts.search.cacheStore(cache)
 		}
 
 		this.opts.onSelect&&this.opts.onSelect(data)
