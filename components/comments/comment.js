@@ -11,11 +11,13 @@ import './file'
 
 let avatarTag
 let nameTag
+let renderMeta
 
 customElements.define('b-comment-row', class extends LitElement {
 
     static set avatarTag(val){ avatarTag = val }
     static set nameTag(val){ nameTag = val }
+    static set renderMeta(val){ renderMeta = val }
 
     static get listeners(){return {
         model: {'change': 'requestUpdate'}
@@ -309,7 +311,7 @@ customElements.define('b-comment-row', class extends LitElement {
     `}
 
     _renderMeta(){
-        return this.renderMeta ? this.renderMeta(this.model) : ''
+        return this.renderMeta ? this.renderMeta(this.model) : (renderMeta ? renderMeta(this.model) : '')
     }
 
     updated(){

@@ -12,6 +12,7 @@ customElements.define('b-comments', class extends LitElement{
     static set extensions(val){ WriteComment.extensions = val }
     static set avatarTag(val){ Comment.avatarTag = val }
     static set nameTag(val){ Comment.nameTag = val }
+    static set renderMeta(val){ Comment.renderMeta = val }
 
     static get listeners(){return {
         coll: {'add remove sync': 'updateView'}
