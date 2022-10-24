@@ -51,7 +51,7 @@ module.exports = class Comments extends Model {
                 gid: this.gid
             }},
             // auto include files with this model if it has files
-            with(row){ return row.attrs.meta?.files }
+            with(row){ return row.attrs?.meta?.files }
         }
     }
 
