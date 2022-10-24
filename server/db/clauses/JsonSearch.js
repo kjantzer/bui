@@ -29,6 +29,10 @@ module.exports = class JsonSearch extends Clause {
                 return `JSON_CONTAINS_PATH(${key}, 'all', '${path}')`
 
             // TODO: searching real numbers wont work (number strings are fine)
+            if( typeof val == 'number'){
+                return `${key}->>'${path}' = ${val}`
+            }
+
             val = db.escape(val)
 
             return `JSON_SEARCH(${key}, 'one', ${val}, null, '${path}') IS NOT NULL`
@@ -50,6 +54,10 @@ module.exports = class JsonSearch extends Clause {
             let [key, val] = s.split(':').map(s=>s.trim())
 
             if( !val ) val = undefined
+
+            // attempt to parse as number
+            if( val && val.match(/[\d\.]+/) )
+                val = parseFloat(val) || val
 
             groups[key] = groups[key] || []
             groups[key].push(val)
