@@ -73,6 +73,8 @@ class FormHandler extends HTMLElement {
 		// TODO: change to `controls`?
 		this.controls = this.editors = Array.from(this.querySelectorAll('form-control[key], check-box[key], radio-group[key], text-field[key], select-field[key]'))
 
+		let changeDelay = this.getAttribute('change-delay') || false
+
 		this.controls.forEach(el=>{
 			let key = el.getAttribute('key')
 			if( key ){
@@ -84,6 +86,9 @@ class FormHandler extends HTMLElement {
 				if( this._values && this._values[key] )
 					el.value = this._values[key]
 			}
+
+			if( changeDelay && el.control?.tagName == 'TEXT-FIELD' )
+				el.control.setAttribute('change-delay', changeDelay)
 		})
 
 		delete this._values
