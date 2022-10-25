@@ -87,15 +87,19 @@ customElements.define('b-comments', class extends LitElement{
         this._model = model
 
         if( model ){
-            this.gid = model.id
             this.meta = model.commentMeta ? model.commentMeta.bind(model) : null
+
+            if( !this.hasAttribute('gid') )
+                this.gid = model.id
 
             if( !this.hasAttribute('group') && model.name )
                 this.group = model.name
 
         }else{
-            this.gid = null
             this.meta = null
+
+            if( !this.hasAttribute('gid') )
+                this.gid = null
 
             if( !this.hasAttribute('group') )
                 this.group = null
