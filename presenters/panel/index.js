@@ -882,6 +882,7 @@ export class Panel extends LitElement {
             right: .5em;
             top: .5em;
             border-radius: .5em;
+            --radius: .5em;
         }
 
         .inlinehtml {
