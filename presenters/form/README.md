@@ -98,6 +98,7 @@ Creates an input-like control. Add `multiline` attribute to make it perform like
 
 - `required`
 - `multiline`
+- `nowrap` - keep text on line line
 - `html` use html `<p>` tags for new lines
 - `.htmlClean` - see below
 - `pattern="int"` - regexp or preset
