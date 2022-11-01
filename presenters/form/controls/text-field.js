@@ -621,12 +621,12 @@ class TextFieldElement extends HTMLElement {
 
 		this._didPressKey = true
 
-		let val = this.input ? this._input.value : this._editor.innerText
+		let val = this.input ? this._input.value : this._editor.textContent
 		stop = stopMaxLength(e, this, val)
 
 		let delay = this.getAttribute('change-delay')
 		clearTimeout(this._changeDelay)
-		if( delay !== null ){
+		if( val != this.value && delay !== null ){
 			delay = delay || 500
 			this._changeDelay = setTimeout(this._updateValue.bind(this), delay)
 		}
