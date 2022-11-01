@@ -27,7 +27,7 @@ module.exports = function(id, opts){
 
 		var model = new ModelClass(data);
 
-		model.needsFetching = true;
+		model.needsFetching = Object.keys(data).length == 1
 
 		// add model to this collection
 		if( !opts || opts.add !== false )
