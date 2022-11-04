@@ -579,7 +579,7 @@ module.exports = class Model {
             
             this.decodeFields(attrs)
 
-            this.afterUpdate(attrs, beforeUpdate)
+            await this.afterUpdate(attrs, beforeUpdate)
 
             if( this.id )
                 this.attrs = Object.assign(this.attrs||{}, attrs)
