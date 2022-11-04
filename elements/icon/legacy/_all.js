@@ -182,7 +182,7 @@ Icon.register(
 	['left', require('./left.svg.html')],
 	// ['lightbulb', require('./lightbulb.svg.html')],
 	['link-ext', require('./link-ext.svg.html')],
-	['link', require('./link.svg.html')],
+	// ['link', require('./link.svg.html')],
 	['list-add', require('./list-add.svg.html')],
 	['list-numbered', require('./list-numbered.svg.html')],
 	['list2', require('./list2.svg.html')],
