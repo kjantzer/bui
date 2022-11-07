@@ -17,7 +17,9 @@ export default class Sorts extends CollMap {
         return this.__value
     }
 
-    set value(val){
+    set value(val){ this._setValue(val)}
+
+    _setValue(val, {silent=false}={}){
 
         if( (!val || Object.keys(val).length == 0) && this.__defaultSort )
             val = this.__defaultSort
@@ -35,7 +37,7 @@ export default class Sorts extends CollMap {
 
         this.forEach(sort=>sort.selected=this.value[sort.key])
 
-        if( didChange )
+        if( !silent && didChange )
             this.emit('change', val)
     }
 
@@ -85,6 +87,26 @@ export default class Sorts extends CollMap {
             sort.selected = this.value[key]
             this.set(key, sort)
         }
+
+        let currentValue = this.value
+        let didChangeCurrentValue = false
+
+        // remove invalid sorts they may have been in local storage
+        for( let key in currentValue ){
+            if( !this.get(key) ){
+                didChangeCurrentValue = true
+                delete currentValue[key]
+            }
+        }
+
+        if( didChangeCurrentValue ){
+            // no more current value, default
+            if( this.__defaultSort && Object.keys(currentValue).length == 0 ){
+                currentValue = this.__defaultSort
+            }
+
+            this._setValue(currentValue, {silent: true})
+        }        
     }
 
     map(fn){
