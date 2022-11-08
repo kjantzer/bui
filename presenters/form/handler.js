@@ -143,7 +143,10 @@ class FormHandler extends HTMLElement {
 		if( this.hasAttribute('store') )
 			this.model.set(this.store(), {silent: true})
 
-		this._updateEditors()
+		// allow for editors to update first (maybe select-field options will change)
+		setTimeout(()=>{
+			this._updateEditors()
+		})
 	}
 
 	store(vals){
