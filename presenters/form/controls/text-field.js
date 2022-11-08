@@ -626,7 +626,7 @@ class TextFieldElement extends HTMLElement {
 
 		let delay = this.getAttribute('change-delay')
 		clearTimeout(this._changeDelay)
-		if( val != this.value && delay !== null ){
+		if( val != this.value && delay !== null && this.type != 'date' ){
 			delay = delay || 500
 			this._changeDelay = setTimeout(this._updateValue.bind(this), delay)
 		}
