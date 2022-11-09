@@ -25,9 +25,10 @@ module.exports = function(id, opts){
 		else
 			data[ModelClass.prototype.idAttribute] = id;
 
-		var model = new ModelClass(data);
+		let needsFetching = Object.keys(data).length == 1 // do this here cause the model may have defaults added
+		let model = new ModelClass(data);
 
-		model.needsFetching = Object.keys(data).length == 1
+		model.needsFetching = needsFetching
 
 		// add model to this collection
 		if( !opts || opts.add !== false )
