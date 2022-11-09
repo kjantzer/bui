@@ -38,6 +38,8 @@ module.exports = function(id, opts){
 			}
 		}
 
+		// hmmm...not sure I like this idea; is this really what should happen?
+		// or was this an edge case when I first wrote it?
 		if( model.isNew() )
 			model.save({}, {success: finishedCallback, error: finishedCallback})
 		else
