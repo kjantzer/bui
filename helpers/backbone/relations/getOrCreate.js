@@ -26,7 +26,8 @@ module.exports = function(id, opts){
 			data[ModelClass.prototype.idAttribute] = id;
 
 		let needsFetching = Object.keys(data).length == 1 // do this here cause the model may have defaults added
-		let model = new ModelClass(data);
+		
+		model = new ModelClass(data);
 
 		model.needsFetching = needsFetching
 
