@@ -43,10 +43,10 @@ module.exports = class Group extends Map {
                 clauses.push(clause)
                 values.push(...clauseValues)
 
-            }else if( ['NULL', 'NOT NULL'].includes(val) ){
+            }else if( ['NULL', 'NOT NULL', 'null', 'not null', null].includes(val) ){
                 clauses.push(`${key} IS ${val}`)
 
-            }else if( ['IS NULL', 'IS NOT NULL'].includes(val) ){
+            }else if( ['IS NULL', 'IS NOT NULL', 'is null', 'is not null'].includes(val) ){
                 clauses.push(`${key} ${val}`)
                 
             }else{
