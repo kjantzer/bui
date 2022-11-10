@@ -8,7 +8,8 @@ module.exports = class Group extends Map {
         this.operator = operator
 
         for( let key in clauses ){
-            this.set(key, clauses[key])
+            if( clauses[key] !== undefined )
+                this.set(key, clauses[key]===undefined?null:clauses[key])
         }
     }
 
