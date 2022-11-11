@@ -13,8 +13,8 @@ customElements.define('b-list-export-btn', class extends Btn{
 
     constructor(){
         super()
-        this.setAttribute('text', '')
-        this.setAttribute('pill', '')
+        this.setAttribute('clear', '')
+        this.setAttribute('lg', '')
         this.icon = this.icon || 'file-excel'
         this.slot = this.slot || 'toolbar:after'
         this.title = this.title || "Export data to CSV file"
@@ -38,7 +38,7 @@ customElements.define('b-list-export-btn', class extends Btn{
             preset = await new Menu(presets.filter(o=>o)).popover(this, {align: 'bottom-end'})
             if( preset === false ) return
             preset = preset.val
-            description += ' | Preset: '+preset
+            description += ' | Export Preset: '+preset
         }
 
         if( list.selection.isOn ){
@@ -57,7 +57,10 @@ customElements.define('b-list-export-btn', class extends Btn{
         if( typeof this.filename == 'function' )
             filename = this.filename()
 
-        const opts = {preset}
+        const opts = this.opts || {}
+
+        if( preset ) opts.preset = preset
+
         if(!this.omitTitle){opts.title = list.key}
         if(!this.omitDescription){opts.description = description}
 
