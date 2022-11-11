@@ -241,6 +241,25 @@ export default class Filters extends Map {
             this.presets.set(presets)
 
         this.lastChanged = new Date().getTime()
+
+
+        let currentValue = this.value()
+        let didChangeCurrentValue = false
+
+        // remove invalid filters they may have been in local storage
+        for( let key in currentValue ){
+            if( !this.get(key) ){
+                didChangeCurrentValue = true
+                delete currentValue[key]
+            }
+        }
+
+        if( didChangeCurrentValue ){
+            this.__value = currentValue
+            
+            if( this.key )
+                localStorage.setItem(this._storeKey, JSON.stringify(this.__value))
+        }  
     }
 
     map(fn){
