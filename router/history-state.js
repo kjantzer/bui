@@ -1,5 +1,10 @@
 import config, {normalizePath, cleansePath} from './config'
 
+function formatQuery(query){
+    this.query = new URLSearchParams(query||'')
+    return Object.fromEntries(this.query.entries())
+}
+
 export default class HistoryState {
 
     constructor(parent, props={}){
@@ -8,27 +13,18 @@ export default class HistoryState {
         this.params = {}
 
         if( !props )
-            props = {}
+        props = {}
 
         if( !props.path )
             props.path = ''
 
         let [path, query] = props.path.split('?')
 
-        let queryData = {}
-        this.query = new URLSearchParams(query||props.query||'')
-
-        if( query ){
-            this.query.forEach((v, k)=>{
-                queryData[k] = v
-            })
-        }
-        
         // removing leading slash and #
         props.path = cleansePath(path)
 
         this.props = Object.assign({
-            query: queryData,
+            query: formatQuery.call(this, query||props.query),
             title: config.APP_TITLE
         }, props)
     }
@@ -93,7 +89,11 @@ export default class HistoryState {
         // do not let num be updated, this is set when newly created
         delete props.num
         
+        if( props.query )
+            props.query = formatQuery.call(this, props.query),
+
         this.props = Object.assign(this.props, props)
+
         this.parent.save()
 
         if( !this.isCurrent ) return
@@ -102,6 +102,16 @@ export default class HistoryState {
             
         if( this.props.title )
             document.title = this.props.title
+    }
+
+    updateQuery(data){
+        let query = this.props?.query || {}
+        query = {...query, ...data}
+        for( let k in query ){
+            if( query[k] === null || query[k] === undefined )
+                delete query[k]
+        }
+        return this.update({query})
     }
 
     toJSON(){

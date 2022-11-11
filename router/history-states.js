@@ -10,7 +10,9 @@ export default class HistoryStates {
 
         // set initial state data
         this.add({
-            path: location.pathname+location.hash+location.search
+            path: location.pathname,
+            hash: location.hash,
+            query: location.search
         })
     }
 
