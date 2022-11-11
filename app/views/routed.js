@@ -53,6 +53,25 @@ export default class RoutedView extends LitElement {
         }
     `}
 
+    constructor(){
+        super()
+
+        // listen for a b-list changing filters
+        this.addEventListener('filter-change', this._trackFilterChange)
+    }
+
+    _trackFilterChange(){
+        if( !this.list || !this.route.state ) return
+
+        let filters = this.list.filters.value()
+
+        // track the set filters in the url
+        if( Object.keys(filters).length == 0 )
+            this.route?.state.updateQuery({filters:null})
+        else
+            this.route?.state.updateQuery({filters: btoa(JSON.stringify(filters))})
+    }
+
     get router(){ return router }
 
     get route(){
@@ -196,6 +215,17 @@ export default class RoutedView extends LitElement {
                 this.list.filters.update(newState.props.filters)
             else
                 this.list.filters.reset(newState.props.filters)
+        
+        // filters found in the url query
+        }else if( newState && newState.props.query?.filters && this.list ){
+            
+            try{
+                let filters = JSON.parse(atob(newState.props.query?.filters))
+                this.list.filters.reset(filters)
+                
+            }catch(err){
+
+            }
         }
 
         if( newState && newState.props.searchTerm && this.list )
