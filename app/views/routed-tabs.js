@@ -67,7 +67,7 @@ customElements.define('b-tabs-router', class extends TabsView {
                 fromMenuClick:new Date().getTime()
             })
 
-            tabView.routeState = newState
+            tabView.routeState = tabView.route.state = newState
             
             // reuse data from old state
             // if( oldState ) // not sure why I was doing this...doesn't seem like we should do this anymore
