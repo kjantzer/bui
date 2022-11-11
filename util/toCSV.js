@@ -1,3 +1,4 @@
+import {titleize} from './string'
 
 export default (rawData, opts)=>{
 
@@ -7,6 +8,7 @@ export default (rawData, opts)=>{
 		title: '',
 		description: '',
 		header: true,
+		titleize: false,
 		preset: undefined
 	}, opts)
 
@@ -15,9 +17,9 @@ export default (rawData, opts)=>{
 		return console.log('No data to export');
 
 	// see if the array of data contains Backbone Models or custom classes that implement `toCSV` or `toJSON`
-	rawData = rawData.map(d=>{
+	rawData = rawData.flatMap(d=>{
 		if( d && d.toCSV )
-			return d.toCSV(opts.preset)
+			return d.toCSV(opts)
 
 		if( d && d.toJSON )
 			return d.toJSON()
@@ -27,6 +29,9 @@ export default (rawData, opts)=>{
 	
 	var header = Object.keys(rawData[0])
 	var rows = rawData.map(d=>Object.values(d))
+
+	if( titleize )
+		header = header.map(s=>titleize(s))
 				
 	var data = opts.header === false ? rows : [header].concat(rows);
 
