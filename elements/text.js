@@ -108,6 +108,7 @@ customElements.define('b-text', class extends LitElement{
         :host([color="green"]) { color: var(--green, green); }
         :host([color="purple"]) { color: var(--deep-purple, purple); }
         :host([color="pink"]) { color: var(--pink, pink); }
+        :host([color="teal"]) { color: var(--teal, brown); }
         :host([color="brown"]) { color: var(--brown, brown); }
 
         :host([gradient]) {
