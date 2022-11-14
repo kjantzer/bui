@@ -89,7 +89,7 @@ customElements.define('b-list-filters-panel', class extends LitElement{
         <header>
 
             <div>
-                <b-btn sm clear ucase color="theme" bold @click=${this.close}>APPLY</b-btn>
+                <b-btn sm ucase color="theme" bold @click=${this.close}>APPLY</b-btn>
                 <b-media-query hide="sm">
                     <b-text sm italic muted>or click the overlay to apply</b-text>
                 </b-media-query>
