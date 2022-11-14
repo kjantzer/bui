@@ -217,15 +217,23 @@ export default class RoutedView extends LitElement {
                 this.list.filters.reset(newState.props.filters)
         
         // filters found in the url query
-        }else if( newState && newState.props.query?.filters && this.list ){
+        }else if( newState && newState.props.query?.filters){
             
-            try{
-                let filters = JSON.parse(atob(newState.props.query?.filters))
-                this.list.filters.reset(filters)
-                
-            }catch(err){
+            // delay to let this.list get established
+            setTimeout(()=>{
 
-            }
+                try{
+                    let filters = newState.props.query?.filters
+
+                    // support clearing/resetting the filters with `filters=reset`
+                    // useful if the query is failing due to applied filter
+                    this.list?.filters.reset(filters=='reset'?{}:JSON.parse(atob(filters)))
+                    
+                }catch(err){
+
+                }
+
+            }, this.list?0:100)
         }
 
         if( newState && newState.props.searchTerm && this.list )
