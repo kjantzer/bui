@@ -52,10 +52,7 @@ export const colorScheme = {
     get theme(){ return localStorage.getItem('theme') },
     get accent(){ return localStorage.getItem('theme-accent') },
 
-    // TODO: rename to `setColorMode` or `setLightDarkMode`
-    setTheme(theme){
-
-        const html = document.documentElement
+    setMetaTheme(color){
         let metaThemeColor = document.head.querySelector('meta[name="theme-color"]')
 
         // create the meta theme color if not found
@@ -65,6 +62,18 @@ export const colorScheme = {
             metaThemeColor.setAttribute('name', 'theme-color')
             document.head.appendChild(metaThemeColor)
         }
+
+        if( !color )
+            color = this.getCssVar('theme-bgd')
+
+        metaThemeColor.content = color
+        localStorage.setItem('meta-theme-color', color)
+    },
+
+    // TODO: rename to `setColorMode` or `setLightDarkMode`
+    setTheme(theme){
+
+        const html = document.documentElement
 
         html.removeAttribute('light')
         html.removeAttribute('dark')
@@ -82,8 +91,7 @@ export const colorScheme = {
         if( theme )
             html.setAttribute(theme, '')
 
-        metaThemeColor.content = this.getCssVar('theme-bgd')
-        localStorage.setItem('meta-theme-color', metaThemeColor.content)  
+        this.setMetaTheme(localStorage.getItem('meta-theme-color'))
     },
 
     setAccent(accent, secondary){
