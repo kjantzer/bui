@@ -11,6 +11,8 @@ function csvToArray(strData, {
     formatHeader=null,
 }={}){
 
+    if( !strData ) return null
+
     // Create a regular expression to parse the CSV values.
     var objPattern = new RegExp(
         (
