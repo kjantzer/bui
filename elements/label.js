@@ -100,7 +100,7 @@ export default class Label extends LitElement {
             height: 6px;
             width: 6px;
             min-width: 0;
-            min-height: 0;
+            min-height: 0 !important;
             padding: 0;
         }
 
