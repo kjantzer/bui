@@ -183,6 +183,7 @@ module.exports = class Comments extends Model {
         }
 
         // delete all comments for a group/gid
+        // TODO: need to delete files that may exist
         if( !this.id && this.group && this.gid ){
             return await this.db.q(/*sql*/`DELETE FROM ${this.config.table} 
                                             WHERE \`group\` = ? AND gid = ?`, [this.group, this.gid])

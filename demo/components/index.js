@@ -28,7 +28,7 @@ customElements.define('demo-components', class extends LitElement{
         <b-tabs-router path="components/" key="components" layout="left" >
             
             <div title="About">
-                <b-paper>
+                <!-- <b-paper> -->
                     <b-text-divider bottom thick>
                         <b-text gradient xbold xxl>Components</b-text>
                     </b-text-divider>
@@ -36,7 +36,7 @@ customElements.define('demo-components', class extends LitElement{
                     
                     <demo-markdown-docs notoc .docs=${docs}></demo-markdown-docs>
 
-                </b-paper>
+                <!-- </b-paper> -->
             </div>
 
             demo-presenter-search
@@ -46,17 +46,17 @@ customElements.define('demo-components', class extends LitElement{
             demo-components-tag-list
 
             <div title="Print View" path="print-view" id="print-view">
-                <b-paper>
+                <!-- <b-paper> -->
                     <b-h1>Print View</b-h1>
                     <demo-markdown-docs .docs=${printViewDocs}></demo-markdown-docs>
-                </b-paper>
+                <!-- </b-paper> -->
             </div>
 
             <div title="Metadata" path="metadata" id="metadata">
-                <b-paper>
+                <!-- <b-paper> -->
                     <b-h1>Metadata</b-h1>
                     <demo-markdown-docs .docs=${metadataDocs}></demo-markdown-docs>
-                </b-paper>
+                <!-- </b-paper> -->
             </div>
 
         </b-tabs-router>

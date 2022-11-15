@@ -29,10 +29,10 @@ customElements.define('demo-server-db', class extends LitElement{
     `}
 
     render(){return html`
-    	<b-paper>
+    	<!-- <b-paper> -->
             <b-h1>Database</b-h1>
 			<demo-markdown-docs .docs=${docs}></demo-markdown-docs>
-		</b-paper>
+		<!-- </b-paper> -->
     `}
 
 })

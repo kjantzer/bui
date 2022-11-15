@@ -29,10 +29,10 @@ customElements.define('demo-server-realtime', class extends LitElement{
     `}
 
     render(){return html`
-    	<b-paper>
+    	<!-- <b-paper> -->
             <b-h1>Realtime</b-h1>
 			<demo-markdown-docs .docs=${docs}></demo-markdown-docs>
-		</b-paper>
+		<!-- </b-paper> -->
     `}
 
 })

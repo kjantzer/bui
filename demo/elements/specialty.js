@@ -12,7 +12,7 @@ let imgs = [
 export default html`
 <section title="Specialty">
 
-<b-paper>
+<!-- <b-paper> -->
     <b-h1>Hardcover Book</b-h1>
 
     <b-grid cols="1,1,2" cols-mobile=1>
@@ -112,7 +112,7 @@ export default html`
 
     <b-text sm italic muted><b-icon name="info-circled"></b-icon> This is a very basic implementation</b-text>
 
-</b-paper>
+<!-- </b-paper> -->
 
 
 </section>

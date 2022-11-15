@@ -7,8 +7,8 @@ import 'bui/elements/text-divider'
 
 export default html`
 <section title="Text">
-<b-paper>
-    <b-h1>Text</b-h1>
+<!-- <b-paper> -->
+    <b-text-divider lg xbold bottom pad=2 thick>Text</b-text-divider>
 
         <b-grid gap="2">
 
@@ -72,10 +72,10 @@ export default html`
 
     </b-grid>
 
-</b-paper>
+<!-- </b-paper> -->
 
-<b-paper>
-    <b-h1>Text Divider</b-h1>
+<!-- <b-paper> -->
+    <b-text-divider lg xbold bottom pad=2 thick>Text Divider</b-text-divider>
     <div>A subclass of <code>b-text</code>. The same attributes can be applied</div>
 
     <br><br>
@@ -100,10 +100,10 @@ export default html`
 
     <b-text-divider center>Text Divider</b-text-divider>
 
-</b-paper>
+<!-- </b-paper> -->
 
-<b-paper>
-    <b-h1>Label</b-h1>
+<!-- <b-paper> -->
+    <b-text-divider lg xbold bottom pad=2 thick>Label</b-text-divider>
    
     <b-grid cols=2 mobile-cols=1>
 
@@ -189,10 +189,10 @@ export default html`
     <b-label divider="right">Right divider</b-label>
 
 
-</b-paper>
+<!-- </b-paper> -->
 
-<b-paper>
-    <b-h1>Speciality</b-h1>
+<!-- <b-paper> -->
+    <b-text-divider lg xbold bottom pad=2 thick>Speciality</b-text-divider>
 
     <b-grid cols="3" cols-mobile=1>
 
@@ -233,13 +233,13 @@ export default html`
             <b-paper overshadow style="height: 120px">
                 <b-ribbon>Ribbon</b-ribbon>
                 <b-ribbon pos="right" style="--color:var(--pink);font-size:1.4em;">Custom</b-ribbon>
-            </b-paper>
+            <!-- </b-paper> -->
 
         </div>
 
     </b-grid>
 
-</b-paper>
+<!-- </b-paper> -->
 
 </section>
 `

@@ -133,7 +133,7 @@ customElements.define('demo-elements', class extends LitElement{
 
             <section title="Layout">
 
-                <b-paper>
+                <!-- <b-paper> -->
                 <h1>Grid</h1>
 
                 <b-grid cols="4">
@@ -216,9 +216,9 @@ customElements.define('demo-elements', class extends LitElement{
                     <div>Row 4</div>
                 </b-grid>
 
-                </b-paper>
+                <!-- </b-paper> -->
 
-                <b-paper>
+                <!-- <b-paper> -->
 
                     <h1>Flex</h1>
 
@@ -250,7 +250,7 @@ customElements.define('demo-elements', class extends LitElement{
                     </b-flex>
                     </b-paper>
 
-                </b-paper>
+                <!-- </b-paper> -->
                 
             </section>
 
@@ -349,7 +349,8 @@ customElements.define('demo-elements', class extends LitElement{
             
             <section title="Tooltip">
 
-                <b-paper><b-text tooltip="Testing">tooltips</b-text>
+                <!-- <b-paper> -->
+                    <b-text tooltip="Testing">tooltips</b-text>
 
                     <b-h1>Tooltips</b-h1>
 
@@ -377,7 +378,7 @@ customElements.define('demo-elements', class extends LitElement{
 
                     <p><b-text tone="info">HTML<b-tooltip delay=500><b>Bold</b> text with an icon <b-icon name="blackstone"></b-icon></b-tooltip></b-text> is also supported in the <b-text tooltip="Testing">tooltips</b-text></p>
 
-                </b-paper>
+                <!-- </b-paper> -->
 
             </section>
 

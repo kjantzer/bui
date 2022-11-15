@@ -17,7 +17,7 @@ customElements.define('demo-view', class extends LitElement{
             padding: var(--view-gutter);
         }
 
-        b-paper > b-text-divider {
+        :host > b-text-divider {
             margin-bottom: var(--gutter);
         }
     `}
@@ -28,7 +28,7 @@ customElements.define('demo-view', class extends LitElement{
     renderDocsHeader(){ return '' }
 
     render(){return html`
-        <b-paper>
+        <!-- <b-paper> -->
             <b-text-divider bottom thick xbold xl heading>
                 ${this.viewTitle||this.tabView.title}
                 <b-flex slot="right">${this.renderTitleRight()}</b-flex>
@@ -42,7 +42,7 @@ customElements.define('demo-view', class extends LitElement{
             </demo-markdown-docs>
             `:''}
 
-        </b-paper>
+        <!-- </b-paper> -->
 
         ${this.renderAfter()}
     `}

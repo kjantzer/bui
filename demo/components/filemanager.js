@@ -28,10 +28,10 @@ customElements.define('demo-components-filemanager', class extends LitElement{
     `}
 
     render(){return html`
-    	<b-paper>
+    	<!-- <b-paper> -->
             <b-h1>File Manager</b-h1>
 			<demo-markdown-docs .docs=${docs}></demo-markdown-docs>
-		</b-paper>
+		<!-- </b-paper> -->
     `}
 
 })

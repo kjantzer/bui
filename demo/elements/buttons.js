@@ -3,7 +3,7 @@ import docs from './docs'
 
 export default html`
 <section title="Buttons">
-<b-paper>
+<!-- <b-paper> -->
     <b-h1>Buttons</b-h1>
 
     <demo-markdown-docs .docs=${docs.btn}></demo-markdown-docs>
@@ -114,7 +114,7 @@ export default html`
 
     </b-grid>
 
-</b-paper>
+<!-- </b-paper> -->
 
 </section>
 `

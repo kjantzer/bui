@@ -3,7 +3,7 @@
 ## 2022-05-17
 - BREAKING: Updated to Lit v2
     - There is a `lit-v1` branch, but it will not be updated anymore.
-    - Upgrading should be [faily simple](https://lit.dev/docs/releases/upgrade/)
+    - Upgrading should be [fairly simple](https://lit.dev/docs/releases/upgrade/)
 
 ## 2021-06-22
 - DEPERECATED: `--view-gutter` changing to `--gutter` (former still exists)
