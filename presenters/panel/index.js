@@ -881,8 +881,8 @@ export class Panel extends LitElement {
             width: calc(100% - .5em) !important;
             right: .5em;
             top: .5em;
-            border-radius: .5em;
-            --radius: .5em;
+            border-radius: var(--b-panel-inset-radius, 12px);
+            --radius: var(--b-panel-inset-radius, 12px);
         }
 
         .inlinehtml {
