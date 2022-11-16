@@ -33,10 +33,10 @@ export default class BtnElement extends LitElement {
             --pink: #E91E63; */
 
             --radius: 3px;
-            --color: var(--b-btn-bgd, var(--black)) ;
+            --color: var(--b-btn-bgd, var(--theme-text, #000)) ;
             --bgdColor: var(--color);
             --hoverBgdColor: rgba(255,255,255,.1);
-            --textColor: var(--b-btn-color, #fff);
+            --textColor: var(--b-btn-color, var(--theme-bgd, #fff));
             --borderColor: var(--color);
             --borderStyle: solid;
             --borderWidth: 1px;
