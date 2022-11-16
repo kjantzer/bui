@@ -144,10 +144,10 @@ export const colorScheme = {
 		html.style.setProperty('--theme-rgb', themeRGB.join(','));
     },
 
-    getCssVar(name){
+    getCssVar(name, el){
         if( name[0] != '-' )
             name = '--'+name
-        return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+        return getComputedStyle(el||document.documentElement).getPropertyValue(name).trim()
     },
 
 	// https://css-tricks.com/converting-color-spaces-in-javascript/
