@@ -100,7 +100,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
         }
         
         b-btn:not([active]):hover {
-            --hoverBgdColor: rgba(var(--theme-text-rgb),.01);
+            --hoverBgdColor: rgba(var(--theme-text-rgb), .1);
         }
 
         [icon="search"] {
