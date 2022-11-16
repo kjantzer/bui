@@ -25,7 +25,7 @@ export class PaperElement extends LitElement {
             --padding: 1em;
             padding: var(--padding);
             position: relative;
-            --bgd: var(--b-paper-bgd, #fff);
+            --bgd: var(--b-paper-bgd, var(--theme-bgd, #fff));
             --bgdAccent: var(--bgd);
         }
 
