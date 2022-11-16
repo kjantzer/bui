@@ -218,6 +218,10 @@ export default class Label extends LitElement {
         :host([divider="right"]) {
             grid-template-columns: 1fr auto 0;
         }
+
+        ::slotted(*) {
+            color: inherit;
+        }
     `}
 
     render(){return html`
