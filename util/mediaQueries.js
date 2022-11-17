@@ -6,19 +6,19 @@ import ColMap from './collmap'
 const MediaQueries = new ColMap()
 
 MediaQueries.set('sm', styles=>css`
-    @media (max-width:599px) {
+    @media (max-width:699px) {
         ${styles}
     }
 `)
 
 MediaQueries.set('sm-landscape', styles=>css`
-    @media (max-width:599px) and (orientation:landscape) {
+    @media (max-width:699px) and (orientation:landscape) {
         ${styles}
     }
 `)
 
 MediaQueries.set('sm-portrait', styles=>css`
-    @media (max-width:599px) and (orientation:portrait) {
+    @media (max-width:699px) and (orientation:portrait) {
         ${styles}
     }
 `)
