@@ -47,7 +47,7 @@ export default class Label extends LitElement {
             --color: #fff; */
             --bgd: rgba(var(--theme-text-rgb, 0,0,0), .5);
             --color: #fff;//var(--theme-bgd, #fff);
-            --theme-text-rgb: var(--dark-text-rgb);
+            --theme-text-rgb: var(--text-text-rgb);
 
             padding: 0.15em 0.3em 0.1em;
             --radius: 3px;
