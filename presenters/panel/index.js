@@ -653,11 +653,13 @@ export class Panel extends LitElement {
         this.removeAttribute('open')
         this.panelController.remove(this, {updateRoute: !!this.route})
         
-        if( immediate )
+        if( immediate ){
             this.remove()
-        else
+            this.view?.onClosed?.()
+        }else
         setTimeout(()=>{
             this.remove()
+            this.view?.onClosed?.()
         }, Panel.animationTime)
     }
 
