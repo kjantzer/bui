@@ -39,6 +39,11 @@ customElements.define('b-ribbon', class extends LitElement{
             -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; 
         }
+        
+        b-text,
+        ::slotted(*) {
+            color: inherit;
+        }
 
         :host([hidden]){ display: none; }
         

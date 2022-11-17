@@ -276,6 +276,10 @@ export class MentionElement extends LitElement {
             position: relation;
 			white-space: normal;
         }
+
+		::slotted(*), b-text {
+			color: inherit;
+		}
     `}
 
 	constructor(){
