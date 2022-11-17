@@ -64,6 +64,7 @@ customElements.define('demo-overview', class extends LitElement{
 
         header {
             color: white;
+            --theme-text: white;
             text-align: center;
             font-size: 1.4em;
             /* padding-top: var(--view-gutter); */
@@ -111,9 +112,10 @@ customElements.define('demo-overview', class extends LitElement{
         }
 
         b-tabs-router::part(tab-bar) {
-            color: white;
-            --inactiveColor: rgba(255,255,255,.4);
-            --border-color: rgba(255,255,255,.1);
+            background-color: var(--theme-bgd);
+            /* color: white; */
+            /* --inactiveColor: rgba(255,255,255,.4); */
+            /* --border-color: rgba(255,255,255,.1); */
         }
     `}
 

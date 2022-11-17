@@ -1,4 +1,4 @@
-import {html} from 'lit'
+import {html, css} from 'lit'
 import App from 'bui/app/tabbar'
 import './overview'
 import './elements'
@@ -8,6 +8,12 @@ import './server'
 import './components'
 
 customElements.define('demo-main', class extends App{
+
+    static styles = [App.styles, css`
+        :host {
+            background-color: var(--theme-bgd);
+        }
+    `]
 
     get views(){
         return html`
