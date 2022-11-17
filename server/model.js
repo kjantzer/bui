@@ -559,11 +559,13 @@ module.exports = class Model {
 
     async update(attrs={}, {manualSync=false}={}){
 
+        let args = arguments
+
         // let subclass remove or modify attributes to be updated
         attrs = await this.validateUpdate(attrs)
         let where = {[this.idAttribute]:this.id}
         
-        let beforeUpdate = await this.beforeUpdate(attrs, where)
+        let beforeUpdate = await this.beforeUpdate(attrs, where, args[1])
 
         if( !this.config.table ) throw Error('missing config.table')
 
@@ -579,7 +581,7 @@ module.exports = class Model {
             
             this.decodeFields(attrs)
 
-            await this.afterUpdate(attrs, beforeUpdate)
+            await this.afterUpdate(attrs, beforeUpdate, args[1])
 
             if( this.id )
                 this.attrs = Object.assign(this.attrs||{}, attrs)
