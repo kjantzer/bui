@@ -619,13 +619,13 @@ module.exports = class Model {
         if( this.isInvalid ) throw Error('Cannot delete: model not found')
 
         let where = {[this.idAttribute]:this.id}
-        await this.beforeDestroy(where, ...args)
+        let beforeDestroy = await this.beforeDestroy(where, ...args)
 
         let [clause, clauseValues] = new this.db.clauses.Group(where).toSqlString(this.db)
         
         let result = await this.db.q(/*sql*/`DELETE FROM ${this.config.table} WHERE ${clause}`, clauseValues)
 
-        await this.afterDestroy(result, ...args)
+        await this.afterDestroy(result, ...args.concat(beforeDestroy))
 
         if( this.config.sync && this.req && this.syncData && result )
             this.syncData({
