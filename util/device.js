@@ -90,7 +90,9 @@ const device = {
     },
 
     get isInstalled(){
-        return navigator.standalone || window.matchMedia('(display-mode: standalone)').matches
+        return navigator.standalone 
+        || window.matchMedia('(display-mode: standalone)').matches
+        || window.matchMedia('(display-mode: window-controls-overlay)').matches
     },
 
     // alias
@@ -112,6 +114,8 @@ const device = {
     }
     
 }
+
+window.device = device
 
 export default device
 export {colorScheme, ThemeColors} // legacy support, should direct import
