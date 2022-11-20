@@ -16,6 +16,24 @@ export const colorScheme = {
     },
 
     get isSupported(){ return this.isDarkMode || this.isLightMode || this.isUnset },
+
+    isWhatTheme(theme, {store=false, fallback='system'}={}){
+
+        if( theme === undefined )
+            theme = localStorage.getItem('theme') || fallback
+        
+        if( store )
+            localStorage.setItem('theme', theme)
+        
+        theme = localStorage.getItem('theme') || 'system'
+
+        if( theme == 'system' )
+            theme = this.isDarkMode ? 'dark' : 'light'
+        if( theme == 'auto' )
+            theme = !this.isDaytime ? 'dark' : 'light'
+        
+        return theme
+    },
     
     onChange(cb){
         // first time, setup watchers
@@ -78,15 +96,7 @@ export const colorScheme = {
         html.removeAttribute('light')
         html.removeAttribute('dark')
 
-        if( theme === undefined )
-            theme = localStorage.getItem('theme') || 'system'
-        
-        localStorage.setItem('theme', theme)
-
-        if( theme == 'system' )
-            theme = this.isDarkMode ? 'dark' : 'light'
-        if( theme == 'auto' )
-            theme = !this.isDaytime ? 'dark' : 'light'
+        theme = this.isWhatTheme(theme, {store: true, fallback: 'system'})
 
         if( theme )
             html.setAttribute(theme, '')
