@@ -192,7 +192,7 @@ module.exports = class User extends Model {
         let resp = await this.db.q(`SELECT * FROM users WHERE ${key} = ?`, id)
         
         if( !resp || resp.length == 0 )
-            throw Error(key+' not found')
+            throw Error('user '+key+' was not found')
 
         return new this(resp[0], this.req)
     }
