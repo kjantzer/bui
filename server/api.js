@@ -81,10 +81,19 @@ module.exports = class API {
 
         args.push(async (req, res)=>{
             
-            if( opts.requiresAuthentication !== false // this particular route needs AUTH
-            && Class.api.requiresAuthentication !== false // all routes on class need AUTH
-            && !req.isAuthenticated() )
-                return res.status(401).send({error: 'session expired', code: 401})
+            // default is no auth required
+            if( this.opts.requiresAuthentication === false ){
+                if( (opts.requiresAuthentication == true // this particular route needs AUTH
+                || Class.api.requiresAuthentication == true) // all routes on class need AUTH
+                && !req.isAuthenticated?.() )
+                    return res.status(401).send({error: 'session expired', code: 401})
+
+            }else{
+                if( opts.requiresAuthentication !== false // this particular route needs AUTH
+                && Class.api.requiresAuthentication !== false // all routes on class need AUTH
+                && !req.isAuthenticated?.() )
+                    return res.status(401).send({error: 'session expired', code: 401})
+            }
 
             try{
 
