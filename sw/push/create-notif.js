@@ -38,19 +38,22 @@ export const createNotif = async (opts)=>{
     // }
 
     // if notifID given, try to find an active matching notif so we can replace it
-    let activeNotif = await getNotif(opts.tag)
+    if( opts.groupUnread ){
+        let activeNotif = await getNotif(opts.tag)
 
-    if( activeNotif ){
+        if( activeNotif ){
 
-        const messageCount = activeNotif.data.newMessageCount + 1;
+            const messageCount = activeNotif.data.newMessageCount + 1;
 
-        opts.title = opts.data.groupTitle || 'New Updates'
-        opts.body = `You have ${messageCount} new updates`;
-        opts.data = Object.assign(activeNotif.data)
-        opts.data.newMessageCount++
+            opts.title = opts.data.groupTitle || 'New Updates'
+            opts.body = `You have ${messageCount} new updates`;
+            opts.data = Object.assign(activeNotif.data)
+            opts.data.newMessageCount++
 
-        // close old notif so only one is visible
-        activeNotif.close();
+            // close old notif so only one is visible
+            activeNotif.close();
+        }
+
     }
 
     return registration.showNotification(opts.title, opts );
