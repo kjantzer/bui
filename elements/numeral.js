@@ -123,3 +123,15 @@ customElements.define('b-decimal', class extends Numeral{
 customElements.define('b-num-large', class extends Numeral{
     get defaultFormat(){ return '0.[0]a' }
 })
+
+
+customElements.define('b-percent', class extends Numeral{
+    get defaultFormat(){ return '0.[00]' }
+
+    set num(num){ super.num = num }
+    get num(){ return this.__num * 100 }
+
+    render(){return html`
+        <slot name="percent"></slot>${this.numeral}<slot><b-text muted nobold>%</b-text></slot>
+    `}
+})
