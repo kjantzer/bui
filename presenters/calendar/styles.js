@@ -117,6 +117,13 @@ export default css`
         margin-right: .5em;
     }
 
+    :host([display="timeline"]) .day-header {
+        visibility: hidden;
+        height: 0;
+        opacity: 0;
+        pointer-events: none;
+    }
+
     :host([display="biweekly"]) b-calendar-month {
         height: calc(var(--height) * 2)
     }

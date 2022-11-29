@@ -1,5 +1,8 @@
 import Emitter from 'component-emitter'
 import dayjs from 'dayjs'
+import range from '../../util/range'
+
+export {range}
 
 export function daysForDate(date){
     

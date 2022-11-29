@@ -6,6 +6,7 @@ customElements.define('b-calendar-month', class extends LitElement{
 
     static get properties(){return {
         date: {type: Object},
+        display: {type: String, reflect: true}
         // inViewport: {type: Boolean, reflect: true}
     }}
 
@@ -27,6 +28,16 @@ customElements.define('b-calendar-month', class extends LitElement{
             grid-auto-rows: 20%;
         }
 
+        :host([display="timeline"]) {
+            display: flex;
+            width: fit-content;
+            /* width: calc(clamp(140px, 14.28571429vw, 80vw) * var(--num-days, 30)); */
+            /* width: 500vw; */
+            --height: 100%;
+            grid-auto-rows: 100%;
+            /* grid-template-columns: repeat(auto-fill, clamp(140px, 14.28571429vw, 80vw)); */
+        }
+
         .label {
             position: absolute;
             top: .25em;
@@ -42,6 +53,10 @@ customElements.define('b-calendar-month', class extends LitElement{
             align-items: center;
             pointer-events: all;
             top: -1em;
+        }
+
+        :host([display="timeline"]) .label {
+            display: none;
         }
 
         /* :host([inviewport]) .label {
@@ -82,6 +97,14 @@ customElements.define('b-calendar-month', class extends LitElement{
             box-shadow: 0px 0px 1px rgba(var(--theme-text-rgb), .4);
         }
 
+        :host([display="timeline"]) .day {
+            padding-top: 0;
+            /* width: clamp(140px, 14.28571429vw, 80vw); */
+            min-width: 3em;
+            max-width: 80vw;
+            width: max-content;
+        }
+
         .day main {
             text-align: left;
             overflow: visible;
@@ -106,6 +129,10 @@ customElements.define('b-calendar-month', class extends LitElement{
             top: .25em;
             right: .25em;
             /* font-weight: bold; */
+        }
+
+        :host([display="timeline"]) .day-num {
+            position: static;
         }
 
         :host(:not([inviewport])) .day-num {
@@ -205,6 +232,7 @@ customElements.define('b-calendar-month', class extends LitElement{
 
     updated(){
         super.updated()
+        this.style.setProperty('--num-days', this.date.calendarDays.length)
         this.setAttribute('start', this.date.day())
         this.setAttribute('weeks', this.date.weeksInMonth())
         this.toggleAttribute('inline-label', this.date.day()>2)
@@ -225,7 +253,8 @@ customElements.define('b-calendar-month', class extends LitElement{
 
         let threshold = {
             'biweekly': 0.4,
-            'weekly': 0.2
+            'weekly': 0.2,
+            'timeline': 0.2
         }[this.display]||0.8
 
         return this.__intersectionObserver = this.__intersectionObserver || new IntersectionObserver((entries)=>{
@@ -265,7 +294,11 @@ customElements.define('b-calendar-month', class extends LitElement{
     }
 
     isDaySelected(day){
-        return this.date.set('date', day) in this.selectedRange
+        return this.dayDate(day) in this.selectedRange
+    }
+
+    dayDate(day){
+        return this.date.set('date', day)
     }
 
     dayClassNames(day){
@@ -273,7 +306,7 @@ customElements.define('b-calendar-month', class extends LitElement{
         if( !day ) return ''
 
         let classNames = []
-        let date = this.date.set('date', day)
+        let date = this.dayDate(day)
 
         if( date in this.selectedRange )
             classNames.push('selected')
@@ -306,7 +339,7 @@ customElements.define('b-calendar-month', class extends LitElement{
             <b-text class="select-month">${this.date.format('MMMM YYYY')}</b-text>
         </b-text>
 
-        ${this.date.calendarDays.map(day=>html`
+        ${this.date.calendarDays.map((day,i)=>html`
             <div class="day ${this.dayClassNames(day)}" num=${day}>
 
                 <div class="bgd">
@@ -340,7 +373,7 @@ customElements.define('b-calendar-month', class extends LitElement{
             return this.emitEvent('date-selected', {month:this.date})
         
         let day = el.getAttribute('num')
-        let date = this.date.set('date', day)
+        let date = this.dayDate(day)
         
         this.emitEvent('date-selected', {date})
     }

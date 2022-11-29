@@ -1,11 +1,12 @@
 import { LitElement, html } from 'lit'
 import {until} from 'lit/directives/until.js'
 import '@lit-labs/virtualizer'
+import {flow} from '@lit-labs/virtualizer/layouts/flow.js';
 import dayjs from 'dayjs'
 import styles from './styles'
 import './month'
 // import './presets'
-import {dateRange, daysForDate} from './util'
+import {dateRange, daysForDate, range} from './util'
 
 customElements.define('b-calendar', class extends LitElement{
 
@@ -50,8 +51,14 @@ customElements.define('b-calendar', class extends LitElement{
 
         this.onSelectedRangeChange.bind(this)
         this.daysHeader = dayjs.weekdaysShort()
+    }
 
-        this.applyMonths()
+    performUpdate(){
+
+        if( !this.dates )
+            this.applyDates()
+
+        super.performUpdate()
     }
     
     connectedCallback(){
@@ -97,7 +104,7 @@ customElements.define('b-calendar', class extends LitElement{
         return this.selectedRange.label
     }
 
-    applyMonths(){
+    applyDates(){
 
         let min = dayjs(this.min).startOf('day')
         let max = dayjs(this.max).endOf('day')
@@ -109,13 +116,17 @@ customElements.define('b-calendar', class extends LitElement{
             this.selectedRange = dateRange(start, end, {min, max, range:this.range})
         }
 
-        this.months = []
+        this.dates = []
         while( min.isBefore(max) ){
             
             let d = min.clone()
-            d.calendarDays = daysForDate(d)
+
+            if( this.display == 'timeline')
+                d.calendarDays = range(d.daysInMonth())
+            else
+                d.calendarDays = daysForDate(d)
             
-            this.months.push(d)
+            this.dates.push(d)
 
             min = min.add(1, 'month')
         }
@@ -174,7 +185,10 @@ customElements.define('b-calendar', class extends LitElement{
         <lit-virtualizer
             scroller
             part="months"
-            .items=${this.months}
+            .layout=${flow({
+                direction: this.display == 'timeline' ? 'horizontal' : 'vertical'
+            })}
+            .items=${this.dates}
             .renderItem=${this.renderMonth.bind(this)}
             @date-selected=${this.onDateSelected}
             @month-in-view=${this.onMonthInView}
@@ -251,7 +265,7 @@ customElements.define('b-calendar', class extends LitElement{
         if( ['start', 'end'].includes(date) ) 
             date = this.selectedRange[date]
             
-        let index = this.months.findIndex(m=>m.isSame(date, 'month'))
+        let index = this.dates.findIndex(m=>m.isSame(date, 'month'))
         
         if( index > -1 )
             this.scroller.scrollToIndex(index, location)
