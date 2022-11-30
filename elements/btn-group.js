@@ -34,7 +34,7 @@ customElements.define('b-btn-group', class extends LitElement{
         }
 
         ::slotted(b-btn:not(:first-of-type)[clear]) {
-            border-left: solid 1px rgba(0,0,0,.1);
+            border-left: none;
         }
 
 
