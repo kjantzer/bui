@@ -375,6 +375,11 @@ customElements.define('b-list', class extends LitElement {
             searchBar.blur()
     }
 
+    showFilterSelection(){
+        // console.log('show filters?');
+        // TODO: show menu with available filters
+    }
+
     onKeydown(e){
 
         if( e.cancelBubble )
@@ -383,6 +388,12 @@ customElements.define('b-list', class extends LitElement {
         if( this.offsetParent // is this list visible?
         && document.activeElement.tagName == 'BODY' // NOT inside an input
         ){
+
+            if( e.key == 'f'
+            && !e.ctrlKey && !e.metaKey && !e.shiftKey // ignore if extra keys pressed
+            ){
+                this.showFilterSelection()
+            }
 
             // Like Google search results, focus search when `/` is pressed
             if( e.key == '/'
