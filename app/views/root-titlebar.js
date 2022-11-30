@@ -18,6 +18,10 @@ customElements.define('b-root-titlebar', class extends LitElement{
             align-self: stretch;
             /* border-right: solid 2px var(--theme-bgd-accent); */
         }
+        
+        b-text {
+            position: relative;
+        }
 
         b-text[lg] {
             margin-bottom: -.15em; /* make up for descenders */
