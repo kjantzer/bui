@@ -90,7 +90,7 @@ export default class Label extends LitElement {
             padding-right: .6em; */
             padding-right: .45em;
             padding-left: .45em;
-            min-width: .3em;
+            min-width: .75em;
             text-align: center;
             min-height: 1em;
             line-height: 0 !important;
