@@ -12,6 +12,8 @@ customElements.define('b-comments-badge', class extends CommentsView{
             display: inline-block;
         }
 
+        :host([hidden]) { opacity: 0; pointer-events: none; }
+
         :host(:not([num])),
         :host([num="0"]) {
             visibility: hidden;
@@ -30,7 +32,7 @@ customElements.define('b-comments-badge', class extends CommentsView{
 
     updated(){
         this.setAttribute('num', this.coll.length)
-        this.toggleAttribute('unread', this.coll.numUnread>0)
+        this.setAttribute('num-unread', this.coll.numUnread)
     }
 
     render(){return html`
@@ -40,6 +42,10 @@ customElements.define('b-comments-badge', class extends CommentsView{
             <!-- <b-label badge="red" dot></b-label> -->
         </b-label>
     `}
+
+    markRead(e){
+        // dont mark read from the badge
+    }
 
 })
 
