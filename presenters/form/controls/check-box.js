@@ -61,6 +61,10 @@ customElements.define('check-box', class extends LitElement{
 			margin-top: -.5em; /* align with first line */
 		}
 
+		aside {
+			line-height: 1.2em;
+		}
+
 		touch-ripple {
 			z-index: -1;
 		}
@@ -192,7 +196,7 @@ customElements.define('check-box', class extends LitElement{
 			<label part="label">
 				<slot>${this.label}</slot>
 			</label>
-			<b-text part="help" block sm italic muted>
+			<b-text part="help" block sm italic muted=2>
 				<slot name="help">${this.helpText}</slot>
 			</b-text>
 		</aside>

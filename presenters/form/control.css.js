@@ -206,7 +206,7 @@ slot[name="control"]::slotted(*) {
 slot[name="help"] {
 	margin: .5em 0 0;
 	font-size: .8em;
-	color: var(--fc-help-color, rgba(0,0,0,.6));
+	color: rgba(var(--theme-text-rgb), .7);
 	display: block;
 }
 
