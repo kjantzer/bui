@@ -12,6 +12,13 @@ LitElement.prototype.firstUpdated = function(){
             this.clickMenu(e)
         })
 
+    if( this.onClick && !this.clickMenu )
+        this.addEventListener('click', e=>{
+            e.preventDefault()
+            e.stopPropagation()
+            this.onClick(e)
+        })
+
     if( this.contextMenu )
         this.addEventListener('contextmenu', e=>{
             if( !e.metaKey )
