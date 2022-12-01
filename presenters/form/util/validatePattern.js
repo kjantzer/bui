@@ -13,9 +13,14 @@ export default (el, val) => {
     switch(pattern){
         case 'int':
             pattern = '^\\d+$'; break;
+        case '-int': // include negative
+            pattern = '^\\-?\\d+$'; break;
         case 'float':
         case 'decimal':
             pattern = '^\\d+(\\.\\d*)?$|^\\.\\d+$'; break;
+        case '-float':
+        case '-decimal':
+            pattern = '^\\-?\\d+(\\.\\d*)?$|^\\.\\d+$'; break;
         case 'email':
             pattern = '^\\S+@\\S+\\.\\S+$'; break;
     }
