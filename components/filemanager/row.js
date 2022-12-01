@@ -105,7 +105,8 @@ customElements.define('b-file-row', class extends LitElement{
         .drag-msg {
             background: rgba(var(--theme-text-rgb), .7);
             z-index: 10000;
-            color: var(--theme-bgd);
+            --theme-text: var(--theme-bgd);
+            color: var(--theme-text);
             border-radius: var(--radius);
         }
 
