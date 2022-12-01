@@ -27,6 +27,7 @@ const modes = {
         --theme-shadow-1: var(--light-shadow-1);
         --theme-shadow-2: var(--light-shadow-2);
         --theme-shadow-3: var(--light-shadow-3);
+        color: var(--theme-text);
     `,
 
     dark: /*css*/`
@@ -44,6 +45,7 @@ const modes = {
         --theme-shadow-1: var(--dark-shadow-1);
         --theme-shadow-2: var(--dark-shadow-2);
         --theme-shadow-3: var(--dark-shadow-3);
+        color: var(--theme-text);
     `,
 
     inverse: /*css*/`
@@ -61,6 +63,7 @@ const modes = {
         --theme-shadow-1: var(--theme-inverse-shadow-1);
         --theme-shadow-2: var(--theme-inverse-shadow-2);
         --theme-shadow-3: var(--theme-inverse-shadow-3);
+        color: var(--theme-text);
     `
 
 }
