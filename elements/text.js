@@ -13,7 +13,7 @@ customElements.define('b-text', class extends LitElement{
         :host {
             display: inline-block;
             cursor: default;
-            color: var(--theme-text);
+            /* color: var(--theme-text); */
             /* line-height: var(--b-text-line-height, 1em); */
         }
 
