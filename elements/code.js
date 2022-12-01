@@ -31,7 +31,21 @@ customElements.define('b-code', class extends LitElement{
 
     connectedCallback(){
         super.connectedCallback()
-        this.textContent = this.textContent.trim()
+
+        clearTimeout(this._trimText)
+        this._trimText = setTimeout(()=>{
+
+            // NOTE: this technique keeps lit.dev working properly
+            this.childNodes.forEach(node=>{
+                if( node.nodeName == '#text' )
+                    node.textContent = node.textContent.trim()
+            })
+        }, 10)
+    }
+
+    disconnectedCallback(){
+        super.disconnectedCallback()
+        clearTimeout(this._trimText)
     }
 
     render(){return html`
