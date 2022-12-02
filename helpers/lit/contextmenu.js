@@ -12,12 +12,14 @@ LitElement.prototype.firstUpdated = function(){
             this.clickMenu(e)
         })
 
-    if( this.onClick && !this.clickMenu )
-        this.addEventListener('click', e=>{
-            e.preventDefault()
-            e.stopPropagation()
-            this.onClick(e)
-        })
+    // conflicts with existing code
+    // I want this, but need to alert of larger refactor
+    // if( this.onClick && !this.clickMenu )
+    //     this.addEventListener('click', e=>{
+    //         e.preventDefault()
+    //         e.stopPropagation()
+    //         this.onClick(e)
+    //     })
 
     if( this.contextMenu )
         this.addEventListener('contextmenu', e=>{
