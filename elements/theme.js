@@ -107,6 +107,16 @@ customElements.define('b-theme', class extends LitElement{
         delete this.host
     }
 
+    set mode(val){
+        let oldVal = this.mode
+        this.__mode = val
+    
+        this._applyTheme()
+        this.requestUpdate('mode', oldVal)
+    }
+    
+    get mode(){ return this.__mode}
+
     async _applyTheme(){
         let el = this.host
 
