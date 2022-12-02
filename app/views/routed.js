@@ -186,6 +186,10 @@ export default class RoutedView extends LitElement {
         this.panel&&this.panel.close()
     }
 
+    reload(){
+        this.list?.reload()
+    }
+
     finishLoading(model, id, attrs, state){
 
         if( this.model && this.model.get('isViewing') )
