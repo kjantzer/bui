@@ -35,6 +35,10 @@ slot[name="after"]{
 	--padX: 0;
 }
 
+:host([block]) {
+	display: block;
+}
+
 :host {
 	min-width: var(--fc-min-width);
 }
