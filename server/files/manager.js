@@ -451,7 +451,7 @@ module.exports = class FileManager extends Model {
 
                     // get most color with most population
                     let color = Object.values(palette).sort((a,b)=>a.pop-b.pop).pop()
-                    arOpts.background = color.hex
+                    arOpts.background = color?.hex || '#ffffff';
                 }
 
                 await this.beforeResize(sharpImg, {width, height, metadata})
@@ -543,6 +543,7 @@ module.exports = class FileManager extends Model {
         let colors = {}
 
         for( let key in palette ){
+            if( palette[key] )
             colors[key.toLowerCase()] = {
                 hex: palette[key].hex,
                 rgb: palette[key].rgb,
