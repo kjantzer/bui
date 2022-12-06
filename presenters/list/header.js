@@ -65,6 +65,14 @@ export function sharedStyles(host=':host'){return css`
         z-index: 5;
     }
 
+    ${unsafeCSS(host)} > [sticky]:first-child + [sticky] {
+        left: var(--grid-col-1-width);
+    }
+
+    ${unsafeCSS(host)} > [sticky]:first-child + [sticky] + [sticky] {
+        left: calc(var(--grid-col-1-width) + var(--grid-col-2-width));
+    }
+
     ${unsafeCSS(host)} > [sticky="right"] {
         left: auto;
         right: 0;
