@@ -106,18 +106,27 @@ export default class Filters extends Map {
 
             for( let k in changes){
                 
-                let changeFrom = this.__value[k]
-                let changeTo = changes[k]
+                let changeFromVal = this.__value[k]
+                let changeToVal = changes[k]
 
                 // is the selected value effectively "unset" (`multi` filters will be an array: `[null]` )
-                if( [null, undefined].includes(changeTo)
-                || (Array.isArray(changeTo) && [null, undefined].includes(changeTo[0]) ) )
+                if( [null, undefined].includes(changeToVal)
+                || (Array.isArray(changeToVal) && [null, undefined].includes(changeToVal[0]) ) )
                     delete this.__value[k]
-                else
-                    this.__value[k] = changeTo
+                else{
+
+                    // make sure the value conforms to what the filter definition allows
+                    changeToVal = this.get(k)._conformValue(changeToVal)
+                    
+                    if( !changeToVal || changeToVal.length == 0 )
+                        delete this.__value[k]
+                    else
+                        this.__value[k] = changeToVal
+                }
+                    
 
                 // converting to JSON string so we can compare arrays
-                if( JSON.stringify(this.__value[k]) != JSON.stringify(changeFrom) ){
+                if( JSON.stringify(this.__value[k]) != JSON.stringify(changeFromVal) ){
                     didChange.push(k)
                 }else{
                     delete changes[k]
@@ -400,6 +409,54 @@ export class Filter {
         })
 
         return values
+    }
+
+    _conformValue(val){
+
+        if( this.attrs.values ){
+
+            let realValues = this.values
+
+            // make sure the val is an array to simplify testing below
+            // a single value will be returned if !isMulti
+            let vals = Array.isArray(val) ? val : [val]
+
+            // test each value to make sure it is allowed
+            for( let i in vals ){
+
+                let v = vals[i]
+
+                // uniform structure
+                if( typeof v != 'object' )
+                    v = {val: v}
+
+                // see if this value exists in the allowed/real values
+                let realVal = realValues.find(_v=>_v.val==v.val)
+
+                if( realVal ){
+
+                    // should have a "selection" - use first one if not set
+                    if( realVal.selections ){
+                        
+                        if( !v.selection )
+                            v.selection = realVal.selections[0]
+
+                        // TODO: test for valid selection
+
+                        vals[i] = v
+                    }
+
+                // not a valid value, remove it so we dont use it
+                }else{
+                    vals.splice(i,1)
+                }
+            }
+            
+            return this.isMulti ? vals : vals[0]
+        }
+
+        // TODO: support other filter types? eg: `view: 'input'`, etc
+        return val
     }
 
     get label(){
