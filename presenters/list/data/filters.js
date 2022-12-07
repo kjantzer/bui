@@ -448,6 +448,7 @@ export class Filter {
 
                 // not a valid value, remove it so we dont use it
                 }else{
+                    console.log('BUI List - invalid filter value:', val);
                     vals.splice(i,1)
                 }
             }
