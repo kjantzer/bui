@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit'
 import Panel, {register as panelRegister} from '../../presenters/panel'
 import Notif from '../../presenters/notif'
 import Popover from '../../presenters/popover'
+import {isDivider} from '../../presenters/menu/util'
 import '../../helpers/lit/shared'
 import device from '../../util/device'
 import store from '../../util/store'
@@ -19,7 +20,7 @@ export const filters = {
     auto_open: {
         values: [
             {label: 'Yes', val:''},
-            {label: 'No', val: false},
+            {label: 'No', val: 'no'},
             {text: 'Should single results be opened?'}
         ],
         // no filtering, this filter is used as a search "setting"
@@ -136,7 +137,32 @@ export default class extends LitElement{
     }
 
     get shortcutsTrigger(){ return '/' }
-    get shortcuts(){ return shortcuts() }
+    get shortcuts(){ 
+        return this.lookupKeys().concat(shortcuts())
+    }
+
+    get lookupValue(){
+        let lookup = this.list?.filters.get('lookup')
+        return lookup && lookup.value ? lookup.valueLabel : ''
+    }
+
+    lookupKeys(){
+        let vals = this.list?.filters.get('lookup').values || []        
+        return vals.filter(v=>{
+            return !isDivider(v) && !v.divider
+        }).map(v=>{
+            if( typeof v != 'object' )
+                v = {label: v, val: v}
+            else
+                v = {...v}
+            
+            v.title = v.label
+            v.icon = 'search'
+            v.shortcut = 'lookup-filter'
+
+            return v
+        })
+    }
 
     get coll(){
         return this.__coll = this.__coll || new Coll(this.url)
@@ -224,6 +250,14 @@ export default class extends LitElement{
             background-color: red;
         }
 
+        .lookup-label {
+            cursor: pointer;
+        }
+
+        :host([state="shortcuts"]) .lookup-label {
+            display: none;
+        }
+
     `}
 
     render(){return html`
@@ -238,6 +272,9 @@ export default class extends LitElement{
                     @change=${this.onChange}
                 ></text-field>
                 <b-icon name="search" slot="prefix"></b-icon>
+                <b-text slot="prefix" class="lookup-label" gradient @click=${this.clearLookup} ?hidden=${!this.lookupValue}>
+                    ${this.lookupValue}:&nbsp;
+                </b-text>
                 <b-btn icon="close" pill squareicon sm slot="suffix" @click=${this.clear}></b-btn>
                 <b-spinner slot="prefix"></b-spinner>
             </form-control>
@@ -251,6 +288,7 @@ export default class extends LitElement{
             divider="${this.dividerView}"
             .filters=${this.filters}
             .coll=${this.coll}
+            @filter-change=${this.onFilterChange}
             @select-result=${this.selectResult}
             @go-to-result=${this.goToResult}
         >
@@ -262,6 +300,14 @@ export default class extends LitElement{
 
         </b-list>
     `}
+
+    clearLookup(){
+        this.list.filters.update({lookup: null})
+    }
+
+    onFilterChange(){
+        this.requestUpdate()
+    }
 
     set state(val){ this.setAttribute('state', val) }
     get state(){ return this.getAttribute('state') || 'empty' }
@@ -293,6 +339,9 @@ export default class extends LitElement{
 
         if( !device.isMobile && this.settings().enlarge )
             this.enlarge()
+
+        // so lookup value renders
+        this.requestUpdate()
     }
 
     focus(){
@@ -341,6 +390,9 @@ export default class extends LitElement{
     onKeyUp(e){
         let val = e.currentTarget.currentValue 
         let metaKey = e.metaKey || e.ctrlKey || e.altKey
+
+        if( e.key == 'Backspace' && !val)
+            this.clearLookup()
 
         if( e.key == 'Enter' && device.isMobile )
             return this._search(val)
@@ -521,7 +573,7 @@ export default class extends LitElement{
 
     get shouldAutoOpen(){
         if( this.list.filters && this.list.filters.get('auto_open') )
-            return this.list.filters.get('auto_open').value !== false
+            return this.list.filters.get('auto_open').value !== 'no'
         
         return true
     }
