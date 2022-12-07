@@ -5,7 +5,7 @@ LitElement.prototype.get = function(key, defaultVal=''){
 
     if( this.model && this.model.get )
         val = this.model.get(key)
-    if( this.model )
+    else if( this.model )
         val = this.model[key]
 
     return val === undefined ? defaultVal : val
