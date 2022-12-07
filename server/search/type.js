@@ -37,7 +37,12 @@ module.exports = class SearchType {
         let type = this.constructor.name || 'unknown'
         return this.db.query(this.fillSql, [ids]).then(async rows=>{
             await Promise.all(rows.map(async (row,i)=>{
-                row.type=row.type||this.type
+
+                if( row.type === undefined ) // DEPRECATED - can conflict with result data
+                    row.type = this.type
+
+                row.result_type=this.type||row.type
+
                 await this.parseRow(row, i, {term, ids})
             }))
             return rows

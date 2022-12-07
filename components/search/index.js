@@ -12,6 +12,7 @@ import './empty-view'
 import './divider'
 import Tips from './tips'
 import Coll from './models'
+import Menu from '../../presenters/menu'
 
 const maxHeight = '96%';
 const maxHistoryDefault = 120
@@ -138,7 +139,7 @@ export default class extends LitElement{
 
     get shortcutsTrigger(){ return '/' }
     get shortcuts(){ 
-        return this.lookupKeys().concat(shortcuts())
+        return this.lookupKeys({withTitle:true}).concat(shortcuts())
     }
 
     get lookupValue(){
@@ -146,7 +147,7 @@ export default class extends LitElement{
         return lookup && lookup.value ? lookup.valueLabel : ''
     }
 
-    lookupKeys(){
+    lookupKeys({withTitle=false}={}){
         let vals = this.list?.filters.get('lookup').values || []        
         return vals.filter(v=>{
             return !isDivider(v) && !v.divider
@@ -156,7 +157,9 @@ export default class extends LitElement{
             else
                 v = {...v}
             
-            v.title = v.label
+            if( withTitle )
+                v.title = v.label // conflicts with Menu
+
             v.icon = 'search'
             v.shortcut = 'lookup-filter'
 
@@ -271,11 +274,17 @@ export default class extends LitElement{
                     @paste=${this.onPaste}
                     @change=${this.onChange}
                 ></text-field>
-                <b-icon name="search" slot="prefix"></b-icon>
+                
+                <b-text slot="prefix" @click=${this.setLookup} link>
+                    <b-icon name="search" ></b-icon>
+                </b-text>
+                
                 <b-text slot="prefix" class="lookup-label" gradient @click=${this.clearLookup} ?hidden=${!this.lookupValue}>
                     ${this.lookupValue}:&nbsp;
                 </b-text>
+
                 <b-btn icon="close" pill squareicon sm slot="suffix" @click=${this.clear}></b-btn>
+                
                 <b-spinner slot="prefix"></b-spinner>
             </form-control>
 
@@ -300,6 +309,18 @@ export default class extends LitElement{
 
         </b-list>
     `}
+
+    async setLookup(e){
+        let selected = await new Menu(this.lookupKeys()).popover(e.currentTarget, {
+            align: 'bottom-start',
+            maxHeight: '40vh'
+        })
+
+        if( selected !== false )
+            this.list.filters.update({lookup: selected.val})
+
+        this.focus()
+    }
 
     clearLookup(){
         this.list.filters.update({lookup: null})
