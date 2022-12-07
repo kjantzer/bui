@@ -80,6 +80,7 @@ customElements.define('text-editor', class extends LitElement{
 
         setTimeout(()=>{
             this.shadowRoot.querySelector('main').prepend(this.editor.options.element)
+
             if( this.menubar )
                 this.shadowRoot.querySelector('b-text-editor-menubar').editor = this.editor
         })
@@ -114,6 +115,13 @@ customElements.define('text-editor', class extends LitElement{
 
     selectAll(){
         this.editor.commands.selectAll()
+    }
+
+    select(range='all'){
+        // if( range == 'all' )
+            this.selectAll()
+
+        // TODO: support `start`, `end` to match text-field?
     }
 
     blur(){
