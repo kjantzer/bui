@@ -15,6 +15,7 @@ import Coll from './models'
 import Menu from '../../presenters/menu'
 
 const maxHeight = '96%';
+const maxWidth = '800px';
 const maxHistoryDefault = 120
 export const filters = {
     search: {hideIcon: true},
@@ -517,13 +518,17 @@ export default class extends LitElement{
         if( !this.panel ) return
 
         // remember what the initial panel height was
-        if( !this.__initialPanelHeight )
+        if( !this.__initialPanelHeight ){
             this.__initialPanelHeight = this.panel.height
+            this.__initialPanelWidth = this.panel.width
+        }
         
         this.panel.height = this.panel.height == maxHeight ? this.__initialPanelHeight : maxHeight
+        this.panel.width = this.panel.width == maxWidth ? this.__initialPanelWidth : maxWidth
 
         let settings = this.settings()
         settings.enlarge = this.panel.height==maxHeight
+        this.panel.width==maxWidth
         this.settings(settings)
     }
 
