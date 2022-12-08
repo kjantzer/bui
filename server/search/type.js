@@ -11,7 +11,7 @@ module.exports = class SearchType {
     static finalSort(a, b){ return 0 }
     
     formatTerm(term){ return term }
-    parseRow(row){ /* noop */ }
+    parseRow(row, i, {term, ids}={}){ /* noop */ }
     finalFormat(row, {term}={}){ /* noop */ }
 
     get limit(){ return 100 }

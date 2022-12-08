@@ -37,6 +37,14 @@ class SearchAPI {
         SearchTypes.set(type.name, type)
     }
 
+    static get searchTypeDefs(){
+        return SearchTypes
+    }
+
+    static searchTypeDef(type){
+        return SearchTypes.get(type)
+    }
+
     async searchType(){
 
         if( !this.db ) throw new Error('Missing `this.db`')
