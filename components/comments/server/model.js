@@ -77,6 +77,7 @@ module.exports = class Comments extends Model {
 
     findWhere(where){
         let {Value, JsonContains, Group, UnsafeSQL} = this.db.clauses
+        let userID = this.req.user.id
 
         if( this.group != '_')
             where.group = this.group
@@ -85,7 +86,7 @@ module.exports = class Comments extends Model {
         if( this.onlyUnread ){
 
             // comments NOT by this uer
-            where['c.uid'] = new Value('!=', this.req.user.id)
+            where['c.uid'] = new Value('!=', userID)
             
             // NOT marked read or new comment
             where.unread = new Group({
@@ -102,7 +103,7 @@ module.exports = class Comments extends Model {
 
                 // comment must mention this user
                 where.mentioned = new Group({
-                    'c.meta': new JsonContains(this.req.user.id, {path:'$.mentions'}),
+                    'c.meta': new JsonContains(userID, {path:'$.mentions'}),
                     'c.group': 'changelog'
                 }, 'OR')
             }
@@ -110,8 +111,8 @@ module.exports = class Comments extends Model {
         }else if(this.gid == 'history' ){
 
             // comments NOT by this uer
-            // where['c.uid'] = new Value('!=', this.req.user.id)
-            where['c.meta'] = new JsonContains(this.req.user.id, {path:'$.mentions'})
+            // where['c.uid'] = new Value('!=', userID)
+            where['c.meta'] = new JsonContains(userID, {path:'$.mentions'})
             where['c.type'] = 'user'
 
         }else {
