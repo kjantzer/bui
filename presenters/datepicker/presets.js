@@ -76,7 +76,7 @@ customElements.define('b-datepicker-presets', class extends LitElement{
             val = Object.keys(Presets)
         }
         
-        if( !val ){
+        if( !val || val.length == 0 ){
             val = false
         }else{
             val = formatPresets(val)   

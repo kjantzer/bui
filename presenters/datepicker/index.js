@@ -42,7 +42,7 @@ customElements.define('b-datepicker', class extends LitElement{
         this.min = min
         this.max = max
         this.active = 'start'
-        this.presets = range ? presets : false
+        this.presets = presets
         this.applyPresetSelect = applyPresetSelect
 
         this.onSelectedRangeChange.bind(this)
@@ -236,10 +236,11 @@ customElements.define('b-datepicker', class extends LitElement{
             this.selectedRange[this.selectedRange.active] = date
 
         if( month ){
-            if( this.range )
-                this.selectedRange.range = [month.startOf('month'), month.endOf('month')]
-            else
-                e.stopPropagation()
+
+            this.selectedRange.range = [
+                month.startOf('month'), 
+                this.range ? month.endOf('month') : month.startOf('month')
+            ]
         }
     }
 

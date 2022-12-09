@@ -30,7 +30,8 @@ export default css`
         grid-row: span 3;
         border-right: solid 1px var(--theme-bgd-accent, #ddd);
         padding: var(--gap);
-        width: 170px;
+        min-width: 60px;
+        max-width: 170px;
     }
 
     @media (max-width: 599px){
