@@ -20,6 +20,8 @@ const CustomViews = {
     // 'token': FilterViewToken
 }
 
+const YesSelections = ['has', 'yes', 'is', 'any']
+
 // do NOT include 0 or false as unset values
 const unsetValues = [undefined, null, '']
 
@@ -552,9 +554,8 @@ export class Filter {
             return false
         })
 
-        let yesSelections = ['has', 'yes', 'is']
         let showSelection = selection=>{
-            return yesSelections.includes(selection?.toLowerCase()) ? '' : selection
+            return YesSelections.includes(selection?.toLowerCase()) ? '' : selection
         }
 
         if( matchedVal&&matchedVal.length>0 )
