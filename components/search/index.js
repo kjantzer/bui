@@ -53,7 +53,7 @@ export default class extends LitElement{
 
         let anchor = device.isMobile ? 'top': 'center'
         let width = device.isMobile ? '100%' :'640px'
-        let height = device.isiOS ? '50%' : '540px'
+        let height = device.isiOS ? '50%' : '680px'
 
         if( device.isChromeOS && device.isTablet && device.isLandscape ){
             anchor = 'left'
