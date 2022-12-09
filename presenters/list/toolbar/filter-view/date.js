@@ -29,6 +29,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         
         this.opts = Object.assign({
             defaultLabel: '–',
+            range: true,
             presets: []
         }, opts)
     }
@@ -38,6 +39,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         if( !this.__datepicker ){
             this.__datepicker = new Datepicker({
                 value: this.value,
+                range: this.opts.range,
                 presets: this.opts.presets,
                 applyPresetSelect: true // will apply the selected preset when clicked
             })
@@ -45,7 +47,9 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             this.datepicker.addEventListener('done', e=>{
 
                 if( e.detail.action == 'apply')
-                    this.__value = [e.detail.value.start, e.detail.value.end]
+                    this.__value = this.opts.range 
+                        ? [e.detail.value.start, e.detail.value.end]
+                        : [e.detail.value, e.detail.value] 
                 else
                     this.datepicker.value = this.__value || new Date()
 
