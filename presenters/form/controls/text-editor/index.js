@@ -166,7 +166,7 @@ customElements.define('text-editor', class extends LitElement{
     }
 
     get characterCount(){
-        return this.editor.getCharacterCount()
+        return this.editor.editor.storage.characterCount.characters()
     }
 
 	get textValue(){
@@ -178,10 +178,12 @@ customElements.define('text-editor', class extends LitElement{
         return !this.editor||this.editor.isEmpty
     }
 
-    onEditorUpdate(){
+    onEditorUpdate({editor, transaction}){
         this.toggleAttribute('empty', this.isEmpty)
 
-        this.dispatchEvent(new Event('text-change'))
+        // https://github.com/ueberdosis/tiptap/blob/main/packages/core/CHANGELOG.md#200-beta193-2022-09-10
+        if( transaction.updated)
+            this.dispatchEvent(new Event('text-change'))
     }
 
     set placeholder(val){

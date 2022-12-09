@@ -105,11 +105,15 @@ customElements.define('b-text-editor-menubar', class extends LitElement{
         <div>
             <slot name="right"></slot>
             <span title="Number of characters">
-                ${this.editor.getCharacterCount()}
+                ${this.characterCount}
                 <b-text muted ?hidden=${!this.maxchar}> / ${this.maxchar}</b-text>
             </span>
         </div>
     `}
+
+    get characterCount(){
+        return this.editor?.storage.characterCount.characters()
+    }
 
     isActive(val, setting){
         return this.editor && this.editor.isActive(val, setting)
