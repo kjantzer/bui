@@ -166,7 +166,7 @@ customElements.define('text-editor', class extends LitElement{
     }
 
     get characterCount(){
-        return this.editor.editor.storage.characterCount.characters()
+        return this.editor.storage.characterCount.characters()
     }
 
 	get textValue(){
