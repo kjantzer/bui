@@ -129,7 +129,9 @@ module.exports = class API {
                     console.error(err.message)
                     console.log(err.lastQuery)
                 }
-                else if( process.env.ENV == 'development' || err.name == 'Error' ){
+                else if( process.env.ENV == 'development' 
+                || ['Error', 'TypeError'].includes(err.name) 
+                || req.query?.logErr !== undefined ){
                     console.log(err.stack||err)
                 }
                 
@@ -143,7 +145,8 @@ module.exports = class API {
                     error: err.message,
                     code: code,
                     type: err.name,
-                    data: err.data
+                    data: err.data,
+                    trace: req.query?.trace !== undefined ? (err.stack||'unknown') : null
                 })
 			}
 		})
