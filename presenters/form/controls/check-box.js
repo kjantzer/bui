@@ -1,6 +1,9 @@
 import { LitElement, html, css } from 'lit'
 import './touch-ripple'
 
+const IconEmpty = 'check-box'
+const IconSelected = 'check-box-active'
+
 customElements.define('check-box', class extends LitElement{
 
 	static get properties(){return {
@@ -178,14 +181,14 @@ customElements.define('check-box', class extends LitElement{
 	constructor(){
 		super()
 		this.placement = 'right'
-		this.iconEmpty = 'check-box'
-		this.icon = 'check-box-active'
+		this.iconEmpty = IconEmpty
+		this.icon = IconSelected
 	}
 
 	render(){return html`
 		<main>
-			<b-icon name="${this.iconEmpty}" square class="icon uncheck" focusable="false"></b-icon>
-			<b-icon name="${this.icon}" square class="icon check" focusable="false"></b-icon>
+			<b-icon name="${this.iconEmpty||IconEmpty}" square class="icon uncheck" focusable="false"></b-icon>
+			<b-icon name="${this.icon||IconSelected}" square class="icon check" focusable="false"></b-icon>
 			
 			<div class="switch"></div>
 			
