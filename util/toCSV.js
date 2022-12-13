@@ -30,7 +30,7 @@ export default (rawData, opts)=>{
 	var header = Object.keys(rawData[0])
 	var rows = rawData.map(d=>Object.values(d))
 
-	if( titleize )
+	if( opts.titleize )
 		header = header.map(s=>titleize(s))
 				
 	var data = opts.header === false ? rows : [header].concat(rows);
