@@ -34,7 +34,7 @@ customElements.define('radio-group', class extends LitElement{
 			margin-right: 1em;
 		}
 
-		:host([segment]) {
+		:host([segment]) main {
 			align-self: flex-start;
 			/* justify-self: flex-start; */
 			background-color: var(--theme-bgd-accent, #ccc);
@@ -55,7 +55,7 @@ customElements.define('radio-group', class extends LitElement{
 			--radio-segment-radius: 1em;
 		}
 
-		:host([segment][stacked]) {
+		:host([segment][stacked]) main {
 			flex-direction: column;
 		}
 
@@ -110,7 +110,11 @@ customElements.define('radio-group', class extends LitElement{
 	`}
 
 	render(){return html`
-		<slot></slot>
+		<slot name="before"></slot>
+		<main>
+			<slot></slot>
+		</main>
+		<slot name="after"></slot>
 	`}
 	
 	constructor() {
