@@ -532,7 +532,11 @@ export default class Menu {
 		else if( m.icon ) 
 			icon = html`<span class="icon">${m.icon}</span>`
 
-		let checkbox = (this.opts.multiple && !m.clearsAll) || m.selected ? html`<check-box placement="left" ?checked=${live(m.selected)}></check-box>` : ''
+		let checkbox = (this.opts.multiple && !m.clearsAll) || m.selected 
+			? html`<check-box placement="left" ?checked=${live(m.selected)} 
+				icon=${this.opts.iconSelected} iconEmpty=${this.opts.iconDeselected}></check-box>` 
+			: ''
+
 		let menuIcon = m.menu && this.opts.hasMenuIcon ? html`<b-icon class="has-menu" name="${this.opts.hasMenuIcon}"></b-icon>` :''
 
 		if( m.selections ){
