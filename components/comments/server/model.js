@@ -104,7 +104,7 @@ module.exports = class Comments extends Model {
                 // comment must mention this user
                 where.mentioned = new Group({
                     'c.meta': new JsonContains(userID, {path:'$.mentions'}),
-                    'c.group': 'changelog'
+                    // 'c.group': 'changelog'
                 }, 'OR')
             }
 
