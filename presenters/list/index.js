@@ -476,6 +476,12 @@ customElements.define('b-list', class extends LitElement {
             // NOTE: will this ever cause lag when lots of rows loaded?
             // if so, change to an opt-in feature
             row.innerHTML = `<slot name="row-${model.id}"></slot>`
+
+            if( row.constructor.applyGridStyleProps )
+                setTimeout(()=>{
+                    row.constructor.applyGridStyleProps(row)
+                })
+            
             return row
         }
     }

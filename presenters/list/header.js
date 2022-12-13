@@ -1,5 +1,7 @@
 import { LitElement, html, css, unsafeCSS } from 'lit'
 import scrollbars from '../../helpers/scrollbars'
+import Menu from '../menu'
+import store from '../../util/store'
 
 export function sharedStyles(host=':host'){return css`
     ${unsafeCSS(host)} {
@@ -161,31 +163,73 @@ customElements.define('b-list-header', class extends LitElement{
     `]}
 
     firstUpdated(){
+
+        super.firstUpdated()
+
         scrollbars.stopWheelScrolling(this)
 
         if( this.slot != 'header') return
 
         let children = Array.from(this.shadowRoot.children)
+        let gridTemplate = []
 
         let prevW = null
-        let widths = children.map(c=>{
+        let cols = children.map((el, i)=>{
 
-            if( c.tagName == 'STYLE' ) return false
+            if( el.tagName == 'STYLE' ) return false
+            if( el.hidden ) return false
 
-            let w = c.getAttribute('w') || prevW || false
+            let w = el.getAttribute('w') || prevW || false
             prevW = w
+            
+            return {width: w, header:el}
 
-            return w
+        }).filter(d=>d&&d.width!==false)
 
-        }).filter(w=>w!==false)
+        
+        cols.forEach((col, i)=>{
 
-        let gridTemplate = widths.map((width,i)=>{
-            let prop = `--grid-col-${i+1}-width`
-            this.parentElement.style.setProperty(prop, width)    
-            return `var(${prop})`
-        }).join(' ')
+            let {width, header} = col
 
-        this.parentElement.style.setProperty('--grid-template-cols', gridTemplate)
+            col.label = header.getAttribute('label') 
+                || header.textContent.trim().replace(/\n/g, ' - ').replace(/\s{2,}/g, ' ')
+                || `Column ${i+1}`
+            col.id = header.getAttribute('cid') || col.label
+            col.num = i+1
+
+            let colWidth = `--grid-col-${i+1}-width`
+            
+            this.parentElement.style.setProperty(colWidth, width)
+
+            gridTemplate.push(`var(${colWidth})`)
+
+            header.style.setProperty('visibility', `var(--grid-col-${i+1}-visibility, visible)`)
+        })
+
+        this.colsHidden = store.create(`b-list:${this.parentElement.key}:cols-hidden`)
+        this.cols = cols
+
+        this.parentElement.style.setProperty('--grid-template-cols', gridTemplate.join(' '))
+
+        // get the row element class
+        if( customElements.get(this.parentElement.rowElement) ){
+            
+            // set default method for applying custom css props
+            customElements.get(this.parentElement.rowElement).applyGridStyleProps = function(row){
+
+                // default to all children, so long as they aren't hidden
+                let children = Array.from(row.shadowRoot.children).filter(el=>{
+                    return !el.hidden && el.tagName != 'STYLE'
+                })
+
+                children.forEach((el, i)=>{
+                    el.style.setProperty('visibility', `var(--grid-col-${i+1}-visibility, visible)`)
+                })
+
+            }
+        }
+
+        this.applyProps()
     }
 
     render(){return html`
@@ -204,6 +248,65 @@ customElements.define('b-list-header', class extends LitElement{
             ${render}
         `
     }
+
+    clickMenu(e){
+        this.showMenu(e)
+    }
+
+    async showMenu(e){
+
+        let menu = this.cols.map(col=>{
+            return {
+                label: col.label,
+                val: col.id,
+                col,
+            }
+        })
+
+        menu = [
+            {divider: 'Show/hide columns'},
+            {label: 'Show All', val: '', clearsAll: true},
+            '-'
+        ].concat(menu)
+
+        let selected = await new Menu(menu, {
+            multiple: 'always',
+            iconSelected: 'visibility_off',
+            iconDeselected: 'visibility',
+            selected: this.colsHidden()
+        }).popover(e)
+
+        if( !selected || selected.length == 0 ) return
+
+        if( !selected[0].val )
+            this.colsHidden(null)
+        else{
+            let cols = selected.map(d=>d.val)
+            this.colsHidden(cols)
+        }
+
+        this.applyProps()
+    }
+
+    applyProps(){
+
+        let parentEl = this.parentElement
+        let hidden = this.colsHidden()
+
+        this.cols.forEach(col=>{
+            
+            if( hidden?.includes(col.id) ){
+
+                parentEl.style.setProperty(`--grid-col-${col.num}-width`, 0)
+                parentEl.style.setProperty(`--grid-col-${col.num}-visibility`, 'hidden')
+
+            }else{
+                parentEl.style.setProperty(`--grid-col-${col.num}-width`, col.width)
+                parentEl.style.removeProperty(`--grid-col-${col.num}-visibility`)
+            }
+        })
+    }
+
 })
 
 export default customElements.get('b-list-header')
