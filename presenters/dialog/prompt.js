@@ -209,28 +209,26 @@ function makePrompt(opts, i=0, globalOpts){
 
 	if( opts.options && (opts.segment || opts.type == 'segment') ){
 		return html`
-			<b-flex col gap="0">
-				<b-text block sm bold ?hidden=${!opts.label}>${opts.label}</b-text>
+			<radio-group segment="theme" ?stacked=${opts.segment?.stacked!==false}
+			?disabled=${opts.disabled}
+			key="${opts.key}"
+			style="${opts.w?`width:${opts.w}px;`:''}"
+			.value=${opts.val}
+			.hideIf=${opts.hideIf}
+			.disableIf=${opts.disableIf}
+			.enableleIf=${opts.enableIf}>
+				
+				${opts.options.map(o=>html`
+					<radio-btn 
+						label=${o.label===undefined?o:o.label}
+						value=${o.val===undefined?o:o.val}
+						?disabled=${o.disabled}
+					></radio-btn>
+				`)}
 
-				<radio-group segment="theme" ?stacked=${opts.segment?.stacked!==false}
-				?disabled=${opts.disabled}
-				key="${opts.key}"
-				style="${opts.w?`width:${opts.w}px;`:''}"
-				.value=${opts.val}
-				.hideIf=${opts.hideIf}
-				.disableIf=${opts.disableIf}
-				.enableleIf=${opts.enableIf}>
-					
-					${opts.options.map(o=>html`
-						<radio-btn 
-							label=${o.label===undefined?o:o.label}
-							value=${o.val===undefined?o:o.val}
-							?disabled=${o.disabled}
-						></radio-btn>
-					`)}
+				<b-text block sm bold slot="before" ?hidden=${!opts.label}>${opts.label}</b-text>
 
-				</radio-group>
-			</b-flex>
+			</radio-group>
 		`
 	}
 
