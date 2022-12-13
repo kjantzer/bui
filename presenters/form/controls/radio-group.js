@@ -217,7 +217,7 @@ customElements.define('radio-group', class extends LitElement{
 	
 	set value(val){
 		(this.radios||[]).forEach(el=>{
-			if( el.value == val )
+			if( el.value == val || (!el.value && !val && el.value !== false && val !== false) )
 				el.active=true
 			else
 				el.active=false
