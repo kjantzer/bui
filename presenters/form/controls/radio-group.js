@@ -57,6 +57,7 @@ customElements.define('radio-group', class extends LitElement{
 
 		:host([segment][stacked]) main {
 			flex-direction: column;
+			width: 100%;
 		}
 
 		:host([segment][disabled]) {
