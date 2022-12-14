@@ -125,7 +125,7 @@ export const Mention = Node.create({
 						menu.onKeydown(props.event)	
 				},
 				onExit() {
-					menu.close()
+					menu?.close()
 					menu = null
 				}
 			}
