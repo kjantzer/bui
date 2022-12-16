@@ -45,7 +45,7 @@ module.exports = class Model {
             return `LIMIT ${limit}`
 
         if( this.req && this.req.query.perPage )
-            return `LIMIT ${this.req.query.pageAt},${this.req.query.perPage}`
+            return `LIMIT ${this.req.query.pageAt||0},${this.req.query.perPage}`
             
         return this.config.limit ? `LIMIT ${this.config.limit}` : ''
     }
