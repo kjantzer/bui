@@ -33,7 +33,7 @@ module.exports = function(id, opts){
 
 		// add model to this collection
 		if( !opts || opts.add !== false )
-			this.add(model, {silent:(opts&&opts.silent||false)});
+			this.add(model, {fromGetOrCreate: true, silent:(opts&&opts.silent||false)});
 		else
 			model.collection = this;
 	}
