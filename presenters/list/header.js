@@ -2,6 +2,7 @@ import { LitElement, html, css, unsafeCSS } from 'lit'
 import scrollbars from '../../helpers/scrollbars'
 import Menu from '../menu'
 import store from '../../util/store'
+import range from '../../util/range'
 
 export function sharedStyles(host=':host'){return css`
     ${unsafeCSS(host)} {
@@ -176,8 +177,7 @@ customElements.define('b-list-header', class extends LitElement{
         let prevW = null
         let cols = children.map((el, i)=>{
 
-            if( el.tagName == 'STYLE' ) return false
-            if( el.hidden ) return false
+            if( !isCell(el) ) return false
 
             let w = el.getAttribute('w') || prevW || false
             prevW = w
@@ -218,9 +218,7 @@ customElements.define('b-list-header', class extends LitElement{
             customElements.get(this.parentElement.rowElement).applyGridStyleProps = function(row){
 
                 // default to all children, so long as they aren't hidden
-                let children = Array.from(row.shadowRoot.children).filter(el=>{
-                    return !el.hidden && el.tagName != 'STYLE'
-                })
+                let children = Array.from(row.shadowRoot.children).filter(el=>isCell(el))
 
                 children.forEach((el, i)=>{
                     el.style.setProperty('visibility', `var(--grid-col-${i+1}-visibility, visible)`)
@@ -310,3 +308,24 @@ customElements.define('b-list-header', class extends LitElement{
 })
 
 export default customElements.get('b-list-header')
+
+
+function isCell(el){
+    return !el.hidden && el.tagName != 'STYLE' && el.getAttribute('cell') != 'no'
+}
+
+export function applyGrid(el, {start=1, end}={}){
+
+    let children = Array.from(el.shadowRoot.children).filter(el=>isCell(el))
+
+    if( !end ) end = children.length + start - 1
+
+    let nums = range(start, end)
+
+    el.style.setProperty('grid-template-columns', nums.map(num=>`var(--grid-col-${num}-width)`).join(' '))
+
+    children.forEach((el, i)=>{
+        let num = nums[i]
+        el.style.setProperty('visibility', `var(--grid-col-${num}-visibility, visible)`)
+    })
+}
