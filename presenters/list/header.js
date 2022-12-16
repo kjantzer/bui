@@ -68,6 +68,28 @@ export function sharedStyles(host=':host'){return css`
         z-index: 5;
     }
 
+    ${unsafeCSS(host)} > [sticky]:before {
+        position: absolute;
+        content: '';
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -2;
+        background: var(--list-cell-bgd, var(--theme-bgd));
+    }
+
+    ${unsafeCSS(host)} > [sticky]:after {
+        position: absolute;
+        content: '';
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background: var(--list-cell-bgd, var(--theme-bgd));
+    }
+
     ${unsafeCSS(host)} > [sticky]:first-child + [sticky] {
         left: var(--grid-col-1-width);
     }
