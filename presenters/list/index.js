@@ -464,7 +464,7 @@ customElements.define('b-list', class extends LitElement {
         return this.shadowRoot.querySelector('b-infinite-list')
     }
 
-    createRow(model){
+    createRow(model, {prevModel, nextModel}){
 
         let row = customElements.get(this.rowElement)
 
@@ -476,6 +476,9 @@ customElements.define('b-list', class extends LitElement {
             // NOTE: will this ever cause lag when lots of rows loaded?
             // if so, change to an opt-in feature
             row.innerHTML = `<slot name="row-${model.id}"></slot>`
+
+            if( row.compareToAdjacentRows )
+                row.compareToAdjacentRows({prevModel, nextModel})
 
             if( row.constructor.applyGridStyleProps )
                 setTimeout(()=>{
