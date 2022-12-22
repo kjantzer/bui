@@ -21,7 +21,7 @@ export function sharedStyles(host=':host'){return css`
     ${host==':host'
     ?unsafeCSS(`${host}([viewing])`)
     :unsafeCSS(`${host}[viewing]`)} > * {
-        background-color: var(--list-cell-viewing-bgd, rgba(var(--theme-rgb), .1))
+        background-color: var(--list-cell-viewing-bgd, rgba(var(--theme-rgb), .1));
     }
     
     ${host==':host'
@@ -86,7 +86,7 @@ export function sharedStyles(host=':host'){return css`
         left: 0;
         width: 100%;
         height: 100%;
-        z-index: -1;
+        z-index: -2;
         background: var(--list-cell-bgd, var(--theme-bgd));
     }
 
