@@ -523,14 +523,14 @@ module.exports = class Model {
         if( merge )
             this.id = id
 
-        this.afterAdd&&await this.afterAdd(attrs, beforeAdd)
-
         // since we dont set `this.id`, find should return a new class instance (unless merge:true)
         // we need to do this to allow for  `add` to be called multiple times
         let model = await (merge ? this.find() : this.find({[this.idAttribute]:id}))
 
         if( merge )
             model = this
+
+        model.afterAdd&&await model.afterAdd(attrs, beforeAdd)
 
         let syncData
         if( this.config.sync && this.req && model.syncData ){
