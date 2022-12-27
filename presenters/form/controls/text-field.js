@@ -76,6 +76,22 @@ main {
 .editor p:first-child{ margin-top: 0;}
 .editor p:last-child{ margin-bottom: 0;}
 
+:host([ul]) {
+	padding-left: 1em;
+	list-style: disc;
+}
+
+:host([ol]) {
+	padding-left: 1em;
+	list-style: decimal
+}
+
+:host([ul]) p,
+:host([ol]) p {
+	display: list-item;
+	margin: var(--b-text-field-paragraph-margin, .25em) 0;
+}
+
 :host([nowrap]) .editor {
 	white-space: nowrap;
     overflow: hidden;
