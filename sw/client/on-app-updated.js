@@ -1,4 +1,5 @@
 import Notif from '../../presenters/notif'
+import device from '../../util/device'
 
 // when a new service worker takes over, reload the app to begin using it
 let refreshing;
@@ -44,7 +45,7 @@ function newUpdateNotif(worker){
     new Notif({
         nid: 'bui-sw-app-updated',
         msg: 'App update available',
-        icon: 'refresh',
+        icon: device.isSmall ? 'system_update' : 'browser_updated',
         btns: [{label: 'Update', color: 'theme'}],
         autoClose: false,
         width: 'auto',
