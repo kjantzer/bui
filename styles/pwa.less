@@ -109,8 +109,8 @@ b-panel {
 }
 
 @media (min-width: 600px){
-:root:not(.installed) b-panel[height="100%"][anchor="right"]::part(main),
-:root:not(.installed) b-panel[height="100%"][anchor="left"]::part(main),
+b-panel[height="100%"][anchor="right"]::part(main),
+b-panel[height="100%"][anchor="left"]::part(main),
 :root.insetpanels b-panel[height="100%"][anchor="right"]::part(main),
 :root.insetpanels b-panel[height="100%"][anchor="left"]::part(main) {
     height: calc(100% - 1em);
@@ -120,10 +120,10 @@ b-panel {
 }
 }
 
-:root.installed:not(.insetpanels) b-panel[height="100%"],
-:root b-panel[height="100%"][width="100%"] {
-    --b-panel-radius: 0 !important;
-}
+// :root.installed:not(.insetpanels) b-panel[height="100%"],
+// :root b-panel[height="100%"][width="100%"] {
+//     --b-panel-radius: 0 !important;
+// }
 
 @media screen and (max-width:699px) {
 :root.installed.mobile b-panel[height="100%"]::part(main) {
