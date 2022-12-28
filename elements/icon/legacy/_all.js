@@ -74,7 +74,6 @@ Icon.register(
 	['cog', require('./cog.svg.html')],
 	['collections-photos', require('./collections-photos.svg.html')],
 	['collections-text', require('./collections-text.svg.html')],
-	['color-lens', require('./color-lens.svg.html')],
 	['columns', require('./columns.svg.html')],
 	['comment-2', require('./comment-2.svg.html')],
 	['comment', require('./comment.svg.html')],
