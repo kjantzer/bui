@@ -101,7 +101,7 @@ export const fileIconLabels = {
     'dpl': html`<b-icon name="cd"></b-icon>`,
     'iso': html`<b-icon name="cd"></b-icon>`,
 
-    'zip': html`<b-icon name="file-archive"></b-icon>`,
+    'zip': html`<b-icon name="archive"></b-icon>`,
     'epub': ext=>html`<b-icon name="book-open"></b-icon><b-text sm bold ucase>${ext}</b-text>`,
 }
 
