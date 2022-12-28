@@ -181,6 +181,8 @@ class RegisteredPanels {
             if( opts.shortcuts && Array.isArray(opts.shortcuts) ){
                 shortcuts = opts.shortcuts.map(s=>{
                     return Object.assign({}, opts, {
+                        parent: opts.title,
+                        sortTitle: opts.title+' '+s.title,
                         description: '',
                         url: route.makePath(s.args||{})
                     }, s)
@@ -190,6 +192,7 @@ class RegisteredPanels {
             if( !onlyShortcuts || opts.shortcuts === true || opts.shortcut === true ){
                 menu.push({
                     title: opts.title,
+                    sortTitle: opts.title,
                     icon: opts.icon||'',
                     url: route.rootPath,
                     shortcuts
@@ -200,7 +203,7 @@ class RegisteredPanels {
                 menu.push(...shortcuts )
         })
 
-        menu = menu.sort((a,b)=>a.title>b.title?1:-1)
+        menu = menu.sort((a,b)=>a.sortTitle>b.sortTitle?1:-1)
         
         return menu
     }
