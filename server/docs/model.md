@@ -140,7 +140,7 @@ findJoins(){
 Use this hook to parse the data from the DB query (before it is converted into classes)
 
 ```js
-findParseRow(row, index, resultCount, resp)
+findParseRow(row, index, resultCount, resp, opts)
 ```
 
 ### `findExtendRowData()`

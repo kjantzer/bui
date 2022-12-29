@@ -60,7 +60,7 @@ module.exports = class Model {
         return  groupBy ? `GROUP BY ${groupBy}` : ''
     }
 
-    findParseRow(row, index, resultCount, resp){
+    findParseRow(row, index, resultCount, resp, opts){
         return row
     }
 
