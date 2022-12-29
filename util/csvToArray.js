@@ -121,7 +121,7 @@ function csvToArray(strData, {
         let header = arrData.shift()
 
         if( normalizeHeader )
-            header = header.map(str=>_normalizeHeader(str))
+            header = header.map(str=>_normalizeHeader(str?.trim()))
 
         if( formatHeader )
             header = formatHeader(header)
