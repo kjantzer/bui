@@ -176,10 +176,10 @@ class RegisteredPanels {
             if( !opts.title && view.title ) opts.title = view.title
             if( !opts.icon && view.icon ) opts.icon = view.icon
 
-            let shortcuts = []
+            let shortcuts = opts.shortcuts || view.shortcuts
 
-            if( opts.shortcuts && Array.isArray(opts.shortcuts) ){
-                shortcuts = opts.shortcuts.map(s=>{
+            if( shortcuts && Array.isArray(shortcuts) ){
+                shortcuts = shortcuts.map(s=>{
                     return Object.assign({}, opts, {
                         parent: opts.title,
                         sortTitle: opts.title+' '+s.title,
@@ -187,6 +187,8 @@ class RegisteredPanels {
                         url: route.makePath(s.args||{})
                     }, s)
                 })
+            }else{
+                shortcuts = []
             }
 
             if( !onlyShortcuts || opts.shortcuts === true || opts.shortcut === true ){

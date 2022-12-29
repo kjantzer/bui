@@ -131,6 +131,29 @@ customElements.define('b-app', class extends LitElement {
     }
     get shouldShowSearch(){ return true }
 
+    static get shortcuts(){
+
+        return this.coreViews?.split(`\n`).flatMap(s=>{
+            s = s.trim()
+            if( !s ) return null
+            let el = customElements.get(s)
+            if( !el ) return null
+            if( !el.id ) return null
+            
+            let shortcuts = [{
+                title: el.title,
+                icon: el.icon,
+                permission: el.permission || parent.permission,
+                args: {
+                    _: el.id
+                }
+            }]
+
+            return shortcuts
+
+        }).filter(s=>s)
+    }
+
     render(){return html`
         ${this.panel?html`
             <b-panel-toolbar shadow notitle nomiddle>
@@ -148,8 +171,11 @@ customElements.define('b-app', class extends LitElement {
         >${this.views}</b-tabs-router>  
     `}
 
+    static get coreViews(){return ''}
+
     get views(){ return html`
         <div title="Home" icon="home">Render your app here</div>
+        ${this.constructor.coreViews}
     `}
 
     trackScreenChange(screenName){
