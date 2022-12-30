@@ -219,11 +219,11 @@ module.exports = class API {
                 res.redirect(path)
             else
                 res.sendFile(path, err=>{
-                    if( err )
-                    res.status(err.status).json({
-                        error: err.message,
-                        code: err.code
-                    })
+                    if( err && !['ECONNABORTED', 'EPIPE'].includes(err?.code) )
+                        res.status(err.status||500).json({
+                            error: err.message,
+                            code: err.code
+                        })
                 })
         
         }else{
