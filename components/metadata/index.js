@@ -149,7 +149,7 @@ customElements.define('b-metadata', class extends LitElement{
 
     _saveMeta(key, val){
 
-        let data = this.data
+        let data = {...this.data}
 
         if( val === null )
             delete data[key]
@@ -160,7 +160,7 @@ customElements.define('b-metadata', class extends LitElement{
             data = null
 
         if( this.save === false )
-            this.model.editAttr({[this.attr]:data})
+            this.model.editAttr(this.attr, data)
         else
             this.model.saveSync({[this.attr]:data}, {patch:true})
 
