@@ -61,7 +61,7 @@ export default class RoutedView extends LitElement {
     }
 
     _trackFilterChange(){
-        if( !this.list || !this.route.state ) return
+        if( !this.list || !this.route?.state ) return
 
         let filters = this.list.filters.value()
 
