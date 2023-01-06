@@ -6,14 +6,21 @@ export const SocialPlatforms = {
     tiktok: 'https://www.tiktok.com/@'
 }
 
-export default function(platform, handle, {fallback=false}={}){
+export default function(platform, handle, {fallback=false, stripAtSign=true}={}){
 
     platform = String(platform).toLowerCase()
 
     let platformLink = SocialPlatforms[platform]
 
+    if( handle.match(/^www/) )
+        handle = '//'+handle
+
     if( handle.match(/^http/) )
         return handle
+
+    // not all social platforms handle the @
+    if( stripAtSign )
+        handle = handle.replace(/^@/, '')
 
     if( !platformLink ) return fallback === false ? handle : fallback
 
