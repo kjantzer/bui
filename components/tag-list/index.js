@@ -133,12 +133,12 @@ customElements.define('b-tag-list', class extends LitElement{
 
         if( this.presets ){
             let preset = await new Menu([{
-                label: 'Custom',
-            }, {divider: 'Presets'}, ...this.presets]).popover(btn)
+                label: 'write in', icon: 'pencil'
+            }, '-', ...this.presets]).popover(btn)
 
             if( !preset ) return
 
-            if( preset.label != 'Custom' )
+            if( preset.label != 'write in' )
                 if( this._addTag(preset.val) ){
                     didAdd = true
 
