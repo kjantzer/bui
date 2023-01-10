@@ -120,6 +120,10 @@ customElements.define('b-flex', class extends LitElement{
             flex-grow: 1;
         }
 
+        :host ::slotted([colspan]) {
+            width: 100%;
+        }
+
         :host ::slotted([end]) {
             margin-left: auto;
         }
