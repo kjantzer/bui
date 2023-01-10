@@ -558,11 +558,12 @@ export default class Menu {
 				
 			
 			if( this.opts.multiple)
-				selections = [{label: 'unset', val:'', clearsAll: true}, 'divider'].concat(selections)
+				selections = [{label: 'Unset', val:'', clearsAll: true}, 'divider'].concat(selections)
 
 			checkbox = html`<select-field 
 							.options=${selections}
-							placeholder="unset"
+							placeholder="–"
+							no-arrow
 							@change=${this.selectOptionsChanged.bind(this)}
 							.selected=${m.selection}
 							adjust-for-mobile=false

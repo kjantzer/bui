@@ -201,10 +201,20 @@
 			margin-left: .5em;
 			margin-right: -.5em;
 			color: var(--checkboxColor);
+			// box-shadow: 0 0 0 1px var(--theme) inset;
+			border-radius: 3px;
+			padding: 0 .1em;
+			text-align: center;
 		}
 
 		> select-field[value=""] {
-			color: var(--b-menu-description-color, var(--theme-text-accent));
+			box-shadow: 0 0 0 2px var(--theme-text) inset;
+			color: var(--b-menu-description-color, var(--theme-text));
+		}
+
+		> select-field:not([value=""]) {
+			background: var(--checkboxColor, var(--theme));
+			color: white;
 		}
 
 		> .mi-content ~ * {
