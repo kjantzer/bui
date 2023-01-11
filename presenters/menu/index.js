@@ -270,12 +270,14 @@ export default class Menu {
 		return this.opts.multiple ? this.__selected : this.__selected[0]
 	}
 
-	toggleSelected(item){
+	toggleSelected(item, {fromSelection=true}={}){
 		let index = this.__selected.indexOf(item)
 				
-		if( index > -1 && !item.selection ){
+		if( index > -1 && !fromSelection ){
 			item.selected = false
+			delete item.selection
 			this.__selected.splice(index, 1)
+
 			return false
 		}else{
 
@@ -637,7 +639,10 @@ export default class Menu {
 		if( target.tagName == 'SELECT-FIELD' )
 			return
 
-		let didClickCheckbox = target.tagName == 'CHECK-BOX'
+		e.stopPropagation()
+		e.preventDefault()
+
+		let didClickCheckbox = target.tagName == 'CHECK-BOX' || target.tagName == 'SELECT-FIELD'
 		
 		while(target && !target.classList.contains('menu-item')){
 			target = target.parentElement
@@ -672,12 +677,12 @@ export default class Menu {
 
 			} else if( this.opts.multiple ){
 
-				if( data.clearsAll || (this.opts.multiple !== 'always' && !didClickCheckbox) ){
+				if( data.clearsAll || (this.opts.multiple !== 'always' && !didClickCheckbox && !e.shiftKey) ){
 					this._onSelect([data])
 					return this.resolve([data])
 				}
 
-				let isSelected = this.toggleSelected(data)
+				let isSelected = this.toggleSelected(data, {fromSelection:didClickCheckbox})
 				
 				if( this.searchIsOn && this.hideUnselected ){
 					this.render()
@@ -688,10 +693,14 @@ export default class Menu {
 					target.classList.add('selected')
 					if( !data.selections )
 						target.querySelector('check-box').checked = true
+					else
+						target.querySelector('select-field').value = data.selection
 				}else{
 					target.classList.remove('selected')
 					if( !data.selections )
 						target.querySelector('check-box').checked = false
+					else
+						target.querySelector('select-field').value = null
 				}
 				
 				this._onSelect(this.selected)
