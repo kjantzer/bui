@@ -105,6 +105,12 @@ export function sharedStyles(host=':host'){return css`
     }
 
     ${host==':host'
+    ?unsafeCSS(`${host}(:hover)`)
+    :unsafeCSS(`${host}:hover`)} > [sticky]:after {
+        background: var(--list-cell-hover-bgd, var(--theme-bgd-accent2));
+    }
+
+    ${host==':host'
     ?unsafeCSS(`${host}([viewing])`)
     :unsafeCSS(`${host}[viewing]`)} > [sticky]:before,
     ${host==':host'
