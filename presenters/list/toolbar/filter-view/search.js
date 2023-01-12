@@ -47,6 +47,8 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
                 val: item.val
             }
 
+        item.selection = 'Is'
+
         // check for duplicates
         if( !this._values.find(_item=>_item.val==item.val) ){
             this._values.push(item)
@@ -61,6 +63,9 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
 
         if( items.length == 1 && items[0].val == '' )
             items = []
+        else{
+            items = items.filter(d=>d.selection)
+        }
 
         this.value = items
 
@@ -79,7 +84,12 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
             menu.push({label: 'Clear', icon: 'backspace', val: '', clearsAll: true}, 'divider')
             
             menu.push(...this._values.map(d=>{
-                d.selected = true
+                // TODO: allow for opt-out for standard check box?
+                return {
+                    ...d,
+                    selections: ['Is', 'Not']
+                }
+                // d.selected = true
                 return d
             }))
 
@@ -214,6 +224,8 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
         return this._values.map(d=>{
             d = Object.assign({}, d)
             delete d.view // do not save custom element/views
+            delete d.selections
+            delete d.selected
 
             // do not save lit HTML values
             if( isLitHTML(d.label) )
