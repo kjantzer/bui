@@ -44,7 +44,7 @@
 	
 	.__view {
 		box-sizing: border-box;
-		background: var(--bgd, #fff);
+		background: var(--bgd, var(--theme-bgd, #fff));
 		overflow: auto;
 		border: solid 1px var(--border);
 		box-shadow: var(--b-popover-shadow, var(--theme-shadow-2, rgba(0,0,0,.2) 0 2px 8px));
@@ -174,7 +174,7 @@
 }
 
 .popover b-dialog {
-	--bgd: var(--color);
+	--bgd: var(--color, var(--theme-bgd));
 }
 
 
