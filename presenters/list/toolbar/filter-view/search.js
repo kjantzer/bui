@@ -226,6 +226,12 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
             delete d.view // do not save custom element/views
             delete d.selections
             delete d.selected
+            delete d.extras
+
+            for( let k in d ){
+                if( isLitHTML(d[k]) ) // do not cache/save lit html values
+                    delete d[k]
+            }
 
             // do not save lit HTML values
             if( isLitHTML(d.label) )
