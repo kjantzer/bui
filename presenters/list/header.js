@@ -275,7 +275,7 @@ customElements.define('b-list-header', class extends LitElement{
         `
     }
 
-    clickMenu(e){
+    contextMenu(e){
         this.showMenu(e)
     }
 
