@@ -642,7 +642,8 @@ export default class Menu {
 		e.stopPropagation()
 		e.preventDefault()
 
-		let didClickCheckbox = target.tagName == 'CHECK-BOX' || target.tagName == 'SELECT-FIELD'
+		let didClickCheckbox = target.tagName == 'CHECK-BOX'
+		let didClickSelectField = target.tagName == 'SELECT-FIELD'
 		
 		while(target && !target.classList.contains('menu-item')){
 			target = target.parentElement
@@ -677,12 +678,12 @@ export default class Menu {
 
 			} else if( this.opts.multiple ){
 
-				if( data.clearsAll || (this.opts.multiple !== 'always' && !didClickCheckbox && !e.shiftKey) ){
+				if( data.clearsAll || (this.opts.multiple !== 'always' && !didClickCheckbox && !didClickSelectField && !e.shiftKey) ){
 					this._onSelect([data])
 					return this.resolve([data])
 				}
 
-				let isSelected = this.toggleSelected(data, {fromSelection:didClickCheckbox})
+				let isSelected = this.toggleSelected(data, {fromSelection:didClickSelectField})
 				
 				if( this.searchIsOn && this.hideUnselected ){
 					this.render()
