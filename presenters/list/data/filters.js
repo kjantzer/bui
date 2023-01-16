@@ -2,6 +2,7 @@ import Menu from '../../menu'
 import Dialog from '../../dialog'
 import Popover from '../../popover'
 import titleize from '../../../util/titleize'
+import pick from '../../../util/pick'
 import Fuse from 'fuse.js'
 import Emitter from 'component-emitter'
 
@@ -170,9 +171,13 @@ export default class Filters extends Map {
             // only send "values" from the `search` filter view
             if( Array.isArray(d) )
                 data[key] = d.map(item=>{
-                    return item.val != undefined && item.selection == undefined 
-                            ? item.val
-                            : item
+
+                    if( item.val != undefined && item.selection == undefined )
+                        return item.val
+                    else if( item.val !== undefined )
+                        return pick(item, ['val', 'selection']) // include more?
+                    else
+                        return item
                 })
             else
                 data[key] = d
