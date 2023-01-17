@@ -12,6 +12,13 @@ function titleize(str){
     return str ? capitalize(str.replace(/[\-_]/g, ' ')) : str
 }
 
+function slugify(str, {spaces='_', lowerCase=true}={}){
+    str = str || ''
+    str = str.replace(' ', spaces)
+    if( lowerCase ) str = str.toLowerCase()
+    return str
+}
+
 // https://ricardometring.com/javascript-replace-special-characters
 function replaceAccents(str){
     str = String(str||'') // make sure it's a string
@@ -20,4 +27,4 @@ function replaceAccents(str){
 	return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove accents
 }
 
-module.exports = {capitalize, titleize, replaceAccents}
+module.exports = {capitalize, titleize, slugify, replaceAccents}
