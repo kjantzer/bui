@@ -4,13 +4,14 @@ const {makePath} = require('./util')
 // https://dev.mysql.com/doc/refman/5.7/en/json-search-functions.html
 module.exports = class JsonContains extends Clause {
 
-    constructor(value, {path='$', conjunction='AND', key=null, not=false, ifNull=false}={}){
+    constructor(value, {path='$', conjunction='AND', key=null, not=false, ifNull=false, ignoreCase=true}={}){
         super()
         this.value = value
         this.key = key
         this.path = path
         this.not = not
         this.ifNull = ifNull
+        this.ignoreCase = ignoreCase
         this.conjunction = ['and', 'or'].includes(conjunction.toLowerCase()) ? conjunction : 'AND'
     }
 
@@ -33,6 +34,13 @@ module.exports = class JsonContains extends Clause {
 
             if( val == undefined )
                 return `${this.not?'!':''}JSON_CONTAINS_PATH(${key}, 'all', '${path}')`
+
+            // https://stackoverflow.com/a/63243229/484780
+            // initial test (simple) appears to not affect speed
+            if( this.ignoreCase ){
+                key = `LOWER(${key})`
+                val = val.toLowerCase()
+            }
 
             val = db.escape(val)
             
