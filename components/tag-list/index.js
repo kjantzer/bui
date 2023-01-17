@@ -9,9 +9,10 @@ import { LitElement, html, css } from 'lit'
 import Notif from '../../presenters/notif'
 import Dialog from '../../presenters/dialog'
 import Menu from '../../presenters/menu'
-import copyText from '../..//util/copyText'
+import copyText from '../../util/copyText'
 import '../../helpers/lit/events'
 import '../../elements/btn'
+import {slugify} from '../../util/string'
 
 customElements.define('b-tag-list', class extends LitElement{
 
@@ -38,13 +39,13 @@ customElements.define('b-tag-list', class extends LitElement{
             margin-right: -.5em;
         }
 
-        [part="tag"] {
+        .tag {
             align-self: center;
             flex-shrink: 0;
         }
 
-        [part="tag"]:hover,
-        [part="tag"].popover-open {
+        .tag:hover,
+        .tag.popover-open {
             color: var(--theme);
             cursor: pointer;
         }
@@ -73,7 +74,7 @@ customElements.define('b-tag-list', class extends LitElement{
             margin-right: 0;
         }
 
-        :host([type="chip"]) [part="tag"] {
+        :host([type="chip"]) .tag {
             background: var(--chip-bgd, var(--theme-bgd-accent));
             padding: 0.125em 0.5em;
             border-radius: 1em;
@@ -116,7 +117,7 @@ customElements.define('b-tag-list', class extends LitElement{
             @click=${this.addTag} part="add-btn"></b-btn>
 
         ${this.value.map(tag=>html`
-            <b-text title="click to remove" @click=${this.removeTag} part="tag">
+            <b-text title="click to remove" @click=${this.removeTag} class="tag" part="tag tag_${slugify(tag)}">
                 <b-text muted>${this.prefix}</b-text>${tag}
             </b-text>
         `)}
