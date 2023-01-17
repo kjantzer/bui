@@ -39,7 +39,8 @@ module.exports = class JsonContains extends Clause {
             // initial test (simple) appears to not affect speed
             if( this.ignoreCase ){
                 key = `LOWER(${key})`
-                val = val.toLowerCase()
+                if( val && val.toLowerCase ) // could be a number
+                    val = val.toLowerCase()
             }
 
             val = db.escape(val)
