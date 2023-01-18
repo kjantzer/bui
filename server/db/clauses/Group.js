@@ -57,7 +57,8 @@ module.exports = class Group extends Map {
                 // TODO: do we really want to support this? or should a defined "clause" be used instead?
                 // changing would break old code
                 if( typeof val == 'string' ){
-                    let [str, customOper, _val] = val.match(/((?:(?:!=)|(?:[><]=?)) )?(.+)/)
+                    // check for !=, >, <, >=, <=
+                    let [str, customOper, _val] = val.match(/^((?:(?:!=)|(?:[><]=?))\s?)?(.+)/)
                     oper = customOper || oper
                     val = _val 
                 }
