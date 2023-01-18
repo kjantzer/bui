@@ -5,10 +5,12 @@ const Group = require('./Group')
 // https://dev.mysql.com/doc/refman/5.7/en/json-search-functions.html#function_json-search
 module.exports = class JsonSearch extends Clause {
 
-    constructor(value, path='$', conjunction='AND'){
+    constructor(value, path='$', conjunction='AND', {not=false, ignoreCase=true}={}){
         super()
         this.value = value
         this.path = path
+        this.ignoreCase = ignoreCase
+        this.not = not
         this.conjunction = ['and', 'or'].includes(conjunction.toLowerCase()) ? conjunction : 'AND'
     }
 
@@ -25,30 +27,45 @@ module.exports = class JsonSearch extends Clause {
             let path = makePath(this.path, db)
 
             // if no value, then look for existance of the path
-            if( val == undefined )
-                return `JSON_CONTAINS_PATH(${key}, 'all', '${path}')`
+            if( val == undefined ){
+                let isValue = this.not ? '= 0' : '= 1'
+                return `JSON_CONTAINS_PATH(${key}, 'all', '${path}') ${isValue}`
+            }
 
             // TODO: searching real numbers wont work (number strings are fine)
             if( typeof val == 'number'){
                 return `${key}->>'${path}' = ${val}`
+            }else{
+                // https://stackoverflow.com/a/63243229/484780
+                // initial test (simple) appears to not affect speed
+                if( this.ignoreCase ){
+                    key = `LOWER(${key})`
+                    
+                    if( val && val.toLowerCase ) // could be a number
+                        val = val.toLowerCase()
+                }
             }
 
             val = db.escape(val)
 
-            return `JSON_SEARCH(${key}, 'one', ${val}, null, '${path}') IS NOT NULL`
+            let isValue = this.not ? 'IS NULL' : 'IS NOT NULL'
+
+            return `JSON_SEARCH(${key}, 'one', ${val}, null, '${path}') ${isValue}`
 
         }).join(' '+this.conjunction+' ')
     }
 
     // str example: `key: val, key2: %val2, key3`
-    static fromString(field, str, group){
+    static fromString(field, str, group, opts){
 
         let groups = {}
 
         if( !group )
             group = new Group({}, 'AND')
 
-        str.split(',').forEach(s=>{
+        let values = Array.isArray(str) ? str : str.split(',')
+        
+        values.forEach(s=>{
             if( !s.trim() ) return
             
             let [key, val] = s.split(':').map(s=>s.trim())
@@ -69,7 +86,7 @@ module.exports = class JsonSearch extends Clause {
 
             group.set(
                 {toSqlString:()=>field},
-                new JsonSearch(vals, key, 'OR')
+                new JsonSearch(vals, key, 'OR', opts)
             )
         }
 
