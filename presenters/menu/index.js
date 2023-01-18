@@ -516,13 +516,13 @@ export default class Menu {
 			return html`<div class="menu-divider">${m.divider}</div>`
 		
 		if( m.text !== undefined )
-			return html`<b-text heading block sm muted=2 class="menu-text">${m.text}</b-text>`
+			return html`<b-text heading block sm muted=2 ?bgd=${m.bgd??true} class="menu-text">${m.text}</b-text>`
 		
 		if( m.title )
-			return html`<b-text heading block xbold class="menu-title">${m.title}</b-text>`
+			return html`<b-text heading block xbold ?bgd=${m.bgd??false} class="menu-title">${m.title}</b-text>`
 		
 		if( m.heading )
-			return html`<b-text heading block xbold class="menu-heading">${m.heading}</b-text>`
+			return html`<b-text heading block xbold ?bgd=${m.bgd??false} class="menu-heading">${m.heading}</b-text>`
 
 		// capture menu item index for use in resolve (if so desired)
 		m.index = i
