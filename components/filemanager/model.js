@@ -146,6 +146,8 @@ export class Palette extends CollMap {
             el.style.setProperty(`--palette-${name}`, color.rgb.join(' '))
         })
 
+        el.style.setProperty('--theme-rgb', this.get('vibrant').rgb.join(', '))
+
         el.style.setProperty('--palette-gradient', 
             `linear-gradient(to right, 
                 rgb(var(--palette-vibrant)),
