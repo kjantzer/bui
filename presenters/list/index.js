@@ -176,6 +176,36 @@ customElements.define('b-list', class extends LitElement {
             user-select: none;
         }
 
+        b-infinite-list[selection-on] > [part="row"] {
+            margin-left: 2em;
+            position: relative;
+        }
+
+        b-infinite-list[selection-on] > [part="row"]:after {
+            display: block;
+            content: '';
+            width: calc(2em - 2px);
+            height: calc(100% - 2px);
+            margin: 1px;
+            left: -2em;
+            top: 0px;
+            background-color: var(--b-list-selected-row-bgd, rgba(var(--theme-rgb), .1));
+            box-shadow: 0 0 0 1px rgba(var(--theme-rgb), .2) inset;
+            color: var(--theme);
+            border-radius: 3px;
+            
+            position: absolute;
+            content: "✔";
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        b-infinite-list[selection-on] > [part="row"][isselected]:after {
+            color: white;
+            background: var(--theme-gradient);
+        }
+
         b-infinite-list > [isselected] {
             position: relative;
             z-index: 0;
@@ -193,9 +223,9 @@ customElements.define('b-list', class extends LitElement {
             /* border: solid 1.4em #E3F2FD;
             border-left-width: 2em; */
             top: 0;
-            left: 0;
+            left: -2em;
             height: 100%;
-            width: 100%;
+            width: calc(100% + 2em);
             box-sizing: border-box;
             z-index: -1;
         }
