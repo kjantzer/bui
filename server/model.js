@@ -457,7 +457,7 @@ module.exports = class Model {
                 // mitigate infinite loops
                 // relatedSrc is the model that created this one
                 // so stop if we're trying to get a relation the same as the creator
-                if( this.relatedSrc && this.relatedSrc.constructor == RelatedModel.constructor )
+                if( this.relatedSrc && this.relatedSrc.constructor == RelatedModel?.constructor )
                     return 
 
                 if( RelatedModel ){
