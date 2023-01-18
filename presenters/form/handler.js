@@ -222,7 +222,7 @@ class FormHandler extends HTMLElement {
 				el.removeAttribute('unsaved')
 		})
 
-		if( !isEdited )
+		// if( !isEdited ) // NOTE: why was I requiring this?
 			this.setControlIfs()
 	}
 	
@@ -231,7 +231,7 @@ class FormHandler extends HTMLElement {
 		for( let key in m.changed ){
 			
 			// if changed value is different than edited value, clear the edited value
-			if( m._editedAttrs && m._editedAttrs[key] && m._editedAttrs[key] != m.changed[key]){
+			if( m._editedAttrs && m._editedAttrs[key] !== undefined && m._editedAttrs[key] != m.changed[key]){
 				delete m._editedAttrs[key]
 			}
 			
