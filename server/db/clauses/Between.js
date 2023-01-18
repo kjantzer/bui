@@ -2,10 +2,11 @@ const Clause = require('./Clause')
 
 module.exports = class Between extends Clause {
 
-    constructor(start, end, {addHours=false, epoch=false}={}){
+    constructor(start, end, {addHours=false, epoch=false, key}={}){
         super()
         this.start = start
         this.end = end
+        this.key = key
 
         if( addHours )
             this.end = this.end+' 23:59:59'
@@ -17,6 +18,7 @@ module.exports = class Between extends Clause {
     }
 
     toSqlString(db, key){
+        key = this.key || key
         return `${key} BETWEEN ${db.escape(this.start)} AND ${db.escape(this.end)}`
     }
 }
