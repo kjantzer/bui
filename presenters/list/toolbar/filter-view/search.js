@@ -86,6 +86,7 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
             menu.push(...this._values.map(d=>{
                 // TODO: allow for opt-out for standard check box?
                 return {
+                    label: d.label || d.cacheLabel || d.toolbarLabel,
                     ...d,
                     selections: ['Is', 'Not']
                 }
