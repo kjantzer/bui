@@ -226,9 +226,11 @@ export default class Label extends LitElement {
     render(){return html`
         <div class="bgd"></div>
         <b-hr></b-hr>
-        <slot></slot>
+        <slot>${this.renderLabel()}</slot>
         <b-hr></b-hr>
     `}
+
+    renderLabel(){ return '' }
 }
 
 customElements.define('b-label', Label)
