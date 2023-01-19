@@ -37,7 +37,12 @@ customElements.defineShared('b-popover-view', class extends LitElement{
         this.model = null
     }
 
-    openIfHovered(id, target, {delay=700, opts}={}){
+    // deprecated - use `openIfHoveringContinues`
+    openIfHovered(...args){
+        return this.openIfHoveringContinues(...args)
+    }
+    
+    openIfHoveringContinues(id, target, {delay=700, opts}={}){
 
         const onMouseOut = function(){ 
             this.autoClose()
