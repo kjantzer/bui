@@ -323,7 +323,7 @@ customElements.define('b-list-header', class extends LitElement{
             
             if( hidden?.includes(col.id) ){
 
-                parentEl.style.setProperty(`--grid-col-${col.num}-width`, 0)
+                parentEl.style.setProperty(`--grid-col-${col.num}-width`, '0px', 'important')
                 parentEl.style.setProperty(`--grid-col-${col.num}-visibility`, 'hidden')
 
             }else{
