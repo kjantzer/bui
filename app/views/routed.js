@@ -58,6 +58,10 @@ export default class RoutedView extends LitElement {
 
         // listen for a b-list changing filters
         this.addEventListener('filter-change', this._trackFilterChange)
+        this.addEventListener('close-panel', e=>{
+            e.stopPropagation()
+            this.close()
+        })
     }
 
     _trackFilterChange(){
