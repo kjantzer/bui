@@ -3,12 +3,12 @@
 */
 module.exports = class CollMap extends Map {
 
-    constructor(data, {appendKey=false, store=false}={}){
+    constructor(data, {appendKey=false, store=false, storeInOrder=false, storeLimit=false}={}){
 
         if( !data && store )
             data = store()
 
-        if( data )
+        if( data && !Array.isArray(data) )
             data = Object.entries(data)
 
         if( appendKey && data ){
@@ -22,9 +22,14 @@ module.exports = class CollMap extends Map {
         super(data)
 
         this.store = store
+        this.opts = arguments[1] || {}
     }
 
     set(...args){
+        // delete first so the new value is added to end of stack (thus keeping in order of adding)
+        if( this.opts?.storeInOrder )
+            super.delete(...args)
+
         super.set(...args)
         this._storeUpdate(...args)
     }
@@ -36,14 +41,29 @@ module.exports = class CollMap extends Map {
 
     _storeUpdate(args){
         if( this.store ){
-            this.store(this.toObject())
+            this.store(this._valueToStore)
             if( this.emit )
                 this.emit('change', args)
         }
     }
+
+    get _valueToStore(){
+        if( this.opts.storeInOrder ){
+
+            let val = this.toEntries() // needed to maintain order
+
+            if( this.opts?.storeLimit )
+                val = val.slice(-1 * this.opts?.storeLimit)
+
+            return val
+        }
+
+        return this.toObject() // object does not keep order
+    }
     
     get first(){ return this.at(0) }
     get last(){ return this.at(this.size-1) }
+    get length(){ return this.size }
 
     at(i){
         return Array.from(this.values())[i]
@@ -70,6 +90,10 @@ module.exports = class CollMap extends Map {
 
     toJSON(){
         return this.map(v=>(v.toJSON&&v.toJSON()||v))
+    }
+
+    toEntries(){
+        return Array.from(this.entries())
     }
 
     toObject(){
