@@ -84,6 +84,9 @@ customElements.define('b-list-filters', class extends LitElement{
         <b-draggable @will-take-action=${this.onDrag}>Export</b-draggable>
         <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
+        <b-btn icon="history" title="History of applied filters" clear lg noshrink
+                @click=${this.openFiltersHistory}></b-btn>
+
         ${this.showOverflow?html`
 
             <b-btn text @click=${this.openFiltersPanel} noshrink class="show-filters" _icon="filter">
@@ -100,9 +103,6 @@ customElements.define('b-list-filters', class extends LitElement{
             <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" clear lg noshrink
                 @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
         `}
-
-        <b-btn icon="history" title="History of applied filters" clear lg noshrink
-                @click=${this.openFiltersHistory}></b-btn>
 
         ${this.filters.map(filter=>this.showFilter(filter)?html`
             <b-list-filter-btn ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
