@@ -3,6 +3,7 @@ import device from '../../../util/device'
 import './filter-btn'
 import FiltersPanel from './filters-panel'
 import Dialog from '../../../presenters/dialog'
+import Menu from '../../../presenters/menu'
 import {DownloadContent} from '../../../elements/draggable'
 import readFile from '../../../util/readFile'
 import '../../../elements/uploader'
@@ -36,7 +37,7 @@ customElements.define('b-list-filters', class extends LitElement{
             right: 0;
         }
 
-        b-list-filter-btn {
+        b-list-filter-btn, [noshrink] {
             flex-shrink: 0;
         }
 
@@ -85,7 +86,7 @@ customElements.define('b-list-filters', class extends LitElement{
 
         ${this.showOverflow?html`
 
-            <b-btn text @click=${this.openFiltersPanel} style="flex-shrink: 0;" class="show-filters" _icon="filter">
+            <b-btn text @click=${this.openFiltersPanel} noshrink class="show-filters" _icon="filter">
                 <main>
                     <b-label xs>Filters</b-label>
                     <div>
@@ -96,9 +97,12 @@ customElements.define('b-list-filters', class extends LitElement{
             </b-btn>
         
         `:html`
-            <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" text
+            <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" clear lg noshrink
                 @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
         `}
+
+        <b-btn icon="history" title="History of applied filters" clear lg noshrink
+                @click=${this.openFiltersHistory}></b-btn>
 
         ${this.filters.map(filter=>this.showFilter(filter)?html`
             <b-list-filter-btn ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
@@ -106,6 +110,42 @@ customElements.define('b-list-filters', class extends LitElement{
 
         <b-btn color="hover-red" title="Clear filters" icon="backspace" text @click=${this.resetFilters}></b-btn>
     `}
+
+    async openFiltersHistory(e){
+        
+        let menu = this.filters.history.map((d, name)=>{
+            
+            let label = name.split('|').map(s=>{
+
+                let vals = s.split(':')
+                let label = vals.shift()
+                let val = vals.join(':')
+
+                return html`<b-text>
+                    <b-text muted=2 italic>${label}:</b-text>
+                    <b-text bold>${val}</b-text>
+                </b-text>`
+            })
+            return {
+                label: html`<b-flex gap="1" gap-row=" " left wrap>${label}</b-flex>`,
+                val: d.filters,
+                description: html`<b-ts .date=${d.ts}></b-ts>`,
+                extras: [
+                    // html`<b-ts .date=${d.ts}></b-ts>`
+                ]
+            }
+        }).reverse() // newest first
+
+        if( !menu.length )
+            menu.push({text: 'No history yet', bgd: false})
+
+        menu.unshift({heading: 'Applied Filters History'})
+
+        let selected = await new Menu(menu).popover(e.currentTarget)
+
+        if( selected )
+            this.filters.reset(selected.val, {stopQueuing: !this.filters.queuing})
+    }
 
     onDrag(e){
         let {action} = e.detail

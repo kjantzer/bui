@@ -3,6 +3,8 @@ import Dialog from '../../dialog'
 import Popover from '../../popover'
 import titleize from '../../../util/titleize'
 import pick from '../../../util/pick'
+import CollMap from '../../../util/collmap'
+import store from '../../../util/store'
 import Fuse from 'fuse.js'
 import Emitter from 'component-emitter'
 
@@ -154,6 +156,10 @@ export default class Filters extends Map {
                         this.emit('change-queue', changes)
                 }else if( opts.silent !== true )
                     this.emit('change', changes)
+
+                if( !this.queuing ){
+                    this._trackChangedFilters(changes)
+                }
             }
 
         // GETTING
@@ -186,12 +192,40 @@ export default class Filters extends Map {
         return data
     }
 
+    get history(){
+        if( this.__history === undefined ){
+
+            this.__history = new CollMap(null, {
+                store: store.create(this._storeKey+':history', []),
+                storeInOrder: true,
+                storeLimit: 50
+            })
+        }
+
+        return this.__history
+    }
+
+    _trackChangedFilters(changes){
+
+        let name = this.toString()
+        let filters = this.value()
+
+        // note: history is de-duped; if previously cached this set of filters, it will move to end of cache stack
+        // oldest -> latest applied filter
+        if( name )
+        this.history.set(name, {
+            filters,
+            ts: new Date().getTime()
+        })
+    }
+
     get queuing(){return this.__queue || false }
     set queuing(val){
         this.__queue = Boolean(val)
 
         if( !this.queuing && this.queuedChanges ){
             this.emit('change', this.queuedChanges)
+            this._trackChangedFilters(this.queuedChanges)
             this.queuedChanges = null
         }
     }
@@ -456,7 +490,10 @@ export class Filter {
                 // not a valid value, remove it so we dont use it
                 }else{
                     console.log('BUI List - invalid filter value:', val);
-                    vals.splice(i,1)
+
+                    // lets not remove if this method exists, since it likely fetches available data, making this value "real"
+                    if( !this.attrs.onFirstLoad )
+                        vals.splice(i,1)
                 }
             }
             
