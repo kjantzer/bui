@@ -1,4 +1,4 @@
-module.exports = function diffObject(before, after){
+module.exports = function diffObject(before={}, after={}){
 
     let changes = {}
 
