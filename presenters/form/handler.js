@@ -315,7 +315,10 @@ class FormHandler extends HTMLElement {
 		
 		if( this.model ){
 			if( this.autoSave === true ){
-				this.model.saveSync(changes, {patch:this.patchSave||false})
+				this.model.saveSync(changes, {patch:this.patchSave||false, wait: true}).catch(err=>{
+					this._updateEditors() // should reset to previous values
+					throw err
+				})
 				this.model.trigger('edited', false, changes)
 				this.model.trigger('saved', changes)
 			}else{
