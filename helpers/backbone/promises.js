@@ -4,6 +4,19 @@
 
 import {Model, Collection} from 'backbone'
 
+const syncPromise = function(method, model, opts={}){
+        return new Promise((resolve, reject)=>{
+            this.sync(method, model, {
+                ...opts,
+                success: resolve,
+                error: reject
+            })
+        })
+    }
+
+Collection.prototype.syncPromise = syncPromise
+Model.prototype.syncPromise = syncPromise
+
 const fetchSync = function(opts={}){
 
     // a fetch is already happening
