@@ -149,7 +149,7 @@ export default class extends LitElement{
     }
 
     lookupKeys({withTitle=false}={}){
-        let vals = this.list?.filters.get('lookup').values || []        
+        let vals = this.list?.filters.get('lookup')?.values || []        
         return vals.filter(v=>{
             return !isDivider(v) && !v.divider
         }).map(v=>{
