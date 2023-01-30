@@ -1,7 +1,16 @@
+import {css} from 'lit'
 import Btn from '../../elements/btn'
 import Notif from '../notif'
 
 customElements.define('b-list-selection-btn', class extends Btn{
+
+    static styles = [Btn.styles, css`
+
+        :host {
+            order: -1;
+            margin-right: -0.25em;
+        }
+    `]
 
     constructor(){
         super()
