@@ -120,8 +120,8 @@ customElements.define('b-list', class extends LitElement {
         [part="toolbar"] { grid-area: toolbar; }
         [part="header"] { grid-area: header; }
         [part="footer"] { grid-area: footer; }
-        [part="sidebar:left"] { grid-area: sidebarleft; }
-        [part="sidebar:right"] { grid-area: sidebarright; }
+        [part="sidebar left"] { grid-area: sidebarleft; }
+        [part="sidebar right"] { grid-area: sidebarright; }
 
         slot[name="header"],
         slot[name="footer"] {
@@ -143,8 +143,8 @@ customElements.define('b-list', class extends LitElement {
             height: 0 !important;
         }
 
-        [part="sidebar:left"],
-        [part="sidebar:right"] {
+        [part="sidebar left"],
+        [part="sidebar right"] {
             display: flex;
         } 
 
@@ -364,7 +364,7 @@ customElements.define('b-list', class extends LitElement {
         </b-infinite-list>
         <slot name="footer" part="footer"></slot>
 
-        <slot name="sidebar:right" part="sidebar:right"></slot>
+        <slot name="sidebar:right" part="sidebar right"></slot>
 
         <b-panels name="b-list:${this.key}"></b-panels>
     `}
