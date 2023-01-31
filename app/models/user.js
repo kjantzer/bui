@@ -3,6 +3,8 @@ import sync, {syncBackboneCollection} from '../../realtime/client/sync'
 import {colorScheme} from '../../util/device'
 import '../../helpers/backbone/relations'
 
+export {colorScheme}
+
 export const themeColors = [
     {label: 'Default', val:''},
     {label: 'Blue', val:'blue'},
