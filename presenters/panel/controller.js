@@ -37,6 +37,8 @@ class PanelController extends LitElement {
             position: relative;
             height: 100%;
             display: none;
+            transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0;
         }
 
         @media (min-width: 1000px) {
@@ -55,6 +57,8 @@ class PanelController extends LitElement {
         
         :host([inset]) ::slotted(b-panel) {
             background: none !important;
+            width: var(--inset-width, 400px) !important;
+            --panel-animation-shift: 0;
         }
 
     `}

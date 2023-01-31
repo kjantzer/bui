@@ -685,6 +685,7 @@ export class Panel extends LitElement {
             --radius: var(--b-panel-radius, 8px);
             --radius-top: var(--radius);
             --radius-bottom: 0;
+            --panel-animation-shift: 45px;
         }
 
         :host([type="modal"]) {
@@ -748,7 +749,7 @@ export class Panel extends LitElement {
         }
 
         :host([anchor="right"]) > main {
-            transform: translateX(45px);
+            transform: translateX(var(--panel-animation-shift));
             height: 100%;
             border-radius: var(--radius) 0 0 var(--radius);
         }
@@ -756,7 +757,7 @@ export class Panel extends LitElement {
         :host([anchor="left"]) > main {
             right: auto;
             left: 0;
-            transform: translateX(-45px);
+            transform: translateX(calc(-1 * var(--panel-animation-shift)));
             height: 100%;
             border-radius: 0 var(--radius) var(--radius) 0;
         }
@@ -767,7 +768,7 @@ export class Panel extends LitElement {
         :host([anchor="bottom"]) > main {
             position: relative;
             margin: auto;
-            transform: translateY(45px);
+            transform: translateY(var(--panel-animation-shift));
         }
 
         :host([anchor="center-left"]) > main {
@@ -785,13 +786,13 @@ export class Panel extends LitElement {
         :host([anchor="bottom"][animation="drop"]) > main {
             position: relative;
             margin: auto;
-            transform: translateY(-45px);
+            transform: translateY(calc(-1 * var(--panel-animation-shift)));
         }
 
         :host([animation="rise"]) > main {
             position: relative;
             margin: auto;
-            transform: translateY(45px);
+            transform: translateY(var(--panel-animation-shift));
         }
 
         :host([anchor^="center"]) > main {
@@ -812,7 +813,7 @@ export class Panel extends LitElement {
 
         :host([anchor="top"]) > main {
             margin-top: 0 !important;
-            transform: translateY(-45px);
+            transform: translateY(calc(-1 * var(--panel-animation-shift)));
             border-radius: 0 0 var(--radius) var(--radius);
         }
 
