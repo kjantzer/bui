@@ -267,7 +267,7 @@ export class Panel extends LitElement {
         register.open(path)
     }
 
-    static get animationTime(){ return 300 }
+    static get animationTime(){ return 200 }
     
     constructor(view, opts={}){
         super()
@@ -748,7 +748,7 @@ export class Panel extends LitElement {
         }
 
         :host([anchor="right"]) > main {
-            transform: translateX(100px);
+            transform: translateX(45px);
             height: 100%;
             border-radius: var(--radius) 0 0 var(--radius);
         }
@@ -756,7 +756,7 @@ export class Panel extends LitElement {
         :host([anchor="left"]) > main {
             right: auto;
             left: 0;
-            transform: translateX(-100px);
+            transform: translateX(-45px);
             height: 100%;
             border-radius: 0 var(--radius) var(--radius) 0;
         }
@@ -767,11 +767,11 @@ export class Panel extends LitElement {
         :host([anchor="bottom"]) > main {
             position: relative;
             margin: auto;
-            transform: translateY(100px);
+            transform: translateY(45px);
         }
 
         :host([anchor="center-left"]) > main {
-            transform: translate(-50%, 100px);
+            transform: translate(-50%, 45px);
             margin: auto 0;
             margin-left: 30%;
         }
@@ -785,13 +785,13 @@ export class Panel extends LitElement {
         :host([anchor="bottom"][animation="drop"]) > main {
             position: relative;
             margin: auto;
-            transform: translateY(-100px);
+            transform: translateY(-45px);
         }
 
         :host([animation="rise"]) > main {
             position: relative;
             margin: auto;
-            transform: translateY(100px);
+            transform: translateY(45px);
         }
 
         :host([anchor^="center"]) > main {
@@ -812,7 +812,7 @@ export class Panel extends LitElement {
 
         :host([anchor="top"]) > main {
             margin-top: 0 !important;
-            transform: translateY(-100px);
+            transform: translateY(-45px);
             border-radius: 0 0 var(--radius) var(--radius);
         }
 
