@@ -246,7 +246,7 @@ customElements.define('b-list-header', class extends LitElement{
             customElements.get(this.parentElement.rowElement).applyGridStyleProps = function(row){
 
                 // default to all children, so long as they aren't hidden
-                let children = Array.from(row.shadowRoot.children).filter(el=>isCell(el))
+                let children = Array.from(row.shadowRoot?.children||[]).filter(el=>isCell(el))
 
                 children.forEach((el, i)=>{
                     el.style.setProperty('visibility', `var(--grid-col-${i+1}-visibility, visible)`)
