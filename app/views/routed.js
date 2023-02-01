@@ -72,8 +72,15 @@ export default class RoutedView extends LitElement {
         // track the set filters in the url
         if( Object.keys(filters).length == 0 )
             this.route?.state.updateQuery({filters:null})
-        else
-            this.route?.state.updateQuery({filters: btoa(JSON.stringify(filters))})
+        else{
+            // https://stackoverflow.com/a/33140101/484780
+            filters = btoa(JSON.stringify(filters).replace(/[\u00A0-\u2666]/g, function(c) {
+                return '&#' + c.charCodeAt(0) + ';';
+            }));
+
+            this.route?.state.updateQuery({filters})
+        }
+            
     }
 
     get router(){ return router }
