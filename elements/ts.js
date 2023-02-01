@@ -64,7 +64,11 @@ customElements.define('b-ts', class extends LitElement{
                 age = age < 0 ? Math.floor(age) : Math.ceil(age) 
             }
 
-            this.setAttribute('age', age)
+            let target = this.trackAgeTarget || this
+            if( typeof target == 'function' )
+                target = target.call(this)
+
+            target?.setAttribute('age', age)
         }
         
         if( this.format == 'relative' && this.date.fromNow )
