@@ -44,6 +44,9 @@ module.exports = class Model {
         if( limit )
             return `LIMIT ${limit}`
 
+        if( this.opts.limit !== undefined )
+            return this.opts.limit ? `LIMIT ${this.opts.limit}` : ''
+
         if( this.req && this.req.query.perPage )
             return `LIMIT ${this.req.query.pageAt||0},${this.req.query.perPage}`
             
@@ -56,7 +59,8 @@ module.exports = class Model {
     }
 
     findGroupBy(){
-        let groupBy = this.config.groupBy
+        let groupBy = this.opts.groupBy || this.config.groupBy
+
         return  groupBy ? `GROUP BY ${groupBy}` : ''
     }
 
@@ -128,7 +132,7 @@ module.exports = class Model {
         if( this.__filters !== undefined ) return this.__filters
 
         try {
-            let filters = this.req.query.filters
+            let filters = this.opts.filters || this.req.query.filters
 
             if( filters && typeof filters == 'string')
                 filters = JSON.parse(filters)
