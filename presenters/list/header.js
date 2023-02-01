@@ -250,6 +250,7 @@ customElements.define('b-list-header', class extends LitElement{
 
                 children.forEach((el, i)=>{
                     el.style.setProperty('visibility', `var(--grid-col-${i+1}-visibility, visible)`)
+                    el.style.setProperty('height', `var(--grid-col-${i+1}-height, auto)`)
                 })
 
             }
@@ -324,10 +325,12 @@ customElements.define('b-list-header', class extends LitElement{
             if( hidden?.includes(col.id) ){
 
                 parentEl.style.setProperty(`--grid-col-${col.num}-width`, '0px', 'important')
+                parentEl.style.setProperty(`--grid-col-${col.num}-height`, '0px')
                 parentEl.style.setProperty(`--grid-col-${col.num}-visibility`, 'hidden')
 
             }else{
                 parentEl.style.setProperty(`--grid-col-${col.num}-width`, col.width)
+                parentEl.style.removeProperty(`--grid-col-${col.num}-height`)
                 parentEl.style.removeProperty(`--grid-col-${col.num}-visibility`)
             }
         })
@@ -355,5 +358,6 @@ export function applyGrid(el, {start=1, end}={}){
     children.forEach((el, i)=>{
         let num = nums[i]
         el.style.setProperty('visibility', `var(--grid-col-${num}-visibility, visible)`)
+        el.style.setProperty('height', `var(--grid-col-${num}-height, auto)`)
     })
 }
