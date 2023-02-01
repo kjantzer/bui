@@ -599,6 +599,7 @@ customElements.define('b-list', class extends LitElement {
 
         // TODO: unbind on disconnect?
         this.selection = new Selection(this.list, this.rowElement, Object.assign({
+            endWhenNoResults: false,
             toolbar: this.shadowRoot.querySelector('b-list-selection-bar'),
         }, (this.selectionOptions||{})))
 
