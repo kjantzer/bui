@@ -14,6 +14,7 @@ class SearchAPI {
     }
 
     get limit(){ return 100 }
+    typeDelimiter = ','
 
     static enableFindWhereTerm(){
         ModelFindWhereTerm(this)
@@ -48,12 +49,13 @@ class SearchAPI {
     async searchType(){
 
         if( !this.db ) throw new Error('Missing `this.db`')
-        
-        let SearchType = SearchTypes.get(this.type)
 
-        if( !SearchType ) throw Error('Invalid search type')
+        let types = this.typeDelimiter === false ? [this.type] : this.type?.split(this.typeDelimiter).map(s=>s.trim())
+
+        let badType = types.find(type=>!SearchTypes.get(type))
+        if( badType ) throw Error('Invalid search type: '+badType)
             
-        return this.searchTypes([this.type])
+        return this.searchTypes(types)
     }
 
     // default searches all "types"
