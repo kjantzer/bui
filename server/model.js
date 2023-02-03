@@ -96,6 +96,10 @@ module.exports = class Model {
         this.opts = opts
 
         for(let key in attrs){
+            
+            if( key == 'req')
+                console.error('ALERT: models should not have `req` for an attribute')
+
             try{
                 this[key] = attrs[key]
             }catch(err){}
@@ -292,7 +296,7 @@ module.exports = class Model {
         if( this.req.query.relations !== undefined )
             return this.relationChain()
 
-        // NOTE: the preferre syntaxt is now:
+        // NOTE: the preferred syntax is now:
         // find(opts={where, [select, with]})
         if( opts == undefined && where && (where.where || where.select || where.with) ){
             opts = Object.assign({}, where)
@@ -500,7 +504,7 @@ module.exports = class Model {
         if( this.config.userID && this.req?.user )
             attrs[this.config.userID] = this.req.user.id
 
-        let beforeAdd = await this.beforeAdd(attrs)
+        let beforeAdd = await this.beforeAdd(attrs, arguments[1])
         this.encodeFields(attrs) // NOTE: this moved to after ^, could cause problems with existing code
 
         if( !attrs || Object.keys(attrs).length == 0 )
