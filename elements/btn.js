@@ -429,8 +429,10 @@ export default class BtnElement extends LitElement {
                 <b-tooltip label>${this.tooltip}</b-tooltip>
             `:''}
         </main>
-        <slot name="outer"></slot>
+        <slot name="outer">${this.renderOuter()}</slot>
     `}
+
+    renderOuter(){}
 
 	constructor(){
 		super()
@@ -440,6 +442,9 @@ export default class BtnElement extends LitElement {
 	}
 
     firstUpdated(){
+
+        super.firstUpdated()
+        
         this.addEventListener('click', ()=>{
 
             if( window.soundFX && soundFX.playIfMobile )
