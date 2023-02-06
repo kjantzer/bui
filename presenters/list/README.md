@@ -87,6 +87,8 @@ const filters = {
         multi: false, // can more than one value be selected?
         db: false, // true will make the filterBy happen on server instead
         show: null, // set to false to hide; also see "overflow panel"
+        neverReset: false, // can only be reset deliberately; not with global reset()
+        summarize: false, // true or function to show number of values selected instead of labels
         onFirstLoad: async (list, filter)=>{
             // use this to fetch data before showing menu for the first time
         },
@@ -101,7 +103,6 @@ const filters = {
                 description: '',
                 icon: '',
                 clearsAll: false, // never allowed to multi select
-                neverReset: false // can only be reset deliberately; not with global reset()
             },
             'divider',
             {label: 'Type 1', val: '1'},

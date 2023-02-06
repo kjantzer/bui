@@ -563,6 +563,13 @@ export class Filter {
         else
             val = val&&(val.val||val)
 
+        // TODO: maybe support a "number" which will summarize if val length over?
+        if( val && val.length > 0 && this.attrs.summarize ){
+            if( typeof this.attrs.summarize == 'function' )
+                return this.attrs.summarize(val)
+            return val.length+' filters'
+        }
+
         if( this.isCustomView ){
             let view = this.customView
             return view ? view.label : 'UNSUPORRTED'
