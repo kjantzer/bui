@@ -41,14 +41,30 @@ customElements.define('b-metadata', class extends LitElement{
         }
     `}
 
+    async performUpdate(){
+        if( this.values?.fetchSync )
+            await this.values.fetchSync({once: true})
+
+        return super.performUpdate()
+    }
+
     get metadata(){
         let metadata = this.data
 
         let data = []
         for( let key in metadata ){
-            data.push({
-                key, val: metadata[key]
-            })
+
+            let spec = this.values?.find ? this.values.find(m=>m.key?.toLowerCase?.()==key) : null
+
+            let val = {
+                key, 
+                val: metadata[key],
+            }
+
+            if( spec && spec.options )
+                val.options = spec.options
+
+            data.push(val)
         }
 
         return data
@@ -71,12 +87,23 @@ customElements.define('b-metadata', class extends LitElement{
         ${this.metadata.map(t=>html`
         
             <form-control key="${t.key}" material="${this.material}">
+                
+                ${t.options?html`
+                <select-field .value=${t.val} .options=${t.options} multiple
+                    placeholder=${this.opts.placeholder}
+                    @change=${this.clearMeta}
+                ></select-field>
+                `:html`
                 <text-field .value=${t.val} 
                     nowrap
                     placeholder=${this.opts.placeholder}
                     @blur=${this.clearMeta}></text-field>
+                `}
+
                 <b-text capitalize slot="label">${this.labelFor(t.key)}</b-text>
+                
                 ${this.contentFor(t.key)}
+                
             </form-control>
         `)}
 
@@ -88,15 +115,25 @@ customElements.define('b-metadata', class extends LitElement{
     async addMeta(e){
 
         let key = null
+        let {clickTarget} = e
 
         if( this.values ){
 
-            let values = this.values.filter(v=>!this.metaExists(v))
+            let values = this.values
+
+            if( this.values?.fetchSync ){
+                await this.values.fetchSync({once: true})
+            }
+
+            // if( values.map )
+            values = values.map(m=>m.key===undefined?m:m.key)
+
+            values = values.filter(v=>!this.metaExists(v))
             
             if( this.allowCustom )
                 values.push('-', {label: this.custom||'Custom', val: 'custom', icon: 'pencil'})
 
-            key = await new Menu(values).popover(e.clickTarget)
+            key = await new Menu(values).popover(clickTarget)
             if( !key ) return
             key = key.val
         }
@@ -105,7 +142,7 @@ customElements.define('b-metadata', class extends LitElement{
             key = await Dialog.prompt({
                 placeholder: (this.custom||'Metadata')+' label/name',
                 btns: ['cancel', 'add']
-            }).popover(e.clickTarget)
+            }).popover(clickTarget)
 
         key = key && key.trim()
 
@@ -138,7 +175,7 @@ customElements.define('b-metadata', class extends LitElement{
 
     saveMeta(e){
         let control = e.currentTarget
-        
+
         if( control.tagName !== 'FORM-CONTROL') return
 
         let key = control.key
@@ -151,8 +188,10 @@ customElements.define('b-metadata', class extends LitElement{
 
         let data = {...this.data}
 
-        if( val === null )
+        if( val === null || (Array.isArray(val) && val.length == 0 ) ){
+            val = null
             delete data[key]
+        }
         else
             data[key] = val
 
