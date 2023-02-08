@@ -44,7 +44,12 @@ slot[name="after"]{
 }
 
 :host(:not([empty])) {
-	min-width: calc(.75 * var(--fc-min-width));
+	/* min-width: calc(.75 * var(--fc-min-width)); */ /* WHY was I doing this? seems worse*/
+}
+
+:host([material="outline"]),
+:host([material="filled"]) {
+	min-width: calc(2em + var(--fc-min-width));
 }
 
 :host main {
