@@ -94,7 +94,7 @@ customElements.define('b-metadata', class extends LitElement{
                 
                 ${t.options?html`
                 <select-field .value=${t.val} .options=${t.options} multiple
-                    placeholder=${this.opts.placeholder||'select'} show-empty
+                    placeholder=${this.opts.placeholder||'select'}
                     @change=${this.clearMeta}
                 ></select-field>
                 `:html`
