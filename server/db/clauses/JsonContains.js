@@ -29,7 +29,7 @@ module.exports = class JsonContains extends Clause {
 
             let path = this.path
             
-            if( path = 'AUTO_DETECT' ){
+            if( path == 'AUTO_DETECT' ){
                 let paths = val.split('->')
                 if( paths.length == 2 ){
                     val = paths[1]
