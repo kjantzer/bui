@@ -79,6 +79,14 @@ customElements.define('b-tag-list', class extends LitElement{
             padding: 0.125em 0.5em;
             border-radius: 1em;
         }
+
+        :host([type="chip"][lg]) {
+            gap: .5em;
+        }
+        
+        :host([type="chip"][lg]) .tag {
+            padding: .5em;
+        }
     `}
 
     set value(val){
