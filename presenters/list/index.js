@@ -201,6 +201,10 @@ customElements.define('b-list', class extends LitElement {
             align-items: center;
         }
 
+        :host([grid]) b-infinite-list[selection-on] > [part="row"]:after {
+            border-radius: var(--grid-cell-radius, 3px) 0 0 var(--grid-cell-radius, 3px);
+        }
+
         b-infinite-list[selection-on] > [part="row"][isselected]:after {
             color: white;
             background: var(--theme-gradient);
@@ -228,6 +232,15 @@ customElements.define('b-list', class extends LitElement {
             width: calc(100% + 2em);
             box-sizing: border-box;
             z-index: -1;
+        }
+
+        :host([grid][selection-on]) b-infinite-list [part="row"] {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        :host([grid]) b-infinite-list > [isselected]:before {
+            border-radius: var(--grid-cell-radius, 0px);
         }
 
         b-infinite-list > * {
