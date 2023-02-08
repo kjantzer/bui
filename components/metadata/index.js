@@ -36,8 +36,12 @@ customElements.define('b-metadata', class extends LitElement{
             display: contents;
         }
 
-        form-control {
+        /* form-control[material=""] {
             min-width: 60px;
+        } */
+
+        form-control[material="hover"] {
+            --padY: .35em;
         }
     `}
 
@@ -58,11 +62,11 @@ customElements.define('b-metadata', class extends LitElement{
 
             let val = {
                 key, 
-                val: metadata[key],
+                val: metadata[key]||'',
             }
 
             if( spec && spec.options )
-                val.options = spec.options
+                val.options = [{label: 'Remove', icon:'trash', val: null, clearsAll: true}, '-'].concat(spec.options)
 
             data.push(val)
         }
@@ -90,7 +94,7 @@ customElements.define('b-metadata', class extends LitElement{
                 
                 ${t.options?html`
                 <select-field .value=${t.val} .options=${t.options} multiple
-                    placeholder=${this.opts.placeholder}
+                    placeholder=${this.opts.placeholder||'select'} show-empty
                     @change=${this.clearMeta}
                 ></select-field>
                 `:html`
@@ -133,8 +137,17 @@ customElements.define('b-metadata', class extends LitElement{
             if( this.allowCustom )
                 values.push('-', {label: this.custom||'Custom', val: 'custom', icon: 'pencil'})
 
+            if( this.values?.manage ){
+                values.push('-', {label: 'Manage', icon: 'settings_material', fn: ()=>{
+                    this.values.manage()
+                }})
+            }
+
             key = await new Menu(values).popover(clickTarget)
             if( !key ) return
+
+            if( key.fn ) return key.fn.call()
+
             key = key.val
         }
 
