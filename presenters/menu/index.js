@@ -1064,7 +1064,9 @@ export default class Menu {
 			if( this.opts.multiple )
 				this.resolve(this.selected)
 			else
+			setTimeout(()=>{ // let submenu resolve
 				this.resolve(false)
+			})
 		}
 		
 		if( !opts.onKeydown)
