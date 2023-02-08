@@ -175,10 +175,12 @@ class SelectFieldElement extends HTMLElement {
 		}
 	}
 
-	static get observedAttributes() { return ['disabled']; }
+	static get observedAttributes() { return ['disabled', 'placeholder']; }
 	attributeChangedCallback(name, oldValue, newValue){
 		if( name === 'disabled' )
 			this._input.disabled = this.disabled
+		if( name === 'placeholder' )
+			this._value.dataset.placeholder = newValue
 	}
 	
 	setAttributes(){
