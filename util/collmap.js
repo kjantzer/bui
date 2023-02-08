@@ -26,12 +26,26 @@ module.exports = class CollMap extends Map {
     }
 
     set(...args){
+
+        // must be a single object of values to set: {key: val, key2: val2}
+        if( args.length == 1 && typeof args[0] == 'object' ){
+            for( let key in args[0] ){
+                this.set(key, args[0][key])
+            }
+            return
+        }
+
         // delete first so the new value is added to end of stack (thus keeping in order of adding)
         if( this.opts?.storeInOrder )
             super.delete(...args)
 
         super.set(...args)
-        this._storeUpdate(...args)
+
+        // timeout used in case single object set from above
+        clearTimeout(this._setStore)
+        this._setStore = setTimeout(()=>{
+            this._storeUpdate(...args)
+        })
     }
 
     delete(...args){
