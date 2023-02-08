@@ -27,7 +27,20 @@ module.exports = class JsonContains extends Clause {
 
         return '('+value.map(val=>{
 
-            let path = makePath(this.path, db)
+            let path = this.path
+            
+            if( path = 'AUTO_DETECT' ){
+                let paths = val.split('->')
+                if( paths.length == 2 ){
+                    val = paths[1]
+                    path = paths[0]
+                }
+
+                if( this.ignoreCase )
+                    path = path?.toLowerCase()
+            }
+
+            path = makePath(path, db)
 
             if( this.ifNull )
                 key = `IFNULL(${key}, '${this.ifNull}')`
