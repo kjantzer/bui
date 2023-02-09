@@ -56,7 +56,7 @@ module.exports = class JsonSearch extends Clause {
     }
 
     // str example: `key: val, key2: %val2, key3`
-    static fromString(field, str, group, opts){
+    static fromString(field, str, group, opts={}){
 
         let groups = {}
 
@@ -87,7 +87,7 @@ module.exports = class JsonSearch extends Clause {
             
             let vals = groups[key]
 
-            if( opts.path )
+            if( opts?.path )
                 key = opts.path+'.'+key
 
             group.set(
