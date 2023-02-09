@@ -218,6 +218,11 @@ customElements.define('b-text', class extends LitElement{
             if( !href.match(/^mailto/) && href.match(/@/) ) href = 'mailto:'+href
             window.open(href)
         }
+
+        // Blackstone app pattern
+        let goto = this.getAttribute('goto')
+        if( goto && window.goTo )
+            goTo(goto)
     }
 
     render(){return html`
