@@ -36,13 +36,8 @@ const device = {
         return /iPad/.test(UA) || (!device.isiOS && device.isMac && navigator.standalone !== undefined )
     },
 
-    get isAndroid(){
-        return /android/i.test(UA)
-    },
-
-    get isChromeOS(){
-        return /CrOS/.test(UA)
-    },
+    get isAndroid(){ return /android/i.test(UA) },
+    get isChromeOS(){ return /CrOS/.test(UA)},
 
     get isTouch(){
         return 'ontouchstart' in window || navigator.maxTouchPoints > 0
@@ -71,6 +66,8 @@ const device = {
              !navigator.userAgent.match(/fxios/i) &&
              !navigator.userAgent.match(/Opera|OPT\//)
     },
+
+    get isSafari(){ return /Safari/.test(UA)},
 
     get chromeVersion(){
         return (UA.match(/Chrome\/([\d\.]+) /)||[])[1]
