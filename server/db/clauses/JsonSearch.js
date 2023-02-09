@@ -72,8 +72,11 @@ module.exports = class JsonSearch extends Clause {
 
             if( !val ) val = undefined
 
+            // date?
+            if( val && val.match(/[\d\.]+\//) )
+                val = val // TODO: format date?
             // attempt to parse as number
-            if( val && val.match(/[\d\.]+/) )
+            else if( val && val.match(/[\d\.]+/) )
                 val = parseFloat(val) || val
 
             groups[key] = groups[key] || []
@@ -83,6 +86,9 @@ module.exports = class JsonSearch extends Clause {
         for( let key in groups ){
             
             let vals = groups[key]
+
+            if( opts.path )
+                key = opts.path+'.'+key
 
             group.set(
                 {toSqlString:()=>field},
