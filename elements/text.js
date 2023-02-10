@@ -55,13 +55,16 @@ customElements.define('b-text', class extends LitElement{
             white-space: normal;
             display: -webkit-box;
             -webkit-box-orient: vertical;
-            -webkit-line-clamp: var(--clip-max-lines, 2);
+            -webkit-line-clamp: var(--clip-max-lines, 1);
         }
 
+        :host([clip="1"]) { --clip-max-lines: 1; }
         :host([clip="2"]) { --clip-max-lines: 2; }
         :host([clip="3"]) { --clip-max-lines: 3; }
         :host([clip="4"]) { --clip-max-lines: 4; }
         :host([clip="5"]) { --clip-max-lines: 5; }
+        :host([clip="6"]) { --clip-max-lines: 6; }
+        :host([clip="7"]) { --clip-max-lines: 7; }
 
         :host([clip]) ::slotted(b-text),
         :host([clip]) ::slotted(span) {
