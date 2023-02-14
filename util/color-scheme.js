@@ -17,7 +17,10 @@ export const colorScheme = {
 
     get isSupported(){ return this.isDarkMode || this.isLightMode || this.isUnset },
 
-    isWhatTheme(theme, {store=false, fallback='system'}={}){
+    // DEPRECATED
+    isWhatTheme(theme, {store=false, fallback='system'}={}){ return this.isWhatMode(...arguments) },
+
+    isWhatMode(theme, {store=false, fallback='system'}={}){
 
         if( theme === undefined )
             theme = localStorage.getItem('theme') || fallback

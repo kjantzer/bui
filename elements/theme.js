@@ -9,6 +9,7 @@
     ```
 */
 import { LitElement, html, css } from 'lit'
+import colorScheme from '../util/color-scheme'
 
 const modes = {
 
@@ -115,7 +116,12 @@ customElements.define('b-theme', class extends LitElement{
         this.requestUpdate('mode', oldVal)
     }
     
-    get mode(){ return this.__mode}
+    get mode(){ 
+        if( this.__mode == 'auto' || !this.__mode )
+            return colorScheme.isWhatMode()
+
+        return this.__mode
+    }
 
     async _applyTheme(){
         let el = this.host
@@ -128,7 +134,7 @@ customElements.define('b-theme', class extends LitElement{
             
         
         if( !el ) return console.warn('b-theme: could not apply to unfound element', this.el)
-        
+
         if( this.mode && modes[this.mode] ){
             let props = cssToProps(modes[this.mode])
 
