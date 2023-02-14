@@ -211,7 +211,7 @@ export default class RoutedView extends LitElement {
             if( this.closeInvalid )
                 setTimeout(()=>this.close(), 300)
 
-            throw new UIWarningError('Invalid ID: '+id)
+            throw new UIWarningError('Invalid ID: '+model.id)
         }
         
         if( model )
