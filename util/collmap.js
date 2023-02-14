@@ -49,8 +49,9 @@ module.exports = class CollMap extends Map {
     }
 
     delete(...args){
-        super.delete(...args)
+        let didDelete = super.delete(...args)
         this._storeUpdate(...args)
+        return didDelete
     }
 
     _storeUpdate(args){
