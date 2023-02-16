@@ -14,7 +14,6 @@ opts = {
 	title:'',
 	body:'',
 	view: null,
-	// w: null, // TODO: add this feature again?
 
 	btns:['dismiss'],
 	closeBtn: false, // close button in top right

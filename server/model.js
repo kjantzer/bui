@@ -1,5 +1,6 @@
 const related = require('./related')
 require('../util/promise.series')
+const findFK = require('./db/findForeignKeyConstraints')
 
 const defaultConfig = {
     idAttribute: 'id'
@@ -646,5 +647,37 @@ module.exports = class Model {
             })
 
         return String(result.affectedRows)
+    }
+
+    async findForeignKeyConstraints(){
+        return findFK.call(this, {table: this.config.table, id: this.idAttribute})
+    }
+
+    async merge(){
+
+        let {ids, primaryID} = this.req.body
+        let foreignKeys = await this.findForeignKeyConstraints()
+
+        // make sure primary ID is NOT in set of IDs to merge
+        ids = ids.filter(id=>id!=primaryID)
+        
+        if( ids.length == 0 || !primaryID )
+            throw new APIError('Improper IDs given for merging')
+
+        this.beforeMerge && await this.beforeMerge({ids, primaryID, foreignKeys})
+
+        // update all foreign keys to use the primary ID
+        await Promise.all(foreignKeys.map(fk=>{
+            this.db.query(/*sql*/`
+                UPDATE ${fk.TABLE_NAME} SET ${fk.COLUMN_NAME} = ? WHERE ${fk.COLUMN_NAME} IN(?)
+            `, [primaryID, ids])
+        }))
+
+        // now delete the merged records
+        await this.db.query(/*sql*/`DELETE FROM ${this.config.table} WHERE ${this.idAttribute} IN(?)`, [ids])
+
+        this.afterMerge && await this.afterMerge({ids, primaryID, foreignKeys})
+
+        return String(ids.length)
     }
 }
