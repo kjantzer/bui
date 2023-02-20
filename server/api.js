@@ -31,8 +31,9 @@ module.exports = class API {
         if( !Class.name )
             return console.warn('! API: not a valid class', Class)
 
-        if( Class.prototype.apiPathPattern )
-            return // already setup, no need to setup again (could be here from a related class api)
+        // cannot do this, could be a subclass with same prototype
+        // if( Class.prototype.apiPathPattern )
+        //     return console.log('already', Class.name); // already setup, no need to setup again (could be here from a related class api)
 
         if( !Class.api || !Class.api.routes )
             return console.warn('! API: class `'+Class.name+'` must specify `api.routes`')
