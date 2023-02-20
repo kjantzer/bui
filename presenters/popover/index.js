@@ -317,6 +317,7 @@ export default class Popover {
 	// internal close method that also triggers the onClose callback
 	_close(){
 		this.close()
+		if( this.view?.onClose ) this.view.onClose()
 		this.opts.onClose&&this.opts.onClose()
 	}
 	
