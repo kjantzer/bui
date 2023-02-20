@@ -52,3 +52,30 @@ popover.positionOver(newKeyboardEvent)
 
 `overflowBoundry` - 'scrollParent', 'window', or an element  
 >Note: you may want to set `maxHeight` as well
+
+## Popover View
+A specialized view class for popover specific views.
+
+```js
+import PopoverView from 'bui/presenters/popover/view'
+import 'bui/helpers/lit/shared'
+
+customElements.defineShared('my-popover-view', class extends PopoverView {
+	load(modelOrID){
+		// get/set model
+	}
+
+	onClose(){
+		// optional hook
+	}
+})
+
+// ...later - get singleton and open
+customElements.get('my-popover-view').shared.open(target, modelOrID, opts)
+customElements.get('my-popover-view').shared.openIfHoveringContinues(target, modelOrID, opts)
+```
+
+### Options
+Same options as `new Popover(target, view, opts)`
+
+#### `matchTargetWidth`
