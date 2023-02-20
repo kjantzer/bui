@@ -31,6 +31,9 @@ module.exports = class API {
         if( !Class.name )
             return console.warn('! API: not a valid class', Class)
 
+        if( Class.prototype.apiPathPattern )
+            return // already setup, no need to setup again (could be here from a related class api)
+
         if( !Class.api || !Class.api.routes )
             return console.warn('! API: class `'+Class.name+'` must specify `api.routes`')
 
@@ -42,6 +45,7 @@ module.exports = class API {
         Class.prototype.apiPathPattern = new UrlPattern(path, {segmentNameCharset: 'a-zA-Z0-9_'})
         Class.prototype.apiPathPattern.path = path
 
+        if( !Class.prototype.hasOwnProperty('apiPath') )
         Object.defineProperty(Class.prototype, 'apiPath', {
             get: function apiPath() {
                 let params = {...this, id: this.id, ...(this.attrs || {})}
@@ -53,6 +57,22 @@ module.exports = class API {
 
         if( Class.api.sync )
             this.setupSync(Class)
+
+        this.initRelatedAPIs(Class)
+    }
+
+    initRelatedAPIs(Class){
+        if( !Class.related ) return
+
+        for( let relatedKey in Class.related ){
+            
+            if( Class.related[relatedKey].api && Class.related[relatedKey].model ){
+                let relatedClass = require(Class.related[relatedKey].model)
+                
+                if( relatedClass && relatedClass.api )
+                    this.initClassAPI(relatedClass)
+            }
+        }
     }
 
     setupSync(Class){
