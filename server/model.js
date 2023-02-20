@@ -338,7 +338,25 @@ module.exports = class Model {
                 opts.select += `,`+joinSelect
         }
 
-        let sql = this.findSql(where, opts)
+        // NOTE: sort of a half-baked idea
+        let unions = await this.findUnions?.()
+        let sql = ''
+
+        if( unions && Array.isArray(unions) && unions.length > 0 ){
+            unions = unions.map(union=>{
+
+                let [clause, clauseValues] = new this.db.clauses.Group(union).toSqlString(this.db)
+                let unionWhere = where || 'WHERE true'
+                unionWhere += 'AND '+clause
+                
+                return this.findSql(unionWhere, opts)
+            })
+
+            sql = `(${unions.join(`) \nUNION ALL\n(`)})`
+
+        }else
+            sql = this.findSql(where, opts)
+        
         if( typeof sql != 'string' ) return sql
 
         if( opts.returnSql )
