@@ -23,9 +23,6 @@ customElements.defineShared('b-popover-view', class extends LitElement{
 
         this.load(id)
 
-        if( opts.matchTargetWidth )
-            opts.width = target.clientWidth+'px'
-
         new Popover(target, this, opts)
     }
 

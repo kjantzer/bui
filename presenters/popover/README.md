@@ -25,6 +25,8 @@ const DefaultOpts = {
 	className: '',
 	clickToggles: true,
 	closeOnHide: true,
+	width: '',
+	matchTargetWidth: false, // true or element
 	maxWidth: '',
 	maxHeight: 'auto',
 	maxHeightThreshold: 400,

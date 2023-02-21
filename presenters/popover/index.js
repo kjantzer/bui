@@ -112,6 +112,17 @@ export default class Popover {
 		this.el.appendChild(view)
 		document.body.append(this.el)
 
+		if( !opts.width && opts.matchTargetWidth ){
+			let targetWidth = target.clientWidth
+
+			if( opts.matchTargetWidth === true && targetWidth < 80 && target.parentElement)
+				targetWidth = target.parentElement.clientWidth
+			else if( opts.matchTargetWidth && opts.matchTargetWidth !== true && opts.matchTargetWidth.clientWidth )
+				targetWidth = opts.matchTargetWidth.clientWidth
+
+			opts.width = targetWidth+'px'
+		}
+
 		if( this.opts.inverse )
 			this.el.classList.add('inverse')
 		
