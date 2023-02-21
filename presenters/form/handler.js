@@ -83,7 +83,7 @@ class FormHandler extends HTMLElement {
 				if( this.autoGridArea )
 					el.style.gridArea = key
 
-				if( this._values && this._values[key] )
+				if( this._values && this._values[key] !== undefined )
 					el.value = this._values[key]
 			}
 
@@ -236,7 +236,7 @@ class FormHandler extends HTMLElement {
 			}
 			
 			// set the editor with the new value
-			if( this.controlsByKey[key] ){
+			if( this.controlsByKey[key] !== undefined ){
 				this.controlsByKey[key].value = m.changed[key]
 				this.controlsByKey[key].removeAttribute('unsaved')
 				
