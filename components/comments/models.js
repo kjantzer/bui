@@ -29,7 +29,7 @@ export default class Comments extends Collection {
         if( ['unread', 'history'].includes(this.gid) )
             return -1 * m.get('ts_created').sortValue()
         
-        return m.get('ts_created').sortValue()
+        return m.get('ts_created')?.sortValue()
     }
 
     onSync(data){
