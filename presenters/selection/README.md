@@ -21,6 +21,7 @@ selection.result.models
 
 ### `.begin()`
 ### `.end()`
+### `.clear()`
 ### `.on(event, callback)`
 See "events" below
 

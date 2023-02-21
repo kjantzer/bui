@@ -92,13 +92,17 @@ export default class Selection {
         this.__on = false
         this.list.removeAttribute('selection-on')
         this.unbindEvents()
+        this.clear()
+
+        this.opts.onEnd()
+        this.emit('end')
+    }
+
+    clear(){
         let {items} = this.getItems()
         items.forEach(item=>{
             this._deselect(item)
         })
-
-        this.opts.onEnd()
-        this.emit('end')
     }
 
     bindEvents(e){
