@@ -524,6 +524,8 @@ export class Panel extends LitElement {
     get panelController(){return this.__panelController}
     set controller(val){ this.panelController = val }
     set panelController(val){
+
+        if( val === 'keep' ) return
         
         if( typeof val === 'string' ){
             let _val = val
