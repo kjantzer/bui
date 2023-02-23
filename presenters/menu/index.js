@@ -1037,6 +1037,9 @@ export default class Menu {
 			return this.promise
 		}
 
+		if( opts.btns )
+			return this.panel({target, ...opts})
+
 		if( opts.adjustForMobile && device.isMobile && !device.isTablet ){
 			let modalOpts = {btns: ['cancel','apply']}
 
@@ -1113,10 +1116,12 @@ export default class Menu {
 			
 			this.presenter = null
 			
-			// if( this.opts.multiple )
-			// 	this.resolve(this.selected)
-			// else
-			// 	this.resolve(false)
+			if( this.opts.multiple && !opts.btns )
+				this.resolve(this.selected)
+			else
+				setTimeout(()=>{ // let submenu resolve
+					this.resolve(false)
+				})
 		}
 		
 
@@ -1127,14 +1132,20 @@ export default class Menu {
 			view: this.el,
 			btns: opts.btns||false
 		})
-		this.presenter = new Panel(dialog, opts)
-		this.presenter.open()
+
+		// if target was given, popover the target
+		if( opts.target ){
+			this.presenter = new Popover(opts.target, dialog, opts)
+		}else{
+			this.presenter = new Panel(dialog, opts)
+			this.presenter.open()
+		}
 
 		// if dialog btn clicked, take action
 		dialog.promise.then(btn=>{
 
-			if( ['apply', 'save', 'create', 'add'].includes(btn.val) && this.opts.multiple )
-				this.resolve(this.selected)
+			if( btn && !btn.isCancelBtn && this.opts.multiple )
+				this.resolve(opts.btns.length>2?[btn, this.selected]:this.selected)
 
 			else if( btn )
 				this.resolve(btn)
