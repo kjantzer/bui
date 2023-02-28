@@ -57,7 +57,11 @@ Model.prototype.resetEdited = function(opts={}){
 	this._editedAttrs = {}
 	this._origAttrs = null
 	this.set(orig)
-	this.trigger('edited', this.isEdited(), {})
+
+	if( opts.silent !== true ){
+		this.trigger('edited:reset')
+		this.trigger('edited', this.isEdited(), {})
+	}
 }
 
 Model.prototype.editAttr = async function(key, val, opts={}){
