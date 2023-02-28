@@ -19,6 +19,7 @@ customElements.defineShared('b-popover-view', class extends LitElement{
     }
 
     async open(id, target, opts){
+        this.opts = opts
         this.close()
 
         this.load(id)
