@@ -432,22 +432,18 @@ export class Panel extends LitElement {
         </main>
     `}
 
-    animate(effect){
+    animate(effect, {timeout=1000}={}){
         if( !effect ) return
         let main = this.shadowRoot.querySelector('main')
-        main.classList.add(effect)
+        main.classList.add(effect, 'animate')
         setTimeout(function(){
-            main.classList.remove(effect)
-        },1000)
+            main.classList.remove(effect, 'animate')
+        },timeout)
     }
 
-    bounce(){
-        this.animate('bounce')
-    }
-
-    shake(){
-        this.animate('shake')
-    }
+    bounce(){ this.animate('bounce') }
+    shake(){ this.animate('shake') }
+    pulseBack(){ this.animate('pulseback', {timeout: 220}) }
 
     set html(fn){ this.__html = fn}
     get html(){ return this.__html ? this.__html.call(this) : ''}
@@ -747,6 +743,9 @@ export class Panel extends LitElement {
 
         :host([open]) > main {
             opacity: 1;
+        }
+
+        :host([open]) > main:not(.animate) {
             transform: none !important;
         }
 
@@ -936,29 +935,22 @@ export class Panel extends LitElement {
             53%,
             80%,
             to {
-                -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
                 animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-                -webkit-transform: translate3d(0, 0, 0);
                 transform: translate3d(0, 0, 0);
             }
 
             40%,
             43% {
-                -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
                 animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-                -webkit-transform: translate3d(0, -30px, 0);
                 transform: translate3d(0, -30px, 0);
             }
 
             70% {
-                -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
                 animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-                -webkit-transform: translate3d(0, -15px, 0);
                 transform: translate3d(0, -15px, 0);
             }
 
             90% {
-                -webkit-transform: translate3d(0, -4px, 0);
                 transform: translate3d(0, -4px, 0);
             }
         }
@@ -985,6 +977,22 @@ export class Panel extends LitElement {
             }
         }
 
+        /* https://animista.net/play/attention/pulsate/pulsate-bck */
+        @keyframes pulsate-bck {
+        0% {
+            -webkit-transform: scale(1);
+                    transform: scale(1);
+        }
+        50% {
+            -webkit-transform: scale(0.9);
+                    transform: scale(0.9);
+        }
+        100% {
+            -webkit-transform: scale(1);
+                    transform: scale(1);
+        }
+        }
+
         .bounce {
             animation-name: bounce;
             transform-origin: center bottom;
@@ -996,6 +1004,10 @@ export class Panel extends LitElement {
             animation-name: shake;
             animation-duration: 700ms;
             animation-fill-mode: both;
+        }
+
+        .pulseback {
+            animation: pulsate-bck 200ms ease-in-out both;
         }
     `}
 }
