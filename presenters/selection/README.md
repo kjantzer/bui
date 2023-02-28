@@ -102,6 +102,11 @@ sel.on('change', result=>{
 ### `begin`
 Do something when bulk selection begins, such as showing a "bulk select toolbar"
 
+```js
+selection.begin(e)
+selection.begin({select: someItem})
+```
+
 ### `end`
 Do something when selection ends
 

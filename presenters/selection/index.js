@@ -344,7 +344,12 @@ export default class Selection {
     }
 
     itemInEvent(e){
-        let path = e.composedPath()
+
+        if( e?.select ){
+            return e.select.tagName == this.itemTagName ? e.select : null
+        }
+
+        let path = e.composedPath?.() || []
         return path.find(_el=>_el.tagName==this.itemTagName)
     }
 
