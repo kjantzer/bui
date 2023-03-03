@@ -8,8 +8,7 @@ import mobileAsyncFocus from '../../util/mobileAsyncFocus'
 import '../../elements/uploader-preview'
 
 let extensions = []
-let MENTION_TAG
-let HASHTAG_TAG
+let TOKENS = []
 
 customElements.define('b-write-comment', class extends LitElement{
 
@@ -19,10 +18,9 @@ customElements.define('b-write-comment', class extends LitElement{
             val = [val]
 
         val.forEach(ext=>{
-            if( ext.name == 'mention' )
-                MENTION_TAG = ext.options.tag
-            if( ext.name == 'hashtag' )
-                HASHTAG_TAG = ext.options.tag
+            let ce = customElements.get(ext.options.tag)
+            if( ce && ce.gleanData )
+                TOKENS.push({tagName: ext.options.tag, elementClass: ce})
         })
 
         extensions = val
@@ -146,17 +144,15 @@ customElements.define('b-write-comment', class extends LitElement{
             path: location.pathname
         }
 
-        if( MENTION_TAG ){
-            let mentions = Array.from(this.formHandler.get('comment').control.shadowRoot.querySelectorAll(MENTION_TAG))
-            meta.mentions = mentions.map(el=>parseInt(el.uid)||null).filter(id=>id)
-        }
+        // mentions, hashtags, etc
+        TOKENS.forEach(({tagName, elementClass})=>{
 
-        if( HASHTAG_TAG ){
-            let hashtags = Array.from(this.formHandler.get('comment').control.shadowRoot.querySelectorAll(HASHTAG_TAG))
-            hashtags = hashtags.map(el=>el.tag||null).filter(tag=>tag)
-            if( hashtags.length > 0 )
-                meta.hashtags = hashtags
-        }
+            let elements = Array.from(this.formHandler.get('comment').control.shadowRoot.querySelectorAll(tagName))
+            let tokenData = elementClass.gleanData(elements)
+
+            if( tokenData )
+                meta = {...meta, ...tokenData}
+        })
 
         if( this.meta ){
             meta = Object.assign(meta, (typeof this.meta == 'function' ? this.meta() : this.meta))
