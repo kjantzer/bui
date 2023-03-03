@@ -63,6 +63,7 @@ customElements.define('b-write-comment', class extends LitElement{
         }
 
         text-editor {
+            --padY: 0;
             /* padding-top: 0; */
             /* align-self: flex-end; */
         }
