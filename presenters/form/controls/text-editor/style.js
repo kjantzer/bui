@@ -105,8 +105,14 @@ export default css`
 }
 
 .ProseMirror :is(h1,h2,h3,h4,h5){
-	line-height: 1em;
+	line-height: 1.1em;
 }
+
+.ProseMirror h1 { font-size: var(--font-size-lg); }
+.ProseMirror h2 { font-size: var(--font-size-md); }
+.ProseMirror h3 { font-size: 1em; }
+.ProseMirror h4 { font-size: var(--font-size-sm) }
+.ProseMirror h5 { font-size: var(--font-size-xs) }
 
 .ProseMirror sup {
 	vertical-align: super;
