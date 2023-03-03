@@ -10,7 +10,7 @@ export default css`
 .ProseMirror {
 	cursor: text;
 	word-wrap: break-word;
-	white-space: pre-wrap;
+	/*white-space: pre-wrap;*/ /* why was this here? */
 	-webkit-font-variant-ligatures: none;
 	font-variant-ligatures: none;
 	line-height: var(--theme-body-line-height, 1.4em);
@@ -71,17 +71,18 @@ export default css`
 }
 
 .ProseMirror pre {
-	background: #0D0D0D;
-	color: #FFF;
+	background: var(--theme-bgd-accent, #aaa);
+    line-height: 1em;
 	font-family: 'JetBrainsMono', monospace;
-	padding: 0.75rem 1rem;
+	padding: 0.5em;
+    border-radius: 4px;
 	border-radius: 0.5rem;
 }
 .ProseMirror pre code {
 	color: inherit;
 	padding: 0;
 	background: none;
-	font-size: 0.8rem;
+	
 }
 
 .ProseMirror hr {
@@ -98,8 +99,8 @@ export default css`
 }
 
 .ProseMirror blockquote {
-	color: rgba(var(--theme-text-rgb),0.6);
-    border-left: 4px solid rgba(var(--theme-text-rgb),0.2);
+	color: rgba(var(--theme-text-rgb),0.8);
+    border-left: 4px solid rgba(var(--theme-text-rgb),0.3);
     padding: 0.25em 0.5em;
     margin: 0.5em 0 .5em 1em;
 }
