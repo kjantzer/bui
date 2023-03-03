@@ -99,6 +99,8 @@ customElements.define('b-text-editor-menubar', class extends LitElement{
 
                 <b-btn action="toggleSuperscript" clear ?active=${this.isActive('superscript')} icon="superscript" title="Superscript"></b-btn>
 
+                <b-btn action="setParagraph" clear icon="short_text" title="Standard paragraph"></b-btn>
+
             </span>
         </div>
 
