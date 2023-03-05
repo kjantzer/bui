@@ -88,6 +88,59 @@ prettyDecimal(val='', ratio=null){
     val = val.replace(/\.75$/, '¾');
     val = val.replace(/^0*/, '') // remove leading 0s
     return val
+},
+
+// based on: https://stackoverflow.com/a/20811670/484780
+// may not be best solution
+// TODO: let `replaceWith` be an "average"?
+fixOutliers(values, {remove=false, replaceWith='auto', iqrLower=1.5, iqrUpper=1.5}={}){ 
+
+    // Copy the values, rather than operating on references to existing values
+    let vals = values.concat()
+
+    // remove null/undefined values
+    vals = vals.filter(val=>val!==null&&val!==undefined)
+
+    // Then sort
+    vals.sort((a, b)=>a-b)
+
+    /* Then find a generous IQR. This is generous because if (vals.length / 4) 
+     * is not an int, then really you should average the two elements on either 
+     * side to find q1.
+     */     
+    let q1 = vals[Math.floor((vals.length / 4))]
+    // Likewise for q3. 
+    let q3 = vals[Math.ceil((vals.length * (3 / 4)))]
+    let iqr = q3 - q1;
+
+    // Then find min and max vals
+    let minValue = q1 - iqr * iqrLower
+    let maxValue = q3 + iqr * iqrUpper
+
+    // Then filter anything beyond or beneath these vals.
+    let filteredVals = vals.filter(x=>{
+        return (x <= maxValue) && (x >= minValue);
+    })
+
+    values = values.concat()
+
+    // now officially remove or replace bad values (we do this here to maintain original order)
+    if( remove )
+        return values.filter(val=>filteredVals.includes(val))
+    else{
+        let prevVal = minValue
+        return values.map(val=>{
+            
+            if( !filteredVals.includes(val) ){
+                if( replaceWith === 'auto' )
+                    val = prevVal
+                else
+                    val = replaceWith
+            }
+            
+            return prevVal = val
+        })
+    }
 }
 
 }
