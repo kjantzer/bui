@@ -9,9 +9,10 @@ const AllowedOperators = [
 */
 module.exports = class Value extends Clause {
 
-    constructor(oper, value, {ifNull=false}={}){
+    constructor(oper, value, {ifNull=false, key}={}){
         super()
 
+        this.key = key
         this.ifNull = ifNull
 
         if( value === undefined ){
@@ -27,6 +28,8 @@ module.exports = class Value extends Clause {
     }
 
     toSqlString(db, key){
+
+        key = this.key || key
 
         if( this.ifNull )
             key = `IFNULL(${key}, '')`
