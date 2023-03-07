@@ -2,7 +2,7 @@ const fs = require('fs')
 const JSZip = require('jszip')
 const parseString = require('xml2js').parseStringPromise
 const puppeteer = require('puppeteer');
-const {minimal_args} = require('../puppeteer')
+const {minimal_args} = require('../../../puppeteer')
 
 // NOTE: to be called in context of `files/mananger`
 module.exports = async function previewEpub(filename){

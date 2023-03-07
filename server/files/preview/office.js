@@ -1,49 +1,13 @@
 
 // imported into code
 if( require.main !== module){
-
-	const { spawn } = require('child_process')
+	
+	const {spawnJob} = require('./spawn')
 
 	exports.extensions = ['pdf', 'docx', 'doc', 'xlsx', 'xls']
 
-	exports.generate = function(file, {size=null, quality=null}={}){
-
-		return new Promise((resolve, reject)=>{
-			let args = [
-				__filename,
-				'--file='+file
-			]
-
-			if( size )
-				args.push('--size='+size)
-			
-			if( quality )
-				args.push('--quality='+quality)
-
-			let child = spawn('nodejs', args)
-			let error = ''
-			let resp = ''
-
-			child.stdout.on('data', (data) => {
-				resp += data
-			});
-
-			child.stderr.on('data', (data) => {
-				error += data
-			});
-
-			child.on('error', function(err) {
-				error += err
-			});
-
-			child.on('exit', (code) => {
-				if( error )
-					reject({code, error, resp})
-				else
-					resolve(resp)
-			});
-
-		})
+	exports.officePreview = function(file, {size=null, quality=null}={}){
+		return spawnJob(__filename, file, arguments[0])
 	}
 
 // when spawned directly

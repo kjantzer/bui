@@ -57,6 +57,7 @@
         "@tiptap/extension-typography": "2.0.0-beta.207",
         "@tiptap/starter-kit": "2.0.0-beta.207",
         "@tiptap/suggestion": "2.0.0-beta.207",
+        "@webtoon/psd": "^0.3.0",
         "backbone": "^1.4.0",
         "component-emitter": "^1.3.0",
         "dayjs": "^1.8.35",

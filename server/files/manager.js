@@ -5,12 +5,12 @@ const fs = require('fs')
 const shellExec = require(bui`util/shellExec`)
 const sharp = require('sharp')
 const exif = require('exif-reader')
-const msOfficeThumbnailer = require('./msOfficePreview')
-const ffmpeg = require('fluent-ffmpeg')
+const office = require('./preview/office')
+const {psdPreview} = require('./preview/psd')
+const {audioPreview} = require('./preview/audio')
+const {videoPreview} = require('./preview/video')
 const Vibrant = require('node-vibrant')
 const {pdfInfo, pdfText} = require('./pdf')
-
-ffmpeg.setFfmpegPath('/usr/bin/ffmpeg');
 
 function ThrowError(name, msg){
     let err = new Error(msg)
@@ -79,7 +79,7 @@ module.exports = class FileManager extends Model {
     get displayPath(){
         if( this.attrs.has_preview
         && this.attrs.ext != 'pdf'
-        && msOfficeThumbnailer.extensions.includes(this.attrs.ext) ){
+        && office.extensions.includes(this.attrs.ext) ){
             let filename = this.fileName ? this.fileName+'.preview.pdf' : ''
             return path.join(this.dirPath, filename)
         }
@@ -199,8 +199,6 @@ module.exports = class FileManager extends Model {
         await this.ensureDirPath()
 
         let isImg = info.type.match(/image/) && !info.type.match(/photoshop/)
-        let isVideo = info.type.match(/video/)
-        let isAudio = info.type.match(/audio/)
         let isPDF = info.type.match(/pdf/)
         let sharpImg
         let metadata = {}
@@ -252,9 +250,7 @@ module.exports = class FileManager extends Model {
                 }
             }
             
-            let generatePreview = isVideo || isAudio 
-                ? this.generateThumbnail() 
-                : this.generatePreview({metadata, sharpImg, filename})
+            let generatePreview = this.generatePreview({metadata, sharpImg, filename, fileType: info.type})
 
             if( this.waitForPreviewGeneration )
                 await generatePreview
@@ -271,124 +267,14 @@ module.exports = class FileManager extends Model {
         return this
     }
 
-    async generateThumbnail(){
-        
-        let metadata = await new Promise(resolve=>{
-            ffmpeg.ffprobe(this.filePath, function(err, metadata) {
-                resolve(metadata);
-            });
-        })
-
-        let videoStream = metadata.streams.find(s=>s.codec_type=='video')
-        let audioStream = metadata.streams.find(s=>s.codec_type=='audio')
-
-        let traits = this.attrs.traits || {}
-        if( videoStream ){
-            traits.width = videoStream.width
-            traits.height = videoStream.height
-            traits.duration = metadata.format.duration
-        }else if ( audioStream ){
-
-            traits = audioStream
-            let has_preview = false
-
-            let waveformOpts = this.audioWaveformPreview
-
-            if( waveformOpts ){
-                let thumbnailSrc = this.filePath
-                let thumbnailFromClippedSample = waveformOpts.clipAt && traits.duration > waveformOpts.clipAt
-
-                // create clipped version of orig to create waveform from
-                if( thumbnailFromClippedSample ){
-                    let clippedFile = this.filePath+'-clipped-for-waveform.mp3'
-
-                    await shellExec('ffmpeg', [
-                        '-ss 00:00:00.0',
-                        `-i "${thumbnailSrc}"`,
-                        '-c copy',
-                        '-t '+waveformOpts.clipTo,
-                        `"${clippedFile}"`,
-                    ]).then(r=>{
-                        if( waveformOpts.debug )
-                            console.log(r);
-                    })
-
-                    thumbnailSrc = clippedFile
-                    waveformOpts.gain = waveformOpts.clipGain
-                }
-
-                await shellExec('ffmpeg', [
-                    `-i "${thumbnailSrc}"`,
-                    '-filter_complex "[0:a]aformat=channel_layouts=mono,',
-                        `compand=gain=${waveformOpts.gain},`,
-                        `showwavespic=s=${waveformOpts.size}:colors=${waveformOpts.colors}"`,
-                    '-frames:v 1',
-                    `"${this.filePath+'.preview.png'}"`
-                ])
-
-                if( thumbnailFromClippedSample && fs.existsSync(thumbnailSrc) ){
-                    fs.unlinkSync(thumbnailSrc)
-                }
-
-                has_preview = 2
-            }
-
-            await this.update({traits, has_preview}) // 2 = png
-
-            return
-        }
-
-        let w = 0
-        let h = 0
-
-        if( traits.width > traits.height ){
-            w = 800
-            h = w / (traits.width / traits.height)
-        }else{
-            
-            if( traits.width == traits.height )
-                traits.square = true
-            else
-                traits.portrait = true
-
-            h = 800
-            w = h / (traits.height / traits.width)
-        }
-        
-        await new Promise(resolve=>{
-
-            ffmpeg(this.filePath)
-            .output(this.filePath+'.preview.jpg')
-            .noAudio()
-            .seek(0.25) // move foward a little in case video starts black
-            .on('error', function(err) {
-                console.log('An error occurred: ' + err.message);
-                resolve()
-            })
-            .on('end', function() {
-                console.log('Processing finished !');
-                resolve()
-            })
-            .run();
-        })
-            
-        try{
-            traits.palette = await this.getColorPalette()
-        }catch(err){
-            console.log('could not find palette', err);
-        }
-
-        await this.update({traits, has_preview: true})
-    }
-
-    async generatePreview({metadata, sharpImg, filename}={}){
+    async generatePreview({metadata, sharpImg, filename, fileType}={}){
 
         // keep track of attrs we want to change at the end of this routine
         let updateAttrs = {}
 
         if( this.epubPreview && filename.match(/\.epub$/) ){
 
-            const epubPreview = require('./epubPreview')
+            const epubPreview = require('./preview/epub')
 
             try{
                 let {previewFilePath, contents, toc} = await epubPreview.call(this, filename)
@@ -467,9 +353,50 @@ module.exports = class FileManager extends Model {
             }
         }
 
+        if( fileType.match(/audio/) ){
+
+            if( this.audioWaveformPreview )
+            await audioPreview(this.filePath, this.audioWaveformPreview).then(traits=>{
+
+                this.attrs.traits = {...this.attrs.traits, ...traits}
+                updateAttrs.traits = this.attrs.traits
+                updateAttrs.has_preview = 2 // png
+
+            }).catch(err=>{
+                console.log('PSD preview failed', err);
+            })
+        }
+
+        if( fileType.match(/video/) ){
+
+            await videoPreview(this.filePath).then(traits=>{
+
+                this.attrs.traits = {...this.attrs.traits, ...traits}
+                updateAttrs.traits = this.attrs.traits
+                updateAttrs.has_preview = 1
+
+            }).catch(err=>{
+                console.log('PSD preview failed', err);
+            })
+        }
+
+        // Photoshop
+        if( filename.match(/\.psd$/) ){
+
+            await psdPreview(this.filePath, {size: 1200}).then(traits=>{
+
+                this.attrs.traits = {...this.attrs.traits, ...traits}
+                updateAttrs.traits = this.attrs.traits
+                updateAttrs.has_preview = true
+
+            }).catch(err=>{
+                console.log('PSD preview failed', err);
+            })
+        }
+
         // if office doc, create PDF preview and jpg thumbnail
-        if( this.previewSize  && msOfficeThumbnailer.extensions.includes(this.attrs.ext) ){
-            await msOfficeThumbnailer.generate(this.filePath)
+        if( this.previewSize  && office.extensions.includes(this.attrs.ext) ){
+            await office.officePreview(this.filePath)
             .then(async resp=>{
                 updateAttrs.has_preview = true
             }).catch(err=>{
@@ -488,12 +415,13 @@ module.exports = class FileManager extends Model {
                 .flatten({background:'#ffffff'}) // in case png with transparency is uploaded
                 .toFile(this.dirPath+'/'+filename+'.preview.jpg')
             
-            updateAttrs.has_preview = true
-            
-            try{
-                if( !this.attrs.traits.palette )
-                    this.attrs.traits.palette = await this.getColorPalette()
+            updateAttrs.has_preview = 1
+        }
 
+        // attempt to get color palette from preview img
+        if( updateAttrs.has_preview == 1 && !this.attrs.traits.palette ){
+            try{
+                this.attrs.traits.palette = await this.getColorPalette()
                 updateAttrs.traits = this.attrs.traits
             }catch(err){
                 console.log('could not find palette', err);
