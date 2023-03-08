@@ -69,6 +69,10 @@ main {
 	margin: -.1em 0;
 }
 
+:host([html]) .editor {
+	white-space: normal; /* make sure <br> is used over \n */
+}
+
 .editor p {
 	margin: var(--b-text-field-paragraph-margin, 1em) 0;
 }
