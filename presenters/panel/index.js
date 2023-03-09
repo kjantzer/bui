@@ -984,8 +984,8 @@ export class Panel extends LitElement {
                     transform: scale(1);
         }
         50% {
-            -webkit-transform: scale(0.9);
-                    transform: scale(0.9);
+            -webkit-transform: scale(0.95);
+                    transform: scale(0.95);
         }
         100% {
             -webkit-transform: scale(1);
