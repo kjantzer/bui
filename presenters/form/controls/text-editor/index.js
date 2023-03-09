@@ -6,6 +6,7 @@ import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
 import Superscript from '@tiptap/extension-superscript'
 import CharacterCount from '@tiptap/extension-character-count'
+import Link from './link'
 import Typography from '@tiptap/extension-typography'
 import TypographyPaste from './typography-paste'
 import './menubar'
@@ -15,6 +16,7 @@ customElements.define('text-editor', class extends LitElement{
 
     static get properties(){return {
         menubar: {type: Boolean},
+        links: {type: Boolean},
         disabled: {type: Boolean, reflect: true},
         placeholder: {type: String},
         maxchar: {type: Number}
@@ -46,6 +48,13 @@ customElements.define('text-editor', class extends LitElement{
         clearTimeout(this._cleanupTimeout)
         if( this.editor ) return
 
+        let useExtensions = []
+
+        if( this.links )
+            useExtensions.push(Link.configure({
+                openOnClick: false // disable default handler, will use custom instead
+            }))
+
         this.editor = new Editor({
             extensions: [
                 StarterKit,
@@ -62,6 +71,7 @@ customElements.define('text-editor', class extends LitElement{
                 CharacterCount.configure({
                     limit: this.maxchar||0,
                 }),
+                ...useExtensions,
 				...this.extensions
             ],
             editorProps: {
