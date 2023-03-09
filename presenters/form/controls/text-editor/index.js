@@ -129,6 +129,9 @@ customElements.define('text-editor', class extends LitElement{
     }
 
     onBlur(){
+
+        if( !this._userDidUpdate ) return
+        delete this._userDidUpdate
          
         var event = new CustomEvent('change', {
 			bubbles: true,
@@ -179,6 +182,9 @@ customElements.define('text-editor', class extends LitElement{
     }
 
     onEditorUpdate({editor, transaction}){
+
+        this._userDidUpdate = this.editor.isFocused
+
         this.toggleAttribute('empty', this.isEmpty)
 
         // https://github.com/ueberdosis/tiptap/blob/main/packages/core/CHANGELOG.md#200-beta193-2022-09-10
