@@ -216,6 +216,12 @@ export default class RoutedView extends LitElement {
         
         if( model )
             model.set('isViewing', true)
+
+        // NOTE: need to review performance on other machines
+        // TODO: allow opt-out?
+        if( this.panel?.isOpen && this.model && model !== this.model){
+            this.panel?.pulseBack()
+        }
     }
 
     async onRouteChange(oldState, newState, dir){
