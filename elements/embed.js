@@ -18,9 +18,8 @@ customElements.define('b-embed', class Embed extends LitElement {
         }
 
         :host([aspect="video"]) main {
+            aspect-ratio: 16/9;
             position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
             overflow: hidden;
             max-width: 100%;
         }
@@ -30,6 +29,10 @@ customElements.define('b-embed', class Embed extends LitElement {
             top: 0;
             left: 0;
             height: 100%;
+        }
+
+        :host([aspect="video"][type="spotify"]) main {
+            aspect-ratio: 1/1;
         }
 
         iframe {
