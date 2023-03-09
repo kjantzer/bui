@@ -51,6 +51,7 @@
         "@material-icons/svg": "github:material-icons/material-icons#original",
         "@tiptap/core": "2.0.0-beta.207",
         "@tiptap/extension-character-count": "2.0.0-beta.207",
+        "@tiptap/extension-link": "2.0.0-beta.207",
         "@tiptap/extension-placeholder": "2.0.0-beta.207",
         "@tiptap/extension-superscript": "2.0.0-beta.207",
         "@tiptap/extension-text-align": "2.0.0-beta.207",
