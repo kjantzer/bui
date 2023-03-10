@@ -115,6 +115,10 @@ export default css`
 .ProseMirror h4 { font-size: var(--font-size-sm) }
 .ProseMirror h5 { font-size: var(--font-size-xs) }
 
+.ProseMirror a {
+	word-break: break-all;
+}
+
 .ProseMirror sup {
 	vertical-align: super;
     font-size: .85em;

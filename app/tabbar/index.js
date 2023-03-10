@@ -1,17 +1,9 @@
 import { LitElement, html, css } from 'lit'
 import router from 'bui/router'
 import '../views/routed-tabs'
+import {mediaQuery, MediaQueries} from './media-queries'
 import './tab-bar'
-import {mediaQuery, MediaQueries} from '../../util/mediaQueries'
 
-// NOTE: change this name
-if( !MediaQueries.get('b-app-landscape') )
-MediaQueries.set('b-app-landscape', styles=>css`
-    @media /*(max-height: 599px) and (orientation:landscape),*/
-    (min-width:900px) and (min-height: 600px), (min-width: 700px) {
-        ${styles}
-    }
-`)
 
 // TODO: rename
 customElements.define('b-app', class extends LitElement {

@@ -105,11 +105,16 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
         [icon="search"] {
             display: var(--app-tab-bar-search-display, inline-block);
+
+            position: sticky;
+            right: 0;
+            bottom: 0;
+            background: var(--b-app-tab-bar-bgd);
+            box-shadow: var(--theme-shadow-2);
+            flex-grow: 0;
         }
 
-        /* phones in landscape */
-        @media /*(max-height: 599px) and (orientation:landscape),*/
-        (min-width:900px) and (min-height: 600px), (min-width: 700px){
+        ${mediaQuery('b-app-landscape', css`
 
             :host(.tab-bar) {
                 /* display: grid !important; */
@@ -157,7 +162,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             /* [icon="search"] {
                 display: none;
             } */
-        }
+        `)}
 
         ${scrollbars.hide('main')}
     `}

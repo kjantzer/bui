@@ -2,6 +2,9 @@ import { LitElement, html, css, unsafeCSS } from 'lit'
 import {MediaQueries, mediaQuery} from '../util/mediaQueries'
 window.MediaQueries = MediaQueries
 
+// delay to let other code add to MediaQueries
+setTimeout(()=>{
+
 const mediaQueryStyles = MediaQueries.map((query, q)=>mediaQuery(q, css`
 
     :host([show="${unsafeCSS(q)}"]) {
@@ -35,5 +38,7 @@ customElements.define('b-media-query', class extends LitElement{
     render(){return html`
         <slot></slot>
     `}
+
+})
 
 })
