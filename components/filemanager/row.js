@@ -203,6 +203,12 @@ customElements.define('b-file-row', class extends LitElement{
                     </b-label>
                     `:''}
 
+                    ${this.model.get('ext')=='psd'?html`
+                    <b-label xs class="pages" filled="black" ?hidden=${!(this.model.get('traits')?.layers>1)} slot="top-right" part="pages">
+                        ${this.model.get('traits')?.layers} layers
+                    </b-label>
+                    `:''}
+
                     ${this.model.isEpub?html`
                     <b-label xs filled="black" ?hidden=${!(this.model.chapters>1)} slot="top-right" part="pages">
                         ${this.model.chapters} chapters
