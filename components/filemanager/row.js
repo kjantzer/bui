@@ -42,7 +42,7 @@ customElements.define('b-file-row', class extends LitElement{
 
         img[hidden] { visibility: hidden; }
 
-        b-file-icon {
+        [part="preview"] b-file-icon {
             display: none;
             position: absolute;
             --size: calc(.5 * var(--img-height, var(--img-min-height, 240px)));
