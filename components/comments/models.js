@@ -134,7 +134,7 @@ let saveReadComments
 // queues up comments to mark as read (will save a bunch on one request)
 export function markCommentRead(model){
 
-    if( !User ) return
+    if( !User ) return console.warn('Comments: cannot mark read, no User object');
     
     // ignore if already read or comment is by this user
     if( !model.isUnread || userID() == model.get('uid') )
