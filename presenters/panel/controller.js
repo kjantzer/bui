@@ -147,12 +147,12 @@ class PanelController extends LitElement {
         <slot></slot>
     `}
 
-    remove(panel, {updateRoute=false}={}){
+    remove(panel, {silent=false, updateRoute=false}={}){
 
         if( panel.onTop ){
             panel.removeAttribute('ontop')
 
-            if( panel.view && panel.view.didBecomeInactive )
+            if( !silent && panel.view && panel.view.didBecomeInactive )
                 setTimeout(()=>{panel.view.didBecomeInactive()})
         }
         

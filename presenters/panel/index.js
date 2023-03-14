@@ -530,6 +530,12 @@ export class Panel extends LitElement {
                 console.warn('Panel controller `'+_val+'` does not exist, root will be used')
         }
 
+        let didChangeControllers = this.__panelController && val != this.__panelController
+        
+        // remove from existing controller
+        if( didChangeControllers )
+            this.__panelController.remove(this, {updateRoute: false, silent: true})
+
         this.__panelController = val
     }
 
