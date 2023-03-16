@@ -21,6 +21,8 @@ customElements.define('b-ts', class extends LitElement{
             display: inline-block;
             white-space: nowrap;
         }
+
+        :host([hidden]) { display: none; }
     `}
 
     connectedCallback(){
