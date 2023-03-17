@@ -87,7 +87,7 @@ export function sharedStyles(host=':host'){return css`
         width: 100%;
         height: 100%;
         z-index: -2;
-        background: var(--list-cell-bgd, var(--theme-bgd));
+        background: var(--list-cell-sticky-bgd, var(--list-cell-bgd, var(--theme-bgd)));
     }
 
     ${unsafeCSS(host)} > [sticky]:first-child + [sticky] {
