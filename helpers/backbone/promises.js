@@ -51,6 +51,7 @@ const fetchSync = function(opts={}){
             model.__fetchSyncPromise = null
             model.isFetching = false
             model.hasFetched = new Date().getTime()
+            delete model.needsFetching
             resolve(arguments)
         }
         opts.error = function(model, xhr, opts){
