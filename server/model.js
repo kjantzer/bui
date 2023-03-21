@@ -408,7 +408,7 @@ module.exports = class Model {
     }
 
     findOptionToArgs(option){
-        if( option == true || option == 1 || option == '1' ) return []
+        if( option == true || option == 1 || option == '1' || option == 'true') return []
         if( Array.isArray(option) ) return option
         return option ? [option] : []
     }
@@ -514,12 +514,18 @@ module.exports = class Model {
                     //     args = [, {select: _with[relation]}]
 
                     args = this.findOptionToArgs(args)
-
-                    // args should be `where, opts`; so create `opts` if needed (so we can set opts.with)
-                    args[1] = args[1] || {}
                     
-                    if( relationWith  )
-                        args[1].with = relationWith 
+                    if( relationWith ){
+                        let opts = {with: relationWith }
+
+                        if( args.length == 0 )
+                            args.push(opts)
+                        else if ( args.length == 1 && (args[0].where || args[0].select || args[0].with) )
+                            args[0] = {...args[0], ...opts}
+                        else
+                            args[1] = {...args[1], ...opts}
+                    }
+                        
                     
                     row.attrs[relation] = await RelatedModel.find(...args)
                 }
