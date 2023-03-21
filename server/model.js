@@ -454,8 +454,25 @@ module.exports = class Model {
         if( _with && typeof _with == 'string' ){
             _with = Object.fromEntries(_with.split(',').map(s=>[s,'']))
             
-            if( this.req?.query.with )
-                this.req.query.with = _with
+            // if( this.req?.query.with )
+            //     this.req.query.with = _with
+        }
+
+        delete this.req?.query.with
+        opts.with = _with
+
+        let childWith = {}
+
+        // dont let top level "with" propagate down to other relations
+        // other relations may have the same name for their own relations (ie "comments")
+        // to include relations down the chain, they must be requested with dot notation'
+        // ex: `with=comments,relatedItems,relatedItems.comments`
+        for( let k in _with ){
+            let [parentKey, ...childKey] = k.split('.')
+            if( childKey?.length > 0 ){
+                childWith[parentKey] = childWith[parentKey] || {}
+                childWith[parentKey][childKey] = 1
+            }
         }
 
         // clear certain values that should only be used on first model
@@ -480,6 +497,7 @@ module.exports = class Model {
 
                 try{
                 let RelatedModel = row[relation]
+                let relationWith = childWith[relation]
 
                 // mitigate infinite loops
                 // relatedSrc is the model that created this one
@@ -496,6 +514,12 @@ module.exports = class Model {
                     //     args = [, {select: _with[relation]}]
 
                     args = this.findOptionToArgs(args)
+
+                    // args should be `where, opts`; so create `opts` if needed (so we can set opts.with)
+                    args[1] = args[1] || {}
+                    
+                    if( relationWith  )
+                        args[1].with = relationWith 
                     
                     row.attrs[relation] = await RelatedModel.find(...args)
                 }

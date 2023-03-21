@@ -259,7 +259,10 @@ myclass.attrs.files = myclass.files.find(, {select: 'filename'})
 ```
 
 This can be done via API as well  
-`/api/myclass/1?with[type]&with[files]`
+`/api/myclass/1?with=type,files`
+
+> Note: `with` will only be used by the top level model. 
+> To target down the chain, use dot notation: `?with=type,files,type.files`
 
 Want data for all relations?
 
