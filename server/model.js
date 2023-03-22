@@ -458,20 +458,24 @@ module.exports = class Model {
             //     this.req.query.with = _with
         }
 
-        delete this.req?.query.with
-        opts.with = _with
-
         let childWith = {}
 
-        // dont let top level "with" propagate down to other relations
-        // other relations may have the same name for their own relations (ie "comments")
-        // to include relations down the chain, they must be requested with dot notation'
-        // ex: `with=comments,relatedItems,relatedItems.comments`
-        for( let k in _with ){
-            let [parentKey, ...childKey] = k.split('.')
-            if( childKey?.length > 0 ){
-                childWith[parentKey] = childWith[parentKey] || {}
-                childWith[parentKey][childKey] = 1
+        // opt-in feature for now - since this can be breaking change
+        if( this.constructor.relatedDotNotation ){
+
+            delete this.req?.query.with
+            opts.with = _with
+
+            // dont let top level "with" propagate down to other relations
+            // other relations may have the same name for their own relations (ie "comments")
+            // to include relations down the chain, they must be requested with dot notation'
+            // ex: `with=comments,relatedItems,relatedItems.comments`
+            for( let k in _with ){
+                let [parentKey, ...childKey] = k.split('.')
+                if( childKey?.length > 0 ){
+                    childWith[parentKey] = childWith[parentKey] || {}
+                    childWith[parentKey][childKey] = 1
+                }
             }
         }
 
