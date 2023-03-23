@@ -45,6 +45,7 @@ customElements.define('radio-group', class extends LitElement{
 			border-radius: var(--radio-segment-radius);
 			padding: var(--radio-segment-padding);
 			display: inline-flex;
+			flex-grow: 1;
 		}
 
 		:host([segment][slot="control"]) {
@@ -84,6 +85,8 @@ customElements.define('radio-group', class extends LitElement{
 
 		:host([segment][stacked]) ::slotted(radio-btn){
 			padding: calc(var(--radio-segment-btn-padding)*1.5);
+			justify-content: left;
+			line-height: 1.1em;
 		}
 
 		:host([segment]) ::slotted(radio-btn:not(:first-child)) {
@@ -103,6 +106,7 @@ customElements.define('radio-group', class extends LitElement{
 		:host([segment="theme"]) ::slotted(radio-btn[active]) {
 			background-color: var(--radio-segment-active-bgd, var(--theme, #2196F3));
 			color: var(--radio-segment-active-color, var(--theme-bgd, #fff));
+			--theme-text-rgb: var(--dark-text-rgb);
 		}
 
 		:host([segment]:not([disabled]):not([focused])) ::slotted(radio-btn:not([active]):hover) {
