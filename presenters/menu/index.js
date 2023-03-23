@@ -515,6 +515,9 @@ export default class Menu {
 		if( m.divider !== undefined )
 			return html`<div class="menu-divider">${m.divider}</div>`
 		
+		if( m.html !== undefined )
+			return html`<b-text heading block ?bgd=${m.bgd??false} class="menu-html" .html=${m.html}></b-text>`
+
 		if( m.text !== undefined )
 			return html`<b-text heading block sm muted=2 ?bgd=${m.bgd??true} class="menu-text">${m.text}</b-text>`
 		
@@ -667,11 +670,11 @@ export default class Menu {
 
 			if( this.opts.perpetual ){
 
-				this._onSelect(data)
+				this._onSelect(data, {evt: e})
 				
 				// only perpetual in search mode...if menu is orig, then were't not showing search results
 				if( this.opts.perpetual == 'search' && this.__origMenu == this.menu )
-					this.resolve(data)
+					this.resolve(data, {evt: e})
 				else{
 					this.focusSearch({selectAll:true})
 				}
@@ -680,7 +683,7 @@ export default class Menu {
 
 				if( data.clearsAll || (this.opts.multiple !== 'always' && !didClickCheckbox && !didClickSelectField && !e.shiftKey) ){
 					this._onSelect([data])
-					return this.resolve([data])
+					return this.resolve([data], {evt: e})
 				}
 
 				let isSelected = this.toggleSelected(data, {fromSelection:didClickSelectField})
@@ -704,16 +707,16 @@ export default class Menu {
 						target.querySelector('select-field').value = null
 				}
 				
-				this._onSelect(this.selected)
+				this._onSelect(this.selected, {evt: e})
 				
 			}else{
 				this._onSelect(data)
-				this.resolve(data)
+				this.resolve(data, {evt: e})
 			}
 		}
 	}
 
-	_onSelect(data){
+	_onSelect(data, {evt}={}){
 
 		// cache the selected result if 
 		if( this.opts.search?.cache && !data.noCache ){
@@ -732,6 +735,9 @@ export default class Menu {
 			// save to cache
 			this.opts.search.cacheStore(cache)
 		}
+
+		if( evt && data )
+			data.evt = evt
 
 		this.opts.onSelect&&this.opts.onSelect(data)
 	}
@@ -978,12 +984,15 @@ export default class Menu {
 	}
 	
 	
-	resolve(data){
+	resolve(data, {evt}={}){
 		
 		// if( this.opts.onSelect )
 		// 	this.opts.onSelect(data)
 
 		let didHandle = false
+
+		if( evt && data )
+			data.evt = evt
 
 		if( this.opts.handler ){
 
