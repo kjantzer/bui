@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit'
 import device from '../../../util/device'
 import './filter-btn'
+import './filter-saved-presets' // TODO: make this opt-in?
 import FiltersPanel from './filters-panel'
 import Dialog from '../../../presenters/dialog'
 import Menu from '../../../presenters/menu'
@@ -59,7 +60,7 @@ customElements.define('b-list-filters', class extends LitElement{
             color: var(--toolbarTextColor);
             margin: -0.5em 0px;
             position: relative;
-            top: -0.5em;
+            top: -0.65em;
             /* opacity: .4; */
         }
 
@@ -69,6 +70,12 @@ customElements.define('b-list-filters', class extends LitElement{
             margin-top: -1px;
             color: var(--toolbarTextColor);
             opacity: .4;
+        }
+
+        b-list-filters-saved {
+            border-right: solid 2px var(--theme-bgd-accent);
+            padding-right: 0.25em;
+            margin-right: 0.25em;
         }
     `}
 
@@ -84,8 +91,10 @@ customElements.define('b-list-filters', class extends LitElement{
         <b-draggable @will-take-action=${this.onDrag}>Export</b-draggable>
         <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
+        ${this.filters.size>0?html`
         <b-btn icon="history" title="History of applied filters" clear lg noshrink
                 @click=${this.openFiltersHistory}></b-btn>
+        `:''}
 
         ${this.showOverflow?html`
 
@@ -103,6 +112,10 @@ customElements.define('b-list-filters', class extends LitElement{
             <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" clear lg noshrink
                 @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
         `}
+
+        ${this.filters.size>0?html`
+        <b-list-filters-saved noshrink></b-list-filters-saved>
+        `:''}
 
         ${this.filters.map(filter=>this.showFilter(filter)?html`
             <b-list-filter-btn ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
