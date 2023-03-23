@@ -220,10 +220,20 @@ function makePrompt(opts, i=0, globalOpts){
 				
 				${opts.options.map(o=>html`
 					<radio-btn 
-						label=${o.label===undefined?o:o.label}
+						label
 						value=${o.val===undefined?o:o.val}
 						?disabled=${o.disabled}
-					></radio-btn>
+					>
+						<b-text>
+							${o.label===undefined?o:o.label}
+						</b-text>
+
+						${o?.description||o?.helpText?html`
+						<b-text block sm italic muted=2>
+							${o.val===undefined?'':o.description||o.helpText}</b-text>
+						`:''}
+
+					</radio-btn>
 				`)}
 
 				<b-text block sm bold slot="before" ?hidden=${!opts.label}>${opts.label}</b-text>
