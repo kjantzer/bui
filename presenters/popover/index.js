@@ -96,12 +96,16 @@ export default class Popover {
 				view = _view
 			}
 		}
+
+		this.closePopoverRequested = this.closePopoverRequested.bind(this)
 		
 		if( window.Backbone && view instanceof window.Backbone.View )
 			view = view.el
 
 		this.opts = opts
 		this.view = view
+
+		this.view.addEventListener('close-popover', this.closePopoverRequested)
 		
 		this.view.classList.add('__view') // DEPRECATED
 		this.view.setAttribute('in-popover', '')
@@ -147,6 +151,10 @@ export default class Popover {
 
 	get isTooltip(){
 		return this.opts.className.includes('tooltip') 
+	}
+
+	closePopoverRequested(){
+		this.close()
 	}
 
 	positionOver(target){
@@ -294,6 +302,8 @@ export default class Popover {
 		this.el.popover = null
 		this.view.popover = null
 		this.view.removeAttribute('in-popover', '')
+
+		this.view.removeEventListener('close-popover', this.close)
 
 		this.mutationObserver.disconnect()
 		this.popper.destroy()
