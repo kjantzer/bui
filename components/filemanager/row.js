@@ -246,7 +246,7 @@ customElements.define('b-file-row', class extends LitElement{
         if( this.willTakeAction('delete').notAllowed ) return
 
         if( await Dialog.confirmDelete().popover(e) ){
-            this.model.destroySync()
+            await this.model.destroySync({wait: true})
             this.remove()
         }
     }
