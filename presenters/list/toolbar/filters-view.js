@@ -96,6 +96,10 @@ customElements.define('b-list-filters', class extends LitElement{
                 @click=${this.openFiltersHistory}></b-btn>
         `:''}
 
+        ${this.filters.size>0?html`
+        <b-list-filters-saved noshrink></b-list-filters-saved>
+        `:''}
+
         ${this.showOverflow?html`
 
             <b-btn text @click=${this.openFiltersPanel} noshrink class="show-filters" _icon="filter">
@@ -112,10 +116,6 @@ customElements.define('b-list-filters', class extends LitElement{
             <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" clear lg noshrink
                 @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
         `}
-
-        ${this.filters.size>0?html`
-        <b-list-filters-saved noshrink></b-list-filters-saved>
-        `:''}
 
         ${this.filters.map(filter=>this.showFilter(filter)?html`
             <b-list-filter-btn ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
