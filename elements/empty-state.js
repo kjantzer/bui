@@ -15,7 +15,6 @@ export default class EmptyState extends LitElement {
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: var(--b-empty-state-color, var(--theme-text-accent));
             font-size: 2em;
             text-align: center;
             padding: 1em;
@@ -26,6 +25,10 @@ export default class EmptyState extends LitElement {
             height: 100%;
             top: 0;
             left: 0;
+        }
+
+        :host(:not([muted="false"])) {
+            color: var(--b-empty-state-color, var(--theme-text-accent));
         }
 
         :host([ondark]) {
