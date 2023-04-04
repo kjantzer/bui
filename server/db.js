@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const groupBy = require('../util/array.groupBy')
+const arrayChunk = require('../util/array.chunk')
 require('../util/promise.series')
 
 const clauses = require('./db/clauses')
@@ -184,16 +185,30 @@ module.exports = class DB {
         return `ON DUPLICATE KEY UPDATE ${updates.join(', ')}`
     }
 
-    bulkInsert(table, rows, {ignore=true, replace=false, update=false}={}){
-        let [cols, vals] = this.parseBulkInsert(rows)
+    async bulkInsert(table, rows, {ignore=true, replace=false, update=false, chunk=false}={}){
 
-        let INSERT = replace?'REPLACE':'INSERT'
-        let IGNORE = ignore&&!update&&!replace?'IGNORE':''
-        let UPDATE_ON_DUPLICATE = update ? this.updateOnDuplicate(rows[0]) : ''
+        let resp = {affectedRows: 0}
 
-        let sql = `${INSERT} ${IGNORE} INTO ${table} (${cols}) VALUES ? ${UPDATE_ON_DUPLICATE}`
+        await arrayChunk.call(rows, async chunk=>{
+            
+            let [cols, vals] = this.parseBulkInsert(chunk)
 
-        return this.query(sql, [vals])
+            let INSERT = replace?'REPLACE':'INSERT'
+            let IGNORE = ignore&&!update&&!replace?'IGNORE':''
+            let UPDATE_ON_DUPLICATE = update ? this.updateOnDuplicate(chunk[0]) : ''
+
+            let sql = `${INSERT} ${IGNORE} INTO ${table} (${cols}) VALUES ? ${UPDATE_ON_DUPLICATE}`
+
+            let r = await this.query(sql, [vals])
+
+            if( chunk )
+                this.format.affectedRows += this.affectedRows
+            else
+                resp = r
+
+        }, {size: chunk||rows.length})
+
+        return resp
     }
 
     bulkUpdate(table, rows){
