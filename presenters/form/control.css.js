@@ -552,10 +552,6 @@ slot[name="help"] {
     border-radius: 0;
 }
 
-:host([material="filled"]) slot[name="control"]::slotted(radio-group[segment]) {
-	margin-top: -.2em;
-}
-
 :host([material="filled"]) .label {
 	transform: translateY(-15%);
 	width: auto;

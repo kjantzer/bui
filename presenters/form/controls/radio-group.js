@@ -83,6 +83,10 @@ customElements.define('radio-group', class extends LitElement{
     		/* margin-top: calc(-1 * var(--padX) / 4); */
 		}
 
+		:host([segment][slot="control"]) main {
+			padding: 0;
+		}
+
 		:host([segment][stacked]) ::slotted(radio-btn){
 			padding: calc(var(--radio-segment-btn-padding)*1.5);
 			justify-content: left;
@@ -116,7 +120,7 @@ customElements.define('radio-group', class extends LitElement{
 
 	render(){return html`
 		<slot name="before"></slot>
-		<main>
+		<main part="main">
 			<slot></slot>
 		</main>
 		<slot name="after"></slot>
