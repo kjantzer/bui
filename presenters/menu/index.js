@@ -301,12 +301,14 @@ export default class Menu {
 		}
 	}
 
-	focusSearch({selectAll=false}={}){
-		let input = this.el.querySelector('.menu-search-bar input')
-		if( input ){
-			input.focus()
-			if( selectAll ) input.select()
-		}
+	focusSearch({selectAll=false, delay=0}={}){
+		setTimeout(()=>{
+			let input = this.el.querySelector('.menu-search-bar input')
+			if( input ){
+				input.focus()
+				if( selectAll ) input.select()
+			}
+		}, delay)
 	}
 
 	get searchIsOn(){
@@ -1089,7 +1091,7 @@ export default class Menu {
 		this.scrollToSelected()
 
 		if( this.searchIsOn )
-			this.focusSearch()
+			this.focusSearch({selectAll: !!this.opts.matching})
 
 		return this.promise
 	}
@@ -1166,7 +1168,7 @@ export default class Menu {
 		this.scrollToSelected()
 		
 		if( this.searchIsOn )
-			this.focusSearch()
+			this.focusSearch({delay: 300, selectAll: !!this.opts.matching})
 
 		return this.promise
 	}
