@@ -7,8 +7,11 @@ const mode = require('./math').mode
 function csvToArray(strData, {
     strDelimiter=',',
     hasHeader=true,
+    mergeHeader=true,
     normalizeHeader=false,
     formatHeader=null,
+    rowLengthThreshold=0.6, // rows must be greater (ratio of non-empty cells to determined "row cell length")
+    ignoreEmptyLines=true
 }={}){
 
     if( !strData ) return null
@@ -87,7 +90,7 @@ function csvToArray(strData, {
 
     let comments = []
 
-    // filter out comments
+    // filter out comments (CSVs)
     arrData = arrData.filter(row=>{
         if( row && row[0] && row[0][0] == '#' ){
             comments.push(row)
@@ -104,37 +107,85 @@ function csvToArray(strData, {
 
     arrData = arrData.filter(row=>{
 
+        // CSVs may have rows with different lengs
         if( row.length < rowLength ){
 
             if( row[0] && foundRow )
                 footer.push(row)
+                
             else if( row[0] )
                 header.push(row)
             
             return false
+
+        // possible all rows, even headers/footers have same length
+        // particularly if the csv was genereated from an excel file
+        }else if( rowLengthThreshold !== false || ignoreEmptyLines ){
+
+            // filter out empty cells
+            let rowDataOnly = row.filter(d=>d)
+
+            if( ignoreEmptyLines && rowDataOnly.length == 0 )
+                return false
+
+            // are we less than the min threshold?
+            if( rowLengthThreshold !== false && 
+            (!rowDataOnly.length || (rowDataOnly.length / rowLength) <= rowLengthThreshold) ){
+                
+                // if row still has data, add to header/footer
+                if( rowDataOnly.length > 0 )
+                    foundRow ? footer.push(row) : header.push(row)
+
+                return false
+            }
         }
+
         foundRow = true
         return true
     })
 
-    if( hasHeader ){
-        let header = arrData.shift()
+    addDataHeader: if( hasHeader ){
+
+        let dataHeader = null
+
+        while(!dataHeader && arrData.length > 0 ){
+            
+            // in most cases, the header should not have any empty cells
+            dataHeader = arrData.shift().filter(d=>d)
+
+            // dont use this "data header" if NOT the same num of columns
+            if( dataHeader.length != rowLength ){
+                
+                // if row still has content, add it to the "header"
+                if( dataHeader.length > 0 )
+                    header.push(dataHeader)
+
+                // clear, then try to get next row as header
+                dataHeader = null
+            }                
+        }
+
+        // hmm...no data header could be determined
+        if( !dataHeader ) break addDataHeader
 
         if( normalizeHeader )
-            header = header.map(str=>_normalizeHeader(str?.trim()))
+            dataHeader = dataHeader.map(str=>_normalizeHeader(str?.trim()))
 
         if( formatHeader )
-            header = formatHeader(header)
-    
-        arrData = arrData.map(line=>{
-            let obj = {};
-            header.forEach((key, i) => obj[key] = line[i]);
-            return obj
-        })
+            dataHeader = formatdataHeader(header)
+        
+        if( mergeHeader )
+            arrData = arrData.map(line=>{
+                let obj = {};
+                dataHeader.forEach((key, i) => obj[key] = line[i]);
+                return obj
+            })
+        
+        arrData.dataHeader = dataHeader
     }
 
     arrData.comments = comments.join(`\n`)
-    arrData.header = header
+    arrData.header = header // TODO: rename to "heading"?
     arrData.footer = footer
 
     // Return the parsed data.
