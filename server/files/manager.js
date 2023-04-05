@@ -134,6 +134,15 @@ module.exports = class FileManager extends Model {
         where['group_name'] = this.group
     }
 
+    async checkIsDuplicate(info){
+        let dupe = await this.db.query(/*sql*/`
+            SELECT * FROM files
+            WHERE IFNULL(parent_id,'') = ? AND group_name = ? AND dir_path = ? AND md5 = ?
+        `, [info.parent_id||'', this.group, info.dir_path, info.md5]).then(r=>r.first)
+
+        return !!dupe
+    }
+
     async upload(file, src='', {traits={}, description=null}={}){
 
         if( !file ){
@@ -178,15 +187,8 @@ module.exports = class FileManager extends Model {
         }
 
         if( this.skipDuplicates == true ){
-            let dupe = await this.db.query(/*sql*/`
-                SELECT * FROM files
-                WHERE IFNULL(parent_id,'') = ? AND group_name = ? AND dir_path = ? AND md5 = ?
-            `, [info.parent_id||'', this.group, info.dir_path, info.md5]).then(r=>r.first)
-
-            if( dupe ){
+            if( await this.checkIsDuplicate(info) )
                 ThrowError('DuplicateFile', 'file already uploaded')
-            }
-                
         }
 
         // only one file allowed for this group/parent_id
