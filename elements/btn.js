@@ -349,7 +349,8 @@ export default class BtnElement extends LitElement {
         :host([xl]) { --b-btn-font-size: 1.4rem; }
 
         :host([color="theme-gradient"]) {
-            background: var(--theme-gradient, var(--bgdColor))
+            background: var(--theme-gradient, var(--bgdColor));
+            color: var(--dark-text);
         }
 
         :host([fab][color="theme-gradient"]) main {
