@@ -145,8 +145,8 @@ export default class RoutedView extends LitElement {
         }
 
         if( !id ){
-            this.model = null
-            this.finishLoading(this.model, id, attrs, state)
+            // this.model = null
+            this.finishLoading(null, id, attrs, state)
             return false
         }
 
@@ -205,6 +205,8 @@ export default class RoutedView extends LitElement {
 
         if( this.model && this.model.get('isViewing') )
             this.model.set('isViewing', false)
+
+        this.model = model
 
         if( model && model.isInvalid ){
 
@@ -278,6 +280,17 @@ export default class RoutedView extends LitElement {
             return this.panel.route
         if( this.tabView )
             return this.tabView.route
+    }
+
+    applyListFilters(e){
+
+        let {filters, merge} = e.detail || {}
+        if( !filters ) return
+
+        if( merge )
+            this.list.filters.update(filters)
+        else
+            this.list.filters.reset(filters)
     }
 
 }
