@@ -291,11 +291,12 @@ customElements.define('b-list', class extends LitElement {
             grid-column: 1/-1;
         }
 
-        b-panel {
+        b-panel[width="100%"][height="100%"] {
             --radius: 0
         }
 
         b-panel::part(main) {
+            max-width: 100%;
             box-shadow: none;
             border-top: solid 1px var(--theme-bgd-accent);
             background: var(--b-list-filter-overflow-bgd, var(--theme-bgd));
