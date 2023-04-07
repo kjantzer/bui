@@ -10,7 +10,7 @@ function csvToArray(strData, {
     mergeHeader=true,
     normalizeHeader=false,
     formatHeader=null,
-    rowLengthThreshold=0.6, // rows must be greater (ratio of non-empty cells to determined "row cell length")
+    rowLengthThreshold=0.3, // rows must be greater (ratio of non-empty cells to determined "row cell length")
     ignoreEmptyLines=true
 }={}){
 
