@@ -129,7 +129,7 @@ customElements.define('b-percent', class extends Numeral{
     get defaultFormat(){ return '0.[00]' }
 
     set num(num){ super.num = num }
-    get num(){ return this.__num * 100 }
+    get num(){ return this.__num <= 1 ? this.__num * 100 : this.__num }
 
     render(){return html`
         <slot name="percent"></slot>${this.numeral}<slot><b-text muted nobold>%</b-text></slot>
