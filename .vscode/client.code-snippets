@@ -91,7 +91,7 @@
 		"scope": "javascript,typescript",
 		"prefix": "attrT",
 		"body": [
-			"get attrTypes(){return {\n\t$1\n}}",
+			"get attrTypes(){return {\n\t$0\n}}",
 		],
 		"description": ""
 	},
@@ -99,7 +99,7 @@
 		"scope": "javascript,typescript",
 		"prefix": "liste",
 		"body": [
-			"static listeners = {\n\t$1\n}",
+			"static listeners = {\n\t$0\n}",
 		],
 		"description": ""
 	},
@@ -107,7 +107,7 @@
 		"scope": "javascript,typescript",
 		"prefix": "prop",
 		"body": [
-			"static properties = {\n\t$1\n}",
+			"static properties = {\n\t$0\n}",
 		],
 		"description": ""
 	},
@@ -115,7 +115,7 @@
 		"scope": "javascript,typescript",
 		"prefix": "styles",
 		"body": [
-			"static styles = css`\n\t$1\n`",
+			"static styles = css`\n\t$0\n`",
 		],
 		"description": ""
 	},
@@ -138,7 +138,7 @@
   "import BUI": {
     "prefix": "importbui",
     "body": [
-      "import {$1} from 'bui'"
+      "import {$0} from 'bui'"
     ],
     "description": "import BUI"
   }

@@ -20,5 +20,18 @@
     "}"
   ],
   "description": "API Model"
+},
+"Model.findJoins": {
+  "prefix": "findJoins",
+  "body": [
+    "async findJoins(){",
+    "    let selects = [], joins = [];",
+    "",
+    "    ${0:joins.push(/*sql*/``)}",
+    "",
+    "    return [selects,  joins]",
+    "}"
+  ],
+  "description": ""
 }
 }
