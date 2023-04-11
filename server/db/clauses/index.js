@@ -12,5 +12,10 @@ module.exports = {
     JsonSearch: require('./JsonSearch'),
     IsEmpty: require('./IsEmpty'),
     NotEmpty: require('./NotEmpty'),
-    UnsafeSQL: require('./UnsafeSQL')
+    UnsafeSQL: require('./UnsafeSQL'),
+
+    // template literal: sqlStr`some string`
+    sqlStr: strings=>{
+        return {toSqlString: _=>strings[0]}
+    }
 }
