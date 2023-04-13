@@ -97,10 +97,18 @@ customElements.define('b-bytes', class extends Numeral{
 })
 
 customElements.define('b-currency', class extends Numeral{
-    get defaultFormat(){ return '0,0.[00]' }
+    get defaultFormat(){ return '(0,0.[00])' }
 
     render(){return html`
         <slot name="currency"><b-text muted nobold sup sm>$</b-text></slot>${this.numeral}<slot></slot>
+    `}
+})
+
+customElements.define('b-currency-acct', class extends Numeral{
+    get defaultFormat(){ return '($0,0.[00])' }
+
+    render(){return html`
+        ${this.numeral}<slot></slot>
     `}
 })
 
@@ -114,6 +122,10 @@ customElements.define('b-currency-large', class extends Numeral{
 
 customElements.define('b-num', class extends Numeral{
     get defaultFormat(){ return '0,0' }
+})
+
+customElements.define('b-num-acct', class extends Numeral{
+    get defaultFormat(){ return '(0,0)' }
 })
 
 customElements.define('b-decimal', class extends Numeral{
