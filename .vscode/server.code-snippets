@@ -24,7 +24,7 @@
 "Model.findJoins": {
   "prefix": "findJoins",
   "body": [
-    "async findJoins(){",
+    "findJoins(){",
     "    let selects = [], joins = [];",
     "",
     "    ${0:joins.push(/*sql*/``)}",
