@@ -41,7 +41,7 @@ customElements.defineShared('b-print-view', class extends LitElement{
                 padding: 1em;
             }
 
-            main {
+            main:not([nostyles]) {
                 width: var(--page-width, 8.5in);
                 padding: var(--page-margin, .5in);
                 margin: 1em auto;
@@ -152,7 +152,7 @@ customElements.defineShared('b-print-view', class extends LitElement{
         </b-panel-toolbar>
 
         <div>
-            <main>
+            <main ?nostyles=${this.view.renderContent}>
                 ${this.view}
             </main>   
         </div>
