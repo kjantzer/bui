@@ -189,26 +189,24 @@ module.exports = class DB {
 
         let resp = {affectedRows: 0}
 
-        const chunkSize = chunk // 'chunk' is a scoped variable in the call below
-
-        await arrayChunk.call(rows, async chunk=>{
+        await arrayChunk.call(rows, async chunkOfRows=>{
             
-            let [cols, vals] = this.parseBulkInsert(chunk)
+            let [cols, vals] = this.parseBulkInsert(chunkOfRows)
 
             let INSERT = replace?'REPLACE':'INSERT'
             let IGNORE = ignore&&!update&&!replace?'IGNORE':''
-            let UPDATE_ON_DUPLICATE = update ? this.updateOnDuplicate(chunk[0]) : ''
+            let UPDATE_ON_DUPLICATE = update ? this.updateOnDuplicate(chunkOfRows[0]) : ''
 
             let sql = `${INSERT} ${IGNORE} INTO ${table} (${cols}) VALUES ? ${UPDATE_ON_DUPLICATE}`
 
             let r = await this.query(sql, [vals])
 
-            if( chunkSize )
+            if( chunk )
                 this.format.affectedRows += this.affectedRows
             else
                 resp = r
 
-        }, {size: chunkSize||rows.length})
+        }, {size: chunk === true ? 500 : (chunk||rows.length)})
 
         return resp
     }
