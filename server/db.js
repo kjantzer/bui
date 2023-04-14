@@ -189,6 +189,8 @@ module.exports = class DB {
 
         let resp = {affectedRows: 0}
 
+        const chunkSize = chunk // 'chunk' is a scoped variable in the call below
+
         await arrayChunk.call(rows, async chunk=>{
             
             let [cols, vals] = this.parseBulkInsert(chunk)
@@ -201,12 +203,12 @@ module.exports = class DB {
 
             let r = await this.query(sql, [vals])
 
-            if( chunk )
+            if( chunkSize )
                 this.format.affectedRows += this.affectedRows
             else
                 resp = r
 
-        }, {size: chunk||rows.length})
+        }, {size: chunkSize||rows.length})
 
         return resp
     }
