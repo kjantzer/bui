@@ -83,7 +83,7 @@ Model.prototype.editAttr = async function(key, val, opts={}){
 		
 		if( opts.save 
 		|| edited === orig
-		|| (!edited && !orig) // treat "falsey" values as the same
+		|| (!(edited?true:false) && !(orig?true:false)) // treat "falsey" values as the same
 		|| (edited === true && orig === 1) // treat boolean "yes" as the same (assuming it was a check-box)
 		|| (!orig && Array.isArray(edited) && edited.length == 0 )
 		|| (edited && edited.length == 0 && orig && orig.length == 0)
