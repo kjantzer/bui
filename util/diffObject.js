@@ -11,7 +11,7 @@ module.exports = function diffObject(before={}, after={}){
 
     // removed traits
     for( let k in before ){
-        if( !after[k] && before?.[k] != after[k] ){
+        if( !after?.[k] && before?.[k] != after?.[k] ){
             changes[k] = null
         }
     }
