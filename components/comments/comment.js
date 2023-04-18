@@ -301,7 +301,7 @@ customElements.define('b-comment-row', class extends LitElement {
                 @saved=${this.doneEditing}
                 @canceled=${this.doneEditing}></b-write-comment>
 
-            `:this.coll.isThread?html`
+            `:this.coll?.isThread?html`
                 <b-btn xs clear @click=${this.beginEditing} class="reply">Reply</b-btn>
             `:html`
                 <b-btn class="write" block color="white" sm @click=${this.beginEditing}>${this.placeholderBtn}</b-btn>
