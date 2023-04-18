@@ -9,6 +9,8 @@ module.exports = class JsonMergePatch extends Clause {
         this.ifNull = ifNull
     }
 
+    toString(){ return JSON.stringify(this.value) }
+
     toSqlString(db, key){
 
         let val = this.value
