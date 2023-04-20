@@ -13,6 +13,7 @@ import FilterViewDate from '../toolbar/filter-view/date'
 import FilterViewInput from '../toolbar/filter-view/input'
 import FilterViewSlider from '../toolbar/filter-view/slider'
 import FilterViewSearch from '../toolbar/filter-view/search'
+import FiltersPanel from '../toolbar/filters-panel'
 // import FilterViewToken from '../toolbar/filter-view/token'
 
 const CustomViews = {
@@ -347,6 +348,19 @@ export default class Filters extends Map {
 
     get showSearch(){
         return !!this.searchOptions.data && this.searchOptions.hideIcon!==true
+    }
+
+    get shouldUseOverflow(){
+        if( this.opts.overflow != undefined )
+            return this.opts.overflow
+
+        return this.size > this.opts.overflowThreshold
+        || ( device.isSmallDevice && this.size > this.opts.overflowThresholdMobile)
+    }
+
+    openFiltersPanel(){
+        this._filtersPanel = this._filtersPanel || new FiltersPanel()
+        this._filtersPanel.open({filters: this})
     }
 
     filterByTerm(data){

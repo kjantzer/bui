@@ -7,8 +7,7 @@ customElements.define('b-list-selection-btn', class extends Btn{
     static styles = [Btn.styles, css`
 
         :host {
-            order: -1;
-            margin-right: -0.25em;
+            order: 100;
         }
     `]
 
@@ -19,11 +18,21 @@ customElements.define('b-list-selection-btn', class extends Btn{
         this.icon = 'library_add_check'
 
         if( this.parentElement.tagName == 'B-LIST')
-            this.slot = 'toolbar:before'
+            this.slot = 'toolbar:after'
 
-        this.title ="Select data"
+        this.tooltip ="Turn on selection"
 
         this.addEventListener('click', this.beginSelection)
+    }
+
+    connectedCallback(){
+        super.connectedCallback()
+        let list = this.list
+        if( list ){
+            // auto set list options if not already set
+            list.listOptions = list.listOptions || {}
+            list.listOptions.selection = true
+        }
     }
 
     get list(){

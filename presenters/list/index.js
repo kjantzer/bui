@@ -420,8 +420,8 @@ customElements.define('b-list', class extends LitElement {
     }
 
     showFilterSelection(){
-        // console.log('show filters?');
-        // TODO: show menu with available filters
+        if( this.filters.shouldUseOverflow )
+            this.filters.openFiltersPanel()
     }
 
     onKeydown(e){
@@ -449,6 +449,19 @@ customElements.define('b-list', class extends LitElement {
                 })
             }
 
+            // ctrl+a = turn on bulk selection
+            if( (e.ctrlKey || e.metaKey) && (e.key == 'a') ){
+                // if selections is allowed (and not already on)
+                if( this.listOptions.selection && !this.selection.isOn ){
+                    e.preventDefault()
+                    // turn on selection IF this is the top level/active list
+                    this._ifInDOM().then(e=>{
+                        this.selection.begin()
+                        // todo: select all results if selection is already on?
+                    })
+                }
+            }
+
             // Mac=option key; Windows=alt key
             if( e.altKey & (e.key == 'r' || e.key == '®') ){
                 
@@ -457,21 +470,9 @@ customElements.define('b-list', class extends LitElement {
                     e.preventDefault()
                     this.focusSearchInput()
 
-                    // traverse up the DOM to see if this list is in the activeElement
-                    setTimeout(()=>{
-                        let parent = this
-                        let isActive = false
-                        while( parent != undefined ){
-                            parent = parent.parentElement || parent.getRootNode().host
-                            if( isActive = parent == document.activeElement )
-                                break
-                        }
-
-                        // yep, active, so refresh
-                        if( isActive ){
-                            this.refresh()
-                            this.blurSearchInput()
-                        }
+                    this._ifInDOM().then(e=>{
+                        this.refresh()
+                        this.blurSearchInput()
                     })
                 })
             }
@@ -480,6 +481,23 @@ customElements.define('b-list', class extends LitElement {
         // if( !e.metaKey && !e.ctrlKey ) return
         // console.log('here');
         // this.queuing = true
+    }
+
+     // traverse up the DOM to see if this list is in the activeElement
+    async _ifInDOM(){
+        return new Promise(resolve=>{
+            setTimeout(()=>{
+                let parent = this
+                let isActive = false
+                while( parent != undefined ){
+                    parent = parent.parentElement || parent.getRootNode().host
+                    if( isActive = parent == document.activeElement )
+                        break
+                }
+
+                resolve(isActive)
+            })
+        })
     }
 
     onKeyup(e){

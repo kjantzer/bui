@@ -31,7 +31,7 @@ customElements.define('b-list-selection-bar', class extends LitElement{
         }
 
         .cancel-btn {
-            margin-right: .5em;
+            margin-left: .5em;
             /* margin: 0 1em; */
         }
 
@@ -87,7 +87,7 @@ customElements.define('b-list-selection-bar', class extends LitElement{
         ${this.selection?html`
 
             <div>
-                <b-btn class="cancel-btn" icon="library_add_check" color="theme" @click=${this.end} clear lg></b-btn>
+                
 
                 <span class="count">
                     <span>${this.selection.result.size}&nbsp;<span>selected</span></span>
@@ -98,6 +98,8 @@ customElements.define('b-list-selection-bar', class extends LitElement{
 
             <div>
                 <slot name="right"></slot>
+
+                <b-btn class="cancel-btn" icon="library_add_check" color="theme" @click=${this.end} clear lg></b-btn>
             </div>
         `:''}
     `}

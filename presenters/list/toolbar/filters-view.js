@@ -2,7 +2,6 @@ import { LitElement, html, css } from 'lit'
 import device from '../../../util/device'
 import './filter-btn'
 import './filter-saved-presets' // TODO: make this opt-in?
-import FiltersPanel from './filters-panel'
 import Dialog from '../../../presenters/dialog'
 import Menu from '../../../presenters/menu'
 import {DownloadContent} from '../../../elements/draggable'
@@ -80,11 +79,8 @@ customElements.define('b-list-filters', class extends LitElement{
     `}
 
     get showOverflow(){ 
-        if( this.filters.opts.overflow != undefined )
-            return this.filters.opts.overflow
-
-        return this.filters.size > this.filters.opts.overflowThreshold
-        || ( device.isSmallDevice && this.filters.size > this.filters.opts.overflowThresholdMobile) }
+        return this.filters.shouldUseOverflow
+    }
 
     render(){return html`
 
@@ -208,10 +204,7 @@ customElements.define('b-list-filters', class extends LitElement{
     }
 
     openFiltersPanel(){
-        this._filtersPanel = this._filtersPanel || new FiltersPanel()
-        this._filtersPanel.open({
-            filters: this.filters
-        })
+        this.filters.openFiltersPanel()
     }
 
     applyQueuedFilters(){

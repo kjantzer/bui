@@ -35,6 +35,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
             width: 1.95rem;
             height: 1.85rem;
             flex-shrink: 0;
+            order: -10;
         }
 
         [icon="down-open"]::part(main) {
