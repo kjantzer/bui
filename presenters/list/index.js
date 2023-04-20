@@ -566,12 +566,16 @@ customElements.define('b-list', class extends LitElement {
         return this.emptyView
     }
 
-    createDivider(prevModel, model){
+    createDivider(prevModel, model, nextModel){
 
         let divider = this.getAttribute('divider')
         
         divider = divider && customElements.get(divider)
-        let shouldDisplay = divider && divider.shouldDisplay && divider.shouldDisplay(prevModel, model, this)
+        let shouldDisplay = divider && divider.shouldDisplay && divider.shouldDisplay(prevModel, model, this, nextModel)
+
+        if( shouldDisplay && typeof shouldDisplay == 'object' && Object.keys(shouldDisplay).length == 0 )
+            shouldDisplay = false
+
         if( shouldDisplay ){
             divider = new divider(prevModel, model, this, shouldDisplay)
             divider.part = 'divider'

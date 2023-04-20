@@ -130,8 +130,8 @@ customElements.define('b-infinite-list', class extends LitElement {
 
         models.forEach((model, i)=>{
 
-            let divider = this.divider && this.divider(this.prevModel, model)
-            if( divider ){
+            let divider = this.divider && this.divider(this.prevModel, model, models[i+1])
+            if( divider && divider.data?.afterRow !== true ){
                 this.appendChild(divider)
             }
 
@@ -141,6 +141,10 @@ customElements.define('b-infinite-list', class extends LitElement {
             let row = this.row && this.row(model, {prevModel, nextModel})
             if( row ){
                 this.appendChild(row)
+            }
+
+            if( divider && divider.data?.afterRow === true ){
+                this.appendChild(divider)
             }
             
             this.prevModel = model
