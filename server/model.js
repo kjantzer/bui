@@ -705,6 +705,29 @@ module.exports = class Model {
         return findFK.call(this, {table: this.config.table, id: this.idAttribute})
     }
 
+    async findForeignKeyUses({includeEmptyFK=false}={}){
+
+        let foreignKeys = await this.findForeignKeyConstraints()
+
+        let resp = await Promise.all(foreignKeys.map(async fk=>{
+            let data = (await this.db.query(/*sql*/`
+                SELECT COUNT(*) num FROM ${fk.TABLE_NAME} WHERE ${fk.COLUMN_NAME} = ? GROUP BY ${fk.COLUMN_NAME}
+            `, [this.id])).first
+
+            return {
+                table: fk.TABLE_NAME,
+                column: fk.COLUMN_NAME,
+                num_rows: data?.num || 0
+            }
+        }))
+
+        // remove foreign keys with no rows
+        if( includeEmptyFK !== true )
+            resp = resp.filter(d=>d.num_rows>0)
+
+        return resp
+    }
+
     async merge(){
 
         let {ids, primaryID} = this.req.body
