@@ -138,7 +138,7 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
                 let values = term.split(/[\n\t\s]/).map(s=>s.trim()).filter(s=>s)
                 let sameLength = values.filter(v=>v.length==values[0].length).length == values.length
                 
-                if( values.length >= 3 && sameLength )
+                if( values.length >= 2 && (sameLength || term.match(/[\d\s]/) ) )
                 menu.unshift({
                     label: `Bulk Search: ${values.length} IDs`,
                     val: values,
