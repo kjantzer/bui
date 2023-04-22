@@ -224,7 +224,7 @@ module.exports = function(Orig){ return {
 		var attributes = this.attributes[key] && typeof this.attributes[key] == 'object' ? this.attributes[key] : {};
 
 		// were we given an ID key? get the id from the attributes on this model
-		if( info.id || typeof this.attributes[key] != 'object' ){
+		if( info.id || (this.attributes[key] !== undefined && typeof this.attributes[key] != 'object') ){
 			attributes[ChildModel.prototype.idAttribute||'id'] = this.attributes[info.id||key];
 			
 			// save link from id name to the child model key.
@@ -261,7 +261,7 @@ module.exports = function(Orig){ return {
 				coll = coll()
 			
 			if( typeof coll == 'function' ){
-				var Model = coll.call(this, id, key)
+				var Model = coll.call(this, id, key, attributes)
 			}else{
 				var Model = info.fetch ? coll.getOrFetch(id, {success:this._childModelFetched.bind(this, key, path), silent:true}) : coll.getOrCreate(attributes)
 				Model.refColl = coll
