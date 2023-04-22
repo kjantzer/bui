@@ -268,6 +268,12 @@ class SelectFieldElement extends HTMLElement {
 					if( val !== undefined && val !== null )
 						val = String(val)
 
+					if( val === undefined && o.label )
+						o.val = o.label
+
+					if( val && o.label === undefined )
+						o.label = val
+
 					// String(o.val!==undefined?o.val:o)
 
 					return Object.assign({}, o, {val})
