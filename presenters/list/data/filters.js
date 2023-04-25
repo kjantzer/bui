@@ -623,7 +623,7 @@ export class Filter {
 
         if( matchedVal&&matchedVal.length>0 )
             return matchedVal.map(f=>{
-                return [showSelection(f.selection), f.toolbarLabel||f.label].filter(s=>s).join(' ')
+                return [showSelection(f.selection), f.toolbarLabel||f.label||f.val].filter(s=>s).join(' ')
             }).join(', ')
         
         if( Array.isArray(val) )
