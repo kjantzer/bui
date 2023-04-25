@@ -174,6 +174,9 @@ export default class Menu {
 			if( !isDivider(val) && ['string', 'number'].includes(typeof val) )
 				return {label: val, val}
 
+			if( val.val && !val.label )
+				val.label = val.val
+
 			return val
 		})
 
