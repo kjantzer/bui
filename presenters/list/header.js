@@ -173,6 +173,11 @@ customElements.define('b-list-header', class extends LitElement{
     constructor(){
         super()
         this.slot = "header"
+        this.disableHideShowMenu = false
+    }
+
+    static properties = {
+        disableHideShowMenu: {type: Boolean}
     }
 
     static get styles(){return [this.sharedStyles, css`
@@ -231,8 +236,8 @@ customElements.define('b-list-header', class extends LitElement{
 
             gridTemplate.push(`var(${colWidth})`)
 
-            header.style.setProperty('visibility', `var(--grid-col-${i+1}-visibility, visible)`)
-            
+            header.style.setProperty('visibility', this.disableHideShowMenu ? 'visible' : `var(--grid-col-${i+1}-visibility, visible)`)
+
             col.hidden = header.getAttribute('col-hidden')
             if(col.hidden === 'default') colsDefaultHidden.push(col.id)
         })
@@ -246,14 +251,14 @@ customElements.define('b-list-header', class extends LitElement{
         if( customElements.get(this.parentElement.rowElement) ){
             
             // set default method for applying custom css props
-            customElements.get(this.parentElement.rowElement).applyGridStyleProps = function(row){
+            customElements.get(this.parentElement.rowElement).applyGridStyleProps = (row)=>{
 
                 // default to all children, so long as they aren't hidden
                 let children = Array.from(row.shadowRoot?.children||[]).filter(el=>isCell(el))
 
                 children.forEach((el, i)=>{
-                    el.style.setProperty('visibility', `var(--grid-col-${i+1}-visibility, visible)`)
-                    el.style.setProperty('height', `var(--grid-col-${i+1}-height, auto)`)
+                    el.style.setProperty('visibility', this.disableHideShowMenu ? 'visible' :`var(--grid-col-${i+1}-visibility, visible)`)
+                    el.style.setProperty('height', this.disableHideShowMenu ? 'auto' : `var(--grid-col-${i+1}-height, auto)`)
                 })
 
             }
@@ -284,7 +289,7 @@ customElements.define('b-list-header', class extends LitElement{
     }
 
     async showMenu(e){
-
+        if(this.disableHideShowMenu) return
         let menu = this.cols.filter(col=>{
             return col.hidden !== 'never'
         }).map(col=>{
