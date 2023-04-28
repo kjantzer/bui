@@ -173,7 +173,6 @@ customElements.define('b-list-header', class extends LitElement{
     constructor(){
         super()
         this.slot = "header"
-        this.colsHiddenDefault=[]
     }
 
     static get styles(){return [this.sharedStyles, css`
@@ -215,7 +214,7 @@ customElements.define('b-list-header', class extends LitElement{
 
         }).filter(d=>d&&d.width!==false)
 
-        
+        const colsDefaultHidden = []
         cols.forEach((col, i)=>{
 
             let {width, header} = col
@@ -233,9 +232,12 @@ customElements.define('b-list-header', class extends LitElement{
             gridTemplate.push(`var(${colWidth})`)
 
             header.style.setProperty('visibility', `var(--grid-col-${i+1}-visibility, visible)`)
+            
+            col.hidden = header.getAttribute('col-hidden')
+            if(col.hidden === 'default') colsDefaultHidden.push(col.id)
         })
 
-        this.colsHidden = store.create(`b-list:${this.parentElement.key}:cols-hidden`, this.colsHiddenDefault)
+        this.colsHidden = store.create(`b-list:${this.parentElement.key}:cols-hidden`, colsDefaultHidden)
         this.cols = cols
 
         this.parentElement.style.setProperty('--grid-template-cols', gridTemplate.join(' '))
@@ -283,7 +285,9 @@ customElements.define('b-list-header', class extends LitElement{
 
     async showMenu(e){
 
-        let menu = this.cols.map(col=>{
+        let menu = this.cols.filter(col=>{
+            return col.hidden !== 'never'
+        }).map(col=>{
             return {
                 label: col.label,
                 val: col.id,
