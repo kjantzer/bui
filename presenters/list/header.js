@@ -173,6 +173,7 @@ customElements.define('b-list-header', class extends LitElement{
     constructor(){
         super()
         this.slot = "header"
+        this.colsHiddenDefault=[]
     }
 
     static get styles(){return [this.sharedStyles, css`
@@ -234,7 +235,7 @@ customElements.define('b-list-header', class extends LitElement{
             header.style.setProperty('visibility', `var(--grid-col-${i+1}-visibility, visible)`)
         })
 
-        this.colsHidden = store.create(`b-list:${this.parentElement.key}:cols-hidden`)
+        this.colsHidden = store.create(`b-list:${this.parentElement.key}:cols-hidden`, this.colsHiddenDefault)
         this.cols = cols
 
         this.parentElement.style.setProperty('--grid-template-cols', gridTemplate.join(' '))
@@ -306,7 +307,7 @@ customElements.define('b-list-header', class extends LitElement{
         if( !selected || selected.length == 0 ) return
 
         if( !selected[0].val )
-            this.colsHidden(null)
+            this.colsHidden([])
         else{
             let cols = selected.map(d=>d.val)
             this.colsHidden(cols)
