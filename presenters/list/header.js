@@ -304,9 +304,9 @@ customElements.define('b-list-header', class extends LitElement{
             selected: this.colsHidden()
         }).popover(e)
 
-        if( !selected || selected.length == 0 ) return
+        if( !selected ) return
 
-        if( !selected[0].val )
+        if( selected.length == 0 || !selected[0].val )
             this.colsHidden([])
         else{
             let cols = selected.map(d=>d.val)
