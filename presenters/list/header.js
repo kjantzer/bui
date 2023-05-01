@@ -207,6 +207,7 @@ customElements.define('b-list-header', class extends LitElement{
         let children = Array.from(this.shadowRoot.children)
         let gridTemplate = []
 
+        // create list of column headers
         let prevW = null
         let cols = children.map((el, i)=>{
 
@@ -219,7 +220,7 @@ customElements.define('b-list-header', class extends LitElement{
 
         }).filter(d=>d&&d.width!==false)
 
-        const colsDefaultHidden = []
+        // now apply formatting to all the headers (and gather additional data)
         cols.forEach((col, i)=>{
 
             let {width, header} = col
@@ -229,6 +230,7 @@ customElements.define('b-list-header', class extends LitElement{
                 || `Column ${i+1}`
             col.id = header.getAttribute('cid') || col.label
             col.num = i+1
+            col.hide = header.getAttribute('hide') == 'never' ? false : (header.hasAttribute('hide')?true:undefined)
 
             let colWidth = `--grid-col-${i+1}-width`
             
@@ -237,13 +239,10 @@ customElements.define('b-list-header', class extends LitElement{
             gridTemplate.push(`var(${colWidth})`)
 
             header.style.setProperty('visibility', this.disableHideShowMenu ? 'visible' : `var(--grid-col-${i+1}-visibility, visible)`)
-
-            col.hidden = header.getAttribute('col-hidden')
-            if(col.hidden === 'default') colsDefaultHidden.push(col.id)
         })
 
-        this.colsHidden = store.create(`b-list:${this.parentElement.key}:cols-hidden`, colsDefaultHidden)
         this.cols = cols
+        this.colsHidden = store.create(`b-list:${this.parentElement.key}:cols-hidden`, this.colsHiddenByDefault)
 
         this.parentElement.style.setProperty('--grid-template-cols', gridTemplate.join(' '))
 
@@ -265,6 +264,10 @@ customElements.define('b-list-header', class extends LitElement{
         }
 
         this.applyProps()
+    }
+
+    get colsHiddenByDefault(){
+        return this.cols.filter(col=>col.hide).map(col=>col.id)
     }
 
     render(){return html`
@@ -290,9 +293,10 @@ customElements.define('b-list-header', class extends LitElement{
 
     async showMenu(e){
         if(this.disableHideShowMenu) return
-        let menu = this.cols.filter(col=>{
-            return col.hidden !== 'never'
-        }).map(col=>{
+        let menu = this.cols.map(col=>{
+            if( col.hide === false )
+                return {title: col.label}
+
             return {
                 label: col.label,
                 val: col.id,
@@ -300,9 +304,12 @@ customElements.define('b-list-header', class extends LitElement{
             }
         })
 
+        let hasDefaultHidden = this.cols.find(col=>col.hide)
+
         menu = [
             {divider: 'Show/hide columns'},
             {label: 'Show All', val: '', clearsAll: true},
+            (hasDefaultHidden?{label: 'Reset to Default', val: 'reset', clearsAll: true}:''),
             '-'
         ].concat(menu)
 
@@ -315,7 +322,9 @@ customElements.define('b-list-header', class extends LitElement{
 
         if( !selected ) return
 
-        if( selected.length == 0 || !selected[0].val )
+        if( selected[0].val == 'reset' )
+            this.colsHidden(this.colsHiddenByDefault)
+        else if( selected.length == 0 || !selected[0].val )
             this.colsHidden([])
         else{
             let cols = selected.map(d=>d.val)

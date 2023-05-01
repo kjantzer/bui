@@ -424,16 +424,23 @@ customElements.define('row-element-name', class extends LitElement{
 
     static header(){return html`
         <div w="40px">ID</div>
-        <div w="1fr">Label</div>
+        <div w="1fr" hide="never">Label</div>
+        <div w="1fr" hide>More data</div>
+        <div cell="no">I will not be treated as a column header</div>
     `}
 
     render(){return html`
         <span>1</span>
         <span>Row Label</span>
+        <span>Extra optional data</span>
     `}
 
 })
 ```
+
+Use `w` attribute to set the width of the column. Any css value is supported (eg: `minmax(200px, 1fr)`)
+
+Use `hide` to make the column hidden by default. A user can right+click on the header to show/hide columns. Use `hide="never"` to make a column never hidden.
 
 ```html
 <b-list row="row-element-name">
