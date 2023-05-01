@@ -161,7 +161,7 @@ module.exports = class API {
                 if( typeof code != 'number' )
                     code = 500
 
-                res.statusMessage = err.code == 'ER_PARSE_ERROR' ? err.code : err.message
+                res.statusMessage = err.code == 'ER_PARSE_ERROR' ? err.code : err.message.replace(/\n/g, ' ')
                 res.status(code).json({
                     error: err.message,
                     code: code,
