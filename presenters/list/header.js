@@ -322,7 +322,7 @@ customElements.define('b-list-header', class extends LitElement{
 
         if( !selected ) return
 
-        if( selected[0].val == 'reset' )
+        if( selected[0]?.val == 'reset' )
             this.colsHidden(this.colsHiddenByDefault)
         else if( selected.length == 0 || !selected[0].val )
             this.colsHidden([])
