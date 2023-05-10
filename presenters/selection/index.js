@@ -68,6 +68,11 @@ export default class Selection {
 
     get isOn(){ return this.__on === true }
 
+    _emit(action, data){
+        this.emit(action, data)
+        this.list.emitEvent?.('selection', {action, data})
+    }
+
     begin(e){
 
         if( this.isOn ) return
@@ -85,7 +90,7 @@ export default class Selection {
         }
 
         this.opts.onBegin()
-        this.emit('begin')
+        this._emit('begin')
     }
 
     end(){
@@ -95,7 +100,7 @@ export default class Selection {
         this.clear()
 
         this.opts.onEnd()
-        this.emit('end')
+        this._emit('end')
     }
 
     clear(){
@@ -174,7 +179,7 @@ export default class Selection {
             this._toggleSelect(item)
 
             this.opts.onChange(this.result)
-            this.emit('change', this.result)
+            this._emit('change', this.result)
             
             if( this.opts.endWhenNoResults && this.result.size == 0 )
                 setTimeout(()=>this.end()) // let mouseup finish
@@ -193,7 +198,7 @@ export default class Selection {
                 this._deselect(_item)
         })
 
-        this.emit('change', this.result)
+        this._emit('change', this.result)
         
         if( this.opts.endWhenNoResults && this.result.size == 0 )
             setTimeout(()=>this.end()) // let mouseup finish
