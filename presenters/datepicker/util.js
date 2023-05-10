@@ -1,7 +1,7 @@
 import {html} from 'lit'
 import dayjs from 'dayjs'
 
-export function dateQuarterPresets({startOf='startOf', dateOffset=null, numQuarters=16}){
+export function dateQuarterPresets({startOf='startOf', dateOffset=null, numQuarters=16}={}){
     let date = new dayjs()
     
     if( dateOffset && Array.isArray( dateOffset) )

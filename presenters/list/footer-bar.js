@@ -37,7 +37,7 @@ export default class extends LitElement{
     }
     
     disconnectedCallback(){
-        this.disconnectedCallback()
+        super.disconnectedCallback()
         this.list?.removeEventListener('selection')
     }
 
