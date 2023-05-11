@@ -209,15 +209,13 @@ customElements.define('b-list-filters-saved', class extends LitElement{
 
         if( !selected ) return
 
-        console.log(selected);
-
         if( !selected.evt.shiftKey )
             this.model = selected.model
 
         this.filters[selected.evt.shiftKey?'update':'reset'](selected.model.get('filters'))
 
         // track how many times used
-        this.model.saveSync({use_count: this.model.get('use_count')+1}, {patch: true})
+        selected.model.saveSync({use_count: selected.model.get('use_count')+1}, {patch: true})
     }
 
     updateModel(){
