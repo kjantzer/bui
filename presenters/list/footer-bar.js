@@ -26,6 +26,13 @@ export default class extends LitElement{
         this.onSelectionChange = this.onSelectionChange.bind(this)
     }
 
+    firstUpdated(){
+        if( this.slot ) return
+        
+        if( this.list )
+            this.slot = 'footer'
+    }
+
     connectedCallback(){
         super.connectedCallback()
 
