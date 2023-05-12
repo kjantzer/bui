@@ -10,7 +10,9 @@ function csvToArray(strData, {
     mergeHeader=true,
     normalizeHeader=false,
     formatHeader=null,
+    // TODO: support 'auto' mode; lower threshold when rowLength is small, higher threshold when large row length
     rowLengthThreshold=0.3, // rows must be greater (ratio of non-empty cells to determined "row cell length")
+    headerLengthThreshold=true, // true means use rowLengthThreshold
     ignoreEmptyLines=true
 }={}){
 
@@ -147,14 +149,18 @@ function csvToArray(strData, {
     addDataHeader: if( hasHeader ){
 
         let dataHeader = null
+        let _headerLengthThreshold = headerLengthThreshold 
+            ? (headerLengthThreshold === true ? rowLengthThreshold : headerLengthThreshold )
+            : 1 // perfect match
 
         while(!dataHeader && arrData.length > 0 ){
             
             // in most cases, the header should not have any empty cells
-            dataHeader = arrData.shift().filter(d=>d)
+            dataHeader = arrData.shift()
+            let dataHeaderDataOnly = dataHeader.filter(d=>d)
 
             // dont use this "data header" if NOT the same num of columns
-            if( dataHeader.length != rowLength ){
+            if( (dataHeaderDataOnly.length / rowLength) <= _headerLengthThreshold ){
                 
                 // if row still has content, add it to the "header"
                 if( dataHeader.length > 0 )
