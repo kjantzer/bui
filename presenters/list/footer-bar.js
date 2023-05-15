@@ -36,7 +36,7 @@ export default class extends LitElement{
     connectedCallback(){
         super.connectedCallback()
 
-        this.list?.removeEventListener('selection')
+        this.list?.removeEventListener('selection', this.onSelectionChange)
 
         this.list = this.parentElement?.tagName == 'B-LIST' ? this.parentElement : null
         this.list?.addEventListener('selection', this.onSelectionChange)
@@ -45,7 +45,7 @@ export default class extends LitElement{
     
     disconnectedCallback(){
         super.disconnectedCallback()
-        this.list?.removeEventListener('selection')
+        this.list?.removeEventListener('selection', this.onSelectionChange)
     }
 
     render(){return html`
