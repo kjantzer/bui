@@ -7,6 +7,7 @@ import './controller'
 import './toolbar'
 import '../../elements/btn'
 import CollMap from '../../util/collmap'
+import isLitHTML from '../../helpers/lit/is-lit-html'
 
 export const PanelDefaults = {
     type: '',
@@ -309,7 +310,7 @@ export class Panel extends LitElement {
 
         this.opts = opts
 
-        if( typeof view == 'function' ){
+        if( isLitHTML(view ) || typeof view == 'function' ){
             this.html = view
 
         }else if( typeof view == 'string' ){
@@ -446,7 +447,7 @@ export class Panel extends LitElement {
     pulseBack(){ this.animate('pulseback', {timeout: 220}) }
 
     set html(fn){ this.__html = fn}
-    get html(){ return this.__html ? this.__html.call(this) : ''}
+    get html(){ return this.__html && typeof this.__html == 'function' ? this.__html.call(this) : (this.__html||'')}
 
     set view(view){
         if( this.view ){
