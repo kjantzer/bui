@@ -195,7 +195,7 @@ customElements.define('b-tag-list', class extends LitElement{
         let tagEl = e.currentTarget
 
         // confirm delete (unless the user ctrl+click)
-        if( !(e.metaKey || e.ctrlKey) && !await Dialog.confirmDelete().popover(tagEl) )
+        if( !(e.metaKey || e.ctrlKey || this.hasAttribute('noconfirm')) && !await Dialog.confirmDelete().popover(tagEl) )
             return
 
         let tag = tagEl.innerText.trim()
