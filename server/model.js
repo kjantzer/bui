@@ -247,7 +247,8 @@ module.exports = class Model {
                         delete attrs[fieldName]._merge
                         attrs[fieldName] = new this.db.clauses.JsonMergePatch(attrs[fieldName])
                     }else
-                        attrs[fieldName] = attrs[fieldName] ? JSON.stringify(attrs[fieldName]) : null
+                        if( typeof attrs[fieldName] !== 'string' )
+                            attrs[fieldName] = attrs[fieldName] ? JSON.stringify(attrs[fieldName]) : null
                 }
             })
         }
