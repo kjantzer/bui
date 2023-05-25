@@ -12,17 +12,22 @@ export function dateQuarterPresets({startOf='startOf', dateOffset=null, numQuart
     let i = 0
     let presets = []
     let quarters = (numQuarters + (5-date.quarter()))
+    let today = dayjs()
     
     while(i++ < quarters ){
 
         let quarterDate = date[startOf]('quarter')
         let quarter = date.quarter()
+        let sameYear = date.isSame(today, 'year')
+        let sameMonth = today.quarter() == quarter && sameYear //date.isSame(today, 'month')
 
         if( i > 1 && quarter == 1 )
-            presets.push('-')
+            presets.push(sameYear ? {divider:'Current Year'} : '-')
+        
 
         presets.push({
-            label: html`<b-text xbold>Q${quarter}</b-text> ${date.year()}`,
+            label: html`<b-text xbold ?gradient=${sameMonth}>Q${quarter}</b-text> 
+                        <b-text ?gradient=${sameYear}>${date.year()}</b-text>`,
             value:d=>quarterDate,
         })
 
