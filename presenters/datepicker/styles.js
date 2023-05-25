@@ -11,7 +11,7 @@ export default css`
         --size: 2em;
         --font-size: calc(.4 * var(--size));
         user-select: none;
-        height: 320px;
+        height: var(--date-picker-height, 320px);
     }
     
     :host(:not([inputs])) header {
