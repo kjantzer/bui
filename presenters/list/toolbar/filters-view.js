@@ -23,7 +23,7 @@ customElements.define('b-list-filters', class extends LitElement{
 
     static get styles(){return css`
         :host {
-            display: flex;
+            display: var(--b-list-filters-display, flex);
             align-items: center;
             overflow: -moz-scrollbars-none;
             flex-shrink: 1;
