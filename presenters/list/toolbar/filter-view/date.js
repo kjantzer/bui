@@ -21,7 +21,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         
         b-datepicker {
             border-top: solid 1px var(--theme-bgd-accent, #ddd);
-            --date-picker-height: 60vh;
+            --date-picker-height: 50vh;
         }
     `}
 
