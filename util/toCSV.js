@@ -1,6 +1,6 @@
-import {titleize} from './string'
+const {titleize} = require('./string')
 
-export default (rawData, opts)=>{
+module.exports = (rawData, opts)=>{
 
 	opts = Object.assign({
 		delimiter: ',',
