@@ -34,7 +34,7 @@ customElements.defineShared('b-popover-view', class extends LitElement{
 
     close(){
         this.stopAutoClose()
-        this.popover&&this.popover.close()
+        this.popOver&&this.popOver.close()
         this.model = null
     }
 

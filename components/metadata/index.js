@@ -143,7 +143,7 @@ customElements.define('b-metadata', class extends LitElement{
                 }})
             }
 
-            key = await new Menu(values).popover(clickTarget)
+            key = await new Menu(values).popOver(clickTarget)
             if( !key ) return
 
             if( key.fn ) return key.fn.call()
@@ -155,7 +155,7 @@ customElements.define('b-metadata', class extends LitElement{
             key = await Dialog.prompt({
                 placeholder: (this.custom||'Metadata')+' label/name',
                 btns: ['cancel', 'add']
-            }).popover(clickTarget)
+            }).popOver(clickTarget)
 
         key = key && key.trim()
 

@@ -19,14 +19,14 @@ let selected = await new Menu([
     'divider',
     {label: 'Delete', icon: 'trash', val: 'destroy'},
     {text: 'A block of text. <b>html</b> can be loaded here'}
-]).popover(element)
+]).popOver(element)
 ```
 
 ```javascript
 // AJAX Search
 let selected = await new Menu([], {
     search: {url: '/my-search-url?term='}
-}).popover(element)
+}).popOver(element)
 ```
 
 ## Menu Items
@@ -144,7 +144,7 @@ You can use the built-in presenters to accomplish this.
 
 `menu.actionsheet(opts)`
 
-`menu.popover(target, opts)`
+`menu.popOver(target, opts)`
 
 #### Promise based
 
@@ -184,21 +184,21 @@ let menuItems = [
 ]
 
 // call the menu handler function directly
-let selected = await new Menu(menuItems).popover(target)
+let selected = await new Menu(menuItems).popOver(target)
 let didHandle = Menu.handle(selected, myClass)
 if( !didHandle )
     console.log(selected.label) // Item 3
 
 // OR use the handler option
-new Menu(menuItems, {handler:myClass}).popover(target)
+new Menu(menuItems, {handler:myClass}).popOver(target)
 .then(selected=>{
     console.log(selected.label) // Item 3
 })
 
 // handler with args
-new Menu(menuItems, {handler:[myClass, 'arg1', 'arg2']}).popover(target)
+new Menu(menuItems, {handler:[myClass, 'arg1', 'arg2']}).popOver(target)
 // long form
-new Menu(menuItems, {handler:myClass, handlerArgs: ['arg1', 'arg2']}).popover(target)
+new Menu(menuItems, {handler:myClass, handlerArgs: ['arg1', 'arg2']}).popOver(target)
 ```
 
 ## Utilities

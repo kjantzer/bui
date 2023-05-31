@@ -312,7 +312,7 @@ export default class extends LitElement{
     `}
 
     async setLookup(e){
-        let selected = await new Menu(this.lookupKeys()).popover(e.currentTarget, {
+        let selected = await new Menu(this.lookupKeys()).popOver(e.currentTarget, {
             align: 'bottom-start',
             maxHeight: '40vh'
         })

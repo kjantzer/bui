@@ -83,7 +83,7 @@ customElements.define('view-two', class extends LitElement{
             {label: 'Slide Top ', opts:{width: '100%', height:'50vh', anchor:'top'}},
             'divider',
             {label: 'Reset', icon: 'arrows-ccw', opts:{width: '100%', height: '100%', anchor:'right'}}
-        ]).popover(e.target, {align: 'bottom-end'})
+        ]).popOver(e.target, {align: 'bottom-end'})
 
         if( selected ){
             for( let key in selected.opts ){

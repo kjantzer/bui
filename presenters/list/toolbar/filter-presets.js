@@ -107,7 +107,7 @@ customElements.define('b-list-filter-presets', class extends LitElement{
         if( menu.length == 0 )
             menu.push({text: 'No presets created'})
 
-        let selected = await new Menu(menu).popover(e.currentTarget)
+        let selected = await new Menu(menu).popOver(e.currentTarget)
         if( !selected ) return
         
         this.preset = this.presets.get(selected.val)
@@ -132,7 +132,7 @@ customElements.define('b-list-filter-presets', class extends LitElement{
             {label: 'Change Name', icon: 'pencil', fn: 'changeName'},
             'divider',
             {label: 'Delete', icon: 'trash', fn: 'destroy'},
-        ], {handler: this}).popover(e.currentTarget)
+        ], {handler: this}).popOver(e.currentTarget)
     }
 
     async changeName(){
@@ -168,7 +168,7 @@ customElements.define('b-list-filter-presets', class extends LitElement{
 
     async destroy(){
         if( !this.preset ) return
-        if( !await Dialog.confirmDelete().popover(this) )
+        if( !await Dialog.confirmDelete().popOver(this) )
             return 
         this.preset.destroy()
         this.preset = null

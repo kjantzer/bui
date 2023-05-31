@@ -92,7 +92,7 @@ customElements.defineShared('b-print-view', class extends LitElement{
 
                 let selected = false
                 if( target )
-                    selected = await new Menu(viewMenu).popover(target, {align})
+                    selected = await new Menu(viewMenu).popOver(target, {align})
                 else
                     selected = await new Menu(viewMenu).modal({title: 'Select Print View', icon: 'print'})
 

@@ -205,7 +205,7 @@ customElements.define('b-list-filters-saved', class extends LitElement{
         if( menu.length == 0 )
             menu.push({text: html`No presets avilable.<br>Apply some filters to create a new preset.`, bgd: false})
 
-        let selected = await new Menu(menu, {search: 10, width: '400px', handler: this}).popover(this)
+        let selected = await new Menu(menu, {search: 10, width: '400px', handler: this}).popOver(this)
 
         if( !selected ) return
 

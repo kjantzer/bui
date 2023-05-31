@@ -150,7 +150,7 @@ customElements.define('b-list-filters', class extends LitElement{
 
         menu.unshift({heading: 'Applied Filters History'})
 
-        let selected = await new Menu(menu).popover(e.currentTarget)
+        let selected = await new Menu(menu).popOver(e.currentTarget)
 
         if( selected )
             this.filters.reset(selected.val, {stopQueuing: !this.filters.queuing})
@@ -187,7 +187,7 @@ customElements.define('b-list-filters', class extends LitElement{
         let how = await new Dialog({
             noContent: true,
             btns: [{label: 'Merge', color: 'blue'}, {label: 'Replace', color: 'red'}]
-        }).popover(uploader.parent)
+        }).popOver(uploader.parent)
 
         if( !how ) return
 

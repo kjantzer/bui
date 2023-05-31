@@ -136,8 +136,8 @@ export default class Popover {
 								.forEach(className=> className ? this.el.classList.add(className.trim()) : null);
 		}
 		
-		this.el.popover = this
-		this.view.popover = this
+		this.el.popOver = this
+		this.view.popOver = this
 		
 		this.positionOver(target)
 		
@@ -171,7 +171,7 @@ export default class Popover {
 		}
 
 		this.target = target
-		this.target.popover = this
+		this.target.popOver = this
 
 		if( this.target._popoverTarget )
 			this.target._popoverTarget.classList.add('popover-open')
@@ -281,7 +281,7 @@ export default class Popover {
 	clearTarget(){
 		if( !this.target ) return
 
-		this.target.popover = null
+		this.target.popOver = null
 
 		if( this.target.classList.contains('popover-invisible-placeholder') ){
 			if( this.target._popoverTarget )
@@ -299,8 +299,8 @@ export default class Popover {
 		// if( !this.target || !this.target.popover ) return; // why was I doing this?
 		if( !this.target ) return;
 		
-		this.el.popover = null
-		this.view.popover = null
+		this.el.popOver = null
+		this.view.popOver = null
 		this.view.removeAttribute('in-popover', '')
 
 		this.view.removeEventListener('close-popover', this.close)

@@ -3,7 +3,7 @@
 
 	new Dialog().modal()
 	new Dialog().notif()
-	new Dialog().popover()
+	new Dialog().popOver()
 	new Dialog().actionsheet()
 */
 import Notif from '../notif'
@@ -19,7 +19,7 @@ export default function bindPresenters(Dialog){
 
 const presenters = {
 
-	popover(target, opts={}){
+	popOver(target, opts={}){
 
 		if( opts.adjustForMobile && device.isMobile )
 			return this.modal((typeof opts.adjustForMobile == 'object' ? opts.adjustForMobile : {}))

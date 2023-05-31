@@ -43,7 +43,7 @@ window.showMenu = async function(el, renderTo=false){
         el.appendChild(menu.el)
         menu.render()
     }else{
-        let selected = await menu.popover(el)
+        let selected = await menu.popOver(el)
         console.log(selected);
         throw new UIAlertError('Check the dev console')   
     }

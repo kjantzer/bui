@@ -171,7 +171,7 @@ After creating a dialog, you must present it. You can render the `dialog` elemen
 or use one of the 3 presenters baked in:
 
 - `.modal(opts)`
-- `.popover(target, opts)`
+- `.popOver(target, opts)`
 - `.notif(opts)`
 
 #### Promise Based

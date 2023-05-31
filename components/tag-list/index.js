@@ -143,7 +143,7 @@ customElements.define('b-tag-list', class extends LitElement{
         if( this.presets ){
             let preset = await new Menu([{
                 label: 'write in', icon: 'pencil'
-            }, '-', ...this.presets]).popover(btn)
+            }, '-', ...this.presets]).popOver(btn)
 
             if( !preset ) return
 
@@ -167,7 +167,7 @@ customElements.define('b-tag-list', class extends LitElement{
                     didAdd = true
                 control.value = ''
             }
-        }).popover(btn)
+        }).popOver(btn)
 
         if( didAdd ){
             this.emitEvent('change', {value: this.value})
@@ -195,7 +195,7 @@ customElements.define('b-tag-list', class extends LitElement{
         let tagEl = e.currentTarget
 
         // confirm delete (unless the user ctrl+click)
-        if( !(e.metaKey || e.ctrlKey || this.hasAttribute('noconfirm')) && !await Dialog.confirmDelete().popover(tagEl) )
+        if( !(e.metaKey || e.ctrlKey || this.hasAttribute('noconfirm')) && !await Dialog.confirmDelete().popOver(tagEl) )
             return
 
         let tag = tagEl.innerText.trim()

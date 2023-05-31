@@ -60,7 +60,7 @@ customElements.define('b-list-filter-set-item', class extends LitElement{
             {text: html`
                 Created by <c-user-avatar nameonly uid=${this.model.get('uid')}></c-user-avatar>
                 <br><b-ts .date=${this.model.get('ts_created')}></b-ts>`}
-        ], {handler: this}).popover(e.currentTarget)
+        ], {handler: this}).popOver(e.currentTarget)
     }
 
     async edit(e){
@@ -69,7 +69,7 @@ customElements.define('b-list-filter-set-item', class extends LitElement{
     }
 
     async destroy(e){
-        if( await Dialog.confirmDelete().popover(this) ){
+        if( await Dialog.confirmDelete().popOver(this) ){
             await this.model.destroySync()
             this.parentElement.parentElement.parentElement.remove()
         }

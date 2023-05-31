@@ -103,7 +103,7 @@ customElements.define('demo-header', class extends LitElement{
         let selected = await new Menu(menu, {
             multiple: false,
             selected: [colorScheme.theme, colorScheme.accent]
-        }).popover(e.currentTarget, {adjustForMobile:{type: 'actionsheet'}})
+        }).popOver(e.currentTarget, {adjustForMobile:{type: 'actionsheet'}})
 
         if( !selected ) return
         

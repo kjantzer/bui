@@ -177,24 +177,24 @@ customElements.defineShared('b-password-change', class extends LitElement{
         if( !val )return true;
         let key = el.parentElement.key
 
-        el.popover&&el.popover.close()
+        el.popOver&&el.popOver.close()
 
         let currentPW = this.formHandler.get('pw_current')
         let newPW = this.formHandler.get('pw_new')
         let confirmPW = this.formHandler.get('pw_new_confirm')
 
         if( key == 'pw_new' && val.length < MIN_LEN ){
-            // Dialog.error({msg: 'Too short', btns: false}).popover(el)
+            // Dialog.error({msg: 'Too short', btns: false}).popOver(el)
             return false
         }
 
         if( key == 'pw_new' && currentPW.value == newPW.value ){
-            // Dialog.error({msg: 'Same password as your current', btns: false}).popover(el)
+            // Dialog.error({msg: 'Same password as your current', btns: false}).popOver(el)
             return false
         }
 
         if( key == 'pw_new_confirm' && newPW.value != confirmPW.value ){
-            // Dialog.error({msg: 'Not the same', btns: false}).popover(el)
+            // Dialog.error({msg: 'Not the same', btns: false}).popOver(el)
             return false
         }
     }

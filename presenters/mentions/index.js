@@ -155,7 +155,7 @@ export default class {
 		this.menu = new Menu(menu, {search:false, autoSelectFirst: true})
 
 		this.menu
-		.popover(marker, {maxHeight: '140px'})
+		.popOver(marker, {maxHeight: '140px'})
         .then(this.insertMention.bind(this, cursorContext, query))
 
 		setTimeout(()=>{

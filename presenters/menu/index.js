@@ -769,7 +769,7 @@ export default class Menu {
 		if( !popoverOpts.align )
 			popoverOpts.align = 'right-start'
 
-		let val = await menu.popover(target, popoverOpts) 
+		let val = await menu.popOver(target, popoverOpts) 
 		if( val ){
 			data.menuSelected = val
 			this.resolve(data)
@@ -1039,7 +1039,7 @@ export default class Menu {
 /*
 	Presenters
 */
-	popover(target, opts={}){
+	popOver(target, opts={}){
 
 		if( this.__filteredMenu && this.__filteredMenu.length == 0 ){
 			this.promise = null

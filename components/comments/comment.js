@@ -359,12 +359,12 @@ customElements.define('b-comment-row', class extends LitElement {
         new Menu(action.menu, {
             handler: this,
             handlerArgs: e
-        }).popover(e)
+        }).popOver(e)
     }
 
     async destroy(e){
         if( this.willTakeAction('delete').notAllowed ) return
-        if( await Dialog.confirmDelete().popover(e) )
+        if( await Dialog.confirmDelete().popOver(e) )
             this.model.destroy()
     }
 

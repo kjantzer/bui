@@ -388,7 +388,7 @@ customElements.define('b-tabs', class extends LitElement {
 
         let selected = await new Menu(this.views.map(v=>{
             return {label: v.title, val: v}
-        })).popover(e.target)
+        })).popOver(e.target)
 
         if( selected )
             this.active = selected.val

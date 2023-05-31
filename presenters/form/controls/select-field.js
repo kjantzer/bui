@@ -496,7 +496,7 @@ class SelectFieldElement extends HTMLElement {
 			popoverOpts.className += ' no-arrow'
 		}
 
-		let val = await this.openMenu.popover(target, popoverOpts)
+		let val = await this.openMenu.popOver(target, popoverOpts)
 		
 		this.openMenu = null
 		this.focused = false

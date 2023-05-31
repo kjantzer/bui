@@ -114,7 +114,7 @@ const dialogs = {
     },
 
     async errorPopover(el){
-        Dialog.error({body: 'Something went wrong'}).popover(el)
+        Dialog.error({body: 'Something went wrong'}).popOver(el)
     },
 
     async confirm(el){
@@ -123,7 +123,7 @@ const dialogs = {
     },
 
      async confirmDelete(el){
-        if( await Dialog.confirmDelete().popover(el) )
+        if( await Dialog.confirmDelete().popOver(el) )
             Notif.alert('Confirmed, delete it!')
     }
 }

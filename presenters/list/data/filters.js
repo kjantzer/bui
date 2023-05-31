@@ -668,7 +668,7 @@ export class Filter {
                 showAll: false
             } : 20),
             width: this.attrs.width||null
-        }).popover(el, Object.assign({
+        }).popOver(el, Object.assign({
             overflowBoundry: this.attrs.overflowBoundry || 'scrollParent',
             maxHeight: this.attrs.maxHeight || '60vh',
             align: this.attrs.align || 'bottom',
@@ -709,7 +709,7 @@ export class Filter {
 
             if( View ){
                 View.prototype.close = function(){
-                    this.popover&&this.popover._close() // to trigger onClose
+                    this.popOver&&this.popover._close() // to trigger onClose
                 }
                 this._customView = new View((this.attrs.viewOpts||{}))
                 this._customView.filter = this
@@ -722,7 +722,7 @@ export class Filter {
     async showCustomView(el, opts){
 
         if( !this.customView )
-            return Dialog.warn({msg:`${this.key}: unsupported view`}).popover(el)
+            return Dialog.warn({msg:`${this.key}: unsupported view`}).popOver(el)
         
         let onClose = _=>{
             // let menu close before attempting to set value

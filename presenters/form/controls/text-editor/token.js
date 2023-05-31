@@ -137,7 +137,7 @@ export default function tokenPlugin({
                             })
 
                             // show menu (disabling the default keyevents...see below)
-                            popover = menu.popover(fakeMouseEvent, {
+                            popover = menu.popOver(fakeMouseEvent, {
                                 onKeyDown:(e)=>{}
                             })
 

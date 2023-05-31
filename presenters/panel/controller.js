@@ -353,7 +353,7 @@ class PanelController extends LitElement {
 
         this.quickJumpOpened = ts
 
-        // let selected = await new Menu(menu).popover(el, {align: 'bottom-start'})
+        // let selected = await new Menu(menu).popOver(el, {align: 'bottom-start'})
         let selected = await new Menu(menu, {autoSelectFirst: true}).modal({
             onClose:()=>{
                 this.quickJumpOpened = null

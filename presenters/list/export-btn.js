@@ -35,7 +35,7 @@ customElements.define('b-list-export-btn', class extends Btn{
         let preset = undefined
         if( this.presets ){
             let presets = typeof this.presets == 'function' ? this.presets() : this.presets
-            preset = await new Menu(presets.filter(o=>o)).popover(this, {align: 'bottom-end'})
+            preset = await new Menu(presets.filter(o=>o)).popOver(this, {align: 'bottom-end'})
             if( preset === false ) return
             preset = preset.val
             description += ' | Export Preset: '+preset

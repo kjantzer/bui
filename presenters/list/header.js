@@ -318,7 +318,7 @@ customElements.define('b-list-header', class extends LitElement{
             iconSelected: 'visibility_off',
             iconDeselected: 'visibility',
             selected: this.colsHidden()
-        }).popover(e)
+        }).popOver(e)
 
         if( !selected ) return
 
