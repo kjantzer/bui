@@ -218,7 +218,7 @@ module.exports = function(Orig){ return {
 		// var infoIsModel = info && info.prototype && info.prototype.toJSON && info.prototype.fetch;
 		var infoIsModel = isModel(info, key)
 
-		var ChildModel = infoIsModel ? info : (info.model ? info.model : Backbone.Model);
+		var ChildModel = infoIsModel ? info : (info.model ? info.model : (info.coll?.model || Backbone.Model) );
 
 		// look for model attributes on this model
 		var attributes = this.attributes[key] && typeof this.attributes[key] == 'object' ? this.attributes[key] : {};
