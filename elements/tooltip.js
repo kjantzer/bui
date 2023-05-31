@@ -73,8 +73,10 @@ function showTooltip(){
     })
 }
 
-function hideTooltip(){
+function hideTooltip(e){
     clearTimeout(showTooltipTimeout)
+
+    if( e.metaKey ) return // for testing
 
     if( shownTooltip ){
         shownTooltip.close()
@@ -150,10 +152,10 @@ customElements.define('b-tooltip', class extends LitElement{
         this._triggerElement = null
     }
 
-    clearTrigger(){
+    clearTrigger(e){
         if( activeTooltip != this ) return
         
-        hideTooltip()
+        hideTooltip(e)
         activeTooltip = null
     }
 
