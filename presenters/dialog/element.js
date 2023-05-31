@@ -315,6 +315,10 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         }
     `}
 
+    // as of chrome 114, `.popover` is native
+    // `bindPresenters` will fail to set `Dialog.prototype.popover` if we don't have this override
+    popover(){ /* noop */ }
+
     constructor(opts={}){
         super()
         
