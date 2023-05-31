@@ -225,7 +225,7 @@ module.exports = function(Orig){ return {
 
 		// were we given an ID key? get the id from the attributes on this model
 		if( info.id || (this.attributes[key] !== undefined && typeof this.attributes[key] != 'object') ){
-			attributes[ChildModel.prototype.idAttribute||'id'] = this.attributes[info.id||key];
+			attributes[ChildModel.prototype?.idAttribute||'id'] = this.attributes[info.id||key];
 			
 			// save link from id name to the child model key.
 			// this way when the id name value is changed we can update the child model. See `set` below
@@ -235,7 +235,7 @@ module.exports = function(Orig){ return {
 			}
 		}
 
-		var id = attributes[ChildModel.prototype.idAttribute||'id'];
+		var id = attributes[ChildModel.prototype?.idAttribute||'id'];
 		
 		if( (id === null || id === undefined) && info.defaultID !== undefined )
 			id = String(info.defaultID)
