@@ -29,15 +29,15 @@ const WatchClicks = function(e){
 		
 	let found = false
 	let close = []
-	let target = e.path ? e.path.find(el=>el.popover) : e.target
+	let target = e.path ? e.path.find(el=>el.popOver) : e.target
 
 	// the clicked target already has a popover and has the "toggle" setting, so close the current popover
-	if( target && target.popover && typeof target.popover != 'function' 
-	&& target.popover.view != target && target.popover.opts.clickToggles ){
+	if( target && target.popOver && typeof target.popOver != 'function' 
+	&& target.popOver.view != target && target.popOver.opts.clickToggles ){
 
 		// tooltips should be shown on mouseover, so dont close on a click
-		if( !target.popover.isTooltip )
-			target.popover._close()
+		if( !target.popOver.isTooltip )
+			target.popOver._close()
 
 		e.preventDefault()
 		e.stopPropagation()
@@ -252,7 +252,7 @@ export default class Popover {
 		// if( parentPopover && parentPopover.contains(target) )
 		// 	return true
 		
-		let targetParent = target.parentElement && target.parentElement.popover
+		let targetParent = target.parentElement && target.parentElement.popOver
 		if( targetParent && this.el.contains(targetParent.target) )
 			return true
 			
@@ -264,7 +264,7 @@ export default class Popover {
 		let parent = this.target
 		while(parent && !parentPopover){
 			parent = parent.parentElement
-			if( parent && parent.popover )
+			if( parent && parent.popOver )
 				parentPopover = parent
 		}
 		return parentPopover
@@ -296,7 +296,7 @@ export default class Popover {
 	
 	close(){
 		
-		// if( !this.target || !this.target.popover ) return; // why was I doing this?
+		// if( !this.target || !this.target.popOver ) return; // why was I doing this?
 		if( !this.target ) return;
 		
 		this.el.popOver = null

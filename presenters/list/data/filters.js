@@ -709,7 +709,7 @@ export class Filter {
 
             if( View ){
                 View.prototype.close = function(){
-                    this.popOver&&this.popover._close() // to trigger onClose
+                    this.popOver&&this.popOver._close() // to trigger onClose
                 }
                 this._customView = new View((this.attrs.viewOpts||{}))
                 this._customView.filter = this
