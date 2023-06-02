@@ -49,7 +49,13 @@ module.exports = class SearchMyTable extends SearchType {
 
     static get name(){ return 'my-table' }
     
+    // formatTerm(term){ return term } // default
     formatTerm(term){ return [this.termForBoolean(term)+'*'] }
+    parseRow(row, i, {term, ids}={}){ /* noop */ }
+    finalFormat(row, {term}={}){ /* noop */ }
+
+    limit = 100
+    threshold = 0.2 // fuse.js setting
 
     // perform the search
     get searchSql(){ return /*sql*/`

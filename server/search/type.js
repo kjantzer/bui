@@ -14,8 +14,8 @@ module.exports = class SearchType {
     parseRow(row, i, {term, ids}={}){ /* noop */ }
     finalFormat(row, {term}={}){ /* noop */ }
 
-    get limit(){ return 100 }
-    get threshold(){ return 0.2 }
+    limit = 100
+    threshold = 0.2
     get type(){ return this.constructor.name || 'unknown' }
 
     termForBoolean(term){
