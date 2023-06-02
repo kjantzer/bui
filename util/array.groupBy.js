@@ -8,7 +8,7 @@ module.exports = function groupBy(key, {
         
         let rowKey = typeof key == 'function' ? String(key(row)) : row[key]
 
-        if( rowKey ){
+        if( rowKey !== undefined ){ // NOTE: should I allow undefined?
 
             if( deleteKeyedValue )
                 delete row[key]
