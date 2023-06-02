@@ -249,6 +249,7 @@ function makePrompt(opts, i=0, globalOpts){
 				.options=${opts.options}
 				.value=${opts.val}
 				?multiple=${opts.multiple}
+				?show-empty=${opts.showEmpty}
 				adjust-for-mobile=false
 			></select-field>
 		`
