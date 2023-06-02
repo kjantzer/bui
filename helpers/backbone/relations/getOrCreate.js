@@ -12,8 +12,16 @@ module.exports = function(id, opts){
 
 	var model = this.get.call(this, lookupID, opts)
 
-	// if no model, fetch and add the requested model
-	if( !model ){
+	
+	if( model ){
+
+		// given ID is actually an object of attributes, so update model
+		// update silently for now to maintain previous pattern
+		if( id != lookupID && typeof id == 'object' )
+			model.set(id, {silent: true}) // update attrs
+
+	// if no model, create and add the requested model
+	}else{
 
 		id = id instanceof Backbone.Model ? id[id.idAttribute] : id;
 		var ModelClass = this.model || Backbone.Model;
