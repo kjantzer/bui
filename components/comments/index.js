@@ -76,6 +76,8 @@ customElements.define('b-comments', class extends LitElement{
 
     constructor(){
         super()
+        this.gid = null
+        this.group = null
         this.limit = 10
         this.singular = 'comment'
         this.plural = 'comments'
@@ -98,10 +100,10 @@ customElements.define('b-comments', class extends LitElement{
         }else{
             this.meta = null
 
-            if( !this.hasAttribute('gid') )
+            if( !this.hasAttribute('gid') && this.gid )
                 this.gid = null
 
-            if( !this.hasAttribute('group') )
+            if( !this.hasAttribute('group') && this.group )
                 this.group = null
         }
     }
@@ -115,7 +117,7 @@ customElements.define('b-comments', class extends LitElement{
         // || changedProps.get('gid') != undefined 
         // || (this.gid && this.gid != changedProps.get('gid') )){
 
-        if( changedProps.get('group') != undefined || changedProps.get('gid') != undefined ){
+        if( changedProps.get('group') !== undefined || changedProps.get('gid') !== undefined ){
             
             this.unbindListeners()
             this.coll.realtimeSync.close()
