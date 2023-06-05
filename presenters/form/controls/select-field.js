@@ -357,7 +357,7 @@ class SelectFieldElement extends HTMLElement {
 			this._selected.push(m.val)
 			
 			if(m.val || this.showEmpty)
-				labels += `<span part="value" value="${m.val}">${m.selectLabel||m.label}</span>`
+				labels += `<span part="value" value="${m.val}">${m.selectLabel||m.toolbarLabel||m.label}</span>`
 				
 		})
 
