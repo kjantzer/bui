@@ -13,6 +13,7 @@ function csvToArray(strData, {
     // TODO: support 'auto' mode; lower threshold when rowLength is small, higher threshold when large row length
     rowLengthThreshold=0.3, // rows must be greater (ratio of non-empty cells to determined "row cell length")
     headerLengthThreshold=true, // true means use rowLengthThreshold
+    ignoreComments=true,
     ignoreEmptyLines=true
 }={}){
 
@@ -93,6 +94,7 @@ function csvToArray(strData, {
     let comments = []
 
     // filter out comments (CSVs)
+    if( ignoreComments )
     arrData = arrData.filter(row=>{
         if( row && row[0] && row[0][0] == '#' ){
             comments.push(row)
