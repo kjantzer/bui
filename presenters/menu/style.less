@@ -150,24 +150,29 @@
 			opacity: 0;
 		}
 		
-		@media (hover){
-		&:hover {
-			background: var(--hoverBgd);
-			color: var(--hoverTextColor);
-			cursor: pointer;
+		@media (hover) {
+			&:hover  {
+				background: var(--hoverBgd);
+				color: var(--hoverTextColor);
+				cursor: pointer;
 
-			b-icon.has-menu {
-				opacity: 1;
-			}
+				b-icon.has-menu {
+					opacity: 1;
+				}
 
-			> check-box {
-				--color: var(--checkboxColorHover) !important;
+				> check-box {
+					--color: var(--checkboxColorHover) !important;
+				}
 			}
 		}
+
+		&[disabled] {
+			color: var(--theme-text-accent);
+			background: var(--theme-bgd);
+			cursor:default;
 		}
 		
-		
-		&[active],
+		&[active] :not([disabled]),
 		&.popover-open {
 			background: var(--hoverBgd);
 			color: var(--hoverTextColor);
