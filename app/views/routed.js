@@ -233,28 +233,38 @@ export default class RoutedView extends LitElement {
         // care of clearing the model
         // this.model = null
 
-        if( newState && newState.props.filters && this.list ){
-            if( newState.props.mergeFilters )
-                this.list.filters.update(newState.props.filters)
-            else
-                this.list.filters.reset(newState.props.filters)
+        if( newState && newState.props.filters ){
+
+            let props = newState.props
+
+            // delay to let this.list get established
+            setTimeout(()=>{
+                try{
+                    
+                    if( !this.list ) return
+                    
+                    // todo: should clear props.filters
+                    if( props.mergeFilters )
+                        this.list.filters.update(props.filters)
+                    else
+                        this.list.filters.reset(props.filters)
+                    
+                }catch(err){}
+            }, this.list?0:100)
         
         // filters found in the url query
         }else if( newState && newState.props.query?.filters){
             
+            let filters = newState.props.query?.filters
+
             // delay to let this.list get established
             setTimeout(()=>{
-
                 try{
-                    let filters = newState.props.query?.filters
-
                     // support clearing/resetting the filters with `filters=reset`
                     // useful if the query is failing due to applied filter
                     this.list?.filters.reset(filters=='reset'?{}:JSON.parse(atob(filters)))
                     
-                }catch(err){
-
-                }
+                }catch(err){}
 
             }, this.list?0:100)
         }
