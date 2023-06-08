@@ -592,7 +592,7 @@ customElements.define('b-list', class extends LitElement {
     async firstUpdated(){
 
         // slight delay to let other code apply filters first
-        if( this.listOptions && this.listOptions.fetchOnLoad !== false )
+        if( this.listOptions?.fetchOnLoad !== false )
         setTimeout(async ()=>{
             this.refresh()
         }, 200)
