@@ -372,7 +372,7 @@ customElements.define('b-list', class extends LitElement {
             .row="${this.createRow}"
             .divider=${this.createDivider}
             .dataSource=${this.dataSource}
-            fetch-on-load=${(this.listOptions&&this.listOptions.fetchOnLoad)}
+            fetch-on-load=${false}
             layout="${this.layout}"
         >
         </b-infinite-list>
@@ -591,16 +591,11 @@ customElements.define('b-list', class extends LitElement {
 
     async firstUpdated(){
 
-        // defer to end of callstack to let infinite list view render and begin fetching
+        // slight delay to let other code apply filters first
+        if( this.listOptions && this.listOptions.fetchOnLoad )
         setTimeout(async ()=>{
-            this.spinner.show = true
-            try{
-                this.toolbar.count = await this.dataSource.length()
-            }catch(err){}
-
-            this.spinner.show = false
-            
-        })
+            this.refresh()
+        }, 200)
 
         this.header = this.$$('[name="header"]').assignedNodes()[0]
         this.footer = this.$$('[name="footer"]').assignedNodes()[0]
