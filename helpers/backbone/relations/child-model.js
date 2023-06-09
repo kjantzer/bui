@@ -225,7 +225,7 @@ module.exports = function(Orig){ return {
 
 		// NOTE: cannot use `ChildModel.prototype.idAttribute` as `idAttribute` in class/extends wont be detected
 		// this works for Backbone.Model.extend
-		let idAttribute = ChildModel.prototype.idAttribute || 'id'
+		let idAttribute = ChildModel.prototype?.idAttribute || 'id'
 
 		// if no `id` value, then assume a custom idAttribute must be used and determine it
 		// we add this test to attempt to improve perf (so we dont always have to create empty model to get key)
