@@ -7,7 +7,7 @@ function viewsFromNodes(nodes){
     nodes.forEach(node=>{
 
         // ignore these node types
-        if( node.slot || ['#comment', 'SCRIPT', 'STYLE'].includes(node.nodeName) )
+        if( node.slot || ['#comment', 'SCRIPT', 'STYLE'].includes(node.nodeName) || node.hasAttribute?.('notcontent'))
             return
 
         // already a tab view
