@@ -40,16 +40,17 @@ export function sharedStyles(host=':host'){return css`
         background-color: var(--list-cell-viewing-bgd, rgba(var(--theme-rgb), .12))
     }
     
-    ${unsafeCSS(host)} > [sep]:not([sep="after"]),
-    ${unsafeCSS(host)} > [sep="before"] {
+    ${unsafeCSS(host)} > [sep]:not([sep*="after"]),
+    ${unsafeCSS(host)} > [sep*="before"] {
         border-left: solid var(--row-sep-width, 1px) var(--border-color, rgba(var(--theme-text-rgb), .1));
     }
 
-    ${unsafeCSS(host)} > [sep="after"] {
+    ${unsafeCSS(host)} > [sep*="after"] {
         border-right: solid var(--row-sep-width, 1px) var(--border-color, rgba(var(--theme-text-rgb), .1));
     }
 
-    ${unsafeCSS(host)} > [sep][thick] {
+    ${unsafeCSS(host)} > [sep][thick],
+    ${unsafeCSS(host)} > [sep*="thick"] {
         --row-sep-width: 4px;
     }
 
