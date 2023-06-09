@@ -34,8 +34,11 @@ customElements.defineShared('b-popover-view', class extends LitElement{
 
     close(){
         this.stopAutoClose()
-        this.popOver&&this.popOver.close()
-        this.model = null
+        
+        if( this.popOver ){
+            this.popOver.close()
+            this.model = null // no reason to clear model if we didn't actually close
+        }
     }
 
     // deprecated - use `openIfHoveringContinues`
