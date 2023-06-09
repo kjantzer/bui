@@ -8,7 +8,8 @@ module.exports = function(id, opts){
 	if( !id )
 		return null;
 
-	let idAttribute = 'id'
+	let ModelClass = this.model || Backbone.Model;
+	let idAttribute = ModelClass.prototype.idAttribute || 'id' // this works when Backbone.Model.extend is used
 	let lookupID = id
 
 	if( typeof id === 'object' ){
@@ -33,7 +34,7 @@ module.exports = function(id, opts){
 	}else{
 
 		id = id instanceof Backbone.Model ? id[id.idAttribute] : id;
-		var ModelClass = this.model || Backbone.Model;
+		
 
 		var data = {}
 

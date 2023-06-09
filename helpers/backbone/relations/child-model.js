@@ -224,7 +224,8 @@ module.exports = function(Orig){ return {
 		var attributes = this.attributes[key] && typeof this.attributes[key] == 'object' ? this.attributes[key] : {};
 
 		// NOTE: cannot use `ChildModel.prototype.idAttribute` as `idAttribute` in class/extends wont be detected
-		let idAttribute = 'id'
+		// this works for Backbone.Model.extend
+		let idAttribute = ChildModel.prototype.idAttribute || 'id'
 
 		// if no `id` value, then assume a custom idAttribute must be used and determine it
 		// we add this test to attempt to improve perf (so we dont always have to create empty model to get key)
