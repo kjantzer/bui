@@ -605,6 +605,7 @@ export default class Menu {
 			<div class="menu-item ${m.className}" val=${m.val} index=${i}
 				data-title=${dataTitle}
 				?active=${this._active==i}
+				?disabled=${m.disabled ?? false }
 				?icon-only=${!m.label && !m.description} ?selected=${m.selected}>
 				${checkbox}
 				${icon}
@@ -658,6 +659,7 @@ export default class Menu {
 		}
 		
 		if( target ){
+			if(target.hasAttribute('disabled')) return
 
 			if( window.soundFX && soundFX.playIfMobile )
                 soundFX.playIfMobile('tinyTap', 0.3)
