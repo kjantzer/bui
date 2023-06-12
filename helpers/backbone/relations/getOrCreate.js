@@ -16,7 +16,7 @@ module.exports = function(id, opts){
 		// NOTE: could this be a perf issue creating an empty model just to find ID?
 		// if no `id` value, then assume a custom idAttribute must be used, determine it
 		if( !id.id )
-			idAttribute = (new this.model).idAttribute
+			idAttribute = (new this.model({})).idAttribute
 		lookupID = id[idAttribute]
 	}
 

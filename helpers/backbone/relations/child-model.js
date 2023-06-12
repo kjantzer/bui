@@ -230,7 +230,7 @@ module.exports = function(Orig){ return {
 		// if no `id` value, then assume a custom idAttribute must be used and determine it
 		// we add this test to attempt to improve perf (so we dont always have to create empty model to get key)
 		if( attributes && !attributes.id )
-			idAttribute = new ChildModel().idAttribute||'id'
+			idAttribute = new ChildModel({}).idAttribute||'id'
 
 		// were we given an ID key? get the id from the attributes on this model
 		if( info.id || (this.attributes[key] !== undefined && typeof this.attributes[key] != 'object') ){
