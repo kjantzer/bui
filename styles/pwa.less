@@ -108,18 +108,6 @@ b-panel {
     --b-panel-radius: 1rem;
 }
 
-@media (min-width: 600px){
-b-panel[height="100%"][anchor="right"]::part(main),
-b-panel[height="100%"][anchor="left"]::part(main),
-:root.insetpanels b-panel[height="100%"][anchor="right"]::part(main),
-:root.insetpanels b-panel[height="100%"][anchor="left"]::part(main) {
-    height: calc(100% - 1em);
-    right: .5em;
-    top: .5em;
-    border-radius: var(--radius);
-}
-}
-
 // :root.installed:not(.insetpanels) b-panel[height="100%"],
 // :root b-panel[height="100%"][width="100%"] {
 //     --b-panel-radius: 0 !important;
