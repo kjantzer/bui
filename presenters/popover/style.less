@@ -48,7 +48,8 @@
 		overflow: auto;
 		border: solid 1px var(--border);
 		box-shadow: var(--b-popover-shadow, var(--theme-shadow-2, rgba(0,0,0,.2) 0 2px 8px));
-		border-radius: 5px;
+		--radius: 5px;
+		border-radius: var(--radius);
 	}
 
 	// only add padding to "divs" - allowing custom elements to define their own padding

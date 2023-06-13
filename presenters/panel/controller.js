@@ -3,6 +3,7 @@ import Menu from '../menu'
 import router from '../../router'
 import device from '../../util/device'
 import overscroll from '../../util/overscroll'
+import CollMap from '../../util/collmap'
 
 const PanelControllers = {}
 
@@ -31,6 +32,36 @@ class PanelController extends LitElement {
             right: 0;
             bottom: 0;
             pointer-events: none;
+        }
+
+        :host, .core, main, .base, .panels {
+            display: grid;
+        }
+
+        /*.base, .top, .bottom, .left, .right {*/
+        slot::slotted(*) {
+            pointer-events: auto;
+        }
+
+        :host {
+            grid-template-rows: auto 1fr auto;
+        }
+
+        .core {
+            grid-template-columns: auto 1fr auto;
+        }
+
+        slot {
+            display: block;
+        }
+
+        main {
+            position: relative;
+        }
+
+        .base {
+            position: absolute;
+            inset: 0;
         }
 
         :host([inset]) {
@@ -74,7 +105,7 @@ class PanelController extends LitElement {
 
     constructor(){
         super()
-        this.panels = new Map()
+        this.panels = new CollMap()
     }
 
     connectedCallback(){
@@ -143,9 +174,23 @@ class PanelController extends LitElement {
             delete PanelControllers[this.name]
     }
             
-    render(){return html`        
-        <slot></slot>
+    render(){return html`
+    
+        <slot class="top" name="top"></slot>
+        <div class="core">
+            <slot class="left" name="left"></slot>
+            <main>
+                <slot class="base" name="base" @active-changed=${this.baseActiveChanged}></slot>
+                <slot class="panels"></slot>
+            </main>
+            <slot class="right" name="right"></slot>
+        </div>
+        <slot class="bottom" name="bottom"></slot>
     `}
+
+    baseActiveChanged(e){
+        console.log('changed?', e);
+    }
 
     remove(panel, {silent=false, updateRoute=false}={}){
 

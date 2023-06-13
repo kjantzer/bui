@@ -663,6 +663,7 @@ export default class Menu {
 		}
 		
 		if( target ){
+			if(target.hasAttribute('disabled')) return
 
 			if( window.soundFX && soundFX.playIfMobile )
                 soundFX.playIfMobile('tinyTap', 0.3)

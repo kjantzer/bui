@@ -223,9 +223,18 @@ module.exports = function(Orig){ return {
 		// look for model attributes on this model
 		var attributes = this.attributes[key] && typeof this.attributes[key] == 'object' ? this.attributes[key] : {};
 
+		// NOTE: cannot use `ChildModel.prototype.idAttribute` as `idAttribute` in class/extends wont be detected
+		// this works for Backbone.Model.extend
+		let idAttribute = ChildModel.prototype?.idAttribute || 'id'
+
+		// if no `id` value, then assume a custom idAttribute must be used and determine it
+		// we add this test to attempt to improve perf (so we dont always have to create empty model to get key)
+		if( attributes && !attributes.id )
+			idAttribute = new ChildModel({}).idAttribute||'id'
+
 		// were we given an ID key? get the id from the attributes on this model
 		if( info.id || (this.attributes[key] !== undefined && typeof this.attributes[key] != 'object') ){
-			attributes[ChildModel.prototype?.idAttribute||'id'] = this.attributes[info.id||key];
+			attributes[idAttribute] = this.attributes[info.id||key];
 			
 			// save link from id name to the child model key.
 			// this way when the id name value is changed we can update the child model. See `set` below
@@ -235,7 +244,7 @@ module.exports = function(Orig){ return {
 			}
 		}
 
-		var id = attributes[ChildModel.prototype?.idAttribute||'id'];
+		var id = attributes[idAttribute];
 		
 		if( (id === null || id === undefined) && info.defaultID !== undefined )
 			id = String(info.defaultID)

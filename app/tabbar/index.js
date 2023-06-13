@@ -80,6 +80,19 @@ customElements.define('b-app', class extends LitElement {
             flex-grow: 1;
         }
 
+        b-tabs-router > b-panels {
+            order: 999;
+        }
+
+        b-tabs-router > b-panels[inset] {
+            max-width: 0;
+        }
+
+        b-tabs-router > b-panels[inset][num] {
+            max-width: var(--inset-width);
+        }
+
+
         b-panel-toolbar {
             z-index: 100;
             /* https://web.dev/window-controls-overlay/ */
