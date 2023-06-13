@@ -274,10 +274,6 @@ export default class Menu {
 	}
 
 	toggleSelected(item, {fromSelection=true}={}){
-
-		if( item )
-			if(item.hasAttribute('disabled')) return
-
 		let index = this.__selected.indexOf(item)
 				
 		if( index > -1 && !fromSelection ){
@@ -809,11 +805,8 @@ export default class Menu {
 		if( !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Space', 'Tab'].includes(e.code) ) return
 
 		if( !this.opts.multiple && e.code == 'Space' ) return
-
+		
 		let items = this.el.querySelectorAll('.menu-item')
-		// filter out any items with the attribute "disabled"
-		items = Array.from(items).filter(item=>!item.hasAttribute('disabled'))
-
 		let activeItem = items[this._active]
 
 		// if active item has a menu open, dont perform any actions
@@ -866,7 +859,7 @@ export default class Menu {
 			
 		if( this._active >= items.length )
 			this._active = 0
-
+		
 		this.setActiveItem(items[this._active])
 		
 		e.preventDefault()
