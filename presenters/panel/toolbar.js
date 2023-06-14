@@ -110,6 +110,7 @@ class PanelToolbar extends LitElement {
 
         .left, .right, .middle {
             display: flex;
+            min-width: 0;
             align-items: center;
             gap: var(--b-panel-toolbar-content-gap, .5em);
         }
