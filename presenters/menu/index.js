@@ -63,6 +63,8 @@ const ItemsPresets = {
 	destroy: ItemPreset({label: 'Delete', icon: 'trash', fn: 'destroy'})
 }
 
+const ITEMS_QUERY_SELECTOR = '.menu-item:not([disabled]'
+
 export default class Menu {
 
 	static Items = ItemsPresets
@@ -544,7 +546,9 @@ export default class Menu {
 
 		let checkbox = (this.opts.multiple && !m.clearsAll) || m.selected 
 			? html`<check-box placement="left" ?checked=${live(m.selected)} 
-				icon=${this.opts.iconSelected} iconEmpty=${this.opts.iconDeselected}></check-box>` 
+				?disabled=${m.disabled ?? false }
+				icon=${this.opts.iconSelected} 
+				iconEmpty=${this.opts.iconDeselected}></check-box>` 
 			: ''
 
 		let menuIcon = m.menu && this.opts.hasMenuIcon ? html`<b-icon class="has-menu" name="${this.opts.hasMenuIcon}"></b-icon>` :''
@@ -574,6 +578,7 @@ export default class Menu {
 							.options=${selections}
 							placeholder="–"
 							no-arrow
+							?disabled=${m.disabled ?? false }
 							@change=${this.selectOptionsChanged.bind(this)}
 							.selected=${m.selection}
 							adjust-for-mobile=false
@@ -806,7 +811,7 @@ export default class Menu {
 
 		if( !this.opts.multiple && e.code == 'Space' ) return
 		
-		let items = this.el.querySelectorAll('.menu-item')
+		let items = this.el.querySelectorAll(ITEMS_QUERY_SELECTOR)
 		let activeItem = items[this._active]
 
 		// if active item has a menu open, dont perform any actions
@@ -889,7 +894,7 @@ export default class Menu {
 
 	setActiveItem(el){
 
-		let items = Array.from(this.el.querySelectorAll('.menu-item'))
+		let items = Array.from(this.el.querySelectorAll(ITEMS_QUERY_SELECTOR))
 
 		items.forEach(el=>el.removeAttribute('active'))
 
