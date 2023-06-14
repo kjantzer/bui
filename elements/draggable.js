@@ -8,15 +8,22 @@
 import { LitElement, html, css } from 'lit'
 import '../helpers/lit/will-take-action'
 
+// TODO: rename to `b-dragdrop`
 customElements.define('b-draggable', class extends LitElement{
 
     static properties = {
         disabled: {type: Boolean},
-        url: {type: String}
+        url: {type: String},
+        drag: {type: Boolean},
+        drop: {type: Boolean},
     }
 
     static styles = css`
         :host(:not(.dragging)) .drag-msg {
+            display: none;
+        }
+
+        :host(:not(.dragover)) [name="dropmsg"] {
             display: none;
         }
 
@@ -31,8 +38,14 @@ customElements.define('b-draggable', class extends LitElement{
     constructor(){
         super()
         this.disabled = false
+        this.drag = true
+        this.drop = false
+
         this.onDragStart = this.onDragStart.bind(this)
         this.onDragEnd = this.onDragEnd.bind(this)
+        this.onDragOver = this.onDragOver.bind(this)
+        this.onDragLeave = this.onDragLeave.bind(this)
+        this.onDrop = this.onDrop.bind(this)
     }
 
     firstUpdated(){
@@ -69,9 +82,18 @@ customElements.define('b-draggable', class extends LitElement{
     bind(){
         if( !this.target ) return console.warn('no target to bind')
         this.unbind()
-        this.target.draggable = true
-        this.target.addEventListener('dragstart', this.onDragStart)
-        this.target.addEventListener('dragend', this.onDragEnd)
+
+        if( this.drag ){
+            this.target.draggable = true
+            this.target.addEventListener('dragstart', this.onDragStart)
+            this.target.addEventListener('dragend', this.onDragEnd)
+        }
+
+        if( this.drop ){
+            this.target.addEventListener('dragover', this.onDragOver)
+            this.target.addEventListener('dragleave', this.onDragLeave)
+            this.target.addEventListener('drop', this.onDrop)
+        }
     }
 
     unbind(){
@@ -80,6 +102,9 @@ customElements.define('b-draggable', class extends LitElement{
         this.target.draggable = false
         this.target.removeEventListener('dragstart', this.onDragStart)
         this.target.removeEventListener('dragend', this.onDragEnd)
+        this.target.removeEventListener('dragover', this.onDragOver)
+        this.target.removeEventListener('dragleave', this.onDragLeave)
+        this.target.removeEventListener('drop', this.onDrop)
     }
 
     render(){return html`
@@ -90,6 +115,7 @@ customElements.define('b-draggable', class extends LitElement{
                 </b-text>
             </b-empty-state>
         </slot>
+        <slot name="dropmsg"></slot>
     `}
 
     onDragStart(e){
@@ -113,10 +139,42 @@ customElements.define('b-draggable', class extends LitElement{
         this.classList.remove('dragging')
     }
 
+    onDragOver(e){
+
+        if( this.disabled 
+        || this.willTakeAction('draggedover', {drag: true, evt:e}).notAllowed
+        ){
+            return
+        }
+        
+        this.target.classList.add('dragover')
+        this.classList.add('dragover')
+
+        e.preventDefault();
+    }
+
+    onDragLeave(){
+        this.target.classList.remove('dragover')
+        this.classList.remove('dragover')
+    }
+
+    onDrop(e){
+        this.onDragLeave()
+        
+        if( this.disabled 
+        || this.willTakeAction('dropped', {drag: true, evt:e}).notAllowed
+        ){
+            e.preventDefault()
+            e.stopPropagation()
+            return
+        }
+    }
+
 })
 
 export default customElements.get('b-draggable')
 
+// TODO: prefix these with `DataTransfer...` so they make more sense when imported
 export function DownloadURL(e, filename, url){
     e.dataTransfer.setData('DownloadURL', [
         `application/octet-stream:${filename}:${url}`
