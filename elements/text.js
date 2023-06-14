@@ -51,6 +51,10 @@ customElements.define('b-text', class extends LitElement{
             vertical-align: text-bottom;
         }
 
+        :host([nowrap]) {
+            white-space: nowrap;
+        }
+
         :host([clip]:not([clip=""])) {
             white-space: normal;
             display: -webkit-box;
