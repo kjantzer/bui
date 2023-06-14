@@ -109,11 +109,12 @@ export default css`
 	line-height: 1.1em;
 }
 
-.ProseMirror h1 { font-size: var(--font-size-lg); }
-.ProseMirror h2 { font-size: var(--font-size-md); }
-.ProseMirror h3 { font-size: 1em; }
-.ProseMirror h4 { font-size: var(--font-size-sm) }
-.ProseMirror h5 { font-size: var(--font-size-xs) }
+.ProseMirror h1 { font-size: var(--font-size-xl); font-weight: 900; }
+.ProseMirror h2 { font-size: var(--font-size-lg); font-weight: 900; }
+.ProseMirror h3 { font-size: var(--font-size-md); font-weight: 900; }
+.ProseMirror h4 { font-size: var(--font-size-sm); font-weight: 900; }
+.ProseMirror h5 { font-size: var(--font-size-xs); font-weight: 900; }
+.ProseMirror h6 { font-size: .5em; font-weight: 900; }
 
 .ProseMirror a {
 	word-break: break-all;
