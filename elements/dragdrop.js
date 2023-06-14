@@ -1,5 +1,5 @@
 /*
-    Draggable - make the parent element (or custom target) draggable
+    DragDrop - make the parent element (or custom target) draggable and/or a dropzone
 
     If `.target` isn't set, the parentElement will be used
 
@@ -8,8 +8,7 @@
 import { LitElement, html, css } from 'lit'
 import '../helpers/lit/will-take-action'
 
-// TODO: rename to `b-dragdrop`
-customElements.define('b-draggable', class extends LitElement{
+customElements.define('b-dragdrop', class extends LitElement{
 
     static properties = {
         disabled: {type: Boolean},
@@ -172,7 +171,7 @@ customElements.define('b-draggable', class extends LitElement{
 
 })
 
-export default customElements.get('b-draggable')
+export default customElements.get('b-dragdrop')
 
 // TODO: prefix these with `DataTransfer...` so they make more sense when imported
 export function DownloadURL(e, filename, url){

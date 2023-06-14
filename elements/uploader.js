@@ -102,6 +102,7 @@ export class UploaderElement extends LitElement {
         this.dragging = false
         this.uploading = false
 
+        // TODO: should likely swap out for b-dragdrop element
         ;['dragenter', 'dragleave', 'dragover', 'drop'].forEach(fn=>{
             this[fn] = this['_'+fn].bind(this)
         })

@@ -4,7 +4,7 @@ import './filter-btn'
 import './filter-saved-presets' // TODO: make this opt-in?
 import Dialog from '../../../presenters/dialog'
 import Menu from '../../../presenters/menu'
-import {DownloadContent} from '../../../elements/draggable'
+import {DownloadContent} from '../../../elements/dragdrop'
 import readFile from '../../../util/readFile'
 import '../../../elements/uploader'
 
@@ -76,6 +76,10 @@ customElements.define('b-list-filters', class extends LitElement{
             padding-right: 0.25em;
             margin-right: 0.25em;
         }
+
+        b-dragdrop {
+            --radius: 4px;
+        }
     `}
 
     get showOverflow(){ 
@@ -84,7 +88,7 @@ customElements.define('b-list-filters', class extends LitElement{
 
     render(){return html`
 
-        <b-draggable @will-take-action=${this.onDrag}>Export</b-draggable>
+        <b-dragdrop @drag=${this.onDrag}>Export</b-dragdrop>
         <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
         ${this.filters.size>0?html`

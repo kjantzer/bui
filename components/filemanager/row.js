@@ -128,7 +128,7 @@ customElements.define('b-file-row', class extends LitElement{
         this.overshadow = true
         this.palette = false
 
-        // TODO: swap out for b-draggable element
+        // TODO: swap out for b-dragdrop element
         this.addEventListener('dragstart', this.onDragStart)
         this.addEventListener('dragend', this.onDragEnd)
     }
