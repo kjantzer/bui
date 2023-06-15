@@ -358,10 +358,11 @@ module.exports = function(Orig){ return {
 					self.__childModels[key].set(attrs[key])
 				}else
 					delete self.__childModels[key];
-			}else if( self.__childModelIDLookup && self.__childModelIDLookup[key] )
+			}else if( self.__childModelIDLookup && self.__childModelIDLookup[key] ){
+				delete self.__childModels[self.__childModelIDLookup[key]];
 				// we dont want to reuse the attributes so delete them
 				delete self.attributes[self.__childModelIDLookup[key]]
-				delete self.__childModels[self.__childModelIDLookup[key]];
+			}
 		}
 		
 		// continue on with normal `set` logic
