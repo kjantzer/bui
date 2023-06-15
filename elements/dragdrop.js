@@ -8,6 +8,8 @@
 import { LitElement, html, css } from 'lit'
 import '../helpers/lit/will-take-action'
 
+let DragData
+
 customElements.define('b-dragdrop', class extends LitElement{
 
     static properties = {
@@ -118,12 +120,19 @@ customElements.define('b-dragdrop', class extends LitElement{
     `}
 
     onDragStart(e){
-        if( this.disabled 
-        || this.willTakeAction('drag', {drag: true, evt:e}).notAllowed
-        ){
+
+        let action = this.disabled ? false : this.willTakeAction('drag', {drag: true, evt:e})
+
+        if( this.disabled || action.notAllowed ){
             e.preventDefault()
             e.stopPropagation()
             return
+        }
+
+        DragData = {
+            model: this.target.model,
+            srcTarget: this.target,
+            ...(action.data || {})
         }
 
         if( this.url )
@@ -141,7 +150,7 @@ customElements.define('b-dragdrop', class extends LitElement{
     onDragOver(e){
 
         if( this.disabled 
-        || this.willTakeAction('draggedover', {drag: true, evt:e}).notAllowed
+        || this.willTakeAction('draggedover', {drag: true, evt:e, data: DragData}).notAllowed
         ){
             return
         }
@@ -161,12 +170,13 @@ customElements.define('b-dragdrop', class extends LitElement{
         this.onDragLeave()
         
         if( this.disabled 
-        || this.willTakeAction('dropped', {drag: true, evt:e}).notAllowed
+        || this.willTakeAction('dropped', {drag: true, evt:e, data: DragData}).notAllowed
         ){
             e.preventDefault()
             e.stopPropagation()
-            return
         }
+
+        DragData = undefined
     }
 
 })
