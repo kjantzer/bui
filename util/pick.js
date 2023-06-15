@@ -1,6 +1,15 @@
-module.exports = (obj, paths, {omit=false}={})=>{
-    if( !Array.isArray(paths) ) return {}
+module.exports = (obj, paths, {omit=false, ifEmpty=undefined}={})=>{
+    
     let data = {}
+    let remap = null
+
+    // allow for paths to be {incomingKey: outGoingKey}
+    if( typeof paths == 'object' && !Array.isArray(paths) ){
+        remap = paths
+        paths = Object.keys(paths)
+    }
+
+    if( !Array.isArray(paths) ) return data
 
     // use order of "paths"
     if( !omit )
@@ -12,6 +21,8 @@ module.exports = (obj, paths, {omit=false}={})=>{
             if( Array.isArray(k) ){
                 fromKey = k[0]
                 toKey = k[1] || k[0]
+            }else if( remap ){
+                toKey = remap[k] || k
             }
 
             if( obj[fromKey] !== undefined )
@@ -23,5 +34,9 @@ module.exports = (obj, paths, {omit=false}={})=>{
             if( paths.includes(k) == !omit )
                 data[k] = obj[k]
         }
+    
+    if( ifEmpty !== undefined && Object.keys(data).length == 0 )
+        return ifEmpty
+
     return data
 }
