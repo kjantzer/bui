@@ -21,6 +21,9 @@ module.exports = function(SearchAPI){
         if( !this.findWhereTermResultsMatch )
             return console.warn('`findWhereTermResultsMatch` is missing')
 
+        if( typeof termSearch == 'function' )
+            termSearch = termSearch.call(this, {term, where, opts})
+
         // convert to an array of term searching
         if( !Array.isArray(termSearch) )
             termSearch = [termSearch]
