@@ -90,9 +90,9 @@ export default class HistoryState {
         delete props.num
         
         if( props.query )
-            props.query = formatQuery.call(this, props.query),
+            props.query = formatQuery.call(this, props.query)
 
-        this.props = Object.assign(this.props, props)
+        this.props = {...this.props, ...props}
 
         this.parent.save()
 

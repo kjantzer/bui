@@ -33,20 +33,28 @@ export default class HistoryStates {
     }
 
     get(num, create=false, props={}){
-        if( !this.states[num] && create ){
+
+        let state = this.states[num]
+
+        if( !state && create ){
             props.num = num
-            this.states[num] = new HistoryState(this, props)
+            state = this.states[num] = new HistoryState(this, props)
+        
+        // when url is manually modified, history.state is reset back to null, but we should treat as a "move forward"
+        }else if( state && props.path !== undefined && state.path != props.path && create ){
+            props.num = num+1
+            state = this.states[num] = new HistoryState(this, props)
         }
 
-        return this.states[num]
+        return state
     }
 
     add(props={}, push=false){
         
         let oldNum = this._current
-        let num = history.state && history.state.num
+        let num = history.state?.num
 
-        if( num == undefined || push ){
+        if( num == null || push ){
             num = ++this._current
             
             // remove trailing states as they are no longer valid
