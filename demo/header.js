@@ -42,11 +42,11 @@ customElements.define('demo-header', class extends LitElement{
             display: flex;
             align-items: center;
             position:relative;
-            z-index: 100;
+            z-index: 110;
             height: 48px;
             -webkit-app-region: drag;
 
-            box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 5px -2px;
+            box-shadow: var(--theme-shadow-1);
         }
 
         bui-logo {
