@@ -75,7 +75,9 @@ customElements.define('b-list-filters-saved', class extends LitElement{
 
             this.filters = filters
             this.coll.key = this.filters.key
-            await this.coll.fetchSync()
+
+            if( window.Backbone )
+                await this.coll.fetchSync()
 
             let active = this.coll.findMatchesFilters(this.filters.value())
 
