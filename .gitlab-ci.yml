@@ -5,14 +5,14 @@ cache:
   paths:
     - node_modules/ # Node modules and dependencies
 
-pages:
-    stage: deploy
-    tags:
-        # kevin's iMac has been setup as a runner with this tag
-        - catalog_deploy
-    script:
-        - npm install
-        - npm run build
-    artifacts:
-        paths:
-            - public
+# pages:
+#     stage: deploy
+#     tags:
+#         # kevin's iMac has been setup as a runner with this tag
+#         - catalog_deploy
+#     script:
+#         - npm install
+#         - npm run build
+#     artifacts:
+#         paths:
+#             - public
