@@ -18,17 +18,17 @@
 import {LitElement} from 'lit'
 import './events'
 
-LitElement.prototype.willTakeAction = function(name, detail={}){
+LitElement.prototype.willTakeAction = function(name, detail={}, eventOpts={}){
     
     let action = Object.assign({
         model: this.model,
         target: this
     }, detail, {name: name, allowed: true})
 
-    this.emitEvent(name, {action})
+    this.emitEvent(name, {action}, eventOpts)
 
     if( action.allowed )
-        this.emitEvent('will-take-action', {action})
+        this.emitEvent('will-take-action', {action}, eventOpts)
     
     // add alias
     action.notAllowed = !action.allowed
