@@ -1,5 +1,8 @@
 # Changelog
 
+## 2023-06-19
+- BREAKING: `.popover()` presenters renamed to `.popOver()` to fix conflict with new native method
+
 ## 2022-05-17
 - BREAKING: Updated to Lit v2
     - There is a `lit-v1` branch, but it will not be updated anymore.

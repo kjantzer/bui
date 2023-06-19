@@ -63,6 +63,8 @@ export default html`
                 <div>Text with<b-text xs sup>Super</b-text> Text with<b-text xs sub>sub</b-text></div>
                 
                 <div style="width:160px"><b-text clip>Text with clipping enabled</b-text></div>
+
+                <div style="width:200px"><b-text clip=2>More text with clipping enabled but this one is limited to 2 lines. BUI clip attribute is setup to support values 1-7</b-text></div>
                 
                 <div><b-text link>Link (hover me)</b-text></div>
                 

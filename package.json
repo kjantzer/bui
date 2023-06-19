@@ -1,7 +1,7 @@
 {
     "name": "blackstone-ui",
     "version": "3.0.0",
-    "description": "Web components, classes, and utilities for creating PWAs",
+    "description": "Web components, classes, and utilities for creating single-page PWAs",
     "main": "index.js",
     "homepage": "https://bui.js.org",
     "repository": {
