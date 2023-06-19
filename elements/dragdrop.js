@@ -8,7 +8,16 @@
 import { LitElement, html, css } from 'lit'
 import '../helpers/lit/will-take-action'
 
+// make sure "dragend" fires immediately
+document.addEventListener("dragover", e=>e.preventDefault(), false);
+
+// keep track of data and preview element while dragging (so drop zones can use the data)
 let DragData
+let DragPreview
+
+// empty pixel for hiding default drag image
+let DragEmptyImg = document.createElement('img')
+DragEmptyImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // preload
 
 customElements.define('b-dragdrop', class extends LitElement{
 
@@ -17,6 +26,10 @@ customElements.define('b-dragdrop', class extends LitElement{
         url: {type: String},
         drag: {type: Boolean},
         drop: {type: Boolean},
+        preview: {type: String},
+
+        // "any", "true" or ['allowed', 'drag', 'tagnames']
+        dragMatchesDrop: {type: Object} // NOTE: not a big fan of this name...not very clear
     }
 
     static styles = css`
@@ -38,13 +51,19 @@ customElements.define('b-dragdrop', class extends LitElement{
 
     constructor(){
         super()
+
+        this.preview = false // 'b-dragdrop-preview'
         this.disabled = false
+
+        // default is drag, but no drop zone support
         this.drag = true
         this.drop = false
+        this.dragMatchesDrop = true
 
         this.onDragStart = this.onDragStart.bind(this)
+        this.onDrag = this.onDrag.bind(this)
         this.onDragEnd = this.onDragEnd.bind(this)
-        this.onDragOver = this.onDragOver.bind(this)
+        this.onDragEnter = this.onDragEnter.bind(this)
         this.onDragLeave = this.onDragLeave.bind(this)
         this.onDrop = this.onDrop.bind(this)
     }
@@ -81,17 +100,18 @@ customElements.define('b-dragdrop', class extends LitElement{
     }
 
     bind(){
-        if( !this.target ) return console.warn('no target to bind')
+        if( !this.target ) return //console.warn('no target to bind')
         this.unbind()
 
         if( this.drag ){
             this.target.draggable = true
             this.target.addEventListener('dragstart', this.onDragStart)
+            this.target.addEventListener('drag', this.onDrag)
             this.target.addEventListener('dragend', this.onDragEnd)
         }
 
         if( this.drop ){
-            this.target.addEventListener('dragover', this.onDragOver)
+            this.target.addEventListener('dragenter', this.onDragEnter)
             this.target.addEventListener('dragleave', this.onDragLeave)
             this.target.addEventListener('drop', this.onDrop)
         }
@@ -102,8 +122,10 @@ customElements.define('b-dragdrop', class extends LitElement{
 
         this.target.draggable = false
         this.target.removeEventListener('dragstart', this.onDragStart)
+        this.target.removeEventListener('drag', this.onDrag)
         this.target.removeEventListener('dragend', this.onDragEnd)
-        this.target.removeEventListener('dragover', this.onDragOver)
+
+        this.target.removeEventListener('dragenter', this.onDragEnter)
         this.target.removeEventListener('dragleave', this.onDragLeave)
         this.target.removeEventListener('drop', this.onDrop)
     }
@@ -119,9 +141,31 @@ customElements.define('b-dragdrop', class extends LitElement{
         <slot name="dropmsg"></slot>
     `}
 
+    willTakeAction(actionName, e){
+        let detail = {drag: true, evt:e, data: DragData, preview: DragPreview}
+        let action = super.willTakeAction(actionName, detail, {composed: false, bubbles: false})
+
+        if( action.preview)
+            action.preview.data = DragData
+
+        // tell preview when enter/leave (but make sure leave is called before enter)
+        if( actionName == 'enter' && action.preview?.onEnter ){
+            clearTimeout(this._previewUpdate)
+            this._previewUpdate = setTimeout(()=>{
+                action.preview.onEnter(action)
+                this._previewUpdate = null
+            })
+        }else if( actionName == 'leave' && action.preview?.onLeave && !this._previewUpdate){
+            clearTimeout(this._previewUpdate)
+            action.preview.onLeave(action)
+        }
+
+        return action
+    }
+
     onDragStart(e){
 
-        let action = this.disabled ? false : this.willTakeAction('drag', {drag: true, evt:e})
+        let action = this.disabled ? false : this.willTakeAction('dragged', e)
 
         if( this.disabled || action.notAllowed ){
             e.preventDefault()
@@ -138,45 +182,93 @@ customElements.define('b-dragdrop', class extends LitElement{
         if( this.url )
             URL(e, this.url)
 
+        if( this.preview !== 'false' && this.preview !== false ){
+            DragPreview = document.createElement(this.preview)
+            if( DragPreview.matchSize ){
+                DragPreview.style.width = this.target.clientWidth+'px'
+                DragPreview.style.minHeight = this.target.clientHeight+'px'
+            }
+            DragPreview.data = DragData
+            document.body.appendChild(DragPreview)
+
+            // hide default drag img
+            e.dataTransfer.setDragImage(DragEmptyImg, 0, 0);
+        }
+
         this.target.classList.add('dragging')
         this.classList.add('dragging')
+    }
+    
+    onDrag(e){
+        // make the preview follow the dragging cursor
+        if( DragPreview )
+        requestAnimationFrame(()=>{
+            if( DragPreview && e.clientX && e.clientY ){
+                DragPreview.style.left = e.clientX+'px'
+                DragPreview.style.top = e.clientY+'px'
+            }
+        })
+    }
+
+    onDragEnter(e){
+
+        // can't drop onto it self
+        if( this.target == DragData.srcTarget ) return this._disallowDrop = true
+
+        // only allow enter/drop if src target matches (either same as dropzone, or array of matches)
+        if( this.dragMatchesDrop && this.dragMatchesDrop != 'any' ){
+
+            // many drag sources supported
+            if( Array.isArray(this.dragMatchesDrop) )
+                this._disallowDrop = !this.dragMatchesDrop.includes(DragData.srcTarget.tagName.toLowerCase())
+            
+            // only allow same drag/drop targets
+            else if( [true, 1, '1', 'true'].includes(this.dragMatchesDrop) )
+                this._disallowDrop = this.target.tagName.toLowerCase() != DragData.srcTarget.tagName.toLowerCase()
+            else
+                this._disallowDrop = this.dragMatchesDrop != DragData.srcTarget.tagName.toLowerCase()
+        }
+
+        if( this._disallowDrop || this.disabled || this.willTakeAction('enter', e).notAllowed )
+            return this._disallowDrop = true
+        
+        this.target.classList.add('dragover')
+        this.classList.add('dragover')
+    }
+
+    onDragLeave(e){
+        this.target.classList.remove('dragover')
+        this.classList.remove('dragover')
+        this.willTakeAction('leave', e)
+    }
+
+    onDrop(e){
+        this.onDragLeave()
+
+        // drag enter disallowed dropzone
+        if( this._disallowDrop ){
+            delete this._disallowDrop
+            return
+        }
+
+        if( this.disabled || this.willTakeAction('dropped', e).notAllowed ){
+            e.preventDefault()
+            e.stopPropagation()
+        }
     }
 
     onDragEnd(e){
         this.target.classList.remove('dragging')
         this.classList.remove('dragging')
-    }
-
-    onDragOver(e){
-
-        if( this.disabled 
-        || this.willTakeAction('draggedover', {drag: true, evt:e, data: DragData}).notAllowed
-        ){
-            return
-        }
         
-        this.target.classList.add('dragover')
-        this.classList.add('dragover')
-
-        e.preventDefault();
-    }
-
-    onDragLeave(){
-        this.target.classList.remove('dragover')
-        this.classList.remove('dragover')
-    }
-
-    onDrop(e){
-        this.onDragLeave()
-        
-        if( this.disabled 
-        || this.willTakeAction('dropped', {drag: true, evt:e, data: DragData}).notAllowed
-        ){
-            e.preventDefault()
-            e.stopPropagation()
-        }
-
         DragData = undefined
+
+        if( DragPreview ){
+            DragPreview.remove()
+            DragPreview = undefined
+        }
+
+        e.stopPropagation()
     }
 
 })
@@ -232,3 +324,56 @@ export function jsonLD(e, type, data){
 
     e.dataTransfer.setData('application/ld+json', JSON.stringify(data));
 }
+
+
+// import { LitElement, html, css } from 'lit'
+
+// not used by default
+customElements.define('b-dragdrop-preview', class extends LitElement{
+
+    static properties = {
+        value: {type: String}
+    }
+
+    static styles = css`
+        :host {
+            display: block;
+            position:relative;
+            position: absolute;
+            z-index: 10000;
+            left: -10000px;
+            pointer-events: none;
+            padding: 1em;
+            box-sizing: border-box;
+            border-radius: 12px;
+            box-shadow: var(--theme-shadow-2);
+            background: var(--theme-bgd);
+
+            /*background: rgba(var(--theme-text-rgb), .2);*/
+
+        }
+    `
+
+    matchSize = true
+
+    render(){return html`
+        ${this.value}
+    `}
+
+    set data(val){
+        let oldVal = this.data
+        this.__data = val
+    
+        this.requestUpdate('data', oldVal)
+    }
+    
+    get data(){ return this.__data}
+
+    onLeave(){
+        this.value = ''
+    }
+
+})
+
+const DragDropPreview = customElements.get('b-dragdrop-preview')
+export {DragDropPreview}
