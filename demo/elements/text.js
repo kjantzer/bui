@@ -13,7 +13,7 @@ export default html`
         <b-grid gap="2">
 
             <b-flex col gap=".5">
-                <b-text-divider ucase bold>Sizes</b-text-divider>
+                <b-text-divider ucase sm xbold bottom>Sizes</b-text-divider>
                 <b-text xs>Extra Small</b-text>
                 <b-text sm>Small</b-text>
                 <b-text>Normal</b-text>
@@ -23,7 +23,7 @@ export default html`
             </b-flex>
 
             <b-flex col gap=".5">
-                <b-text-divider ucase bold>Weights</b-text-divider>
+                <b-text-divider ucase sm xbold bottom>Weights</b-text-divider>
                 <b-text lighter>Lighter</b-text>
                 <b-text>Default</b-text>
                 <b-text semibold>Semi-bold</b-text>
@@ -32,27 +32,26 @@ export default html`
             </b-flex>
 
             <b-flex col gap=".5">
-                <b-text-divider ucase bold>Accents</b-text-divider>
+                <b-text-divider ucase sm xbold bottom>Accents</b-text-divider>
                 <b-text>Normal</b-text>
+                <b-text dim>Dim</b-text>
                 <b-text muted>Muted</b-text>
-                <b-text muted=1>Muted 1</b-text>
-                <b-text muted=2>Muted 2</b-text>
                 <b-text color="theme">Theme</b-text>
                 <b-text gradient>Theme Gradient</b-text>
                 <b-text gradient="reverse">Theme Gradient (Reverse)</b-text>
             </b-flex>
 
             <b-flex col stretch>
-                <b-text-divider ucase bold>Speciality</b-text-divider>
+                <b-text-divider ucase sm xbold bottom>Speciality</b-text-divider>
 
-                <b-text block>Normal text, Labore consectetur quis laborum elit. Aliqua officia dolore nisi minim eu voluptate. Irure proident exercitation esse sunt est in deserunt velit elit commodo. In ut dolor incididunt ex. Adipisicing duis cillum laborum ex dolor do commodo consequat quis cupidatat ea.</b-text>
+                <b-text block>Normal text, in "block" mode. Labore consectetur quis laborum elit. Aliqua officia dolore nisi minim eu voluptate. Irure proident exercitation esse sunt est in deserunt velit elit commodo. In ut dolor incididunt ex. Adipisicing duis cillum laborum ex dolor do commodo consequat quis cupidatat ea.</b-text>
                 
-                <b-text block body>Body text, Labore consectetur quis laborum elit. Aliqua officia dolore nisi minim eu voluptate. Irure proident exercitation esse sunt est in deserunt velit elit commodo. In ut dolor incididunt ex. Adipisicing duis cillum laborum ex dolor do commodo consequat quis cupidatat ea.</b-text>
+                <b-text block body>Body text. Labore consectetur quis laborum elit. Aliqua officia dolore nisi minim eu voluptate. Irure proident exercitation esse sunt est in deserunt velit elit commodo. In ut dolor incididunt ex. Adipisicing duis cillum laborum ex dolor do commodo consequat quis cupidatat ea.</b-text>
             </b-flex>
 
             <b-flex col gap=".5">
 
-                <b-text-divider ucase bold>Other Variations</b-text-divider>
+                <b-text-divider ucase sm xbold bottom>Other Variations</b-text-divider>
 
                 <div>
                     <b-text bold>Bold</b-text> and <b-text italic>Italic</b-text>
@@ -183,42 +182,36 @@ export default html`
 
     </b-grid> 
 
-    <br><br>
-
-    <b-label>A label</b-label><br><br>
-    <b-label divider>A label with divider</b-label><br>
-    <b-label divider="center">Centered divider</b-label><br>
-    <b-label divider="right">Right divider</b-label>
-
 
 <!-- </b-paper> -->
 
 <!-- <b-paper> -->
     <b-text-divider lg xbold bottom pad=2 thick>Speciality</b-text-divider>
 
-    <b-grid cols="3" cols-mobile=1>
+    <b-grid cols="3" cols-mobile=1 gap=2>
 
         <div>
-            <b-text block ucase muted bold>Numeral</b-text><b-hr pad="xs"></b-hr>
+            <b-text-divider bottom block ucase sm xbold>Numeral</b-text-divider><br>
 
-            <b-numeral>130000000</b-numeral> &nbsp;&nbsp;
-            <b-numeral>25000</b-numeral> &nbsp;&nbsp;
-            <b-bytes>34554343323</b-bytes>
+            <b-numeral num="13000"></b-numeral> &nbsp;&nbsp;
+            <b-currency num="25000"></b-currency> &nbsp;&nbsp;
+            <b-currency-acct num="-1247"></b-currency-acct> &nbsp;&nbsp;
+            <b-bytes num="34554343323"></b-bytes>
         </div>
         
         <div>
-            <b-text block ucase muted bold>Timestamp</b-text><b-hr pad="xs"></b-hr>
+            <b-text-divider bottom block ucase sm xbold>Timestamp</b-text-divider><br>
             Page rendered <b-text tone="info"><b-ts .date=${dayjs()}></b-ts></b-text>
-            <b-text sm muted>Updated every minute</b-text>
+            <b-text sm muted>(Updated every minute)</b-text>
         </div>
 
         <div>
-            <b-text block ucase muted bold>Timer</b-text><b-hr pad="xs"></b-hr>
+            <b-text-divider bottom block ucase sm xbold>Timer</b-text-divider><br>
             <b-timer running></b-timer>
         </div>
 
         <div>
-            <b-text block ucase muted bold>Code</b-text><b-hr pad="xs"></b-hr>
+            <b-text-divider bottom block ucase sm xbold>Code</b-text-divider><br>
             
             This is <b-code>inline code</b-code>
 
@@ -230,7 +223,7 @@ export default html`
 
         <div>
         
-            <b-text block ucase muted bold>Ribbon</b-text><b-hr pad="xs"></b-hr>
+            <b-text-divider block bottom ucase sm xbold>Ribbon</b-text-divider><br>
 
             <b-paper overshadow style="height: 120px">
                 <b-ribbon>Ribbon</b-ribbon>

@@ -135,7 +135,7 @@ customElements.define('b-list-filters', class extends LitElement{
                 let val = vals.join(':')
 
                 return html`<b-text>
-                    <b-text muted=2 italic>${label}:</b-text>
+                    <b-text dim italic>${label}:</b-text>
                     <b-text bold>${val}</b-text>
                 </b-text>`
             })

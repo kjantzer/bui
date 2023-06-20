@@ -103,7 +103,7 @@ customElements.define('b-native-file-preview', class extends LitElement{
 
             <b-text clip>${this.file.name}</b-text>
 
-            <b-text muted=2>
+            <b-text dim>
                 <b-bytes .num=${this.file.size}></b-bytes>
             </b-text>
             

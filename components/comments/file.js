@@ -26,7 +26,7 @@ customElements.define('b-comment-file', class extends FileRow{
     renderContent(){ return html`
 
         <b-text clip sm block heading>${this.model.origFilenameLabel}</b-text>
-        <b-text muted=2 block sm>
+        <b-text dim block sm>
             <b-bytes .num=${this.model.get('size')}></b-bytes>
         </b-text>        
     `}

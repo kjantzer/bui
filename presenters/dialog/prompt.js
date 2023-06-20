@@ -229,7 +229,7 @@ function makePrompt(opts, i=0, globalOpts){
 						</b-text>
 
 						${o?.description||o?.helpText?html`
-						<b-text block sm italic muted=2>
+						<b-text block sm italic dim>
 							${o.val===undefined?'':o.description||o.helpText}</b-text>
 						`:''}
 

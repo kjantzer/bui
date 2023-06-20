@@ -30,7 +30,7 @@ customElements.define('b-list-filter-set-item', class extends LitElement{
                 <b-text>
                     ${this.get('name')}
                 </b-text>
-                <b-text sm italic muted=2 ?hidden=${!this.get('summary')}>${this.get('summary')}</b-text>
+                <b-text sm italic dim ?hidden=${!this.get('summary')}>${this.get('summary')}</b-text>
             </b-grid>
 
             <b-flex gap=" ">

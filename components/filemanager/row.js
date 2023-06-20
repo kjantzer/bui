@@ -179,9 +179,9 @@ customElements.define('b-file-row', class extends LitElement{
                     
                         <b-label filled="black" xs slot="top-left" part="size">
                             ${this.model.width}
-                            &nbsp;<b-text muted=2>x</b-text>&nbsp;
+                            &nbsp;<b-text dim>x</b-text>&nbsp;
                             ${this.model.height}
-                            &nbsp;<b-text muted=2>px</b-text>
+                            &nbsp;<b-text dim>px</b-text>
                         </b-label>
 
                     `:''}
@@ -190,9 +190,9 @@ customElements.define('b-file-row', class extends LitElement{
                     
                         <b-label filled="black" xs slot="top-left" part="size">
                             ${this.model.width}
-                            &nbsp;<b-text muted=2>x</b-text>&nbsp;
+                            &nbsp;<b-text dim>x</b-text>&nbsp;
                             ${this.model.height}
-                            &nbsp;<b-text muted=2>in</b-text>
+                            &nbsp;<b-text dim>in</b-text>
                         </b-label>
 
                     `:''}

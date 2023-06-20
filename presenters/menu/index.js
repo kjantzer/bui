@@ -385,7 +385,7 @@ export default class Menu {
 
 			let label = allowCreate.label
 						? (typeof allowCreate.label == 'function' ? allowCreate.label(term) : allowCreate.label)
-						: html`<b-text muted=2>Create:</b-text> <b-text xbold color="theme">${term}</b-text>`
+						: html`<b-text dim>Create:</b-text> <b-text xbold color="theme">${term}</b-text>`
 				
 			let extras = [
 				'divider',
@@ -526,7 +526,7 @@ export default class Menu {
 			return html`<b-text heading block ?bgd=${m.bgd??false} class="menu-html" .html=${m.html}></b-text>`
 
 		if( m.text !== undefined )
-			return html`<b-text heading block sm muted=2 ?bgd=${m.bgd??true} class="menu-text">${m.text}</b-text>`
+			return html`<b-text heading block sm dim ?bgd=${m.bgd??true} class="menu-text">${m.text}</b-text>`
 		
 		if( m.title )
 			return html`<b-text heading block xbold ?bgd=${m.bgd??false} class="menu-title">${m.title}</b-text>`

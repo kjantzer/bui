@@ -199,7 +199,7 @@ customElements.define('check-box', class extends LitElement{
 			<label part="label">
 				<slot>${this.label}</slot>
 			</label>
-			<b-text part="help" block sm italic muted=2>
+			<b-text part="help" block sm italic dim>
 				<slot name="help">${this.helpText}</slot>
 			</b-text>
 		</aside>
