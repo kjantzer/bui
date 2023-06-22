@@ -2,14 +2,11 @@ const Model = require('../model')
 const mkdirp = require('mkdirp')
 const path = require('path')
 const fs = require('fs')
-const shellExec = require(bui`util/shellExec`)
 const sharp = require('sharp')
-const exif = require('exif-reader')
 const office = require('./preview/office')
 const {psdPreview} = require('./preview/psd')
 const {audioPreview} = require('./preview/audio')
 const {videoPreview} = require('./preview/video')
-const Vibrant = require('node-vibrant')
 const {pdfInfo, pdfText} = require('./pdf')
 
 function ThrowError(name, msg){
@@ -212,6 +209,7 @@ module.exports = class FileManager extends Model {
 
             if( metadata.exif ){
                 try{
+                    const exif = require('exif-reader')
                     metadata.exif = info.traits.exif = exif(metadata.exif)
                     delete info.traits.exif.exif
                 }catch(err){
@@ -497,23 +495,28 @@ module.exports = class FileManager extends Model {
     }
 
     async getColorPalette({returnSwatches=false, fromPreview=true, filePath=null}={}){
-        
-        filePath = filePath || this.filePath+(fromPreview?'.preview.jpg': '')
-        let palette = await Vibrant.from(filePath).getPalette()
-
-        if( returnSwatches )
-            return palette
 
         let colors = {}
+        
+        try{
+            const Vibrant = require('node-vibrant')
 
-        for( let key in palette ){
-            if( palette[key] )
-            colors[key.toLowerCase()] = {
-                hex: palette[key].hex,
-                rgb: palette[key].rgb,
-                pop: palette[key].population,
+            filePath = filePath || this.filePath+(fromPreview?'.preview.jpg': '')
+            let palette = await Vibrant.from(filePath).getPalette()
+
+            if( returnSwatches )
+                return palette
+
+            for( let key in palette ){
+                if( palette[key] )
+                colors[key.toLowerCase()] = {
+                    hex: palette[key].hex,
+                    rgb: palette[key].rgb,
+                    pop: palette[key].population,
+                }
             }
-        }
+
+        }catch(err){}
 
         return colors
     }
