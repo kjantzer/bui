@@ -34,6 +34,7 @@ module.exports = class FileManager extends Model {
     skipDuplicates = false // only applies when same parent_id
     waitForPreviewGeneration = false // upload response wont return until preview saved
     autoRotate = false
+    fullSize=true // set to number to save a smaller size (orig file will be overwritten)
     previewSize = 800
 
     // TODO: 
@@ -95,7 +96,7 @@ module.exports = class FileManager extends Model {
         if( !this.attrs.has_preview ){
 
             // fallback to full size image
-            if( ['jpg', 'jpeg', 'png', 'gif', 'tif', 'heic'].includes(this.attrs.ext) ) 
+            if( ['jpg', 'jpeg', 'png', 'gif', 'tif', 'heic', 'DNG'].includes(this.attrs.ext) ) 
                 return this.filePath
             else 
                 return null
@@ -179,7 +180,7 @@ module.exports = class FileManager extends Model {
             type: file.mimetype,
             dir_path: this.groupPath,
             orig_filename: file.name,
-            user_id: this.req.user.id,
+            user_id: this.req.user?.id,
             description,
             src: src,
             md5: file.md5,
@@ -297,13 +298,14 @@ module.exports = class FileManager extends Model {
 
         }
 
+        let orientation = metadata.orientation ?? metadata.exif?.image?.Orientation
+        // NOTE: even numbers are also mirrored
+        let orientations = [0, 0, 180, 180, 90, 90, 270, 270] // https://sirv.com/help/articles/rotate-photos-to-be-upright/
         // resave the image with proper rotation (iPhone, etc)
-        if( sharpImg && this.autoRotate
-        && metadata.exif && metadata.exif.image.Orientation != 1){
-
-            let rotate = (metadata.exif.image.Orientation-1) * 90
-
-            sharpImg.rotate(rotate).toFile(this.dirPath+'/'+filename)
+        if( sharpImg && this.autoRotate && orientation){
+            let rotate = orientations[(orientation-1)] || 0
+            if( rotate > 0 )
+                sharpImg.rotate(rotate).toFile(this.dirPath+'/'+filename)
         }
 
         // apply aspect ratio if set
@@ -353,6 +355,38 @@ module.exports = class FileManager extends Model {
                 this.attrs.traits.height = height
                 updateAttrs.traits = this.attrs.traits
             }
+        }
+
+        // reduce size of full image
+        if( sharpImg && typeof this.fullSize == 'number' ){
+
+            fs.unlinkSync(this.dirPath+'/'+filename)
+
+            let ext = this.attrs.ext == 'DNG' ? 'jpg' : this.attrs.ext
+
+            if( this.attrs.ext == 'DNG' )
+                this.attrs.type = updateAttrs.type = 'image/jpeg'
+
+            filename = filename.replace(new RegExp(this.attrs.ext+'$'), ext)
+
+            await sharpImg.resize(this.fullSize, this.fullSize, {
+                fit: 'inside'
+            }).sharpen().toFile(this.dirPath+'/'+filename)
+            
+            sharpImg = sharp(this.dirPath+'/'+filename)
+            metadata = await sharpImg.metadata()
+
+            this.attrs.ext = ext
+            this.attrs.filename = filename
+            // this.attrs.orig_filename = this.attrs.orig_filename.replace(new RegExp(this.attrs.ext+'$'), ext)
+
+            this.attrs.traits.width = metadata.width
+            this.attrs.traits.height = metadata.height
+
+            updateAttrs.ext = this.attrs.ext
+            updateAttrs.filename = this.attrs.filename
+            // updateAttrs.orig_filename = this.attrs.orig_filename
+            updateAttrs.traits = this.attrs.traits
         }
 
         if( fileType.match(/audio/) ){
