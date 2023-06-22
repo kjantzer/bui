@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import {repeat} from 'lit/directives/repeat.js'
-import Sortable from 'sortablejs'
+// import Sortable from 'sortablejs'
 import Dialog, { Notif } from '../../presenters/dialog'
 import device from '../../util/device'
 import '../../helpers/lit/will-take-action'
@@ -111,21 +111,25 @@ customElements.define('b-file-manager', class extends LitElement{
         
         if( this.sortingEnabled ) return console.warn('Sorting already enabled')
         if( this.limit == 1 ) return console.warn('Limited to 1 file, nothing to sort')
+
+        import('sortablejs').then(Sortable=>{
         
-        this.sortable = Sortable.create(this.$$('.files'), {
-            draggable: this.row,
-            handle: '.drag',
-            swapThreshold: 1,
-            // https://github.com/SortableJS/Sortable/tree/master/plugins/OnSpill#revertonspill-plugin
-            // revertOnSpill: true, // doesn't work with shadow dom
-            // direction: 'vertical',
-            onUpdate: this.onSort.bind(this)
+            this.sortable = Sortable.create(this.$$('.files'), {
+                draggable: this.row,
+                handle: '.drag',
+                swapThreshold: 1,
+                // https://github.com/SortableJS/Sortable/tree/master/plugins/OnSpill#revertonspill-plugin
+                // revertOnSpill: true, // doesn't work with shadow dom
+                // direction: 'vertical',
+                onUpdate: this.onSort.bind(this)
+            })
+
+            let rows = Array.from(this.$$all(this.row))
+            rows.forEach(row=>row.setAttribute('sorting', ''))
+
+            this.sorting = true
+
         })
-
-        let rows = Array.from(this.$$all(this.row))
-        rows.forEach(row=>row.setAttribute('sorting', ''))
-
-        this.sorting = true
     }
 
     toggleSorting(){
