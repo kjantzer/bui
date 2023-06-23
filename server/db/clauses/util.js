@@ -1,4 +1,8 @@
 
+function sqlStr(strings){
+    return {toSqlString: _=>strings[0]}
+}
+
 // TODO: rename to makeJsonPath ?
 function makePath(path, db){
     
@@ -42,5 +46,3 @@ function composeClauses(db, clauses){
     }
 
 }
-
-module.exports = {makePath, composeClauses}
