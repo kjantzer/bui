@@ -740,6 +740,7 @@ module.exports = class Model {
         if( ids.length == 0 || !primaryID )
             throw new APIError('Improper IDs given for merging')
 
+        this.id = primaryID
         this.beforeMerge && await this.beforeMerge({ids, primaryID, foreignKeys})
 
         // update all foreign keys to use the primary ID
@@ -749,11 +750,16 @@ module.exports = class Model {
             `, [primaryID, ids])
         }))
 
-        // now delete the merged records
-        await this.db.query(/*sql*/`DELETE FROM ${this.config.table} WHERE ${this.idAttribute} IN(?)`, [ids])
+        await this._mergeDelete({ids, primaryID, foreignKeys})
 
         this.afterMerge && await this.afterMerge({ids, primaryID, foreignKeys})
 
         return String(ids.length)
+    }
+
+    // let sublclasses modify this behaviour
+    async _mergeDelete({ids, primaryID, foreignKeys}){
+        // now delete the merged records
+        await this.db.query(/*sql*/`DELETE FROM ${this.config.table} WHERE ${this.idAttribute} IN(?)`, [ids])
     }
 }

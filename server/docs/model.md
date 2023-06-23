@@ -94,6 +94,10 @@ module.exports = class MyModel extends Model {
     async beforeDestroy(){ /* noop */ }
     async afterDestroy(){ /* noop */ }
 
+    async beforeMerge({ids, primaryID, foreignKeys}){ /* noop */ }
+    async afterMerge({ids, primaryID, foreignKeys}){ /* noop */ }
+    async _mergeDelete({ids, primaryID, foreignKeys}){ /* deletes merged rows; override to change behavior */}
+
 }
 ```
 
