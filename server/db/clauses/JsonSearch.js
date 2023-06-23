@@ -61,7 +61,7 @@ module.exports = class JsonSearch extends Clause {
         let groups = {}
 
         if( !group )
-            group = new Group({}, 'AND')
+            group = new Group({}, opts?.conjunction||'AND')
 
         let values = Array.isArray(str) ? str : str.split(',')
         
