@@ -174,3 +174,16 @@ export class UIError extends UICustomError {
     }
 }
 
+export class UISilentError extends UICustomError {
+    
+    constructor(msg='', detail={}){
+        detail.silent = true
+        super(msg, detail)
+        this.name = 'UISilentError'
+    }
+
+    get presenter(){
+        return true
+    }
+}
+

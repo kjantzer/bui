@@ -27,6 +27,13 @@
   ],
   "description": "UIError"
 },
+"UISilentError": {
+  "prefix": "UISilentError",
+  "body": [
+    "UISilentError('$1')"
+  ],
+  "description": "UISilentError"
+},
 "APIError": {
   "prefix": "APIError",
   "body": [
