@@ -62,6 +62,12 @@ customElements.define('b-text', class extends LitElement{
             -webkit-line-clamp: var(--clip-max-lines, 1);
         }
 
+        /* this does take a bit of perf hit, so must opt-in; 
+        also only works for 4 lines and less: https://developer.chrome.com/blog/css-text-wrap-balance/ */
+        :host([balance]), :host([balance][clip]:not([clip=""])) {
+            text-wrap: balance;
+        }
+
         :host([clip="1"]) { --clip-max-lines: 1; }
         :host([clip="2"]) { --clip-max-lines: 2; }
         :host([clip="3"]) { --clip-max-lines: 3; }
@@ -101,12 +107,13 @@ customElements.define('b-text', class extends LitElement{
         :host([align="justify"]) .slot { text-align: justify; }
 
         /* https://spencermortensen.com/articles/typographic-scale/ */
-        :host([xs]) .slot { font-size: var(--font-size-xs, .65em); line-height: 1.1em; }
-        :host([sm]) .slot { font-size: var(--font-size-sm, .8409em); line-height: 1.1em; }
-        :host([md]) .slot { font-size: var(--font-size-md, 1.1892em); line-height: 1.1em; }
-        :host([lg]) .slot { font-size: var(--font-size-lg, 1.4142em); line-height: 1.1em; }
-        :host([xl]) .slot { font-size: var(--font-size-xl, 1.6818em); line-height: 1.1em; }
-        :host([xxl]) .slot { font-size: var(--font-size-xxl, 2em); line-height: 1.1em; }
+        :host([xs]) .slot, :host([size="xs"]) .slot { font-size: var(--font-size-xs, .65em); line-height: 1.1em; }
+        :host([sm]) .slot, :host([size="sm"]) .slot { font-size: var(--font-size-sm, .8409em); line-height: 1.1em; }
+        :host([rg]) .slot, :host([size="rg"]) .slot { font-size: var(--font-size-rg, 1.1em); line-height: 1.1em; }
+        :host([md]) .slot, :host([size="md"]) .slot { font-size: var(--font-size-md, 1.1892em); line-height: 1.1em; }
+        :host([lg]) .slot, :host([size="lg"]) .slot { font-size: var(--font-size-lg, 1.4142em); line-height: 1.1em; }
+        :host([xl]) .slot, :host([size="xl"]) .slot { font-size: var(--font-size-xl, 1.6818em); line-height: 1.1em; }
+        :host([xxl]) .slot, :host([size="xxl"]) .slot { font-size: var(--font-size-xxl, 2em); line-height: 1.1em; }
 
         :host([tone="muted"]),
         :host([muted]) { color: rgba(var(--theme-text-rgb, 0,0,0),.4); }
