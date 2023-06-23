@@ -36,6 +36,8 @@ customElements.define('b-inline-edit', class extends LitElement{
             let textNodes = Array.from(target.childNodes).filter(n=>n.nodeName=='#text')
             el.textNode = textNodes.find(n=>n.textContent.trim()) || textNodes[0]
 
+            for( let child of target.children ){ child.hidden = true }
+
             target.setAttribute('editing-inline', '')
             el.textNode.replaceWith(el)
 
@@ -107,6 +109,7 @@ customElements.define('b-inline-edit', class extends LitElement{
 
         this.target.removeAttribute('editing-inline')
         this.replaceWith(this.textNode)
+        for( let child of this.target.children ){ child.hidden = false }
         this.resolve(false)
     }
 
