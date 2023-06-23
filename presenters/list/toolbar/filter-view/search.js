@@ -44,7 +44,8 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
         if( item.type == 'create' )
             item = {
                 label: item.val,
-                val: item.val
+                val: item.val,
+                created: true
             }
 
         item.selection = 'Is'
@@ -67,12 +68,15 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
             items = items.filter(d=>d.selection)
         }
 
+        // determine what was deselected (so we can set it's value in the search bar again to edit)
+        let deselected = this.value.find(d=>!items.find(i=>i.val==d.val))
+
         this.value = items
 
-        if( items.length == 0 )
-            this.close()
-        else
-            this.focus()
+        this.focus({
+            selectAll: true, 
+            value: deselected?.created&&deselected?.val // let user re-edit the value
+        })
     }
 
     get menuForValues(){
@@ -88,7 +92,7 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
                 return {
                     label: d.label || d.cacheLabel || d.toolbarLabel,
                     ...d,
-                    selections: ['Is', 'Not']
+                    selections: this.opts.selections ?? ['Is', 'Not']
                 }
                 // d.selected = true
                 return d
@@ -210,10 +214,10 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
         this.focus()
     }
 
-    focus(){
+    focus(opts){
         setTimeout(()=>{
             if(this.menu )
-                this.menu.focusSearch()
+                this.menu.focusSearch(opts)
         }, 100)
     }
 
