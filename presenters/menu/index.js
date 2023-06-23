@@ -306,10 +306,13 @@ export default class Menu {
 		}
 	}
 
-	focusSearch({selectAll=false, delay=0}={}){
+	focusSearch({selectAll=false, delay=0, value}={}){
 		setTimeout(()=>{
 			let input = this.el.querySelector('.menu-search-bar input')
 			if( input ){
+				if( value !== undefined )
+					input.value = value
+
 				input.focus()
 				if( selectAll ) input.select()
 			}
@@ -393,6 +396,7 @@ export default class Menu {
 					label,
 					val: term,
 					type: allowCreate.type || 'create',
+					create: true,
 					noCache: true
 				},
 				'divider'
