@@ -137,8 +137,8 @@ module.exports = class Comments extends Model {
     }
 
     beforeAdd(attrs){
-        attrs.group = this.group
-        attrs.gid = this.gid
+        attrs.group ||= this.group
+        attrs.gid ||= this.gid
         attrs.uid = this.req.user.id
     }
 
@@ -149,7 +149,7 @@ module.exports = class Comments extends Model {
     }
 
     sendPushMsg(){
-        if( PushMsg && this.attrs.meta && this.attrs.meta.mentions ){
+        if( PushMsg && this.attrs?.meta && this.attrs.meta.mentions ){
             let meta = this.attrs.meta
             let msg = {
                 tag: this.group+':'+this.gid,
