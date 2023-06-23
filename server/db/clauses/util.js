@@ -46,3 +46,5 @@ function composeClauses(db, clauses){
     }
 
 }
+
+module.exports = {makePath, composeClauses}
