@@ -378,6 +378,8 @@ module.exports = class FileManager extends Model {
             this.attrs.filename = filename
             // this.attrs.orig_filename = this.attrs.orig_filename.replace(new RegExp(this.attrs.ext+'$'), ext)
 
+            // TODO: get updated size
+            // this.attrs.size = updateAttrs.size = metadata.size
             this.attrs.traits.width = metadata.width
             this.attrs.traits.height = metadata.height
 

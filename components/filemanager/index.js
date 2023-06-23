@@ -16,7 +16,8 @@ customElements.define('b-file-manager', class extends LitElement{
         layout: {type: String},
         accept: {type: String},
         placeholder: {type: String},
-        limit: {type: Number}
+        limit: {type: Number},
+        disabled: {type: Boolean}
     }}
 
     static get listeners(){return {
@@ -152,7 +153,7 @@ customElements.define('b-file-manager', class extends LitElement{
     selectFile(){ return this.selectFiles() }
 
     render(){return html`
-        <b-uploader accept="${this.accept}" @change=${this.onUpload} ?multiple=${this.limit!=1}></b-uploader>
+        <b-uploader ?disabled=${this.disabled} accept="${this.accept}" @change=${this.onUpload} ?multiple=${this.limit!=1}></b-uploader>
             
         <div class="files" part="files">
         
