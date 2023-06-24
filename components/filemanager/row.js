@@ -246,7 +246,7 @@ customElements.define('b-file-row', class extends LitElement{
 
     async destroy(e){
         
-        if( this.willTakeAction('delete').notAllowed ) return
+        if( this.willTakeAction('delete', {clickTarget: e?.currentTarget}).notAllowed ) return
 
         if( await Dialog.confirmDelete().popOver(e) ){
             await this.model.destroySync({wait: true})
