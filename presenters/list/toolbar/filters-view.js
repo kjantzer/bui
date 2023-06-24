@@ -91,12 +91,12 @@ customElements.define('b-list-filters', class extends LitElement{
         <b-dragdrop @drag=${this.onDrag}>Export</b-dragdrop>
         <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
-        ${this.filters.size>0?html`
+        ${this.filters.size>0&&this.filters.opts?.history!==false?html`
         <b-btn icon="history" title="History of applied filters" clear lg noshrink
                 @click=${this.openFiltersHistory}></b-btn>
         `:''}
 
-        ${this.filters.size>0?html`
+        ${this.filters.size>0&&this.filters.opts?.presets!==false?html`
         <b-list-filters-saved noshrink></b-list-filters-saved>
         `:''}
 
