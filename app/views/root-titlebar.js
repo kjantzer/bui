@@ -31,19 +31,20 @@ customElements.define('b-root-titlebar', class extends LitElement{
             margin-left: -.5em;
         }
 
-        [icon="down-open"] {
+        [icon="chevron_right"] {
             width: 1.95rem;
             height: 1.85rem;
             flex-shrink: 0;
             order: -10;
+            transform: rotate(var(--b-panel-toolbar-close-btn-rotation, 0deg));
         }
 
-        [icon="down-open"]::part(main) {
+        [icon="chevron_right"]::part(main) {
             padding-top: 0;
             padding-bottom: 0;
         }
 
-        [icon="down-open"]::part(icon) {
+        [icon="chevron_right"]::part(icon) {
             --size: 1.5rem;
         }
 
@@ -77,7 +78,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
     render(){return html`
 
         ${this.panel?html`
-            <b-btn text icon="down-open" part="close-btn" @click=${this.close}></b-btn>
+            <b-btn text icon="chevron_right" part="close-btn" @click=${this.close}></b-btn>
         `:''}
 
         <slot name="left"></slot>
