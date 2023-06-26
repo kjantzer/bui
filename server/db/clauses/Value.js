@@ -3,7 +3,7 @@ const Group = require('./Group')
 const {sqlStr} = require('./util')
 
 const AllowedOperators = [
-    '!=', '>', '>=', '<', '<=', '=', 'NOT', 'LIKE', 'NOT LIKE'
+    '!=', '>=','>', '<=', '<', '=', 'NOT', 'LIKE', 'NOT LIKE'
 ]
 
 /*
@@ -57,7 +57,12 @@ module.exports = class Value extends Clause {
             if( this.oper == 'NOT' || this.oper == 'IS NOT')
                 this.oper = '!='
                 
-            return `${key} ${this.oper} ${db.escape(this.value)}`
+            let value = this.value
+            
+            if( typeof value == 'string' && !['now()', 'curdate()'].includes(value.toLowerCase()) )
+                value = db.escape(this.value)
+
+            return `${key} ${this.oper} ${value}`
         }
     }
 
