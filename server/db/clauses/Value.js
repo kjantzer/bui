@@ -11,11 +11,12 @@ const AllowedOperators = [
 */
 module.exports = class Value extends Clause {
 
-    constructor(oper, value, {ifNull=false, key}={}){
+    constructor(oper, value, {ifNull=false, key, escapeId=false}={}){
         super()
 
         this.key = key
         this.ifNull = ifNull
+        this.escapeId = escapeId // defaults to false cause assumes the key is hardcoded
 
         if( value === undefined ){
             this.value = oper
@@ -37,7 +38,7 @@ module.exports = class Value extends Clause {
             key = key.toSqlString()
 
         // make sure key is escaped
-        }else if(  key[0] != '`' ){
+        }else if( this.escapeId && key[0] != '`' ){
             key = db.escapeId(key)
         }
 
@@ -137,7 +138,7 @@ module.exports = class Value extends Clause {
                 key = opts.keyPrefix+'.'+key
 
             // now create official "Value" clause
-            group.set(i+key, new Value(oper, !val?'NOT NULL':val, {key}))
+            group.set(i+key, new Value(oper, !val?'NOT NULL':val, {key, escapeId: true}))
         })
 
         // if no values, return `true = true`
