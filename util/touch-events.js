@@ -12,19 +12,28 @@ export const bindLongpress = (el, {
 
     el.addEventListener(isTouch?'touchstart':'mousedown', e=>{
 
+        let {clientX, clientY} = e
+
         // ignore right+click (https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button)
         if( !isTouch && e.button !== 0 ) return
 
         el._longPressTimeout = setTimeout(() => {
 
             detail.target = el
-            
-            el._didLongPress = true
-            el.dispatchEvent(new CustomEvent(event, {
+            detail.clientX = clientX
+            detail.clientY = clientY
+
+            let customEvent = new CustomEvent(event, {
                 bubbles: true,
                 composed: true,
                 detail
-            }))
+            })
+
+            customEvent.clientX = clientX
+            customEvent.clientY = clientY
+            
+            el._didLongPress = true
+            el.dispatchEvent(customEvent)
 
         }, delay);
 

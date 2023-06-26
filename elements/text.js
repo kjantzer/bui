@@ -116,7 +116,8 @@ customElements.define('b-text', class extends LitElement{
         :host([xxl]) .slot, :host([size="xxl"]) .slot { font-size: var(--font-size-xxl, 2em); line-height: 1.1em; }
 
         :host([tone="muted"]),
-        :host([muted]) { color: rgba(var(--theme-text-rgb, 0,0,0),.4); }
+        :host([muted]),
+        :host([color="muted"]) { color: rgba(var(--theme-text-rgb, 0,0,0),.4); }
         :host([dim]) { color: rgba(var(--theme-text-rgb, 0,0,0),.6); }
         :host([body][dim]) { color: rgba(var(--theme-text-rgb, 0,0,0),.7); }
         /* DEPRECATED */

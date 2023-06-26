@@ -287,7 +287,8 @@ Fiters are only availble when the overflow threshold is met. Adjust the threshol
 ```js
 const filters = {
     options: {
-        presets: false
+        presets: false,
+        history: false // turn history button off
     }
 }
 ```

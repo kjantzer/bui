@@ -176,7 +176,10 @@ export default class RoutedView extends LitElement {
             return true
 
         }catch(err){
+            
             this.close()
+            setTimeout(()=>{this.close()}, 100) // timing issue with panel possibliy opening
+
             if( err.handle )
                 throw err
             else

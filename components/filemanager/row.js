@@ -10,7 +10,8 @@ customElements.define('b-file-row', class extends LitElement{
     static get properties(){return {
         layout: {type: String, reflect: true},
         overshadow: {type: Boolean},
-        palette: {type: Boolean}
+        palette: {type: Boolean},
+        draggable: {type: Boolean},
     }}
 
     static get styles(){return css`
@@ -129,8 +130,10 @@ customElements.define('b-file-row', class extends LitElement{
         this.palette = false
 
         // TODO: swap out for b-dragdrop element
-        this.addEventListener('dragstart', this.onDragStart)
-        this.addEventListener('dragend', this.onDragEnd)
+        if( this.draggable ){
+            this.addEventListener('dragstart', this.onDragStart)
+            this.addEventListener('dragend', this.onDragEnd)
+        }
     }
 
     render(){return html`
@@ -243,7 +246,7 @@ customElements.define('b-file-row', class extends LitElement{
 
     async destroy(e){
         
-        if( this.willTakeAction('delete').notAllowed ) return
+        if( this.willTakeAction('delete', {clickTarget: e?.currentTarget}).notAllowed ) return
 
         if( await Dialog.confirmDelete().popOver(e) ){
             await this.model.destroySync({wait: true})
