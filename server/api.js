@@ -1,4 +1,5 @@
 const UrlPattern = require('url-pattern')
+const CollMap = require('../util/collmap')
 
 const DEFAULT_OPTS = {
     root: ''
@@ -11,7 +12,7 @@ module.exports = class API {
         this.opts = Object.assign({}, DEFAULT_OPTS, opts)
 		
         this.app = app
-		this._classes = new Map()
+		this._classes = new CollMap()
 
         this.initClasses(classes)
 	}
@@ -37,6 +38,8 @@ module.exports = class API {
 
         if( !Class.api || !Class.api.routes )
             return console.warn('! API: class `'+Class.name+'` must specify `api.routes`')
+
+        this._classes.set(Class, Class)
 
         let path = Class.api.root
         if( this.opts.root )

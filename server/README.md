@@ -1,3 +1,5 @@
+# App
+
 # API
 
 ```js
@@ -43,4 +45,69 @@ class MyClass {
 ```
 
 
+# SPA
 
+Instead of finishing the express app with a `sendFile('index.html')`, this class can be used. It will generate an HTML file with most of the necessary tags needed for a well formed PWA
+
+This class also provides a mechanism for API classes to alter the response of the SPA index for things like social/share `<meta>` tags
+
+```js
+const app = require('express')();
+const SPA = require('bui/server/spa')
+
+const api = new API(/*...*/)
+
+new SPA(app, {
+    path='/*', 
+    requireAuthentication=true, 
+    loginPath='/login',
+    api, // required if wanting to use `spaIndexHook` hooks
+
+    // html document values
+    title: 'My App',
+    description='My own nifty PWA SPA',
+    
+    // defaults
+    pwaTitle='', // uses title if empty
+    entryJS= '/index.js',
+    statusBarColor='black-translucent',
+    manifest='/manifest.json',
+    viewport='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover, user-scalable=no',
+    
+    meta='',
+
+    headBeforeEntryJS='', // ex: google analytics
+    headAfterEntryJS='', // other JS to load after entryjs
+
+    htmlAttrs='',
+    bodyAttrs='',
+    body='',
+
+    appleIcon='',
+    icons='', // additional icons (favicon, etc)
+
+    // https://web.dev/learn/pwa/enhancements/#splash-screens
+    // https://appsco.pe/developer/splash-screens
+    splashscreen='',
+})
+```
+
+## Hooks
+API classes can hook into the creation of the SPA index by adding a `async spaIndexHook` method. It will be triggered if `api.root` matches the requested path. Alternatively, a class can specify a custom tester: `spaIndexHookTest(req)`. The response of `spaIndexHookTest` will be passed along to `spaIndexHook()`
+
+`spaIndexHook(spaIndexHookTestResp, spaOpts, req)`
+
+```js
+class MyClass {
+
+    /* ... */
+
+    static spaIndexHookTest(req){ return req.path.match(new RegExp('^'+this.api.root+'/([0-9]+)/?'))?.[1] }
+
+    static async spaIndexHook(id, spaOpts, req){
+        let myClass = await new this({id}).find()
+        spaOpts.title = myClass.attrs.title
+    }
+
+}
+```

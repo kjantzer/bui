@@ -3,7 +3,7 @@ import docs from 'bui/server/README.md'
 
 customElements.define('demo-server-api', class extends LitElement{
 
-    static get title(){ return 'API' }
+    static get title(){ return 'App' }
     static get icon(){ return 'terminal' }
 
     static get styles(){return css`
@@ -30,7 +30,7 @@ customElements.define('demo-server-api', class extends LitElement{
 
     render(){return html`
     	<!-- <b-paper> -->
-            <b-h1>API</b-h1>
+            <b-h1>APP</b-h1>
 			<demo-markdown-docs .docs=${docs}></demo-markdown-docs>
 		<!-- </b-paper> -->
     `}
