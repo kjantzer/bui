@@ -70,7 +70,7 @@ registerPreset('confirmDelete', opts=>{ return {
 
 registerPreset('warn', {
 	pretitle: 'Warning',
-	icon: 'attention-1',
+	icon: 'warning',
 	accent: 'orange',
 	color: 'inverse',
 	edge: true,
