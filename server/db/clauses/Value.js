@@ -62,6 +62,8 @@ module.exports = class Value extends Clause {
             
             if( typeof value == 'string' && !['now()', 'curdate()'].includes(value.toLowerCase()) )
                 value = db.escape(this.value)
+            else if( value?.toSqlString )
+                value = value.toSqlString()
 
             return `${key} ${this.oper} ${value}`
         }
