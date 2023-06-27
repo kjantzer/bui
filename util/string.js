@@ -27,4 +27,17 @@ function replaceAccents(str){
 	return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove accents
 }
 
-module.exports = {capitalize, titleize, slugify, replaceAccents}
+// lightweight tag strip: https://www.geeksforgeeks.org/how-to-strip-out-html-tags-from-a-string-using-javascript/
+function removeTags(str) {
+    if ((str===null) || (str===''))
+        return false;
+    else
+        str = str.toString();
+          
+    // Regular expression to identify HTML tags in
+    // the input string. Replacing the identified
+    // HTML tag with a null string.
+    return str.replace( /(<([^>]+)>)/ig, '');
+}
+
+module.exports = {capitalize, titleize, slugify, replaceAccents, removeTags}
