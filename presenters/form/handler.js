@@ -385,7 +385,9 @@ class FormHandler extends HTMLElement {
 	get disabled(){ return this.__disabled || false }
 	set disabled(disabled=false){
 		this.__disabled = disabled === true
-		this.controls&&this.controls.forEach(el=>el.disabled=this.__disabled)
+		setTimeout(() => {
+			this.controls&&this.controls.forEach(el=>el.disabled=this.__disabled)
+		});
 	}
 
 	get isInvalid(){
