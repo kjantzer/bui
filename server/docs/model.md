@@ -297,3 +297,16 @@ class MyClass extends Model {
     }
 }
 ```
+
+This can also be accomplishd in the config:
+
+```js
+class MyClass extends Model {
+    config = {
+        table: 'table_name',
+        with: {type: true}
+    }
+}
+```
+
+> Note: `config.with` is ignored if `?with` is given in API request
