@@ -88,7 +88,7 @@ customElements.define('b-list-filters', class extends LitElement{
 
     render(){return html`
 
-        <b-dragdrop @drag=${this.onDrag}>Export</b-dragdrop>
+        <b-dragdrop @dragged=${this.onDrag}>Export</b-dragdrop>
         <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
         ${this.filters.size>0&&this.filters.opts?.history!==false?html`
