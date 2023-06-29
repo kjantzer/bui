@@ -158,7 +158,7 @@ customElements.define('b-app', class extends LitElement {
             if( !el.id ) return null
             
             let shortcuts = [{
-                title: el.title,
+                title: el.shortcutTitle || el.title,
                 icon: el.icon,
                 permission: el.permission || parent.permission,
                 args: {
