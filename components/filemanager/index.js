@@ -113,7 +113,7 @@ customElements.define('b-file-manager', class extends LitElement{
         if( this.sortingEnabled ) return console.warn('Sorting already enabled')
         if( this.limit == 1 ) return console.warn('Limited to 1 file, nothing to sort')
 
-        import('sortablejs').then(Sortable=>{
+        import('sortablejs').then(({Sortable})=>{
         
             this.sortable = Sortable.create(this.$$('.files'), {
                 draggable: this.row,
