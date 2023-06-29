@@ -10,6 +10,7 @@ export const fileIconColors = {
     video: css`:host([ext="mp4"]){ --bgd: var(--red);}`,
     html: css`:host([ext="html"]){ --bgd: #e54c21}`,
     xml: css`:host([ext="xml"]){ --bgd: #f26524}`,
+    csv: css`:host([ext="csv"]){ --bgd: #81C784; --color: #333; }`,
     onix: css`:host([ext="onix"]){ --bgd: #626a7f;}`,
     zip: css`:host([ext="zip"]){ --bgd: var(--gray-600);}`,
 
