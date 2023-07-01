@@ -735,6 +735,7 @@ export class Panel extends LitElement {
             transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* why was this disabled? */
         /* :host([type="actionsheet"][anchor="top"]) > main {
             padding-top: env(safe-area-inset-top);
         } */
