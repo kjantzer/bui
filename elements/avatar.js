@@ -77,6 +77,18 @@ class AvatarElement extends HTMLElement {
 			svg.imgloaded rect {
 				fill: var(--bgdDefault);
 			}
+
+			slot {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left; 0;
+				font-size: .8em;
+				display: grid;
+				place-content: center;
+				place-items: center;
+			}
 			</style>
 			
 		<svg class="imgloading" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
@@ -131,7 +143,7 @@ class AvatarElement extends HTMLElement {
 		let color = this.getAttr('bgd')
 		if( !color ){
 			
-			let initials = this.getAttr('initials', '').toLowerCase()
+			let initials = this.getAttr('initials', '').toLowerCase().trim()
 			
 			if( !initials ){
 				color = DefaultBgd
