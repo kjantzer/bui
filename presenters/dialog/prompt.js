@@ -20,6 +20,10 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 			gap: .5em;
 		}
 
+		form-handler > form-control {
+			min-width: 0;
+		}
+
 		:host(:not([notext])) form-handler {
 			margin-top: 1em;
 		}
