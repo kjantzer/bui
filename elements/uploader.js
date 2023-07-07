@@ -180,9 +180,9 @@ export class UploaderElement extends LitElement {
         return accept.split(',').find(patt=>{
             patt = patt.trim()
             if( patt[0] == '.' )
-                return new RegExp(patt+'$').test(file.name)
+                return new RegExp(patt+'$', 'i').test(file.name)
             else
-                return new RegExp(patt).test(file.type)
+                return new RegExp(patt, 'i').test(file.type)
         })
     }
 
