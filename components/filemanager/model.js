@@ -137,39 +137,44 @@ export class Palette extends CollMap {
     }
 
     applyVars(el, {overrideTheme=true}={}){
+        
+        // https://web.dev/avoid-large-complex-layouts-and-layout-thrashing/?utm_source=devtools#avoid-forced-synchronous-layouts
+        requestAnimationFrame(()=>{
 
-        this.clearVars(el)
+            this.clearVars(el)
 
-        if( this.size == 0 ) return
+            if( this.size == 0 ) return
 
-        this.forEach((color, name)=>{
-            el.style.setProperty(`--palette-${name}`, color.rgb.join(' '))
+            this.forEach((color, name)=>{
+                el.style.setProperty(`--palette-${name}`, color.rgb.join(' '))
+            })
+
+            el.style.setProperty('--theme-rgb', this.get('vibrant').rgb.join(', '))
+
+            el.style.setProperty('--palette-gradient', 
+                `linear-gradient(to right, 
+                    rgb(var(--palette-vibrant)),
+                    rgb(var(--palette-muted))
+                )`
+            )
+
+            el.style.setProperty('--palette-gradient-rainbow', 
+                `linear-gradient(to right, 
+                    rgb(var(--palette-vibrant)),
+                    rgb(var(--palette-lightvibrant)),
+                    rgb(var(--palette-lightmuted)),
+                    rgb(var(--palette-muted))
+                )`
+            )
+
+            el.style.setProperty(`--palette-text-accent`, this.textAccent.hex)
+
+            if( overrideTheme ){
+                el.style.setProperty('--theme', 'var(--palette-text-accent)')
+                el.style.setProperty('--theme-gradient', 'var(--palette-gradient)')
+            }
+
         })
-
-        el.style.setProperty('--theme-rgb', this.get('vibrant').rgb.join(', '))
-
-        el.style.setProperty('--palette-gradient', 
-            `linear-gradient(to right, 
-                rgb(var(--palette-vibrant)),
-                rgb(var(--palette-muted))
-            )`
-        )
-
-        el.style.setProperty('--palette-gradient-rainbow', 
-            `linear-gradient(to right, 
-                rgb(var(--palette-vibrant)),
-                rgb(var(--palette-lightvibrant)),
-                rgb(var(--palette-lightmuted)),
-                rgb(var(--palette-muted))
-            )`
-        )
-
-        el.style.setProperty(`--palette-text-accent`, this.textAccent.hex)
-
-        if( overrideTheme ){
-            el.style.setProperty('--theme', 'var(--palette-text-accent)')
-            el.style.setProperty('--theme-gradient', 'var(--palette-gradient)')
-        }
     }
 
     get textAccent(){
