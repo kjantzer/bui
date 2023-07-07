@@ -675,6 +675,7 @@ export class Panel extends LitElement {
 
     static get styles(){return css`
         :host {
+            contain: layout;
             pointer-events: initial;
             display: flex;
             position: absolute;
