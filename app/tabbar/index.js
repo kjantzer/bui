@@ -134,7 +134,8 @@ customElements.define('b-app', class extends LitElement {
             }
 
             b-root-titlebar::part(close-btn) {
-                width: 60px;
+                height: 60px;
+                margin: -1em 1em -1em 0.5em;
             }
         `)}
     `}
