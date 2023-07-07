@@ -144,22 +144,7 @@ export class UploaderElement extends LitElement {
     }
 
     getParentElement(){
-        let parent = this.parentElement || this.getRootNode().host
-        let target = parent
-
-        // the parent we care about is the one with relative/absolute position
-        while(parent){
-
-            target = parent
-            let {position} = window.getComputedStyle(target)
-            
-            if( ['relative', 'absolute'].includes(position) )
-                return target
-            
-            parent = target.parentElement
-        }
-
-        return target
+        return this.offsetParent || this.parentElement || this.getRootNode().host
     }
 
     connectedCallback(){

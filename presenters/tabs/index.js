@@ -250,6 +250,7 @@ customElements.define('b-tabs', class extends LitElement {
             align-self: flex-start;
             max-height: 100%;
             box-sizing: border-box;
+            contain: layout;
         }
         
         /* dont add padding to custom elements */
