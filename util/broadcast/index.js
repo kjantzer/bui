@@ -56,7 +56,7 @@ export default class Broadcast {
                 opts.forClient = client.id
         }
 
-        this.bc.postMessage({key, data, opts})
+        return this.bc.postMessage({key, data, opts})
     }
 
     getClients(){
@@ -89,9 +89,9 @@ export default class Broadcast {
     
     async goTo(url, opts, emitOpts){
         url ||= location.pathname
-        await this.emit('goTo', {url, opts}, emitOpts)
+        let didEmit = await this.emit('goTo', {url, opts}, emitOpts)
         
-        if( globalThis.UIAlertMsg )
+        if( didEmit !== false && globalThis.UIAlertMsg )
             throw new UIAlertMsg('Opened in other window')
     }
 
