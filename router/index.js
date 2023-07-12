@@ -33,6 +33,9 @@ export class Router {
 
     start(opts={}){
 
+        // already started
+        if( this.states ) return
+
         opts = Object.assign({
             currentState: null,
             requireState: false
