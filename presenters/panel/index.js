@@ -307,6 +307,7 @@ export class Panel extends LitElement {
         this.height = opts.height
         this.anchor = opts.anchor
         this.panelController = opts.controller
+        this._closeFromEvent = this._closeFromEvent.bind(this)
 
         this.opts = opts
 
@@ -602,6 +603,9 @@ export class Panel extends LitElement {
         window.removeEventListener('keydown', this._onKeydown, true)
         window.addEventListener('keydown', this._onKeydown, true)
 
+        this.removeEventListener('close-panel', this._closeFromEvent)
+        this.addEventListener('close-panel', this._closeFromEvent)
+
         this.panelController.add(this)
 
         if( this.view && this.view.onRouteChange ){
@@ -635,6 +639,12 @@ export class Panel extends LitElement {
     get params(){
         return this.route ? this.route.state.params : {}
     }
+    
+    _closeFromEvent(e){
+        e.stopPropagation()
+        e.preventDefault()
+        this.close()
+    }
 
     async close(){
 
@@ -662,6 +672,8 @@ export class Panel extends LitElement {
         window.removeEventListener('keydown', this._onKeydown, true)
         this.removeAttribute('open')
         this.panelController.remove(this, {updateRoute: !!this.route})
+
+        this.removeEventListener('close-panel', this._closeFromEvent)
         
         if( immediate ){
             this.remove()

@@ -8,14 +8,6 @@ import './tab-bar'
 // TODO: rename
 customElements.define('b-app', class extends LitElement {
 
-    constructor(){
-        super()
-        this.addEventListener('close-panel', e=>{
-            e.stopPropagation()
-            this.close()
-        })
-    }
-
     close(){
         this.panel&&this.panel.close()
     }
