@@ -70,6 +70,19 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             --hoverBgdColor: rgba(var(--theme-text-rgb), .1);
         }
 
+        :host([part="close-btn"]) b-btn {
+            flex-grow: 0;
+            margin: 0;
+            border-radius: 0px;
+            box-shadow: var(--theme-shadow-2);
+            min-width: 0;
+            border-right: solid 1px var(--light-text);
+        }
+
+        :host([part="close-btn"]) b-btn::part(icon) {
+            rotate: var(--b-panel-toolbar-close-btn-rotation, 0deg);
+        }
+
         ${mediaQuery('b-app-landscape', css`
 
             b-btn {
@@ -85,6 +98,12 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
                 line-height: 1em;
                 font-size: .85em;
                 margin-top: .5em;
+            }
+
+            :host([part="close-btn"]) b-btn {
+                border-right: 0;
+                height: 2.43em; /* NOTE: bit hacky */
+                box-shadow: var(--theme-shadow-0);
             }
         `)}
     `

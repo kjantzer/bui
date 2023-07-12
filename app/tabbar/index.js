@@ -43,7 +43,7 @@ customElements.define('b-app', class extends LitElement {
 
         let activeView = this.tabs.views.active
 
-        // not sure this *should * ever happen, but it does, so fail gracefully
+        // not sure this *should * ever happen, but if it does, so fail gracefully
         if( !activeView ) return
 
         // new route matches active view...make it active again
@@ -117,6 +117,7 @@ customElements.define('b-app', class extends LitElement {
 
             b-tabs-router > b-hr {
                 display: inline-block;
+                margin: 0;
             }
 
             b-panel-toolbar::part(close-btn) {
@@ -165,12 +166,6 @@ customElements.define('b-app', class extends LitElement {
     }
 
     render(){return html`
-        ${this.panel?html`
-            <b-panel-toolbar shadow notitle nomiddle>
-                <b-root-titlebar title=${this.panel.title}></b-root-titlebar>
-            </b-panel-toolbar>
-        `:''}
-
         <b-tabs-router 
             layout="bottom"
             key="${this.key}"
@@ -178,7 +173,14 @@ customElements.define('b-app', class extends LitElement {
             .model=${this.model}
             ?no-search=${!this.shouldShowSearch}
             path="${this.tabsPath}"
-        >${this.views}</b-tabs-router>  
+        >
+
+            ${this.panel?html`
+            <b-app-tab-bar-btn part="close-btn" icon="chevron_right" slot="menu:before" @click=${this.close}></b-app-tab-bar-btn>
+            `:''}
+
+            ${this.views}
+        </b-tabs-router>  
     `}
 
     static get coreViews(){return ''}
