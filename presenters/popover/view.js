@@ -22,9 +22,11 @@ customElements.defineShared('b-popover-view', class extends LitElement{
         this.opts = opts
         this.close()
 
-        this.load(id)
+        let resp = this.load(id)
 
         new Popover(target, this, opts)
+
+        return resp
     }
 
     load(id){
