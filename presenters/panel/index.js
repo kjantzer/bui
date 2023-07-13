@@ -633,6 +633,7 @@ export class Panel extends LitElement {
         this.__title = str
         this.route&&this.route.update({title: str})
         if(this.toolbar) this.toolbar.title = str
+        this.emitEvent('panel-title-updated', {panel: this}, {composed: false})
     }
     get title(){ return this.__title }
 
