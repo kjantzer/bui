@@ -433,7 +433,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
 
     renderIcon(){
         if( this.icon == 'spinner' )
-            return html`<b-spinner></b-spinner>`
+            return html`<b-spinner spin></b-spinner>`
 
         if( isLitHTML(this.icon) )
             return this.icon
