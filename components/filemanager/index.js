@@ -15,6 +15,7 @@ customElements.define('b-file-manager', class extends LitElement{
         row: {type: String},
         layout: {type: String},
         accept: {type: String},
+        plainFilename: {type: Boolean},
         placeholder: {type: String},
         limit: {type: Number},
         disabled: {type: Boolean}
@@ -54,6 +55,7 @@ customElements.define('b-file-manager', class extends LitElement{
         super()
         this.row = 'b-file-row'
         this.accept = '' // all files
+        this.plainFilename = false // Allow special characters in filenames by default
         // this.sorting = true // turn of by default; should use `enableSorting
         this.placeholder = 'No files'
         this.limit = 0
@@ -153,7 +155,7 @@ customElements.define('b-file-manager', class extends LitElement{
     selectFile(){ return this.selectFiles() }
 
     render(){return html`
-        <b-uploader ?disabled=${this.disabled} accept="${this.accept}" @change=${this.onUpload} ?multiple=${this.limit!=1}></b-uploader>
+        <b-uploader ?disabled=${this.disabled} accept="${this.accept}" ?plainFilename=${this.plainFilename} @change=${this.onUpload} ?multiple=${this.limit!=1}></b-uploader>
             
         <div class="files" part="files">
         
@@ -205,7 +207,7 @@ customElements.define('b-file-manager', class extends LitElement{
             return Dialog.stopped(`File limit of ${this.limit} already reached`).notif()
 
         if( invalid )
-            Dialog.warn(`${invalid.length} invalid files – allowed types: ${this.accept}`).notif()
+            Dialog.warn(`${invalid.length} invalid files – allowed types: ${this.accept}${this.plainFilename ? ' Filename must also contain no special characters' :''}`).notif()
 
         if( uploader.files.length == 0 )
             return
