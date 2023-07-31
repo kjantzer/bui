@@ -1,5 +1,6 @@
 import Notif from '../notif'
 import Panel from '../panel'
+import Dialog from '../dialog'
 import Popover from '../popover'
 import device from '../../util/device'
 
