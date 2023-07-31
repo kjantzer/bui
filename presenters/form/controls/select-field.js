@@ -488,9 +488,9 @@ class SelectFieldElement extends HTMLElement {
 
 		// looks better/more considtent if menu is same with as select-field
 		if( !popoverOpts.width
-		&& this.parentElement.tagName == 'FORM-CONTROL'
-		&& this.parentElement.hasAttribute('material')
-		&& this.parentElement.getAttribute('material') != 'hover' ){
+		&& this.parentElement?.tagName == 'FORM-CONTROL'
+		&& this.parentElement?.hasAttribute('material')
+		&& this.parentElement?.getAttribute('material') != 'hover' ){
 			target = this.assignedSlot.parentElement
 			popoverOpts.width = target.clientWidth+4+'px'
 			popoverOpts.className += ' no-arrow'
