@@ -27,7 +27,9 @@ customElements.define('b-tabs-router', class extends TabsView {
                 if( newState && this.active != tab.id )
                     this.active = tab
 
-                if( tab.view.onRouteChange )
+                // It's possible for the newState to be null if only the old state matched in Route._change
+                // This is a problem since onRouteChange expects newState to have properties
+                if( tab.view.onRouteChange && newState !== null) 
                     tab.view.onRouteChange(oldState, newState, dir)
             })
 
