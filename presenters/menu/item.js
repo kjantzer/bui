@@ -266,6 +266,14 @@ customElements.define('b-menu-item', class extends LitElement{
 
     }
 
+	// NOTE: not sure I like this very much
+	setValue(val){
+		if( !this.model.selections )
+			this.shadowRoot.querySelector('check-box').checked = val
+		else
+			this.shadowRoot.querySelector('select-field').value = val
+	}
+
     stopProp(e){
         e.stopPropagation()
     }

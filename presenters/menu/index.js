@@ -628,16 +628,10 @@ export default class Menu {
 						this.presenter._updatePosition()
 				}else if( isSelected ){
 					target.classList.add('selected')
-					if( !data.selections )
-						target.querySelector('check-box').checked = true
-					else
-						target.querySelector('select-field').value = data.selection
+					target.setValue(data.selections?data.selection:true) // NOTE: not sure I like this very much
 				}else{
 					target.classList.remove('selected')
-					if( !data.selections )
-						target.querySelector('check-box').checked = false
-					else
-						target.querySelector('select-field').value = null
+					target.setValue(data.selections?null:false)
 				}
 				
 				this._onSelect(this.selected, {evt: e})
