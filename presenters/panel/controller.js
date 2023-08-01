@@ -175,7 +175,6 @@ class PanelController extends LitElement {
     }
             
     render(){return html`
-    
         <slot class="top" name="top"></slot>
         <div class="core">
             <slot class="left" name="left"></slot>
@@ -207,6 +206,8 @@ class PanelController extends LitElement {
         if( updateRoute )
             this._updateRoute()
 
+        this.emitEvent('panel-removed', {panel}, {bubbles: false})
+
         if( this.length == 0 )
             this.dispatchEvent(new CustomEvent('panels-closed', {
                 bubbles: true,
@@ -229,6 +230,8 @@ class PanelController extends LitElement {
             this.append(panel)
 
         this._updatePanels()
+
+        this.emitEvent('panel-added', {panel}, {bubbles: false})
     }
 
     get panelOnTop(){

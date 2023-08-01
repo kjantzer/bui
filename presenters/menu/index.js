@@ -1,21 +1,20 @@
 import {html, render} from 'lit'
-import {unsafeHTML} from 'lit/directives/unsafe-html.js'
-import {live} from 'lit/directives/live.js'
 import { repeat } from 'lit/directives/repeat.js';
 import Popover from '../popover'
 import Dialog from '../dialog'
-import Panel from '../panel'
+import bindPresenters from './bind-presenters'
 import Fuse from 'fuse.js'
 import '../../elements/hr'
 import '../form/controls/check-box'
 import '../form/controls/select-field'
-import device from '../../util/device';
 import {toMenu, isDivider} from './util'
 import isLitHTML from '../../helpers/lit/is-lit-html'
 import '../../helpers/lit/events'
 import store from '../../util/store'
 import uniq from '../../util/uniq'
+import './item'
 
+// not used as var; only included for style build file
 const styles = require('./style.less')
 
 export {Dialog, Popover, toMenu, isDivider}
@@ -518,7 +517,7 @@ export default class Menu {
 	}
 	
 	renderItem(m, i){
-		
+
 		if( isDivider(m) )
 		// if( m == 'divider' || (m.label == 'divider' && m.val == 'divider') )
 			return html`<b-hr></b-hr>`
@@ -538,101 +537,19 @@ export default class Menu {
 		if( m.heading )
 			return html`<b-text heading block xbold ?bgd=${m.bgd??false} class="menu-heading">${m.heading}</b-text>`
 
-		// capture menu item index for use in resolve (if so desired)
-		m.index = i
-
-		let icon = ''
-		
-		if( m.icon && typeof m.icon == 'string' )
-			icon = html`<b-icon square name="${m.icon}"></b-icon>`
-		else if( m.icon ) 
-			icon = html`<span class="icon">${m.icon}</span>`
-
-		let checkbox = (this.opts.multiple && !m.clearsAll) || m.selected 
-			? html`<check-box placement="left" ?checked=${live(m.selected)} 
-				?disabled=${m.disabled ?? false }
-				icon=${this.opts.iconSelected} 
-				iconEmpty=${this.opts.iconDeselected}></check-box>` 
-			: ''
-
-		let menuIcon = m.menu && this.opts.hasMenuIcon ? html`<b-icon class="has-menu" name="${this.opts.hasMenuIcon}"></b-icon>` :''
-
-		if( m.selections ){
-			let selections = m.selections
-
-			// if only two selections,
-			// let's add a description telling the user they can ctrl+click to select section option
-			if( selections.length == 2 ){
-
-				// could be a string, so convert to standard label/val (needed so we can add description)
-				if( !selections[1].val )
-					selections[1] = {
-						label: selections[1],
-						val: selections[1]
-					}
-				
-				selections[1].description = 'ctrl/cmd click'
-			}
-				
-			
-			if( this.opts.multiple)
-				selections = [{label: 'Unset', val:'', clearsAll: true}, 'divider'].concat(selections)
-
-			checkbox = html`<select-field 
-							.options=${selections}
-							placeholder="–"
-							no-arrow
-							?disabled=${m.disabled ?? false }
-							@change=${this.selectOptionsChanged.bind(this)}
-							.selected=${m.selection}
-							adjust-for-mobile=false
-							></select-field>`
-		}
-
-
-		let extras = ''
-		if( m.extras ){
-			extras = m.extras.map(elName=>{
-
-				if( typeof elName == 'string' && customElements.get(elName) ){
-					let el = document.createElement(elName)
-					el.item = m
-					el.classList.add('menu-item-extra')
-					return el
-				}
-
-				return elName
-			})
-		}
-
-		let dataTitle = (m.dataTitle || m.label+' '+m.description).trim().toLowerCase()
-
-		let label = isLitHTML(m.label) ? m.label : unsafeHTML(String(m.label||''))
-		let description = isLitHTML(m.description) ? m.description : unsafeHTML(String(m.description||''))
-
-		return html`
-			<div class="menu-item ${m.className}" val=${m.val} index=${i}
-				data-title=${dataTitle}
-				?active=${this._active==i}
-				?disabled=${m.disabled ?? false }
-				?icon-only=${!m.label && !m.description} ?selected=${m.selected}>
-				${checkbox}
-				${icon}
-				${m.view&&(m.view instanceof HTMLElement||m.view.type=='html') ?m.view:html`
-					<span class="mi-content">
-						<div class="mi-label">${label}</div>
-						<div class="mi-description">${description}</div>
-					</span>
-				`}
-				${extras}
-				${menuIcon}
-			</div>
-		`
+		return html`<b-menu-item 
+			class="menu-item"
+			.index=${i} 
+			.model=${m} 
+			.opts=${this.opts}
+			?active=${this._active==i}
+			@selection-changed=${this.selectOptionsChanged.bind(this)}
+		></b-menu-item>`
 	}
 
 	selectOptionsChanged(e){
-		let val = e.currentTarget.value
-		let data = this.displayMenu[e.currentTarget.parentElement.getAttribute('index')]
+		let {val, index} = e.detail
+		let data = this.displayMenu[index]
 		data.selection = val
 
 		if( !this.opts.multiple ){
@@ -711,16 +628,10 @@ export default class Menu {
 						this.presenter._updatePosition()
 				}else if( isSelected ){
 					target.classList.add('selected')
-					if( !data.selections )
-						target.querySelector('check-box').checked = true
-					else
-						target.querySelector('select-field').value = data.selection
+					target.setValue(data.selections?data.selection:true) // NOTE: not sure I like this very much
 				}else{
 					target.classList.remove('selected')
-					if( !data.selections )
-						target.querySelector('check-box').checked = false
-					else
-						target.querySelector('select-field').value = null
+					target.setValue(data.selections?null:false)
 				}
 				
 				this._onSelect(this.selected, {evt: e})
@@ -1046,144 +957,7 @@ export default class Menu {
 		this._resolve = null
 		this.promise = null
 	}
-
-/*
-	Presenters
-*/
-	popOver(target, opts={}){
-
-		if( this.__filteredMenu && this.__filteredMenu.length == 0 ){
-			this.promise = null
-			return Promise.resolve(false)
-		}
-
-		if( this.presenter && this.presenter instanceof Popover ){
-			this.presenter.positionOver(target)
-			return this.promise
-		}
-
-		if( opts.btns )
-			return this.panel({target, ...opts})
-
-		if( opts.adjustForMobile && device.isMobile && !device.isTablet ){
-			let modalOpts = {btns: ['cancel','apply']}
-
-			if( this.searchIsOn )
-				modalOpts.anchor = 'top'
-			
-			if( typeof opts.adjustForMobile == 'object' )
-				modalOpts = Object.assign(modalOpts, opts.adjustForMobile)
-
-			return this.modal(modalOpts)
-		}
-		
-		this.render()
-
-		// NOTE: this is rather hacky, but we'll leave for now
-		if( this.searchOpts.autoFetch ){
-			this.fetchResults()
-		}
-		
-		let onClose = opts.onClose
-		opts.onClose = ()=>{
-			onClose&&onClose()
-			this.presenter = null
-			
-			if( this.opts.multiple )
-				this.resolve(this.selected)
-			else
-			setTimeout(()=>{ // let submenu resolve
-				this.resolve(false)
-			})
-		}
-		
-		if( !opts.onKeydown)
-			opts.onKeydown = this.onKeydown.bind(this)
-		
-		this.presenter = new Popover(target, this.el, opts)
-
-		this.scrollToSelected()
-
-		if( this.searchIsOn )
-			this.focusSearch({selectAll: !!this.opts.matching})
-
-		return this.promise
-	}
 	
-	modal(opts={}, mobileOpts){
-		if( mobileOpts && device.isMobile && device.isSmallDevice )
-			return this.panel(mobileOpts)
-		else
-			return this.panel(opts)
-	}
-
-	actionsheet(opts={}){
-		return this.panel(Object.assign({
-			type: 'actionsheet'
-		}, opts))
-	}
-
-	panel(opts={}){
-		
-		this.render()
-		
-		opts = Object.assign({
-			type: 'modal',
-			// animation: 'scale'
-		}, opts)
-
-		if( !opts.onKeydown )
-			opts.onKeydown = this.onKeydown.bind(this)
-		
-		let onClose = opts.onClose
-		opts.onClose = ()=>{
-			onClose&&onClose()
-			
-			this.presenter = null
-			
-			if( this.opts.multiple && !opts.btns )
-				this.resolve(this.selected)
-			else
-				setTimeout(()=>{ // let submenu resolve
-					this.resolve(false)
-				})
-		}
-		
-
-		let dialog = new Dialog({
-			icon: opts.icon||'',
-			title: opts.title||'',
-			body: opts.body||'',
-			view: this.el,
-			btns: opts.btns||false
-		})
-
-		// if target was given, popover the target
-		if( opts.target ){
-			this.presenter = new Popover(opts.target, dialog, opts)
-		}else{
-			this.presenter = new Panel(dialog, opts)
-			this.presenter.open()
-		}
-
-		// if dialog btn clicked, take action
-		dialog.promise.then(btn=>{
-
-			if( btn && !btn.isCancelBtn && this.opts.multiple )
-				this.resolve(opts.btns.length>2?[btn, this.selected]:this.selected)
-
-			else if( btn )
-				this.resolve(btn)
-				// this.presenter.close()
-			else
-				this.resolve(false)
-		})
-
-		this.scrollToSelected()
-		
-		if( this.searchIsOn )
-			this.focusSearch({delay: 300, selectAll: !!this.opts.matching})
-
-		return this.promise
-	}
 }
+
+bindPresenters(Menu)

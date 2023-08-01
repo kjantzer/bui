@@ -24,6 +24,7 @@ import Dialog from '../../presenters/dialog'
 import '../../elements/empty-state'
 import '../../elements/flex'
 import '../../elements/text'
+import download from '../download'
 
 customElements.defineShared('b-barcode-camera-scanner', class extends LitElement{
 
@@ -170,7 +171,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         continuous=false,
         formats=['qr_code', 'ean_13', 'code_128'],
         facingMode='environment',
-        width=640,
+        width=1920,
         aspectRatio=1.7777777778,
         focusDistance=0.1,
         detectInterval=100 // ms
@@ -187,11 +188,11 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         this.stream = await navigator.mediaDevices.getUserMedia({ 
                 audio: false,
                 video: {
-                    width,
+                    width: {ideal: width},
                     aspectRatio,
                     facingMode,
                     // imac camera // TEMP
-                    deviceId: '0881177ed75e30561585154f2605242a344718e018049b168bfee0604eef3d1e'
+                    // deviceId: '0881177ed75e30561585154f2605242a344718e018049b168bfee0604eef3d1e'
                 }
         })
 
@@ -237,6 +238,12 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
     // alias
     close(){
         this.stop()
+    }
+
+    async getDevices(){
+        let devices = await navigator.mediaDevices.enumerateDevices()
+        devices = devices.filter(device=>device.kind=='videoinput')
+        return devices
     }
 
     stop(){
@@ -373,6 +380,21 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
 
         // Make path to stroke
         ctx.stroke();
+    }
+
+    takePicture(e){
+        e?.stopPropagation?.()
+        const canvas = this.$$('canvas', true)
+        const context = canvas.getContext("2d");
+        let width = this.video.videoWidth;
+        let height = this.video.videoHeight;
+        
+        canvas.width = width;
+        canvas.height = height;
+        context.drawImage(this.video, 0, 0, width, height);
+
+        const data = canvas.toDataURL("image/jpeg", 1.0);
+        download(data, 'test.jpg')   
     }
 
 })

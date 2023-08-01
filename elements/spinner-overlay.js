@@ -100,7 +100,7 @@ export class SpinnerOverlayElement extends LitElement {
 
     render(){ return html`
 		<main>
-			<b-spinner></b-spinner>
+			<b-spinner ?spin=${this.show}></b-spinner>
 			<label>${this.label}</label>
 		</main>
     `}

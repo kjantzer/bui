@@ -63,7 +63,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
     }
 
     close(){
-        this.panel&&this.panel.close()
+        this.emitEvent('close-panel')
     }
 
     get panel(){

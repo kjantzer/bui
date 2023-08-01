@@ -38,8 +38,11 @@ class SpinnerElement extends HTMLElement {
 			}
 			
 			svg {
-				animation: spin 1s infinite linear;
 				transform-origin: center center;
+			}
+
+			:host([spin]) svg {
+				animation: spin 1s infinite linear;
 			}
 			</style>
 			<svg viewBox="0 0 1024 1024" class="spin" data-icon="loading" width="100%" height="100%" fill="currentColor" aria-hidden="true">

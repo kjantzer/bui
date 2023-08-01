@@ -307,6 +307,7 @@ export class Panel extends LitElement {
         this.height = opts.height
         this.anchor = opts.anchor
         this.panelController = opts.controller
+        this._closeFromEvent = this._closeFromEvent.bind(this)
 
         this.opts = opts
 
@@ -602,6 +603,9 @@ export class Panel extends LitElement {
         window.removeEventListener('keydown', this._onKeydown, true)
         window.addEventListener('keydown', this._onKeydown, true)
 
+        this.removeEventListener('close-panel', this._closeFromEvent)
+        this.addEventListener('close-panel', this._closeFromEvent)
+
         this.panelController.add(this)
 
         if( this.view && this.view.onRouteChange ){
@@ -629,11 +633,18 @@ export class Panel extends LitElement {
         this.__title = str
         this.route&&this.route.update({title: str})
         if(this.toolbar) this.toolbar.title = str
+        this.emitEvent('panel-title-updated', {panel: this}, {composed: false})
     }
     get title(){ return this.__title }
 
     get params(){
         return this.route ? this.route.state.params : {}
+    }
+    
+    _closeFromEvent(e){
+        e.stopPropagation()
+        e.preventDefault()
+        this.close()
     }
 
     async close(){
@@ -662,6 +673,8 @@ export class Panel extends LitElement {
         window.removeEventListener('keydown', this._onKeydown, true)
         this.removeAttribute('open')
         this.panelController.remove(this, {updateRoute: !!this.route})
+
+        this.removeEventListener('close-panel', this._closeFromEvent)
         
         if( immediate ){
             this.remove()
@@ -675,6 +688,7 @@ export class Panel extends LitElement {
 
     static get styles(){return css`
         :host {
+            contain: layout;
             pointer-events: initial;
             display: flex;
             position: absolute;
@@ -735,6 +749,7 @@ export class Panel extends LitElement {
             transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* why was this disabled? */
         /* :host([type="actionsheet"][anchor="top"]) > main {
             padding-top: env(safe-area-inset-top);
         } */

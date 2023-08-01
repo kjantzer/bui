@@ -10,6 +10,7 @@ export class UploaderElement extends LitElement {
         url: {type: String},
         disabled: {type: Boolean},
         accept: {type: String},
+        plainFilename: {type: Boolean},
         multiple: {type: Boolean},
         placeholder: {type: String},
         files: {type: Array},
@@ -92,6 +93,7 @@ export class UploaderElement extends LitElement {
         this.url = '';
         this.disabled = false
         this.accept = '';
+        this.plainFilename = false
         this.multiple = false
         this.resize = false
         this.placeholder = 'Drop to upload';
@@ -144,22 +146,7 @@ export class UploaderElement extends LitElement {
     }
 
     getParentElement(){
-        let parent = this.parentElement || this.getRootNode().host
-        let target = parent
-
-        // the parent we care about is the one with relative/absolute position
-        while(parent){
-
-            target = parent
-            let {position} = window.getComputedStyle(target)
-            
-            if( ['relative', 'absolute'].includes(position) )
-                return target
-            
-            parent = target.parentElement
-        }
-
-        return target
+        return this.offsetParent || this.parentElement || this.getRootNode().host
     }
 
     connectedCallback(){
@@ -189,15 +176,17 @@ export class UploaderElement extends LitElement {
     }
 
     _acceptFile(file){
-        let doAccept = true
         let accept = this.accept
+        if(this.plainFilename && !(new RegExp('^[\x00-\x7F]*$', 'i').test(file.name))){ // Disallow special characters in filenames if enabled
+            return false
+        }
         if( !accept ) return true
         return accept.split(',').find(patt=>{
             patt = patt.trim()
             if( patt[0] == '.' )
-                return new RegExp(patt+'$').test(file.name)
+                return new RegExp(patt+'$', 'i').test(file.name)
             else
-                return new RegExp(patt).test(file.type)
+                return new RegExp(patt, 'i').test(file.type)
         })
     }
 

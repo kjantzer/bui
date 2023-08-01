@@ -18,7 +18,7 @@
 import {LitElement} from 'lit'
 import './events'
 
-LitElement.prototype.willTakeAction = function(name, detail={}, eventOpts={}){
+export const willTakeAction = function(name, detail={}, eventOpts={}){
     
     let action = Object.assign({
         model: this.model,
@@ -35,3 +35,6 @@ LitElement.prototype.willTakeAction = function(name, detail={}, eventOpts={}){
 
     return action
 }
+
+LitElement.prototype.willTakeAction = willTakeAction
+window.willTakeAction = willTakeAction

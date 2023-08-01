@@ -79,14 +79,18 @@ router.goTo('my-custom-element')
 // url will change to `/#/my-custom-element`
 ```
 
-#### Events
-`onOpen(state)`  
-If the custom element implements `onOpen`, the panel will call it with the
+### Events
+- Methods
+    - `onOpen(state)`
+        - If the custom element implements `onOpen`, the panel will call it with the
 route `state` object
-
-`async willOpen(state)`
-Called right before opening. If the function returns `false`, the panel
+    - `async willOpen(state)`
+        - Called right before opening. If the function returns `false`, the panel
 will not open
+- Controller Event Listeners
+    - `panel-added`
+    - `pannel-removed`
+    - `panel-title-updated`
 
 ### Animation
 There are some built in animations

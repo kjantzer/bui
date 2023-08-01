@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit'
 import device from '../../util/device'
 import {mediaQuery} from '../../util/mediaQueries'
 import scrollbars from '../../helpers/scrollbars'
+import './tab-bar-btn'
 
 customElements.define('b-app-tab-bar', class extends LitElement{
 
@@ -47,71 +48,18 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             }
         }
 
-        b-btn {
-            color: var(--b-app-tab-bar-text-color, var(--theme-text));
-            text-align: center;
-            display: flex;
-            align-content: center;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.1em;
-            padding-top: .25em;
-            padding-bottom: .25em;
-            --b-btn-stacked-icon-opacity: var(--b-app-tab-bar-bgd-stacked-icon-opacity, .3);
-
-            border-radius: var(--btn-radius);
-            margin: .25em 0;
-            min-width: var(--b-app-tab-bar-btn-min-width, 70px);
-            flex-grow: 1;
-            flex-shrink: 0;
-        }
-
-        b-btn::part(icon) {
-            --theme: currentColor;
-            --theme-secondary: currentColor;
-        }
-
-        b-btn > span {
-            margin-top: .25em;
-            font-weight: 700;
-        }
-        
-        @media (min-width:900px) {
-            b-btn {
-                font-size: 1.2em;
-                padding-bottom: 0;
-            }
-        }
-
-        b-btn[active] {
-            --b-btn-stacked-icon-opacity: 1;
-            /* color: var(--b-app-tab-bar-active-color, var(--theme-text)); */
-            /* top border */
-            /* box-shadow: black 1px 6px 0px -2px inset; */
-            /* border-radius: 0; */
-            /* --bgdColor: rgba(var(--theme-text-rgb),.1); */
-
-            color: var(--b-app-tab-bar-active-color-text, white);
-            background: var(--b-app-tab-bar-active-color, var(--theme));
-        }
-        
-        b-btn[active] span {
-            opacity: 1;
-        }
-        
-        b-btn:not([active]):hover {
-            --hoverBgdColor: rgba(var(--theme-text-rgb), .1);
-        }
-
-        [icon="search"] {
+    
+        .search-btn {
             display: var(--app-tab-bar-search-display, inline-block);
-
             position: sticky;
             right: 0;
             bottom: 0;
+            flex-grow: 0;
+        }
+
+        .search-btn::part(btn){
             background: var(--b-app-tab-bar-bgd);
             box-shadow: var(--theme-shadow-2);
-            flex-grow: 0;
         }
 
         ${mediaQuery('b-app-landscape', css`
@@ -132,36 +80,6 @@ customElements.define('b-app-tab-bar', class extends LitElement{
                 align-content: flex-start;
                 gap: .5em;
             }
-
-            /* :host(.tab-bar):not([layout="bottom"]) {
-                order: 0 !important;
-            } */
-
-            b-btn {
-                padding-top: .5em;
-                padding-bottom: .35em;
-
-                margin: 0 .25em;
-                flex-shrink: 1;
-            }
-
-            b-btn[active] {
-                /* left border */
-                /* box-shadow: var(--b-app-tab-bar-active-color, var(--theme-chosen, var(--theme-text))) 6px 1px 0px -2px inset; */
-                /* border-top-left-radius: 0;
-                border-bottom-left-radius: 0; */
-            }
-
-            b-btn > span {
-                display: inline-block;
-                line-height: 1em;
-                font-size: .85em;
-                margin-top: .5em;
-            }
-
-            /* [icon="search"] {
-                display: none;
-            } */
         `)}
 
         ${scrollbars.hide('main')}
@@ -178,20 +96,9 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
                 <slot name="before:${v.id}"></slot>
 
-                <b-btn text vid=${v.id} stacked icon="${typeof v.icon==='string'?v.icon:''}" ?active=${v.active} .tabView=${v} @click=${this.onClick}>
-
-                    ${v._viewClass?.tabBarBtn?html`
-                        ${v._viewClass.tabBarBtn}
-                    `:html`
-                    ${typeof v.icon !== 'string'?html`
-                        <span slot="icon">${v.icon}</span>
-                    `:''}
-                    <span>${v.title}</span>
-                    `}
-
+                <b-app-tab-bar-btn .tabView=${v} ?active=${v.active} @click=${this.onClick}>
                     <slot slot="outer" name="inside:${v.id}"></slot>
-
-                </b-btn>
+                </b-app-tab-bar-btn>
 
                 <slot name="after:${v.id}"></slot>
 
@@ -199,9 +106,9 @@ customElements.define('b-app-tab-bar', class extends LitElement{
         `)}
 
         ${this.shouldShowSearch?html`
-            <b-btn text stacked icon="search" @click=${this.focusSearch}>
+            <b-app-tab-bar-btn @click=${this.focusSearch} icon="search" class="search-btn">
                 <span>Search</span>
-            </b-btn>
+            </b-app-tab-bar-btn>
         `:''}
 
         </main>
@@ -222,4 +129,3 @@ customElements.define('b-app-tab-bar', class extends LitElement{
     }
 
 })
-

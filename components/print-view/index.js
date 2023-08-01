@@ -67,12 +67,14 @@ customElements.defineShared('b-print-view', class extends LitElement{
         views,
         view,
         autoPrint=false,
+        noPrint=false,
         target,
         align='bottom-end',
-        data=null
+        data=null,
+        panelOpts={}
     }={}){
 
-        if( this.panel && this.panel.isOpen )
+        if( this.panel && this.panel.isOpen && !noPrint)
             return window.print()
             
         if( !view ){
@@ -106,12 +108,14 @@ customElements.defineShared('b-print-view', class extends LitElement{
 
         if( !View ) throw Error('wrong view')
 
+        this.noPrint = noPrint
         this.view = new View(models)
         this.view.models = models
         this.view.data = data
 
         let panel = new Panel(this, {
-            title: this.view.name||'Print'
+            title: this.view.name||'Print',
+            ...panelOpts
         })
         panel.open()
 
@@ -119,7 +123,7 @@ customElements.defineShared('b-print-view', class extends LitElement{
 
         this.update()
 
-        if( autoPrint )
+        if( autoPrint && !noPrint )
             setTimeout(()=>{
                 window.print()
             },700)
@@ -148,7 +152,7 @@ customElements.defineShared('b-print-view', class extends LitElement{
     render(){return html`
 
         <b-panel-toolbar>
-            <b-btn color="theme" @click=${this.print} slot="right">Print</b-btn>
+            <b-btn color="theme" @click=${this.print} slot="right" ?hidden=${this.noPrint}>Print</b-btn>
         </b-panel-toolbar>
 
         <div>

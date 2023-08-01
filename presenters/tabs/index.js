@@ -243,6 +243,7 @@ customElements.define('b-tabs', class extends LitElement {
             box-shadow: var(--contentShadow);
             border-radius: var(--contentRadius);
             overflow: var(--overflow, auto);
+            contain: layout;
         }
 
         .content::slotted(*) {

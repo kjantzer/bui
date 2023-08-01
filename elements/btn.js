@@ -417,7 +417,7 @@ export default class BtnElement extends LitElement {
         <div class="hover" part="hover"></div>
         <main part="main">
             <span part="icon-area">
-                <b-spinner></b-spinner>
+                <b-spinner ?spin=${this.spin}></b-spinner>
                 <slot name="icon">
                     ${this.icon?html`
                         <b-icon part="icon" name="${this.icon}" 

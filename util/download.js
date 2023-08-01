@@ -50,7 +50,8 @@ export const download = (url, filename = '', {
     standaloneHTML = ''
 }={})=>{
 
-    if( typeof url == 'string' ){
+    // don't covert "data:..." urls (aka, from `canvas.toDataURL`)
+    if( typeof url == 'string' && !url.startsWith('data:') ){
         try{
             url = new URL(url)
         }catch(err){
