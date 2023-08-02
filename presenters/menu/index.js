@@ -1,8 +1,7 @@
-import {html, render} from 'lit'
+import { LitElement, html, css } from 'lit'
+import '../../helpers/lit/selectors'
 import { repeat } from 'lit/directives/repeat.js';
-import Popover from '../popover'
-import Dialog from '../dialog'
-import bindPresenters from './bind-presenters'
+import bindPresenters, {Dialog, Popover} from './bind-presenters'
 import Fuse from 'fuse.js'
 import '../../elements/hr'
 import '../form/controls/check-box'
@@ -13,9 +12,6 @@ import '../../helpers/lit/events'
 import store from '../../util/store'
 import uniq from '../../util/uniq'
 import './item'
-
-// not used as var; only included for style build file
-const styles = require('./style.less')
 
 export {Dialog, Popover, toMenu, isDivider}
 
@@ -64,9 +60,9 @@ const ItemsPresets = {
 
 const ITEMS_QUERY_SELECTOR = '.menu-item:not([disabled]'
 
-export default class Menu {
+customElements.define('b-menu', class extends LitElement{
 
-	static Items = ItemsPresets
+    static Items = ItemsPresets
 
 	static handle(selected, handler, args){
 		if( !selected ) return true
@@ -94,8 +90,186 @@ export default class Menu {
 		
 		return false // NOT handled
 	}
-	
-	constructor(menu=[], opts={}){
+
+    static styles = css`
+
+        :host([hidden]) {
+            display: none;
+        }
+
+        [hidden] {
+            display: none;
+        }
+
+        :host {
+            --hoverBgd: var(--b-menu-hover-bgd, var(--theme-bgd-accent, rgba(0,0,0,.1)));
+            --hoverTextColor: inherit;
+            --checkboxColor: var(--b-menu-checkbox-color, #e10050);
+            --checkboxColorHover: var(--checkboxColor);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        :host > header {
+            padding: 1em;
+            padding-bottom: 0;
+        }
+
+        :host > header[no-input] {
+            padding: .75em 1em .25em;
+        }
+
+        .results {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        
+        [heading] {
+            padding: .75em 1em 0;
+        }
+
+        .menu-search-bar {
+            flex-shrink: 0;
+            display: flex;
+            position: relative;
+            font-size: var(--b-menu-input-font-size, 1.1rem);
+            border-bottom: solid 1px var(--theme-bgd-accent);
+        }
+
+        .menu-search-bar [hidden] {
+            padding: 0;
+        }
+
+        .menu-search-bar input {
+            width: auto;
+            flex: 1;
+            min-width: 2em;
+            box-shadow: none;
+            border: none;
+            background: transparent;
+            color: var(--b-menu-input-color, var(--theme-text));
+            font-size: 1em;
+            padding: .75em .5em .75em 2.3em;
+            outline: none;
+        }
+
+        .menu-search-bar input::placeholder {
+            color: var(--b-menu-color-accent, rgba(var(--theme-text-rgb), .5));
+        }
+
+        .menu-search-bar b-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: calc(1.1 * var(--b-menu-input-font-size, .75rem));
+        }
+
+        .menu-search-bar b-spinner {
+            position: absolute;
+            right: .9em;
+            top: 1em;
+            padding-right: .1em;
+            // background: rgba(238, 238, 238, .9);
+        }
+
+        alphabet-jump-nav ~ .menu-item {
+            padding-right: 2.4em;
+        }
+        
+        .results > b-hr {
+            margin: 0;
+        }
+        
+        .menu-divider {
+            padding: 1em 1em .25em 1.1em;
+            font-weight: normal;
+            font-size: .9em;
+            border-top: solid 1px var(--b-hr-bgd, rgba(0,0,0,.1));
+            color: var(--b-menu-color-accent, rgba(var(--theme-text-rgb), .5));
+        }
+
+        .menu-divider:first-child {
+            border-top: none;
+        }
+
+        .menu-divider:last-child {
+            padding-bottom: 1em;
+        }
+        
+        .menu-text {
+            padding: .5em 1em;
+            user-select: text;
+        }
+
+        .menu-text[bgd],
+        .menu-headingp[bgd],
+        .menu-title[bgd] {
+            background: var(--theme-bgd-accent2, #eee);
+        }
+
+        :host ~ .d-btns:empty {
+            display: none;
+        }
+
+        :host-context(b-dialog) {
+            margin: 0 calc(-1 * var(--pad));
+        }
+
+        /*
+            Presenters
+        */
+
+        :host(.grid-2) .results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
+            .menu-title,
+            .menu-text,
+            .menu-divider,
+            hr {
+                grid-column-start: 1;
+                grid-column-end: 3;
+            }
+        }
+
+        :host(.grid-3) .results {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+
+            .menu-title,
+            .menu-text,
+            .menu-divider,
+            hr {
+                grid-column-start: 1;
+                grid-column-end: 4;
+            }
+        }
+
+        :host(.grid-4) .results {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+
+            .menu-title,
+            .menu-text,
+            .menu-divider,
+            hr {
+                grid-column-start: 1;
+                grid-column-end: 5;
+            }
+        }
+
+        :host(.grid-c)entered .results {
+            .menu-item {
+                justify-self: center;
+            }
+        }
+    `
+
+    constructor(menu=[], opts={}){
+
+        super()
 
 		if( menu.toMenu )
 			menu = menu.toMenu()
@@ -104,17 +278,7 @@ export default class Menu {
 
 		// remove null/empty values
 		menu = menu.filter(i=>i)
-		
-		this.el = document.createElement('div')
-		this.el.classList.add('b-menu')
-		this.el.classList.add('nopadding')
-		this.el.menu = this
 
-		if( opts.className )
-			opts.className.split(' ').forEach(cn=>{
-				this.el.classList.add(cn.trim())
-			})
-		
 		this.opts = Object.assign({}, DefaultOpts, opts)
 		this.menu = menu
 		
@@ -124,23 +288,28 @@ export default class Menu {
 		let selected = this.opts.selected !== undefined ? this.opts.selected : []
 		if( Array.isArray(selected) ) selected = selected.slice(0) // clone
 		this.selected = selected
-		
-		if( this.opts.minW )
-			this.el.style.minWidth = this.opts.minW
-		
-		if( this.opts.maxW )
-			this.el.style.maxWidth = this.opts.maxW
-		
-		if( this.opts.width )
-			this.el.style.width = this.opts.width
 
 		if( this.opts.matching )
 			this.matching(this.opts.matching)
-		
-		this.el.addEventListener('click', this.onClick.bind(this))
 	}
 
-	get promise(){
+    firstUpdated(){
+        if( this.opts.className )
+            this.opts.className.split(' ').forEach(cn=>{
+                this.classList.add(cn.trim())
+            })
+
+        if( this.opts.minW )
+			this.style.minWidth = this.opts.minW
+		
+		if( this.opts.maxW )
+			this.style.maxWidth = this.opts.maxW
+		
+		if( this.opts.width )
+			this.style.width = this.opts.width
+    }
+
+    get promise(){
 		if( !this._promise )
 			this._promise = new Promise(resolve=>{this._resolve = resolve})
 		return this._promise
@@ -156,7 +325,7 @@ export default class Menu {
 		this.menu = menu
 		if( selected != undefined )
 			this.selected = selected
-		this.render()
+		this.requestUpdate()
 	}
 
 	set menu(menu){
@@ -289,7 +458,7 @@ export default class Menu {
 			this.__selected = this.__selected.filter(item=>{
 				if( item.clearsAll ){
 					item.selected = false
-					let checkbox = this.el.querySelector(`[index="${item.index}"] check-box`)
+					let checkbox = this.$$(`[index="${item.index}"] check-box`)
 					if( checkbox ) checkbox.hidden = true
 				}
 				return !item.clearsAll
@@ -307,7 +476,7 @@ export default class Menu {
 
 	focusSearch({selectAll=false, delay=0, value}={}){
 		setTimeout(()=>{
-			let input = this.el.querySelector('.menu-search-bar input')
+			let input = this.$$('.menu-search-bar input', true)
 			if( input ){
 				if( value !== undefined )
 					input.value = value
@@ -371,7 +540,7 @@ export default class Menu {
 	}
 
 	get searchSpinner(){
-		return this.__searchSpinner = this.__searchSpinner || this.el.querySelector('.menu-search-bar b-spinner')
+		return this.$$('.menu-search-bar b-spinner', true)
 	}
 
 	get searchOpts(){ return this.opts.search||{}}
@@ -457,15 +626,15 @@ export default class Menu {
 		this._fetchingTerm = null
 		this.searchSpinner.hidden = true
 
-		this.render()
+		this.requestUpdate()
 
 		if( this.opts.search.onResultsFetched)
 			this.opts.search.onResultsFetched.call(this)
 	}
 
 	appendTo(el){
-		el.appendElement(this.el)
-		this.render()
+		el.appendElement(this)
+		this.requestUpdate()
 	}
 
 	render(){
@@ -475,7 +644,7 @@ export default class Menu {
 
 		this._active = this.opts.autoSelectFirst ? 0 : null
 
-		render(html`
+		return html`
 
 			${this.opts.header?html`
 			<header ?no-input=${this.searchOpts.input===false}>
@@ -507,7 +676,7 @@ export default class Menu {
 				${repeat(this.displayMenu, m=>m.val, (m,i)=>this.renderItem(m,i))}
 			</div>
 
-		`, this.el)
+		`
 
 		// update popover position
 		if( this.presenter && this.presenter._updatePosition )
@@ -544,6 +713,7 @@ export default class Menu {
 			.opts=${this.opts}
 			?active=${this._active==i}
 			@selection-changed=${this.selectOptionsChanged.bind(this)}
+            @click=${this.onClick}
 		></b-menu-item>`
 	}
 
@@ -562,7 +732,7 @@ export default class Menu {
 	}
 
 	clickItem(index){
-		let el = this.el.querySelector(`.menu-item:nth-child(${index+1})`)
+		let el = this.$$(`.menu-item:nth-child(${index+1})`)
 		if( el )
 			el.click()
 	}
@@ -571,14 +741,15 @@ export default class Menu {
 		
 		let target = e.target
 
-		if( target.tagName == 'SELECT-FIELD' )
-			return
+        // handled by item now
+		// if( target.tagName == 'SELECT-FIELD' )
+		// 	return
 
 		e.stopPropagation()
 		e.preventDefault()
 
-		let didClickCheckbox = target.tagName == 'CHECK-BOX'
-		let didClickSelectField = target.tagName == 'SELECT-FIELD'
+		let didClickCheckbox = e.item?.target.tagName == 'CHECK-BOX'
+		let didClickSelectField = e.item?.target.tagName == 'SELECT-FIELD' // NOTE: still needed?
 		
 		while(target && !target.classList.contains('menu-item')){
 			target = target.parentElement
@@ -622,7 +793,7 @@ export default class Menu {
 				let isSelected = this.toggleSelected(data, {fromSelection:didClickSelectField})
 				
 				if( this.searchIsOn && this.hideUnselected ){
-					this.render()
+					this.requestUpdate()
 					// update popover position
 					if( this.presenter && this.presenter._updatePosition )
 						this.presenter._updatePosition()
@@ -670,17 +841,17 @@ export default class Menu {
 	}
 
 	clear(){
-		let input = this.el.querySelector('.menu-search-bar input')
+		let input = this.$$('.menu-search-bar input', true)
 		if( input )
 			input.value = ''
 		
 		this.menu = this.__origMenu
 		this.__filteredMenu = null
-		this.render()
+		this.requestUpdate()
 	}
 
 	async _itemMenu(target, data){
-		let menu = new Menu(data.menu, data.menuOpts||{})
+		let menu = new (this.constructor)(data.menu, data.menuOpts||{})
 
 		let popoverOpts = data.menuOpts && data.menuOpts.popover || {}
 
@@ -726,7 +897,7 @@ export default class Menu {
 
 		if( !this.opts.multiple && e.code == 'Space' ) return
 		
-		let items = this.el.querySelectorAll(ITEMS_QUERY_SELECTOR)
+		let items = this.$$all(ITEMS_QUERY_SELECTOR)
 		let activeItem = items[this._active]
 
 		// if active item has a menu open, dont perform any actions
@@ -748,7 +919,7 @@ export default class Menu {
 			if( activeItem )
 				activeItem.click()
 			else
-				window.emitEvent('enter-on-no-item', {value: e.target.value, menu: this}, {context: this.el})
+				window.emitEvent('enter-on-no-item', {value: e.target.value, menu: this}, {context: this})
 
 			if( e.ctrlKey || e.metaKey )
 				this.resolve(this.selected)
@@ -762,7 +933,7 @@ export default class Menu {
 			if( activeItem )
 				activeItem.click()
 			else
-				window.emitEvent('enter-on-no-item', {value: e.target.value, menu: this}, {context: this.el})
+				window.emitEvent('enter-on-no-item', {value: e.target.value, menu: this}, {context: this})
 			
 			e.preventDefault()
 			e.stopPropagation()
@@ -800,7 +971,7 @@ export default class Menu {
 		this._active = index
 		
 
-		let items = this.el.querySelectorAll('.menu-item')
+		let items = this.$$all('.menu-item')
 		
 		if( items.length == 0 ) return
 
@@ -809,7 +980,7 @@ export default class Menu {
 
 	setActiveItem(el){
 
-		let items = Array.from(this.el.querySelectorAll(ITEMS_QUERY_SELECTOR))
+		let items = Array.from(this.$$all(ITEMS_QUERY_SELECTOR))
 
 		items.forEach(el=>el.removeAttribute('active'))
 
@@ -828,11 +999,12 @@ export default class Menu {
 
 	onLetterPress(e){
 
-		if( e.target.tagName == 'INPUT' ){
+		// if( e.target.tagName == 'INPUT' ){
+        if( this.shadowRoot.activeElement.tagName == 'INPUT'){
 
 			setTimeout(()=>{
 
-				let val = e.target.value
+				let val = this.shadowRoot.activeElement.value
 
 				// interpret only 1 character as "empty"
 				if( !val || val.length < 2 )
@@ -848,7 +1020,7 @@ export default class Menu {
 
 					if( !val ){
 						this.menu = this.__origMenu
-						this.render()
+						this.requestUpdate()
 
 						// update popover position
 						if( this.presenter && this.presenter._updatePosition )
@@ -865,7 +1037,7 @@ export default class Menu {
 
 				}else{
 					this.matching(val)
-					this.render()
+					this.requestUpdate()
 					this.setActiveItem(this.opts.autoSelectFirst?0:null)
 				}
 
@@ -883,7 +1055,7 @@ export default class Menu {
 
 		this._lastLetterPress += e.key
 
-		let li = this.el.querySelector(`.menu-item[data-title^="${this._lastLetterPress}"]`)
+		let li = this.$$(`.menu-item[data-title^="${this._lastLetterPress}"]`)
 
 		if( li )
 			this.setActiveItem(li)
@@ -932,7 +1104,7 @@ export default class Menu {
 				handler = handler[0]
 			}
 
-			didHandle = Menu.handle(data, handler, args)
+			didHandle = this.constructor.handle(data, handler, args)
 		}
 
 		if( !didHandle && this._resolve ){
@@ -946,7 +1118,7 @@ export default class Menu {
 	
 	scrollToSelected(){
 		setTimeout(()=>{
-			let el = this.el.querySelector('.selected')
+			let el = this.$$('.selected')
 			el && this.setActiveItem(el)
 		},0)
 	}
@@ -957,7 +1129,9 @@ export default class Menu {
 		this._resolve = null
 		this.promise = null
 	}
-	
-}
 
-bindPresenters(Menu)
+})
+
+export default customElements.get('b-menu')
+
+bindPresenters(customElements.get('b-menu'))

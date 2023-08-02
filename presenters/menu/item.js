@@ -159,6 +159,11 @@ customElements.define('b-menu-item', class extends LitElement{
 		}
     `
 
+	onClick(e){
+		// add some data to event for the menu handler
+		e.item = {target: e.target}
+	}
+
     onModelChange(model){
 
         // capture menu item index for use in resolve (if so desired)
@@ -191,6 +196,7 @@ customElements.define('b-menu-item', class extends LitElement{
 			? html`<check-box placement="left" ?checked=${live(m.selected)} 
 				?disabled=${m.disabled ?? false }
 				icon=${this.opts.iconSelected} 
+				@click=${this.onClick}
 				iconEmpty=${this.opts.iconDeselected}></check-box>` 
 			: ''
 

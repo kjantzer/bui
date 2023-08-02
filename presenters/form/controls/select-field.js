@@ -482,7 +482,7 @@ class SelectFieldElement extends HTMLElement {
 			
 		this.openMenu = new Menu(menu, menuOpts)
 		
-		this.openMenu.el.setAttribute('select-field', this.className)
+		this.openMenu.setAttribute('select-field', this.className)
 
 		let target = this.$('main')
 

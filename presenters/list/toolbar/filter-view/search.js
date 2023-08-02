@@ -180,10 +180,10 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
             }
         })
 
-        this.appendChild(this.menu.el)
+        this.appendChild(this.menu)
         this.menu.render()
 
-        this.menu.el.addEventListener('enter-on-no-item', e=>{
+        this.menu.addEventListener('enter-on-no-item', e=>{
             this.close()
         })
     }

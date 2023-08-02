@@ -4,7 +4,7 @@ import Dialog from '../dialog'
 import Popover from '../popover'
 import device from '../../util/device'
 
-export {Notif, Panel, Popover}
+export {Dialog, Notif, Panel, Popover}
 
 export default function bindPresenters(Menu){
     Object.assign(Menu.prototype, presenters)
@@ -62,7 +62,7 @@ const presenters = {
 		if( !opts.onKeydown)
 			opts.onKeydown = this.onKeydown.bind(this)
 		
-		this.presenter = new Popover(target, this.el, opts)
+		this.presenter = new Popover(target, this, opts)
 
 		this.scrollToSelected()
 
@@ -116,7 +116,7 @@ const presenters = {
 			icon: opts.icon||'',
 			title: opts.title||'',
 			body: opts.body||'',
-			view: this.el,
+			view: this,
 			btns: opts.btns||false
 		})
 
