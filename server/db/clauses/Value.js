@@ -23,7 +23,7 @@ module.exports = class Value extends Clause {
             this.oper = Array.isArray(this.value) ? '' : '='
         }else{
             this.value = value
-            this.oper = oper.toUpperCase()
+            this.oper = oper?.toUpperCase()
         }
 
         if( !AllowedOperators.includes(oper.toUpperCase()) )
@@ -46,7 +46,7 @@ module.exports = class Value extends Clause {
             key = `IFNULL(${key}, '')`
             
         if( Array.isArray(this.value) )
-            return `${key} ${this.oper} IN(${db.escape(this.value)})`
+            return `${key} ${this.oper=='NOT'?this.oper:''} IN(${db.escape(this.value)})`
         else{
 
             if( ['NULL', 'NOT NULL', 'null', 'not null', null].includes(this.value) )
@@ -65,7 +65,7 @@ module.exports = class Value extends Clause {
             else if( value?.toSqlString )
                 value = value.toSqlString()
 
-            return `${key} ${this.oper} ${value}`
+            return `${key} ${this.oper||'='} ${value}`
         }
     }
 
