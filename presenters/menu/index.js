@@ -869,6 +869,7 @@ customElements.define('b-menu', class extends LitElement{
 		}
 	}
 	
+	// NOTE: event listener stems from a presenter
 	onKeydown(e){
 
 		if( (e.which >= 65 && e.which <= 90) // a-z
