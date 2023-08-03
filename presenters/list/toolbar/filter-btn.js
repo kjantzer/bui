@@ -5,6 +5,10 @@ import device from '../../../util/device'
 
 customElements.define('b-list-filter-btn', class extends LitElement{
 
+    static properties = {
+        full: {type: Boolean}
+    }
+
     static get styles(){return css`
         :host {
             display: inline-block;
@@ -85,12 +89,48 @@ customElements.define('b-list-filter-btn', class extends LitElement{
         :host([larger]) div {
             font-size: 1.2rem;
         }
+
+        :host([full]) main {
+            display: grid;
+            gap: 1em;
+            grid-template-columns: auto 1fr;
+        }
+
+        :host([full]) b-btn {
+            display: block;
+            --padding: .5em;
+            opacity: 1;
+        }
+
+        :host([full]) b-btn::part(main) {
+            align-items: unset;
+        }
+
+        :host([full]) b-btn:not([active]) .label {
+            opacity: .7;
+        }
+
+        :host([full]) b-btn:not([active]) div {
+            opacity: .8;
+        }
+
+        :host([full]) b-btn[active] {
+            box-shadow: 0 0 0 1px var(--theme) inset;
+        }
+
+        :host([full]) b-btn[active] .label {
+            color: var(--theme);
+        }
     `}
 
     render(){return html`
         <b-btn text ?active=${this.filter.isActive} @click=${this.showMenu}>
             <main>
-                <b-text xs ucase bold class="label">${this.filter.label}</b-text>
+                ${this.full?html`
+                    <b-text class="">${this.filter.label}: </b-text>
+                `:html`
+                    <b-text xs ucase bold class="label">${this.filter.label}</b-text>
+                `}
                 <b-text block caps>
                     ${this.filter.icon?html`<b-icon name="${this.filter.icon}"></b-icon>`:''}
                     ${unsafeHTML(this.filter.valueLabel)}

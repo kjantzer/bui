@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import Panel from '../../panel'
+import Menu from '../../menu'
 import device from '../../../util/device'
 import './filter-presets'
 
@@ -14,11 +15,17 @@ customElements.define('b-list-filters-panel', class extends LitElement{
         }
 
         main {
+            display: grid;
+            grid-template-rows: auto 1fr;
+        }
+
+        main > b-text-divider {
+            margin: 1em 1em 0 1em;
+        }
+
+        main > section {
+            padding: .5em;
             overflow: auto !important;
-            padding: 1em;
-            /* padding-top: 0; */
-            padding-bottom: calc(1em + var(--safe-bottom));
-            padding-left: calc(1em + var(--safe-left));
         }
 
         header {
@@ -34,13 +41,27 @@ customElements.define('b-list-filters-panel', class extends LitElement{
             width: 400px;
             max-width: 100%;
         }
+        
+        .main {
+            grid-template-rows: 1fr;
+            height: 70vh;
+        }
 
-        @media (max-height: 599px) and (orientation:landscape) {
-            b-grid {
-                grid-template-columns: 1fr 1fr 1fr;
+        b-menu {
+            border-left: solid 2px var(--theme-bgd-accent)
+        }
+
+        @media (max-width: 599px) {
+            .main {
+                grid-template-columns: 1fr;
+                grid-template-rows: 2fr 1fr;
+            }
+
+            b-menu {
+                border-left: none;
+                border-top: solid 4px var(--theme-bgd-accent)
             }
         }
-        
     `}
 
     open({filters, sorts}={}){
@@ -54,15 +75,17 @@ customElements.define('b-list-filters-panel', class extends LitElement{
         new Panel(this, {
             title: 'Filters',
             controller: 'b-list:'+filters.key,
-            animation: 'drop',// device.isSmallDevice ? 'drop': 'slide',
-            anchor: 'top', //device.isSmallDevice ? 'top': 'left',
-            width: '100%', // device.isSmallDevice ? '100%' : '400px',
+            animation: 'drop', //device.isSmallDevice ? 'drop': 'slide',
+            anchor: 'top',// device.isSmallDevice ? 'top': 'left',
+            width: '800px', // device.isSmallDevice ? '100%' : '400px',
             height: 'auto'
             // height: device.isSmallDevice ? '80%' : '100% '
         }).open()
         
         this.__originalFilters = this.filters.value()
         this.filters.queuing = true
+        
+        this.requestUpdate()
     }
 
     onClose(){
@@ -103,23 +126,70 @@ customElements.define('b-list-filters-panel', class extends LitElement{
 
             </span>
         </header>
-        
-        <main>
 
-            <b-flex wrap left _cols-mobile=1>
+        <b-grid class="main" gap=0>
 
-                ${this.filters.opts.presets?html`
-                <b-list-filter-presets colspan=2 .filters=${this.filters}></b-list-filter-presets>
-                `:''}
+            <main>
+                <b-text-divider bottom xbold icon="filter">Filters</b-text-divider>
+                <section>
+                <b-grid cols=1 cols-mobile=1 gap=" ">
 
-            ${this.filters.map(filter=>html`
-                <b-list-filter-btn larger ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
-            `)}
+                    ${this.filters.opts.presets?html`
+                    
+                    `:''}
 
-            </b-flex>
+                ${this.filters.map(filter=>html`
+                    <b-list-filter-btn full ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
+                `)}
 
-        </main>
+                </b-grid>
+                </section>
+
+            </main>
+
+            ${this.historyMenu()}
+
+        </b-grid>
     `}
+
+    historyMenu(){
+        
+        let menu = this.filters.history.map((d, name)=>{
+            
+            let label = name.split('|').map(s=>{
+
+                let vals = s.split(':')
+                let label = vals.shift()
+                let val = vals.join(':')
+
+                return html`<b-flex col gap="0">
+                    <b-text dim italic sm>${label}</b-text>
+                    <b-text semibold>${val}</b-text>
+                </b-flex>`
+            })
+            return {
+                label: html`<b-flex gap="1" gap-row=" " left wrap>${label}</b-flex>`,
+                val: d.filters,
+            }
+        }).reverse() // newest first
+
+        if( !menu.length )
+            menu.push({text: 'No filters used yet', bgd: false})
+
+        this._historyMenu = this._historyMenu || new Menu([], {
+            header: html`<b-text-divider bottom xbold icon="history">Previously Used</b-text-divider>`,
+            search: false,
+            onSelect: this.onHistorySelect.bind(this),
+        })
+
+        this._historyMenu.updateMenu(menu)
+
+        return this._historyMenu
+    }
+
+    onHistorySelect(selected){
+        this.filters.reset(selected.val, {stopQueuing: false})
+    }
 
 })
 

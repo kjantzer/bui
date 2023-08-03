@@ -71,12 +71,6 @@ customElements.define('b-list-filters', class extends LitElement{
             opacity: .4;
         }
 
-        b-list-filters-saved {
-            border-right: solid 2px var(--theme-bgd-accent);
-            padding-right: 0.25em;
-            margin-right: 0.25em;
-        }
-
         b-dragdrop {
             --radius: 4px;
         }
@@ -91,16 +85,11 @@ customElements.define('b-list-filters', class extends LitElement{
         <b-dragdrop @dragged=${this.onDrag}>Export</b-dragdrop>
         <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
-        ${this.filters.size>0&&this.filters.opts?.history!==false?html`
-        <b-btn icon="history" title="History of applied filters" clear lg noshrink
-                @click=${this.openFiltersHistory}></b-btn>
-        `:''}
-
         ${this.filters.size>0&&this.filters.opts?.presets!==false?html`
         <b-list-filters-saved noshrink></b-list-filters-saved>
         `:''}
 
-        ${this.showOverflow?html`
+        ${this.showOverflow||true?html`
 
             <b-btn text @click=${this.openFiltersPanel} noshrink class="show-filters" _icon="filter">
                 <main>
@@ -123,42 +112,6 @@ customElements.define('b-list-filters', class extends LitElement{
 
         <b-btn color="hover-red" title="Clear filters" icon="backspace" text @click=${this.resetFilters}></b-btn>
     `}
-
-    async openFiltersHistory(e){
-        
-        let menu = this.filters.history.map((d, name)=>{
-            
-            let label = name.split('|').map(s=>{
-
-                let vals = s.split(':')
-                let label = vals.shift()
-                let val = vals.join(':')
-
-                return html`<b-text>
-                    <b-text dim italic>${label}:</b-text>
-                    <b-text bold>${val}</b-text>
-                </b-text>`
-            })
-            return {
-                label: html`<b-flex gap="1" gap-row=" " left wrap>${label}</b-flex>`,
-                val: d.filters,
-                description: html`<b-ts .date=${d.ts}></b-ts>`,
-                extras: [
-                    // html`<b-ts .date=${d.ts}></b-ts>`
-                ]
-            }
-        }).reverse() // newest first
-
-        if( !menu.length )
-            menu.push({text: 'No history yet', bgd: false})
-
-        menu.unshift({heading: 'Applied Filters History'})
-
-        let selected = await new Menu(menu).popOver(e.currentTarget)
-
-        if( selected )
-            this.filters.reset(selected.val, {stopQueuing: !this.filters.queuing})
-    }
 
     onDrag(e){
         let {action} = e.detail

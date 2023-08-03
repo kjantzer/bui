@@ -118,7 +118,7 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
             search: false,
             onSelect: this.onDeselect.bind(this),
         })
-        this.appendChild(this.valueMenu.el)
+        this.appendChild(this.valueMenu)
         this.valueMenu.render()
         
         let _extendResults = []
