@@ -43,7 +43,7 @@ module.exports = class Value extends Clause {
         }
 
         if( this.ifNull )
-            key = `IFNULL(${key}, ${this.ifNull==true?'':this.ifNull})`
+            key = `IFNULL(${key}, '')`
             
         if( Array.isArray(this.value) )
             return `${key} ${this.oper=='NOT'?this.oper:''} IN(${db.escape(this.value)})`
