@@ -21,10 +21,9 @@ import {Parsers, emit} from './index'
 import device from '../device'
 import '../../helpers/lit/shared'
 import Dialog from '../../presenters/dialog'
-import '../../elements/empty-state'
+import '../../elements/camera'
 import '../../elements/flex'
 import '../../elements/text'
-import download from '../download'
 
 customElements.defineShared('b-barcode-camera-scanner', class extends LitElement{
 
@@ -58,7 +57,9 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
            width: 'auto'
         })
 
-        await camScanner.start(scanner)
+        setTimeout(async () => {
+            await camScanner.start(scanner)
+        }, 0);
     }
 
     static get styles(){return css`
@@ -75,19 +76,8 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
             background-color: var(--theme-bgd-accent);
         }
 
-        video {
-            height: auto;
-            width: auto;
-            max-width: 100%;
-            position: relative;
-            z-index: 10;
-            /*transform: scaleX(-1);*/ /* enable if facing self desktop*/
-        }
-
-        canvas {
+        b-camera {
             width: 100%;
-            height: 100%;
-            position: absolute;
         }
 
         .marks {
@@ -112,22 +102,10 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         .marks > div:nth-child(2){ border-width: 4px 4px 0 0; top: 0; right: 0;}
         .marks > div:nth-child(3){ border-width: 0 4px 4px 0; bottom: 0; right: 0;}
         .marks > div:nth-child(4){ border-width: 0 0 4px 4px; bottom: 0; left: 0;}
-
-        b-empty-state {
-            z-index: 0;
-            color: var(--theme-text-accent);
-            opacity: 1;
-        }
     `}
 
-    async firstUpdated(){
-        this.video = this.$$('video')
-        // this.canvas = this.$$('canvas')
-    }
-
     render(){return html`
-        <canvas></canvas>
-        <video autoplay></video>
+        <b-camera></b-camera>
         <div class="marks">
             <div></div>
             <div></div>
@@ -137,7 +115,6 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
                 <b-text ucase xbold xs>Barcode Scanner</b-text>
             </b-flex>
         </div>
-        <b-empty-state sm>Initializing...</b-empty-state>
     `}
 
     constructor(){
@@ -167,6 +144,8 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
             throw new Error(isSupported)
     }
 
+    get camera(){ return this.$$('b-camera', true) }
+
     async start({
         continuous=false,
         formats=['qr_code', 'ean_13', 'code_128'],
@@ -184,19 +163,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
 
         this.style.setProperty('--aspect-ratio', aspectRatio)
         
-        // Start video stream
-        this.stream = await navigator.mediaDevices.getUserMedia({ 
-                audio: false,
-                video: {
-                    width: {ideal: width},
-                    aspectRatio,
-                    facingMode,
-                    // imac camera // TEMP
-                    // deviceId: '0881177ed75e30561585154f2605242a344718e018049b168bfee0604eef3d1e'
-                }
-        })
-
-        this.video.srcObject = this.stream
+        this.camera.start(arguments[0])
 
         this.detecting = this.detecting || setInterval(this.detectCode, detectInterval);
 
@@ -209,41 +176,12 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
     }
 
     focusTo(focusDistance){
-        if( !this.stream ) return
-        let track = this.stream.getVideoTracks()[0]
-        let supports = track.getCapabilities()
-
-        // throw new UIAlertError(`${supports.focusDistance.min} - ${supports.focusDistance.max}`)
-        if( supports.focusDistance ){
-
-            if( focusDistance < supports.focusDistance.min )
-                focusDistance = supports.focusDistance.min
-            
-            if( focusDistance > supports.focusDistance.max )
-                focusDistance = supports.focusDistance.max
-
-            try{
-                track.applyConstraints({
-                    advanced: [{
-                        focusMode: 'manual', 
-                        focusDistance,
-                    }]
-                })
-            }catch(err){
-
-            }
-        }
+        this.camera.focusTo(focusDistance)
     }
 
     // alias
     close(){
         this.stop()
-    }
-
-    async getDevices(){
-        let devices = await navigator.mediaDevices.enumerateDevices()
-        devices = devices.filter(device=>device.kind=='videoinput')
-        return devices
     }
 
     stop(){
@@ -256,11 +194,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         clearTimeout(this._autoFocusChange)
         clearInterval(this.detecting)
         this.detecting = null
-
-        if( this.stream )
-            this.stream.getTracks().forEach(track=>{ track.stop() })
-
-        this.video.srcObject = null
+        this.camera.stop()
     }
 
     async detectCode(){
@@ -268,7 +202,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         let codes = []
         
         try {
-            codes = await this.detector.detect(this.video)
+            codes = await this.detector.detect(this.camera.video)
         }catch(err){
             console.log(err);
         }
@@ -380,21 +314,6 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
 
         // Make path to stroke
         ctx.stroke();
-    }
-
-    takePicture(e){
-        e?.stopPropagation?.()
-        const canvas = this.$$('canvas', true)
-        const context = canvas.getContext("2d");
-        let width = this.video.videoWidth;
-        let height = this.video.videoHeight;
-        
-        canvas.width = width;
-        canvas.height = height;
-        context.drawImage(this.video, 0, 0, width, height);
-
-        const data = canvas.toDataURL("image/jpeg", 1.0);
-        download(data, 'test.jpg')   
     }
 
 })
