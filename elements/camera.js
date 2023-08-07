@@ -53,17 +53,11 @@ customElements.define('b-camera', class extends LitElement{
         }
     `}
 
+    get key(){ return 'b-camera-'+(this.iid||'0') }
+    
     async firstUpdated(){
         this.video = this.$$('video')
-
-        this.settings = new CollMap(null, {
-            store: store.create('b-camera-'+(this.iid||'0'))
-        })
-
-        // TEMP
-        this.addEventListener('click', e=>{
-            this.toggleStart()
-        })
+        this.settings = new CollMap(null, {store: store.create(this.key)})
     }
 
     render(){return html`
@@ -79,7 +73,7 @@ customElements.define('b-camera', class extends LitElement{
     }
 
     static get isSupported(){
-        // Check for a camera
+        // Check for a camera support
         if( !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia )
             return 'getUserMedia not supported'
 
@@ -187,8 +181,10 @@ customElements.define('b-camera', class extends LitElement{
         this.video.hidden = true
     }
 
-    takePicture(e){
-        e?.stopPropagation?.()
+    takePicture({filename}={}){
+        
+        filename = (filename||this.key)+`-${new Date().getTime()}.jpg`
+
         const canvas = this.$$('canvas', true)
         const context = canvas.getContext("2d");
         let width = this.video.videoWidth;
@@ -198,8 +194,8 @@ customElements.define('b-camera', class extends LitElement{
         canvas.height = height;
         context.drawImage(this.video, 0, 0, width, height);
 
-        const data = canvas.toDataURL("image/jpeg", 1.0);
-        download(data, 'test.jpg')   
+        const data = canvas.toDataURL('image/jpeg', 1.0);
+        download(data, filename)
     }
 
 })
