@@ -13,7 +13,9 @@ const DEFAULT_OPTS = {
     fileUploads: false, // see express-fileupload
     parseSocketIDs: true, // will set `req.socketIDs` from header 'x-socket-ids'
     staticPaths: [],
-    beforeMiddleware: null // optional hook
+    beforeMiddleware: null, // optional hook
+    handleUncaughtException: true,
+    handleUnhandledRejection: true,
 }
 
 /*
@@ -64,6 +66,12 @@ module.exports = class ExpressApp {
         opts.staticPaths?.forEach(path=>{
             this.use(express.static(path, {index: false}))
         })
+
+        if( opts.handleUncaughtException )
+            handleUncaughtException(opts.handleUncaughtException)
+
+        if( opts.unhandledRejection )
+            handleUnhandledRejection(opts.handleUnhandledRejection)
     }
 
     // pass-through to express
@@ -104,4 +112,25 @@ function _allowCorsPrivateNetwork(req, res, next){
         res.setHeader("access-control-allow-private-network", "true")
     
     next(null)
+}
+
+
+function handleUncaughtException(fn){
+    fn = typeof fn == 'function' ? fn : function(err) {
+        console.log('UNCAUGHT EXCEPTION');
+        console.trace(err)
+        if( err.lastQuery )
+            console.log(err.lastQuery);
+    }
+
+    process.on('uncaughtException', fn)
+}
+
+function handleUnhandledRejection(fn){
+    fn = typeof fn == 'function' ? fn : function(reason, promise) {
+        console.log('Unhandled Rejection at:', promise, 'reason:', reason);
+        // TODO: capture in a way to notify developers
+    }
+
+    process.on('unhandledRejection', fn);
 }
