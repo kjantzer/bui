@@ -2,7 +2,7 @@ const UrlPattern = require('url-pattern')
 const CollMap = require('../util/collmap')
 
 const DEFAULT_OPTS = {
-    root: ''
+    root: '/api'
 }
 
 module.exports = class API {
@@ -256,6 +256,13 @@ module.exports = class API {
             else
                 res.send(resp)
         }
+    }
+
+    enableCatchall({msg='api not found', code=404}={}){
+        // catachall for undefined API requests
+        app.get((this.opts.root||'')+'/*', (req, res)=>{
+            res.status(code).send({error: msg, code})
+        })
     }
 
 }
