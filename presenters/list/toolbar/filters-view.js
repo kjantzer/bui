@@ -156,8 +156,15 @@ customElements.define('b-list-filters', class extends LitElement{
 
     showFilter(filter){
         if( filter.attrs.show === false ) return false
-        // NOTE: alwaysShow is legacy and DEPRECATED
-        return !this.showOverflow || (filter.isActive || filter.attrs.alwaysShow || filter.attrs.show === true )
+
+        let defaultVal = this.filters.opts.overflowDefaultShowAll ? false : true
+
+        // NOTE: alwaysShow is legacy and DEPRECATED - use `show`
+        return !this.showOverflow || (
+            filter.isActive 
+            || filter.attrs.alwaysShow == defaultVal
+            || (filter.attrs.show||false) == defaultVal
+        )
     }
 
     openFiltersPanel(){

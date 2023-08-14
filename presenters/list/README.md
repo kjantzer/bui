@@ -261,6 +261,8 @@ const filters = {
         overflowThreshold: 8, // defaults
         overflowThresholdMobile: 3,
         overflow: false // enable/disable overflow all together
+        // always shows filters in bar unless `show:false` set on a filter
+        overflowDefaultShowAll: true
     }
 }
 ```
