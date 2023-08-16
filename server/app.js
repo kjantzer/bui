@@ -1,3 +1,6 @@
+/*
+    An opinionated express app for BUI apps
+*/
 const express = require('express')
 const http = require('http')
 
@@ -18,9 +21,6 @@ const DEFAULT_OPTS = {
     handleUnhandledRejection: true,
 }
 
-/*
-    An opinionated express app for BUI apps
-*/
 module.exports = class ExpressApp {
 
     constructor(opts={}){
