@@ -1001,7 +1001,7 @@ customElements.define('b-menu', class extends LitElement{
 	onLetterPress(e){
 
 		// if( e.target.tagName == 'INPUT' ){
-        if( this.shadowRoot.activeElement.tagName == 'INPUT'){
+        if( this.shadowRoot.activeElement?.tagName == 'INPUT'){
 
 			setTimeout(()=>{
 
