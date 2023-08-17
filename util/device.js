@@ -92,6 +92,10 @@ const device = {
         || window.matchMedia('(display-mode: window-controls-overlay)').matches
     },
 
+    get isBrowser(){
+        return matchMedia("(display-mode: browser)").matches
+    },
+
     // alias
     get isStandalone(){ return device.isInstalled },
 
