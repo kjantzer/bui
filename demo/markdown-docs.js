@@ -160,7 +160,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
         }
 
         :host > main > [header="h1"] {
-            background: var(--theme-bgd);
+            background: var(--theme-bgd-accent2);
             position: sticky;
             top: 0;
             z-index: 100;
