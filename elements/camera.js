@@ -181,6 +181,7 @@ customElements.define('b-camera', class extends LitElement{
         this.video.hidden = true
     }
 
+    saveFrame(...args){ return this.takePicture(...args) } // alias
     takePicture({filename}={}){
         
         filename = (filename||this.key)+`-${new Date().getTime()}.jpg`

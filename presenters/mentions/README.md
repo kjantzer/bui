@@ -1,6 +1,9 @@
 Mentions
 =============
 
+> NOT ready for production; early concept.  
+> Best to use form/text-editor and the `token` plugin
+
 Make any `contenteditable` detect and insert mentions.
 
 ```js
@@ -8,10 +11,10 @@ import Mentions from 'bui/presenters/mentions'
 
 new Mentions(editableElement, {
     values: [{
-        label: 'Name 1'
+        label: 'Name 1',
         val: 1
     },{
-        label: 'Name 2'
+        label: 'Name 2',
         val: 2
     }/* ... */]
 })

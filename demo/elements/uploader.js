@@ -3,6 +3,7 @@ import View from '../presenters/view'
 import Dialog from 'bui/presenters/dialog'
 import 'bui/elements/uploader'
 import 'bui/elements/uploader-preview'
+import docs from '../../docs/uploader.md'
 
 customElements.define('demo-elements-uploader', class extends View{
 
@@ -12,12 +13,12 @@ customElements.define('demo-elements-uploader', class extends View{
         
     `]}
 
-    get docs(){ return ''}
+    get docs(){ return docs}
 
     
     renderContent(){ return html`
 
-
+        <b-grid cols=2 cols-mobile=1>
         <b-paper outline>
 
             <b-text md xbold>Simple Uploader</b-text>
@@ -29,11 +30,9 @@ customElements.define('demo-elements-uploader', class extends View{
             <b-btn onclick="this.previousElementSibling.previousElementSibling.chooseFile()">Or select a file</b-btn>
         </b-paper>
 
-        <br><br>
-
         <b-paper outline>
 
-            <b-text md xbold>Uploader Preview</b-text><br><br>
+            <b-text md xbold>Uploader with Preview</b-text><br><br>
 
             <b-uploader-preview>
                 <b-uploader multiple></b-uploader>
@@ -43,6 +42,10 @@ customElements.define('demo-elements-uploader', class extends View{
 
             <!-- <b-btn onclick="this.previousElementSibling.previousElementSibling.chooseFile()">Or select a file</b-btn> -->
         </b-paper>
+
+        </b-grid>
+
+        <br><br>
 
     `}
 

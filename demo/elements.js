@@ -26,6 +26,7 @@ import 'bui/elements/timeline-horz'
 import 'bui/helpers/day-js'
 import './elements/icons'
 import './elements/uploader'
+import './elements/camera'
 
 import buttons from './elements/buttons'
 import text from './elements/text'
@@ -389,6 +390,7 @@ customElements.define('demo-elements', class extends LitElement{
             </section>
 
             demo-elements-uploader
+            demo-elements-camera
 
             <section title="Media">
                 <h1>Media</h1>
