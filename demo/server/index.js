@@ -24,8 +24,8 @@ customElements.define('demo-server', class extends LitElement{
 
     render(){return html`
         <b-tabs-router path="server/" key="server" layout="left" >
-            demo-server-db
             demo-server-api
+            demo-server-db
             demo-server-model
             demo-server-search
             demo-server-filemanager
