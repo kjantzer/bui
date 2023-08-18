@@ -1,0 +1,163 @@
+.popover {
+  z-index: 10000;
+  --arrow-w: 8px;
+  --bgd: var(--b-popover-bgd, #fff);
+  --arrowBgd: var(--bgd);
+  --border: rgba(0, 0, 0, 0.2);
+  color: var(--b-popover-color, #333);
+  --arrow-w: 0;
+}
+.popover.no-arrow {
+  --arrow-w: 0;
+}
+.popover.inverse {
+  --theme-bgd: var(--theme-inverse-bgd);
+  --theme-bgd-accent: var(--theme-inverse-bgd-accent);
+  --theme-bgd-accent2: var(--theme-inverse-bgd-accent2);
+  --theme-bgd-rgb: var(--theme-inverse-bgd-rgb);
+  --theme-text: var(--theme-inverse-text);
+  --theme-text-accent: var(--theme-inverse-text-accent);
+  --theme-text-rgb: var(--theme-inverse-text-rgb);
+  --bgd: var(--theme-inverse-bgd, #222);
+  color: var(--theme-inverse-text, #222);
+}
+.popover.no-pointer {
+  pointer-events: none;
+}
+.popover.dark {
+  --bgd: var(--b-popover-bgd, #2c3033);
+  --border: #111;
+  color: #fff;
+}
+.popover.dark .subheading,
+.popover.dark sub {
+  color: rgba(255, 255, 255, 0.4);
+}
+.popover .__view {
+  box-sizing: border-box;
+  background: var(--bgd, var(--theme-bgd, #fff));
+  overflow: auto;
+  border: solid 1px var(--border);
+  box-shadow: var(--b-popover-shadow, var(--theme-shadow-2, rgba(0, 0, 0, 0.2) 0 2px 8px));
+  --radius: var(--b-popover-radius, 6px);
+  border-radius: var(--radius);
+}
+.popover div.__view:not(.nopadding) {
+  padding: 1em;
+}
+.popover div.__view.padding-lite {
+  padding: 0.25em;
+}
+.popover.tooltip {
+  pointer-events: none;
+}
+.popover.tooltip div.__view {
+  font-size: 0.8em;
+  padding: 0.25rem 0.5rem;
+}
+.popover.tooltip .__arrow {
+  display: none;
+}
+.popover[x-out-of-boundaries] {
+  display: none;
+}
+.popover[x-placement] {
+  opacity: 1;
+}
+.popover[x-placement^="top"] {
+  margin-bottom: 5px;
+}
+.popover .__arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: var(--border);
+  position: absolute;
+  z-index: 10000;
+  margin: calc(var(--arrow-w) / 2);
+}
+.popover .__arrow > .__arrow {
+  border-color: var(--arrowBgd);
+}
+.popover[x-placement^="top"] .__arrow {
+  border-width: var(--arrow-w) var(--arrow-w) 0 var(--arrow-w);
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  bottom: calc(-1 * var(--arrow-w));
+  left: calc(50% - var(--arrow-w));
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.popover[x-placement^="top"] .__arrow > .__arrow {
+  bottom: 1px;
+  margin: 0;
+}
+.popover[x-placement^="bottom"] {
+  margin-top: var(--arrow-w);
+}
+.popover[x-placement^="bottom"] .__arrow {
+  border-width: 0 var(--arrow-w) var(--arrow-w) var(--arrow-w);
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-top-color: transparent;
+  top: calc(-1 * var(--arrow-w));
+  left: calc(50% - var(--arrow-w));
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.popover[x-placement^="bottom"] .__arrow > .__arrow {
+  top: 1px;
+  margin: 0;
+}
+.popover[x-placement^="right"] {
+  margin-left: var(--arrow-w);
+}
+.popover[x-placement^="right"] .__arrow {
+  border-width: var(--arrow-w) var(--arrow-w) var(--arrow-w) 0;
+  border-left-color: transparent;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  left: calc(-1 * var(--arrow-w));
+  top: calc(50% - var(--arrow-w));
+  margin-left: 0;
+  margin-right: 0;
+}
+.popover[x-placement^="right"] .__arrow > .__arrow {
+  left: 1px;
+  margin: 0;
+}
+.popover[x-placement^="left"] {
+  margin-right: var(--arrow-w);
+}
+.popover[x-placement^="left"] .__arrow {
+  border-width: var(--arrow-w) 0 var(--arrow-w) var(--arrow-w);
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  right: calc(-1 * var(--arrow-w));
+  top: calc(50% - var(--arrow-w));
+  margin-left: 0;
+  margin-right: 0;
+}
+.popover[x-placement^="left"] .__arrow > .__arrow {
+  right: 1px;
+  margin: 0;
+}
+.popover b-dialog {
+  --bgd: var(--color, var(--theme-bgd));
+}
+.popover.dark .popover-confirm .text-btn {
+  color: #fff;
+}
+.popover.dark .popover-confirm .text-btn:hover {
+  background: #111;
+}
+.popover-prompt model-editor {
+  font-size: 1.2rem;
+  padding: 0.5em;
+  --focusBgd: none;
+}
+
+
+/*# sourceMappingURL=demo.766e5efe.css.map */
