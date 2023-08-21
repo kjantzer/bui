@@ -48,10 +48,17 @@ customElements.define('b-app', class extends LitElement {
 
         // new route matches active view...make it active again
         if( !e.detail.path || activeView.route.patt.match(e.detail.path) ){
+
+            let path = e.detail.path
+
+            if( !path ){
+                let pathParams = activeView.view.pathParams?.() || activeView.route.params
+                path = activeView.route.makePath(pathParams)
+            }
             
             router.states.current.update({
                 title: activeView.title,
-                path: e.detail.path || activeView.route.makePath(activeView.route.params)
+                path
             })
             activeView.route.state = router.states.current
             
