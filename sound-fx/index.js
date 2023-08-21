@@ -3,6 +3,7 @@ import fetchAudioBuffer from './fetch-audio-buffer';
 import methodPatch from './method-patch';
 import MobileAudioFix from './mobile-audio-fix';
 import device from '../util/device'
+import vibrate from '../util/vibrate'
 
 // All of my MP3s were built to be a consistent volume on export,
 // so I can safely set the same gain on all of them.
@@ -47,8 +48,10 @@ export default class Single {
   }
 
   playIfMobile(...args){
-    if( device.isMobile )
+    if( device.isMobile ){
       this.play(...args)
+      vibrate(70) // NOTE: do I want this to always happen?
+    }
   }
 
   play(key, volume) {
