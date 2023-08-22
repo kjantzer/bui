@@ -61,7 +61,7 @@ customElements.define('b-camera', class extends LitElement{
     }
 
     render(){return html`
-        <canvas></canvas>
+        <canvas hidden></canvas>
         <video autoplay playsinline></video>
         <b-empty-state sm>Uninitialized</b-empty-state>
         <slot></slot>
@@ -191,12 +191,15 @@ customElements.define('b-camera', class extends LitElement{
         let width = this.video.videoWidth;
         let height = this.video.videoHeight;
         
+        canvas.hidden = false
         canvas.width = width;
         canvas.height = height;
         context.drawImage(this.video, 0, 0, width, height);
 
         const data = canvas.toDataURL('image/jpeg', 1.0);
         download(data, filename)
+
+        canvas.hidden = true
     }
 
 })
