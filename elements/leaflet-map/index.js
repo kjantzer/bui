@@ -2,6 +2,8 @@
     Leaflet Map
 
     A very simply implementation - not ready for production
+
+    https://leafletjs.com/reference.html
 */
 import { LitElement, html, css } from 'lit'
 import styles from './styles'
