@@ -212,6 +212,9 @@ customElements.define('b-dragdrop', class extends LitElement{
 
     onDragEnter(e){
 
+        // must not be from a dragdrop
+        if( !DragData || !DragData.srcTarget ) return
+
         // can't drop onto it self
         if( this.target == DragData.srcTarget ) return this._disallowDrop = true
 
