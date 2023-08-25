@@ -88,7 +88,7 @@ registerPreset('stopped', {
 
 registerPreset('error', {
 	pretitle: 'Error',
-	icon: 'attention-circle',
+	icon: 'error',
 	accent: 'red',
 	color: 'inverse',
 	edge: true,

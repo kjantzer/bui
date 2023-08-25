@@ -11,6 +11,7 @@ export default [
     
     // TODO: update BUI code to use real icon name
     ['cancel-circled', require(`@material-icons/svg/svg/cancel/baseline.svg`)],
+    ['error', require('@material-icons/svg/svg/error/baseline.svg')],
     ['close', require('@material-icons/svg/svg/close/baseline.svg')],
     ['chevron_left', require(`@material-icons/svg/svg/chevron_left/baseline.svg`)],
     ['chevron_right', require(`@material-icons/svg/svg/chevron_right/baseline.svg`)],
