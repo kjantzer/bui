@@ -39,7 +39,10 @@ export default class NFC {
 			onScan?.(event)
 		},{once})
 		
-		this.ndef.scan({signal: this.ctlr.signal}).catch(err => reject(err));
+		this.ndef.scan({signal: this.ctlr.signal}).catch(err=>{
+			this.stop()
+			throw err
+		});
 	}
 
 	stop(){
@@ -52,7 +55,13 @@ export default class NFC {
 		if( this.isScanning ) throw new Error('Already scanning')
 
 		return new Promise((resolve, reject) => {
-			this.scan({once: true, onScan: resolve, onAbort: reject})
+			this.scan({
+				once: true, 
+				onScan: resolve, 
+				onAbort: reject
+			}).catch(err=>{
+				reject(err)
+			})
 		})
 	}
 }
