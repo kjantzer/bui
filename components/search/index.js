@@ -240,6 +240,10 @@ export default class extends LitElement{
             border-top: solid 1px var(--theme-bgd-accent);
         }
 
+        b-list {
+            --b-list-filter-panel-height: auto;
+        }
+
         b-list::part(list){
             padding: .5em;
         }
