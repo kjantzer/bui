@@ -44,12 +44,12 @@ customElements.define('b-list-filters-panel', class extends LitElement{
         
         .main {
             grid-template-rows: 1fr;
-            height: 70vh; /* FIXME: this doesn't work well when list is null nearly full screen */
+            height: var(--b-list-filter-panel-height, 70vh); /* FIXME: this doesn't work well when list is null nearly full screen */
         }
 
         @media (max-height: 699px) {
             .main {
-                height: 60vh;
+                height: var(--b-list-filter-panel-height, 60vh);
             }
         }
 
