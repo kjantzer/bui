@@ -52,7 +52,7 @@ export default class extends LitElement{
             mobileAsyncFocus(this)
 
         let anchor = device.isMobile ? 'top': 'center'
-        let width = device.isMobile ? '100%' :'640px'
+        let width = device.isSmall ? '100%' :'640px'
         let height = device.isiOS ? '50%' : '680px'
 
         if( device.isChromeOS && device.isTablet && device.isLandscape ){
