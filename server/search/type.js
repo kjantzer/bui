@@ -1,4 +1,5 @@
 const Fuse = require('fuse.js')
+const { replaceAccents } = require('../../util/string')
 
 module.exports = class SearchType {
     
@@ -28,7 +29,11 @@ module.exports = class SearchType {
         let sql = this.searchSql
         if( typeof sql == 'function' ) sql = sql(term)
         return this.db.query(sql, term).then(rows=>{
-            rows.forEach(row=>row.type=row.type||this.type)
+            rows.forEach(row=>{
+                row.type=row.type||this.type
+                if( row.label )
+                    row.label = replaceAccents(row.label)
+            })
             return rows
         })
     }
