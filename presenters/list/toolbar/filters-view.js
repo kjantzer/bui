@@ -80,6 +80,10 @@ customElements.define('b-list-filters', class extends LitElement{
         return this.filters.shouldUseOverflow
     }
 
+    get showOverflowBtn(){
+        return this.filters.size
+    }
+
     render(){return html`
 
         <b-dragdrop @dragged=${this.onDrag}>Export</b-dragdrop>
@@ -89,7 +93,7 @@ customElements.define('b-list-filters', class extends LitElement{
         <b-list-filters-saved noshrink></b-list-filters-saved>
         `:''}
 
-        ${this.showOverflow||true?html`
+        ${this.showOverflowBtn?html`
 
             <b-btn text @click=${this.openFiltersPanel} noshrink class="show-filters" _icon="filter">
                 <main>
