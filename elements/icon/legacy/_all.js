@@ -156,6 +156,7 @@ Icon.register(
 	['minus-squared', require('./minus-squared.svg.html')],
 	['minus', require('./minus.svg.html')],
 	['move', require('./move.svg.html')],
+	['move-item', require('./move-item.svg.html')],
 	['music', require('./music.svg.html')],
 	['na', require('./na.svg.html')],
 	['net', require('./net.svg.html')],
