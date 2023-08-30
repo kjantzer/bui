@@ -18,6 +18,15 @@ export default class DataSource {
         this._rawData = []      // unaltered data from server
         this._filteredData = [] // raw data with after filters applied
         this.data = []          // filtered data with "search term" applied
+
+        // if still trying to fetch data, stop
+        this.abortFetch()
+    }
+
+    abortFetch(){
+        // stop fetching data if still in process
+        this._fetchFromServerController?.abort()
+        this._fetchFromServerController = null
     }
 
     set coll(coll){
@@ -61,6 +70,9 @@ export default class DataSource {
 
     async _fetchFromServer(pageAt){
 
+        // if currently trying to fetch, stop
+        this.abortFetch()
+
         // TODO: support fetching data with `fetch` and a url?
         if( this.coll && this.coll.fetchSync ){
 
@@ -83,12 +95,18 @@ export default class DataSource {
                 data = Object.assign(fetchData, data)
             }
 
+            // let fetch be aborted
+            this._fetchFromServerController = new AbortController()
+
             await this.coll.fetchSync({
+                signal: this._fetchFromServerController.signal,
                 data:data,
                 merge: true,
                 remove: pageAt==0 ? true : false,
                 // for Backone 0.9.10/0.9.9, 'update' is needed to register change events on the model, rather than mass "reset" (see line 815 in backbone source)
                 update: true,
+            }).finally(()=>{
+                this._fetchFromServerController = null
             })
         }
     }

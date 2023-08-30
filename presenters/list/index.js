@@ -671,6 +671,7 @@ customElements.define('b-list', class extends LitElement {
         try{
             this.selection.end()
             this.dataSource.reset()
+            await new Promise(resolve=>setTimeout(resolve)) // let datasource abort fetch so list.reset works
             this.list.reset()
             this.toolbar.count = await this.dataSource.length()
         }catch(err){}
