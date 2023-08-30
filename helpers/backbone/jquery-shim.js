@@ -33,6 +33,7 @@ module.exports = {
         }, opts.headers||{})
 
         fetch(opts.url, {
+            signal: opts.signal, // allows fetch to be aborted
             method: opts.type,
             headers: headers,
             body: opts.data
