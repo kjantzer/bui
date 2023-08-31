@@ -101,7 +101,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
         .scroller { order: 3; }
         .after { order: 4; }
 
-        @media (max-width: 599px) {
+        @container (max-width: 599px) {
             
             :host {
                 display: grid;

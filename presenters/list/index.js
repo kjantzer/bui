@@ -101,6 +101,7 @@ customElements.define('b-list', class extends LitElement {
 
     static get styles(){return css`
         :host {
+            container-type: inline-size;
             display: grid;
             grid-template-rows: auto auto 1fr auto;
             grid-template-columns: auto 1fr auto;

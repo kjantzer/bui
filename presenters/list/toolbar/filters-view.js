@@ -81,7 +81,7 @@ customElements.define('b-list-filters', class extends LitElement{
     }
 
     get showOverflowBtn(){
-        return this.filters.size
+        return this.filters.size && this.filters.opts?.filterBtn !== false // NOTE: no sure I like this option name
     }
 
     render(){return html`

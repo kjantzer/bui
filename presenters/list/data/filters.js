@@ -124,7 +124,7 @@ export default class Filters extends Map {
                     // make sure the value conforms to what the filter definition allows
                     changeToVal = this.get(k)._conformValue(changeToVal)
                     
-                    if( !changeToVal || changeToVal.length == 0 )
+                    if( changeToVal.length == 0 )
                         delete this.__value[k]
                     else
                         this.__value[k] = changeToVal
