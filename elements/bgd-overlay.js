@@ -14,6 +14,10 @@ customElements.define('b-bgd-overlay', class extends LitElement{
             background: var(--theme);
             z-index: -1;
         }
+
+        :host([hidden]) {
+            display: none;
+        }
     `}
 
     render(){return html`
