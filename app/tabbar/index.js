@@ -19,6 +19,8 @@ customElements.define('b-app', class extends LitElement {
         this.classList.add('b-app')
 
         this.tabs = this.shadowRoot.querySelector('b-tabs-router')
+
+        this.setAttribute('viewing', this.tabs.active)
         
         // let elements render to DOM before starting router
         setTimeout(()=>{
@@ -180,6 +182,7 @@ customElements.define('b-app', class extends LitElement {
             .model=${this.model}
             ?no-search=${!this.shouldShowSearch}
             path="${this.tabsPath}"
+            @active-changed=${this.onActiveTabChanged}
         >
 
             ${this.panel?html`
@@ -189,6 +192,10 @@ customElements.define('b-app', class extends LitElement {
             ${this.views}
         </b-tabs-router>  
     `}
+
+    onActiveTabChanged(e){
+        this.setAttribute('viewing', this.tabs.active)
+    }
 
     static get coreViews(){return ''}
 
