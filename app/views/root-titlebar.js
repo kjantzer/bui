@@ -86,7 +86,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
         <b-text md xbold>
             <slot name="title">
                 <slot name="title:before"></slot>
-                ${this.titleVal}
+                <slot name="title:inner">${this.titleVal}</slot>
                 <slot name="title:after"></slot>
             </slot>            
         </b-text>
