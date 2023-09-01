@@ -8,6 +8,10 @@ import './tab-bar'
 // TODO: rename
 customElements.define('b-app', class extends LitElement {
 
+    static properties = {
+        minimizable: {type: Boolean}
+    }
+
     close(){
         this.panel&&this.panel.close()
     }
@@ -180,6 +184,7 @@ customElements.define('b-app', class extends LitElement {
             key="${this.key}"
             tab-bar="${this.tabBar}" 
             .model=${this.model}
+            ?minimizable=${this.minimizable}
             ?no-search=${!this.shouldShowSearch}
             path="${this.tabsPath}"
             @active-changed=${this.onActiveTabChanged}

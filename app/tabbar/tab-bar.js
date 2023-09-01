@@ -62,6 +62,35 @@ customElements.define('b-app-tab-bar', class extends LitElement{
             box-shadow: var(--theme-shadow-2);
         }
 
+        /* for now, only support on small screens */
+        @media (min-width: 600px) {
+            .maximize {
+                display: none;
+            }
+        }
+
+        :host([minimized]) {
+            height: .5em;
+            overflow: visible !important;
+        }
+
+        /* hide all other content except maximize button */
+        :host([minimized]) > *:not(.maximize) {
+            display: none
+        }
+
+        .maximize {
+            position: absolute;
+            left: 0;
+            top: -.9em;
+        }
+
+        :host([minimized]) .maximize {
+            top: -1.4em;
+            z-index: 1000;
+            box-shadow: var(--theme-shadow-1);
+        }
+
         ${mediaQuery('b-app-landscape', css`
 
             :host(.tab-bar) {
@@ -114,7 +143,17 @@ customElements.define('b-app-tab-bar', class extends LitElement{
         </main>
 
         <slot name="after"></slot>
+
+        ${this.minimizable?html`
+        <b-btn icon="unfold_more" pill black class="maximize" @click=${this.toggleMinimize}></b-btn>
+        `:''}
     `}
+
+    toggleMinimize(){
+        this.toggleAttribute('minimized', !this.hasAttribute('minimized'))
+    }
+
+    get minimizable(){ return this.hasAttribute('minimizable')}
 
     get shouldShowSearch(){
         return device.isMobile && !this.host.hasAttribute('no-search')
