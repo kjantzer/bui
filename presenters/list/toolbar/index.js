@@ -22,7 +22,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
             align-items: center;
             min-width: 0;
             position: relative;
-            gap: .25em;
+            column-gap: .25em;
         }
 
         :host(.selection-bar-shown) > * {
@@ -118,6 +118,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
                 margin-left: -0.5em;
                 margin-right: -0.5em;
                 margin-top: 0.25em;
+                padding-top: .25em;
                 border-top: solid 1px var(--theme-bgd-accent);
             }
 
