@@ -35,8 +35,13 @@ function registerIcon(name, icon, {prefix='icon-', className=''}={}){
 	if( !name )
 		return console.warn('Icons must have a name')
 
-	if( SVG_ICONS.get(name) )
-		return console.warn('There is already an icon registered with that name:', name)
+	if( SVG_ICONS.get(name) ){
+		// only log warning if the actual icon is different
+		if( SVG_ICONS.get(name).outerHTML != icon.outerHTML )
+			console.warn('ICON: there is already an icon registered with that name:', name)
+
+		return
+	}
 
 	SVG_ICONS.set(name, icon)
 }
