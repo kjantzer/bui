@@ -22,7 +22,7 @@ const PRESETS = {
     'import': {label: 'Import', color: 'theme'},
 	'delete': {label: 'Delete', color: 'red'},
     'remove': {label: 'Remove', color: 'red'},
-	'x': {label: '', icon:'cancel-1', doesCancel:true},
+	'x': {label: '', icon:'close', doesCancel:true},
     '...': {label: '', icon:'dot-3'}
 }
 

@@ -13,7 +13,7 @@ class PanelToolbar extends LitElement {
         super()
         this.title = ''
         this.look = ''
-        this.closebtn = 'cancel-1'
+        this.closebtn = 'close'
     }
 
     static get styles(){return css`

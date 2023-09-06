@@ -92,7 +92,7 @@ export default html`
         </b-timeline-horz>
         <b-timeline-horz>
             <div slot="date">Aug 27</div>
-            <b-icon name="cancel-1" slot="bubble" style="color: var(--red)"></b-icon>
+            <b-icon name="close" slot="bubble" style="color: var(--red)"></b-icon>
             <div>Timeline content</div>
         </b-timeline-horz>
         <b-timeline-horz style="--b-timeline-line-display:none;">
