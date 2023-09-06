@@ -2,87 +2,7 @@
 	https://icomoon.io/app
 */
 import { LitElement, html, css } from 'lit';
-
-const SVG_ICONS = new Map()
-
-function registerIcon(name, icon, {prefix='icon-', className=''}={}){
-
-	let d = document.createElement('div')
-	d.innerHTML = icon
-	icon = d.firstElementChild
-
-	// if no name, get it from the icon attribute
-	if( !name ){
-		name = icon.id || icon.name || ''
-		name = name.replace(prefix, '')
-	}
-
-	// remove <title> tags – we dont want to see them when hovering over the icon
-	let title = icon.querySelector('title')
-	if( title ){
-		icon.setAttribute('data-title', title.textContent)
-		title.remove()
-	}
-
-	icon.setAttribute('part', 'svg')
-
-	if( className )
-		icon.classList.add(className)
-
-	icon.removeAttribute('width')
-	icon.removeAttribute('height')
-
-	if( !name )
-		return console.warn('Icons must have a name')
-
-	if( SVG_ICONS.get(name) ){
-		// only log warning if the actual icon is different
-		if( SVG_ICONS.get(name).outerHTML != icon.outerHTML )
-			console.warn('ICON: there is already an icon registered with that name:', name)
-
-		return
-	}
-
-	SVG_ICONS.set(name, icon)
-}
-
-const WARNINGS = new Map()
-const GLOBAL_ICONS_CONST = function(strings, ...args){
-	let iconName = strings.map((s,i)=>s+(args[i]||'')).join('')
-
-	if( !SVG_ICONS.has(iconName) ){
-		// only warn once
-		if( !WARNINGS.get(iconName) )
-			console.warn(`Icon: "${iconName}" not loaded`);
-		WARNINGS.set(iconName, true)
-	}
-
-    return iconName
-}
-
-const GLOBAL_ICONS_CONST_PROXY = new Proxy(GLOBAL_ICONS_CONST, {
-
-    get(target, prop){
-		if( !SVG_ICONS.has(prop) ){
-			// only warn once
-			if( !WARNINGS.get(prop) )
-				console.warn(`Icon: "${prop}" not loaded`);
-			WARNINGS.set(prop, true)
-		}
-		return prop
-	}
-});
-
-if( !globalThis.ICONS )
-	globalThis.ICONS = GLOBAL_ICONS_CONST_PROXY
-
-
-let hasWarnedNoIcons = false
-function warnNoIcons(){
-	if( hasWarnedNoIcons ) return
-	hasWarnedNoIcons = true
-	console.warn('No icons have been registered. Do so with `IconElement.register()` – Or import `bui/elements/icon/legacy/_all`')
-}
+import {registerIcon, SVG_ICONS, warnNoIcons, getIconSvg} from './register'
 
 export default class IconElement extends HTMLElement {
 
@@ -192,7 +112,7 @@ export default class IconElement extends HTMLElement {
 		if( this._svg )
 			this._svg.remove()
 
-		let svg = SVG_ICONS.get(this.name)
+		let svg = getIconSvg(this.name)
 		
 		if( svg ){
 			this._svg = svg.cloneNode(true)
