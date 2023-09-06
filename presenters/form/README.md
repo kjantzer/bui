@@ -283,7 +283,7 @@ select-field::part(value):after {
 #### Custom icons
 
 ```html
-<check-box icon="star" iconempty="star-empty"></check-box>
+<check-box icon="star" iconempty="star_outline"></check-box>
 ```
 
 ## `<radio-btn>`
