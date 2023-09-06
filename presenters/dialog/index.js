@@ -113,7 +113,7 @@ registerPreset('info', {
 })
 
 registerPreset('success', {
-	icon: 'ok-circled',
+	icon: 'check_circle',
 	accent: 'green',
 	color: 'inverse',
 	btns: ['dismiss']

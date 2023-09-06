@@ -242,11 +242,11 @@ customElements.define('b-comment-row', class extends LitElement {
                     <div class="extras">
                         <b-hr></b-hr>
 
-                        <b-btn icon="${this.model.isResolved?'ok-circled':'ok-circled2'}" clear sm class="resolve" 
+                        <b-btn icon="${this.model.isResolved?'check_circle':'check_circle_outline'}" clear sm class="resolve" 
                             title="Toggle resolved/done"
                             @click=${this.toggleResolved}></b-btn>
 
-                        <b-btn icon="thumbs-up" clear sm class="reaction"
+                        <b-btn icon="thumb_up" clear sm class="reaction"
                             title="Toggle your reaction"
                             num=${this.model.reactions.length}
                             ?reacted=${this.model.userHasReacted}

@@ -87,7 +87,7 @@ export default html`
     <div>
         <b-timeline-horz>
             <div slot="date">Aug 10</div>
-            <b-icon name="ok-circled" slot="bubble" style="color: var(--green)"></b-icon>
+            <b-icon name="check_circle" slot="bubble" style="color: var(--green)"></b-icon>
             <div>Timeline content</div>
         </b-timeline-horz>
         <b-timeline-horz>
