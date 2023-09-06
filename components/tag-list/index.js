@@ -114,7 +114,7 @@ customElements.define('b-tag-list', class extends LitElement{
     constructor(){
         super()
         this.name = 'tag'
-        this.icon = 'tag'
+        this.icon = 'label'
         this.value = []
         this.saveDelay = 1500
     }
