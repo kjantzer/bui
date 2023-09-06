@@ -47,12 +47,23 @@ function registerIcon(name, icon, {prefix='icon-', className=''}={}){
 }
 
 const WARNINGS = new Map()
-const GlobalIconConst = new Proxy(SVG_ICONS, {
+const GLOBAL_ICONS_CONST = function(strings, ...args){
+	let iconName = strings.map((s,i)=>s+(args[i]||'')).join('')
 
-	set(){}, // disable setting this way (for now)
+	if( !SVG_ICONS.has(iconName) ){
+		// only warn once
+		if( !WARNINGS.get(iconName) )
+			console.warn(`Icon: "${iconName}" not loaded`);
+		WARNINGS.set(iconName, true)
+	}
+
+    return iconName
+}
+
+const GLOBAL_ICONS_CONST_PROXY = new Proxy(GLOBAL_ICONS_CONST, {
 
     get(target, prop){
-		if( !target.has(prop) ){
+		if( !SVG_ICONS.has(prop) ){
 			// only warn once
 			if( !WARNINGS.get(prop) )
 				console.warn(`Icon: "${prop}" not loaded`);
@@ -63,7 +74,7 @@ const GlobalIconConst = new Proxy(SVG_ICONS, {
 });
 
 if( !globalThis.ICONS )
-	globalThis.ICONS = GlobalIconConst
+	globalThis.ICONS = GLOBAL_ICONS_CONST_PROXY
 
 
 let hasWarnedNoIcons = false
