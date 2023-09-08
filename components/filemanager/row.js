@@ -151,7 +151,7 @@ customElements.define('b-file-row', class extends LitElement{
             </b-empty-state>
 
             <main>
-                <b-file-preview class="img" part="preview" icon="${this.model.isVideo?'play':''}"
+                <b-file-preview class="img" part="preview" icon="${this.model.isVideo?'play_arrow':''}"
                 @preview=${this.preview}
                 @contextmenu=${this.showMenu}>
                     <slot name="drag"></slot>
