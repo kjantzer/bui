@@ -9,7 +9,7 @@ module.exports = function diffObject(before={}, after={}, {includeChanged=true,i
         if( before?.[k] != after[k] ){
             changes[k] = after[k]
             
-            if( before[k])
+            if( before?.[k])
                 changesBefore[k] = before[k]
         }
     }
