@@ -19,6 +19,7 @@
 */
 
 const DEFAULT_ALLOW_TAGS = ['p', 'br', 'b', 'strong', 'em', 'i', 'ul', 'ol', 'li']
+const BLOCK_TAGS = ['div', 'main', 'article', 'section', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li']
 
 // TODO: move to param
 const DEFAULT_ALLOW_STYLES = {
@@ -181,6 +182,17 @@ function cleanNode(parent, node, opts={}){
                     node.childNodes[0].remove()
             }
             // if( parent.tagName == 'P' )
+            parent.appendChild(node)
+
+        // convert other "block" type tags to standard paragraphs
+        }else if( opts.allowTags.includes('p') && BLOCK_TAGS.includes(node.nodeName.toLowerCase()) ){
+            
+            // covert to standard p tag
+            let _node = document.createElement('p')
+            _node.innerHTML = node.innerHTML
+
+            node.remove()
+            node = _node
             parent.appendChild(node)
 
         // remove tags we dont want, but keep their contents
