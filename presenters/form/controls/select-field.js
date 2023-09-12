@@ -1,7 +1,7 @@
 /*
 	Select Field
 */
-import {css} from 'lit'
+import {css, html, render} from 'lit'
 import Menu from '../../menu'
 import device from '../../../util/device';
 
@@ -350,15 +350,14 @@ class SelectFieldElement extends HTMLElement {
 		if( this.options.length == 0 )
 			this._selected = val
 		
-		let labels = ''
+		let labels = []
 		
 		selected.forEach(m=>{
 			
 			this._selected.push(m.val)
 			
 			if(m.val || this.showEmpty)
-				labels += `<span part="value" value="${m.val}">${m.selectLabel||m.toolbarLabel||m.label}</span>`
-				
+				labels.push(html`<span part="value" value="${m.val}">${m.selectLabel||m.toolbarLabel||m.label}</span>`)
 		})
 
 		if( this.hasAttribute('summarize') ){
@@ -373,7 +372,7 @@ class SelectFieldElement extends HTMLElement {
 				labels = ''
 		}
 		
-		this._value.innerHTML = labels
+		render(labels, this._value)
 
 		this.setAttribute('value', val.join(','))
 		
