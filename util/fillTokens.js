@@ -6,6 +6,8 @@ module.exports = function(val, target, {
     tokenEnd='}'
 }={}){
 
+    if( !target ) throw new Error('Cannot fill tokens - missing target')
+
     let isJSON = typeof val !== 'string'
     let valStr = isJSON ? JSON.stringify(val) : val
     let tokens = JSON.stringify(val).match(new RegExp(`${tokenStart}(${tokenChars}+)${tokenEnd}`, 'g'))
@@ -23,6 +25,8 @@ module.exports = function(val, target, {
 
     if( isJSON )
         val = JSON.parse(valStr)
+    else 
+        val = valStr
 
     return val
 }
