@@ -249,7 +249,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
 
         ${scollbars.styleWindows('.body-wrap')}
 
-        .body {
+        :host:not([litbody]) .body {
             color: rgba(var(--theme-text-rgb, 0,0,0), .6);
         }
 
@@ -365,6 +365,8 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             this.setAttribute('notext', '')
         else
             this.removeAttribute('notext')
+
+        this.toggleAttribute('litbody', this.body&&!this.title&&!this.pretitle&&isLitHTML(this.body))
 
         this.toggleAttribute('nobtns', this.btns.length==0)
 
