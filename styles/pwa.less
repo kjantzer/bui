@@ -114,9 +114,9 @@ b-panel[height="100%"][anchor="right"]::part(main),
 b-panel[height="100%"][anchor="left"]::part(main),
 :root.insetpanels b-panel[height="100%"][anchor="right"]::part(main),
 :root.insetpanels b-panel[height="100%"][anchor="left"]::part(main) {
-    height: calc(100% - 1em);
-    right: .5em;
-    top: .5em;
+    height: calc(100% - (calc(2 * var(--inset-margin, .5em)))) !important;
+    right: var(--inset-margin, .5em);
+    top: var(--inset-margin, .5em);
     border-radius: var(--radius);
     overflow: hidden; /* keep clipped inside radius */
 }
