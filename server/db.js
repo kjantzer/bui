@@ -293,6 +293,8 @@ class QueryPromise extends Promise {
 
 class DBResults extends Array {
     static get array_chunk_size(){return 10000}
+
+    clone(){ return new DBResults(...this) }
     
     groupBy(...args){
         return groupBy.apply(this, args )
