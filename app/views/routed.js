@@ -11,6 +11,7 @@ export default class RoutedView extends LitElement {
     }
 
     closeInvalid = true
+    animateSameModelLoaded = false
 
     static get styles(){return css`
         :host {
@@ -110,6 +111,10 @@ export default class RoutedView extends LitElement {
         // this model already loaded
         // NOTE: will this cause problems with existing code?
         if( this.isLoadingSameModel(id) ){
+
+            if( this.animateSameModelLoaded )
+                this.panel?.pulseBack()
+            
             this.finishLoading(this.model, id, attrs, state)
             return false
         }
