@@ -1,7 +1,8 @@
 
 module.exports = function groupBy(key, {
     forceArray=false,
-    deleteKeyedValue=false
+    deleteKeyedValue=false,
+    returnAsArray=false
 }={}){
     let group = {}
     this.forEach(row=>{
@@ -28,5 +29,5 @@ module.exports = function groupBy(key, {
                 group[rowKey] = row
         }
     })
-    return group
+    return returnAsArray ? Object.values(group) : group
 }
