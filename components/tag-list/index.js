@@ -116,6 +116,7 @@ customElements.define('b-tag-list', class extends LitElement{
         this.name = 'tag'
         this.icon = 'label'
         this.value = []
+        this.allowCustom = true
         this.saveDelay = 1500
     }
 
@@ -141,9 +142,15 @@ customElements.define('b-tag-list', class extends LitElement{
         let didAdd = false
 
         if( this.presets ){
-            let preset = await new Menu([{
-                label: 'write in', icon: 'pencil'
-            }, '-', ...this.presets]).popOver(btn)
+
+            let presetMenu = [...this.presets]
+
+            if( this.allowCustom )
+                menu.unshift({
+                    label: 'write in', icon: 'pencil'
+                }, '-')
+
+            let preset = await new Menu(presetMenu).popOver(btn)
 
             if( !preset ) return
 
