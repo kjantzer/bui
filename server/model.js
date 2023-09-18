@@ -362,6 +362,14 @@ module.exports = class Model {
 
         if( opts.returnSql )
             return this.db.format(sql, clauseValues)
+
+        if( this.findExtendQuery ){
+            sql = this.db.format(sql, clauseValues)
+            sql = this.findExtendQuery(sql)
+            clauseValues = [] // applied by format ^
+
+            if( !sql ) throw new APIError('`findExtendQuery` should return a sql string')
+        }
             
         let resp = await this.db.query(sql, clauseValues, {preSql:opts.preSql})
 

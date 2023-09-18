@@ -69,6 +69,10 @@ module.exports = class MyModel extends Model {
                         ${this.findLimit}`
     }
 
+    // for wrapping query as subquery
+    // called right before making the actual query, after `findSql` creates and applies `findWhere`
+    findExtendQuery(sql){ return sql }
+
     async findParseRow(row, index, resultCount, resp, opts){
         // defaults to noop, only passing the row along as-is
         return row
