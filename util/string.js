@@ -12,11 +12,17 @@ function titleize(str){
     return str ? capitalize(str.replace(/[\-_]/g, ' ')) : str
 }
 
-function slugify(str, {spaces='_', lowerCase=true}={}){
+function slugify(str, {spaces='_', lowerCase=true, removeCamelcase=false}={}){
     str = str || ''
     str = str.replace(' ', spaces)
+    if( removeCamelcase ) str = camelcaseUndo(str, {delimiter: spaces})    
     if( lowerCase ) str = str.toLowerCase()
     return str
+}
+
+// TODO: better name?
+function camelcaseUndo(str, {delimiter='_'}={}){
+    return str?.split(/([A-Z])/).map(s=>s.match(/[A-Z]/)?delimiter+s.toLowerCase():s).join('')
 }
 
 // https://ricardometring.com/javascript-replace-special-characters
@@ -40,4 +46,4 @@ function removeTags(str) {
     return str.replace( /(<([^>]+)>)/ig, '');
 }
 
-module.exports = {capitalize, titleize, slugify, replaceAccents, removeTags}
+module.exports = {capitalize, titleize, slugify, replaceAccents, removeTags, camelcaseUndo}
