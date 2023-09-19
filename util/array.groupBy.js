@@ -18,7 +18,7 @@ module.exports = function groupBy(key, {
                 group[rowKey] = []
 
             // exists with one row...convert to array of rows
-            if( group[rowKey] && group[rowKey][key] ) // FIXME: this is broken logic
+            if( group[rowKey] && !Array.isArray(group[rowKey]) )
                 group[rowKey] = [group[rowKey]]
 
             // already set, must be array of rows
