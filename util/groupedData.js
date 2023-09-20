@@ -13,6 +13,7 @@
     data.groupBy('type').map(d=>d.total('qty')) // 3, 3
 */
 import {round} from './math'
+import uniq from './uniq'
 
 export default class GroupedData {
 
@@ -49,7 +50,7 @@ export default class GroupedData {
     groupBy(name, cb){
         
         if( !cb )
-            cb = d=>d[name]
+            cb = d=>d[name]?.toLowerCase?.()
 
         let key = name+'_'+cb.toString()
 
@@ -92,6 +93,13 @@ export default class GroupedData {
     filterBy(name, cb){
         if( !cb )
             cb = d=>d[name]
+        else if( typeof cb == 'string' ){
+            let v = cb.toLowerCase()
+            cb = d=>d[name]?.toLowerCase?.()==v
+        }else if( Array.isArray(cb) ){
+            let v = cb.map(v=>v.toLowerCase?.())
+            cb = d=>v.includes(d[name])
+        }
 
         let key = name+'_'+cb.toString()
 
@@ -116,6 +124,16 @@ export default class GroupedData {
     // gets value by looking at first model
     get(key){
         return this.models[0]?.[key]
+    }
+
+    values(key, {dedupe=true}={}){
+        let vals = this.map(d=>d[key].toLowerCase())
+
+        vals = vals.filter(d=>d!==undefined)
+
+        if( dedupe ) vals = uniq(vals)
+
+        return vals
     }
 }
 
