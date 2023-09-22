@@ -97,7 +97,7 @@ customElements.define('b-tabs', class extends LitElement {
             --contentPadding: var(--view-gutter, 2em);
             --menuItemPadding: .75em 1em;
             --menuItemRadius: 4px;
-            --inactiveColor: var(--b-tabs-inactive-color, rgba(0,0,0,.4));
+            --inactiveColor: var(--b-tabs-inactive-color, rgba(0,0,0,.9));
             --activeColor:  var(--b-tabs-active-color, var(--theme));
             --border-color: var(--b-tabs-border-color, rgba(0, 0, 0, 0.1));
             /* --contentBgd: none; */
