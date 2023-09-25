@@ -7,6 +7,7 @@ window.open = function(url, windowName, windowFeatures={}){
 
     return new Promise(resolve=>{
 
+    // TODO: should detect only "installed app" to support Edge, etc?
     const PWA = device.isChromeInstalledApp && (url[0]=='/' || url.includes(location.host))
     
     windowFeatures = Object.assign({
