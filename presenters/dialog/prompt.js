@@ -63,7 +63,7 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 					this.selectAll()
 			}, 200)
 			
-			if( device.isMobile )
+			if( device.isMobile || device.isTablet )
 				mobileAsyncFocus(this)
 		}
     }

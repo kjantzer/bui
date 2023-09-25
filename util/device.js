@@ -16,9 +16,8 @@ const device = {
     get isMac(){ return /Mac/.test(UA) },
     get isLinux(){ return /Linux/.test(UA) },
 
-    get minScreenSize(){
-        return window.outerWidth < window.outerHeight ? window.outerWidth : window.outerHeight;
-    },
+    get minScreenSize(){ return Math.min(window.outerWidth, window.outerHeight) },
+    get maxScreenSize(){ return Math.max(window.outerWidth, window.outerHeight) },
 
     get isSmall(){ return this.minScreenSize <= 599 },
     get isMedium(){ return this.minScreenSize <= 1199 },
@@ -36,7 +35,7 @@ const device = {
         return /iPad/.test(UA) || (!device.isiOS && device.isMac && navigator.standalone !== undefined )
     },
 
-    get isAndroid(){ return /android/i.test(UA) },
+    get isAndroid(){ return /android/i.test(UA) }, // NOTE: not reliable - particularly on tablets
     get isChromeOS(){ return /CrOS/.test(UA)},
 
     get isTouch(){
@@ -48,7 +47,7 @@ const device = {
     },
 
     get isTablet(){
-        return this.isMobile && this.minScreenSize >= 600 && this.isTouch
+        return this.minScreenSize >= 600 && this.isTouch
     },
 
     get isHandheldScanner(){
