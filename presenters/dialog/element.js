@@ -46,9 +46,8 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             position:relative;
             background: var(--theme-bgd, #fff);
             color: var(--theme-text, #222);
-            border-radius: var(--radius);
+            border-radius: var(--radius, 5px);
 
-            --radius: 5px;
             --pad: 1em;
 
             border: solid 1px var(--theme-bgd-accent); /* temp */
