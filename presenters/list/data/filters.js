@@ -363,6 +363,8 @@ export default class Filters extends Map {
         this._filtersPanel.open({filters: this})
     }
 
+    shouldSearchTermOnDB(){ return this.searchOptions.db || this.searchOptions.data === 'db' }
+
     filterByTerm(data){
         return new Promise(resolve=>{
             
@@ -374,7 +376,7 @@ export default class Filters extends Map {
             })
 
             if( !this.term 
-            || (!searchOptions.data || searchOptions.data === 'db' || searchOptions.db )
+            || (!searchOptions.data || this.shouldSearchTermOnDB )
             || this.term.length < searchOptions.minMatchCharLength )
                 return resolve(data)
 

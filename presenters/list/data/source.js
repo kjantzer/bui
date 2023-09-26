@@ -95,6 +95,8 @@ export default class DataSource {
                 data = Object.assign(fetchData, data)
             }
 
+            this._lastFetchedFromServerData = data
+
             // let fetch be aborted
             this._fetchFromServerController = new AbortController()
 
@@ -115,7 +117,8 @@ export default class DataSource {
         return this._fetching = new Promise(async (resolve, reject)=>{
 
             if( (pageAt == 0 && this._rawData.length == 0) 
-            || (this._pageFetched != pageAt && this._rawData.length == pageAt && this.opts.fetch == 'more' ) ){
+            || (this._pageFetched != pageAt && this._rawData.length == pageAt && this.opts.fetch == 'more' ) 
+            || (pageAt == 0 && this.filters.shouldSearchTermOnDB && (this._lastFetchedFromServerData?.term||'') != (this.filters.term||'') ) ){
 
                 this._pageFetched = pageAt
 
