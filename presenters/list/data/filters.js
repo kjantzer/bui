@@ -363,7 +363,7 @@ export default class Filters extends Map {
         this._filtersPanel.open({filters: this})
     }
 
-    shouldSearchTermOnDB(){ return this.searchOptions.db || this.searchOptions.data === 'db' }
+    get shouldSearchTermOnDB(){ return this.searchOptions.db || this.searchOptions.data === 'db' }
 
     filterByTerm(data){
         return new Promise(resolve=>{
