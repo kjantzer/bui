@@ -342,7 +342,7 @@ class FormHandler extends HTMLElement {
 				// skip controls that dont need testing
 				if( !control[toggleKey] ) return
 
-				let valid = true
+				let valid = []
 
 				if( typeof control[toggleKey] == 'function' ){
 
@@ -360,20 +360,25 @@ class FormHandler extends HTMLElement {
 						let val = this.model ? this.model.get(key) : this.get(key).value
 
 						if( typeof allowedVal == 'function' ){
-							valid = allowedVal(val) == true
+							valid.push(allowedVal(val) == true)
 
 						}else if( Array.isArray(allowedVal) ){
 							if( !allowedVal.includes(val) )
-								valid = false
+								valid.push(false)
 						}else{
 							if( allowedVal == 'falsey' )
-								valid = !val
+								valid.push(!val)
 
 							else if( allowedVal != val )
-								valid = false
+								valid.push(false)
 						}
+
+						console.log(key, val, valid);
 					}
 				}
+
+				if( Array.isArray(valid) )
+					valid = !valid.includes(false)
 
 				toggleIf[toggleKey](control, valid)
 
