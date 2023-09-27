@@ -372,8 +372,6 @@ class FormHandler extends HTMLElement {
 							else if( allowedVal != val )
 								valid.push(false)
 						}
-
-						console.log(key, val, valid);
 					}
 				}
 
