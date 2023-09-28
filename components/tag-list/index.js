@@ -146,7 +146,7 @@ customElements.define('b-tag-list', class extends LitElement{
             let presetMenu = [...this.presets]
 
             if( this.allowCustom )
-                menu.unshift({
+                presetMenu.unshift({
                     label: 'write in', icon: 'pencil'
                 }, '-')
 
