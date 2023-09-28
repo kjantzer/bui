@@ -340,17 +340,17 @@ class TextFieldElement extends HTMLElement {
 
 			this._val = val
 
-			if( this._editor.innerHTML != val ){
+			if( this._editor.innerHTML !== (val??'') ){
 				
 				if( this.isMultiline && !this.isPlain )
 					val = stringToHTML(val) || '<p><br></p>'
 				else
-					val = val || ''
+					val = val ?? ''
 
 				this._editor.innerHTML = val
 			}
 				
-			if( this._input.value != val )
+			if( this._input.value !== (val??'') )
 				this._input.value = val
 		}
 		
