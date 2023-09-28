@@ -366,7 +366,7 @@ class SelectFieldElement extends HTMLElement {
 				let name = summarize || 'item'
 				if( selected.length != 1 ) name += 's'
 
-				labels = `<span part="value">${selected.length} ${name}</span>`
+				labels = html`<span part="value">${selected.length} ${name}</span>`
 			}
 			else
 				labels = ''
