@@ -409,7 +409,7 @@ class TextFieldElement extends HTMLElement {
 	
 	_setClassNames(){
 		setValueAttrs(this, this._val)
-		if( (this._val??false)!==false && this._val !== '<p><br></p>' )
+		if( (this._val??'')!=='' && this._val !== '<p><br></p>' )
 			this.removeAttribute('empty')
 		else
 			this.setAttribute('empty', '')
