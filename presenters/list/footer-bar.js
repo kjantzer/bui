@@ -3,6 +3,10 @@ import '../../elements/theme'
 
 export default class extends LitElement{
 
+    static properties = {
+        theme: {type: String}
+    }
+
     static listeners = {
         coll: {'sync': 'onContentChanged'}
     }
@@ -24,6 +28,7 @@ export default class extends LitElement{
     constructor(){
         super()
         this.onSelectionChange = this.onSelectionChange.bind(this)
+        this.theme = 'inverse'
     }
 
     firstUpdated(){
@@ -49,7 +54,7 @@ export default class extends LitElement{
     }
 
     render(){return html`
-        <b-theme mode="inverse"></b-theme>
+        <b-theme mode="${this.theme}"></b-theme>
         <slot></slot>
     `}
 
