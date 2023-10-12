@@ -33,5 +33,14 @@
     "}"
   ],
   "description": ""
+},"Related server models": {
+  "prefix": "related",
+  "body": [
+    "static relatedDotNotation = true",
+    "static related = {",
+    "    $1: {id: '${2:id}', model: __dirname+'/$1'},",
+    "}"
+  ],
+  "description": "Related server models"
 }
 }
