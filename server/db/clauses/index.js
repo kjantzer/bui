@@ -15,7 +15,7 @@ module.exports = {
     UnsafeSQL: require('./UnsafeSQL'),
 
     // template literal: sqlStr`some string`
-    sqlStr: strings=>{
-        return {toSqlString: _=>strings[0]}
+    sqlStr: (strings, ...keys)=>{
+        return {toSqlString: _=>strings.map((str,i)=>str+(keys[i]||'')).join('')}
     }
 }
