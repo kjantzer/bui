@@ -61,6 +61,9 @@ module.exports = (rawData, opts)=>{
 			return val;
 		})
 	})
+
+	if( opts.footer )
+		data.push([opts.footer]);
 	
 	let csvContent = "\ufeff"; // utf-8 bom
 	data.forEach(function(infoArray, index){
