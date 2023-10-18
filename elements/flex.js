@@ -94,6 +94,15 @@ customElements.define('b-flex', class extends LitElement{
             margin-right: 0.35ch;
         }
 
+        /* comma separated list! */
+        :host([gap="•"]){ row-gap: 0ch; column-gap: 0ch; }
+        :host([gap="•"]) ::slotted(*:not(:last-child))::after {
+            content: ' • ';
+            display: inline;
+            margin-left: -0.25ch;
+            margin-right: 0.35ch;
+        }
+
         :host([gap-col="0"]), :host([gap-col="none"]) { column-gap: 0; }
         :host([gap-col=" "]) { column-gap: .5ch; }
         :host([gap-col=".25"]) { column-gap: .25rem; }
