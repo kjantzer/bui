@@ -77,6 +77,7 @@ customElements.define('b-list-export-btn', class extends Btn{
     }
 
     async exportDB(preset, {description}={}){
+        
         let list = this.list
         let filters = list.filters.toPostData()
         let url = list.coll.url
@@ -87,6 +88,7 @@ customElements.define('b-list-export-btn', class extends Btn{
         this.spin = true
 
         try{
+            // TODO: support path override via preset?
             let resp = await fetch(url+'/download?'+q)
 
             if( resp.status != 200 )
