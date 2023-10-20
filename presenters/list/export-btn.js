@@ -3,6 +3,7 @@ import Notif from '../notif'
 import Menu from '../menu'
 import toCSV from '../../util/toCSV'
 import { downloadCSV } from '../../util/download'
+import {titleize} from '../../util/string'
 
 customElements.define('b-list-export-btn', class extends Btn{
 
@@ -24,11 +25,16 @@ customElements.define('b-list-export-btn', class extends Btn{
         this.omitDescription = false;
     }
 
-    async export(){
+    get list(){
         if( this.parentElement.tagName !== 'B-LIST' )
-            return console.warn('`b-list-export-btn` must be a direct child of `b-list`')
+            throw new UIWarningError('`b-list-export-btn` must be a direct child of `b-list`')
 
-        let list = this.parentElement
+        return this.parentElement
+    }
+
+    async export(){
+
+        let list = this.list
         let data = list.dataSource.data
         let description = list.filters.toString() || 'No filters'
 
@@ -37,6 +43,9 @@ customElements.define('b-list-export-btn', class extends Btn{
             let presets = typeof this.presets == 'function' ? this.presets() : this.presets
             preset = await new Menu(presets.filter(o=>o)).popOver(this, {align: 'bottom-end'})
             if( preset === false ) return
+
+            if( preset.db ) return this.exportDB(preset, {description})
+
             preset = preset.val
             description += ' | Export Preset: '+preset
         }
@@ -61,10 +70,47 @@ customElements.define('b-list-export-btn', class extends Btn{
 
         if( preset ) opts.preset = preset
 
-        if(!this.omitTitle){opts.title = list.key}
+        if(!this.omitTitle){opts.title = titleize(list.key)}
         if(!this.omitDescription){opts.description = description}
 
         downloadCSV(toCSV(data, opts), filename)
+    }
+
+    async exportDB(preset, {description}={}){
+        let list = this.list
+        let filters = list.filters.toPostData()
+        let url = list.coll.url
+
+        let body = {filters: JSON.stringify(filters), download: preset.val}
+        let q = new URLSearchParams(body)
+
+        this.spin = true
+
+        try{
+            let resp = await fetch(url+'/download?'+q)
+
+            if( resp.status != 200 )
+                throw new Error(resp.statusText) // TODO: what if JSON error response?
+
+            let headers = Object.fromEntries(resp.headers.entries())
+            let data = await resp.text()
+
+            let [_, filename] = headers['content-disposition']?.match(/filename=(.+)/) || []
+            if( !filename ) list.key+'.csv'
+
+            // TODO: detect JSON response and convert to csv?
+
+            if(!this.omitDescription)
+                data = description+`\n`+data
+
+            if(!this.omitTitle)
+                data = titleize(list.key)+`\n`+data
+
+            return downloadCSV(data, filename)
+
+        }finally{
+            this.spin = false
+        }
     }
 
 })
