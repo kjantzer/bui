@@ -19,6 +19,7 @@ module.exports = class Between extends Clause {
 
     toSqlString(db, key){
         key = this.key || key
+        if( key.toSqlString ) key = key.toSqlString()
         return `${key} BETWEEN ${db.escape(this.start)} AND ${db.escape(this.end)}`
     }
 }
