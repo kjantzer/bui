@@ -33,7 +33,9 @@ export default function tokenPlugin({
     tag='b-token', 
     key=true, // will use `tag` name
     char='/', 
-    allowSpaces=false
+    inline=true,
+    allowSpaces=false,
+    selectable=false
 }={}){
 
     let tokenElement = customElements.get(tag)
@@ -66,9 +68,9 @@ export default function tokenPlugin({
     return Node.create({
 
         name,
-        group: 'inline',
-        inline: true,
-        selectable: false,
+        group: inline?'inline':'block',
+        inline,
+        selectable,
         atom: true,
 
         addOptions(){ return {
