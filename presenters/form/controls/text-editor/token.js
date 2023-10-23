@@ -114,14 +114,18 @@ export default function tokenPlugin({
                             menu = new Menu(props.items, {
                                 search:false,
                                 autoSelectFirst: true,
+                                perpetual: true,
                                 onSelect(item){
 
                                     let args = pick(item, attrs)
 
-                                    if( tokenElement.formatArgsForCommand )
-                                        args = tokenElement.formatArgsForCommand.call(this, args, item)
+                                    if( tokenElement.formatArgsForCommand ){
+                                        args = tokenElement.formatArgsForCommand.call(this, args, item, menu)
+                                        if( args === false ) return
+                                    }
 
                                     menu.command(args)
+                                    // menu.close()
                                 }
                             })
 
@@ -221,7 +225,7 @@ export default function tokenPlugin({
     }).configure({
 		tag: tag,
         suggestion: {
-            items: query => tokenElement.items(query) || []
+            items: ({query,editor}) => tokenElement.items({query,editor}) || []
         }
     })
 
