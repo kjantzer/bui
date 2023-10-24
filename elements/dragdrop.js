@@ -118,6 +118,8 @@ customElements.define('b-dragdrop', class extends LitElement{
     }
 
     unbind(){
+        this._enterCount = 0
+
         if( !this.target ) return
 
         this.target.draggable = false
@@ -212,6 +214,8 @@ customElements.define('b-dragdrop', class extends LitElement{
 
     onDragEnter(e){
 
+        this._enterCount++ // keep track of entering children
+
         // must not be from a dragdrop
         if( !DragData || !DragData.srcTarget ) return
 
@@ -240,6 +244,10 @@ customElements.define('b-dragdrop', class extends LitElement{
     }
 
     onDragLeave(e){
+        this._enterCount-- // fires when entering/leaving children
+
+        if( this._enterCount != 0 ) return // still within drop area (children)
+
         this.target.classList.remove('dragover')
         this.classList.remove('dragover')
         this.willTakeAction('leave', e)
