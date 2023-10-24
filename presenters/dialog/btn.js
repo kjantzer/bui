@@ -19,6 +19,7 @@ const PRESETS = {
     'open': {label: 'Open', color: 'theme'},
     'submit': {label: 'Submit', color: 'theme'},
     'upload': {label: 'Upload', color: 'theme'},
+    'update': {label: 'Update', color: 'theme'},
     'import': {label: 'Import', color: 'theme'},
 	'delete': {label: 'Delete', color: 'red'},
     'remove': {label: 'Remove', color: 'red'},
