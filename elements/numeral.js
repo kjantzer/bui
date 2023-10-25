@@ -70,7 +70,7 @@ customElements.define('b-numeral', class extends LitElement{
     }
 
     render(){return html`
-        <b-text nobold part="prefix"?hidden=${!this.prefix}>${this.prefix}</b-text>
+        <b-text nobold part="prefix" ?hidden=${!this.prefix}>${this.prefix}</b-text>
         ${this.numeral}<slot></slot>
         <b-text nobold part="suffix" ?hidden=${!this.suffix}>${this.suffix}</b-text>
     `}
