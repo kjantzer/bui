@@ -40,6 +40,10 @@ customElements.define('b-numeral', class extends LitElement{
         :host {
             display: inline-block;
         }
+
+        :host([muted]) [part] {
+            color: var(--theme-text-accent);
+        }
     `}
 
     get defaultFormat(){ return '0.[0]a' } 
@@ -66,9 +70,9 @@ customElements.define('b-numeral', class extends LitElement{
     }
 
     render(){return html`
-        <b-text muted nobold ?hidden=${!this.prefix}>${this.prefix}</b-text>
+        <b-text nobold part="prefix"?hidden=${!this.prefix}>${this.prefix}</b-text>
         ${this.numeral}<slot></slot>
-        <b-text muted nobold ?hidden=${!this.suffix}>${this.suffix}</b-text>
+        <b-text nobold part="suffix" ?hidden=${!this.suffix}>${this.suffix}</b-text>
     `}
 
     applyRange(){
@@ -116,7 +120,7 @@ customElements.define('b-currency-large', class extends Numeral{
     get defaultFormat(){ return '0.[0]a' }
 
     render(){return html`
-        <slot name="currency"><b-text muted nobold sup sm>$</b-text></slot>${this.numeral}<slot></slot>
+        <slot name="currency"><b-text nobold sup sm part="prefix">$</b-text></slot>${this.numeral}<slot></slot>
     `}
 })
 
@@ -144,6 +148,6 @@ customElements.define('b-percent', class extends Numeral{
     get num(){ return this.__num <= 1 && !this.hasAttribute('raw') ? this.__num * 100 : this.__num }
 
     render(){return html`
-        <slot name="percent"></slot>${this.numeral}<slot><b-text muted nobold>%</b-text></slot>
+        <slot name="percent"></slot>${this.numeral}<slot><b-text nobold part="suffix">%</b-text></slot>
     `}
 })
