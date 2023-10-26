@@ -55,6 +55,9 @@ customElements.define('b-grid', class extends LitElement{
         :host([rows="auto,1"]) { grid-template-rows: auto 1fr; }
         :host([rows="1,auto"]) { grid-template-rows: 1fr auto; }
 
+        :host([rows="2,1"]) { grid-template-rows: 2fr 1fr; }
+        :host([rows="1,2"]) { grid-template-rows: 1fr 2fr; }
+
         ${mediaQuery('sm', css`
             :host([cols-mobile="1"]) { grid-template-columns: 1fr; }
             :host([cols-mobile="2"]) { grid-template-columns: repeat(2, 1fr); }
