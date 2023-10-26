@@ -101,6 +101,10 @@ customElements.define('b-list-toolbar', class extends LitElement{
         .scroller { order: 3; }
         .after { order: 4; }
 
+        .scroller[empty] {
+            display: none;
+        }
+
         @container (max-width: 599px) {
             
             :host {
@@ -136,7 +140,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
         <div class="count"><span>${this.count}</span></div>
 
-        <div class="scroller">
+        <div class="scroller" ?empty=${!this.sorts&&!this.filters.length}>
 
             ${!this.sorts?'':html`
                 <b-list-sort-btn .sorts=${this.sorts}></b-list-sort-btn>
