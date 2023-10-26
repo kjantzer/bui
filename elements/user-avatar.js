@@ -63,6 +63,8 @@ export default class UserAvatar extends LitElement {
             this.model = user
         else if( val && users )
             this.model = users.get(val)
+        else
+            this.model = null
     
         this.requestUpdate('uid', oldVal)
     }
@@ -113,7 +115,7 @@ export default class UserAvatar extends LitElement {
         ${this.model&&(this.withName||this.nameOnly!=undefined)?html`
             ${this.nameOnly!=undefined?'':html`&nbsp;`}
             ${this.userName}
-        `:''}
+        `:(this.fallback??'')}
 
         <slot></slot>
     `}
