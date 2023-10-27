@@ -140,7 +140,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
         <div class="count"><span>${this.count}</span></div>
 
-        <div class="scroller" ?empty=${!this.sorts&&!this.filters.length}>
+        <div class="scroller" ?empty=${!this.sorts&&!this.filters.size}>
 
             ${!this.sorts?'':html`
                 <b-list-sort-btn .sorts=${this.sorts}></b-list-sort-btn>
