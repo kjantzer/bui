@@ -39,7 +39,10 @@ module.exports = (rawData, opts)=>{
 		data.unshift([]);
 
 	if( opts.description )
-		data.unshift([opts.description]);
+		Array.isArray(opts.description) 
+		? data.unshift(...opts.description.map(d=>[d]))
+		: data.unshift([opts.description]) 
+		
 
 	if( opts.title )
 		data.unshift([opts.title]);
