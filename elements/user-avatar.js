@@ -117,7 +117,7 @@ export default class UserAvatar extends LitElement {
             ${this.userName}
         `:''}
 
-        ${this.model&&(this.withName||this.nameOnly!=undefined)?(this.fallback??''):''}
+        ${this.model&&(this.withName||this.nameOnly!=undefined)&&!this.userName?(this.fallback??''):''}
 
         <slot></slot>
     `}
