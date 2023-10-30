@@ -44,6 +44,10 @@ customElements.define('b-numeral', class extends LitElement{
         :host([muted]) [part] {
             color: var(--theme-text-accent);
         }
+
+        [part="prefix"] {
+            vertical-align: text-top;
+        }
     `}
 
     get defaultFormat(){ return '0.[0]a' } 
@@ -104,7 +108,7 @@ customElements.define('b-currency', class extends Numeral{
     get defaultFormat(){ return '(0,0.[00])' }
 
     render(){return html`
-        <slot name="currency"><b-text muted nobold sup sm>$</b-text></slot>${this.numeral}<slot></slot>
+        <slot name="currency"><b-text nobold sm part="prefix">$</b-text></slot>${this.numeral}<slot></slot>
     `}
 })
 
