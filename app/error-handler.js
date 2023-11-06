@@ -58,11 +58,18 @@ const GlobalErrorHandler = (evt)=>{
         notif.msg = 'You DO NOT have permission for that'
     }
 
+    if( error.type == 'APIError' ){
+        notif.type = 'failed'
+        notif.edge = true
+        notif.icon = 'error'
+    }
+
     if( error.type == 'APIAccessError' ){
         notif.edge = true
         // notif.accent = true
         notif.icon = 'alert'
         notif.width = 'auto'
+        notif.animation = 'bounce'
     }
 
     if( error.type == 'DBError' ){
