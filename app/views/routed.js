@@ -184,6 +184,7 @@ export default class RoutedView extends LitElement {
         if( this.model && this.model.get('isViewing') )
             this.model.set('isViewing', false)
 
+        let oldModel = this.model
         this.model = model
 
         if( model && model.isInvalid ){
@@ -198,10 +199,10 @@ export default class RoutedView extends LitElement {
             model.set('isViewing', true)
 
         // NOTE: need to review performance on other machines
-        // TODO: allow opt-out?
-        if( this.panel?.isOpen && this.model && model !== this.model){
-            this.panel?.pulseBack()
-        }
+        // TODO: allow opt-out? - yes
+        // if( this.panel?.isOpen && oldModel && model && model !== oldModel){
+        //     this.panel?.pulseBack()
+        // }
     }
 
     async onRouteChange(oldState, newState, dir){
