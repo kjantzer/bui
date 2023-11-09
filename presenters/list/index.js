@@ -552,17 +552,28 @@ customElements.define('b-list', class extends LitElement {
         }
     }
 
+    noResultsText(term){
+        let str = this.listOptions?.noResultsPlaceholder || this.getAttribute('placeholder') || 'No results'
+        if( typeof str == 'function' )
+            str = str(term)
+        else
+            str = term ? `${str} “${term}”` : str
+
+        return str
+    }
+
     createEmptyElement(){
         this.emptyView = this.emptyView || document.createElement(this.emptyElement)
         this.emptyView.part = 'empty-view'
         this.emptyView.setAttribute('must-be', 'first')
+        this.emptyView.setAttribute('md', '')
         this.emptyView.list = this
         this.emptyView.dataSource = this.dataSource
         
         // this.emptyView.innerHTML = '<slot name="empty"></slot>'
         
         let term = this.dataSource.filters&&this.dataSource.filters.term
-        this.emptyView.value = term ? `No results for “${term}”` : (this.getAttribute('placeholder') || 'No results')
+        this.emptyView.value = this.noResultsText(term)
         this.emptyView.requestUpdate()
         return this.emptyView
     }
