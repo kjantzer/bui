@@ -96,6 +96,12 @@ export default class Filters extends Map {
         // first time getting value, get it from local storage
         if( this.__value === undefined ){
             this.__value = this.key && JSON.parse(localStorage.getItem(this._storeKey)) || {}
+
+            // set default values if something under than falsey
+            this.forEach(filter=>{
+                if( this.__value[filter.key] == undefined && filter.attrs.defaultVal )
+                    this.__value[filter.key] = filter.attrs.defaultVal
+            })
         }
 
         // SETTING
@@ -562,10 +568,10 @@ export class Filter {
     }
 
     get defaultVal(){
-        if( this.attrs.defaultVal ) return this.attrs.defaultVal
+        if( this.attrs.defaultVal !== undefined ) return this.attrs.defaultVal
         
         if( this.isCustomView )
-            return this.customView.defaultVal ? this.customView.defaultVal : null
+            return this.customView.defaultVal !== undefined ? this.customView.defaultVal : null
 
         let first = this.values[0]
         return first ? first.val : null
