@@ -150,11 +150,17 @@ customElements.define('b-tag-list', class extends LitElement{
                     label: 'write in', icon: 'pencil'
                 }, '-')
 
-            let preset = await new Menu(presetMenu).popOver(btn)
+            let preset
+
+            // only one item and it has no value; treat as "custom/write in"
+            if( presetMenu.length == 1 && presetMenu[0].label && !presetMenu[0].val )
+                preset = {} // custom
+            else
+                preset = await new Menu(presetMenu).popOver(btn)
 
             if( !preset ) return
 
-            if( preset.label != 'write in' )
+            if( preset.val )
                 if( this._addTag(preset.val) ){
                     didAdd = true
 
