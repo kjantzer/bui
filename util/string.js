@@ -3,6 +3,7 @@ function capitalize(str){
     if( !str ) return str
     return str
     .trim()
+    .toLowerCase() // in case all uppercase
     .split(' ')
     .map(s=>s?(s[0].toUpperCase()+s.substr(1)):'')
     .join(' ')
