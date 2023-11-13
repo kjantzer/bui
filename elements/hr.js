@@ -8,7 +8,7 @@ customElements.define('b-hr', class extends LitElement{
 
             display: block;
             margin: var(--padding, 1em) auto;
-            height: 1px;
+            height: var(--b-hr-height, 1px);
             min-width: 1em;
             flex-grow: 1;
             background: var(--bgd);
