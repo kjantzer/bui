@@ -14,6 +14,8 @@ customElements.define('b-list-footer', class extends Header{
         super()
         this.slot = "footer"
     }
+
+    showMenu(){} // clear
 })
 
 export default customElements.get('b-list-footer')
