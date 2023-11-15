@@ -220,7 +220,7 @@ customElements.define('radio-group', class extends LitElement{
 	}
 	
 	get active(){
-		return this.radios.find(el=>el.active)
+		return this.radios?.find(el=>el.active)
 	}
 	
 	get value(){
