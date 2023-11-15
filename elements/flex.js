@@ -90,8 +90,8 @@ customElements.define('b-flex', class extends LitElement{
         :host([gap="/"]) ::slotted(*:not(:last-child))::after {
             content: ' / ';
             display: inline;
-            margin-left: -0.25ch;
             margin-right: 0.35ch;
+            vertical-align: middle;
         }
 
         /* comma separated list! */
@@ -99,8 +99,8 @@ customElements.define('b-flex', class extends LitElement{
         :host([gap="•"]) ::slotted(*:not(:last-child))::after {
             content: ' • ';
             display: inline;
-            margin-left: -0.25ch;
             margin-right: 0.35ch;
+            vertical-align: middle;
         }
 
         :host([gap-col="0"]), :host([gap-col="none"]) { column-gap: 0; }
