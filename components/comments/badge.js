@@ -7,6 +7,10 @@ import CommentsView from './index'
 
 customElements.define('b-comments-badge', class extends CommentsView{
 
+    static properties = {
+        color: {type: 'String'}
+    }
+
     static get styles(){return css`
         :host {
             display: inline-block;
@@ -14,8 +18,8 @@ customElements.define('b-comments-badge', class extends CommentsView{
 
         :host([hidden]) { opacity: 0; pointer-events: none; }
 
-        :host(:not([num])),
-        :host([num="0"]) {
+        :host(:not([showzero]):not([num])),
+        :host(:not([showzero])[num="0"]) {
             visibility: hidden;
         }
 
@@ -37,7 +41,7 @@ customElements.define('b-comments-badge', class extends CommentsView{
 
     render(){return html`
 
-        <b-label badge="${this.coll.numUnread?'red':'white'}" part="badge">
+        <b-label badge="${this.coll.numUnread?'red':(this.color||'white')}" part="badge">
             ${this.coll.length}
             <!-- <b-label badge="red" dot></b-label> -->
         </b-label>
