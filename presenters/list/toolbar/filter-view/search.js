@@ -136,7 +136,7 @@ customElements.define('b-list-filter-view-search', class extends LitElement{
             })
 
         // bulk search features
-        if( this.opts.allowBulkSearch !== false )
+        if( this.opts.allowBulkSearch == true )
             _extendResults.push((menu, term)=>{
 
                 let values = term.split(/[\n\t\s]/).map(s=>s.trim()).filter(s=>s)
