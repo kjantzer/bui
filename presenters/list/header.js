@@ -25,8 +25,8 @@ export function sharedStyles(host=':host'){return css`
     }
     
     ${host==':host'
-    ?unsafeCSS(`${host}(:hover:not([viewing]):not([isselected]))`)
-    :unsafeCSS(`${host}:hover:not([viewing]):not([isselected])`)} > * {
+    ?unsafeCSS(`${host}(:hover:not([viewing]):not([isselected]):not([slot="header"]))`)
+    :unsafeCSS(`${host}:hover:not([viewing]):not([isselected]):not([slot="header"])`)} > * {
         background-color: var(--list-cell-hover-bgd, var(--theme-bgd-accent2))
     }
 
@@ -106,8 +106,8 @@ export function sharedStyles(host=':host'){return css`
     }
 
     ${host==':host'
-    ?unsafeCSS(`${host}(:hover)`)
-    :unsafeCSS(`${host}:hover`)} > [sticky]:after {
+    ?unsafeCSS(`${host}(:hover:not([slot="header"]))`)
+    :unsafeCSS(`${host}:hover:not([slot="header"])`)} > [sticky]:after {
         background: var(--list-cell-hover-bgd, var(--theme-bgd-accent2));
     }
 
