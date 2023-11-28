@@ -446,16 +446,18 @@ export default class BtnElement extends LitElement {
 
         super.firstUpdated()
         
-        this.addEventListener('click', ()=>{
+        this.addEventListener('click', (e)=>{
 
             if( window.soundFX && soundFX.playIfMobile )
                 soundFX.playIfMobile('tinyTap', 0.3)
 
-            if( this.href )
+            if( this.href ){
+                e.stopPropagation()
                 if( this.getAttribute('target') == '_blank' )
                     window.open(this.href)
                 else
                     window.location = this.href
+            }
         }, true)
     }
 
