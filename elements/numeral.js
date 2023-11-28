@@ -30,7 +30,9 @@ customElements.define('b-numeral', class extends LitElement{
         if( !this._title && this.title )
             this._title = this.title||''
 
-        this.title = ((this._title||'')+` `+(val||'')).trim()
+        if( !this.hasAttribute('notitle') )
+            this.title = ((this._title||'')+` `+(val||'')).trim()
+        
         this.applyRange()
     }
     
