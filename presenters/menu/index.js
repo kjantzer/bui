@@ -25,7 +25,7 @@ export const DefaultOpts = {
 	autoSelectFirst: false,
 	jumpNav: false, // true (always show) or number of results for it to show
 	typeDelay: 700, // how long until typed characters reset
-	hasMenuIcon: 'right-open',
+	hasMenuIcon: 'chevron_right',
 	onSelect: ()=>{},
 	onResultsFetched: ()=>{}
 }

@@ -74,7 +74,7 @@ customElements.define('b-menu-item', class extends LitElement{
 		}
 
 		b-icon.has-menu {
-			opacity: 0;
+			/*opacity: 0; */ /* Why did I think this was a good idea? seems weird */
 		}
 		
 		@media (hover) {
@@ -104,14 +104,16 @@ customElements.define('b-menu-item', class extends LitElement{
 			background: var(--hoverBgd);
 			color: var(--hoverTextColor);
 			cursor: pointer;
+		}
 
-			b-icon.has-menu {
-				opacity: 1;
-			}
+		:host([active]) b-icon.has-menu,
+		:host(.popover-open) b-icon.has-menu {
+			opacity: 1;
+		}
 
-			> check-box {
-				--color: var(--checkboxColorHover) !important;
-			}
+		:host([active]) > check-box,
+		:host(.popover-open) > check-box {
+			--color: var(--checkboxColorHover) !important;
 		}
 
 		@media (hover){
