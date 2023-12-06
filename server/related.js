@@ -9,9 +9,9 @@ function setup(Model){
         Model = Model.constructor
         
     if( !Model.related ) return
-    if( Model.__relatedSetup ) return
+    if( Model.__relatedSetup == Model.name ) return
 
-    Model.__relatedSetup = true
+    Model.__relatedSetup = Model.name
     
     for( let prop in Model.related ){
         let opts = Model.related[prop]
