@@ -653,6 +653,10 @@ customElements.define('b-list', class extends LitElement {
         this.selection.on('end', ()=>{
             this.removeAttribute('selection-on')
         })
+
+        this.selection.on('contextmenu', ({evt}={})=>{
+            this.selectionContextMenu?.(evt)
+        })
         
         this.addEventListener('selection:begin', e=>{
             e.stopPropagation()
