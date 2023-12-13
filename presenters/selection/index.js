@@ -222,6 +222,10 @@ export default class Selection {
     }
 
     stopPropagation(e){
+        
+        if( e.type == 'contextmenu' )
+            this.emit('contextmenu', {evt: e})
+
         e.preventDefault()
         e.stopImmediatePropagation()
         e.stopPropagation()
