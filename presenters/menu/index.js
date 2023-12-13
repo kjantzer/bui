@@ -130,6 +130,10 @@ customElements.define('b-menu', class extends LitElement{
             padding: .75em 1em 0;
         }
 
+		[heading]:has(+ .menu-divider) {
+			padding-bottom: .5em;
+		}
+
         .menu-search-bar {
             flex-shrink: 0;
             display: flex;
