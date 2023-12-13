@@ -16,6 +16,7 @@ const PRESETS = {
 	'save': {label: 'Save', color: 'theme'},
 	'create': {label: 'Create', color: 'theme'},
     'send': {label: 'Send', color: 'theme'},
+    'next': {label: 'Next', color: 'theme'},
     'open': {label: 'Open', color: 'theme'},
     'submit': {label: 'Submit', color: 'theme'},
     'upload': {label: 'Upload', color: 'theme'},
