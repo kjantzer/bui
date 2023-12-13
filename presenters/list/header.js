@@ -12,7 +12,7 @@ export function sharedStyles(host=':host'){return css`
 
     ${unsafeCSS(host)} > * {
         position: relative;
-        padding: var(--list-cell-padding-y, .5rem) var(--list-cell-padding-x, .5rem);
+        padding: var(--list-cell-padding-y, .75rem) var(--list-cell-padding-x, .5rem);
         box-sizing: border-box;
         border-bottom: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .1));
     }
