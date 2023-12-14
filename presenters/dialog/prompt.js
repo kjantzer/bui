@@ -32,6 +32,11 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 			margin-bottom: .25em;
 		}
 
+		radio-group[segment] radio-btn {
+			font-size: 1rem;
+    		font-weight: normal;
+		}
+
 		/* keep from tiny overscroll happening due to touch-ripple clipping */
 		form-handler > div:last-child > check-box {
 			margin-bottom: .5em;
