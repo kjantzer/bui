@@ -14,7 +14,7 @@ customElements.define('b-list-end-of-row', class extends LitElement{
         }
 
         b-text {
-            padding: 1em;
+            padding: var(--list-end-of-list-padding, 1em);
         }
     `
 
