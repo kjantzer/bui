@@ -26,7 +26,7 @@ export const downloadContent = (content, filename, opts={})=>{
         }
             opts.type = 'text/plain'
 
-        content = new Blob([content], {type: opts.type})
+        content = new Blob(Array.isArray(content)?content:[content], {type: opts.type})
     }
 
     url = window.URL.createObjectURL(content);
@@ -36,6 +36,7 @@ export const downloadContent = (content, filename, opts={})=>{
     a.download = filename||''
     a.click();
 
+    URL.revokeObjectURL(url)
 }
 
 export const downloadCSV = (content, filename, opts={})=>{
