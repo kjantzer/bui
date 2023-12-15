@@ -10,6 +10,8 @@
     - provide finer movements while holding `ctrl`
 
     Initial code pulled from: https://stackoverflow.com/a/21569684/484780
+
+    DEPRECATED - use b-draggable element
 */
 
 
@@ -37,6 +39,8 @@ export default function makeDraggable(el, callback){
 }
 
 let startDragging = (e)=>{
+
+    if( e.button !== 0 ) return // main button only
 
     let el = e.currentTarget
     let mouseX = e.clientX
@@ -67,6 +71,8 @@ let startDragging = (e)=>{
 let draggingDone = (e)=>{
     
     document.onmousemove = function(){}
+
+    return // NOTE: why was I doing the rest?
 
     let el = e.currentTarget
     let parent = el.offsetParent
