@@ -12,7 +12,8 @@ customElements.define('b-camera', class extends LitElement{
 
     static properties = {
         iid: {type: String},
-        mirror: {type: Boolean, reflect: true}
+        mirror: {type: Boolean, reflect: true},
+        placeholder: {type: String},
     }
 
     static get styles(){return css`
@@ -67,6 +68,11 @@ customElements.define('b-camera', class extends LitElement{
         }
     `}
 
+    constructor(){
+        super()
+        this.placeholder = 'Uninitialized'
+    }
+
     get key(){ return 'b-camera-'+(this.iid||'0') }
     
     async firstUpdated(){
@@ -77,7 +83,7 @@ customElements.define('b-camera', class extends LitElement{
     render(){return html`
         <canvas hidden></canvas>
         <video autoplay playsinline part="video"></video>
-        <b-empty-state sm>Uninitialized</b-empty-state>
+        <b-empty-state sm part="placeholder">${this.placeholder}</b-empty-state>
         <slot></slot>
     `}
 
@@ -117,6 +123,8 @@ customElements.define('b-camera', class extends LitElement{
         mirror=null
     }={}){
 
+        if( !this.video ) return
+
         this.checkFeatures()
 
         this.style.setProperty('--aspect-ratio', aspectRatio) // NOTE: support this?
@@ -149,6 +157,7 @@ customElements.define('b-camera', class extends LitElement{
 
         this.video.srcObject = this.stream
         this.video.hidden = false
+        this.setAttribute('streaming', '')
     }
 
     focusTo(focusDistance){
@@ -187,12 +196,10 @@ customElements.define('b-camera', class extends LitElement{
     }
 
     stop(){
-
-        if( this.stream )
-            this.stream.getTracks().forEach(track=>{ track.stop() })
-
+        this.stream?.getTracks().forEach(track=>track.stop())
         this.video.srcObject = null
         this.video.hidden = true
+        this.removeAttribute('streaming')
     }
 
     saveFrame(...args){ return this.takePicture(...args) } // alias
