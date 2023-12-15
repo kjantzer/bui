@@ -2,8 +2,8 @@ import { LitElement, html, css } from 'lit'
 import '../../elements/camera'
 import '../../elements/camera-controls'
 import '../../elements/draggable'
-// import makeDraggable from '../../util/makeDraggable'
 
+// TODO: support size
 customElements.define('c-screen-record-camera', class extends LitElement{
 
     static styles = css`
@@ -24,22 +24,12 @@ customElements.define('c-screen-record-camera', class extends LitElement{
         }
     `
 
-    constructor(){
-        super()
-        // this.show()
-    }
-
     show(){
         document.body.appendChild(this)
     }
 
     hide(){
         this.remove()
-    }
-
-    firstUpdated(){
-        // makeDraggable(this)
-        // this.video?.start()
     }
 
     render(){return html`

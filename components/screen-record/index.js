@@ -1,5 +1,7 @@
 import { LitElement, html, css } from 'lit'
 import Camera from './camera'
+import {downloadContent} from '../../util/download'
+import Draw from '../draw'
 
 customElements.define('b-screen-record', class extends LitElement{
 
@@ -15,112 +17,141 @@ customElements.define('b-screen-record', class extends LitElement{
 
     constructor(){
         super()
-        this.onStop = this.onStop.bind(this)
-        this.camera = new Camera()        
+        this.camera = new Camera()
+        this.draw = new Draw()
+
+        this.drawOn = this.drawOn.bind(this)
+        this.drawOff = this.drawOff.bind(this)
+
+        window.rec = this // TEMP
     }
 
     render(){return html`
         <b-btn @click=${this.toggle}>${this.recording?'Stop':'Record'}</b-btn>
-        
     `}
 
-    firstUpdated(){
-        this.camera.show()
-    }
-
     toggle(){
-        this.recording = !this.recording; // Start / Stop recording
-
-        // setTimeout(()=>{
-
-            if(this.recording){
-                this.camera.show()
-                this.startRecording()
-            } else {
-                this.camera?.hide()
-                this.stopRecording()
-            }
-
-        // })
+        if(this.recording){
+            this.stop()  
+        }else{
+            this.start()
+        }
     }
 
-    async startRecording(){
+    async start({thisTab=true}={}){
+
+        if( this.recording ) return
         
+        this.title = document.title // for filename
         this.deviceRecorder = null
         this.chunks = []
 
+        this.camera.show()
+        this.enableDraw()
+
         try{
 
-        var videoStream = await navigator.mediaDevices.getDisplayMedia({
-            video: {
-                mediaSource: 'screen',
-                width: { ideal: 2560, max: 2560 },
-                height: { ideal: 1440, max: 1440 }
-            }, 
-            audio: {
-                autoGainControl: false,
-                echoCancellation: false,
-                googAutoGainControl: false,
-                noiseSuppression: false
-            },
-            // selfBrowserSurface: 'include',
-            surfaceSwitching: 'exclude',
-            // preferCurrentTab: true, // not wide support
-            // systemAudio: 'include'
-        })
+            var videoStream = await navigator.mediaDevices.getDisplayMedia({
+                video: {
+                    mediaSource: 'screen',
+                    width: { ideal: 1920, max: 1920 },
+                    height: { ideal: 1080, max: 1080 }
+                    // width: { ideal: 2560, max: 2560 },
+                    // height: { ideal: 1440, max: 1440 }
+                }, 
+                audio: false,
+                selfBrowserSurface: 'include',
+                surfaceSwitching: 'exclude',
+                preferCurrentTab: thisTab, // not wide support
+            })
+            
 
-        let audioStream = await navigator.mediaDevices.getUserMedia({
-            video: false,
-            audio: { // https://medium.com/@trystonperry/why-is-getdisplaymedias-audio-quality-so-bad-b49ba9cfaa83
-                autoGainControl: false,
-                echoCancellation: false,
-                googAutoGainControl: false,
-                noiseSuppression: false
-            }, 
-        }) 
+            let audioStream = await navigator.mediaDevices.getUserMedia({
+                video: false,
+                audio: true
+                // audio: { // https://medium.com/@trystonperry/why-is-getdisplaymedias-audio-quality-so-bad-b49ba9cfaa83
+                //     autoGainControl: false,
+                //     echoCancellation: false,
+                //     googAutoGainControl: false,
+                //     noiseSuppression: false
+                // }, 
+            })
 
-        let stream = await new MediaStream([...videoStream.getTracks(), ...audioStream.getTracks()]) 
+            this.stream = await new MediaStream([...videoStream.getTracks(), ...audioStream.getTracks()]) 
 
-        this.deviceRecorder = await new MediaRecorder(stream, {mimeType: "video/webm"});
+            // if ended via Chrome "stop share" button
+            this.stream.getVideoTracks()[0].addEventListener('ended', () => {
+                console.log('stream ended');
+                this.onStop()
+            });
 
+            this.deviceRecorder = await new MediaRecorder(this.stream, {mimeType: "video/webm"});
 
-        this.deviceRecorder.ondataavailable = (e) => {
-            if(e.data.size > 0){
-                this.chunks.push(e.data);
+            this.deviceRecorder.ondataavailable = (e) => {
+                if(e.data.size > 0){
+                    this.chunks.push(e.data);
+                }
             }
-        }
 
-        this.deviceRecorder.onstop = this.onStop
-        
-        this.deviceRecorder.start(4.17188152) // ms - 24 frames a second?
+            // this not yet needed
+            this.deviceRecorder.onstop = function(){
+                console.log('recorder stopped?');
+            }
+            
+            this.deviceRecorder.start(4.17188152) // ms - 24 frames a second?
+
+            this.recording = true
 
         }catch(err){
-            this.recording = false
-            throw err
+            
+            this.stop()
+
+            if( err.message != 'Permission denied' )
+                throw err
         }
     }
 
-    stopRecording(){
-        this.deviceRecorder.stop()
+    stop(){
+        this.stream?.getVideoTracks()?.[0].stop()
+        this.onStop()
     }
 
     onStop(){
-        console.log('did stop?');
-        // var filename = window.prompt("File name", "video"); // Ask the file name
-        let filename = 'test.webm'
 
-        let blob = new Blob(this.chunks, {type: "video/webm"})
-        this.chunks = [] // Resetting the data chunks
+        // stop recording
+        this.recording = false
+        this.deviceRecorder?.stop()
+        this.camera?.hide()
+        this.disableDraw()
 
-        var dataDownloadUrl = URL.createObjectURL(blob);
+        if( !this.chunks.length ) return
 
-        // Downloadin it onto the user's device
-        let a = document.createElement('a')
-        a.href = dataDownloadUrl;
-        a.download = `${filename}.webm`
-        a.click()
+        // download recording
+        let filename = this.title+'.webm'
+        downloadContent(this.chunks, filename, {type: 'video/webm'})
         
-        URL.revokeObjectURL(dataDownloadUrl)
+        // reset
+        this.chunks = []
+    }
+
+    enableDraw(){
+        document.addEventListener('keydown', this.drawOn)
+        document.addEventListener('keyup', this.drawOff)
+    }
+
+    disableDraw(){
+        document.removeEventListener('keydown', this.drawOn)
+        document.removeEventListener('keyup', this.drawOff)
+    }
+
+    drawOn(e){
+        if( !e 
+        || ((e.ctrlKey||e.metaKey) && e.shiftKey) )
+            document.body.appendChild(this.draw)
+    }
+    
+    drawOff(){
+        this.draw.remove()
     }
 
 })
