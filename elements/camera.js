@@ -28,6 +28,10 @@ customElements.define('b-camera', class extends LitElement{
             background-color: var(--theme-bgd-accent);
         }
 
+        :host([hidden]) {
+            display: none;
+        }
+
         video {
             height: auto;
             width: auto;
@@ -51,6 +55,16 @@ customElements.define('b-camera', class extends LitElement{
             color: var(--theme-text-accent);
             opacity: 1;
         }
+
+        :host([bubble]) {
+            --aspect-ratio: 1;
+            border-radius: 50%;
+        }
+
+        :host([bubble]) video {
+            height: 100%;
+            object-fit: cover;
+        }
     `}
 
     get key(){ return 'b-camera-'+(this.iid||'0') }
@@ -62,7 +76,7 @@ customElements.define('b-camera', class extends LitElement{
 
     render(){return html`
         <canvas hidden></canvas>
-        <video autoplay playsinline></video>
+        <video autoplay playsinline part="video"></video>
         <b-empty-state sm>Uninitialized</b-empty-state>
         <slot></slot>
     `}
