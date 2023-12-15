@@ -93,6 +93,9 @@ customElements.define('b-draggable', class extends LitElement{
 
         this.styles = getComputedStyle(this.target)
 
+        if( this.target && !this.target.draggableController )
+            this.target.draggableController = this
+
         if( !['relative', 'absolute', 'fixed'].includes(this.styles.position) )
             this.target.style.position = 'relative'
         
@@ -110,6 +113,9 @@ customElements.define('b-draggable', class extends LitElement{
         }
 
         this.styles = null
+
+        if( this.target.draggableController == this )
+            delete this.target.draggableController
         
         this.target.removeEventListener('mousedown', this.onStart, false)
         this.target.removeEventListener('mouseup', this.onDone, false)
@@ -118,7 +124,7 @@ customElements.define('b-draggable', class extends LitElement{
 
     onLeave(){
         clearTimeout(this._onLeave)
-        this._onLeave = setTimeout(this.onDone, 300);
+        this._onLeave = setTimeout(this.onDone, 700);
     }
 
     onStart(e){
@@ -149,9 +155,18 @@ customElements.define('b-draggable', class extends LitElement{
         }
     }
 
+    snapToEdge(){
+        let {left, top} = snapToEdge(this.target, this.target.style)
+
+        this.target.style.left = left+'px'
+        this.target.style.top = top+'px'
+
+        return {left, top}
+    }
+
     onDone(){
 
-        let {left, top} = snapToEdge(this.target, this.target.style)
+        let {left, top} = this.snapToEdge()
 
         this.target.style.left = left+'px'
         this.target.style.top = top+'px'
