@@ -124,7 +124,7 @@ customElements.define('b-draggable', class extends LitElement{
 
     onLeave(){
         clearTimeout(this._onLeave)
-        this._onLeave = setTimeout(this.onDone, 700);
+        this._onLeave = setTimeout(this.onDone, 300);
     }
 
     onStart(e){
@@ -142,7 +142,7 @@ customElements.define('b-draggable', class extends LitElement{
         var origX = mouseX - elLeft,
             origY = mouseY - elTop;
         
-        document.onmousemove = function(e){
+        document.onmousemove = (e)=>{
 
             clearTimeout(this._onLeave)
 
