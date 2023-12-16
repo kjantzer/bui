@@ -187,6 +187,8 @@ export default customElements.get('b-draggable')
 
 function snapToEdge(target, {left=0, top=0}={}){
 
+    if( !target.offsetParent ) return {left, top}
+
     if( typeof left == 'string') left = parseInt(left)
     if( typeof top == 'string') top = parseInt(top)
 
