@@ -2,27 +2,47 @@
     Screen Record
 
     NOTES
-    - enable resolutions
     - mic/video enable/disable
-    - avatar sizes
 */
 import { LitElement, html, css } from 'lit'
 import Dialog from '../../presenters/dialog'
+import Menu from '../../presenters/menu'
 import {downloadContent} from '../../util/download'
 import '../../helpers/lit/shared'
+import '../../helpers/lit/contextmenu'
 import '../../elements/camera'
-import '../../elements/camera-controls'
 import '../../elements/draggable'
 import '../../elements/timer'
 import '../../elements/text'
 import '../../elements/btn'
+import '../../elements/btn-group'
 import '../../elements/grid'
+import '../../elements/code'
 import Draw from '../draw'
+import CollMap from '../../util/collmap'
+import store from '../../util/store'
+
+// for developing
+// setTimeout(()=>{
+//     customElements.get('b-screen-record').shared.open()
+// },500)
+
+const SIZES = [
+    {label: 'Standard', val: 'standard'},
+    {label: 'Small', val: 'small'},
+]
+
+const RESOLUTIONS = {
+    720: [1280, 720],
+    1080: [1920, 1080],
+    1440: [2560, 1440]
+}
 
 customElements.defineShared('b-screen-record', class extends LitElement{
 
     static properties = {
-        recording: {type: Boolean, reflect: true}
+        recording: {type: Boolean, reflect: true},
+        size: {type: String, reflect: true}
     }
 
     static styles = css`
@@ -31,12 +51,17 @@ customElements.defineShared('b-screen-record', class extends LitElement{
             display: grid;
             place-items: center;
             poition: absolute;
-            height: 200px;
-            width: 200px;
+            height: var(--size, 200px);
+            width: var(--size, 200px);
             border-radius: 50%;
             bottom: 0;
             right: 0;
             z-index: 10000;
+            box-shadow: var(--theme-shadow-1);
+        }
+
+        :host([size="small"]) {
+            --size: 150px;
         }
 
         b-camera {
@@ -52,21 +77,16 @@ customElements.defineShared('b-screen-record', class extends LitElement{
             
         }
 
-        [fab]:first-of-type {
+        [fab]{
             top: 0;
             left: 0;
-        }
-
-        [fab] ~ [fab] {
-            bottom: 0;
-            right: 0;
         }
 
         :host([recording]:not(:hover)) .controls {
             display: none;
         }
 
-        .timer {
+        b-text {
             background: rgba(0,0,0,.4);
             color: white;
             padding: 0.25em;
@@ -74,11 +94,30 @@ customElements.defineShared('b-screen-record', class extends LitElement{
             display: inline-block;
             text-align: center;
         }
+
+        b-camera {
+            --aspect-ratio: 1;
+            border-radius: 50%;
+        }
+
+        b-camera::part(video) {
+            height: 100%;
+            object-fit: cover;
+        }
     `
 
     constructor(){
         super()
         this.draw = new Draw()
+
+        this.opts = new CollMap(null, {
+            store: store.create('b-screen-recorder-opts', {
+                size: 'standard',
+                resolution: 720
+            })
+        })
+
+        this.size = this.opts.get('size')
 
         this.recordedData = []
         this.drawOn = this.drawOn.bind(this)
@@ -86,6 +125,7 @@ customElements.defineShared('b-screen-record', class extends LitElement{
     }
 
     open(){
+        if( this.parentElement ) return
         document.body.appendChild(this)
     }
 
@@ -94,6 +134,8 @@ customElements.defineShared('b-screen-record', class extends LitElement{
     }
 
     firstUpdated(){
+        super.firstUpdated()
+
         setTimeout(()=>{
             this.camera?.start().catch(err=>{})
         })
@@ -119,17 +161,19 @@ customElements.defineShared('b-screen-record', class extends LitElement{
 
         <b-grid class="controls" cols=1 center gap=" ">
             <b-btn fab icon="close" @click=${this.cancelAndClose}></b-btn>
-            <b-btn color="theme-gradient" @click=${this.toggle}>${this.recording?'Stop & Save':'Start Recording'}</b-btn>
-            <b-btn fab @click=${this.showTips}>?</b-btn>
-
             ${this.recording?html`
+                <b-btn color="theme-gradient" @click=${this.stop}>Stop & Save</b-btn>
                 <b-text tnum class="timer" sm><b-timer running></b-timer></b-text>
-            `:''}
+            `:html`
+                <b-btn-group>
+                    <b-btn color="theme-gradient" @click=${this.start}>Record</b-btn>
+                    <b-btn color="theme" icon="settings" @click=${this.options}></b-btn>
+                </b-btn-group>
+            `}
+
         </b-grid>
 
-        <b-camera bubble placeholder="">
-            <b-camera-controls></b-camera-controls>
-        </b-camera>
+        <b-camera placeholder=""></b-camera>
     `}
 
     showTips(e){
@@ -179,16 +223,13 @@ customElements.defineShared('b-screen-record', class extends LitElement{
 
         try{
 
+            let [resW, resH] = RESOLUTIONS[this.opts.get('resolution')] || RESOLUTIONS[720]
+
             var videoStream = await navigator.mediaDevices.getDisplayMedia({
                 video: {
                     mediaSource: 'screen',
-                    // TODO: enable resolution selection
-                    width: { ideal: 1280, max: 1280 },
-                    height: { ideal: 720, max: 720 }
-                    // width: { ideal: 1920, max: 1920 },
-                    // height: { ideal: 1080, max: 1080 }
-                    // width: { ideal: 2560, max: 2560 },
-                    // height: { ideal: 1440, max: 1440 }
+                    width: { ideal: resW, max: resW },
+                    height: { ideal: resH, max: resH }
                 }, 
                 audio: false,
                 selfBrowserSurface: 'include',
@@ -280,6 +321,80 @@ customElements.defineShared('b-screen-record', class extends LitElement{
     
     drawOff(){
         this.draw.remove()
+    }
+
+    async contextMenu(e){
+        this.options(e)
+    }
+
+    async options(e){
+
+        if( !this.camera ) return
+
+        let menu = []
+
+        menu.push({
+            label: 'Size',
+            description: this.opts.get('size')||'Standard',
+            fn: 'changeSize',
+            menu: SIZES,
+            menuOpts: {selected: this.opts.get('size')}
+        })
+
+        menu.push({
+            label: 'Resolution',
+            fn: 'changeRes',
+            description: this.opts.get('resolution')||'720',
+            menu: Object.values(RESOLUTIONS).map(([width, height])=>{
+                return {label: height, val: height}
+            }),
+            menuOpts: {selected: this.opts.get('resolution')}
+        })
+
+        let devices = await this.camera.getDevices()
+        let device = devices.find(d=>d.deviceId==this.camera.settings.get('deviceId'))
+        menu.push({
+            label: 'Camera',
+            description: device?.label||this.camera.settings.get('deviceId'),
+            fn: 'changeCamera',
+            menu: devices.length ? [...devices] : [{text: 'No cameras available', bgd: false}]
+        })
+
+        menu.push('-',{
+            label: 'Tips',
+            menu: [
+                {text: html`
+                <b-text md body color="text" style="max-width: 300px">
+                <b-grid cols=1 gap="1">
+                    <b-text>Click and drag this bubble to move</b-text>
+                    <b-text>Hold <b-code>shift+ctrl/cmd</b-code> while recording to draw with your mouse</b-text>
+                    <b-text>Left and Right clicks draw with different colors</b-text>
+                    <b-text>Letting go of keys will clear the drawing</b-text>
+                </b-grid>
+                </b-text>
+            `}
+            ]
+        })
+
+        new Menu(menu, {
+            handler: [this, e]
+        }).popOver(e)
+    }
+
+    async changeCamera(e, device){
+        this.camera.start({deviceId: device.menuSelected||device})
+    }
+
+    async changeSize(e, size){
+        this.size = size.menuSelected?.val || size.val
+        this.opts.set('size', this.size)
+        setTimeout(()=>{
+            this.draggableController.snapToEdge()
+        })
+    }
+
+    async changeRes(e, res){
+        this.opts.set('resolution', res.menuSelected?.val || res.val)
     }
 
 })
