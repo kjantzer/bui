@@ -188,7 +188,7 @@ customElements.define('b-camera', class extends LitElement{
 
     async getDevices(){
         let devices = await navigator.mediaDevices.enumerateDevices()
-        devices = devices.filter(device=>device.kind=='videoinput').map(d=>{
+        devices = devices.filter(device=>device.kind=='videoinput'&&device.deviceId).map(d=>{
             d.val = d.deviceId
             return d
         })
