@@ -5,6 +5,12 @@ const mime = require('mime')
 // create same "file" definition as express-fileupload (only data that is needed by fileManager.js)
 module.exports = function fileObjectFromPath(filepath, filename){
 
+    // if given single object
+    if( filepath.path && filepath.filename ){
+        filename = filepath.filename
+        filepath = filepath.path
+    }
+
     if( !filename ){
         filename = filepath.split('/').pop()
     }

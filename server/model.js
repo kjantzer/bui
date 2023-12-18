@@ -624,7 +624,7 @@ module.exports = class Model {
         if( syncData && !manualSync )
                 syncData()
 
-        return manualSync ? {resp: model, syncData} : model
+        return manualSync ? {resp: model, model, syncData} : model
     }
 
     async update(attrs={}, {manualSync=false}={}){
