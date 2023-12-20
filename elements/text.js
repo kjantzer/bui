@@ -167,7 +167,7 @@ customElements.define('b-text', class extends LitElement{
         }
 
         :host([link].popover-open),
-        :host([href]:not([color])){
+        :host([href]:not([href=""]):not([color])){
             color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
         }
 
@@ -179,7 +179,7 @@ customElements.define('b-text', class extends LitElement{
                 --b-text-hover-color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
             }
 
-            :host([href]:hover) {
+            :host([href]:not([href=""]):hover) {
                 text-decoration: underline;
             }
         }
