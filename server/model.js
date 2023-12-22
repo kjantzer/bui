@@ -664,7 +664,7 @@ module.exports = class Model {
                     if( this.config.jsonFields?.includes(k) )
                         this.attrs[k] = Object.assign(this.attrs[k]||{}, attrs[k])
                     else
-                        this.attrs[k] = attr[k]
+                        this.attrs[k] = attrs[k]
                 }
             }
 
