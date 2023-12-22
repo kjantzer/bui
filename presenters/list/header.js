@@ -220,6 +220,9 @@ customElements.define('b-list-header', class extends LitElement{
 
             let w = el.getAttribute('w') || prevW || false
             prevW = w
+
+            if(!el.part.contains('cell') )
+                el.part.add('cell')
             
             return {width: w, header:el}
 
