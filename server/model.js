@@ -263,6 +263,8 @@ module.exports = class Model {
                 try{
                     if( attrs[fieldName] && typeof attrs[fieldName] == 'string' )
                         attrs[fieldName] = JSON.parse(attrs[fieldName])
+                    else if( attrs[fieldName]?.toJSON )
+                        attrs[fieldName] = attrs[fieldName].toJSON()
                     else
                         attrs[fieldName] = attrs[fieldName] || []
                 }catch(err){
@@ -653,8 +655,18 @@ module.exports = class Model {
 
             await this.afterUpdate(attrs, beforeUpdate, args[1])
 
-            if( this.id )
-                this.attrs = Object.assign(this.attrs||{}, attrs)
+            if( this.id ){
+
+                this.attrs = this.attrs||{}
+
+                for( let k in attrs ){
+                    // merge JSON values (instead of replacing)
+                    if( this.config.jsonFields?.includes(k) )
+                        this.attrs[k] = Object.assign(this.attrs[k]||{}, attrs[k])
+                    else
+                        this.attrs[k] = attr[k]
+                }
+            }
 
             let syncData
             if( this.config.sync && this.req && this.syncData )
