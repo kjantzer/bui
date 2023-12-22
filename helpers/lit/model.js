@@ -15,6 +15,11 @@ Object.defineProperty(LitElement.prototype, 'model', {
                 this.unbindListeners()
 
             this.__model = val
+
+            if( val )
+                this.setAttribute('model', val.id)
+            else
+                this.removeAttribute('model')
             
             this.bindListeners&&this.bindListeners()
 
