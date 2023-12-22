@@ -99,6 +99,10 @@ export function sharedStyles(host=':host'){return css`
         left: calc(var(--grid-col-1-width) + var(--grid-col-2-width));
     }
 
+    ${unsafeCSS(host)} > [sticky]:first-child + [sticky] + [sticky] + [sticky] {
+        left: calc(var(--grid-col-1-width) + var(--grid-col-2-width) + var(--grid-col-3-width));
+    }
+
     ${unsafeCSS(host)} > [sticky="right"] {
         left: auto;
         right: 0;
