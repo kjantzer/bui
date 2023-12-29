@@ -16,7 +16,7 @@ Object.defineProperty(LitElement.prototype, 'model', {
 
             this.__model = val
 
-            if( val )
+            if( val && val.id )
                 this.setAttribute('model', val.id)
             else
                 this.removeAttribute('model')
