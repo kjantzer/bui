@@ -78,14 +78,16 @@ customElements.define('b-datepicker', class extends LitElement{
     }
     
     get value(){
+        // if( !this.selectedRange ) return null
+
         let dbFormat = 'YYYY-MM-DD'
         if( this.range )
             return {
-                start: this.selectedRange.start.format(dbFormat),
-                end: this.selectedRange.end.format(dbFormat)
+                start: this.selectedRange?.start.format(dbFormat),
+                end: this.selectedRange?.end.format(dbFormat)
             }
         else
-            return this.selectedRange.start.format(dbFormat)
+            return this.selectedRange?.start.format(dbFormat)
     }
 
     get label(){
@@ -123,15 +125,20 @@ customElements.define('b-datepicker', class extends LitElement{
 
     connectedCallback(){
         super.connectedCallback()
-        
-        setTimeout(() => {
-            this.scrollToDate('start')
-        }, 1);
+        this._didConnect = true
     }
 
     scrollToDate(date='start', location='center'){
 
         if( !this.monthsList ) return
+
+        let index = this.indexOfDate(date)
+        
+        if( index > -1 )
+            this.monthsList.scrollToIndex(index, location)
+    }
+
+    indexOfDate(date){
 
         if( date == 'today' )
             date = dayjs()
@@ -140,9 +147,28 @@ customElements.define('b-datepicker', class extends LitElement{
             date = this.selectedRange[date]
             
         let index = this.months.findIndex(m=>m.isSame(date, 'month'))
+
+        return index
+    }
+
+    // .layout for the lit-virtualizer
+    // https://github.com/lit/lit/tree/main/packages/labs/virtualizer#framing-a-child-element-within-the-viewport
+    get _layout(){
+
+        let layout = {}
+
+        // when reconnected to dom, pin to start of selected range
+        if( this._didConnect )
+            layout.pin = {
+                // NOTE: -6 added to properly render a correct position
+                // not sure if bug or how we've implemented - seems okay for now, may need to remove later
+                index: this.indexOfDate('start') - 6,
+                block: 'start'
+            }
         
-        if( index > -1 )
-            this.monthsList.scrollToIndex(index, location)
+        delete this._didConnect
+
+        return layout
     }
 
     render(){return html`
@@ -181,6 +207,7 @@ customElements.define('b-datepicker', class extends LitElement{
             part="months"
             .items=${this.months}
             .renderItem=${this.renderMonth.bind(this)}
+            .layout=${this._layout}
             @date-selected=${this.onDateSelected}
         ></lit-virtualizer>
         </main>
@@ -212,7 +239,8 @@ customElements.define('b-datepicker', class extends LitElement{
         if( prop == 'active' )
             return this.active = val
 
-        this.update()
+        
+        this.requestUpdate()
     }
 
     onPresetSelected(e){
