@@ -21,12 +21,13 @@ Object.defineProperty(LitElement.prototype, 'model', {
             else
                 this.removeAttribute('model')
             
-            this.bindListeners&&this.bindListeners()
-
             // does this "need" to be after request update?
             this.onModelChange && await this.onModelChange(val, oldVal)
             this.requestUpdate('model', oldVal)
             // this.onModelChange&&this.onModelChange(val, oldVal)
+
+            // do this at end so `onModelChange` can choose to update/set other models for listeners
+            this.bindListeners&&this.bindListeners()
         }
     },
 
