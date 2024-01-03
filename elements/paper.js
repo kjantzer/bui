@@ -156,9 +156,14 @@ export class PaperElement extends LitElement {
 
         :host([color="postit"]) {
             color: var(--b-paper-postit-color, inherit);
-            --bgd: var(--b-paper-postit-bgd, #FFF8E1);
+            --bgd: var(--b-paper-postit-bgd, var(--amber-100));
             --bgdAccent: var(--b-paper-postit-bgd-accent, var(--orange));
             --theme-text-rgb: 0,0,0;
+            box-shadow: none;
+        }
+
+        :host([color="postit"]) ::selection {
+            background: white;
         }
 
         :host([color="info"]) {
