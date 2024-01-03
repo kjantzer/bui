@@ -202,7 +202,7 @@ function cleanNode(parent, node, opts={}){
             if( node.remove )
                 node.remove()
             else
-                node.parentNode.removeChild(node) // node.js xmldom
+                node.parentNode.removeChild(node) // node.js @xmldom/xmldom required
 
             childNodes = Array.from(node.childNodes)
             childNodes.forEach(child=>{
