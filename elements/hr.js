@@ -17,6 +17,10 @@ customElements.define('b-hr', class extends LitElement{
             grid-column: 1/-1;
         }
 
+        :host-context(b-grid){
+            margin: var(--padding, 1em) 0;
+        }
+
         :host([dashed]) {
             background: linear-gradient(to right, transparent 50%, var(--theme-bgd) 50%), var(--bgd);
             background-size: var(--dash-size, 10px) 2px, 100% 2px;
