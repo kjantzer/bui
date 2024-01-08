@@ -238,7 +238,7 @@ module.exports = function(Orig){ return {
 			
 			// save link from id name to the child model key.
 			// this way when the id name value is changed we can update the child model. See `set` below
-			if( info.id != key ){
+			if( info.id !== undefined && info.id != key ){
 				this.__childModelIDLookup = this.__childModelIDLookup || {}
 				this.__childModelIDLookup[info.id] = key
 			}
