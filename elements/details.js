@@ -84,7 +84,11 @@ customElements.define('b-details', class extends LitElement{
     }
 
     maybeToggle(e){
-        if( e.target.hasAttribute('toggles') )
+        let topEl = e.target
+        while( topEl && topEl.slot != 'summary' )
+            topEl = topEl.parentElement
+
+        if( topEl?.hasAttribute('toggles') )
             this.toggle()
     }
 
