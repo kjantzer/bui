@@ -17,12 +17,16 @@ customElements.define('b-details', class extends LitElement{
 
         .summary {
             display: grid;
-            grid-template-columns: auto 1fr;
+            grid-template-columns: 1em 1fr;
             gap: .25em;
         }
 
         .content {
             display: block;
+        }
+
+        :host([nest]) .content {
+            margin-left: 1.25em;
         }
 
         :host(:not([open])) .content {
