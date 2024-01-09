@@ -50,7 +50,7 @@ export default class RoutedView extends LitElement {
         :host > main {
             overflow: auto;
             position: relative;
-            padding: var(--view-gutter, 1em);
+            padding: var(--gutter, 1em);
         }
     `}
 
