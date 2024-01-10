@@ -268,11 +268,15 @@ class TextFieldElement extends HTMLElement {
 	static get observedAttributes() { return ['disabled', 'placeholder']; }
 	attributeChangedCallback(name, oldValue, newValue){
 		
-		if( name === 'disabled' )
+		if( name === 'disabled' ){
 			this._editor.contentEditable = !this.disabled
+			this._input.disabled = this.disabled
+		}
 
-		if( name === 'placeholder' )
+		if( name === 'placeholder' ){
 			this._editor.dataset.placeholder = newValue
+			this._input.placeholder = newValue
+		}
 	}
 	
 	get input(){ return this.getAttribute('input') }
