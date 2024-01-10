@@ -63,7 +63,7 @@ customElements.define('b-details', class extends LitElement{
     `
 
     firstUpdated(){
-        let summaryElements = this.shadowRoot.querySelector('slot').assignedElements()
+        let summaryElements = this.shadowRoot.querySelector('slot[name="summary"]').assignedElements()
 
         // set first child as the summary if no summary set
         // TODO: improve this for if the element re-renders? should this logic fire again?
