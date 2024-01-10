@@ -209,6 +209,7 @@ function makePrompt(opts, i=0, globalOpts){
 		<text-field
 			pattern="${opts.pattern}"
 			placeholder="${opts.placeholder}"
+			input=${opts.input}
 			type="${opts.type}"
 			?html=${opts.html}
 			?multiline=${opts.multiline}
