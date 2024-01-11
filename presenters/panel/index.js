@@ -647,14 +647,14 @@ export class Panel extends LitElement {
         this.close()
     }
 
-    async close(){
+    async close(e){
 
         if( !this.isOpen ) return
 
-        if( this.opts.onClose && await this.opts.onClose() === false )
+        if( this.opts.onClose && await this.opts.onClose(e) === false )
             return
         
-        if( this.view && this.view.onClose && await this.view.onClose() === false )
+        if( this.view && this.view.onClose && await this.view.onClose(e) === false )
             return
 
         this.route&&this.route.update({didExit: true})
