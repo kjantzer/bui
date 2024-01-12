@@ -4,7 +4,8 @@ import io from 'socket.io-client'
 const socket = io('/', {
     // all modern browser support websockets, so dont use any fallbacks
     // https://caniuse.com/#feat=websockets
-    transports: ['websocket']
+    transports: ['websocket'],
+    query: window._realtimeConnectionQueryData // FIXME: hacky
 });
 
 const realtime = {

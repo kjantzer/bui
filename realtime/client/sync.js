@@ -19,7 +19,8 @@ export class Sync extends Map {
         super()
 
         this.socket = io(path, {
-            transports: ['websocket']
+            transports: ['websocket'],
+            query: window._realtimeConnectionQueryData // FIXME: hacky
         });
 
         this.socket.on('connect', ()=>{ this.reconnect() })
