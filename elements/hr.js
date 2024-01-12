@@ -37,6 +37,7 @@ customElements.define('b-hr', class extends LitElement{
         :host([short]) {
             width: min(180px, 30%);
             max-width: 100%;
+            margin: var(--padding, 1em) auto !important;
         }
 
         :host([vert]) {
@@ -51,7 +52,7 @@ customElements.define('b-hr', class extends LitElement{
             flex-grow: 0;
         }
 
-        :host([pad="none"]) { --padding: auto; }
+        :host([pad="0"]), :host([pad="none"]) { --padding: auto; }
         :host([pad="xs"]) { --padding: .25em; }
         :host([pad="sm"]) { --padding: .5em; }
         :host([pad="md"]) { --padding: 1.5em; }
