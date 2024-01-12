@@ -35,7 +35,10 @@ const device = {
         return /iPad/.test(UA) || (!device.isiOS && device.isMac && navigator.standalone !== undefined )
     },
 
-    get isAndroid(){ return /android/i.test(UA) }, // NOTE: not reliable - particularly on tablets
+    get isAndroid(){ return 
+        /android/i.test(UA) // NOTE: not reliable - particularly on tablets
+        || window.ContactsManager // as of Jan 2024, only supported on android
+    }, 
     get isChromeOS(){ return /CrOS/.test(UA)},
 
     get isTouch(){
