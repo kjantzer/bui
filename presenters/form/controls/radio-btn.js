@@ -120,8 +120,14 @@ customElements.define('radio-btn', class extends LitElement{
 		if( this.disabled ) return
 
 		this.ripple.burst()
-		
-		this.active = !this.active
+
+		// DO NOT allow unselect if part of radio-group
+		// TODO: support this with a opt-in attr? not sure of good name
+		if( this.active && this.parentElement?.tagName == 'RADIO-GROUP' )
+			// NOTE: continue logic to set change event - not really a "change" event, but "selected"
+			this.active = this.active
+		else
+			this.active = !this.active
 		
 		var event = new CustomEvent('change', {
 			bubbles: true,
