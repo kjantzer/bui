@@ -180,6 +180,14 @@ export default class BtnElement extends LitElement {
             margin-left: -.15em;
         }
 
+        :host([iconafter]) main [part="icon-area"] {
+            order: 1;
+        }
+        :host([iconafter]) main b-icon {
+            margin-left: .35em;
+            margin-right: -.15em;
+        }
+
         :host([stacked]) {
             --padding: .3em .5em .1em .5em;
         }
