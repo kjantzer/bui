@@ -13,4 +13,8 @@ function secondsToTime(secs){
     return {h, m, s, ms}
 }
 
-module.exports = {secondsToTime}
+function msToTime(ms){
+    return secondsToTime(ms/1000)
+}
+
+module.exports = {secondsToTime, msToTime}

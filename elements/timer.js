@@ -1,50 +1,32 @@
 import { LitElement, html, css } from 'lit'
-import dayjs from 'dayjs'
-import duration from 'dayjs/plugin/duration'
-dayjs.extend(duration)
+import {msToTime} from '../util/time'
 
-export class TimerElement extends LitElement {
+customElements.define('b-timer', class TimerElement extends LitElement {
 
     static get properties() { return {
-        time: {type: Number},
-		ms: {type: Boolean},
-		short: {type: Boolean, reflect: true}
+		startAt: {}, // date string, date object, or DayJS object
+		short: {type: Boolean, reflect: true},
+		
+		// internal setting
+		_time: {type: Object},
     }}
 
     constructor(){
 		super()
-        this.time = 0
-		this.ms = false
 		this.short = false
-		this.running = this.hasAttribute('running') ? true : false
-	}
-
-	get time(){ return this.__time }
-
-	set time(val){
-
-		const oldVal = this.__time
+		this._time = msToTime(0)
 		
-		if( !this.dur )
-			this.dur = dayjs.duration(val)
-		else{
-			let delta = val - oldVal
-			this.dur = this.dur.add(delta)
-		}
+		if( this.hasAttribute('running') )
+			this.startAt = new Date()
 
-		if( val == 0 )
-			this.setAttribute('zero', '')
-		else
-			this.removeAttribute('zero')
-
-		this.__time = val
-		this.requestUpdate('time', oldVal);
+		this._progress = this._progress.bind(this)
 	}
 
     static get styles(){ return css`
         :host {
             display: inline-flex;
 			--zeroColor: rgba(0,0,0,.5);
+			font-feature-settings: "tnum";
         }
 
 		.hours[value="0"],
@@ -67,6 +49,8 @@ export class TimerElement extends LitElement {
 			display: none;
 		}
 
+		:host(:not([ms])) .ms { display: none; }
+
 		/* span, */
 		/* unit[value="00"] {
 			color: var(--zeroColor);
@@ -79,64 +63,103 @@ export class TimerElement extends LitElement {
 		<unit class="minutes" value="${this.minutes}">${this.minutes}</unit>
 		<span>:</span>
 		<unit class="seconds" value="${this.seconds}">${this.seconds}</unit>
-		${this.ms?html`<unit class="ms">.${this.milliseconds}</unit>`:''}
+		<unit class="ms">.${this.milliseconds}</unit>
     `}
 
-	get running(){
-		return this._lastTS != null
+	set startAt(val){
+		let oldVal = this.startAt
+
+		// dayjs object
+		if( val?.toDate )
+			val = val.toDate()
+		// date string (or should be)
+		else if( ['string', 'number'].includes(typeof val) )
+			val = new Date(val)
+		else if( !(val instanceof Date) )
+			val = null
+
+		// if invalid date string
+		if( val && val.toString() == 'Invalid Date' )
+			val = null
+
+		this.__startAt = val
+
+		if( val )
+			this.start()
+		else
+			this.stop()
+	
+		this.requestUpdate('startAt', oldVal)
 	}
+	
+	get startAt(){ return this.__startAt}
 
 	set running(run){
 		if( !run ){
-			this.removeAttribute('running')
-			this._lastTS = null
-			clearInterval(this._progressInterval)
+			this._progressInterval = clearInterval(this._progressInterval)
+		
+		// if not already running, begin
 		}else if( !this.running ){
-			this._lastTS = new Date().getTime()
-			this._progressInterval = setInterval(this._progress.bind(this), 100)
-			this.setAttribute('running', '')
+
+			// if not "start at" defined, set it now
+			if( !this.startAt )
+				this.startAt = new Date()
+			
+			this._progressInterval = setInterval(this._progress, 100)
 		}
+
+		this.toggleAttribute('running', this.running)
 	}
 
-	start(){ this.running = true }
-	stop(){ this.running = false }
+	get running(){ return !!this._progressInterval }
 
-	_progress(){
-		let ts = new Date().getTime()
-		let elapsedTime = ts - this._lastTS
-		this._lastTS = ts
-		this.time += elapsedTime
+	start(startAt){
+		if( startAt !== undefined ){
+			this.stop()
+			this.startAt = startAt
+		}
+
+		this.running = true
 	}
 
-	get hours(){
-		return String(this.dur.hours()).padStart(2, '0')
+	stop({clear=false}={}){
+		if( clear )
+			this.startAt = null
+
+		this.running = false
 	}
 
-	get minutes(){
-		return String(this.dur.minutes()).padStart(2, '0')
+	_progress(){ 
+		let elapsedTime = new Date().getTime() - this.startAt.getTime()
+		this._time = msToTime(elapsedTime)
 	}
 
-	get seconds(){
-		return String(this.dur.seconds()).padStart(2, '0')
-	}
+	get hours(){ return String(this._time.h).padStart(2, '0') }
+	get minutes(){ return String(this._time.m).padStart(2, '0') }
+	get seconds(){ return String(this._time.s).padStart(2, '0') }
+	get milliseconds(){ return Math.round(this._time.ms / 100) }
 
-	get milliseconds(){
-		return Math.round(this.dur.milliseconds() / 100)
-	}
 
-	get format(){
-
+	toString({ms=false}={}){
+		
 		let str = [
 			this.hours,
 			this.minutes,
 			this.seconds
 		].join(':')
 
-		if( this.ms )
+		if( ms )
 			str += '.'+this.milliseconds
 
 		return str
 	}
-}
-    
-customElements.define('b-timer', TimerElement)       
+
+	toJSON(){ return {
+		...this._time,
+		startAt: this.startAt.getTime(),
+		elapsedMs: new Date().getTime() - this.startAt.getTime()
+	}}
+	
+})
+
+export default customElements.get('b-timer')
