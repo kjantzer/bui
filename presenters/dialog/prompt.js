@@ -29,6 +29,7 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 		}
 
 		radio-group {
+			display: grid;
 			margin-bottom: .25em;
 		}
 
