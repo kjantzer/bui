@@ -259,6 +259,7 @@ export default class BtnElement extends LitElement {
 
         :host([color^="primary"])  { --color: var(--theme); }
         :host([color^="theme"])  { --color: var(--theme); }
+        :host([color^="theme-secondary"])  { --color: var(--theme-secondary); }
         :host([color^="black"])  { --color: var(--theme-text-accent, #222); --textColor: var(--theme-bgd, #fff); }
         :host([color^="white"])  { --color: var(--theme-bgd-accent2, #ddd); --textColor: var(--theme-text, #111); }
         :host([color^="orange"]) { --color: var(--orange); }
@@ -275,6 +276,7 @@ export default class BtnElement extends LitElement {
 
         @media (hover){
         :host([color*="hover-theme"]:hover)  { --color: var(--theme); }
+        :host([color*="hover-theme-secondary"]:hover)  { --color: var(--theme-secondary); }
         :host([color*="hover-black"]:hover)  { --color: var(--black); }
         :host([color*="hover-orange"]:hover) { --color: var(--orange); }
         :host([color*="hover-blue"]:hover)   { --color: var(--blue); }
