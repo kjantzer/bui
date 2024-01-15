@@ -66,6 +66,11 @@ customElements.define('b-timer', class TimerElement extends LitElement {
 		<unit class="ms">.${this.milliseconds}</unit>
     `}
 
+	disconnectedCallback(){
+		super.disconnectedCallback()
+		this.stop() // TODO: track that it WAS running and restart on connect?
+	}
+
 	set startAt(val){
 		let oldVal = this.startAt
 
