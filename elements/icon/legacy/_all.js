@@ -167,7 +167,6 @@ Icon.register(
 	['ok', require('./ok.svg.html')],
 	['paragraph-center', require('./paragraph-center.svg.html')],
 	['paste', require('./paste.svg.html')],
-	['pause', require('./pause.svg.html')],
 	['phone', require('./phone.svg.html')],
 	['photo_size_select_small', require('./photo_size_select_small.svg.html')],
 	['picture', require('./picture.svg.html')],
