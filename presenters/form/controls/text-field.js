@@ -258,6 +258,7 @@ class TextFieldElement extends HTMLElement {
 
 		// TODO: how this applied needs improved
 		this._input.type = this.input
+		this._input.autocomplete = this.autocomplete
 	}
 	
 	disconnectedCallback(){
