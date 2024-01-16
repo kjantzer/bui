@@ -164,6 +164,8 @@ function makePrompt(opts, i=0, globalOpts){
 		helpText: '',
 		w: false,
 		type: '',
+		input: '',
+		autocomplete: 'off',
 		multiline: false,
 		disabled: false
 	}, opts)
@@ -211,6 +213,7 @@ function makePrompt(opts, i=0, globalOpts){
 			pattern="${opts.pattern}"
 			placeholder="${opts.placeholder}"
 			input=${opts.input}
+			autocomplete=${opts.autocomplete}
 			type="${opts.type}"
 			?html=${opts.html}
 			?multiline=${opts.multiline}
