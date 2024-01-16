@@ -2,7 +2,7 @@
 // stupid iOS https://stackoverflow.com/a/55652503/484780
 // maybe android problem too?
 
-export default function mobileAsyncFocus(focusElem, {delay=1000}={}){
+export default function mobileAsyncFocus(focusElem, {delay=1000, opts}={}){
     
     const fakeInput = document.createElement('input')
     fakeInput.setAttribute('type', 'text')
@@ -20,7 +20,7 @@ export default function mobileAsyncFocus(focusElem, {delay=1000}={}){
         if( typeof focusElem == 'function' )
             focusElem()
         else if( focusElem.focus )
-            focusElem.focus()
+            focusElem.focus(opts)
         else
             console.warning('Given element does not have a `focus` method');
 

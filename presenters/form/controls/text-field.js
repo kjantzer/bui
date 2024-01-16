@@ -541,6 +541,11 @@ class TextFieldElement extends HTMLElement {
 	
 	select(range='all'){
 
+		if( this.input && range == 'all' )
+			return this._input.select()
+		// TODO: this._input.setSelectionRange
+		// https://stackoverflow.com/a/4067488/484780
+
 		let el = this.editorEl,
 		    s = window.getSelection(),
 		    r = document.createRange(),

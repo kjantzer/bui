@@ -63,14 +63,19 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 
 		if( opts.autoFocus !== false ){
 
+			// defaults to first control, but allow user to change
+			let focusIndex = opts.autoFocus?.index || 0
+			let selectAll = opts.autoFocus?.selectAll || opts.autoFocus == 'select'
+
 			setTimeout(()=>{
-				this.focus()
-				if( opts.autoFocus == 'select' )
-					this.selectAll()
+				this.focus(focusIndex)
+				if( selectAll )
+					this.selectAll(focusIndex)
 			}, 200)
 			
-			if( device.isMobile || device.isTablet )
-				mobileAsyncFocus(this)
+			// NOTE: as of Jan 2024, android tablet seems to not need this
+			if( (device.isMobile || device.isTablet) && !device.isAndroid)
+				mobileAsyncFocus(this, {opts: focusIndex})
 		}
     }
 
@@ -97,14 +102,14 @@ customElements.define('b-dialog-prompt', class extends Dialog{
 		e.target.blur()
 	}
 
-	focus(){
+	focus(controlIndex=0){
 		if( this.formHandler.controls.length > 0 )
-			this.formHandler.controls[0].focus()
+			this.formHandler.controls[controlIndex]?.focus()
 	}
 
-	selectAll(){
+	selectAll(controlIndex=0){
 		if( this.formHandler.controls.length > 0 )
-			this.formHandler.controls[0].control.select('all')
+			this.formHandler.controls[controlIndex]?.control.select('all')
 	}
 
 	get value(){
