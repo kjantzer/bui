@@ -733,6 +733,11 @@ export class Panel extends LitElement {
             transition: ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        :host([type="modal"]) {
+            align-items: center;
+            justify-items: center;
+        }
+
         :host([type="modal"]) > main {
             max-height: var(--max-height, 96%);
             max-width: var(--max-width, 96%);
