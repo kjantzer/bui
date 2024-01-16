@@ -18,8 +18,6 @@ customElements.define('b-timer', class TimerElement extends LitElement {
 		
 		if( this.hasAttribute('running') )
 			this.startAt = new Date()
-
-		this._progress = this._progress.bind(this)
 	}
 
     static get styles(){ return css`
@@ -110,7 +108,7 @@ customElements.define('b-timer', class TimerElement extends LitElement {
 			if( !this.startAt )
 				this.startAt = new Date()
 			
-			this._progressInterval = setInterval(this._progress, 100)
+			this._progressInterval = setInterval(this._progress.bind(this), 100)
 		}
 
 		this.toggleAttribute('running', this.running)
