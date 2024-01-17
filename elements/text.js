@@ -208,12 +208,12 @@ customElements.define('b-text', class extends LitElement{
         ::slotted(p:first-child) {margin-top: 0;}
         ::slotted(p:last-child) {margin-bottom: 0;}
 
-        p:first-of-type,
+        :first-of-type,
         ::slotted(p:first-of-type) {
             margin-top: 0;
         }
 
-        p:last-of-type,
+        :last-of-type,
         ::slotted(p:last-of-type) {
             margin-bottom: 0;
         }
