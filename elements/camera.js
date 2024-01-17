@@ -119,6 +119,7 @@ customElements.define('b-camera', class extends LitElement{
         width=1920,
         aspectRatio=1.7777777778,
         audio=false,
+        zoom=null, // default or saved settings
         deviceId=null,
         mirror=null
     }={}){
@@ -148,12 +149,13 @@ customElements.define('b-camera', class extends LitElement{
                 width: {ideal: width},
                 aspectRatio,
                 facingMode,
-                deviceId
+                deviceId,
+                zoom: zoom || this.settings.get('zoom') || 1
             }
         })
 
-        let track = this.stream.getVideoTracks()[0]
-        this.capabilities = track.getCapabilities()
+        this.videoStream = this.stream.getVideoTracks()[0]
+        this.capabilities = this.videoStream.getCapabilities()
 
         this.video.srcObject = this.stream
         this.video.hidden = false
@@ -163,7 +165,6 @@ customElements.define('b-camera', class extends LitElement{
     focusTo(focusDistance){
         if( !this.stream ) return
         let opts = this.capabilities
-        let track = this.stream.getVideoTracks()[0]
 
         // throw new UIAlertError(`${supports.focusDistance.min} - ${supports.focusDistance.max}`)
         if( opts.focusDistance ){
@@ -175,7 +176,7 @@ customElements.define('b-camera', class extends LitElement{
                 focusDistance = opts.focusDistance.max
 
             try{
-                track.applyConstraints({
+                this.videoStream.applyConstraints({
                     advanced: [{
                         focusMode: 'manual', 
                         focusDistance,
@@ -187,14 +188,31 @@ customElements.define('b-camera', class extends LitElement{
         }
     }
 
+    get canZoom(){ return this.capabilities?.zoom }
+    get zoom(){ return this.videoStream.getConstraints()?.zoom }
+    set zoom(val){ return this.zoomTo(val) }
+
     zoomTo(zoomVal){
         // TODO: check capabilities and change zoomVal if out of bounds
 
-        let track = this.stream.getVideoTracks()[0]
+        let opts = this.capabilities
+
+        if( !opts.zoom ) return console.log('zoom not supported');
+
+        if( !zoomVal ) zoomVal = opts.zoom.min // reset to min
+        else zoomVal = parseFloat(zoomVal)
+
+        if( !zoomVal ) return console.log('bad zoom val:', zoomVal);
+
+        if( zoomVal < opts.zoom.min ) zoomVal = opts.zoom.min
+        if( zoomVal > opts.zoom.max ) zoomVal = opts.zoom.max
+
         try{
-            track.applyConstraints({
+            this.videoStream.applyConstraints({
                 zoom: zoomVal
             })
+
+            this.settings.set('zoom', zoomVal)
         }catch(err){
             console.log(err);
         }
