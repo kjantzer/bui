@@ -163,6 +163,7 @@ customElements.define('b-camera', class extends LitElement{
     focusTo(focusDistance){
         if( !this.stream ) return
         let opts = this.capabilities
+        let track = this.stream.getVideoTracks()[0]
 
         // throw new UIAlertError(`${supports.focusDistance.min} - ${supports.focusDistance.max}`)
         if( opts.focusDistance ){
@@ -183,6 +184,19 @@ customElements.define('b-camera', class extends LitElement{
             }catch(err){
 
             }
+        }
+    }
+
+    zoomTo(zoomVal){
+        // TODO: check capabilities and change zoomVal if out of bounds
+
+        let track = this.stream.getVideoTracks()[0]
+        try{
+            track.applyConstraints({
+                zoom: zoomVal
+            })
+        }catch(err){
+            console.log(err);
         }
     }
 
