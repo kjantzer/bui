@@ -39,7 +39,7 @@ export default class NFC {
 			onScan?.(event)
 		},{once})
 		
-		this.ndef.scan({signal: this.ctlr.signal}).catch(err=>{
+		return this.ndef.scan({signal: this.ctlr.signal}).catch(err=>{
 			this.stop()
 			throw err
 		});
