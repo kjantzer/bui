@@ -39,11 +39,8 @@ customElements.define('radio-group', class extends LitElement{
 			/* justify-self: flex-start; */
 			background-color: var(--theme-bgd-accent, #ccc);
 			--radio-segment-radius: 6px;
-			--radio-segment-padding: .25rem;
-			--radio-segment-btn-padding: var(--radio-segment-padding);
-			--radio-segment-min-width: 5em;
 			border-radius: var(--radio-segment-radius);
-			padding: var(--radio-segment-padding);
+			padding: var(--radio-segment-padding, .25rem);
 			display: inline-flex;
 			flex-grow: 1;
 		}
@@ -74,8 +71,8 @@ customElements.define('radio-group', class extends LitElement{
     		justify-content: center;
 			border-radius: var(--radio-segment-radius);
 			font-size: var(--radio-segment-font-size, 0.8em);
-			padding: var(--radio-segment-btn-padding);
-			min-width: var(--radio-segment-min-width);
+			padding: var(--radio-segment-btn-padding, var(--radio-segment-padding, .25em));
+			min-width: var(--radio-segment-min-width, 5em);
 			font-weight: bold;
 		}
 
@@ -89,7 +86,7 @@ customElements.define('radio-group', class extends LitElement{
 		}
 
 		:host([segment][stacked]) ::slotted(radio-btn){
-			padding: calc(var(--radio-segment-btn-padding)*1.5);
+			padding: calc(var(--radio-segment-btn-padding, var(--radio-segment-padding, .25em))*1.5);
 			justify-content: left;
 			line-height: 1.1em;
 		}
