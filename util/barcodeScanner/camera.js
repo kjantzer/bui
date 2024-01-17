@@ -53,7 +53,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
        camScanner.presenter.notif({
            anchor,
            autoClose: false,
-           closeOnClick: true,
+           closeOnClick: false,
            width: 'auto'
         })
 
@@ -102,10 +102,29 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         .marks > div:nth-child(2){ border-width: 4px 4px 0 0; top: 0; right: 0;}
         .marks > div:nth-child(3){ border-width: 0 4px 4px 0; bottom: 0; right: 0;}
         .marks > div:nth-child(4){ border-width: 0 0 4px 4px; bottom: 0; left: 0;}
+
+        radio-group {
+            position: absolute;
+            z-index: 10000;
+            line-height: .5em;
+            width: calc(100% - 2em);
+            left: 1em;
+            bottom: 1em;
+            --radio-segment-min-width: 2em;
+            --radio-segment-active-bgd: rgba(0,0,0,.6);
+        }
+
+        radio-group::part(main) {
+            background: rgba(0,0,0,.3);
+        }
+
+        b-camera:not([streaming]) ~ radio-group {
+            display: none;
+        }
     `}
 
     render(){return html`
-        <b-camera></b-camera>
+        <b-camera @click=${this.close}></b-camera>
         <div class="marks">
             <div></div>
             <div></div>
@@ -115,7 +134,20 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
                 <b-text ucase xbold xs>Barcode Scanner</b-text>
             </b-flex>
         </div>
+
+        ${this.camera?.canZoom?html`
+            <radio-group segment @change=${this.changeZoom} .value=${this.camera.settings?.get('zoom')||'1`'}>
+                <radio-btn value="1">1x</radio-btn>
+                <radio-btn value="2">2x</radio-btn>
+                <radio-btn value="3">3x</radio-btn>
+            </radio-group>
+        `:''}
     `}
+
+    changeZoom(e){
+        e.stopPropagation()
+        this.camera.zoom = e.currentTarget.value
+    }
 
     constructor(){
         super();
@@ -163,7 +195,9 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
 
         this.style.setProperty('--aspect-ratio', aspectRatio)
         
-        this.camera.start(arguments[0])
+        this.camera.start(arguments[0]).then(()=>{
+            this.requestUpdate() // to render zoom controls
+        })
 
         this.detecting = this.detecting || setInterval(this.detectCode, detectInterval);
 
