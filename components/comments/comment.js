@@ -70,6 +70,7 @@ customElements.define('b-comment-row', class extends LitElement {
         }
 
         .avatar {
+            display: var(--comment-avatar-display, inline-flex);
             --size: 2em;
             margin-top: .2em;
         }
@@ -90,7 +91,7 @@ customElements.define('b-comment-row', class extends LitElement {
         }
 
         .comment {
-            /* font-size: var(--b-comment-font-size, .9em); */
+            font-size: var(--b-comment-font-size, unset);
         }
 
         .comment > :first-child {
