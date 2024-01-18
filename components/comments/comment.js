@@ -8,6 +8,7 @@ import '../../elements/new-badge'
 import '../../elements/hr'
 import '../../elements/btn'
 import './file'
+import {bindLongpress} from 'bui/util/touch-events'
 
 let avatarTag
 let nameTag
@@ -35,6 +36,8 @@ customElements.define('b-comment-row', class extends LitElement {
         this.replies = false
         this.placeholderBtn = 'Comment'
         this.placeholder = 'Write a comment'
+
+        bindLongpress(this)
 
         this.addEventListener('contextmenu', this.showMenu)
     }
@@ -340,10 +343,20 @@ customElements.define('b-comment-row', class extends LitElement {
         this.editing = false
     }
 
+    _cancelEditing(){
+        this.model.resetEdited()
+        this.editing = false
+    }
+
     showMenu(e){
 
         e.preventDefault()
         e.stopPropagation()
+
+        // bindLongpress; not needed, menu already shown
+        // bindLongpress still used cause the first time the menu opens it goes away when finger lifted
+        // bindLongpress will keep it open, but then no need to open menu AGAIN
+        if( e.detail?.clientX ) return
 
         if( !this.model ) return
         if( this.model.get('type') == 'system' ) return  
@@ -353,6 +366,10 @@ customElements.define('b-comment-row', class extends LitElement {
             'divider',
             {label: 'Delete', icon: 'trash', color: 'hover-red', fn: 'destroy'}
         ]
+
+        // this is mostly put in place for mobile devices with no escape key
+        if( this.editing )
+            menu = [{label: 'Cancel Edit', icon: 'restart_alt', fn: '_cancelEditing'}]
 
         let action = this.willTakeAction('show-menu', {menu})
         if( action.notAllowed ) return

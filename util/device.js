@@ -20,7 +20,7 @@ const device = {
     get maxScreenSize(){ return Math.max(window.outerWidth, window.outerHeight) },
 
     get isSmall(){ return this.minScreenSize <= 599 },
-    get isMedium(){ return this.minScreenSize <= 1199 },
+    get isMedium(){ return this.minScreenSize <= 1199 }, // TODO: rename to `isMaxSizeMedium` or similar?
     get isSmallDevice(){ return this.isSmall }, // DEPRECATED
 
     get isLandscape(){ return window.outerHeight < window.outerWidth },
