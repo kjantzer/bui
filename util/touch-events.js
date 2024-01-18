@@ -12,7 +12,7 @@ export const bindLongpress = (el, {
 
     el.addEventListener(isTouch?'touchstart':'mousedown', e=>{
 
-        let {clientX, clientY} = e
+        let {clientX, clientY} = e.touches?.[0] || e
 
         // ignore right+click (https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button)
         if( !isTouch && e.button !== 0 ) return
