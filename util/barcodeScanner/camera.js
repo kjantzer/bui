@@ -88,6 +88,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
             position: absolute;
             top: 0;
             left: 0;
+            pointer-events: none;
         }
 
         .marks > div {
@@ -121,6 +122,11 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         b-camera:not([streaming]) ~ radio-group {
             display: none;
         }
+
+        .error  {
+            background: rgba(0,0,0,.8);
+            padding: 1px 3px;
+        }
     `}
 
     render(){return html`
@@ -131,7 +137,10 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
             <div></div>
             <div></div>
             <b-flex center>
-                <b-text ucase xbold xs>Barcode Scanner</b-text>
+                <b-text ucase xbold xs align="center">
+                    Barcode Scanner
+                    <b-text ?hidden=${this.detector} class="error" color="red" block>BarcodeDetector not supported</b-text>
+                </b-text>
             </b-flex>
         </div>
 
@@ -191,7 +200,13 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         this.checkFeatures()
 
         this.continuous = continuous
-        this.detector = new BarcodeDetector({formats});
+
+        try{
+            this.detector = new BarcodeDetector({formats});
+            this.detecting = this.detecting || setInterval(this.detectCode, detectInterval);
+        }catch(err){
+            console.log(err);
+        }
 
         this.style.setProperty('--aspect-ratio', aspectRatio)
         
@@ -199,14 +214,12 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
             this.requestUpdate() // to render zoom controls
         })
 
-        this.detecting = this.detecting || setInterval(this.detectCode, detectInterval);
-
         this.focusTo(focusDistance)
 
         // after 3 seconds try minium focus distance
-        this._autoFocusChange = setTimeout(()=>{
-            this.focusTo(0.05)
-        }, 3*1000)
+        // this._autoFocusChange = setTimeout(()=>{
+        //     this.focusTo(0.05)
+        // }, 3*1000)
     }
 
     focusTo(focusDistance){
