@@ -89,6 +89,10 @@ customElements.define('radio-btn', class extends LitElement{
 			color: var(--labelColor);
 		}
 
+		:host-context(radio-group[stacked]) label {
+			flex-grow: 1;
+		}
+
 		label {
 			cursor: pointer;
 		}
