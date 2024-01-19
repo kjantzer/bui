@@ -104,14 +104,24 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         .marks > div:nth-child(3){ border-width: 0 4px 4px 0; bottom: 0; right: 0;}
         .marks > div:nth-child(4){ border-width: 0 0 4px 4px; bottom: 0; left: 0;}
 
+        .switch-cam {
+            position: absolute;
+            top: 1em;
+            left: 1em;
+            z-index: 10000;
+            --bgdColor: rgba(0,0,0,.6);
+        }
+
         radio-group {
             position: absolute;
             z-index: 10000;
-            line-height: .5em;
+            line-height: 1em;
             width: calc(100% - 2em);
             left: 1em;
             bottom: 1em;
+            color: white;
             --radio-segment-min-width: 2em;
+            --radio-segment-padding: 2px;
             --radio-segment-active-bgd: rgba(0,0,0,.6);
         }
 
@@ -139,7 +149,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
             <b-flex center>
                 <b-text ucase xbold xs align="center">
                     Barcode Scanner
-                    <b-text ?hidden=${this.detector} class="error" color="red" block>BarcodeDetector not supported</b-text>
+                    <b-text ?hidden=${this.detector||!this.camera} class="error" color="red" block>BarcodeDetector not supported</b-text>
                 </b-text>
             </b-flex>
         </div>
@@ -151,7 +161,21 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
                 <radio-btn value="3">3x</radio-btn>
             </radio-group>
         `:''}
+
+        ${this.hasFrontBackCam?html`
+            <b-btn @click=${this.toggleCamera} pill lg icon="cameraswitch" class="switch-cam"></b-btn>
+        `:''}
     `}
+
+    toggleCamera(e){
+        e.stopPropagation()
+        let {front, back} = this.hasFrontBackCam
+        let camera = this.camera.videoStream.label == front.label ? back : front
+        this.camera.start({
+            deviceId: camera,
+            mirror: camera == front
+        })
+    }
 
     changeZoom(e){
         e.stopPropagation()
@@ -201,16 +225,18 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
 
         this.continuous = continuous
 
-        try{
-            this.detector = new BarcodeDetector({formats});
-            this.detecting = this.detecting || setInterval(this.detectCode, detectInterval);
-        }catch(err){
-            console.log(err);
-        }
-
         this.style.setProperty('--aspect-ratio', aspectRatio)
         
-        this.camera.start(arguments[0]).then(()=>{
+        this.camera.start(arguments[0]).then(async ()=>{
+
+            try{
+                this.detector = new BarcodeDetector({formats});
+                this.detecting = this.detecting || setInterval(this.detectCode, detectInterval);
+            }catch(err){
+                console.log(err);
+            }
+
+            this.hasFrontBackCam = await this.camera.hasFrontBack()
             this.requestUpdate() // to render zoom controls
         })
 
