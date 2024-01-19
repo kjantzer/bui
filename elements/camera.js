@@ -129,9 +129,13 @@ customElements.define('b-camera', class extends LitElement{
         this.checkFeatures()
 
         this.style.setProperty('--aspect-ratio', aspectRatio) // NOTE: support this?
-        this.mirror = mirror === null ? this.mirror : mirror
 
         this.stop()
+
+        if( mirror !== null )
+            this.settings.set('mirror', mirror)
+
+        this.mirror = this.settings.get('mirror')
 
         // can be given `InputDeviceInfo` object
         if( deviceId?.deviceId )
@@ -225,6 +229,17 @@ customElements.define('b-camera', class extends LitElement{
             return d
         })
         return devices
+    }
+
+    async hasFrontBack(){
+        let devices = await this.getDevices()
+        let front = devices.find(d=>d.label.match(/front/i))
+        let back = devices.find(d=>d.label.match(/back/i))
+
+        if( front && back )
+            return {front, back}
+
+        return false
     }
 
     stop(){
