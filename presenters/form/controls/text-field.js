@@ -55,6 +55,7 @@ main {
 	border: none;
 	background: transparent;
 	color: inherit;
+	-webkit-text-fill-color: var(--theme-text); /* auto fill */
 	/* background: yellow; */
 }
 
@@ -584,8 +585,10 @@ class TextFieldElement extends HTMLElement {
 		
 		this.isInvalid = false
 
-		if( e.key.length == 1)
+		if( !e.key || e.key.length == 1)
 			this.removeAttribute('empty')
+
+		if( !e.key ) return // auto-complete event
 
 		// make sure to remove trailing <br> when deleting content
 		if( e.key == 'Backspace' && this.isHTML ){
