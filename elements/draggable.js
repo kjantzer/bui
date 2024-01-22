@@ -101,9 +101,9 @@ customElements.define('b-draggable', class extends LitElement{
         
         this.target.style.cursor = 'move'
 
-        this.target.addEventListener('mousedown', this.onStart, false)
-        this.target.addEventListener('mouseup', this.onDone, false)
-        this.target.addEventListener('mouseleave', this.onLeave, false) // if left window while dragging
+        this.target.addEventListener('pointerdown', this.onStart, false)
+        this.target.addEventListener('pointerup', this.onDone, false)
+        this.target.addEventListener('pointerleave', this.onLeave, false) // if left window while dragging
     }
 
     unbind(){
