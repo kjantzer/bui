@@ -24,24 +24,47 @@
 
 */
 import Emitter from 'component-emitter'
+import store from './store'
 
 const Instances = new Map()
 
 class UsbPrinter {
 
     static get default(){ return this.shared('default') }
-    static get zebra(){ return this.shared('zebra', {vendorID:2655})}
+
+    static get zebra(){ return this.shared('zebra', {filters: {
+        vendorId:0x0a5f
+    }})}
+    
+    static get zebraZP450(){ return this.shared('zebra-zp-450', {filters: {
+        vendorId:0x0a5f, productId: 0x008c
+    }})}
+
+    static get zebraZM400(){ return this.shared('zebra-zm-400', {filters: {
+        vendorId:0x0a5f, productId: 0x0065
+    }})}
 
     static shared(key, opts){
         if( !Instances.get(key) )
-            Instances.set(key, new UsbPrinter(opts))
+            Instances.set(key, new UsbPrinter({...opts, key}))
         return Instances.get(key)
     }
 
-    constructor({
-        vendorID=2655 // Zebra
-    }={}){
-        this.vendorID = vendorID
+    constructor({filters, key}={}){
+
+        // store which device was connected in local storage
+        // so when we refresh/reconnect, we get correct device
+        // this lets us have multiple usb devices connected
+        if( key )
+            this.deviceCache = store.create('usb-device:'+key)
+
+        this.filters = filters || {vendorId:2655} // Zebra // TODO: remove this default
+
+        if( this.filters && !Array.isArray(this.filters))
+            this.filters = [this.filters]
+        else if( !this.filters )
+            this.filters = []
+
         this.connectToDevice()
     }
 
@@ -70,9 +93,15 @@ class UsbPrinter {
 
         return this._connectingToDevice = new Promise(async resolve=>{
             // a device will be found if already requested and its connected (via usb)
-            let devices = await navigator.usb.getDevices()
+            let devices = await navigator.usb.getDevices({filters: this.filters})
             delete this._connectingToDevice
-            resolve(this.setupDevice(devices[0]))
+
+            let {vendorId, productId} = this.deviceCache?.() || {}
+            let device = this.deviceCache ? devices.find(device=>{
+                return device.vendorId == vendorId && device.productId == productId
+            }) : devices[0]
+
+            resolve(this.setupDevice(device))
         })
     }
 
@@ -95,7 +124,7 @@ class UsbPrinter {
 
         try{
             if( !await this.connectToDevice() ){
-                let device = await navigator.usb.requestDevice({ filters: [{ vendorId: this.vendorID }]});
+                let device = await navigator.usb.requestDevice({filters: this.filters});
                 await this.setupDevice(device)
                 await this.device.claimInterface(0);
             }
@@ -108,6 +137,12 @@ class UsbPrinter {
         if (device) {
             await device.open();
             await device.selectConfiguration(1);
+
+            if( this.deviceCache )
+                this.deviceCache({
+                    vendorId: device.vendorId,
+                    productId: device.productId
+                })
 
             this.device = device
             return device
