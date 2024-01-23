@@ -27,6 +27,9 @@ const GlobalErrorHandler = (evt)=>{
     let msg = error && (error.message || error.name)
     if( !msg ) return
 
+    // NOTE: as of Jan 2024, seems to be a chrome bug
+    if( msg == 'setPhotoOptions failed' ) return 
+
     let notif = {
         nid: 'js-error', // lets only show one at a time
         msg: msg,
