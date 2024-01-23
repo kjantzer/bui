@@ -31,15 +31,21 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         continuous: {Boolean: String}
     }}
 
+    static close(){ return this.shared?.close() }
+
     static async open({
+        toggle=true,
         scanner={}, // "start()" options
         anchor=(device.isSmall?'top':'top-left'),
     }={}){
 
         let camScanner = this.shared
 
-        if( camScanner.presenter )
-            return camScanner.close()
+        if( camScanner.presenter ){
+            if( toggle )
+                camScanner.close()
+            return
+        }
 
         camScanner.checkFeatures()
 
@@ -110,6 +116,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
             left: 1em;
             z-index: 10000;
             --bgdColor: rgba(0,0,0,.6);
+            color: white;
         }
 
         radio-group {
