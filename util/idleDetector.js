@@ -16,21 +16,34 @@ export async function start({
     threshold=60 // seconds
 }={}){
 
+    // already started
+    if( controller ) return
+
     if( !supported() || await IdleDetector.requestPermission() != 'granted' )
         return
-
-    if( controller ) return
 
     try {
         controller = new AbortController();
         idleDetector = new IdleDetector();
 
+        let userState, screenState;
+
         idleDetector.addEventListener('change', () => {
+            
+            let changes = {}
+            if( userState && userState != idleDetector.userState ) 
+                changes.userState = idleDetector.userState
+            if( screenState && screenState != idleDetector.screenState ) 
+                changes.screenState = idleDetector.screenState
+            
             window.dispatchEvent(new CustomEvent('idle-changed', {
                 bubbles: true,
                 composed: true,
-                detail: idleDetector
+                detail: changes
             }))
+
+            userState = idleDetector.userState
+            screenState = idleDetector.screenState
         })
 
         await idleDetector.start({
@@ -39,6 +52,7 @@ export async function start({
         })
 
     } catch (err) {
+        controller = null
         // Deal with initialization errors like permission denied,
         // running outside of top-level frame, etc.
         // TODO: 
