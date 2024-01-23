@@ -66,8 +66,8 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         :host {
             display: block;
             position:relative;
-            width: var(--width, 300px);
-            height: calc(var(--width, 300px) / var(--aspect-ratio, 1.7777777778));
+            width: var(--width, 400px);
+            height: calc(var(--width, 400px) / var(--aspect-ratio, 1.7777777778));
             line-height: 0;
 
             position: relative;
