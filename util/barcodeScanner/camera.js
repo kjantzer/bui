@@ -274,7 +274,7 @@ customElements.defineShared('b-barcode-camera-scanner', class extends LitElement
         clearTimeout(this._autoFocusChange)
         clearInterval(this.detecting)
         this.detecting = null
-        this.camera.stop()
+        this.camera?.stop()
     }
 
     async detectCode(){
