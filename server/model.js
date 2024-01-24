@@ -458,6 +458,8 @@ module.exports = class Model {
 
     async findExtendRowData(row, opts={}){
 
+        if( !row.attrs ) return // model not found
+
         let related = this.constructor.related
         let _with = opts.with || this.req?.query.with || this.config.with
         
