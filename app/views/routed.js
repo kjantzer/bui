@@ -151,16 +151,19 @@ export default class RoutedView extends LitElement {
             return true
 
         }catch(err){
-            
-            this.close()
-            setTimeout(()=>{this.close()}, 100) // timing issue with panel possibliy opening
-
-            if( err.handle )
-                throw err
-            else
-                console.error(err);
-            return false
+            this.onLoadFailed(err)
         }
+    }
+
+    onLoadFailed(err){
+        this.close()
+        setTimeout(()=>{this.close()}, 100) // timing issue with panel possibliy opening
+
+        if( err.handle ) // ex: UIWarningError
+            throw err
+        else
+            console.error(err);
+        return false
     }
 
     onClose(){
@@ -184,9 +187,6 @@ export default class RoutedView extends LitElement {
         if( this.model && this.model.get('isViewing') )
             this.model.set('isViewing', false)
 
-        let oldModel = this.model
-        this.model = model
-
         if( model && model.isInvalid ){
 
             if( this.closeInvalid )
@@ -194,6 +194,9 @@ export default class RoutedView extends LitElement {
 
             throw new UIWarningError('Invalid ID: '+model.id)
         }
+
+        let oldModel = this.model
+        this.model = model
         
         if( model )
             model.set('isViewing', true)
