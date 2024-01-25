@@ -8,6 +8,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             display: grid;
             position:relative;
             padding: 0;
+            max-height: 49vh !important;
         }
 
         b-btn {
