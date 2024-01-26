@@ -5,6 +5,7 @@ import '../../helpers/lit/shared'
 import '../../elements/spinner-overlay'
 import '../../elements/paper'
 import '../../elements/grid'
+import '../../presenters/form/controls/password-toggle-icon'
 
 const MIN_LEN = 8
 
@@ -16,6 +17,7 @@ customElements.defineShared('b-password-change', class extends LitElement{
 
         this.opts = Object.assign({
             tempPW: false,
+            requireCurrent: true,
             title: 'Password',
             notify: true
         }, opts)
@@ -96,20 +98,22 @@ customElements.defineShared('b-password-change', class extends LitElement{
 
             <b-grid cols=1>
 
-            <form-control ?hidden=${this.isTempPW||this.isResetting} 
+            <form-control ?hidden=${this.isTempPW||this.isResetting||!this.opts.requireCurrent} 
                 material="filled" label="Current Password" key="pw_current">
                 <input slot="control" type="password">
             </form-control>
 
-            <b-hr short></b-hr>
+            <b-hr short ?hidden=${!this.opts.requireCurrent}></b-hr>
 
             <form-control material="filled" label="New Password" key="pw_new">
                 <input slot="control" type="${this.isTempPW?'text':'password'}" .validate=${this.validateConfirm.bind(this)}>
+                <password-toggle-icon></password-toggle-icon>
                 <span slot="help">Use at least ${MIN_LEN} characters</span>
             </form-control>
 
             <form-control material="filled" label="Confirm New Password" key="pw_new_confirm">
                 <input slot="control" type="${this.isTempPW?'text':'password'}" .validate=${this.validateConfirm.bind(this)}>
+                <password-toggle-icon></password-toggle-icon>
             </form-control>
 
             ${this.isTempPW&&this.opts.notify?html`
@@ -119,8 +123,8 @@ customElements.defineShared('b-password-change', class extends LitElement{
             </div>
             `:''}
 
-            <b-btn block color="primary" @click=${this.changePassword}>
-                ${this.isTempPW?'Set Temporary':'Change'} Password
+            <b-btn block color="theme-gradient" @click=${this.changePassword}>
+                ${this.isTempPW?'Set Temporary':this.opts.requireCurrent?'Change':'Set'} Password
             </b-btn>
 
             </b-grid>
