@@ -131,12 +131,16 @@ customElements.define('b-datepicker', class extends LitElement{
     scrollToDate(date='start', location='center'){
 
         if( !this.monthsList ) return
-        if( this.checkVisibility && !this.checkVisibility() ) return
-
-        let index = this.indexOfDate(date)
         
-        if( index > -1 )
-            this.monthsList.scrollToIndex(index, location)
+        // timeout in case datepicker is in a closing popoover
+        setTimeout(()=>{
+            if( this.checkVisibility && !this.checkVisibility() ) return
+
+            let index = this.indexOfDate(date)
+            
+            if( index > -1 )
+                this.monthsList.scrollToIndex(index, location)
+        })
     }
 
     indexOfDate(date){
