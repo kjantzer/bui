@@ -155,6 +155,11 @@ export default class RoutedView extends LitElement {
         }
     }
 
+    async refreshModel(){
+        await this.model?.fetchSync({data: this.loadFetchData})
+        this.requestUpdate()
+    }
+
     onLoadFailed(err){
         this.close()
         setTimeout(()=>{this.close()}, 100) // timing issue with panel possibliy opening
