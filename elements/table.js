@@ -13,6 +13,12 @@ customElements.define('b-table', class extends LitElement{
             display: grid;
             position:relative;
             border: solid 1px var(--theme-bgd-accent);
+            overflow: auto;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
         }
 
         ::slotted(*) {
@@ -28,6 +34,7 @@ customElements.define('b-table', class extends LitElement{
     applyHeader(){
         let header = this.$$('[name="header"]', true).assignedElements()?.[0]
         
+        // NOTE: some of this logic/idea take from list/header
         let prevW = '1fr'
         let headerCells = Array.from(header?.children)?.map?.(el=>{
 
@@ -54,18 +61,12 @@ customElements.define('b-table', class extends LitElement{
         })
 
         this.style.setProperty('--table-template-cols', gridTemplate.join(' '))
-
-        console.log(headerCells);
     }
 
     firstUpdated(){
-
         this.$$('[name="header"]', true).addEventListener('slotchange', e=>{
-            console.log('changed?', e);
             this.applyHeader()
         })
-            
-        // this.applyHeader()
     }
 
     render(){return html`
