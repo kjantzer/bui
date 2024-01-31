@@ -461,7 +461,7 @@ module.exports = class Model {
         if( !row.attrs ) return // model not found
 
         let related = this.constructor.related
-        let _with = opts.with || this.req?.query.with || this.config.with
+        let _with = opts.with===false ? null : (opts.with || this.req?.query.with || this.config.with)
         
         // support comma delimited `with=related,related2`
         if( _with && typeof _with == 'string' ){
