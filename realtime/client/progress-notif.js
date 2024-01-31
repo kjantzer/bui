@@ -1,7 +1,7 @@
 import Dialog from '../../presenters/dialog'
 import realtime from './index'
 
-Dialog.realtimeProgress = function(syncPath, opts){
+Dialog.realtimeProgress = function(syncPath, opts, notifOpts={}){
 
     if( (opts.title || opts.body) && !opts.btns )
         opts.btns = false
@@ -9,7 +9,7 @@ Dialog.realtimeProgress = function(syncPath, opts){
     let d = new Dialog.alert(opts)
     let resolve
 
-     function progress(resp){
+    function progress(resp){
             
         if( opts.onProgress )
             opts.onProgress(resp)
@@ -25,13 +25,15 @@ Dialog.realtimeProgress = function(syncPath, opts){
 
     realtime.socket.on(syncPath, progress)
  
-    return new Promise(_resolve=>{
+    let promise = new Promise(_resolve=>{
         resolve = _resolve
 
-        d.notif({anchor: 'top-right', autoClose: false, closeOnClick: false})
+        d.notif({anchor: 'top-right', autoClose: false, closeOnClick: false, ...notifOpts})
 
     }).then(r=>{
         d.close()
         realtime.socket.off(syncPath, progress)
     })
+
+    return {promise, resolve, dialog: d}
 }
