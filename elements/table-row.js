@@ -10,6 +10,11 @@ customElements.define('b-table-row', class extends LitElement{
 
         :host([slot="header"]) {
             background: var(--theme-bgd-accent);
+            border-color: rgba(var(--theme-text-rgb), .1) !important;
+        }
+
+        :host([slot="header"]) ::slotted(*) {
+            border-color: rgba(var(--theme-text-rgb), .1);
         }
 
         ::slotted(*) {
