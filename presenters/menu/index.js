@@ -201,6 +201,10 @@ customElements.define('b-menu', class extends LitElement{
         .menu-divider:last-child {
             padding-bottom: 1em;
         }
+
+		.menu-divider + b-hr {
+			display: none;
+		}
         
         .menu-text {
             padding: .5em 1em;
