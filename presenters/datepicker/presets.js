@@ -63,6 +63,10 @@ customElements.define('b-datepicker-presets', class extends LitElement{
         .divider {
             margin-left: .5em;
         }
+
+        b-hr:first-child {
+            display: none;
+        }
     `}
 
     set presets(val){
@@ -103,7 +107,7 @@ customElements.define('b-datepicker-presets', class extends LitElement{
                 <b-hr pad="xs"></b-hr>
                 ${preset.divider?html`
                     <div class="divider">
-                        <b-text muted sm bold>${preset.divider}</b-text>
+                        <b-text sm bold>${preset.divider}</b-text>
                     </div>
                 `:''}
 

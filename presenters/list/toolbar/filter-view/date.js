@@ -8,16 +8,6 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             display: grid;
             position:relative;
             padding: 0;
-            max-height: 49vh !important;
-        }
-
-        b-btn {
-            margin: .25em;
-            padding: .1em;
-        }
-
-        b-btn:hover {
-            --bgdColor: rgba(0, 0, 0, 0.1);
         }
         
         b-datepicker {
@@ -40,6 +30,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
 
         if( !this.__datepicker ){
             this.__datepicker = new Datepicker({
+                btns: {clear: true},
                 value: this.value,
                 range: this.opts.range,
                 presets: this.opts.presets,
@@ -52,6 +43,8 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
                     this.__value = this.opts.range 
                         ? [e.detail.value.start, e.detail.value.end]
                         : [e.detail.value, e.detail.value] 
+                else if( e.detail.action == 'clear')
+                    this.clearDates()
                 else
                     this.datepicker.value = this.__value || new Date()
 
@@ -66,8 +59,6 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
     render(){return html`
 
         <div>${this.opts.header||''}</div>
-
-        <b-btn text md @click=${this.clearDates}>Clear</b-btn>
 
         ${this.datepicker}
 

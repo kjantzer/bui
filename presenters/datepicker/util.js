@@ -36,3 +36,52 @@ export function dateQuarterPresets({startOf='startOf', dateOffset=null, numQuart
 
     return presets
 }
+
+export function reportingPeriods(){
+    
+    let presets = []
+
+    let date = new dayjs()
+
+    date = date.startOf('year').add(-1, 'month')
+
+    presets.push({divider: 'Annual'})
+    ;[-1,0,1].forEach(k=>{
+        let dateEnd = date.add(k*12, 'month').endOf('month')
+        let dateStart = dateEnd.add(-11, 'month').startOf('month')
+
+        presets.push({
+            label: dateStart.format('YYYY'),
+            start: d=>dateStart,
+            end: d=>dateEnd
+        })
+    })
+
+    presets.push({divider: 'Semi-Annual'})
+    ;[-1,0,1,2].forEach(k=>{
+        let dateEnd = date.add(k*6, 'month').endOf('month')
+        let dateStart = dateEnd.add(-5, 'month').startOf('month')
+
+        presets.push({
+            label: dateStart.format('MMM')+'-'+dateEnd.format('MMM YYYY'),
+            start: d=>dateStart,
+            end: d=>dateEnd
+        })
+    })
+
+    presets.push({divider: 'Quarterly'})
+    ;[-2,-1,0,1,2].forEach(k=>{
+        let dateEnd = date.add(k*3, 'month').endOf('month')
+        let dateStart = dateEnd.add(-2, 'month').startOf('month')
+
+        presets.push({
+            label: dateStart.format('MMM')+'-'+dateEnd.format('MMM YYYY'),
+            start: d=>dateStart,
+            end: d=>dateEnd
+        })
+    })
+
+    return presets
+}
+
+window.reportingPeriods = reportingPeriods // TEMP

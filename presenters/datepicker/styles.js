@@ -65,6 +65,12 @@ export default css`
         border-top: solid 1px var(--theme-bgd-accent, #ddd);
         padding: var(--gap);
         text-align: right;
+        display: flex;
+        justifty-content: flex-end;
+    }
+
+    footer b-btn.clear {
+        margin-right: auto;
     }
     
     main {

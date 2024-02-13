@@ -17,7 +17,7 @@ customElements.define('b-datepicker', class extends LitElement{
         max: {type: String},
         range: {type: Boolean, reflect: true},
         inputs: {type: Boolean, reflect: true},
-        btns: {type: Boolean, reflect: true},
+        btns: {type: Object, reflect: true},
         active: {type: String, reflect: true},
         presets: {type: Array},
         applyPresetSelect: {type: Boolean}
@@ -26,7 +26,7 @@ customElements.define('b-datepicker', class extends LitElement{
     constructor({
         range = true,
         inputs = true,
-        btns= true,
+        btns=true,
         value = new Date(),
         min = '1975-01-01',
         max = '2099-12-31',
@@ -218,6 +218,9 @@ customElements.define('b-datepicker', class extends LitElement{
         </main>
 
         <footer>
+            <b-btn clear @click=${this.clearDates} class="clear"
+                ?hidden=${this.btns?.clear!==true}>Clear</b-btn>
+
             <b-btn clear @click=${this.cancelDate}>Cancel</b-btn>
             <b-btn clear color="theme" @click=${this.applyDate}>Apply</b-btn>
         </footer>
@@ -229,6 +232,11 @@ customElements.define('b-datepicker', class extends LitElement{
             .selectedRange=${this.selectedRange}
         ></b-datepicker-month>
     `}
+
+    clearDates(){
+        this.emitEvent('clear')
+        this.emitEvent('done', {action: 'clear'})
+    }
 
     cancelDate(){
         this.emitEvent('cancel')
