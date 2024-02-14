@@ -67,7 +67,7 @@ const getFileInfo = (dirPath, file='')=>{
     return fileInfo
 }
 
-const readFile = (filePath, {raw=false}={})=>{
+const readFile = (filePath, {raw=false, csvOpts={}}={})=>{
     if( !fs.existsSync(filePath) )
         throw Error('does not exist')
 
@@ -83,7 +83,7 @@ const readFile = (filePath, {raw=false}={})=>{
             contents = String(contents)
 
         if( filePath.match(/\.csv$/) )
-            contents = csvToArray(String(contents))
+            contents = csvToArray(String(contents), csvOpts)
     }
 
     return contents
