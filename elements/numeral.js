@@ -131,7 +131,7 @@ customElements.define('b-num', class extends Numeral{
 })
 
 customElements.define('b-num-acct', class extends Numeral{
-    get defaultFormat(){ return '(0,0)' }
+    get defaultFormat(){ return '(0,0.[00])' }
 })
 
 customElements.define('b-decimal', class extends Numeral{
