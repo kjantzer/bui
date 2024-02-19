@@ -4,7 +4,9 @@ customElements.define('b-edited-model-btns', class extends LitElement{
 
     static get properties(){return {
         changed: {type: Number, reflect: true},
-        shownum: { type: Boolean }
+        shownum: { type: Boolean },
+        sm: {type: Boolean},
+        xs: {type: Boolean}
     }}
 
     static get styles(){ return css`
@@ -44,15 +46,31 @@ customElements.define('b-edited-model-btns', class extends LitElement{
     }
 
     render(){return html`
-        <b-btn color="theme-gradient" @click=${this.save}>
+        <slot name="before"></slot>
+        <b-btn color="theme-gradient" @click=${this.save} ?sm=${this.sm} ?xs=${this.xs}>
             Save
             ${this.shownum&&this.changed>0?html` <b-text nobold>(${this.changed})</b-text>`:''}
         </b-btn>
-        <b-btn clear @click=${this.cancel}>Cancel</b-btn>
+        <b-btn clear @click=${this.cancel} ?sm=${this.sm} ?xs=${this.xs}>Cancel</b-btn>
+        <slot></slot>
     `}
 
-    save(e){
-        this.model.saveEdited({patch: true})
+    async save(e){
+        let btn = e.currentTarget
+        if( btn.spin ) return
+
+        if( this.willTakeAction('save-edited-model').allowed ){
+            btn.spin = true
+            await this.model.saveEdited({patch: true})
+            .catch(err=>{
+                // allow error to be supressed or handled somewhere else
+                if( this.willTakeAction('save-edited-model-error', {err}).allowed )
+                    throw err
+            }).finally(_=>{
+                btn.spin = false
+            })
+        }
+            
     }
 
     cancel(){
