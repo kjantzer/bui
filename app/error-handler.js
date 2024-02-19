@@ -61,21 +61,22 @@ const GlobalErrorHandler = (evt)=>{
         notif.msg = 'You DO NOT have permission for that'
     }
 
-    if( error.name == 'APIError' ){
+    if( error.name == 'APIError' || error.type == 'APIError' ){
         notif.type = 'failed'
         notif.edge = true
         notif.icon = 'error'
     }
 
-    if( error.name == 'APIAccessError' ){
+    if( error.name == 'APIAccessError' || error.type == 'APIAccessError' ){
         notif.edge = true
+        notif.type = 'failed'
         // notif.accent = true
-        notif.icon = 'alert'
+        notif.icon = 'warning'
         notif.width = 'auto'
         notif.animation = 'bounce'
     }
 
-    if( error.name == 'DBError' ){
+    if( error.name == 'DBError' || error.type == 'DBError' ){
         notif.pretitle = 'Database Error'
         notif.edge = true
         notif.accent = true
