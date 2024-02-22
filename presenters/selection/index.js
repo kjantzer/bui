@@ -108,6 +108,7 @@ export default class Selection {
         items.forEach(item=>{
             this._deselect(item)
         })
+        this.result.clear() // empty results if any left (ex: model was deleted before deselected)
     }
 
     bindEvents(e){
