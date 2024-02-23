@@ -112,15 +112,20 @@ module.exports = class DB {
     /* 
         performs a series of queries and if any fail, will roll back  
     */
-    async transactionalQuery(queries){
+    async transactionalQuery(queries, {progress}={}){
 
         let queryResults = []
         let conn = await this.beginTransaction()
+
+        if( progress && typeof progress != 'function' ) progress = null 
 
         try{
 
             /* peform each query, making sure each one succeeds */
             await Promise.series(queries, (query, i, prevResult)=>new Promise((resolve, reject)=>{
+
+                if( progress )
+                    progress(i, queries.length, query)
 
                 if( typeof query == 'function' )
                     query = query(prevResult)
