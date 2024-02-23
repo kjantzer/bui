@@ -11,21 +11,21 @@ const fileTypes = {
 
 export const downloadContent = (content, filename, opts={})=>{
 
+    if( !opts.type ){
+        if( filename?.match(/\.json$/) ){
+            opts.type = 'application/json'
+
+            if( typeof content !== 'string' && !(content instanceof Blob))
+                content = JSON.stringify(content, null, 2)
+
+        }else if( filename?.match(/\.csv$/) ){
+            opts.type = 'text/csv'
+        }else
+            opts.type = 'text/plain'    
+    }
+
     let url;
     if (!(content instanceof Blob)) {
-
-        if( !opts.type ){
-            if( filename.match(/\.json$/) ){
-                opts.type = 'application/json'
-
-                if( typeof content !== 'string' )
-                    content = JSON.stringify(content, null, 2)
-
-            }else
-                opts.type = 'text/plain'    
-        }
-            opts.type = 'text/plain'
-
         content = new Blob(Array.isArray(content)?content:[content], {type: opts.type})
     }
 
@@ -45,6 +45,34 @@ export const downloadCSV = (content, filename, opts={})=>{
     filename = filename || (new Date().getTime()+'.csv')
     opts.type = 'text/csv'
     downloadContent(content, filename, opts)
+}
+
+// NOTE: move this?
+export function filenameFromResp(resp){
+
+    if( resp.headers )
+        resp = resp.headers.get('content-disposition')
+
+    if( typeof resp != 'string' ) return null
+
+    return resp.match(/filename=(.+)$/)?.[1]
+}
+
+export const downloadViaFetch = (url, {filename}={})=>{
+    return fetch(url)
+    .then(resp=>{
+
+        if( resp.status != 200 )
+            throw new Error(resp.statusText)
+        
+        if( !filename )
+            filename = filenameFromResp(resp) || (new Date().getTime()+'.csv')
+
+        return resp.blob()
+    })
+    .then(blob => {
+        downloadContent(blob, filename)
+    })
 }
 
 export const download = (url, filename = '', {
