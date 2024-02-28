@@ -2,13 +2,16 @@
 
 const BMath = {
 
-round(num, decimals=2){
+round(num, decimals=2, {round='round'}={}){
     if( typeof num == 'string' )
 		num = parseFloat(num)
 	
 	let divisor = Math.pow(10, decimals)
+
+    if( !['round', 'ceil', 'floor'].includes(round) )
+		round = 'round'
 	
-	return Math.round(num * divisor) / divisor 
+	return Math[round](num * divisor) / divisor 
 },
 
 inToMM(val, decimals=1){ return BMath.round(val * 25.4, decimals) },
