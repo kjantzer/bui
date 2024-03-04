@@ -1,4 +1,4 @@
-module.exports = (obj, paths, {omit=false, ifEmpty=undefined}={})=>{
+module.exports = (obj, paths, {omit=false, ifEmpty=undefined, keepUndefined=false}={})=>{
     
     let data = {}
     let remap = null
@@ -25,8 +25,9 @@ module.exports = (obj, paths, {omit=false, ifEmpty=undefined}={})=>{
                 toKey = remap[k] || k
             }
 
-            if( obj[fromKey] !== undefined )
+            if( obj[fromKey] !== undefined || keepUndefined )
                 data[toKey] = obj[fromKey]
+
         }
     // different logic if ommiting
     else
