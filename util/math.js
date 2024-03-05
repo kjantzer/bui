@@ -73,6 +73,7 @@ mode(numbers) {
     return modes;
 },
 
+// round to nearest 2=half, 4=quarter, etc
 roundTo(num, ratio=2){
     num = parseFloat(num)
     if( isNaN(num) ) return ''
