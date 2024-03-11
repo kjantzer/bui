@@ -154,7 +154,7 @@ customElements.define('b-realtime-users', class extends LitElement{
             
             ${this.users.map((m,i)=>!this.showUser(i)?'':this.renderUser(m))}
             ${this.users.length>this.max?html`
-                <b-avatar class="avatar" initials="+${this.users.length-this.max+1}" color="#555" bgd="#ddd"></b-avatar>
+                <b-avatar class="avatar" part="avatar" initials="+${this.users.length-this.max+1}" color="#555" bgd="#ddd"></b-avatar>
             `:''}
 
         </main>
