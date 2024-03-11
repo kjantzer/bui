@@ -108,7 +108,7 @@ customElements.define('b-timer', class TimerElement extends LitElement {
 			if( !this.startAt )
 				this.startAt = new Date()
 			
-			this._progressInterval = setInterval(this._progress.bind(this), 100)
+			this._progressInterval = setInterval(this._trackProgress.bind(this), 100)
 		}
 
 		this.toggleAttribute('running', this.running)
@@ -132,10 +132,9 @@ customElements.define('b-timer', class TimerElement extends LitElement {
 		this.running = false
 	}
 
-	_progress(){ 
-		let elapsedTime = new Date().getTime() - this.startAt.getTime()
-		this._time = msToTime(elapsedTime)
-	}
+	get elapsed(){ return new Date().getTime() - this.startAt.getTime()}
+
+	_trackProgress(){ this._time = msToTime(this.elapsed) }
 
 	get hours(){ return String(this._time.h).padStart(2, '0') }
 	get minutes(){ return String(this._time.m).padStart(2, '0') }
