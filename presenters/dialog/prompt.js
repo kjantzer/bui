@@ -257,6 +257,8 @@ function makePrompt(opts, i=0, globalOpts){
 
 				<b-text block sm bold slot="before" ?hidden=${!opts.label}>${opts.label}</b-text>
 
+				${opts.helpText?html`<b-text slot="after" sm dim>${opts.helpText}</b-text>`:''}
+
 			</radio-group>
 		`
 	}
