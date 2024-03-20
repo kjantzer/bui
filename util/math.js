@@ -17,6 +17,11 @@ round(num, decimals=2, {round='round'}={}){
 inToMM(val, decimals=1){ return BMath.round(val * 25.4, decimals) },
 mmToIn(val, decimals=1){ return BMath.round(val / 25.4, decimals) },
 
+// celsius to Far.
+cToF(val, decimals=1){
+    return BMath.round((val * 9/5) + 32, decimals)
+},
+
 /**
  * The "median" is the "middle" value in the list of numbers.
  *
