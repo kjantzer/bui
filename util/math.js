@@ -22,6 +22,10 @@ cToF(val, decimals=1){
     return BMath.round((val * 9/5) + 32, decimals)
 },
 
+avg(numbers, decimals=2){
+    return BMath.round(numbers.reduce((a, b) => a + b) / numbers.length, decimals)
+},
+
 /**
  * The "median" is the "middle" value in the list of numbers.
  *
