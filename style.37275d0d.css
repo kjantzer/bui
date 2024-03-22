@@ -1,0 +1,673 @@
+@import url('https://rsms.me/inter/inter.css');
+html {
+  background: var(--theme-bgd);
+  color: var(--theme-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body {
+  margin: 0;
+}
+:root {
+  --black: #000;
+  --white: #fff;
+  --dark: #2c3033;
+  --dark-black: #1f2224;
+  --white-bluetint: #edf2f3;
+  --light: #f5f5f5;
+  --red: var(--red-500);
+  --pink: var(--pink-500);
+  --purple: var(--purple-500);
+  --deep-purple: var(--deep-purple-500);
+  --indigo: var(--indigo-500);
+  --blue: var(--blue-500);
+  --light-blue: var(--light-blue-500);
+  --cyan: var(--cyan-500);
+  --teal: var(--teal-500);
+  --green: var(--green-500);
+  --light-green: var(--light-green-500);
+  --lime: var(--lime-500);
+  --yellow: var(--yellow-500);
+  --amber: var(--amber-500);
+  --orange: var(--orange-500);
+  --deep-orange: var(--deep-orange-500);
+  --brown: var(--brown-500);
+  --gray: var(--gray-500);
+  --gray-blue: var(--gray-blue-500);
+}
+:root[dark] {
+  --deep-purple: var(--deep-purple-300);
+}
+:root {
+  --red-50: #FFEBEE;
+  --red-100: #FFCDD2;
+  --red-200: #EF9A9A;
+  --red-300: #E57373;
+  --red-400: #EF5350;
+  --red-500: #F44336;
+  --red-600: #E53935;
+  --red-700: #D32F2F;
+  --red-800: #C62828;
+  --red-900: #B71C1C;
+  --red-A100: #FF8A80;
+  --red-A200: #FF5252;
+  --red-A400: #FF1744;
+  --red-A700: #D50000;
+  --pink-50: #FCE4EC;
+  --pink-100: #F8BBD0;
+  --pink-200: #F48FB1;
+  --pink-300: #F06292;
+  --pink-400: #EC407A;
+  --pink-500: #E91E63;
+  --pink-600: #D81B60;
+  --pink-700: #C2185B;
+  --pink-800: #AD1457;
+  --pink-900: #880E4F;
+  --pink-A100: #FF80AB;
+  --pink-A200: #FF4081;
+  --pink-A400: #F50057;
+  --pink-A700: #C51162;
+  --purple-50: #F3E5F5;
+  --purple-100: #E1BEE7;
+  --purple-200: #CE93D8;
+  --purple-300: #BA68C8;
+  --purple-400: #AB47BC;
+  --purple-500: #9C27B0;
+  --purple-600: #8E24AA;
+  --purple-700: #7B1FA2;
+  --purple-800: #6A1B9A;
+  --purple-900: #4A148C;
+  --purple-A100: #EA80FC;
+  --purple-A200: #E040FB;
+  --purple-A400: #D500F9;
+  --purple-A700: #AA00FF;
+  --deep-purple-50: #EDE7F6;
+  --deep-purple-100: #D1C4E9;
+  --deep-purple-200: #B39DDB;
+  --deep-purple-300: #9575CD;
+  --deep-purple-400: #7E57C2;
+  --deep-purple-500: #673AB7;
+  --deep-purple-600: #5E35B1;
+  --deep-purple-700: #512DA8;
+  --deep-purple-800: #4527A0;
+  --deep-purple-900: #311B92;
+  --deep-purple-A100: #B388FF;
+  --deep-purple-A200: #7C4DFF;
+  --deep-purple-A400: #651FFF;
+  --deep-purple-A700: #6200EA;
+  --indigo-50: #E8EAF6;
+  --indigo-100: #C5CAE9;
+  --indigo-200: #9FA8DA;
+  --indigo-300: #7986CB;
+  --indigo-400: #5C6BC0;
+  --indigo-500: #3F51B5;
+  --indigo-600: #3949AB;
+  --indigo-700: #303F9F;
+  --indigo-800: #283593;
+  --indigo-900: #1A237E;
+  --indigo-A100: #8C9EFF;
+  --indigo-A200: #536DFE;
+  --indigo-A400: #3D5AFE;
+  --indigo-A700: #304FFE;
+  --blue-50: #E3F2FD;
+  --blue-100: #BBDEFB;
+  --blue-200: #90CAF9;
+  --blue-300: #64B5F6;
+  --blue-400: #42A5F5;
+  --blue-500: #2196F3;
+  --blue-600: #1E88E5;
+  --blue-700: #1976D2;
+  --blue-800: #1565C0;
+  --blue-900: #0D47A1;
+  --blue-A100: #82B1FF;
+  --blue-A200: #448AFF;
+  --blue-A400: #2979FF;
+  --blue-A700: #2962FF;
+  --light-blue-50: #E1F5FE;
+  --light-blue-100: #B3E5FC;
+  --light-blue-200: #81D4FA;
+  --light-blue-300: #4FC3F7;
+  --light-blue-400: #29B6F6;
+  --light-blue-500: #03A9F4;
+  --light-blue-600: #039BE5;
+  --light-blue-700: #0288D1;
+  --light-blue-800: #0277BD;
+  --light-blue-900: #01579B;
+  --light-blue-A100: #80D8FF;
+  --light-blue-A200: #40C4FF;
+  --light-blue-A400: #00B0FF;
+  --light-blue-A700: #0091EA;
+  --cyan-50: #E0F7FA;
+  --cyan-100: #B2EBF2;
+  --cyan-200: #80DEEA;
+  --cyan-300: #4DD0E1;
+  --cyan-400: #26C6DA;
+  --cyan-500: #00BCD4;
+  --cyan-600: #00ACC1;
+  --cyan-700: #0097A7;
+  --cyan-800: #00838F;
+  --cyan-900: #006064;
+  --cyan-A100: #84FFFF;
+  --cyan-A200: #18FFFF;
+  --cyan-A400: #00E5FF;
+  --cyan-A700: #00B8D4;
+  --teal-50: #E0F2F1;
+  --teal-100: #B2DFDB;
+  --teal-200: #80CBC4;
+  --teal-300: #4DB6AC;
+  --teal-400: #26A69A;
+  --teal-500: #009688;
+  --teal-600: #00897B;
+  --teal-700: #00796B;
+  --teal-800: #00695C;
+  --teal-900: #004D40;
+  --teal-A100: #A7FFEB;
+  --teal-A200: #64FFDA;
+  --teal-A400: #1DE9B6;
+  --teal-A700: #00BFA5;
+  --green-50: #E8F5E9;
+  --green-100: #C8E6C9;
+  --green-200: #A5D6A7;
+  --green-300: #81C784;
+  --green-400: #66BB6A;
+  --green-500: #4CAF50;
+  --green-600: #43A047;
+  --green-700: #388E3C;
+  --green-800: #2E7D32;
+  --green-900: #1B5E20;
+  --green-A100: #B9F6CA;
+  --green-A200: #69F0AE;
+  --green-A400: #00E676;
+  --green-A700: #00C853;
+  --light-green-50: #F1F8E9;
+  --light-green-100: #DCEDC8;
+  --light-green-200: #C5E1A5;
+  --light-green-300: #AED581;
+  --light-green-400: #9CCC65;
+  --light-green-500: #8BC34A;
+  --light-green-600: #7CB342;
+  --light-green-700: #689F38;
+  --light-green-800: #558B2F;
+  --light-green-900: #33691E;
+  --light-green-A100: #CCFF90;
+  --light-green-A200: #B2FF59;
+  --light-green-A400: #76FF03;
+  --light-green-A700: #64DD17;
+  --lime-50: #F9FBE7;
+  --lime-100: #F0F4C3;
+  --lime-200: #E6EE9C;
+  --lime-300: #DCE775;
+  --lime-400: #D4E157;
+  --lime-500: #CDDC39;
+  --lime-600: #C0CA33;
+  --lime-700: #AFB42B;
+  --lime-800: #9E9D24;
+  --lime-900: #827717;
+  --lime-A100: #F4FF81;
+  --lime-A200: #EEFF41;
+  --lime-A400: #C6FF00;
+  --lime-A700: #AEEA00;
+  --yellow-50: #FFFDE7;
+  --yellow-100: #FFF9C4;
+  --yellow-200: #FFF59D;
+  --yellow-300: #FFF176;
+  --yellow-400: #FFEE58;
+  --yellow-500: #FFEB3B;
+  --yellow-600: #FDD835;
+  --yellow-700: #FBC02D;
+  --yellow-800: #F9A825;
+  --yellow-900: #F57F17;
+  --yellow-A100: #FFFF8D;
+  --yellow-A200: #FFFF00;
+  --yellow-A400: #FFEA00;
+  --yellow-A700: #FFD600;
+  --amber-50: #FFF8E1;
+  --amber-100: #FFECB3;
+  --amber-200: #FFE082;
+  --amber-300: #FFD54F;
+  --amber-400: #FFCA28;
+  --amber-500: #FFC107;
+  --amber-600: #FFB300;
+  --amber-700: #FFA000;
+  --amber-800: #FF8F00;
+  --amber-900: #FF6F00;
+  --amber-A100: #FFE57F;
+  --amber-A200: #FFD740;
+  --amber-A400: #FFC400;
+  --amber-A700: #FFAB00;
+  --orange-50: #FFF3E0;
+  --orange-100: #FFE0B2;
+  --orange-200: #FFCC80;
+  --orange-300: #FFB74D;
+  --orange-400: #FFA726;
+  --orange-500: #FF9800;
+  --orange-600: #FB8C00;
+  --orange-700: #F57C00;
+  --orange-800: #EF6C00;
+  --orange-900: #E65100;
+  --orange-A100: #FFD180;
+  --orange-A200: #FFAB40;
+  --orange-A400: #FF9100;
+  --orange-A700: #FF6D00;
+  --deep-orange-50: #FBE9E7;
+  --deep-orange-100: #FFCCBC;
+  --deep-orange-200: #FFAB91;
+  --deep-orange-300: #FF8A65;
+  --deep-orange-400: #FF7043;
+  --deep-orange-500: #FF5722;
+  --deep-orange-600: #F4511E;
+  --deep-orange-700: #E64A19;
+  --deep-orange-800: #D84315;
+  --deep-orange-900: #BF360C;
+  --deep-orange-A100: #FF9E80;
+  --deep-orange-A200: #FF6E40;
+  --deep-orange-A400: #FF3D00;
+  --deep-orange-A700: #DD2C00;
+  --brown-50: #EFEBE9;
+  --brown-100: #D7CCC8;
+  --brown-200: #BCAAA4;
+  --brown-300: #A1887F;
+  --brown-400: #8D6E63;
+  --brown-500: #795548;
+  --brown-600: #6D4C41;
+  --brown-700: #5D4037;
+  --brown-800: #4E342E;
+  --brown-900: #3E2723;
+  --gray-50: #FAFAFA;
+  --gray-100: #F5F5F5;
+  --gray-200: #EEEEEE;
+  --gray-300: #E0E0E0;
+  --gray-400: #BDBDBD;
+  --gray-500: #9E9E9E;
+  --gray-600: #757575;
+  --gray-700: #616161;
+  --gray-800: #424242;
+  --gray-900: #212121;
+  --gray-blue-50: #ECEFF1;
+  --gray-blue-100: #CFD8DC;
+  --gray-blue-200: #B0BEC5;
+  --gray-blue-300: #90A4AE;
+  --gray-blue-400: #78909C;
+  --gray-blue-500: #607D8B;
+  --gray-blue-600: #546E7A;
+  --gray-blue-700: #455A64;
+  --gray-blue-800: #37474F;
+  --gray-blue-900: #263238;
+}
+:root {
+  --theme: var(--blue);
+  --theme-secondary: var(--blue-A700);
+  --theme-gradient: linear-gradient(var(--theme-gradient-direction, to right), var(--theme-secondary), var(--theme));
+  --theme-gradient-reverse: linear-gradient(var(--theme-gradient-direction-reverse, to left), var(--theme-secondary), var(--theme));
+  --light-text-rgb: 34,34,34;
+  --light-bgd-rgb: 255,255,255;
+  --light-text: rgba(var(--light-text-rgb), 1);
+  --light-text-accent: rgba(var(--light-text-rgb), 0.4);
+  --light-text-dim: rgba(var(--light-text-rgb), 0.6);
+  --light-text-accent2: rgba(var(--light-text-rgb), 0.8);
+  --light-bgd: white;
+  --light-bgd-accent: #ebebeb;
+  --light-bgd-accent2: var(--light);
+  --light-bgd-hc: white;
+  --light-shadow: rgba(0, 0, 0, 0.2);
+  --light-shadow-0: rgba(0, 0, 0, 0.1) 0 1px 5px;
+  --light-shadow-1: rgba(0, 0, 0, 0.2) 0 3px 10px;
+  --light-shadow-2: rgba(0, 0, 0, 0.3) 0 3px 30px;
+  --light-shadow-3: 0 0.7px 2.2px rgba(0, 0, 0, 0.007),
+        0 1.4px 5.3px rgba(0, 0, 0, 0.012),
+        0 2.4px 10px rgba(0, 0, 0, 0.017),
+        0 3.7px 17.9px rgba(0, 0, 0, 0.02),
+        0 6px 33.4px rgba(0, 0, 0, 0.025),
+        0 13px 80px rgba(0, 0, 0, 0.07);
+  --dark-text-rgb: 255,255,255;
+  --dark-bgd-rgb: 0,0,0;
+  --dark-text: rgba(var(--dark-text-rgb), 1);
+  --dark-text-accent: rgba(var(--dark-text-rgb), 0.4);
+  --dark-text-dim: rgba(var(--dark-text-rgb), 0.6);
+  --dark-text-accent2: rgba(var(--dark-text-rgb), 0.8);
+  --dark-bgd: var(--dark);
+  --dark-bgd-accent: var(--dark-black);
+  --dark-bgd-accent2: #242729;
+  --dark-bgd-hc: #141618;
+  --dark-shadow: rgba(0, 0, 0, 0.4);
+  --dark-shadow-0: rgba(0, 0, 0, 0.35) 0 1px 5px;
+  --dark-shadow-1: rgba(0, 0, 0, 0.4) 0 3px 10px;
+  --dark-shadow-2: rgba(0, 0, 0, 0.5) 0 3px 30px;
+  --dark-shadow-3: 0 0.7px 2.2px rgba(0, 0, 0, 0.019),
+        0 1.4px 5.3px rgba(0, 0, 0, 0.035),
+        0 2.4px 10px rgba(0, 0, 0, 0.048),
+        0 3.7px 17.9px rgba(0, 0, 0, 0.058),
+        0 6px 33.4px rgba(0, 0, 0, 0.7),
+        0 13px 80px rgba(0, 0, 0, 0.35);
+}
+:root,
+:root[light] {
+  --theme-text-rgb: var(--light-text-rgb);
+  --theme-bgd-rgb: var(--light-bgd-rgb);
+  --theme-text: var(--light-text);
+  --theme-text-accent: var(--light-text-accent);
+  --theme-text-dim: var(--light-text-dim);
+  --theme-text-accent2: var(--light-text-accent2);
+  --theme-bgd: var(--light-bgd);
+  --theme-bgd-accent: var(--light-bgd-accent);
+  --theme-bgd-accent2: var(--light-bgd-accent2);
+  --theme-bgd-hc: var(--light-bgd-hc);
+  --theme-shadow: var(--light-shadow);
+  --theme-shadow-0: var(--light-shadow-0);
+  --theme-shadow-1: var(--light-shadow-1);
+  --theme-shadow-2: var(--light-shadow-2);
+  --theme-shadow-3: var(--light-shadow-3);
+  --theme-inverse-text-rgb: var(--dark-text-rgb);
+  --theme-inverse-bgd-rgb: var(--dark-bgd-rgb);
+  --theme-inverse-text: var(--dark-text);
+  --theme-inverse-text-accent: var(--dark-text-accent);
+  --theme-inverse-text-dim: var(--dark-text-dim);
+  --theme-inverse-text-accent2: var(--dark-text-accent2);
+  --theme-inverse-bgd: var(--dark-bgd);
+  --theme-inverse-bgd-accent: var(--dark-bgd-accent);
+  --theme-inverse-bgd-accent2: var(--dark-bgd-accent2);
+  --theme-inverse-bgd-hc: var(--dark-bgd-hc);
+  --theme-inverse-shadow: var(--dark-shadow);
+  --theme-inverse-shadow-0: var(--dark-shadow-0);
+  --theme-inverse-shadow-1: var(--dark-shadow-1);
+  --theme-inverse-shadow-2: var(--dark-shadow-2);
+  --theme-inverse-shadow-3: var(--dark-shadow-3);
+}
+:root[dark] {
+  --theme-text-rgb: var(--dark-text-rgb);
+  --theme-bgd-rgb: var(--dark-bgd-rgb);
+  --theme-text: var(--dark-text);
+  --theme-text-accent: var(--dark-text-accent);
+  --theme-text-dim: var(--dark-text-dim);
+  --theme-text-accent2: var(--dark-text-accent2);
+  --theme-bgd: var(--dark-bgd);
+  --theme-bgd-accent: var(--dark-bgd-accent);
+  --theme-bgd-accent2: var(--dark-bgd-accent2);
+  --theme-bgd-hc: var(--dark-bgd-hc);
+  --theme-shadow: var(--dark-shadow);
+  --theme-shadow-0: var(--dark-shadow-0);
+  --theme-shadow-1: var(--dark-shadow-1);
+  --theme-shadow-2: var(--dark-shadow-2);
+  --theme-shadow-3: var(--dark-shadow-3);
+  --theme-inverse-text-rgb: var(--light-text-rgb);
+  --theme-inverse-bgd-rgb: var(--light-bgd-rgb);
+  --theme-inverse-text: var(--light-text);
+  --theme-inverse-text-accent: var(--light-text-accent);
+  --theme-inverse-text-dim: var(--light-text-dim);
+  --theme-inverse-text-accent2: var(--light-text-accent2);
+  --theme-inverse-bgd: var(--light-bgd);
+  --theme-inverse-bgd-accent: var(--light-bgd-accent);
+  --theme-inverse-bgd-accent2: var(--light-bgd-accent2);
+  --theme-inverse-bgd-hc: var(--light-bgd-hc);
+  --theme-inverse-shadow: var(--light-shadow);
+  --theme-inverse-shadow-0: var(--light-shadow-0);
+  --theme-inverse-shadow-1: var(--light-shadow-1);
+  --theme-inverse-shadow-2: var(--light-shadow-2);
+  --theme-inverse-shadow-3: var(--light-shadow-3);
+}
+:root {
+  --b-spinner-overlay-bgd: rgba(var(--theme-bgd-rgb), 0.6);
+  --b-label-color: rgba(var(--theme-text-rgb), 0.3);
+  --b-sub-color: rgba(var(--theme-text-rgb), 0.4);
+  --b-panel-bgd: var(--theme-bgd);
+  --fc-theme: var(--theme);
+  --fc-bgd: var(--theme-bgd-accent);
+  --fc-placeholder-color: var(--theme-text-accent);
+  --fc-disabled-color: rgba(var(--theme-text-rgb), 0.3);
+  --b-notif-bgd: var(--theme-text);
+  --b-notif-color: var(--theme-bgd-accent);
+  --b-dialog-msg-color: var(--theme-text-accent);
+  --b-dialog-icon-bgd: var(--theme-bgd-accent);
+  --b-empty-state-color: rgba(var(--theme-text-rgb), 0.3);
+  --list-search-bgd: var(--theme-bgd-accent);
+  --b-menu-checkbox-color: var(--theme-chosen);
+  --b-popover-bgd: var(--theme-bgd);
+  --b-popover-color: var(--theme-text);
+  --b-tabs-inactive-color: rgba(var(--theme-text-rgb), 0.9);
+  --b-tabs-border-color: rgba(var(--theme-text-rgb), 0.1);
+}
+:root[dark] {
+  --b-paper-postit-color: var(--theme-bgd);
+  --b-paper-postit-bgd: #8c8161;
+  --b-paper-postit-color: var(--theme-text);
+  --b-paper-postit-bgd-accent: var(--orange);
+  --b-paper-info-bgd: var(--blue-800);
+  --b-paper-info-bgd-accent: var(--blue-400);
+  --b-tabs-border-color: rgba(var(--theme-bgd-rgb), 0.4);
+}
+:root[dark] b-panel[type="modal"] {
+  --b-panel-shadow: var(--b-paper-overshadow);
+}
+b-panel {
+  color: var(--theme-text);
+}
+:root[dark] .popover {
+  --border: var(--dark-black);
+}
+html {
+  overflow: visible;
+  position: relative;
+  /* prevent iOS from showing callouts like when long pressing an image */
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Prevent font scaling in landscape while allowing user zoom */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* make things more "app" like: disable text selection */
+  --gutter: 2rem;
+  --gutter-negative: calc(-1 * var(--gutter));
+  --view-gutter: var(--gutter);
+  --safe-bottom: env(safe-area-inset-bottom);
+  --safe-top: env(safe-area-inset-top);
+  --safe-left: env(safe-area-inset-left);
+  --safe-right: env(safe-area-inset-right);
+  --gutter-safe-bottom: calc(var(--gutter) + var(--safe-bottom));
+  --gutter-safe-top: calc(var(--gutter) + var(--safe-top));
+  --gutter-safe-left: calc(var(--gutter) + var(--safe-left));
+  --gutter-safe-right: calc(var(--gutter) + var(--safe-right));
+  --gutter-safe: var(--gutter-safe-top) var(--gutter-safe-right) var(--gutter-safe-bottom) var(--gutter-safe-left);
+  --font-system: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+               "Helvetica Neue", sans-serif;
+  /* https://spencermortensen.com/articles/typographic-scale/ */
+  --font-size-xs: 0.65em;
+  --font-size-sm: 0.8409em;
+  --font-size-rg: 1em;
+  --font-size-md: 1.1892em;
+  --font-size-lg: 1.4142em;
+  --font-size-xl: 1.6818em;
+  --font-size-xxl: 2em;
+}
+html.ios.installed {
+  top: calc(env(safe-area-inset-top) / 1.25);
+  height: calc(100% + (env(safe-area-inset-top) / 4));
+}
+html.installed.ios,
+html.installed.android {
+  /* make things more "app" like: disable text selection */
+  -webkit-user-select: none;
+}
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+/*
+    Only require one side to be large. Android will shrink the viewport
+    when the keyboard opens
+*/
+@media (min-width: 600px) and (min-height: 400px) and (max-height: 900px), (min-width: 400px) and (min-height: 600px) and (max-width: 900px) {
+  html.touch,
+  html.touch body {
+    font-size: 18px !important;
+  }
+}
+@media screen and (orientation: landscape) and (max-width: 999px) and (max-height: 800px), screen and (orientation: portrait) and (max-height: 999px) and (max-width: 800px) {
+  :root {
+    --gutter: var(--gutter-mobile, 1rem);
+  }
+  :root.mobile .popover .b-menu {
+    font-size: 1.1em;
+  }
+  :root.mobile b-panels[name="root"] {
+    top: 0;
+    z-index: 110;
+  }
+}
+b-panel {
+  --b-menu-input-radius: 4px;
+  --b-menu-input-font-size: 1em;
+  --b-menu-input-padding: 0.5em;
+}
+:root.installed.mac:not(.ios) b-panel {
+  --b-panel-radius: 0.75rem;
+}
+:root.installed:not(.ios) b-panel {
+  --b-panel-radius: 0.75rem;
+}
+@media (min-width: 600px) {
+  b-panel[height="100%"][anchor="right"]::part(main),
+  b-panel[height="100%"][anchor="left"]::part(main),
+  :root.insetpanels b-panel[height="100%"][anchor="right"]::part(main),
+  :root.insetpanels b-panel[height="100%"][anchor="left"]::part(main) {
+    height: calc(100% - (calc(2 * var(--inset-margin, 0.5em)))) !important;
+    right: var(--inset-margin, 0.5em);
+    top: var(--inset-margin, 0.5em);
+    border-radius: var(--radius);
+    overflow: hidden;
+    /* keep clipped inside radius */
+  }
+}
+@media screen and (max-width: 699px) {
+  :root.installed.mobile b-panel[height="100%"]::part(main) {
+    box-shadow: none;
+  }
+}
+:root:not(.mobile) b-panel[type="search-popup"] {
+  --radius: 1em;
+  position: fixed;
+  z-index: 2000 !important;
+  top: 0;
+  background: rgba(var(--dark-bgd-rgb), 0.7);
+}
+/* Print styles */
+@media print {
+  :root {
+    --theme-bgd: white !important;
+    --theme-bgd-accent: var(--light-bgd-accent) !important;
+    --theme-bgd-accent2: var(--light-bgd-accent2) !important;
+    --theme-text: black !important;
+    --theme-text-accent: var(--light-text-accent) !important;
+    --theme-text-accent2: var(--light-text-accent2) !important;
+  }
+  html,
+  body {
+    display: block;
+    overflow: auto;
+    background-color: var(--theme-bgd);
+  }
+  b-panels {
+    background-color: var(--theme-bgd);
+  }
+  body.b-panel-open > *:not(b-panels),
+  b-panel:not([ontop]) {
+    display: none;
+  }
+}
+@page {
+  size: 8.5in 11in;
+  margin: 0.5in;
+}
+/*
+  NOTE: consider adding this font to the repo?
+*/
+html,
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px !important;
+  letter-spacing: -0.011em;
+  --theme-body-line-height: 1.4em;
+}
+@supports (font-variation-settings: normal) {
+  html,
+  body {
+    font-family: 'Inter var', sans-serif;
+  }
+}
+:root {
+  --color-facebook: #1877f2;
+  --color-youtube: #ff0000;
+  --color-twitter: #1da1f2;
+  --color-amazon: #ff9900;
+  --color-instagram: #c32aa3;
+  --bgd-instagram: radial-gradient(circle at 30% 186%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+}
+:root {
+  --color-product-default: var(--gray-blue);
+  --color-product-ZM: var(--deep-orange);
+  --color-product-ZP: var(--blue);
+  --color-product-30: var(--blue);
+  --color-product-31: var(--blue);
+  --color-product-32: var(--blue);
+  --color-product-ZE: #f44336;
+  --color-product-10: #f44336;
+  --color-product-11: #f44336;
+  --color-product-12: #f44336;
+  --color-product-HC: var(--deep-purple-A400);
+  --color-product-HA: var(--gray-blue-300);
+  --color-product-SA: var(--gray-blue-300);
+  --color-product-PB: #009688;
+  --color-product-PP: #009688;
+  --color-product-PM: #009688;
+  --color-product-MM: #009688;
+  --color-product-ET: var(--brown-400);
+}
+:root[dark] {
+  --color-product-default: var(--gray-blue-300);
+  --color-product-HC: var(--deep-purple-A200);
+}
+:root {
+  --theme-secondary: #3D5AFE;
+  --b-app-tab-bar-active-color: var(--theme-gradient);
+}
+:root[light] {
+  --theme: #1976D2;
+}
+html,
+body {
+  margin: 0;
+  font-size: 17px;
+}
+body > main {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+}
+demo-main {
+  background: var(--theme-bgd-accent2);
+  --app-tab-bar-search-display: none;
+}
+b-panels[name="root"] {
+  z-index: 200;
+}
+@media (max-width: 599px) {
+  :root {
+    --b-app-tab-bar-active-color: rgba(var(--dark-bgd-rgb), 0.3);
+    --b-app-tab-bar-active-color-text: var(--dark-text);
+    --b-app-tab-bar-bgd: var(--theme-gradient);
+    --b-app-tab-bar-text-color: var(--dark-text);
+    --b-app-tab-bar-bgd-stacked-icon-opacity: 0.75;
+  }
+}
+
+
+/*# sourceMappingURL=style.37275d0d.css.map */
