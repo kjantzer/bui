@@ -461,6 +461,11 @@ export default class BtnElement extends LitElement {
             if( window.soundFX && soundFX.playIfMobile )
                 soundFX.playIfMobile('tinyTap', 0.3)
 
+            // Blackstone app pattern
+            let goto = this.getAttribute('goto')
+            if( goto && window.goTo )
+                return goTo(goto)
+
             if( this.href ){
                 e.stopPropagation()
                 if( this.getAttribute('target') == '_blank' )
