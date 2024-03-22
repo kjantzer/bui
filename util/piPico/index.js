@@ -14,31 +14,33 @@ class PiPico {
     #currentRead = []
     #readValue = ''
 
-    constructor(){
+    constructor({reconnect=true}={}){
         this.onDisconnect = this.onDisconnect.bind(this)
         
         // attempt to reconnect automatically (assuming user already connected to port)
-        this.connect()
+        if( reconnect )
+            this.connect()
     }
 
     get isConnected(){
-        return this.#reader && this.#port ? true : false
+        return this.#port ? true : false
     }
 
     async connect(){
+
         // get connected ports - only works if user already requested port
         const ports = await navigator.serial.getPorts()
 
         // get the port that we want (ideally based on ID, but that is not yet supported)
         // see https://github.com/WICG/serial/issues/128
         this.#port = ports?.find(port=>port.getInfo().usbVendorId)
-        this.#setupDevice()
+        return this.#setupDevice()
     }
 
     async requestPort(){
         try{
             this.#port = await navigator.serial.requestPort({ filters: [{ usbVendorId: this.#usbVendorId }] })
-            this.#setupDevice({elseError: true}) // show error since user requested device
+            return this.#setupDevice({elseError: true}) // show error since user requested device
         }catch(err){
             if( err.message.match('No port selected by the user') ) return
             throw err
@@ -47,7 +49,7 @@ class PiPico {
 
     async #setupDevice({elseError=false}={}){
 
-        if( !this.#port ) return // nothing to setup
+        if( !this.#port ) return false // nothing to setup
 
         try{
             await this.#port.open({ baudRate: 115200 })
@@ -56,7 +58,7 @@ class PiPico {
             // only one tab can connect to serial port; so auto connect shouldn't show error
             if( elseError ){
                 // this port already connected, no need to error
-                if( err.message.match('port is already open') ) return
+                if( err.message.match('port is already open') ) return true
 
                 // show friendly message; as this is usually the reason
                 if( err.message.match('Failed to open serial port.') )
@@ -65,7 +67,7 @@ class PiPico {
                 throw err
             }
             else
-                return // don't continue with setup
+                return false // don't continue with setup
         }
 
         this.#reader = this.#port.readable.getReader()
@@ -79,6 +81,8 @@ class PiPico {
         this.emit('connected')
 
         this.#port.addEventListener('disconnect', this.onDisconnect)
+
+        return true
     }
 
     // serial port was disconnected
