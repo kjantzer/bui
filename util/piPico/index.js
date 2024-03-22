@@ -163,6 +163,7 @@ class PiPico {
         // short delay before reporting the "read value" in case we get another line
         this._readFinished = setTimeout(()=>{
             
+            let rawVal = this.#readValue
             let val = this.#readValue.trim()
 
             // looks like may be json
@@ -184,7 +185,7 @@ class PiPico {
             if( from == 'push' && !val )
                 return
 
-            this.emit('read', {value: val, from})
+            this.emit('read', {value: val, from, rawVal})
 
         },10)
 

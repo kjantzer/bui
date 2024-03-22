@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit'
 import './util'
 import './helpers'
+import './pi-pico'
 
 customElements.define('demo-tools', class extends LitElement{
 
@@ -22,6 +23,7 @@ customElements.define('demo-tools', class extends LitElement{
         <b-tabs-router path="tools/" key="tools" layout="left" >
             demo-util
             demo-helpers
+            demo-components-pipico
         </b-tabs-router>
     `}
 

@@ -1,7 +1,13 @@
 Pi Pico with Kaluma over WebSerial
 ========================================
 
+Inspired by: https://www.mathsuniverse.com/pico
+
+### Basic Use
+
 ```js
+import PiPico from 'bui/util/piPico'
+
 let pico = new PiPico()
 
 // will be true if user already connected previously
