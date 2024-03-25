@@ -22,6 +22,7 @@ customElements.define('demo-components-pipico', class extends View{
             margin-bottom: 0;
             border: 1px black solid;
             border-bottom: none;
+            box-sizing: border-box;
         }
     `]
 
@@ -45,6 +46,9 @@ customElements.define('demo-components-pipico', class extends View{
     renderDocsHeader(){ return html`
 
         <b-grid cols=1>
+
+            <b-text body>Send and recieve data over WebSerial with a Raspberry Pi Pico running <a href="https://kalumajs.org">Kalumajs</a></b-text>
+
             <output></output>
 
             <form-control key="cmd" material="filled" label="" prefix="> " show="prefix" ?disabled=${!this.pico.isConnected}>
