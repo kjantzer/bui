@@ -74,7 +74,13 @@ class GroupedColl extends Collection {
         if( sequentialGroups.length > 0 ){
             let _sequentialGroups = new GroupedColls()
             sequentialGroups.forEach(key=>{
-                _sequentialGroups.set(key, groups.get(key)||new this.constructor())
+                let groupColl = groups.get(key)
+                if( !groupColl ){
+                    groupColl = new this.constructor()
+                    groupColl.path = String(fn)
+                    groupColl.name = key
+                }
+                _sequentialGroups.set(key, groupColl)
             })
             groups = _sequentialGroups
         }
