@@ -14,6 +14,9 @@ export class SpinnerOverlayElement extends LitElement {
 		this.label = ''
 	}
 
+	// allows for `spinner?.spin()`
+	spin(show=true){ this.show = show }
+
 	connectedCallback(){
 		super.connectedCallback()
 
