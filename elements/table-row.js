@@ -8,6 +8,10 @@ customElements.define('b-table-row', class extends LitElement{
             display: grid;
         }
 
+        :host([hidden]) {
+            display: none !important;
+        }
+
         :host([slot="header"]) {
             background: var(--theme-bgd-accent);
             border-color: rgba(var(--theme-text-rgb), .1) !important;
