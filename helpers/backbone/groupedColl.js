@@ -33,17 +33,12 @@ class GroupedColl extends Collection {
         }, decimals))
     }
 
-    max(key){
-        return this.map(m=>m.get(key)).sort().pop()
-    }
+    max(key){ return this.map(m=>m.get(key)).sort().pop() }
+    min(key){ return this.map(m=>m.get(key)).sort().shift() }
 
-    filterBy(fn){
-        return new this.constructor(this.filter(fn))
-    }
+    filterBy(fn){ return new this.constructor(this.filter(fn)) }
 
-    values(key){
-        return this.map(m=>m.get(key))
-    }
+    values(key){ return this.map(m=>m.get(key)) }
 
     byHour(){ return this.groupBy('tsHour', this.dateRange({unit: 'hour'})) }
     byDay(){ return this.groupBy('tsDay', this.dateRange({unit: 'day'})) }
