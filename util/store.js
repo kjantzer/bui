@@ -37,6 +37,10 @@ export default localStore
 // creates special "store" function that doesn't need the key each time
 localStore.create = (key,defaultVal)=>{
 	
+	// merge defult with existing (in case new default added)
+	if( defaultVal && typeof defaultVal == 'object' && !Array.isArray(defaultVal) )
+		localStore(key, {...defaultVal, ...(localStore(key)||{}) })
+
 	if( defaultVal && !localStore(key) )
 		localStore(key, defaultVal)
 
