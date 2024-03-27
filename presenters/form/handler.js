@@ -136,9 +136,11 @@ class FormHandler extends HTMLElement {
 		this._model = model
 		this.model._editedAttrs = this.model._editedAttrs || {}
 
-		this.model.on('sync', this.onModelSync, this)
-		this.model.on('change', this.onModelChange, this)
-		this.model.on('edited', this.onModelEdited, this)
+		if( this.model.on ){
+			this.model.on('sync', this.onModelSync, this)
+			this.model.on('change', this.onModelChange, this)
+			this.model.on('edited', this.onModelEdited, this)
+		}
 
 		if( this.hasAttribute('store') )
 			this.model.set(this.store(), {silent: true})
@@ -321,8 +323,10 @@ class FormHandler extends HTMLElement {
 				})
 				this.model.trigger('edited', false, changes)
 				this.model.trigger('saved', changes)
-			}else{
+			}else if( this.model.editAttr ) {
 				this.model.editAttr(changes)
+			}else if( this.model.set ){
+				this.model.set(changes)
 			}
 		}
 
