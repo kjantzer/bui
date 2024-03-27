@@ -221,8 +221,6 @@ customElements.define('b-text', class extends LitElement{
         :host([body]) ::slotted(b-icon) {
             vertical-align: middle;
         }
-
-        :host(:empty) { display: none;}
     `}
 
     firstUpdated(){
