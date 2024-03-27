@@ -61,6 +61,7 @@ class GroupedColl extends Collection {
             let groupColl = new this.constructor(groupedModels[key])
             groupColl.path = String(fn)
             groupColl.name = key
+            groupColl.settings = this.settings
             groups.set(key, groupColl)
         }
 
@@ -74,6 +75,7 @@ class GroupedColl extends Collection {
                     groupColl = new this.constructor()
                     groupColl.path = String(fn)
                     groupColl.name = key
+                    groupColl.settings = this.settings
                 }
                 _sequentialGroups.set(key, groupColl)
             })
