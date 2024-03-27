@@ -51,6 +51,10 @@ customElements.define('b-details', class extends LitElement{
             rotate: 90deg;
         }
 
+        :host([noicon]) .summary {
+            grid-template-columns: 1fr; 
+        }
+
         :host([noicon]) [name="icon"] {
             display: none;
         }
