@@ -39,6 +39,7 @@ class GroupedColl extends Collection {
     filterBy(fn){ return new this.constructor(this.filter(fn)) }
 
     values(key){ return this.map(m=>m.get(key)) }
+    uniqueValues(key){ return Array.from(new Set(this.values(key)))}
 
     byHour(){ return this.groupBy('tsHour', this.dateRange({unit: 'hour'})) }
     byDay(){ return this.groupBy('tsDay', this.dateRange({unit: 'day'})) }
