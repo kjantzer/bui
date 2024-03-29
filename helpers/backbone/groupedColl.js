@@ -24,6 +24,7 @@ export class GroupedCollModel extends Model {
 class GroupedColl extends Collection {
 
     get label(){ return this.name }
+    get pathKey(){ return this.path+':'+this.name }
 
     dateRange({unit, startDate, endDate, dateKey}){ return rangeOfDates.call(this, {unit, startDate, endDate, dateKey})}
 
@@ -115,7 +116,24 @@ class GroupedColl extends Collection {
 export default GroupedColl
 
 // future proof
-class GroupedColls extends CollMap {}
+class GroupedColls extends CollMap {
+
+    flatMap(fn){
+        let resp = []
+        let i = 0
+        this.forEach((coll, key)=>{
+            let newColl = fn(coll, key, i++)
+
+            if( Array.isArray(newColl) )
+                resp.push(...newColl.map(v=>[v.pathKey, v]))
+            else if( newColl instanceof GroupedColls )
+                resp.push(...Array.from(newColl.values()).map(v=>[coll.pathKey+'.'+v.pathKey, v]))
+            else
+                resp.push([newColl.pathKey, newColl])
+        })
+        return new GroupedColls(Object.fromEntries(resp))
+    }
+}
 
 
 function groupByGetter(fn){
