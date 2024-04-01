@@ -5,7 +5,7 @@
 */
 import {Collection, Model} from 'backbone'
 import CollMap from '../../util/collmap'
-import {round} from '../../util/math'
+import {round, avg} from '../../util/math'
 import dayjs from 'dayjs'
 import {capitalize} from '../../util/string'
 
@@ -32,6 +32,10 @@ class GroupedColl extends Collection {
         return Math.round(this.reduce((num, m)=>{
             return num + (m.get(key)||0)
         }, decimals))
+    }
+
+    avg(key, {decimals=0}={}){
+        return avg(this.values(key), decimals)
     }
 
     max(key){ return this.map(m=>m.get(key)).sort().pop() }
@@ -115,9 +119,22 @@ class GroupedColl extends Collection {
 
 export default GroupedColl
 
-// future proof
+
 class GroupedColls extends CollMap {
 
+    // TODO: rename? dont really like this name
+    groupChild(key, fn){
+        let coll = this.get(key)
+        if( coll ){
+            let group = coll.groupBy(fn)
+            group.forEach(subColl=>{
+                this.set(coll.pathKey+'.'+subColl.pathKey, subColl)
+            })
+            this.delete(key)
+        }
+    }
+
+    // alows for grouping data, then alternatively grouping child groups again, but keeping one flat GroupedColl
     flatMap(fn){
         let resp = []
         let i = 0
@@ -126,12 +143,12 @@ class GroupedColls extends CollMap {
 
             if( Array.isArray(newColl) )
                 resp.push(...newColl.map(v=>[v.pathKey, v]))
-            else if( newColl instanceof GroupedColls )
+            else if( newColl instanceof this.constructor )
                 resp.push(...Array.from(newColl.values()).map(v=>[coll.pathKey+'.'+v.pathKey, v]))
             else
                 resp.push([newColl.pathKey, newColl])
         })
-        return new GroupedColls(Object.fromEntries(resp))
+        return new this.constructor(Object.fromEntries(resp))
     }
 }
 
