@@ -91,6 +91,19 @@ module.exports = class CollMap extends Map {
         return resp
     }
 
+    flatMap(fn){
+        let resp = []
+        let i = 0
+        this.forEach((v, key)=>{
+            let val = fn(v, key, i++)
+            if( Array.isArray(val) )
+                resp.push(...val)
+            else
+                resp.push(val)
+        })
+        return resp
+    }
+
     filter(fn){
         let resp = []
         let i = 0
