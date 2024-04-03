@@ -22,7 +22,7 @@ customElements.define('b-table-row', class extends LitElement{
         }
 
         ::slotted(*) {
-            padding: .75em;
+            padding: var(--table-cell-padding, .75em);
         }
 
         ::slotted(*:not(:last-child)) {
