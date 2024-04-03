@@ -3,7 +3,7 @@ import { LitElement, html, css } from 'lit'
 import '../helpers/lit/selectors'
 
 function isCell(el){
-    return !el.hidden && el.tagName != 'STYLE' && el.getAttribute('cell') != 'no'
+    return !el.hidden && el.tagName != 'STYLE' && el.getAttribute('cell') != 'no' && el.checkVisibility()
 }
 
 customElements.define('b-table', class extends LitElement{
