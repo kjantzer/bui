@@ -115,6 +115,30 @@ class GroupedColl extends Collection {
         }
         return path
     }
+
+    groupByChain(names, opts){
+        let group
+        let i = 0
+        for( let name of names ){
+
+            if( !Array.isArray(name) )
+                name = [name]
+
+            if( !group )
+                group = this.groupBy(...name)
+            else{
+                group = group.flatMap(g=>{
+                    // console.log(i, g.level);
+                    if( g.level < i ) return g
+                    return g.groupBy(...name)
+                }, opts)
+            }
+
+            i++
+        }
+
+        return group || [this]
+    }
 }
 
 export default GroupedColl
@@ -135,18 +159,29 @@ class GroupedColls extends CollMap {
     }
 
     // alows for grouping data, then alternatively grouping child groups again, but keeping one flat GroupedColl
-    flatMap(fn){
+    flatMap(fn, {keepAll=false}={}){
         let resp = []
         let i = 0
         this.forEach((coll, key)=>{
             let newColl = fn(coll, key, i++)
 
+            let newColls = []
             if( Array.isArray(newColl) )
-                resp.push(...newColl.map(v=>[v.pathKey, v]))
+                newColls.push(...newColl.map(v=>[v.pathKey, v]))
             else if( newColl instanceof this.constructor )
-                resp.push(...Array.from(newColl.values()).map(v=>[coll.pathKey+'.'+v.pathKey, v]))
+                newColls.push(...Array.from(newColl.values()).map(v=>[coll.pathKey+'.'+v.pathKey, v]))
             else
-                resp.push([newColl.pathKey, newColl])
+                newColls.push([newColl.pathKey, newColl])
+
+            if( keepAll ){
+                resp.push([coll.pathKey, coll])
+
+                // if parent did not further group, no need to add it agian (same data)
+                if( newColls.length > 1 )
+                    resp.push(...newColls)
+
+            }else
+                resp.push(...newColls)
         })
         return new this.constructor(Object.fromEntries(resp))
     }
