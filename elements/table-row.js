@@ -5,7 +5,12 @@ customElements.define('b-table-row', class extends LitElement{
 
     static styles = css`
         :host {
+            display: block !important;
+        }
+        
+        main {
             display: grid;
+            grid-template-columns: var(--table-template-cols);
         }
 
         :host([hidden]) {
@@ -17,21 +22,28 @@ customElements.define('b-table-row', class extends LitElement{
             border-color: rgba(var(--theme-text-rgb), .1) !important;
         }
 
-        :host([slot="header"]) ::slotted(*) {
+        :host([slot="header"]) main ::slotted(*) {
             border-color: rgba(var(--theme-text-rgb), .1);
         }
 
-        ::slotted(*) {
+        main ::slotted(*) {
             padding: var(--table-cell-padding, .75em);
         }
 
-        ::slotted(*:not(:last-child)) {
+        main ::slotted(*:not(:last-child)) {
             border-right: solid 1px var(--theme-bgd-accent);
+        }
+
+        [name="before"]::slotted(*) {
+            padding-left: var(--table-cell-padding, .75em);
+            padding-right: var(--table-cell-padding, .75em);
         }
     `
 
     render(){return html`
-        <slot></slot>
+        <slot name="before"></slot>
+        <main><slot></slot></main>
+        <slot name="after"></slot>
     `}
 
 })
