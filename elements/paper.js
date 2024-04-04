@@ -90,6 +90,21 @@ export class PaperElement extends LitElement {
             justify-content: space-between;
         }
 
+        ::slotted([bleed]) {
+            margin: calc(var(--padding) * -1);
+        }
+
+        ::slotted([bleed]:first-child) {
+            border-top-left-radius: var(--radius);
+            border-top-right-radius: var(--radius);
+        }
+
+        ::slotted([bleed]:last-child) {
+            border-bottom-left-radius: var(--radius);
+            border-bottom-right-radius: var(--radius);
+        }
+        
+
         ::slotted(.bleed) {
             margin: calc(var(--padding) * -1);
             padding: var(--padding);
