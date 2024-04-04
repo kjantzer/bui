@@ -80,8 +80,11 @@ module.exports = class CollMap extends Map {
     get last(){ return this.at(this.size-1) }
     get length(){ return this.size }
 
+    valuesArray(){ return Array.from(this.values()) }
+    keysArray(){ return Array.from(this.keys()) }
+
     at(i){
-        return Array.from(this.values())[i]
+        return this.valuesArray()[i]
     }
 
     map(fn){
