@@ -91,10 +91,11 @@ export class PaperElement extends LitElement {
         }
 
         ::slotted([bleed]) {
-            margin: calc(var(--padding) * -1);
+            margin: 0 calc(var(--padding) * -1);
         }
 
         ::slotted([bleed]:first-child) {
+            margin-top: calc(var(--padding) * -1);
             border-top-left-radius: var(--radius);
             border-top-right-radius: var(--radius);
         }
@@ -102,6 +103,7 @@ export class PaperElement extends LitElement {
         ::slotted([bleed]:last-child) {
             border-bottom-left-radius: var(--radius);
             border-bottom-right-radius: var(--radius);
+            margin-bottom: calc(var(--padding) * -1);
         }
         
 
