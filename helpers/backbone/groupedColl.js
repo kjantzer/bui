@@ -177,7 +177,8 @@ class GroupedColls extends CollMap {
                 resp.push([coll.pathKey, coll])
 
                 // if parent did not further group, no need to add it agian (same data)
-                if( newColls.length > 1 )
+                // TODO: enable via option
+                // if( newColls.length > 1 )
                     resp.push(...newColls)
 
             }else
