@@ -62,6 +62,10 @@ const fetchSync = function(opts={}){
 
         model.isFetching = true
         this.fetch.call(this, opts)
+    }).finally(()=>{
+        // failsafe
+        this.__fetchSyncPromise = null
+        model.isFetching = false
     })
 }
 
