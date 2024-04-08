@@ -27,7 +27,7 @@ customElements.define('b-hr', class extends LitElement{
         }
 
         :host([hidden]) {
-            display: none;
+            display: none !important;
         }
 
         :host([thick]) {
