@@ -11,6 +11,7 @@ customElements.define('b-x-out', class extends LitElement{
             left: 0;
             width: 100%;
             height: 100%;
+            pointer-events: none;
         }
 
         :host[hidden] { display:  none; }
