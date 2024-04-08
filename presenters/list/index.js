@@ -124,6 +124,10 @@ customElements.define('b-list', class extends LitElement {
         [part="sidebar left"] { grid-area: sidebarleft; }
         [part="sidebar right"] { grid-area: sidebarright; }
 
+        :host([minimized]) > :is(slot, b-infinite-list, b-panels) {
+            display: none;
+        }
+
         slot[name="header"],
         slot[name="footer"] {
             display: grid;

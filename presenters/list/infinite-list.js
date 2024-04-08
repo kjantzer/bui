@@ -63,6 +63,7 @@ customElements.define('b-infinite-list', class extends LitElement {
     get endOfListRow(){
         if( !this._endOfListRow ){
             this._endOfListRow = document.createElement('b-list-end-of-row')
+            this._endOfListRow.part = 'end-of-list'
         }
         return this._endOfListRow
     }
