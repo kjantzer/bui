@@ -73,6 +73,8 @@ customElements.define('b-list-export-btn', class extends Btn{
         if(!this.omitTitle){opts.title = titleize(list.key)}
         if(!this.omitDescription){opts.description = description}
 
+        opts.from = this.list
+
         downloadCSV(toCSV(data, opts), filename)
     }
 
