@@ -41,7 +41,15 @@ class GroupedColl extends Collection {
     max(key){ return this.map(m=>m.get(key)).sort().pop() }
     min(key){ return this.map(m=>m.get(key)).sort().shift() }
 
-    filterBy(fn){ return new this.constructor(this.filter(fn)) }
+    filterBy(fn){
+        let filteredColl = new this.constructor(this.filter(fn)) 
+
+        // filteredColl.path = String(fn)
+        // filteredColl.name = key
+        filteredColl.settings = this.settings
+
+        return filteredColl
+    }
 
     values(key){ return this.map(m=>m.get(key)) }
     uniqueValues(key){ return Array.from(new Set(this.values(key)))}
