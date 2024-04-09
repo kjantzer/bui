@@ -232,7 +232,11 @@ customElements.define('check-box', class extends LitElement{
 		})
 	}
 
+	toggle(){ this._onClick() }
+
 	_onClick(e){
+
+		e?.stopPropagation?.()
 
 		if( this.disabled ) return
 		
