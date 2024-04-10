@@ -14,6 +14,14 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             border-top: solid 1px var(--theme-bgd-accent, #ddd);
             --date-picker-height: 50vh;
         }
+
+        /* move buttons to top */
+        b-datepicker::part(footer) {
+            order: -1;
+            border-top: 0;
+            border-bottom: solid 1px var(--theme-bgd-accent, #ddd)
+        }
+
     `}
 
     constructor(opts={}){
