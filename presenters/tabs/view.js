@@ -12,6 +12,7 @@ export default class TabView {
 
             if( this._viewClass && this._viewClass.title ){
                 this.__title = this._viewClass.title
+                this.__toolbarTitle = this._viewClass.toolbarTitle
                 this.__options = this._viewClass.tabOptions || {}
                 this.__icon = this._viewClass.icon
                 this.__id = this.__title.toLowerCase().replace(/ /g, '-')
@@ -108,6 +109,8 @@ export default class TabView {
     get title(){
         return this.__title || 'No Title'
     }
+
+    get toolbarTitle(){ return this.__toolbarTitle || this.title }
 
     get options(){
         return this.__options || {}
