@@ -217,7 +217,7 @@ customElements.define('b-datepicker', class extends LitElement{
         ></lit-virtualizer>
         </main>
 
-        <footer>
+        <footer part="footer">
             <b-btn clear @click=${this.clearDates} class="clear"
                 ?hidden=${this.btns?.clear!==true}>Clear</b-btn>
 
