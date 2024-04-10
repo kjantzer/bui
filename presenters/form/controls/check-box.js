@@ -236,7 +236,7 @@ customElements.define('check-box', class extends LitElement{
 
 	_onClick(e){
 
-		e?.stopPropagation?.()
+		// e?.stopPropagation?.() // causes issues. maybe opt in?
 
 		if( this.disabled ) return
 		
