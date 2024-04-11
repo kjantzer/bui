@@ -19,6 +19,8 @@ export class GroupedCollModel extends Model {
     get tsHour(){ return this.ts.startOf('hour').format('YYYY-MM-DD HH:00:00') }
     get tsDay(){ return this.ts.format('YYYY-MM-DD') }
     get tsMonth(){ return this.ts.format('YYYY-MM') }
+    get tsQuarter(){ return this.ts.format('YYYY Q')+this.ts.quarter() }
+    get tsYear(){ return this.ts.format('YYYY') }
 }
 
 class GroupedColl extends Collection {
