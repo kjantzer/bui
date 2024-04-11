@@ -26,6 +26,17 @@ export default css`
         visibility: hidden;
     }
 
+    [part="custom-date"] {
+        display: block;
+        width: 100%;
+        border: solid 1px var(--theme-bgd-accent);
+        margin: -.5em 0 .5em;
+        box-sizing: border-box;
+        box-shadow: none !important;
+        padding: .25em .5em;
+        border-radius: var(--radius);
+    }
+
     b-datepicker-presets {
         grid-row: span 3;
         border-right: solid 1px var(--theme-bgd-accent, #ddd);

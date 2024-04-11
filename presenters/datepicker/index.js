@@ -186,6 +186,8 @@ customElements.define('b-datepicker', class extends LitElement{
 
         <header part="header">
 
+            <input part="custom-date" type="text" placeholder="Custom date (ex: 90 day)" @change=${this.onCustomDateChange}>
+
             <input part="input" type="text" placeholder="Start date" .key=${'start'}
                 .value=${live(this.selectedRange.start.format('MMM D, YYYY'))}
                 @focus=${this.dateInputFocused}
@@ -291,6 +293,24 @@ customElements.define('b-datepicker', class extends LitElement{
         this.scrollToDate(this.selectedRange.active)
     }
 
+    onCustomDateChange(e){
+        
+        let {start, end} = stringToDateRange(e.target.value, {
+            start: this.selectedRange.start,
+            end: this.selectedRange.end
+        })
+
+        if( start && end ){
+            start = start.format('YYYY-MM-DD')
+            end = end.format('YYYY-MM-DD')
+            
+            this.selectedRange.range = [start, end]
+            this.scrollToDate(this.selectedRange.start, 'start') // not working quite right
+        }
+
+        return e.target.value = ''
+    }
+
     dateInputChange(e){
         let {key, value} = e.target
 
@@ -322,4 +342,86 @@ function daysForDate(date){
     while(i<numDays){ days[i+start] = ++i }
 
     return days
+}
+
+
+// TODO: move to util or helpers?
+// inspired by: https://twitter.com/syntaxfm/status/1775907339792490785
+function stringToDateRange(value, {start, end}={}){
+
+    let _start, _end // new values
+
+    start ||= dayjs()
+    end ||= dayjs()
+
+    if( ['now', 'today'].includes(value) ){
+        _start = _end = dayjs()
+    }
+        
+    if( value == 'this year' ){
+        _start = dayjs().startOf('year')
+        _end = _start.endOf('year')
+    }
+
+    let customMonth = _start ? null : value.match(/^([a-z]{3})\s?(\d{2,4})?$/i)
+
+    if( customMonth ){
+        let [,month, year] = customMonth
+        year ||= new Date().getFullYear()
+
+        let date = dayjs(`${month} 1, ${year}`)
+        _start = date
+        _end = date.endOf('month')
+
+    }
+    
+    let custom = _start ? null : value.match(/^([-+])?(\d+)\s?(years?|yr|months?|mo|weeks?|days?)?(?: (ago))?$/i)
+
+    customDate: if( custom ){
+
+        let [,shift, unit, period, range] = custom
+        if( period == 'yr') period = 'year'
+        if( period == 'mo') period = 'month'
+
+        unit = parseInt(unit)
+
+        // assume month (1 = janary)
+        if( !period && unit <= 12 ){
+            _start = start.set('month', unit-1).startOf('month') // dayjs treats as 0-index; 0 = jan
+            _end = _start.endOf('month')
+            break customDate
+        }
+
+        // assume shorthand year "24" for 2024
+        if( !period && unit > 12 && unit < 99 ){
+            unit += 2000
+            _start = dayjs().set('year', unit).startOf('year')
+            _end = _start.endOf('year')
+            break customDate
+        }
+
+        if( !period && unit > 1900 && unit < 2099 ){
+            _start = dayjs().set('year', unit).startOf('year')
+            _end = _start.endOf('year')
+            break customDate
+        }
+
+        // treat unit as negative unless specified
+        if( shift != '+' )
+            unit = unit * -1
+
+        let date = shift ? start : dayjs()
+
+        date = date.add(unit, period)
+
+        _start = date
+        _end = shift ? end : date
+
+        if( range )
+            _start = _start.add(unit, period)
+        else
+            _end = shift ? _end.add(unit, period) : _end.add(Math.abs(unit), period)
+    }
+
+    return {start: _start, end: _end}
 }

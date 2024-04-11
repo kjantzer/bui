@@ -82,6 +82,11 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
     connectedCallback(){
         super.connectedCallback()
         this.datepicker.value = this.__value
+
+        // FIXME: should be part of datepicker?
+        setTimeout(()=>{
+            this.datepicker.$$('[part="custom-date"]')?.focus()
+        })
     }
 
     get value(){
