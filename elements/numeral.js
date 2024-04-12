@@ -118,6 +118,14 @@ customElements.define('b-currency-acct', class extends Numeral{
     `}
 })
 
+customElements.define('b-currency-acct-lg', class extends Numeral{
+    get defaultFormat(){ return '($0.[0]a)' }
+
+    render(){return html`
+        ${this.numeral}<slot></slot>
+    `}
+})
+
 customElements.define('b-currency-large', class extends Numeral{
     get defaultFormat(){ return '0.[0]a' }
 
