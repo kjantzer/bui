@@ -119,6 +119,7 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
 
     render(){return html`
         <b-btn text stacked part="btn"
+            goto=${this.getAttribute('goto')}
             vid=${this.tabView.id}
             icon="${this.icon||(typeof this.tabView.icon==='string'?this.tabView.icon:'')}" 
             ?active=${this.active} 
