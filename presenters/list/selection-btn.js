@@ -65,7 +65,7 @@ customElements.define('b-list-selection-btn', class extends Btn{
             data = this.data()
 
         if( data.length == 0 )
-            return Notif.alert('No data to select', {autoClose: 2000})
+            throw new UIWarningError('No data to select', {target: this})
 
         list.selection.begin()
     }
