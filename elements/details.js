@@ -15,6 +15,8 @@ customElements.define('b-details', class extends LitElement{
             row-gap: .5em;
         }
 
+        :host([hidden]) { display: none; }
+
         .summary {
             display: grid;
             grid-template-columns: 1em 1fr;
