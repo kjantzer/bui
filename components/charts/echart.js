@@ -55,6 +55,10 @@ customElements.define('b-echart', class extends LitElement{
         this.chart?.setOption({dataZoom: this.dataZoom})
     }
 
+    select(seriesIndex, dataIndex){ this.chart?.dispatchAction({type: 'select', seriesIndex, dataIndex}) }
+    unselect(seriesIndex, dataIndex){ this.chart?.dispatchAction({type: 'unselect', seriesIndex, dataIndex}) }
+    toggleSelect(seriesIndex, dataIndex){ this.chart?.dispatchAction({type: 'toggleSelect', seriesIndex, dataIndex}) }
+
     connectedCallback(){
         super.connectedCallback()
         this.resizeObserver.observe(this)
