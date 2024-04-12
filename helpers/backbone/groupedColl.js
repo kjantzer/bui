@@ -218,7 +218,7 @@ function groupByGetter(fn){
 }
 
 // NOTE: maybe move to bui/util?
-export function rangeOfDates({unit, startDate, endDate, dateKey='date'}={}){
+export function rangeOfDates({dates, unit, startDate, endDate, dateKey='date'}={}){
 
     let format = {
         'year': 'YYYY',
@@ -228,7 +228,8 @@ export function rangeOfDates({unit, startDate, endDate, dateKey='date'}={}){
         'hour': 'YYYY-MM-DD HH:00:00'
     }[unit]||'YYYY-MM-DD'
 
-    let dates = this.map(m=>dayjs(m.get(dateKey)).format(format))
+    if( !dates )
+        dates = this.map(m=>dayjs(m.get(dateKey)).format(format))
 
     dates.sort()
 
