@@ -194,6 +194,7 @@ customElements.define('b-list-header', class extends LitElement{
         ${scrollbars.hide()}
 
         :host {
+            position: relative;
             --list-cell-hover-bgd: transparent;
         }
 
@@ -202,6 +203,26 @@ customElements.define('b-list-header', class extends LitElement{
         :host > span {
             font-size: var(--b-list-header-font-size, .75em);
             font-weight: bold;
+        }
+
+        [name="selection"] { display: none;}
+
+        :host-context([selection-on]) [name="selection"],
+        :host(:hover) [name="selection"] {
+            display: block;
+            position: absolute;
+            left: 2px;
+            top: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0;
+        }
+
+        [name="selection"]::slotted(b-list-selection-btn) {
+            color: inherit;
+            z-index: 1000;
+            width: calc(2rem - 2px);
         }
     `]}
 
@@ -295,6 +316,7 @@ customElements.define('b-list-header', class extends LitElement{
 
         return html`
             ${render}
+            <slot name="selection"></slot>
             <style>${styles}</style>
         `
     }

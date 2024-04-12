@@ -20,6 +20,9 @@ customElements.define('b-list-selection-btn', class extends Btn{
         if( this.parentElement.tagName == 'B-LIST')
             this.slot = 'toolbar:after'
 
+        if( this.parentElement.tagName == 'B-LIST-HEADER' )
+            this.slot = 'selection'
+
         this.tooltip ="Turn on selection"
 
         this.addEventListener('click', this.beginSelection)
@@ -48,6 +51,9 @@ customElements.define('b-list-selection-btn', class extends Btn{
     }
 
     beginSelection(){
+
+        if( this.list.selection?.isOn )
+            return this.list.selection.end()
 
         let list = this.list
         let data = list.dataSource.data

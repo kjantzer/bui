@@ -182,7 +182,7 @@ customElements.define('b-list', class extends LitElement {
         }
 
         b-infinite-list[selection-on] > [part="row"] {
-            margin-left: 2em;
+            margin-left: 2rem;
             padding-left: 0; /* override shared header style */
             position: relative;
         }
@@ -190,10 +190,10 @@ customElements.define('b-list', class extends LitElement {
         b-infinite-list[selection-on] > [part="row"]:after {
             display: block;
             content: '';
-            width: calc(2em - 2px);
+            width: calc(2rem - 2px);
             height: calc(100% - 2px);
             margin: 1px;
-            left: -2em;
+            left: -2rem;
             top: 0px;
             background-color: var(--b-list-selected-row-bgd, rgba(var(--theme-rgb), .1));
             box-shadow: 0 0 0 1px rgba(var(--theme-rgb), .2) inset;
