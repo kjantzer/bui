@@ -130,6 +130,10 @@ export function sharedStyles(host=':host'){return css`
         top: 0;
         z-index: -1;
     }
+
+    :host-context([selection-on]) {
+        padding-left: 2em;
+    }
 `
 }
 
@@ -290,8 +294,8 @@ customElements.define('b-list-header', class extends LitElement{
         let render = (this.slot&&rowEl[this.slot]&&rowEl[this.slot].call(this.parentElement)) || ''
 
         return html`
-            <style>${styles}</style>
             ${render}
+            <style>${styles}</style>
         `
     }
 

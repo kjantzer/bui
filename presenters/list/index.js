@@ -183,6 +183,7 @@ customElements.define('b-list', class extends LitElement {
 
         b-infinite-list[selection-on] > [part="row"] {
             margin-left: 2em;
+            padding-left: 0; /* override shared header style */
             position: relative;
         }
 
