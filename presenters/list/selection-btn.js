@@ -23,7 +23,7 @@ customElements.define('b-list-selection-btn', class extends Btn{
         if( this.parentElement.tagName == 'B-LIST-HEADER' )
             this.slot = 'selection'
 
-        this.tooltip ="Turn on selection"
+        this.tooltip ="Toggle selection"
 
         this.addEventListener('click', this.beginSelection)
     }
