@@ -395,7 +395,7 @@ export default customElements.get('b-list-header')
 
 
 function isCell(el){
-    return !el.hidden && !el.slot && el.tagName != 'STYLE' && el.getAttribute('cell') != 'no' //&& el.checkVisibility()
+    return !el.hidden && !el.slot && !['STYLE', 'SLOT'].includes(el.tagName) && el.getAttribute('cell') != 'no' //&& el.checkVisibility()
     // return !el.hidden && el.tagName != 'STYLE' && el.getAttribute('cell') != 'no'
 }
 
