@@ -316,7 +316,7 @@ customElements.define('b-list-header', class extends LitElement{
 
         return html`
             ${render}
-            <slot name="selection"></slot>
+            <slot part="selection-slot" name="selection"></slot>
             <style>${styles}</style>
         `
     }
