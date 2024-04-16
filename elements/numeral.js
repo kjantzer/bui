@@ -150,6 +150,10 @@ customElements.define('b-num-large', class extends Numeral{
     get defaultFormat(){ return '0.[0]a' }
 })
 
+customElements.define('b-num-acct-lg', class extends Numeral{
+    get defaultFormat(){ return '(0.[0]a)' }
+})
+
 customElements.define('b-time', class extends Numeral{
     get defaultFormat(){ return '00:00:00' }
 })
