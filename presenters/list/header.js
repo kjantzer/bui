@@ -205,7 +205,10 @@ customElements.define('b-list-header', class extends LitElement{
             font-weight: bold;
         }
 
-        [name="selection"] { display: none;}
+        [name="selection"] {
+            display: none;
+            background-color: var(--theme-bgd);
+        }
 
         :host-context([selection-on]) [name="selection"],
         :host(:hover) [name="selection"] {
@@ -217,6 +220,7 @@ customElements.define('b-list-header', class extends LitElement{
             display: flex;
             align-items: center;
             padding: 0;
+            z-index: 5;
         }
 
         [name="selection"]::slotted(b-list-selection-btn) {
