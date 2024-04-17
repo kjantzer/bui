@@ -4,7 +4,7 @@
 import { LitElement, html, css } from 'lit'
 import '../helpers/lit/selectors'
 import '../elements/empty-state'
-import download from '../util/download'
+import download, {downloadContent} from '../util/download'
 import CollMap from '../util/collmap'
 import store from '../util/store'
 
@@ -164,6 +164,47 @@ customElements.define('b-camera', class extends LitElement{
         this.video.srcObject = this.stream
         this.video.hidden = false
         this.setAttribute('streaming', '')
+    }
+
+    async startRecording(){
+
+        if( !this.stream ) throw new UIWarningError('No stream')
+        
+        this.recordedData = []
+        this.deviceRecorder = await new MediaRecorder(this.stream, {mimeType: "video/webm"});
+
+        this.deviceRecorder.ondataavailable = (e) => {
+            if(e.data.size > 0 && this.recording )
+                this.recordedData.push(e.data);
+        }
+
+        this.deviceRecorder.onstop = function(){} // this not yet needed
+        
+        this.deviceRecorder.start(4.17188152) // timeslice (ms) - number is 24 frames a second; idk :shrug:
+
+        this.recording = true
+    }
+
+    stopRecording({
+        download=false
+    }={}){
+        if( !this.deviceRecorder ) throw new UIWarningError('Not recording')
+
+        this.recording = false
+        this.deviceRecorder.stop()
+
+        if( !this.recordedData?.length ) return console.log('nothing captured');
+
+        let data = this.recordedData
+        this.recordedData = []
+
+        // download recording
+        if( download ){
+            let filename = 'camera-'+(new Date().getTime())+'.webm'
+            return downloadContent(data, filename, {type: 'video/webm'})
+        }
+
+        return new Blob(data, {type: 'video/webm'});
     }
 
     focusTo(focusDistance){
