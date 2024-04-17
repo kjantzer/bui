@@ -37,6 +37,7 @@ customElements.define('demo-presenter-virtual-scroller', class extends View{
         <p>Uses <b-text href="https://github.com/PolymerLabs/uni-virtualizer">lit-virtualizer</b-text> to efficiently render large lists as a virtual windowed list. Here is an example of 25,000 rows with dividers and a "skipper" menu
         </p><br>
 
+        <div>
         <b-paper compact overshadow>
             <b-virtual-scroller
                 row="demo-virtual-scroller-row"
@@ -44,6 +45,7 @@ customElements.define('demo-presenter-virtual-scroller', class extends View{
                 .items=${items}
             ></b-virtual-scroller>
         </b-paper>
+        </div>
 
         <br><br>
         <h2>Documentation</h2>

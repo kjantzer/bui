@@ -25,6 +25,7 @@ customElements.define('demo-presenter-list', class extends View{
 
     renderContent(){ return html`
 
+        <div>
         <b-paper overshadow compact>
             <b-list
                 key="demo-list"
@@ -34,20 +35,22 @@ customElements.define('demo-presenter-list', class extends View{
                 .coll=${data}
             >
 
-                <b-list-selection-btn></b-list-selection-btn>
+                <b-list-header>
+                    <b-list-selection-btn></b-list-selection-btn>
+                </b-list-header>
+
                 <b-list-export-btn></b-list-export-btn>
 
                 <b-flex slot="actions:left">
                     <b-btn @click=${this.copy} clear color="theme">Copy IDs</b-btn>
                 </b-flex>
 
-                <b-list-header></b-list-header>
-
                 <div slot="footer" style="padding: .5em; border-top: solid 2px var(--theme-bgd-accent);">
                     List footer content
                 </div>
             </b-list>
         </b-paper>
+        </div>
 
         <br><br>
         <h2>Documentation</h2>
