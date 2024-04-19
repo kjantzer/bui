@@ -1,6 +1,8 @@
 /*
     Grouped Collection
 
+    DEPRECATED
+
     Similar to bui/util/groupedData
 */
 import {Collection, Model} from 'backbone'
