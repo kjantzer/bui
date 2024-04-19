@@ -10,7 +10,7 @@ function get(model, key){
 
 export default class GroupedData {
     
-    constructor(models, {parent, path, name, settings, src, opts}={}){
+    constructor(models, {parent, path, name, settings, src, opts, level}={}){
 
         // if models is a backbone collection
         if( models.models ){
@@ -24,7 +24,7 @@ export default class GroupedData {
         this.name = name
         this.parent = parent
 
-        this.level = parent ? ((parent.level||0) + 1) : 0
+        this.level = level ?? (parent ? ((parent.level||0) + 1) : 0)
         this.settings = settings || parent?.settings || src?.settings
         this.opts = opts || parent?.opts
         this.src = src || parent?.src
@@ -63,6 +63,7 @@ export default class GroupedData {
 
     filterBy(fn){
         let filteredColl = new this.constructor(this.models.filter(fn), {
+            level: this.level, // same level as group // NOTE: or should this reset to zero?
             parent: this,
             settings: this.settings,
             // path: String(fn),
@@ -179,6 +180,14 @@ export default class GroupedData {
         }
 
         return group || [this]
+    }
+
+    toJSON(){
+        return this.models.map(m=>m.toJSON?.()||m)
+    }
+
+    toCSV(opts){
+        return this.opts?.toCSV?.call(this, opts) || this.models.map(m=>m.toCSV?.()||m.toJSON?.()||m)
     }
 }
 
