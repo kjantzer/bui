@@ -139,7 +139,7 @@ class GroupedColl extends Collection {
             else{
                 group = group.flatMap(g=>{
                     // console.log(i, g.level);
-                    if( g.level < i ) return g
+                    if( g.level < i ) return null
                     return g.groupBy(...name)
                 }, opts)
             }
@@ -180,11 +180,11 @@ class GroupedColls extends CollMap {
                 newColls.push(...newColl.map(v=>[v.pathKey, v]))
             else if( newColl instanceof this.constructor )
                 newColls.push(...Array.from(newColl.values()).map(v=>[coll.pathKey+'.'+v.pathKey, v]))
-            else
+            else if( newColl )
                 newColls.push([newColl.pathKey, newColl])
 
             if( keepAll ){
-                resp.push([coll.pathKey, coll])
+                resp.push([key, coll])
 
                 // if parent did not further group, no need to add it agian (same data)
                 // TODO: enable via option
