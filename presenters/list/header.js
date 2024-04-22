@@ -55,11 +55,11 @@ export function sharedStyles(host=':host'){return css`
     }
 
     ${unsafeCSS(host)} > *:first-child {
-        padding-left: calc(var(--list-cell-padding-x, .5rem) * 2);
+        padding-left: calc(var(--list-cell-padding-x, .5rem) * var(--list-cell-padding-x-cap, 2));
     }
 
     ${unsafeCSS(host)} > *:last-child {
-        padding-right: calc(var(--list-cell-padding-x, .5rem) * 2);
+        padding-right: calc(var(--list-cell-padding-x, .5rem) * var(--list-cell-padding-x-cap, 2));
     }
 
     ${unsafeCSS(host)} > [sticky] {
