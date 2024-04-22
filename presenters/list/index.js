@@ -185,6 +185,8 @@ customElements.define('b-list', class extends LitElement {
             margin-left: 2rem;
             padding-left: 0; /* override shared header style */
             position: relative;
+            top: unset; /* undo possible sticky position */
+            bottom: unset;
         }
 
         b-infinite-list[selection-on] > [part="row"]:after {
