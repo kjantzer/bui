@@ -138,6 +138,8 @@ export default class GroupedData {
         return groups
     }
 
+    get(key){ return get(this.models[0], key)}
+
     get pathValue(){
         let parent = this
         let labels = []
