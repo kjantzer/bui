@@ -151,7 +151,11 @@ export default class DataSource {
             if( !this.filters ) return resolve(this.data)
 
             if( this.lastFiltered < this.filters.lastChanged ){
+
                 this.data = await this.filters.filter(this._rawData)
+
+                if( this.coll?.applyGrouping )
+                    this.data = this.coll.applyGrouping(this.data)
                 
                 if( this.sorts && !this.sorts.sortOnDB )
                     await this.sort()
