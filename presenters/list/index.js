@@ -371,7 +371,7 @@ customElements.define('b-list', class extends LitElement {
             </b-list-selection-bar>
         </b-list-toolbar>
 
-        <slot name="sidebar:left" part="sidebar:left"></slot>
+        <slot name="sidebar:left" part="sidebar left"></slot>
 
         <slot name="header" part="header"></slot>
         <b-infinite-list
