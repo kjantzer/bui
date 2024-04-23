@@ -689,7 +689,12 @@ customElements.define('b-list', class extends LitElement {
         return models.length > 0 ? models : this.dataSource.data
     }
 
-    async refresh(){
+    async refresh(e){
+        
+        // let's outside code change how refresh happens
+        if( e?.currentTarget && this.willTakeAction('refresh-btn').notAllowed )
+            return
+
         this.spinner.show = true
         try{
             this.selection.end()
