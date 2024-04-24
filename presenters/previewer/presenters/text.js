@@ -59,7 +59,7 @@ customElements.define('b-previewer-text', class extends LitElement{
                 ${this.renderContent()}
             </main>
         `:html`
-            <b-empty-state>${this.err||'Loading...'}</b-empty-state>
+            <b-empty-state overlay lg>${this.err||'Loading...'}</b-empty-state>
         `}
     `}
 

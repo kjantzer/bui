@@ -385,7 +385,22 @@ customElements.define('demo-elements', class extends LitElement{
 
             <section title="Empty State" view-id="Empty-State">
                 
-                <b-empty-state>Empty state</b-empty-state>
+                <b-paper overshadow style="position: relative; height: 50vh">
+                    <b-empty-state overlay lg>Empty state</b-empty-state>
+                </b-paper>
+
+                <b-paper overshadow>
+                    <b-empty-state>Empty state</b-empty-state>
+                </b-paper>
+
+                <b-paper overshadow>
+                    <b-empty-state if="first">
+                        <b-grid cols=1 gap=" ">
+                            <b-text lg xbold>No Content</b-text>
+                            <b-text dim>More info here</b-text>
+                        </b-grid>
+                    </b-empty-state>
+                </b-paper>
 
             </section>
 

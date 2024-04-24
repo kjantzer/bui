@@ -57,7 +57,7 @@ customElements.define('b-embed', class Embed extends LitElement {
                     allowfullscreen
                     allow="encrypted-media">
             </iframe>
-            <b-empty-state>${this.url?'Failed to load':(this.placeholder||'')}</b-empty-state>
+            <b-empty-state overlay lg>${this.url?'Failed to load':(this.placeholder||'')}</b-empty-state>
         </main>
     `}
 

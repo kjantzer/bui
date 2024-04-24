@@ -572,8 +572,9 @@ customElements.define('b-list', class extends LitElement {
     createEmptyElement(){
         this.emptyView = this.emptyView || document.createElement(this.emptyElement)
         this.emptyView.part = 'empty-view'
-        this.emptyView.setAttribute('must-be', 'first')
+        this.emptyView.setAttribute('if', 'first')
         this.emptyView.setAttribute('md', '')
+        this.emptyView.setAttribute('overlay', '')
         this.emptyView.list = this
         this.emptyView.dataSource = this.dataSource
         

@@ -310,13 +310,13 @@ import {BgdColors} from 'avatar'
 BgdColors = [/*...array of colors...*/]
 ```
 
-## `<b-empty-state>`
+## `<b-empty-state overlay lg>`
 
 Use to show a message when a view is empty. **NOTE:** make sure the parent 
 element has `position:relative` (or absolute)
 
 <!--
-<b-empty-state static>Nothing to show</b-empty-state>
+<b-empty-state>Nothing to show</b-empty-state>
 -->
 
 #### Attributes

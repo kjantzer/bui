@@ -172,7 +172,7 @@ customElements.define('b-previewer', class extends LitElement{
             return Presenter.useFor((model.get&&model.get('ext'))||model.ext)
         })
 
-        if( !Presenter ) return html`<b-empty-state><div>Preview not supported</div></b-empty-state>`
+        if( !Presenter ) return html`<b-empty-state overlay lg><div>Preview not supported</div></b-empty-state>`
 
         let view = new Presenter()
         view.model = model

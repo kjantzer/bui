@@ -83,7 +83,7 @@ customElements.define('b-camera', class extends LitElement{
     render(){return html`
         <canvas hidden></canvas>
         <video autoplay playsinline part="video"></video>
-        <b-empty-state sm part="placeholder">${this.placeholder}</b-empty-state>
+        <b-empty-state part="placeholder">${this.placeholder}</b-empty-state>
         <slot></slot>
     `}
 

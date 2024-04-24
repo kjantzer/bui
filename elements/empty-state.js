@@ -15,11 +15,13 @@ export default class EmptyState extends LitElement {
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 2em;
             text-align: center;
             padding: 1em;
             box-sizing: border-box;
-            line-height: 1.2em;
+            min-height: 1em;
+        }
+
+        :host([overlay]) {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -31,18 +33,17 @@ export default class EmptyState extends LitElement {
             color: var(--b-empty-state-color, var(--theme-text-accent));
         }
 
+        /* if anything but simple text string is in slot, deafult back to normal text color */
+        slot::slotted(*) {
+            color: var(--theme-text);
+        }
+
         :host([ondark]) {
             color: rgba(255,255,255,.1);
         }
 
         :host([dashed]) {
             border: dashed 1px;
-        }
-
-        :host([static]) {
-            position: static;
-            height: auto;
-            min-height: 1em;
         }
 
         :host([nopad]) {
@@ -57,10 +58,10 @@ export default class EmptyState extends LitElement {
             display: inline-flex;
         }
 
-        :host([xs]) { font-size: .8em; }
-        :host([sm]) { font-size: 1em; }
-        :host([md]) { font-size: 1.4em; }
-        :host([lg]) { font-size: 3em; }
+        :host([xs]) { font-size: .8em; line-height: 1.2em; }
+        :host([md]) { font-size: 1.4em; line-height: 1.2em; }
+        :host([lg]) { font-size: 2em; line-height: 1.2em; }
+        :host([xl]) { font-size: 3em; line-height: 1.2em; }
 
         :host([must-be="first"]:not(:first-child)),
         :host([if="first"]:not(:first-child)) {

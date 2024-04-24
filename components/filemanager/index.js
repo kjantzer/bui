@@ -193,7 +193,7 @@ customElements.define('b-file-manager', class extends LitElement{
     }
 
     renderEmptyState(){return html`
-        <b-empty-state must-be="first" static md part="empty-state">
+        <b-empty-state if="first" static md part="empty-state">
             <slot name="placeholder">${this.placeholder}</slot>
         </b-empty-state>
     `}

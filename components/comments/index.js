@@ -210,7 +210,7 @@ customElements.define('b-comments', class extends LitElement{
         ></b-comment-row>
 
         ${this.coll.length==0&&this.unread?html`
-            <b-empty-state static sm>
+            <b-empty-state>
                 <slot name="unread-empty">No unread ${this.plural}</slot>
             </b-empty-state>
         `:''}

@@ -39,7 +39,7 @@ customElements.define('b-upload-view', class extends LitElement{
             
             <slot></slot>            
             <b-flex gap=".25" col>
-                <b-empty-state static must-be="last" sm>Drop files here</b-empty-state>
+                <b-empty-state if="last" sm>Drop files here</b-empty-state>
                 ${this.files.map(file=>html`
                     <b-upload-file .file=${file}></b-upload-file>        
                 `)}

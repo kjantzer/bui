@@ -25,10 +25,10 @@ customElements.define('b-search-popup-empty-results', class extends LitElement{
 
         ${this.list.coll.length==0&&this.list.coll.term?html`
 
-            <b-empty-state>No results found</b-empty-state>
+            <b-empty-state overlay lg>No results found</b-empty-state>
 
         `:device.isMobile?'':html`
-            <b-empty-state sm>
+            <b-empty-state>
                 <b-search-popup-tips></b-search-popup-tips>
             </b-empty-state>
         `}

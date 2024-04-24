@@ -29,7 +29,7 @@ customElements.define('b-previewer-image', class extends LitElement{
     `}
 
     render(){return html`
-        <b-empty-state sm>Loading...</b-empty-state>
+        <b-empty-state>Loading...</b-empty-state>
         <img src="${this.model.displayURL}">
     `}
 
