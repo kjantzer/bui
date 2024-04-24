@@ -377,8 +377,6 @@ customElements.define('demo-elements', class extends LitElement{
 
                     <p>Tooltips use the Popover presenter to show the tooltip.</p>
 
-                    <p><b-text tone="info">HTML<b-tooltip delay=500><b>Bold</b> text with an icon <b-icon name="blackstone"></b-icon></b-tooltip></b-text> is also supported in the <b-text tooltip="Testing">tooltips</b-text></p>
-
                 <!-- </b-paper> -->
 
             </section>
