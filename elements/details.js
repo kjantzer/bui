@@ -27,6 +27,10 @@ customElements.define('b-details', class extends LitElement{
             display: block;
         }
 
+        :host([display-contents]) .content {
+            display: contents;
+        }
+
         :host([nest]) .content {
             margin-left: 1.25em;
         }
