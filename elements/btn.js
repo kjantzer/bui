@@ -483,6 +483,11 @@ export default class BtnElement extends LitElement {
         },1000)
     }
 
+    // allows for `e.currentTarget.spinning?.()`
+    spinning(doSpin=true){
+        this.spin = doSpin
+    }
+
 }
 
 customElements.define('b-btn', BtnElement)
