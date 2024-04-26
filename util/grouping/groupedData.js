@@ -42,6 +42,9 @@ export default class GroupedData {
 
     get pathKey(){ return this.path+':'+this.name }
 
+    get length(){ return this.models.length }
+    get size(){ return this.models.length }
+
     sum(key, {decimals=0}={}){
         return Math.round(this.models.reduce((num, m)=>{
             return num + (get(m, key)||0)
