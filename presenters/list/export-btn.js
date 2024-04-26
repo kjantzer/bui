@@ -16,9 +16,10 @@ customElements.define('b-list-export-btn', class extends Btn{
         super()
         this.setAttribute('clear', '')
         this.setAttribute('lg', '')
-        this.icon = this.icon || 'file-excel'
+        this.icon = this.icon || 'download'
         this.slot = this.slot || 'toolbar:after'
-        this.title = this.title || "Export data to CSV file"
+        this.tooltip = this.title || "Export data to CSV file"
+        this.title = ''
         this.addEventListener('click', this.export)
 
         this.omitTitle = false;
