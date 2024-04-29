@@ -170,7 +170,7 @@ customElements.define('b-app', class extends LitElement {
                 icon: el.icon,
                 permission: el.permission || parent.permission,
                 args: {
-                    _: el.id
+                    _: el.path ? el.path.split('(')[0] : el.id
                 }
             }]
 
