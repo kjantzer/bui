@@ -12,14 +12,14 @@ export default async function contextMenu({target, models, before, after}={}){
     
     let menu = []
     
-    if( list && list.selection.isOn )
-        menu.push({
-            label: 'Selection Off',
-            icon: 'library_add_check',
-            fn: ()=>{
-                list.selection.end()
-            }
-        })
+    // if( list && list.selection.isOn )
+    //     menu.push({
+    //         label: 'Selection Off',
+    //         icon: 'library_add_check',
+    //         fn: ()=>{
+    //             list.selection.end()
+    //         }
+    //     })
     if( list && list.selection.isOn && models.length )
         menu.push({
             label: 'Clear selection',
