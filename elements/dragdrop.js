@@ -134,7 +134,7 @@ customElements.define('b-dragdrop', class extends LitElement{
 
     render(){return html`
         <slot name="msg">
-            <b-empty-state class="drag-msg" sm>
+            <b-empty-state class="drag-msg" overlay>
                 <b-text md>
                     <slot></slot>
                 </b-text>
