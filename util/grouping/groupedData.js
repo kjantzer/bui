@@ -58,6 +58,7 @@ export default class GroupedData {
     max(key){ return this.map(m=>get(m, key)).sort().pop() }
     min(key){ return this.map(m=>get(m, key)).sort().shift() }
 
+    forEach(){ return this.models.forEach(...arguments)}
     map(){ return this.models.map(...arguments)}
     filter(){ return this.models.filter(...arguments)}
     first(){ return this.models.at(0) }
