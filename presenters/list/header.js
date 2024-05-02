@@ -91,15 +91,18 @@ export function sharedStyles(host=':host'){return css`
         background: var(--list-cell-sticky-bgd, var(--list-cell-bgd, var(--theme-bgd)));
     }
 
-    ${unsafeCSS(host)} > [sticky]:first-child + [sticky] {
+    ${unsafeCSS(host)} > [sticky]:first-child + [sticky],
+    ${unsafeCSS(host)} > [sticky="2"] {
         left: var(--grid-col-1-width);
     }
 
-    ${unsafeCSS(host)} > [sticky]:first-child + [sticky] + [sticky] {
+    ${unsafeCSS(host)} > [sticky]:first-child + [sticky] + [sticky],
+    ${unsafeCSS(host)} > [sticky="3"] {
         left: calc(var(--grid-col-1-width) + var(--grid-col-2-width));
     }
 
-    ${unsafeCSS(host)} > [sticky]:first-child + [sticky] + [sticky] + [sticky] {
+    ${unsafeCSS(host)} > [sticky]:first-child + [sticky] + [sticky] + [sticky],
+    ${unsafeCSS(host)} > [sticky="4"] {
         left: calc(var(--grid-col-1-width) + var(--grid-col-2-width) + var(--grid-col-3-width));
     }
 
