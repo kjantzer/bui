@@ -1,27 +1,47 @@
-// TODO: support prefixing?
 
+// TODO: support prefixing?
 const store = (store, key, val)=>{
 	
 	if( val === undefined ){
-		let data = store.getItem(key)
-		
-		if( data === null || data === undefined )
-			return undefined
-		
-		var val = ''
-		try { val = JSON.parse(data) }
-		catch(e) { val = data }
-		
-		return val
+		return getItem(store, key)
 	}
 		
 	if( val === null ){
 		return store.removeItem(key)
 	}
-		
+	
+	if( val._merge ){
+		delete val._merge
+		val = {
+			...(getItem(store, key)||{}),
+			...val
+		}
+
+		let nullKeys = []
+		for( let k in val ){
+			if( val[k] === null || val[k] === undefined )
+				nullKeys.push(k)
+		}
+
+		nullKeys.forEach(k=>delete val[k])
+	}
+
 	val = JSON.stringify(val)
 	
 	return store.setItem(key, val)
+}
+
+function getItem(store, key){
+	let data = store.getItem(key)
+	
+	if( data === null || data === undefined )
+		return undefined
+	
+	var val = ''
+	try { val = JSON.parse(data) }
+	catch(e) { val = data }
+	
+	return val
 }
 
 export const localStore = (key, val)=>{
