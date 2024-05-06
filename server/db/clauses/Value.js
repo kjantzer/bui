@@ -69,6 +69,24 @@ module.exports = class Value extends Clause {
         }
     }
 
+    static detectOperator(val, oper='='){
+        
+        let valAndOper = val?.split(new RegExp('('+AllowedOperators.join('|')+')', 'i')).filter(s=>s)
+
+        // if matched a operator and val, separate (but dont treat null values as operators)
+        if( valAndOper?.length >= 2 && val != 'is not null' && val != 'is null' ){
+
+            oper = valAndOper.shift()
+            val = valAndOper.join('').trim()
+
+            // LIKE must contain '%' to be of use, so if user forgot to, default LIKE left or right
+            if( oper == 'like' && !val.includes('%') )
+                val = '%'+val+'%'
+        }
+
+        return {val, oper}
+    }
+
     // NOTE: this is a bit complicated :/
     // expects a string or array of strings like:
     // `key`, `key: value`, `key = value`, `key like value`, `key > value`, etc
@@ -110,19 +128,12 @@ module.exports = class Value extends Clause {
             }
 
             // does the value contain an allowed operator? eg: "like value"
-            let valAndOper = val?.split(new RegExp('('+AllowedOperators.join('|')+')', 'i')).filter(s=>s)
-            
-            // if matched a operator and val, separate (but dont treat null values as operators)
-            if( valAndOper?.length >= 2 && val != 'is not null' && val != 'is null' ){
-
-                oper = valAndOper.shift()
-                val = valAndOper.join('').trim()
-
-                // LIKE must contain '%' to be of use, so if user forgot to, default LIKE left or right
-                if( oper == 'like' && !val.includes('%') )
-                    val = '%'+val+'%'
+            let detectOper = this.detectOperator(val, oper)
+            if( detectOper ){
+                val = detectOper.val
+                oper = detectOper.oper
             }
-
+            
             // format the value for all comparisions but LIKE
             if( oper != 'like' ){
                 
