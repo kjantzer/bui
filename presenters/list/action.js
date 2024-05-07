@@ -26,7 +26,7 @@ export default class Action {
         let Action = this
 
         return function(e){
-            let model = this.list ? this.list.currentModels : this.model
+            let model = this.list?.selection.isOn ? this.list.currentModels : this.model
             return new Action(this, e, model, opts)
         }
     }
