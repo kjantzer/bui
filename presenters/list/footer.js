@@ -39,7 +39,6 @@ customElements.define('b-list-footer', class extends Header{
 
     onSelectionChange(e){
         let {action, data} = e.detail
-        console.log('updatE?');
         this.onContentChanged()
     }
 
