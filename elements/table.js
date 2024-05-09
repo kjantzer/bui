@@ -26,6 +26,10 @@ customElements.define('b-table', class extends LitElement{
             grid-template-columns: var(--table-template-cols);
         }
 
+        ::slotted([colspan]) {
+            grid-template-columns: 1fr;
+        }
+
         ::slotted(*:not(:last-child)) {
             border-bottom: solid 1px var(--theme-bgd-accent);
         }
