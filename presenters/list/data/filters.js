@@ -598,7 +598,7 @@ export class Filter {
         }
 
         let matchedVal = this.values.filter((v,i)=>{
-            if( typeof v == 'string' || v.divider || v.text || v.noDisplay ) return false
+            if( typeof v == 'string' || v.divider || v.text || v.noDisplay || v.heading ) return false
             // return v.val==val
 
             if( !Array.isArray(val) ){
