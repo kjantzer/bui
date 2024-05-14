@@ -241,7 +241,7 @@ function makePrompt(opts, i=0, globalOpts){
 					<radio-btn 
 						label
 						value=${o.val===undefined?o:o.val}
-						?disabled=${o.disabled}
+						?disabled=${o.disabled||opts.disabled}
 					>
 						<b-text>
 							${o.label===undefined?o:o.label}
