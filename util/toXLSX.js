@@ -11,17 +11,20 @@ module.exports = function toXLSX(data, opts){
 		workbook: null, // TODO: if workbook object provided, will add the sheet to an existing workbook
 	}, opts)
 
-	if( !data || data.length == 0 )
-		// TEMP:create a workbook with a single sheet containing a message to prevent errors when trying to apend a sheet to another workbook
+	// TEMP: create a workbook with a single sheet containing a message to prevent errors when trying to apend a sheet to another workbook
+	if( !data?.length )
 		return XLSX.utils.book_new({SheetNames:['Sheet1'], Sheets:{'Sheet1':XLSX.utils.aoa_to_sheet([['No data to export']])}});
 
   	// see if the array of data contains Backbone Models or custom classes that implement `toXLSX` or `toJSON`
 	data = data.flatMap(d=>{
-		if( d && d.toXLSX )
-		return d.toXLSX(opts)
+		if( d?.toXLSX )
+			return d.toXLSX(opts)
+		
+		if( d?.toCSV )
+			return d.toCSV(opts)
 
-		if( d && d.toJSON )
-		return d.toJSON()
+		if( d?.toJSON )
+			return d.toJSON()
 
 		return d
 	})
