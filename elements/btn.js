@@ -453,27 +453,31 @@ export default class BtnElement extends LitElement {
 	}
 
     firstUpdated(){
-
         super.firstUpdated()
-        
-        this.addEventListener('click', (e)=>{
-
+        this.addEventListener('click', e=>{
+            
             if( window.soundFX && soundFX.playIfMobile )
                 soundFX.playIfMobile('tinyTap', 0.3)
 
-            // Blackstone app pattern
-            let goto = this.getAttribute('goto')
-            if( goto && window.goTo )
-                return goTo(goto)
-
-            if( this.href ){
-                e.stopPropagation()
-                if( this.getAttribute('target') == '_blank' )
-                    window.open(this.href)
-                else
-                    window.location = this.href
-            }
+            this.onClick()
         }, true)
+    }
+
+    // for subclassing
+    onClick(e){
+        
+        // Blackstone app pattern
+        let goto = this.getAttribute('goto')
+        if( goto && window.goTo )
+            return goTo(goto)
+
+        if( this.href ){
+            e.stopPropagation()
+            if( this.getAttribute('target') == '_blank' )
+                window.open(this.href)
+            else
+                window.location = this.href
+        }
     }
 
     shake(){
