@@ -75,7 +75,12 @@ sessionStore.create = (key,defaultVal)=>{
 	return (val)=>{return sessionStore(key, val)}
 }
 
+let _forceStorageEventsLocally
+
 export function forceStorageEventsLocally(){
+
+	if( _forceStorageEventsLocally ) return
+	_forceStorageEventsLocally = true
 
 	let setItem = window.localStorage.setItem
 	let removeItem = window.localStorage.removeItem
