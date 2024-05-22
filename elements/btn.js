@@ -430,7 +430,7 @@ export default class BtnElement extends LitElement {
                 <b-spinner ?spin=${this.spin}></b-spinner>
                 <slot name="icon">
                     ${this.icon?html`
-                        <b-icon part="icon" name="${this.icon}" 
+                        <b-icon part="icon" name="${this.icon}"
                             ?spin=${this.spinicon} ?square=${this.squareicon}></b-icon>
                     `:''}
                 </slot>
@@ -450,6 +450,7 @@ export default class BtnElement extends LitElement {
         this.icon = ''
         this.tooltip = ''
         this.spin = false
+        this.squareicon = true // I think best to default this?
 	}
 
     firstUpdated(){
