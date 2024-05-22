@@ -36,7 +36,8 @@ customElements.define('c-toggle-view', class extends LitElement{
     }
 
     onChange(e){
-        if( !this.key || e.detail.key != this.key ) return
+        let key = e.detail?.key || e.key
+        if( !this.key || key != this.key ) return
         if( !this.show && !this.hide )
         
         this.apply()
