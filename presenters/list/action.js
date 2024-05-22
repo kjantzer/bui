@@ -9,6 +9,7 @@ export {Dialog, Menu}
 export default class Action {
 
     static icon = ''
+    static label = ''
 
     // NOTE: getter so subclassing can change and default saveModels read it
     get sequentialSave(){ return false } // should wait for model to save before saving next?
@@ -29,6 +30,10 @@ export default class Action {
             let model = this.list?.selection.isOn ? this.list.currentModels : this.model
             return new Action(this, e, model, opts)
         }
+    }
+
+    static menuOption(opts={}){
+        return {label: opts.label||this.label, icon: opts.icon||this.icon, fn: this.clickHandler(opts)}
     }
 
     constructor(context, target, models, opts={}){
