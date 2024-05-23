@@ -21,12 +21,12 @@ customElements.define('b-circle-progress', class extends LitElement{
 
         circle {
             fill: none;
-            stroke: var(--theme);
+            stroke: var(--circle-progress-color, var(--theme));
             stroke-width: 32px;
         }
 
         circle.bgd {
-            stroke: var(--theme-bgd-accent);
+            stroke: var(--circle-progress-bgd, var(--theme-bgd-accent));
         }
     `
 
