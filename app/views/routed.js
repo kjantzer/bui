@@ -12,6 +12,7 @@ export default class RoutedView extends LitElement {
 
     closeInvalid = true
     animateSameModelLoaded = false
+    animateModelChange = false
 
     static get styles(){return css`
         :host {
@@ -211,6 +212,11 @@ export default class RoutedView extends LitElement {
         // if( this.panel?.isOpen && oldModel && model && model !== oldModel){
         //     this.panel?.pulseBack()
         // }
+
+        // slight animation to edit panel to let user know the content changed
+        // since the edit pane often looks nearly the same
+        if( this.animateModelChange && this.model && this.panel?.isOpen )
+            this.panel?.pulseBack()
     }
 
     async onRouteChange(oldState, newState, dir){
