@@ -65,8 +65,12 @@ module.exports = class Model {
         return  groupBy ? `GROUP BY ${groupBy}` : ''
     }
 
-    findParseRow(row, index, resultCount, resp, opts){
+    async findParseRow(row, index, resultCount, resp, opts){
         return row
+    }
+
+    async findAdditionalData(resp, opts){
+        // nothing to do by default    
     }
 
     validateUpdate(attrs){
@@ -376,8 +380,9 @@ module.exports = class Model {
         let resp = await this.db.query(sql, clauseValues, {preSql:opts.preSql})
 
         // parse each row (for decoding JSON strings, etc)
-        await Promise.series(resp, (row,i)=>{
+        await Promise.series(resp, async (row,i)=>{
             this.decodeFields(row)
+            if( i == 0 ) await this.findAdditionalData(resp, opts)
             return this.findParseRow(row, i, resp.length, resp, opts)
         })
 
