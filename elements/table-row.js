@@ -13,6 +13,11 @@ customElements.define('b-table-row', class extends LitElement{
             grid-template-columns: var(--table-template-cols);
         }
 
+        :host([hover]:hover),
+        :host(.popover-open) {
+            background-color: var(--theme-bgd-accent2);
+        }
+
         :host([hidden]) {
             display: none !important;
         }
@@ -26,11 +31,13 @@ customElements.define('b-table-row', class extends LitElement{
             border-color: rgba(var(--theme-text-rgb), .1);
         }
 
-        main ::slotted(*) {
+        main ::slotted(*),
+        main > *:not(slot) {
             padding: var(--table-cell-padding, .75em);
         }
 
-        main ::slotted(*:not(:last-child)) {
+        main ::slotted(*:not(:last-child)),
+        main > *:not(slot):not(:last-child) {
             border-right: solid 1px var(--theme-bgd-accent);
         }
 
