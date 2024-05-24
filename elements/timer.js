@@ -6,6 +6,7 @@ customElements.define('b-timer', class TimerElement extends LitElement {
     static get properties() { return {
 		startAt: {}, // date string, date object, or DayJS object
 		short: {type: Boolean, reflect: true},
+		fixed: {type: Boolean, reflect: true},
 		
 		// internal setting
 		_time: {type: Object},
@@ -14,6 +15,7 @@ customElements.define('b-timer', class TimerElement extends LitElement {
     constructor(){
 		super()
 		this.short = false
+		this.fixed = false
 		this._time = msToTime(0)
 		
 		if( this.hasAttribute('running') )
@@ -77,7 +79,7 @@ customElements.define('b-timer', class TimerElement extends LitElement {
 			val = val.toDate()
 		// date string (or should be)
 		else if( ['string', 'number'].includes(typeof val) )
-			val = new Date(val)
+			val = this.fixed ? (new Date(new Date() - val)) : new Date(val)
 		else if( !(val instanceof Date) )
 			val = null
 
@@ -87,7 +89,10 @@ customElements.define('b-timer', class TimerElement extends LitElement {
 
 		this.__startAt = val
 
-		if( val )
+		if( this.fixed ){
+			this._trackProgress()
+		}
+		else if( val )
 			this.start()
 		else
 			this.stop()
