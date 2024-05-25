@@ -1,21 +1,23 @@
-const XLSX = require('xlsx');
+const ExcelJS = require('exceljs');
 const {titleize} = require('./string')
 
 module.exports = function toXLSX(data, opts){
 
 	opts = Object.assign({
 		title: '',
-		//description: '',
+		letterHead: [],
+		imagePath: '',
 		freeze: true,
-		titleize: false,
+		titleize: true,
 		workbook: null, // TODO: if workbook object provided, will add the sheet to an existing workbook
+		columnFormats: {}, // {columnKEy: format}
 	}, opts)
 
 	// TEMP: create a workbook with a single sheet containing a message to prevent errors when trying to apend a sheet to another workbook
 	if( !data?.length )
-		return XLSX.utils.book_new({SheetNames:['Sheet1'], Sheets:{'Sheet1':XLSX.utils.aoa_to_sheet([['No data to export']])}});
+		return new ExcelJS.Workbook().addWorksheet('Sheet1').addRow(['No data to display'])
 
-  	// see if the array of data contains Backbone Models or custom classes that implement `toXLSX` or `toJSON`
+  // see if the array of data contains Backbone Models or custom classes that implement `toXLSX` or `toJSON`
 	data = data.flatMap(d=>{
 		if( d?.toXLSX )
 			return d.toXLSX(opts)
@@ -29,35 +31,95 @@ module.exports = function toXLSX(data, opts){
 		return d
 	})
 
-	let worksheet = XLSX.utils.json_to_sheet(data);
+	let workbook = opts.workbook || new ExcelJS.Workbook();
 
-	// fix column width by finding the max width of each column with a minimum of the column header width
-	let colWidths = data.reduce((acc, row)=>{
+	let worksheet = workbook.addWorksheet(opts.title || 'Sheet1');
 
-		Object.keys(row).forEach((key, i)=>{
-			let val = row[key];
-			let len = val ? val.toString().length : 0;
-			acc[i] = Math.max(acc[i] || 0, len);
+	// Parse the data to ensure numbers are integers and not strings
+	data = data.map(row=>{
+		Object.keys(row).forEach(key=>{
+			if( typeof row[key] === 'string' && !isNaN(row[key]) )
+				row[key] = parseFloat(row[key])
+		})
+		return row;
+	})
+
+	// Create Header Row and set column width based on the longest value in the column + 2
+	worksheet.columns = Object.keys(data[0]).map((key)=>{
+		let columnWidth = Math.max(key.length, ...data.map(row=>row[key]?.toString().length || 10)) + 2;
+		return {header: titleize(key), key: key, width: columnWidth};
+	});
+
+	// Style the Header Row
+	let headerRow = worksheet.getRow(1);
+	headerRow.font = {bold: true};
+	headerRow.fill = {type: 'pattern', pattern:'solid', fgColor:{argb:'FFDDDDDD'}};
+
+	// Add the data to the worksheet
+	worksheet.addRows(data);
+
+	// Apply column formats get the column number from the column key and apply the format
+	if (opts.columnFormats) {
+
+		Object.keys(opts.columnFormats).forEach(key => {
+			let columnHeaders = worksheet.getRow(1).values;
+			let columnKey = columnHeaders.indexOf(titleize(key))	;
+			columnNumberFormat(worksheet, columnKey, opts.columnFormats[key]);
 		});
-
-		return acc;
-
-	}, Object.keys(data[0]).map(key=>key.length + 2));
-
-	worksheet['!cols'] = colWidths.map(width=>({wch: width}));
-
-	if( opts.titleize ) {
-		let header = data[0];
-		let titleizedHeader = Object.keys(header).map(s=>titleize(s));
-		XLSX.utils.sheet_add_aoa(worksheet, [titleizedHeader], {origin: "A1"});
 	}
 
-	if (opts.workbook)
-		return XLSX.utils.book_append_sheet(opts.workbook, worksheet, opts.title || 'Sheet1'); //TODO: add a check for existing sheet names
+	//If a letter head image exists, add it to cell C1
+	if( opts.imagePath ) {
+		worksheet.insertRows(1,[[],[],[],[],[],[],[],[]]);
+		let img = workbook.addImage({
+			filename: PUBLIC_PATH + opts.imagePath,
+			extension: 'png',
+		});
 
+		worksheet.addImage(img, {
+			tl: {col: 1, row: 0},
+			ext: {width: 500, height: 150},
+		});
+	}
 
-	let workbook = XLSX.utils.book_new();
-	XLSX.utils.book_append_sheet(workbook, worksheet, opts.title || 'Sheet1'); 
+	// If a letter head exists, add it and give a buffer of 3 empty rows.
+	if(opts.letterHead.length > 0) {
+		
+		let letterHeadStart = opts.imagePath? 9 : 1;
+
+		worksheet.insertRows(letterHeadStart,[[],[],[]]);
+		worksheet.insertRows(letterHeadStart, opts.letterHead)
+		// worksheet.getRows(letterHeadStart, opts.letterHead.length).numFmt = '0'
+	}
+
+	// freeze the header row + the letter head rows if provided
+	if( opts.freeze ) {
+		let freeze = 1 + (opts.letterHead.length > 0 ? (opts.letterHead.length+3): 0) + (opts.imagePath ? 8 : 0);
+		worksheet.views = [{state: 'frozen', xSplit: 0, ySplit: freeze, topLeftCell: 'A' + (freeze + 1)}];
+	}
 
 	return workbook;
 }
+
+columnNumberFormat = (worksheet, columnKey, format) => {
+	switch(format){
+		case 'date':
+			format = 'mm-dd-yyyy';
+			break;
+		case 'currency':
+			format = '$#,##0.00';
+			break;
+		case 'percent':
+			format = '0.00%';
+			break;
+		case 'accounting':
+			format = '_($* #,##0.00_);_($* (#,##0.00);_($* "-"??_);_(@_)';
+			break;
+		default:
+			format = format || '0';
+			break;
+	}
+
+	return worksheet.getColumn(columnKey).numFmt = format;
+}
+	
