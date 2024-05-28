@@ -140,6 +140,25 @@ export function sharedStyles(host=':host'){return css`
 `
 }
 
+export function grayHeaderStyles(el='b-list-header'){ return css`
+    ${unsafeCSS(el)}::part(cell) {
+        font-size: 1em;
+        font-weight: bold;
+        --list-cell-padding-y: .75em;
+        background-color: var(--divider-bgd, var(--theme-bgd-accent));
+    }
+
+    ${unsafeCSS(el)} {
+        /*border-top: solid 1px rgba(var(--theme-text-rgb), .1);*/
+        background-color: var(--divider-bgd, var(--theme-bgd-accent));
+        --list-cell-sticky-bgd: var(--divider-bgd, var(--theme-bgd-accent));
+    }
+
+    ${unsafeCSS(el)}::part(selection-slot) {
+        background-color: var(--divider-bgd, var(--theme-bgd-accent));
+    }
+`}
+
 customElements.define('b-list-header', class extends LitElement{
 
     static get sharedStyles(){ return sharedStyles() }
