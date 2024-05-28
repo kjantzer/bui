@@ -10,6 +10,10 @@ customElements.define('b-group-by-divider', class extends LitElement{
             --list-cell-hover-bgd: var(--theme-bgd-accent);
         }
 
+        ::slotted(*) {
+            background: var(--theme-bgd-accent);
+        }
+
         :host([level="1"]) {
             position: var(--level-1-sticky, static);
             top: 0em;
