@@ -2,13 +2,19 @@
     Sortable
 
     NOTE: this is a very basic implementation; subject to change
+
+    https://github.com/SortableJS/Sortable
+
+    TODO
+    - make sorting an option?
 */
 import { LitElement, html, css } from 'lit'
 
 customElements.define('b-sortable', class extends LitElement{
     
     static properties = {
-        item: {type: String}
+        item: {type: String},
+        group: {type: String}
     }
 
     static styles = css`
@@ -20,6 +26,7 @@ customElements.define('b-sortable', class extends LitElement{
     constructor(){
         super()
         this.item = undefined
+        this.group = undefined
     }
 
     render(){return html``}
@@ -52,6 +59,7 @@ customElements.define('b-sortable', class extends LitElement{
             // TODO: add support for more options
             this.sortable = Sortable.create(target, {
                 draggable: this.item,
+                group: this.group,
                 onEnd: this.onSort.bind(this),
                 onChoose: this.onSortChoose.bind(this)
             })
