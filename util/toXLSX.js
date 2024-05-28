@@ -17,7 +17,7 @@ module.exports = function toXLSX(data, opts){
 	if( !data?.length )
 		return new ExcelJS.Workbook().addWorksheet('Sheet1').addRow(['No data to display'])
 
-  // see if the array of data contains Backbone Models or custom classes that implement `toXLSX` or `toJSON`
+  	// see if the array of data contains Backbone Models or custom classes that implement `toXLSX` or `toJSON`
 	data = data.flatMap(d=>{
 		if( d?.toXLSX )
 			return d.toXLSX(opts)
@@ -31,6 +31,8 @@ module.exports = function toXLSX(data, opts){
 		return d
 	})
 
+	// I think this should be at the top?
+	// shouldn't this be used when data.length is empty?
 	let workbook = opts.workbook || new ExcelJS.Workbook();
 
 	let worksheet = workbook.addWorksheet(opts.title || 'Sheet1');
@@ -45,6 +47,7 @@ module.exports = function toXLSX(data, opts){
 	})
 
 	// Create Header Row and set column width based on the longest value in the column + 2
+	// TODO: 10 should probably be a `opts.defaultCellWidth`?
 	worksheet.columns = Object.keys(data[0]).map((key)=>{
 		let columnWidth = Math.max(key.length, ...data.map(row=>row[key]?.toString().length || 10)) + 2;
 		return {header: titleize(key), key: key, width: columnWidth};
@@ -68,7 +71,9 @@ module.exports = function toXLSX(data, opts){
 		});
 	}
 
-	//If a letter head image exists, add it to cell C1
+	// If a letter head image exists, add it to cell C1
+	// FIXME: PUBLIC_PATH should not be used in BUI; this util function should only accept full image paths
+	// I would rename `imagePath` to something like `headerImg` and require {filename, extension} as arg
 	if( opts.imagePath ) {
 		worksheet.insertRows(1,[[],[],[],[],[],[],[],[]]);
 		let img = workbook.addImage({
@@ -78,6 +83,8 @@ module.exports = function toXLSX(data, opts){
 
 		worksheet.addImage(img, {
 			tl: {col: 1, row: 0},
+			// FIXME: would also make this part of the `headerImg` arg as I believe this is largely
+			// dependent on the image given
 			ext: {width: 500, height: 150},
 		});
 	}
