@@ -17,7 +17,7 @@ customElements.define('b-group-by-divider', class extends LitElement{
             z-index: 10;
         }
 
-        :host ::slotted(:last-child) {
+        :host ::slotted(.end) {
             grid-column-end: -1; 
             text-align: right;
             justify-content: flex-end;
