@@ -6,18 +6,22 @@ module.exports = function toXLSX(data, opts){
 	opts = Object.assign({
 		title: '',
 		letterHead: [],
-		imagePath: '',
+		headerImage: {}, // {filename, extension}
+		headerImageSize: {width: 500, height: 150},
 		freeze: true,
 		titleize: true,
 		workbook: null, // TODO: if workbook object provided, will add the sheet to an existing workbook
-		columnFormats: {}, // {columnKEy: format}
+		columnFormats: {}, // {columnKey: {numberFormat, alignment, font, fill, border}}
+		totalColumns: [], // ['A', 'B', 'C']
+		//narrowMargins: false, FIXME: causes column widths to be messed up
+		defaultCellWidth: 10,
 	}, opts)
 
 	// TEMP: create a workbook with a single sheet containing a message to prevent errors when trying to apend a sheet to another workbook
 	if( !data?.length )
 		return new ExcelJS.Workbook().addWorksheet('Sheet1').addRow(['No data to display'])
 
-  	// see if the array of data contains Backbone Models or custom classes that implement `toXLSX` or `toJSON`
+  // see if the array of data contains Backbone Models or custom classes that implement `toXLSX` or `toJSON`
 	data = data.flatMap(d=>{
 		if( d?.toXLSX )
 			return d.toXLSX(opts)
@@ -31,12 +35,6 @@ module.exports = function toXLSX(data, opts){
 		return d
 	})
 
-	// I think this should be at the top?
-	// shouldn't this be used when data.length is empty?
-	let workbook = opts.workbook || new ExcelJS.Workbook();
-
-	let worksheet = workbook.addWorksheet(opts.title || 'Sheet1');
-
 	// Parse the data to ensure numbers are integers and not strings
 	data = data.map(row=>{
 		Object.keys(row).forEach(key=>{
@@ -46,10 +44,28 @@ module.exports = function toXLSX(data, opts){
 		return row;
 	})
 
+	let workbook = opts.workbook || new ExcelJS.Workbook()
+
+	// create new worksheet in landscape mode
+	let worksheet = workbook.addWorksheet(opts.title || 'Sheet1')
+
+	//TODO: Make opts
+	worksheet.pageSetup = {orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 100}
+
+	// FIXME: causes column widths to be messed up
+	// if (opts.narrowMargins)
+	// 	worksheet.pageSetup.margins = {
+	// 		top: 0.75, bottom: 0.75, left: 0.25, right: 0.25
+	// 	}
+
 	// Create Header Row and set column width based on the longest value in the column + 2
-	// TODO: 10 should probably be a `opts.defaultCellWidth`?
 	worksheet.columns = Object.keys(data[0]).map((key)=>{
 		let columnWidth = Math.max(key.length, ...data.map(row=>row[key]?.toString().length || 10)) + 2;
+
+		// Limit the column width to 45 in case of extremely long strings
+		// TODO: make this an maxCellWidth option
+		columnWidth > 45? columnWidth = 45 : columnWidth;
+
 		return {header: titleize(key), key: key, width: columnWidth};
 	});
 
@@ -66,67 +82,108 @@ module.exports = function toXLSX(data, opts){
 
 		Object.keys(opts.columnFormats).forEach(key => {
 			let columnHeaders = worksheet.getRow(1).values;
-			let columnKey = columnHeaders.indexOf(titleize(key))	;
+			let columnKey = columnHeaders.indexOf(titleize(key))
 			columnNumberFormat(worksheet, columnKey, opts.columnFormats[key]);
 		});
 	}
 
 	// If a letter head image exists, add it to cell C1
-	// FIXME: PUBLIC_PATH should not be used in BUI; this util function should only accept full image paths
-	// I would rename `imagePath` to something like `headerImg` and require {filename, extension} as arg
-	if( opts.imagePath ) {
+	if( opts.headerImage.filename && opts.headerImage.extension ) {
 		worksheet.insertRows(1,[[],[],[],[],[],[],[],[]]);
 		let img = workbook.addImage({
-			filename: PUBLIC_PATH + opts.imagePath,
-			extension: 'png',
+			filename: opts.headerImage.filename,
+			extension: opts.headerImage.extension,
 		});
 
 		worksheet.addImage(img, {
-			tl: {col: 1, row: 0},
-			// FIXME: would also make this part of the `headerImg` arg as I believe this is largely
-			// dependent on the image given
-			ext: {width: 500, height: 150},
+			tl: {col: 0, row: 0},
+			ext: opts.headerImageSize,
 		});
 	}
 
-	// If a letter head exists, add it and give a buffer of 3 empty rows.
+	// Add the letterhead to the top of the sheet
 	if(opts.letterHead.length > 0) {
 		
-		let letterHeadStart = opts.imagePath? 9 : 1;
+		let letterHeadStart = opts.headerImage ? 9 : 1;
 
 		worksheet.insertRows(letterHeadStart,[[],[],[]]);
 		worksheet.insertRows(letterHeadStart, opts.letterHead)
-		// worksheet.getRows(letterHeadStart, opts.letterHead.length).numFmt = '0'
+		// reset the number format of the letter head rows
+
+		for(let i = 0; i < opts.letterHead.length; i++) {
+			worksheet.getRow(letterHeadStart + i).numFmt = '0';
+		}	
 	}
 
 	// freeze the header row + the letter head rows if provided
 	if( opts.freeze ) {
-		let freeze = 1 + (opts.letterHead.length > 0 ? (opts.letterHead.length+3): 0) + (opts.imagePath ? 8 : 0);
-		worksheet.views = [{state: 'frozen', xSplit: 0, ySplit: freeze, topLeftCell: 'A' + (freeze + 1)}];
+		let freeze = 1 + (opts.letterHead.length > 0 ? (opts.letterHead.length+3): 0) + (opts.headerImage.filename ? 8 : 0)
+		worksheet.views = [{state: 'frozen', xSplit: 0, ySplit: freeze, topLeftCell: 'A' + (freeze + 1)}]
+	}
+
+		// Create a Total Row if totalColumns are provided
+	if( opts.totalColumns.length ) {
+		let totalRow = worksheet.addRow([])
+		totalRow.getCell(1).value = 'TOTAL:'
+		totalRow.font = {bold: true}
+		totalRow.fill = {type: 'pattern', pattern:'solid', fgColor:{argb:'FFDDDDDD'}}
+
+		opts.totalColumns.forEach(col=>{
+			let columnIndex = worksheet.getColumn(col).number
+			let cell = totalRow.getCell(columnIndex)
+			let total = data.reduce((acc, row)=>acc + row[col], 0)
+			cell.value = total
+		})
 	}
 
 	return workbook;
 }
 
 columnNumberFormat = (worksheet, columnKey, format) => {
-	switch(format){
-		case 'date':
-			format = 'mm-dd-yyyy';
-			break;
-		case 'currency':
-			format = '$#,##0.00';
-			break;
-		case 'percent':
-			format = '0.00%';
-			break;
-		case 'accounting':
-			format = '_($* #,##0.00_);_($* (#,##0.00);_($* "-"??_);_(@_)';
-			break;
-		default:
-			format = format || '0';
-			break;
+	
+	if (!format) throw new Error('format is required')
+
+	if( format.numberFormat ) {
+		let numFormat = format.numberFormat
+
+		switch(numFormat){
+			case 'date':
+				numFormat = 'mm-dd-yyyy'
+				break;
+			case 'currency':
+				numFormat = '$#,##0.00'
+				break;
+			case 'percent':
+				numFormat = '0.00%'
+				break;
+			case 'accounting':
+				numFormat = '_($* #,##0.00_);_($* (#,##0.00);_($* "-"??_);_(@_)'
+				break;
+			default:
+				numFormat = numFormat
+				break;
+		}
+
+	return worksheet.getColumn(columnKey).numFmt = numFormat
 	}
 
-	return worksheet.getColumn(columnKey).numFmt = format;
+	if( format.alignment ) {
+		let alignment = format.alignment
+		switch (alignment) {
+			case 'center':
+				alignment = {vertical: 'bottom', horizontal: 'center'}
+				break;
+			case 'right':
+				alignment = {vertical: 'bottom', horizontal: 'right'}
+				break;
+			case 'left':
+				alignment = {vertical: 'bottom', horizontal: 'left'}
+				break;
+		}
+
+		return worksheet.getColumn(columnKey).alignment = alignment
+	}
+
+	
 }
 	
