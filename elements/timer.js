@@ -29,6 +29,8 @@ customElements.define('b-timer', class TimerElement extends LitElement {
 			font-feature-settings: "tnum";
         }
 
+		.days[value=""] { display: none;}
+
 		.hours[value="0"],
 		.hours[value="00"] {
 			display: none;
@@ -58,6 +60,7 @@ customElements.define('b-timer', class TimerElement extends LitElement {
     `}
 
     render(){ return html`
+		<unit class="days" value="${this.days}">${this.days}&nbsp;</unit>
 		<unit class="hours" value="${this.hours}">${this.hours}</unit>
 		<span>:</span>
 		<unit class="minutes" value="${this.minutes}">${this.minutes}</unit>
@@ -141,6 +144,7 @@ customElements.define('b-timer', class TimerElement extends LitElement {
 
 	_trackProgress(){ this._time = msToTime(this.elapsed) }
 
+	get days(){ return this._time.d ? String(this._time.d)+'d' : '' }
 	get hours(){ return String(this._time.h).padStart(2, '0') }
 	get minutes(){ return String(this._time.m).padStart(2, '0') }
 	get seconds(){ return String(this._time.s).padStart(2, '0') }
@@ -154,6 +158,9 @@ customElements.define('b-timer', class TimerElement extends LitElement {
 			this.minutes,
 			this.seconds
 		].join(':')
+
+		if( this.days )
+			str += this.days+' '+str
 
 		if( ms )
 			str += '.'+this.milliseconds
@@ -169,4 +176,4 @@ customElements.define('b-timer', class TimerElement extends LitElement {
 	
 })
 
-export default customElements.get('b-timer')
+export default customElements.get('_time-timer')

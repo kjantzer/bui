@@ -1,20 +1,27 @@
 
-function secondsToTime(secs){
-    var h = Math.floor(secs / (60 * 60));
+function secondsToTime(secs, {days=true}={}){
 
-    var divisor_for_minutes = secs % (60 * 60);
-    var m = Math.floor(divisor_for_minutes / 60);
+    let d = 0
+    let h = Math.floor(secs / (60 * 60));
 
-    var divisor_for_seconds = divisor_for_minutes % 60;
-    var s = Math.ceil(divisor_for_seconds);
+    if( days && h > 24 ){
+        d = Math.floor(h/24)
+        h = Math.floor(h%24)
+    }
 
-    var ms = Math.round((secs % 1) * 100)
+    let divisor_for_minutes = secs % (60 * 60);
+    let m = Math.floor(divisor_for_minutes / 60);
 
-    return {h, m, s, ms}
+    let divisor_for_seconds = divisor_for_minutes % 60;
+    let s = Math.ceil(divisor_for_seconds);
+
+    let ms = Math.round((secs % 1) * 100)
+
+    return {d, h, m, s, ms}
 }
 
-function msToTime(ms){
-    return secondsToTime(ms/1000)
+function msToTime(ms, opts){
+    return secondsToTime(ms/1000, opts)
 }
 
 module.exports = {secondsToTime, msToTime}
