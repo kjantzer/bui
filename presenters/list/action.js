@@ -33,7 +33,12 @@ export default class Action {
     }
 
     static menuOption(opts={}){
-        return {label: opts.label||this.label, icon: opts.icon||this.icon, fn: this.clickHandler(opts)}
+        return {
+            label: this.label,
+            icon: this.icon,
+            fn: this.clickHandler(opts),
+            ...opts
+        }
     }
 
     constructor(context, target, models, opts={}){
