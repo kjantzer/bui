@@ -8,6 +8,7 @@ customElements.define('b-group-by-divider', class extends LitElement{
             display: contents;
             --list-cell-padding-y: .25em;
             --list-cell-hover-bgd: var(--theme-bgd-accent);
+            grid-column: 1/-1;
         }
 
         ::slotted(*) {
