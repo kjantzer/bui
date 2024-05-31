@@ -5,13 +5,13 @@ customElements.define('b-group-by-divider', class extends LitElement{
 
     static styles = [sharedStyles(':host'), css`
         :host {
-            display: contents;
             --list-cell-padding-y: .25em;
             --list-cell-hover-bgd: var(--theme-bgd-accent);
             grid-column: 1/-1;
         }
 
-        ::slotted(*) {
+        ::slotted(*),
+        :host > * {
             background: var(--theme-bgd-accent);
         }
 
@@ -22,7 +22,8 @@ customElements.define('b-group-by-divider', class extends LitElement{
             z-index: 10;
         }
 
-        :host ::slotted(.end) {
+        :host ::slotted(.end),
+        :host > .end {
             grid-column-end: -1; 
             text-align: right;
             justify-content: flex-end;
@@ -33,7 +34,8 @@ customElements.define('b-group-by-divider', class extends LitElement{
             background: var(--theme-bgd-accent)
         }
 
-        :host([level="1"]) ::slotted(.label) {
+        :host([level="1"]) ::slotted(.label),
+        :host([level="1"]) .label {
             font-weight: bold;
             text-align: left;
         }
@@ -46,7 +48,8 @@ customElements.define('b-group-by-divider', class extends LitElement{
             z-index: 10;
         }
 
-        :host([level="2"]) ::slotted(.label) {
+        :host([level="2"]) ::slotted(.label),
+        :host([level="2"]) .label {
             text-align: left;
         }
 
@@ -58,13 +61,15 @@ customElements.define('b-group-by-divider', class extends LitElement{
             z-index: 10;
         }
 
-        :host([level="3"]) ::slotted(.label) {
+        :host([level="3"]) ::slotted(.label),
+        :host([level="3"]) .label {
             text-align: left;
             color: var(--theme-text-dim);
             font-style: italic;
         }
 
-        ::slotted(.label) {
+        ::slotted(.label),
+        :host > .label {
             /*padding-left: .5rem !important;*/
             --list-cell-sticky-bgd: var(--divider-bgd, var(--theme-bgd-accent));
         }

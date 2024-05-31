@@ -524,6 +524,7 @@ customElements.define('b-list', class extends LitElement {
     }
 
     get rowElement(){ return this.getAttribute('row') || ''}
+    get groupByRowElement(){ return this.getAttribute('groupByRow') || ''}
     get emptyElement(){ return this.getAttribute('empty') || 'b-empty-state'}
 
     get toolbar(){
@@ -537,6 +538,9 @@ customElements.define('b-list', class extends LitElement {
     createRow(model, {prevModel, nextModel}){
 
         let row = customElements.get(this.rowElement)
+
+        if( this.groupByRowElement && model.level )
+            row = customElements.get(this.groupByRowElement)
 
         if( row ){
             row = new row()
