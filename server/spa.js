@@ -10,6 +10,9 @@ module.exports = class SPA {
             if( requireAuthentication && !req.isAuthenticated() )
                 return res.redirect(`${loginPath}?redirect=${req.url}`)
 
+            if( opts.isAllowed?.(req, res) === false )
+                return req.next()
+
             // check API classes for any "index hooks" (hook into the creation of the SPA index page)
             let spaIndexHookData
             let spaIndexHookClass = api && api._classes.find(Class=>{

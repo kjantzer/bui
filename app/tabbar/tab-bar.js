@@ -145,7 +145,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
         <slot name="after"></slot>
 
         ${this.minimizable?html`
-        <b-btn icon="unfold_more" pill black class="maximize" @click=${this.toggleMinimize}></b-btn>
+        <b-btn icon="unfold_more" hidden pill black class="maximize" @click=${this.toggleMinimize}></b-btn>
         `:''}
     `}
 
