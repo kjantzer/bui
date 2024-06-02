@@ -40,7 +40,9 @@ function applyGrouping(models, opts){
         m.sortLabelPartial = m.sortLabel
 
         if( level == this.dataLevels )
-            m.sortLabelPartial = pathValue.slice(0,-1).join(' / ').toLowerCase()+level
+            m.sortLabelPartial = pathValue.slice(0,-1).join(' / ').toLowerCase()+' / '+level
+        else
+            m.sortLabelPartial += ' / '+level
 
         m.searchLabels = {
             label: pathValue.join(' / ') // full label ("name / of / path")
