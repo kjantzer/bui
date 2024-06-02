@@ -1,6 +1,11 @@
 import { LitElement, html, css } from 'lit'
 import {live} from 'lit/directives/live.js'
 import scrollbars from '../../../helpers/scrollbars'
+import {applyGrouping} from './util'
+import '../../../elements/sortable'
+import '../../../elements/details'
+
+export {applyGrouping}
 
 customElements.defineShared('b-list-group-by', class extends LitElement{
 
