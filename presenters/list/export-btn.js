@@ -59,6 +59,8 @@ customElements.define('b-list-export-btn', class extends Btn{
         if( typeof this.data == 'function' )
             data = this.data()
 
+        data = data.filter(d=>d.level===undefined) // exclude "group by" dividers
+
         if( data.length == 0 )
             return Notif.alert('No data to export', {autoClose: 2000})
         
