@@ -29,12 +29,14 @@ module.exports = class SPA {
                 }
             })
 
+            let _opts = {...opts}
+
             // one of the API classes matched the requested index path, invoke the hook to modify the created index opts
             if( spaIndexHookClass ){
-                await spaIndexHookClass.spaIndexHook(spaIndexHookData, opts, req)
+                await spaIndexHookClass.spaIndexHook(spaIndexHookData, _opts, req)
             }
 
-            return res.send(html(opts))
+            return res.send(html(_opts))
         })
 
     }
