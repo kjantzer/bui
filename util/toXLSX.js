@@ -77,17 +77,6 @@ module.exports = function toXLSX(data, opts){
 	// Add the data to the worksheet
 	worksheet.addRows(data);
 
-	// Style the pool rows
-	if (opts.poolRows) {
-		let poolRows = data.filter(row=>row.title === '-')
-		poolRows.forEach(row=>{
-			let rowNumber = data.indexOf(row) + 2
-			let poolRow = worksheet.getRow(rowNumber)
-			poolRow.font = {bold: true}
-			poolRow.fill = {type: 'pattern', pattern:'solid', fgColor:{argb:'FFDDDDDD'}}
-		});
-	}
-
 	// Apply column formats get the column number from the column key and apply the format
 	if (opts.columnFormats) {
 
