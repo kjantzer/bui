@@ -6,7 +6,8 @@ import { LitElement, html, css } from 'lit'
 customElements.define('b-details', class extends LitElement{
 
     static properties = {
-        open: {type: Boolean, reflect: true}
+        open: {type: Boolean, reflect: true},
+        disabled: {type: Boolean, reflect: true}
     }
 
     static styles = css`
@@ -94,6 +95,7 @@ customElements.define('b-details', class extends LitElement{
     `}
 
     toggle(){
+        if( this.disabled ) return
         this.open = !this.open
     }
 
