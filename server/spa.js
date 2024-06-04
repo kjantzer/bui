@@ -18,7 +18,7 @@ module.exports = class SPA {
             let spaIndexHookClass = api && api._classes.find(Class=>{
 
                 // found class with a hook...see if we should use it
-                if( Class.spaIndexHook ){
+                if( Class.spaIndexHook && !spaIndexHookData ){
 
                     // use custom tester
                     if( Class.spaIndexHookTest )
