@@ -14,8 +14,7 @@ module.exports = function toXLSX(data, opts){
 		columnFormats: {}, // {columnKey: {numberFormat, alignment, font, fill, border}}
 		totalColumns: [], // ['A', 'B', 'C']
 		//narrowMargins: false, FIXME: causes column widths to be messed up
-		defaultCellWidth: 10,
-		poolRows: false,
+		defaultCellWidth: 10
 	}, opts)
 
 	// TEMP: create a workbook with a single sheet containing a message to prevent errors when trying to apend a sheet to another workbook
