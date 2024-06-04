@@ -15,6 +15,7 @@ module.exports = function toXLSX(data, opts){
 		totalColumns: [], // ['A', 'B', 'C']
 		//narrowMargins: false, FIXME: causes column widths to be messed up
 		defaultCellWidth: 10,
+		poolRows: false,
 	}, opts)
 
 	// TEMP: create a workbook with a single sheet containing a message to prevent errors when trying to apend a sheet to another workbook
@@ -38,10 +39,10 @@ module.exports = function toXLSX(data, opts){
 	// Parse the data to ensure numbers are integers and not strings
 	data = data.map(row=>{
 		Object.keys(row).forEach(key=>{
-			if( typeof row[key] === 'string' && !isNaN(row[key]) )
-				row[key] = parseFloat(row[key])
+			if( !isNaN(row[key]) && row[key] !== '' )
+				row[key] = Number(row[key])
 		})
-		return row;
+		return row
 	})
 
 	let workbook = opts.workbook || new ExcelJS.Workbook()
@@ -76,6 +77,17 @@ module.exports = function toXLSX(data, opts){
 
 	// Add the data to the worksheet
 	worksheet.addRows(data);
+
+	// Style the pool rows
+	if (opts.poolRows) {
+		let poolRows = data.filter(row=>row.title === '-')
+		poolRows.forEach(row=>{
+			let rowNumber = data.indexOf(row) + 2
+			let poolRow = worksheet.getRow(rowNumber)
+			poolRow.font = {bold: true}
+			poolRow.fill = {type: 'pattern', pattern:'solid', fgColor:{argb:'FFDDDDDD'}}
+		});
+	}
 
 	// Apply column formats get the column number from the column key and apply the format
 	if (opts.columnFormats) {
