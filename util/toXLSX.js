@@ -14,7 +14,7 @@ module.exports = function toXLSX(data, opts){
 		columnFormats: {}, // {columnKey: {numberFormat, alignment, font, fill, border}}
 		totalColumns: [], // ['A', 'B', 'C']
 		//narrowMargins: false, FIXME: causes column widths to be messed up
-		defaultCellWidth: 10,
+		defaultCellWidth: 10
 	}, opts)
 
 	// TEMP: create a workbook with a single sheet containing a message to prevent errors when trying to apend a sheet to another workbook
@@ -38,10 +38,10 @@ module.exports = function toXLSX(data, opts){
 	// Parse the data to ensure numbers are integers and not strings
 	data = data.map(row=>{
 		Object.keys(row).forEach(key=>{
-			if( typeof row[key] === 'string' && !isNaN(row[key]) )
-				row[key] = parseFloat(row[key])
+			if( !isNaN(row[key]) && row[key] !== '' )
+				row[key] = Number(row[key])
 		})
-		return row;
+		return row
 	})
 
 	let workbook = opts.workbook || new ExcelJS.Workbook()
