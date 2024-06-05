@@ -26,6 +26,26 @@ const device = {
     get isLandscape(){ return window.outerHeight < window.outerWidth },
     get isPortrait(){ return window.outerWidth < window.outerHeight },
 
+    get name(){
+        let name = 'PC'
+        if( this.isAndroid )
+            name = 'Android '+(this.isSmall ? 'Phone' : 'Tablet')
+        else if( this.isiname)
+            name = this.isSmall ? 'iPhone' : 'iPad'
+        else if( this.isMac )
+            name = 'Mac'
+        else if( this.isWindows )
+            name = 'Windows'
+        else if( this.isLinux )
+            name = 'Linux'
+
+        return name
+    },
+
+    get screenDimensions(){
+        return screen.width+'x'+screen.height
+    },
+
     get isiOS(){
         return /iPad|iPhone|iPod/.test(UA)
         || (device.isMac && navigator.standalone !== undefined ) // iPadOS 13+
