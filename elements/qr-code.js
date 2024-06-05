@@ -41,7 +41,17 @@ customElements.define('b-qr-code', class extends LitElement{
             image: this.img,
             dotsOptions: {
                 color: color,
-                type: "rounded"
+                type: 'rounded'
+            },
+            cornersSquareOptions: {
+                // type: 'extra-rounded'
+            },
+            backgroundOptions: {
+                color: 'transparent',
+            },
+            imageOptions: {
+                crossOrigin: 'anonymous',
+                margin: 5
             }
         })
     }
