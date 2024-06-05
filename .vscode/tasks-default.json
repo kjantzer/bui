@@ -1,0 +1,51 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+        "label": "📦 Install NPM",
+        "type": "shell",
+        "command": "docker-compose exec node bash -c \"npm install\"",
+        "problemMatcher": [],
+        "group": "build",
+        "presentation": {
+            "reveal": "always",
+            "panel": "dedicated",
+            "focus": true
+        }
+    },
+    {
+        "label": "📦✅ Install NPM Package",
+        "type": "shell",
+        "command": "docker-compose exec node bash -c \"npm install -s ${input:npmPackages}\"",
+        "problemMatcher": [],
+        "group": "build",
+        "presentation": {
+            "reveal": "always",
+            "panel": "dedicated",
+            "focus": true
+        },"options": {
+            "statusbar": {
+                "hide": true
+            }
+        }
+    },
+    {
+        "label": "📦❌ Uninstall NPM Package",
+        "type": "shell",
+        "command": "docker-compose exec node bash -c \"npm uninstall -s ${input:npmPackages}\"",
+        "problemMatcher": [],
+        "group": "build",
+        "presentation": {
+            "reveal": "always",
+            "panel": "dedicated",
+            "focus": true
+        },"options": {
+            "statusbar": {
+                "hide": true
+            }
+        }
+    }    
+  ]
+}
