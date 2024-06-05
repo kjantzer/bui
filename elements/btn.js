@@ -460,7 +460,7 @@ export default class BtnElement extends LitElement {
             if( window.soundFX && soundFX.playIfMobile )
                 soundFX.playIfMobile('tinyTap', 0.3)
 
-            this.onClick()
+            this.onClick(e)
         }, true)
     }
 
