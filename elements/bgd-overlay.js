@@ -13,6 +13,7 @@ customElements.define('b-bgd-overlay', class extends LitElement{
             opacity: .2;
             background: var(--theme);
             z-index: -1;
+            box-sizing: border-box;
         }
 
         :host([hidden]) {
