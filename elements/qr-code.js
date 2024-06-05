@@ -51,7 +51,7 @@ customElements.define('b-qr-code', class extends LitElement{
     `}
 
     download(opts={}){
-        this.qrCode?.download(opts)
+        this.qrCode?.download({extension: 'svg', ...opts})
     }
 
 })
