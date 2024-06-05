@@ -4,7 +4,8 @@ export default StandardIcons.concat([
     ['send', require(`@material-icons/svg/svg/send/baseline.svg`)],
     ['logout', require(`@material-icons/svg/svg/logout/baseline.svg`)],
     ['ios_share', require(`@material-icons/svg/svg/ios_share/baseline.svg`)],
-    ['install', require(`@material-icons/svg/svg/install_desktop/baseline.svg`)],
+    ['install_desktop', require(`@material-icons/svg/svg/install_desktop/baseline.svg`)],
+    ['install', 'install_desktop'],
     ['install_mobile', require(`@material-icons/svg/svg/install_mobile/baseline.svg`)],
 
     ['person', require(`@material-icons/svg/svg/person/baseline.svg`)],
