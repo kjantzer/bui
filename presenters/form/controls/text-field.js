@@ -492,8 +492,10 @@ class TextFieldElement extends HTMLElement {
 
 			if( this.isHTML )
 				val = stringToHTML(val)
-			else
-				val = val.split(`\n\n`).join(`<br>\n`)
+			else{
+				val = val.split(`\n\n`).join(`<br><br>\n`)
+				val = val.split(`\n`).join(`<br>\n`)
+			}
 		}
 
 		let eventDetail = {
