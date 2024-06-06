@@ -265,6 +265,10 @@ class FormControlElement extends HTMLElement {
 		this.control && this.control.focus(opts)
 	}
 
+	blur(opts){
+		this.control && this.control.blur(opts)
+	}
+
 }
 
 customElements.define('form-control', FormControlElement)
