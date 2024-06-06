@@ -48,6 +48,8 @@ export class UICustomError extends Error {
         
         if( this.detail&&this.detail.target ){
 
+            this.detail.target.popOver?.close() // existing error
+
             if( this.detail.target.scrollIntoViewIfNeeded )
                 this.detail.target.scrollIntoViewIfNeeded()
             else if( this.detail.target.scrollIntoView )
