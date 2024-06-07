@@ -62,9 +62,16 @@ LitElement.prototype.bindListeners = function(){
 
                 m.off(event, null, this)
 
-                if( !this[events[event]] ) continue
+                let fnName = events[event]
+                let fn = this[fnName]
 
-                m.on(event, this[events[event]], this)
+                if( !fn ) continue
+
+                // custom inline function so no args are passed to `requestUpdate`
+                if( fnName == 'requestUpdate' )
+                    fn = function(){ this.requestUpdate() }.bind(this)
+
+                m.on(event, fn, this)
             }
         }
     }else if( this.listeners ){
