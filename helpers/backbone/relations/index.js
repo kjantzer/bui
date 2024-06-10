@@ -20,7 +20,7 @@ import Backbone from 'backbone'
 Backbone.Collection.prototype.urlRoot = function(){
 	let url = this.parentModel?.url
 	if( typeof url == 'function' ) return url()
-	return url || '/api' // FIXME: allow for this to be set by config?
+	return url || Backbone.API_ROOT || '/api'
 }
 
 // set a default URL using the root and appending the 

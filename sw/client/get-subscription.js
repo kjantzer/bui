@@ -1,6 +1,6 @@
 
 export default async function getSubscription({
-    vapidPublicKey='/vapidPublicKey'
+    vapidPublicKey='/api/push-msg/public-key'
 }={}){
 
     let registration = await navigator.serviceWorker.ready

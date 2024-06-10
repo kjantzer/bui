@@ -126,6 +126,7 @@ module.exports = class API {
                 model.req = req
                 model.res = res
 
+                // TODO: rename to something like `canAccessAPI`
                 if( 'canAccess' in model && await model.canAccess === false )
                     return res.status(403).send({error: 'unauthorized', code: 403})
 
