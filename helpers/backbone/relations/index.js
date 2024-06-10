@@ -16,6 +16,20 @@
 
 import Backbone from 'backbone'
 
+// Collections dont have urlRoot by default; but let's add one now for relations
+Backbone.Collection.prototype.urlRoot = function(){
+	let url = this.parentModel?.url
+	if( typeof url == 'function' ) return url()
+	return url || '/api' // FIXME: allow for this to be set by config?
+}
+
+// set a default URL using the root and appending the 
+Backbone.Collection.prototype.url = function(){
+	let path = this.urlPath
+	if( !path ) return undefined
+	return this.urlRoot()+path
+}
+
 Backbone.Collection.prototype.getOrCreate = require('./getOrCreate')
 Backbone.Collection.prototype.getOrFetch = require('./getOrFetch')
 Backbone.Collection.prototype.getBefore = require('./getBefore')
