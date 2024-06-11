@@ -12,7 +12,7 @@ module.exports = function requireNonJS(ext){
 
     ext.forEach(ext=>{
         if( ext[0] != '.' ) ext = '.'+ext
-        console.log(ext);
+        
         require.extensions[ext] = function (module, filename) {
             module.exports = fs.readFileSync(filename, 'utf8');
         };
