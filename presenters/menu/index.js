@@ -748,6 +748,8 @@ customElements.define('b-menu', class extends LitElement{
 	onClick(e){
 		
 		let target = e.target
+		let shiftKey = e.detail?.shiftKey || e.shiftKey
+		let metaKey = (e.metaKey || e.detail?.metaKey) || (e.ctrlKey || e.detail?.ctrlKey)
 
         // handled by item now
 		// if( target.tagName == 'SELECT-FIELD' )
@@ -773,7 +775,7 @@ customElements.define('b-menu', class extends LitElement{
 
 			if( data.selections && !data.selection ){
 				// select second option if ctrl/cmd key held on click (but only if 2 options)
-				let index = data.selections.length == 2 && (e.metaKey||e.ctrlKey) ? 1 : 0;
+				let index = data.selections.length == 2 && metaKey ? 1 : 0;
 				data.selection = data.selections[index]&&data.selections[index].val||data.selections[index]
 			}
 			
@@ -793,7 +795,7 @@ customElements.define('b-menu', class extends LitElement{
 
 			} else if( this.opts.multiple ){
 
-				if( data.clearsAll || (this.opts.multiple !== 'always' && !didClickCheckbox && !didClickSelectField && !e.shiftKey) ){
+				if( data.clearsAll || (this.opts.multiple !== 'always' && !didClickCheckbox && !didClickSelectField && !shiftKey) ){
 					this._onSelect([data])
 					return this.resolve([data], {evt: e})
 				}
@@ -926,7 +928,7 @@ customElements.define('b-menu', class extends LitElement{
 
 			// TODO: I think we should only click if item isn't already selected
 			if( activeItem )
-				activeItem.click()
+				activeItem.emitEvent('click', {shiftKey: e.shiftKey, metaKey: e.metaKey, ctrlKey: e.ctrlKey})
 			else
 				window.emitEvent('enter-on-no-item', {value: e.target.value, menu: this}, {context: this})
 
