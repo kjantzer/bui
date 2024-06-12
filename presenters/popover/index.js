@@ -309,6 +309,8 @@ export default class Popover {
 		this.mutationObserver.disconnect()
 		this.popper.destroy()
 
+		this.target.emitEvent?.('popover:closed')
+
 		this.clearTarget()
 		
 		// remove this from the list of open popovers as well as all popovers after it
