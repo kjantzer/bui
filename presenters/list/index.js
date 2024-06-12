@@ -6,6 +6,7 @@ import Layouts from './data/layouts'
 import './toolbar'
 import './toolbar/selection-bar'
 import './infinite-list'
+// import './toolbar/filters-sidebar' // R&D
 import '../../elements/spinner-overlay'
 import '../../helpers/lit/selectors'
 import Selection from '../selection'
@@ -371,7 +372,10 @@ customElements.define('b-list', class extends LitElement {
             </b-list-selection-bar>
         </b-list-toolbar>
 
-        <slot name="sidebar:left" part="sidebar left"></slot>
+        <div part="sidebar left">
+            <b-list-filters-sidebar .filters=${this.filters}></b-list-filters-sidebar>
+            <slot name="sidebar:left"></slot>
+        </div>
 
         <slot name="header" part="header"></slot>
         <b-infinite-list

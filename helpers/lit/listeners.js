@@ -28,7 +28,7 @@ LitElement.prototype.__listenerModelFor = function(key){
     else if( key == 'coll' || key == 'collection' )
         m = this.coll || this.collection
     
-    else if( this.model )
+    else if( this.model && this.model.get )
         m = this.model.get(key)
 
     if( !m && this[key] )
