@@ -107,7 +107,9 @@ customElements.define('b-inline-edit', class extends LitElement{
     doneEditing(e){
         e&&e.stopPropagation()
 
+        this.target._lastInlineEdit = new Date().getTime()
         this.target.removeAttribute('editing-inline')
+
         this.replaceWith(this.textNode)
         for( let child of this.target.children ){ child.hidden = false }
         this.resolve(false)
