@@ -386,6 +386,10 @@ export default class Popover {
 	}
 	
 	_onKeydown(e){
+
+		if( this.opts.closeOnEsc && e.key == 'Escape' )
+			this.close()
+		
 		if( this.opts.onKeydown )
 			this.opts.onKeydown(e)
 	}

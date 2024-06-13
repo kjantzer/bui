@@ -25,6 +25,7 @@ const DefaultOpts = {
 	className: '',
 	clickToggles: true,
 	closeOnHide: true,
+	closeOnEsc: false,
 	width: '',
 	matchTargetWidth: false, // true or element
 	maxWidth: '',
