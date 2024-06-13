@@ -4,10 +4,13 @@ import './sort-dir-btn'
 import './filters-view'
 import './layout-btn'
 import './search'
+import '../../../elements/toggle-btn'
+import '../../../elements/toggle-view'
 
 customElements.define('b-list-toolbar', class extends LitElement{
 
     static get properties(){return {
+        key: {type: String},
         count: {type: Number},
     }}
 
@@ -133,12 +136,18 @@ customElements.define('b-list-toolbar', class extends LitElement{
             }
 
         }
+
+        .toggle-panel {
+            order: 2;
+        }
     `}
 
     render(){return html`
         <slot name="before"></slot>
 
         <div class="count"><span>${this.count}</span></div>
+
+        <!--<b-toggle-btn class="toggle-panel" clear lg icon="tune" key=${this.key+':sidebar-panel'}></b-toggle-btn>-->
 
         <div class="scroller" ?empty=${!this.sorts&&!this.filters.size}>
 

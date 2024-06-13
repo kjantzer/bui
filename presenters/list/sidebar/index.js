@@ -7,8 +7,25 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
     static get properties(){return {
         count: {type: Number},
         queuing: {type: Number},
-        term: {type: String}
+        term: {type: String},
+        hidden: {type: Boolean, reflect: true}
     }}
+
+    set hidden(val){
+        let oldVal = this.hidden
+        this.__hidden = val
+
+        console.log('hidden?', val);
+        if( !val )
+            setTimeout(()=>{
+                this.focus()
+            })
+
+        // super.hidden = 
+        this.requestUpdate('hidden', oldVal)
+    }
+    
+    get hidden(){ return this.__hidden}
 
     static styles = css`
         :host {
@@ -16,8 +33,11 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
             grid-template-rows: auto 1fr;
         }
 
+        :host([hidden]) {display: none;}
+
         main {
             overflow: auto;
+            min-height: 33%;
         }
 
         :host-context([part="sidebar left"]) {
@@ -38,7 +58,15 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
             padding: 1em;
             border-bottom: solid 1px var(--theme-bgd-accent);
         }
+
+        ::slotted(*) {
+            padding: 1em;
+        }
     `
+
+    focus(){
+        this.$$('b-term-search')?.focus()
+    }
 
     constructor(){
         super()
@@ -69,20 +97,22 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
     get filters(){ return this.__filters}
 
     render(){return html`
+
+        <slot name="before"></slot>
         
         <b-grid class="header" cols=1>
 
-            <b-flex>
-                <b-text xbold md>
-                    <b-icon name="filter"></b-icon>
-                    Filters
+            <b-text-divider xbold icon="filter">
+                Filters
 
-                </b-text>
-
-                <b-btn sm clear color="theme" @click=${this.enableQueuedFilters} ?hidden=${this.filters.queuing}>Queue</b-btn>
-                <b-btn sm clear color="theme" @click=${this.applyQueuedFilters} 
+                <b-flex gap=" " slot="right">
+                    <b-btn sm clear color="theme" @click=${this.enableQueuedFilters} ?hidden=${this.filters.queuing}>Queue</b-btn>
+                    <b-btn sm clear color="theme" @click=${this.applyQueuedFilters} 
                     ?hidden=${!this.filters.queuing}>Apply (${this.queuing})</b-btn>
-            </b-flex>
+                </b-flex>
+
+            </b-text-divider>
+
 
             <b-term-search .coll=${this.filtersMenu}></b-term-search>
 
@@ -96,6 +126,8 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
 
             `}></b-term-search-results>
         </main>
+
+        <slot name="after"></slot>
 
     `}
 

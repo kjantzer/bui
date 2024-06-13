@@ -6,7 +6,7 @@ import Layouts from './data/layouts'
 import './toolbar'
 import './toolbar/selection-bar'
 import './infinite-list'
-// import './toolbar/filters-sidebar' // R&D
+// import './sidebar'
 import '../../elements/spinner-overlay'
 import '../../helpers/lit/selectors'
 import Selection from '../selection'
@@ -354,6 +354,7 @@ customElements.define('b-list', class extends LitElement {
         </slot>
         
         <b-list-toolbar 
+            key=${this.key}
             .filters=${this.filters}
             .sorts=${this.sorts}
             .layouts=${this.layouts}
@@ -373,7 +374,11 @@ customElements.define('b-list', class extends LitElement {
         </b-list-toolbar>
 
         <div part="sidebar left">
-            <b-list-filters-sidebar .filters=${this.filters}></b-list-filters-sidebar>
+            <b-list-filters-sidebar .filters=${this.filters}>
+                <b-toggle-view key=${this.key+':sidebar-panel'} type="show"></b-toggle-view>
+                <slot name="sidebar-panel:before" slot="before"></slot>
+                <slot name="sidebar-panel:after" slot="after"></slot>
+            </b-list-filters-sidebar>
             <slot name="sidebar:left"></slot>
         </div>
 
