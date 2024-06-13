@@ -6,7 +6,7 @@ import {forceStorageEventsLocally} from '../util/store'
 forceStorageEventsLocally()
 
 
-customElements.define('c-toggle-view', class extends LitElement{
+customElements.define('b-toggle-view', class extends LitElement{
 
     static properties = {
         key: {type: String},
@@ -55,4 +55,4 @@ customElements.define('c-toggle-view', class extends LitElement{
 
 })
 
-export default customElements.get('c-toggle-view')
+export default customElements.get('b-toggle-view')
