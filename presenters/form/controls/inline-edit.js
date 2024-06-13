@@ -81,7 +81,7 @@ customElements.define('b-inline-edit', class extends LitElement{
     }
 
     get newValue(){
-        return (this.textField.value||'').trim()
+        return String((this.textField.value||'')).trim()
     }
 
     saveEdit(){
