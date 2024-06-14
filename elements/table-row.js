@@ -36,6 +36,11 @@ customElements.define('b-table-row', class extends LitElement{
             padding: var(--table-cell-padding, .75em);
         }
 
+        main ::slotted(b-btn),
+        main > b-btn {
+            padding: 0;
+        }
+
         main ::slotted(*:not(:last-child)),
         main > *:not(slot):not(:last-child) {
             border-right: solid 1px var(--theme-bgd-accent);
