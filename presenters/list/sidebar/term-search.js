@@ -23,6 +23,12 @@ customElements.define('b-term-search', class extends LitElement{
         }
 
         [falsy] .clear-btn { display: none;}
+
+        form-control {
+            --fc-border-radius: 0;
+            margin: 0 -.75em -1em;
+            --fc-border-color: none;
+        }
     `
 
     set coll(val){
@@ -92,9 +98,9 @@ customElements.define('b-term-search', class extends LitElement{
     get control(){ return this.$$('form-control', true)}
 
     render(){return html`
-        <form-control material="filled" dense>
+        <form-control material="outline" dense>
             <text-field 
-                placeholder="Search" 
+                placeholder="Find filter" 
                 .value=${this.term||''}
                 @keyup=${this.onKeypress}
                 @esckey=${this.cancel}

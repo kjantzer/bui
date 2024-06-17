@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import './filter'
+import './filters-history'
 import './term-search'
 
 customElements.define('b-list-filters-sidebar', class extends LitElement{
@@ -40,9 +41,21 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
             min-height: 33%;
         }
 
-        :host-context([part="sidebar left"]) {
-            border-right: solid 2px var(--theme-bgd-accent);
+        :host([slot*="sidebar"]) {
             width: 260px;
+        }
+
+        :host([slot="sidebar:left"]) {
+            border-right: solid 2px var(--theme-bgd-accent);
+        }
+
+        :host([slot="sidebar:right"]) {
+            border-left: solid 2px var(--theme-bgd-accent);
+        }
+
+        :host([slot="header"]) {
+            width: unset;
+            max-height: 50vh;
         }
 
         b-list-filters-sidebar-filter {
@@ -57,11 +70,25 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
         .header {
             padding: 1em;
             border-bottom: solid 1px var(--theme-bgd-accent);
+            position: sticky;
+            top: 0;
+            background: var(--theme-bgd);
+            z-index: 10;
         }
 
         ::slotted(*) {
             padding: 1em;
         }
+
+        b-list-filters-sidebar-history {
+            /*margin: 0 -1em -1em;*/
+        }
+
+        b-tabs {
+            background-color: transparent !important;
+        }
+        
+        b-tabs > * { padding: 0;}
     `
 
     focus(){
@@ -70,6 +97,9 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
 
     constructor(){
         super()
+        
+        this.slot = this.slot || 'sidebar:left'
+
         this.onFilterQueuing = this.onFilterQueuing.bind(this)
         this.onFilterChange = this.onFilterChange.bind(this)
     }
@@ -96,23 +126,30 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
     
     get filters(){ return this.__filters}
 
+    get list(){
+        if( this.parentElement.tagName !== 'B-LIST' )
+            throw new UIWarningError('`'+this.tagName+'` must be a direct child of `b-list`')
+
+        return this.parentElement
+    }
+
     render(){return html`
 
+        <b-toggle-view key=${this.filters?.key+':sidebar-panel'} type="show"></b-toggle-view>
+
         <slot name="before"></slot>
+
+        <b-tabs>
+        <div title="Filters">
         
-        <b-grid class="header" cols=1>
+        <b-grid class="header" cols=1 gap=".5">
 
-            <b-text-divider xbold icon="filter">
-                Filters
+            <radio-group segment="" .value=${this.queuing>=0?'1':'0'} @change=${this.toggleQueue}>
+                <radio-btn value="0">${!this.queuing?'Auto Apply':`Apply (${this.queuing})`}</radio-btn>
+                <radio-btn value="1">Queue</radio-btn>
+            </radio-group>
 
-                <b-flex gap=" " slot="right">
-                    <b-btn sm clear color="theme" @click=${this.enableQueuedFilters} ?hidden=${this.filters.queuing}>Queue</b-btn>
-                    <b-btn sm clear color="theme" @click=${this.applyQueuedFilters} 
-                    ?hidden=${!this.filters.queuing}>Apply (${this.queuing})</b-btn>
-                </b-flex>
-
-            </b-text-divider>
-
+            <b-btn sm block clear color="theme" @click=${this.cancelQueuedFilters} ?hidden=${!this.queuing} >Cancel</b-btn>
 
             <b-term-search .coll=${this.filtersMenu}></b-term-search>
 
@@ -125,14 +162,38 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
                 <b-list-filters-sidebar-filter .model=${item.filter} ?active=${item.active}></b-list-filters-sidebar-filter>
 
             `}></b-term-search-results>
+
+            <!-- end of list -->
+            <b-text align="center" body block>
+                <b-label badge="gray" dot></b-label>
+            </b-text>
         </main>
+
+        </div>
+
+        <b-list-filters-sidebar-history title="History" .filters=${this.filters}></b-list-filters-sidebar-history>
+
+        </b-tabs>
 
         <slot name="after"></slot>
 
     `}
 
-    enableQueuedFilters(){ this.filters.queuing = true; this.queuing = 0 }
-    applyQueuedFilters(){ this.filters.queuing = false; this.queuing = false }
+    toggleQueue(e){
+        if( e?.currentTarget?.value == '1' ){
+            this.__originalFilters = this.filters.value()
+            this.filters.queuing = true
+            this.queuing = 0
+        }else{
+            this.filters.queuing = false
+            this.queuing = undefined
+        }
+    }
+
+    cancelQueuedFilters(){
+        this.filters.reset(this.__originalFilters, {stopQueuing:false})
+        this.toggleQueue()
+    }
 
     resetFilters(){
         this.filters.reset()
@@ -140,6 +201,8 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
 
     connectedCallback(){
         super.connectedCallback()
+
+        this.filters = this.list?.filters
 
         if( this.filters ){
             this.filters.on('queuing', this.onFilterQueuing)

@@ -19,6 +19,7 @@ customElements.define('b-list-filters-sidebar-filter', class extends LitElement{
 
         b-btn {
             margin: -1em -.5em -1em 0;
+            --padding: .25em .5em;
         }
 
         b-icon {
@@ -35,9 +36,9 @@ customElements.define('b-list-filters-sidebar-filter', class extends LitElement{
     }
 
     render(){return html`
-        <b-grid gap=".5" cols=1>
+        <b-grid gap=".25" cols=1>
             <b-flex>
-                <b-text bold sm color=${this.model.isActive?'theme':'text'}>
+                <b-text bold sm color=${this.model.isActive?'text':'text'}>
                     <b-icon square name=${this.model.icon} ?hidden=${!this.model.icon}></b-icon>
                     ${this.model.label}
                 </b-text>

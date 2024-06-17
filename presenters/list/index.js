@@ -373,14 +373,7 @@ customElements.define('b-list', class extends LitElement {
             </b-list-selection-bar>
         </b-list-toolbar>
 
-        <div part="sidebar left">
-            <b-list-filters-sidebar .filters=${this.filters}>
-                <b-toggle-view key=${this.key+':sidebar-panel'} type="show"></b-toggle-view>
-                <slot name="sidebar-panel:before" slot="before"></slot>
-                <slot name="sidebar-panel:after" slot="after"></slot>
-            </b-list-filters-sidebar>
-            <slot name="sidebar:left"></slot>
-        </div>
+        <slot part="sidebar left" name="sidebar:left"></slot>
 
         <slot name="header" part="header"></slot>
         <b-infinite-list
