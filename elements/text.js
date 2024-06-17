@@ -143,7 +143,8 @@ customElements.define('b-text', class extends LitElement{
         :host([color="teal"]) { color: var(--teal, brown); }
         :host([color="brown"]) { color: var(--brown, brown); }
 
-        :host([gradient]) {
+        :host([gradient]),
+        :host([color="gradient"]) {
             background-image: var(--theme-gradient,var(--theme-text, #000));
             background-size: 100%;
             background-repeat: repeat;
