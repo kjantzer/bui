@@ -47,7 +47,7 @@ customElements.define('b-toggle-view', class extends LitElement{
         let val = localStorage.getItem(this.key)
         let hide = (this.type == 'hide' && val) || (this.type == 'show' && !val)
 
-        let parent = this.parentElement
+        let parent = this.parentElement || this.getRootNode()?.host
 
         if( parent )
             parent.hidden = hide
