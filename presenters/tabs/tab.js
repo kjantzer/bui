@@ -2,6 +2,7 @@ import {html} from 'lit'
 
 export default class TabView {
 
+    // `view` should be a string name of custom element or a real element
     constructor(view){
         
         // custom element - we lazy load these
@@ -10,58 +11,82 @@ export default class TabView {
             this._viewName = view
             this._viewClass = customElements.get(view)
 
-            if( this._viewClass && this._viewClass.title ){
-                this.__title = this._viewClass.title
-                this.__toolbarTitle = this._viewClass.toolbarTitle
-                this.__options = this._viewClass.tabOptions || {}
-                this.__icon = this._viewClass.icon
-                this.__id = this.__title.toLowerCase().replace(/ /g, '-')
-            }else{
-                this.__id = this._viewName
-            }
-
             if( !this._viewClass )
                 console.warn('Could not find tabview:', view)
 
-            if( this._viewClass?.id )
-                this.__id = this._viewClass.id
-
         // HTML element
         }else{
-            view.hidden = true
-            this.__view = view
-            this.__title = view.title
-            this.__icon = view.getAttribute('icon')
+            view.hidden = true // set all views as hidden on initial load
+            this._view = this.__view = view // this.__view for backwards compat
+            this._view.tabView = this
 
-            // NOTE: `view-id` is DEPRECATED
-            if( view.hasAttribute('tab-id') || view.hasAttribute('view-id') ){
-                this.__id = view.getAttribute('tab-id') || view.getAttribute('view-id')
-            }else{
-                this.__id = this.__title.toLowerCase().replace(/ /g, '-')
-                this.__view.setAttribute('tab-id', this.id)
-                this.__view.setAttribute('view-id', this.id)
+            // element instance is a custom element, so capture the constructor too
+            let viewName = view.tagName.toLowerCase()
+            this._viewClass = customElements.get(viewName)
+            if( this._viewClass )
+                this._viewName = viewName
+
+            if( view.title && !view.getAttribute('tab-title') ){
+                view.setAttribute('tab-title', view.title)
+                view.title = '' // clear title attribute so hover doesn't show tooltip
             }
-
-            this.__view.tabView = this
-            view.title = ''
         }
     }
 
+    get title(){ return this._viewClass?.title || this._view?.getAttribute('tab-title') }
+    get icon(){ return this._viewClass?.icon || this._view?.getAttribute('icon') }
+    get toolbarTitle(){ return this._viewClass?.toolbarTitle || this._view?.getAttribute('toolbar-title') || this.title }
+
+    get id(){ 
+        // prefer officialy set IDs
+        return this._viewClass?.id
+        || this._view?.getAttribute('tab-id')
+        // fallback to the title
+        || this.title?.toLowerCase().replace(/ /g, '-')
+        // then icon or tag name
+        || this.icon
+        || this._viewName
+        || this._view?.tagName.toLowerCase()
+    }
+
+    // not sure why this was ever introduced
+    get options(){
+        return this._viewClass?.tabOptions || {}
+    }
+
+    // NOTE: rename to "route" ?
+    get path(){
+        return this._viewClass?.path || this._view?.path || this._view?.getAttribute('path') || this.id
+    }
+
+    // rename?
     render(onClick){
-        return this.canDisplay?html`
+
+        if( !this.canDisplay ) return ''
+
+        // TODO: no sure I want to support this
+        let renderFn = this._view?.constructor.tabViewBtn || this._viewClass?.tabViewBtn
+
+        if( renderFn )
+            return renderFn(this, onClick)
+
+        return html`
             <slot name="menu:before:${this.id}"></slot>
             <div class="tab-bar-item" ?active=${this.active} .tabView=${this} @click=${onClick}>
-                <slot name="menu:${this.id}">${this.title}</slot>
+                <slot name="menu:${this.id}">
+                    <b-icon name=${this.icon}></b-icon>
+                    ${this.title||(this.icon?'':(this.id||'[unnamed]'))}
+                </slot>
             </div>
             <slot name="menu:after:${this.id}"></slot>
-        `:''
+        `
     }
 
     set model(model){
         // if view is created and NOT hidden
         // NOTE: generally that means this view is "active", but special cases may have multiple
         // tab views visible
-        if( this.__view && !this.view.hidden )
+        if( this._view && !this.view.hidden )
             this.view.model = model
     }
 
@@ -69,7 +94,7 @@ export default class TabView {
     set active(isActive){
         let didChange = this.__active != isActive
         this.__active = isActive
-        if( !this.__view ) return // view not created yet
+        if( !this._view ) return // view not created yet
         
         if( !didChange )
             didChange = this.view.hidden == isActive
@@ -85,50 +110,30 @@ export default class TabView {
     }
 
     get view(){
+
+        // NOTE: should this return '' if !canDisplay?
+
         // lazy loading the html element view
-        if( !this.__view ){
+        if( !this._view ){
             
             if( this._viewClass ){
-                this.__view = new this._viewClass()
-                this.__view.tabView = this
+                this._view = new this._viewClass()
+                this._view.tabView = this
             }else{
-                this.__view = document.createElement('section')
-                this.__view.innerHTML = `<b-paper color="red" border dense><b>${this._viewName}</b> is not a custom element</b-paper>`
+                this._view = document.createElement('section')
+                this._view.innerHTML = `<b-paper color="red" border dense><b>${this._viewName}</b> is not a custom element</b-paper>`
             }
-
-            this.__view.setAttribute('tab-id', this.id)
-            this.__view.setAttribute('view-id', this.id) // DEPRECATED
         }
-        return this.__view 
-    }
 
-    get id(){
-        return this.__id
-    }
+        this._view.setAttribute('tab-id', this.id)
+        this._view.setAttribute('view-id', this.id) // DEPRECATED
 
-    get title(){
-        return this.__title || 'No Title'
-    }
-
-    get toolbarTitle(){ return this.__toolbarTitle || this.title }
-
-    get options(){
-        return this.__options || {}
-    }
-
-    get icon(){ return this.__icon }
-
-    // NOTE: rename to "route" ?
-    get path(){
-        if( this._viewClass ){
-            return this._viewClass.path || this.id
-        }else if(this.__view) {
-            return this.__view.path || this.__view.getAttribute('path') || this.id
-        }
+        return this._view 
     }
 
     get canDisplay(){
-        if( !this._viewClass || this._viewClass.canDisplay === undefined ) return true
-        return this._viewClass.canDisplay
+        return this._viewClass?.canDisplay ?? true
+        // if( !this._viewClass || this._viewClass.canDisplay === undefined ) return true
+        // return this._viewClass.canDisplay
     }
 }
