@@ -17,7 +17,6 @@ export default class TabViews extends Map {
     }
 
     add(nodes, {makeActive=true}={}){
-        let nextA
         viewsFromNodes(nodes).forEach((v,i)=>{
             v = new TabView(v)
 
@@ -36,7 +35,7 @@ export default class TabViews extends Map {
 
             if( !node.tabView ) return
 
-            console.log('time to remove', node.tabView);
+            // console.log('time to remove', node.tabView);
 
             this.delete(node.tabView.id)
             delete node.tabView
