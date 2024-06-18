@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit'
 import Menu from '../menu'
-import TabViews from './views'
-import TabView from './view'
+import TabViews from './tabs'
+import TabView from './tab'
 import debounce from '../../util/debounce'
 
 customElements.define('b-tabs', class extends LitElement {
@@ -358,7 +358,7 @@ customElements.define('b-tabs', class extends LitElement {
                     `)}
                 `
             }else{
-                this.__customTabBar.update()
+                this.__customTabBar.update() // TODO: change to requestUpdate?
             }
 
             return this.__customTabBar

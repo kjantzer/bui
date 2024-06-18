@@ -134,7 +134,7 @@ A simplified tab bar that displays tabs as text buttons with the active one bein
 import 'bui/presenters/tabs/tab-bar/badges'
 
 let view = html`
-    <b-list tab-bar="b-tab-bar-badges"></b-list>
+    <b-tabs tab-bar="b-tab-bar-badges"></b-tabs>
 `
 ```
 
@@ -145,7 +145,7 @@ Mimics manila folder tabs (or browser tabs)
 import 'bui/tabs/tab-bar/manila'
 
 let view = html`
-    <b-list tab-bar="b-tab-bar-manila"></b-list>
+    <b-tabs tab-bar="b-tab-bar-manila"></b-tabs>
 `
 ```
 
