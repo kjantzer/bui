@@ -63,8 +63,8 @@ customElements.defineShared('b-list-group-by', class extends LitElement{
     get list(){
         let el = this
         let list = null
-        while(el.parentElement && !list ){
-            el = el.parentElement
+        while(el && !list ){
+            el = el.parentElement || el.getRootNode()?.host
             if( el.tagName == 'B-LIST' )
                 list = el
         }
