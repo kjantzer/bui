@@ -451,7 +451,7 @@ customElements.define('b-tabs', class extends LitElement {
         if( this._propagateModel )
             view.model = this.model
 
-        if( view.parentElement != this)
+        if( view.parentElement != this && !view.slot )
             this.appendChild( view )
     }
 

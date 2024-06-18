@@ -1,13 +1,13 @@
 import TabView from './view'
 import store from '../../util/store'
 
-function viewsFromNodes(nodes){
+function viewsFromNodes(nodes, {ignoreSlots=true}={}){
 
     let views = []
     nodes.forEach(node=>{
 
         // ignore these node types
-        if( node.slot || ['#comment', 'SCRIPT', 'STYLE'].includes(node.nodeName) || node.hasAttribute?.('notcontent'))
+        if( (ignoreSlots&&node.slot) || ['#comment', 'SCRIPT', 'STYLE'].includes(node.nodeName) || node.hasAttribute?.('notcontent'))
             return
 
         // already a tab view
@@ -24,6 +24,9 @@ function viewsFromNodes(nodes){
             views.push(..._views)
             node.textContent = ''
 
+        } else if(node.tagName == 'SLOT'){
+            let slotViews = viewsFromNodes(node.assignedNodes(), {ignoreSlots: false})
+            views.push(...slotViews)
         }else{
 
             // all tab views should have a title, so add one

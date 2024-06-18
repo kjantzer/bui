@@ -189,3 +189,26 @@ customElements.define('my-custom-tab-bar', class extends LitElement{
 ```
 
 Clicked menu items **must** have `.tabView=${view}` set to work
+
+## Slotted Tab Views
+
+```js
+customElements.define('my-custom-tab-bar', class extends LitElement{
+
+    render(){return html`
+        <b-tabs>
+            <div title="Normal view"></div>
+            <slot></slot>
+        </b-tabs>
+    `}
+
+})
+```
+
+The following with render three tabs, "Normal view" and "Slotted view", and a lazy-loaded view
+```html
+<my-custom-tab-bar>
+    <div title="Slotted view"></div>
+    custom-element-1
+</my-custom-tab-bar>
+```
