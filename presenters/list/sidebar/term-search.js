@@ -122,8 +122,10 @@ customElements.define('b-term-search', class extends LitElement{
     cancel(e){ 
         if( !e.currentTarget.value )
             this.emitEvent('hide')
-
-        this.clear() && this.blur()
+        else{
+            this.clear()
+            this.focus()
+        }
     }
     clear(){ this.term = '' }
     focus(opts){ this.control?.focus(opts) }

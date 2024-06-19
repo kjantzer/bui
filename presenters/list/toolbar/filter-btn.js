@@ -42,7 +42,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
             opacity: 1;
         }
 
-        b-btn:not([active]):has([empty]) {
+        b-btn:not([active]):has([empty]):not(:hover):not(.popover-open) {
             color: var(--theme-text-dim);
         }
 
