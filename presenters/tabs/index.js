@@ -122,10 +122,13 @@ customElements.define('b-tabs', class extends LitElement {
         .tab-bar::-webkit-scrollbar { display: none; width: 0 !important; height: 0 !important; }
 
         .tab-bar-item {
+            display: flex;
             padding: var(--menuItemPadding);
             cursor: pointer;
             box-sizing: border-box;
             color: var(--inactiveColor);
+            flex-grow: 1;
+            justify-content: center;
         }
 
         
