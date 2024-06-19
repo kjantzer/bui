@@ -45,9 +45,9 @@ customElements.define('demo-presenter-list', class extends View{
                     <b-btn @click=${this.copy} clear color="theme">Copy IDs</b-btn>
                 </b-flex>
 
-                <div slot="footer" style="padding: .5em; border-top: solid 2px var(--theme-bgd-accent);">
-                    List footer content
-                </div>
+                <b-text sm dim body slot="footer" style="padding: .5em; border-top: solid 2px var(--theme-bgd-accent);">
+                    Tip: try pressing <b-code>s</b-code> (select) or <b-code>f</b-code> (filter). Then <b-code>esc</b-code> to cancel
+                </b-text>
             </b-list>
         </b-paper>
         </div>
