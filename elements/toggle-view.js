@@ -2,7 +2,7 @@
     Generally used with `b-toggle-btn`
 */
 import { LitElement, html, css } from 'lit'
-import {forceStorageEventsLocally} from '../util/store'
+import store, {forceStorageEventsLocally} from '../util/store'
 forceStorageEventsLocally()
 
 
@@ -27,18 +27,22 @@ customElements.define('b-toggle-view', class extends LitElement{
     connectedCallback(){
         super.connectedCallback()
         window.addEventListener('storage', this.onChange)
+        this.parent = this.parentElement || this.getRootNode()?.host
+        if( this.parent )
+            this.parent.toggleView = this
         this.apply()
     }
 
     disconnectedCallback(){
         super.disconnectedCallback()
         window.removeEventListener('storage', this.onChange)
+        if( this.parent && this.parent.toggleView == this )
+            delete this.parent.toggleView
     }
 
     onChange(e){
         let key = e.detail?.key || e.key
         if( !this.key || key != this.key ) return
-        if( !this.show && !this.hide )
         
         this.apply()
     }
@@ -47,10 +51,20 @@ customElements.define('b-toggle-view', class extends LitElement{
         let val = localStorage.getItem(this.key)
         let hide = (this.type == 'hide' && val) || (this.type == 'show' && !val)
 
-        let parent = this.parentElement || this.getRootNode()?.host
+        if( this.parent )
+            this.parent.hidden = hide
+    }
 
-        if( parent )
-            parent.hidden = hide
+    show(){
+        let val = this.type == 'hide' ? null : true
+        store(this.key, val)
+        this.apply()
+    }
+
+    hide(){
+        let val = this.type == 'hide' ? true : null
+        store(this.key, val)
+        this.apply()
     }
 
 })
