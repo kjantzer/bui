@@ -1,6 +1,6 @@
 import {LitElement, html, css, unsafeCSS} from 'lit'
 import Controller from './controller'
-import router from '../../router'
+import router from '../../app/router'
 import Route from '../../app/router/route'
 import device from '../../util/device'
 import './controller'
