@@ -72,8 +72,7 @@ export async function edit(model){
             {label: 'Name', key: 'name', required: true},
             {label: 'Summary', key: 'summary', placeholder: '(optional)'},
             {_label: 'Visibility', key: 'type', segment: {_stacked: false},
-                options: Types, 
-                helpText: 'test'}
+                options: Types}
         ],
         val: vals,
         btns: ['cancel', (isModel?'save':'create')]
