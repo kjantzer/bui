@@ -3,7 +3,7 @@ import View from './view'
 import docs from 'bui/presenters/calendar/README.md'
 import 'bui/presenters/calendar'
 import Panel from 'bui/presenters/panel'
-import router from 'bui/router'
+import router from 'bui/app/router'
 
 customElements.define('demo-presenter-calendar', class extends View{
 

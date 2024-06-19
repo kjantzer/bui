@@ -98,7 +98,7 @@ CSS Varibles
 import 'style.less'
 
 // if your gonna use the router, import and set the config now
-import router from 'bui/router'
+import router from 'bui/app/router'
 router.config({
     root: '/',
 })

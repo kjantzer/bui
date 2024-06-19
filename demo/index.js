@@ -1,5 +1,5 @@
 
-import router from 'bui/router'
+import router from 'bui/app/router'
 router.config({
     root: location.hostname.match(/github|gitlab/) ? '/bui/' : '/',
     prefix: '#/'

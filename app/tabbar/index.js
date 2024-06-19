@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit'
-import router from 'bui/router'
+import router from 'bui/app/router'
 import '../views/routed-tabs'
 import {mediaQuery, MediaQueries} from './media-queries'
 import './tab-bar'
