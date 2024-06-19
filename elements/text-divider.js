@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import Text from './text'
+import './hr'
 
 customElements.define('b-text-divider', class extends Text{
 

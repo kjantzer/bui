@@ -14,7 +14,7 @@ function titleize(str){
 }
 
 function slugify(str, {spaces='_', lowerCase=true, removeCamelcase=false}={}){
-    str = str || ''
+    str = String(str || '')
     str = str.replace(' ', spaces)
     if( removeCamelcase ) str = camelcaseUndo(str, {delimiter: spaces})    
     if( lowerCase ) str = str.toLowerCase()
