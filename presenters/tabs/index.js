@@ -127,8 +127,6 @@ customElements.define('b-tabs', class extends LitElement {
             cursor: pointer;
             box-sizing: border-box;
             color: var(--inactiveColor);
-            flex-grow: 1;
-            justify-content: center;
         }
 
         
@@ -141,6 +139,12 @@ customElements.define('b-tabs', class extends LitElement {
         :host([layout="top"]) .tab-bar-item,
         :host([layout="bottom"]) .tab-bar-item {
             white-space: nowrap;
+        }
+
+        :host([layout="top"][stretch]) .tab-bar-item,
+        :host([layout="bottom"][stretch]) .tab-bar-item {
+            flex-grow: 1;
+            justify-content: center;
         }
 
         :host([layout="left"]) .tab-bar,

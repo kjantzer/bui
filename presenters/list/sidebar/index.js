@@ -152,7 +152,7 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
 
         <slot name="before"></slot>
 
-        <b-tabs key=${this.filters?.key+':sidebar-panel'}>
+        <b-tabs key=${this.filters?.key+':sidebar-panel'} stretch>
 
         <div title="" tab-id="filters" icon="filter">
         
