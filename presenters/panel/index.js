@@ -1,7 +1,7 @@
 import {LitElement, html, css, unsafeCSS} from 'lit'
 import Controller from './controller'
 import router from '../../router'
-import Route from '../../router/route'
+import Route from '../../app/router/route'
 import device from '../../util/device'
 import './controller'
 import './toolbar'
