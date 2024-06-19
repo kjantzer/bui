@@ -1,3 +1,4 @@
+// DEPRECATED - use `b-text`
 import { LitElement, html, css } from 'lit'
 
 customElements.define('b-h1', class extends LitElement {
