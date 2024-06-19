@@ -46,7 +46,7 @@ customElements.define('demo-presenter-list', class extends View{
                 </b-flex>
 
                 <b-text sm dim body slot="footer" style="padding: .5em; border-top: solid 2px var(--theme-bgd-accent);">
-                    Tip: try pressing <b-code>s</b-code> (select) or <b-code>f</b-code> (filter). Then <b-code>esc</b-code> to cancel
+                    Tip: try pressing <b-code>s</b-code> (select) or <b-code>f</b-code> (filter). Then <b-code>esc</b-code> to cancel. Press <b-code>/</b-code> to focus the search input.
                 </b-text>
             </b-list>
         </b-paper>

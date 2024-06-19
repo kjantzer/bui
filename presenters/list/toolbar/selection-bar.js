@@ -46,10 +46,10 @@ customElements.define('b-list-selection-bar', class extends LitElement{
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            border-radius: 4px;
+            background: var(--theme-bgd-accent);
+            border-radius: 1em;
             padding: 0.2em 0.4em;
             flex-shrink: 0;
-            box-shadow: 0 0 0 1px var(--theme-shadow) inset;
             order: var(--count-order, 2);
         }
 

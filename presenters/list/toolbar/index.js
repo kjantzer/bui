@@ -174,10 +174,12 @@ customElements.define('b-list-toolbar', class extends LitElement{
                 <b-list-layout-btn .layouts=${this.layouts} pill text></b-list-layout-btn>
             `}
 
+            ${this.filters?.size?html`
             <b-text class="toggle-sidebar">
                 <b-toggle-btn clear lg icon="tune" key=${this.filters.key+':sidebar-panel'}></b-toggle-btn>
                 <b-label xs badge="theme" ?hidden=${!this.filters.length}>${this.filters.length}</b-label>
             </b-text>
+            `:''}
 
             <slot name="refresh-btn"></slot>
 

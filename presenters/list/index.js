@@ -644,7 +644,7 @@ customElements.define('b-list', class extends LitElement {
         // look for a user inserted sidebar, else add the default one now
         // a user might add it themselves so they can nest/slot additional views
         this.sidebar = this.querySelector('b-list-sidebar')
-        if( this.filters && !this.sidebar ){
+        if( this.filters?.size && !this.sidebar ){
             this.sidebar = new (customElements.get('b-list-sidebar'))()
             this.append(this.sidebar)
         }
