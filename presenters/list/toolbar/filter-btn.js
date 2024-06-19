@@ -18,21 +18,12 @@ customElements.define('b-list-filter-btn', class extends LitElement{
             --color: var(--toolbarTextColor);
         }
 
-        main {
-            display: inline-grid;
-            line-height: 1.2em;
-            margin-bottom: -.25em;
+        b-btn[active]  {
+            box-shadow: 0 0 0 1px var(--theme-shadow) inset;
         }
 
-        .label {
-            grid-area: unset;
-            color: var(--toolbarTextColor);
-            margin: -0.5em 0px;
-            position: relative;
-            top: -0.5em;
-            line-height: 1em;
-            font-size: .9em;
-            /* opacity: .4; */
+        main {
+            display: inline-flex;
         }
 
         b-icon {
@@ -49,6 +40,10 @@ customElements.define('b-list-filter-btn', class extends LitElement{
 
         b-btn:not([active]).popover-open {
             opacity: 1;
+        }
+
+        b-btn:not([active]):has([empty]) {
+            color: var(--theme-text-dim);
         }
 
         b-btn[active] {
@@ -121,19 +116,30 @@ customElements.define('b-list-filter-btn', class extends LitElement{
         :host([full]) b-btn[active] .label {
             color: var(--theme);
         }
+
+        
+        main[empty] .value { display: none;}
+
+        .value {
+            max-width: 20vw;
+        }
     `}
 
     render(){return html`
-        <b-btn text ?active=${this.filter.isActive} @click=${this.showMenu}>
-            <main>
+        <b-btn text 
+            ?active=${this.filter.isActive}
+            @click=${this.showMenu}>
+
+            <main ?empty=${['', '-', '–'].includes(this.filter.valueLabel)}>
+                
                 ${this.full?html`
                     <b-text class="">${this.filter.label}: </b-text>
                 `:html`
-                    <b-text xs ucase bold class="label">${this.filter.label}</b-text>
+                    <b-text class="label">${this.filter.label}</b-text>
                 `}
-                <b-text block caps>
-                    ${this.filter.icon?html`<b-icon name="${this.filter.icon}"></b-icon>`:''}
-                    ${unsafeHTML(this.filter.valueLabel)}
+
+                <b-text caps clip class="value">
+                    : <b-text .html=${this.filter.valueLabel}></b-text>
                 </b-text>
             </main>
         </b-btn>

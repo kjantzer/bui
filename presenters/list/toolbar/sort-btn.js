@@ -12,17 +12,7 @@ customElements.define('b-list-sort-btn', class extends LitElement{
         }
 
         main {
-            display: inline-grid;
-            line-height: 1.2em;
-            margin-bottom: -.25em;
-        }
-
-        b-label {
-            color: var(--toolbarTextColor);
-            grid-area: unset !important;
-            margin: -0.5em 0px;
-            position: relative;
-            top: -0.5em
+            display: inline-flex;
         }
 
         .none:not(:first-child) {
@@ -52,8 +42,7 @@ customElements.define('b-list-sort-btn', class extends LitElement{
             /* font-size: .8em; */
             /* vertical-align: baseline; */
             color: var(--toolbarTextColor);
-            opacity: .5;
-            margin-right: .25ch;
+            margin: 0 -.125em;
         }
 
         /* b-icon:hover {
@@ -65,12 +54,12 @@ customElements.define('b-list-sort-btn', class extends LitElement{
     render(){return html`
         <b-btn text class="sorts" @click=${this.sortMenu}>
             <main>
-                <b-label xs>Sort</b-label>
+                <b-text bold>Sort:</b-text>
 
                 <b-flex gap=" " left>
                     ${this.sorts.active.map(sort=>html`
                         <b-flex inline gap="0" left class="sort" .sort=${sort}>
-                            <b-icon name="filter_list" ?rotate180=${!sort.isDesc}></b-icon> ${sort.label}
+                            <b-icon name="arrow_right_alt" ?rotate-90=${!sort.isDesc} ?rotate90=${sort.isDesc}></b-icon> ${sort.label}
                         </b-flex>
                     `)}
                     

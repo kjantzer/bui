@@ -65,7 +65,7 @@ customElements.define('b-list-filters-saved', class extends LitElement{
     async setup(){
         this.coll.reset()
 
-        let filters = this.parentElement?.filters
+        let filters = this.filters || this.parentElement?.filters
 
         if( !filters && !this.parentElement ){
             filters = this.getRootNode()?.host?.filters
@@ -137,19 +137,24 @@ customElements.define('b-list-filters-saved', class extends LitElement{
 
     render(){return html`
 
-        <b-btn text @click=${this.openFiltersPanel} ?active=${this.model}>
-            <main>
-                <b-label xs>Presets</b-label>
-                <b-text ?bold=${this.model}>
-                    ${this.model?this.model.get('name'):html`
-                        ${this.coll.length==0?'None':this.coll.length+' Avail.'}
-                    `}
-                    ${this.changed?html`
-                        <b-icon name="pencil"></b-icon>
-                    `:''}
+        <b-grid gap=".25" cols=1 ?active=${this.model}>
+
+            <b-text>
+                <b-text bold sm ?gradient=${this.model}>
+                    Presets
                 </b-text>
-            </main>
-        </b-btn>
+            </b-text>
+
+            <b-text heading ?dim=${!this.model}>
+                ${this.model?this.model.get('name'):html`
+                    ${this.coll.length==0?'None':this.coll.length+' Avail.'}
+                `}
+                ${this.changed?html`
+                    <b-icon name="pencil"></b-icon>
+                `:''}
+            </b-text>
+
+        </b-grid>
     `}
 
     clickMenu(){ this.showMenu() }
@@ -207,14 +212,14 @@ customElements.define('b-list-filters-saved', class extends LitElement{
         if( menu.length == 0 )
             menu.push({text: html`No presets avilable.<br>Apply some filters to create a new preset.`, bgd: false})
 
-        let selected = await new Menu(menu, {search: 10, width: '400px', handler: this}).popOver(this)
+        let selected = await new Menu(menu, {search: 10, width: '400px', handler: this}).popOver(this, {align: 'right'})
 
         if( !selected ) return
 
         if( !selected.evt.shiftKey )
             this.model = selected.model
 
-        this.filters[selected.evt.shiftKey?'update':'reset'](selected.model.get('filters'))
+        this.filters[selected.evt.shiftKey?'update':'reset'](selected.model.get('filters'), {stopQueuing: false})
 
         // track how many times used
         selected.model.saveSync({use_count: selected.model.get('use_count')+1}, {patch: true})

@@ -38,12 +38,12 @@ customElements.define('b-list-filters-sidebar-filter', class extends LitElement{
     render(){return html`
         <b-grid gap=".25" cols=1>
             <b-flex>
-                <b-text bold sm color=${this.model.isActive?'text':'text'}>
+                <b-text bold sm color=${this.model.isActive?'gradient':'text'}>
                     <b-icon square name=${this.model.icon} ?hidden=${!this.model.icon}></b-icon>
                     ${this.model.label}
                 </b-text>
 
-                <b-btn sm clear color="gray" ?hidden=${!this.model.isActive} @click=${this.clearFilter}>Clear</b-btn>
+                <b-btn sm clear icon="cancel" color="gray" ?hidden=${!this.model.isActive} @click=${this.clearFilter}></b-btn>
             </b-flex>
 
             <b-text heading dim ?hidden=${!this.model.isActive}>${this.model.valueLabel}</b-text>
@@ -77,7 +77,7 @@ customElements.define('b-list-filters-sidebar-filter', class extends LitElement{
     }
 
     clickMenu(){
-        this.model.showMenu(this, {align: 'right'})
+        this.model.showMenu(this, {align: 'left', maxHeight: '50vh'})
     }
 
     clearFilter(e){

@@ -9,6 +9,8 @@ export {applyGrouping}
 
 customElements.defineShared('b-list-group-by', class extends LitElement{
 
+    static icon = 'layers'
+
     static styles = css`
         :host {
             display: block;
@@ -21,6 +23,10 @@ customElements.defineShared('b-list-group-by', class extends LitElement{
         :host([in-popover]) {
             padding: 1em;
             width: 320px;
+        }
+
+        :host([tab-id]) {
+            padding: 1em !important;
         }
 
         :host([slot="sidebar:left"]) {

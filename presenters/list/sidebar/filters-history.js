@@ -2,6 +2,8 @@ import { LitElement, html, css } from 'lit'
 
 customElements.define('b-list-filters-sidebar-history', class extends LitElement{
 
+    static icon = 'history'
+
     static styles = css`
         :host {
             display: block;
@@ -13,7 +15,7 @@ customElements.define('b-list-filters-sidebar-history', class extends LitElement
         }
 
         .meta {
-            margin: .25em .5em -1em;
+            margin: .25em .5em -1.5em;
         }
 
         .set {
@@ -60,11 +62,13 @@ customElements.define('b-list-filters-sidebar-history', class extends LitElement
 
     render(){return html`
 
+        <b-text xbold style="margin: 1em">Filter History</b-text>
+
         ${this.values.map(d=>html`
             <b-grid cols=1 .model=${d} gap=".25" class="set" @click=${this.reapply}>
                 
                 <b-flex class="meta" right>
-                    <b-text gradient xbold xs ucase>
+                    <b-text xs muted>
                         <b-ts .date=${d.ts}></b-ts>
                     </b-text>
                 </b-flex>
@@ -79,6 +83,8 @@ customElements.define('b-list-filters-sidebar-history', class extends LitElement
                 </div>
             </b-grid>
         `)}
+
+        <b-empty-state if="first">no history</b-empty-state>
         
     `}
 

@@ -1,3 +1,6 @@
+/*
+    DEPRECATED
+*/
 import { LitElement, html, css } from 'lit'
 import Panel from '../../panel'
 import Menu from '../../menu'

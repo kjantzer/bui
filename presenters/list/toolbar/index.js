@@ -26,6 +26,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
             min-width: 0;
             position: relative;
             column-gap: .25em;
+            background: linear-gradient(to bottom, transparent, var(--theme-bgd));
         }
 
         :host(.selection-bar-shown) > * {
@@ -54,9 +55,6 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
         b-list-sort-btn,
         b-list-sort-btn + b-list-filters {
-            border-left: solid 2px rgba(0,0,0,.1);
-            margin-left: .25em;
-            padding-left: .25em;
         }
 
         .after {
@@ -71,7 +69,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
             align-items: center;
             /* border-right: 2px solid rgba(0, 0, 0, 0.1); */
             /* padding: 0 .75em 0 .25em; */
-            margin-right: .25em;
+            margin: 0 .25em;
         }
 
         .controls {
@@ -92,11 +90,11 @@ customElements.define('b-list-toolbar', class extends LitElement{
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 4px;
+            border-radius: 1em;
             padding: 0.2em 0.4em;
             flex-shrink: 0;
-            box-shadow: 0 0 0 1px var(--theme-shadow) inset;
             order: var(--count-order, 2);
+            background: var(--theme-bgd-accent);
         }
 
         [name="before"] { order: 1; }
@@ -107,6 +105,15 @@ customElements.define('b-list-toolbar', class extends LitElement{
         .scroller[empty] {
             display: none;
         }
+
+        .toggle-sidebar { order: 100; position: relative; }
+        .toggle-sidebar b-label {
+            position: absolute;
+            top: 1px;
+            right: 1px;
+            pointer-events: none;
+        }
+
 
         @container (max-width: 599px) {
             
@@ -136,18 +143,12 @@ customElements.define('b-list-toolbar', class extends LitElement{
             }
 
         }
-
-        .toggle-panel {
-            order: 2;
-        }
     `}
 
     render(){return html`
         <slot name="before"></slot>
 
         <div class="count"><span>${this.count}</span></div>
-
-        <!--<b-toggle-btn class="toggle-panel" clear lg icon="tune" key=${this.key+':sidebar-panel'}></b-toggle-btn>-->
 
         <div class="scroller" ?empty=${!this.sorts&&!this.filters.size}>
 
@@ -172,6 +173,11 @@ customElements.define('b-list-toolbar', class extends LitElement{
             ${!this.layouts?'':html`
                 <b-list-layout-btn .layouts=${this.layouts} pill text></b-list-layout-btn>
             `}
+
+            <b-text class="toggle-sidebar">
+                <b-toggle-btn clear lg icon="tune" key=${this.filters.key+':sidebar-panel'}></b-toggle-btn>
+                <b-label xs badge="theme" ?hidden=${!this.filters.length}>${this.filters.length}</b-label>
+            </b-text>
 
             <slot name="refresh-btn"></slot>
 

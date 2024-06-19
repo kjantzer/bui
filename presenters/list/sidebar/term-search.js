@@ -25,10 +25,9 @@ customElements.define('b-term-search', class extends LitElement{
         [falsy] .clear-btn { display: none;}
 
         form-control {
-            --fc-border-radius: 0;
-            margin: 0 -.75em -1em;
-            --fc-border-color: none;
+            --padX: .5em;
         }
+
     `
 
     set coll(val){
@@ -98,14 +97,14 @@ customElements.define('b-term-search', class extends LitElement{
     get control(){ return this.$$('form-control', true)}
 
     render(){return html`
-        <form-control material="outline" dense>
+        <form-control material="outline" show="prefix">
             <text-field 
                 placeholder="Find filter" 
                 .value=${this.term||''}
                 @keyup=${this.onKeypress}
                 @esckey=${this.cancel}
             ></text-field>
-
+            <b-icon slot="prefix" name="search"></b-icon>
             <b-btn clear icon="cancel" class="clear-btn" @click=${this.clear} slot="suffix"></b-btn>
         </form-control>
     `}
@@ -120,7 +119,12 @@ customElements.define('b-term-search', class extends LitElement{
         this.term = e.currentTarget.currentValue
     }
 
-    cancel(){ this.clear() && this.blur() }
+    cancel(e){ 
+        if( !e.currentTarget.value )
+            this.emitEvent('hide')
+
+        this.clear() && this.blur()
+    }
     clear(){ this.term = '' }
     focus(opts){ this.control?.focus(opts) }
     blur(){ this.control?.blur() }

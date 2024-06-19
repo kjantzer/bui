@@ -6,7 +6,7 @@ import Layouts from './data/layouts'
 import './toolbar'
 import './toolbar/selection-bar'
 import './infinite-list'
-// import './sidebar'
+import './sidebar'
 import '../../elements/spinner-overlay'
 import '../../helpers/lit/selectors'
 import Selection from '../selection'
@@ -161,7 +161,7 @@ customElements.define('b-list', class extends LitElement {
         b-list-toolbar {
             box-shadow: var(--list-toolbar-shadow, rgba(0,0,0,.2) 0 0 6px);
             padding: .25em .5em;
-            z-index: 10;
+            z-index: 15;
         }
 
         b-list-toolbar b-btn {
@@ -430,8 +430,7 @@ customElements.define('b-list', class extends LitElement {
     }
 
     showFilterSelection(){
-        if( this.filters.shouldUseOverflow )
-            this.filters.openFiltersPanel()
+        this.sidebar?.focus()
     }
 
     onKeydown(e){
@@ -447,6 +446,25 @@ customElements.define('b-list', class extends LitElement {
             && !e.ctrlKey && !e.metaKey && !e.shiftKey // ignore if extra keys pressed
             ){
                 this.showFilterSelection()
+            }
+
+            if( e.key == 's'
+            && !e.ctrlKey && !e.metaKey && !e.shiftKey // ignore if extra keys pressed
+            ){
+                // if selections is allowed (and not already on)
+                if( this.listOptions.selection && !this.selection.isOn ){
+                    // turn on selection IF this is the top level/active list
+                    this._ifInDOM().then(e=>{
+                        this.selection.begin()
+                        // todo: select all results if selection is already on?
+                    })
+                }
+            }
+
+            if( e.key == 'Escape'
+            && !e.ctrlKey && !e.metaKey && !e.shiftKey // ignore if extra keys pressed
+            ){
+                this.sidebar?.hide()
             }
 
             // Like Google search results, focus search when `/` is pressed
@@ -622,6 +640,14 @@ customElements.define('b-list', class extends LitElement {
         setTimeout(async ()=>{
             this.refresh()
         }, 200)
+
+        // look for a user inserted sidebar, else add the default one now
+        // a user might add it themselves so they can nest/slot additional views
+        this.sidebar = this.querySelector('b-list-filters-sidebar')
+        if( this.filters && !this.sidebar ){
+            this.sidebar = new (customElements.get('b-list-filters-sidebar'))()
+            this.append(this.sidebar)
+        }
 
         this.header = this.$$('[name="header"]').assignedNodes()[0]
         this.footer = this.$$('[name="footer"]').assignedNodes()[0]

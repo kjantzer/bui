@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit'
 import './filter'
 import './filters-history'
 import './term-search'
+import device from '../../../util/device'
 
 customElements.define('b-list-filters-sidebar', class extends LitElement{
 
@@ -15,14 +16,6 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
     set hidden(val){
         let oldVal = this.hidden
         this.__hidden = val
-
-        console.log('hidden?', val);
-        if( !val )
-            setTimeout(()=>{
-                this.focus()
-            })
-
-        // super.hidden = 
         this.requestUpdate('hidden', oldVal)
     }
     
@@ -31,7 +24,7 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
     static styles = css`
         :host {
             display: grid;
-            grid-template-rows: auto 1fr;
+            grid-template-rows: 1fr;
         }
 
         :host([hidden]) {display: none;}
@@ -42,7 +35,10 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
         }
 
         :host([slot*="sidebar"]) {
-            width: 260px;
+            width: 220px;
+            border-top: solid 1px var(--theme-bgd-accent);
+            box-shadow: var(--theme-shadow-3);
+            z-index: 10;
         }
 
         :host([slot="sidebar:left"]) {
@@ -56,14 +52,17 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
         :host([slot="header"]) {
             width: unset;
             max-height: 50vh;
+            order: -20 !important;
+            border-top: solid 2px var(--theme-bgd-accent);
         }
 
-        b-list-filters-sidebar-filter {
+        b-list-filters-sidebar-filter,
+        b-list-filters-saved {
             border-bottom: solid 1px var(--theme-bgd-accent);
             padding: 1em;
         }
 
-        [active] {
+        b-list-filters-sidebar-filter[active] {
             background-color: var(--theme-bgd-accent2);
         }
 
@@ -74,6 +73,10 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
             top: 0;
             background: var(--theme-bgd);
             z-index: 10;
+        }
+
+        .header b-btn {
+            margin-top: -.5em;
         }
 
         ::slotted(*) {
@@ -91,14 +94,24 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
         b-tabs > * { padding: 0;}
     `
 
+    show(){ this.toggleView?.show() }
+    hide(){ this.toggleView?.hide() }
+
     focus(){
-        this.$$('b-term-search')?.focus()
+        this.show() // this view may be hidden, tell it to show
+        if( this.$$('b-tabs', true) )
+            this.$$('b-tabs', true).active = 'filters'
+
+        // make sure shown first, then focus (else wont work)
+        setTimeout(()=>{
+            this.$$('b-term-search')?.focus()
+        })
     }
 
     constructor(){
         super()
         
-        this.slot = this.slot || 'sidebar:left'
+        this.slot = this.slot || (device.isSmall ? 'header' : 'sidebar:right')
 
         this.onFilterQueuing = this.onFilterQueuing.bind(this)
         this.onFilterChange = this.onFilterChange.bind(this)
@@ -139,24 +152,41 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
 
         <slot name="before"></slot>
 
-        <b-tabs>
-        <div title="Filters">
+        <b-tabs key=${this.filters?.key+':sidebar-panel'}>
+
+        <div title="" tab-id="filters" icon="filter">
         
         <b-grid class="header" cols=1 gap=".5">
 
-            <radio-group segment="" .value=${this.queuing>=0?'1':'0'} @change=${this.toggleQueue}>
-                <radio-btn value="0">${!this.queuing?'Auto Apply':`Apply (${this.queuing})`}</radio-btn>
-                <radio-btn value="1">Queue</radio-btn>
-            </radio-group>
+            <b-flex>
+                <b-text xbold>Filters</b-text>
 
-            <b-btn sm block clear color="theme" @click=${this.cancelQueuedFilters} ?hidden=${!this.queuing} >Cancel</b-btn>
+                <b-flex right gap=0>
 
-            <b-term-search .coll=${this.filtersMenu}></b-term-search>
+                    <b-btn sm clear noshrink color="theme" ?hidden=${this.queuing!=undefined} @click=${this.toggleQueue}>Queue</b-btn>
+                    <b-btn sm clear noshrink color="theme" ?hidden=${this.queuing==undefined} @click=${this.toggleQueue}>Apply (${this.queuing})</b-btn>
+
+                    <b-btn sm block clear icon="cancel" 
+                        @click=${this.cancelQueuedFilters} ?hidden=${!this.queuing} tooltip="Cancel changes"></b-btn>
+
+                    <b-btn sm block clear color="hover-red" tooltip="Clear filters"
+                        ?hidden=${!this.filters.length}
+                        icon="backspace" @click=${this.resetFilters}></b-btn>
+                
+                </b-flex>
+            </b-flex>
+
+            <b-term-search .coll=${this.filtersMenu} @hide=${this.hide}></b-term-search>
 
         </b-grid>
     
 
         <main>
+
+            ${this.filters.size>0&&this.filters.opts?.presets!==false?html`
+            <b-list-filters-saved .filters=${this.filters} noshrink></b-list-filters-saved>
+            `:''}
+
             <b-term-search-results .coll=${this.filtersMenu} .item=${item=>html`
 
                 <b-list-filters-sidebar-filter .model=${item.filter} ?active=${item.active}></b-list-filters-sidebar-filter>
@@ -171,7 +201,9 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
 
         </div>
 
-        <b-list-filters-sidebar-history title="History" .filters=${this.filters}></b-list-filters-sidebar-history>
+        <b-list-filters-sidebar-history icon="history" .filters=${this.filters}></b-list-filters-sidebar-history>
+
+        <slot></slot>
 
         </b-tabs>
 
@@ -179,8 +211,12 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
 
     `}
 
+    resetFilters(){
+        this.filters.reset({}, {stopQueuing: false})
+    }
+
     toggleQueue(e){
-        if( e?.currentTarget?.value == '1' ){
+        if( this.queuing === undefined ){
             this.__originalFilters = this.filters.value()
             this.filters.queuing = true
             this.queuing = 0
@@ -193,10 +229,6 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
     cancelQueuedFilters(){
         this.filters.reset(this.__originalFilters, {stopQueuing:false})
         this.toggleQueue()
-    }
-
-    resetFilters(){
-        this.filters.reset()
     }
 
     connectedCallback(){
@@ -221,8 +253,7 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
     }
 
     onFilterQueuing(length){
-        console.log('?');
-        this.queuing = length
+        this.queuing = length == false ? undefined : length
     }
 
     onFilterChange(){

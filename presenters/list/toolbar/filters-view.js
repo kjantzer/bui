@@ -24,6 +24,7 @@ customElements.define('b-list-filters', class extends LitElement{
     static get styles(){return css`
         :host {
             display: var(--b-list-filters-display, flex);
+            gap: .25em;
             align-items: center;
             overflow: -moz-scrollbars-none;
             flex-shrink: 1;
@@ -35,6 +36,7 @@ customElements.define('b-list-filters', class extends LitElement{
             display: inline-block;
             position: sticky;
             right: 0;
+            background-color: var(--theme-bgd);
         }
 
         b-list-filter-btn, [noshrink] {
@@ -89,21 +91,8 @@ customElements.define('b-list-filters', class extends LitElement{
         <b-dragdrop @dragged=${this.onDrag}>Export</b-dragdrop>
         <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
-        ${this.filters.size>0&&this.filters.opts?.presets!==false?html`
-        <b-list-filters-saved noshrink></b-list-filters-saved>
-        `:''}
-
         ${this.showOverflowBtn?html`
 
-            <b-btn text @click=${this.openFiltersPanel} noshrink class="show-filters" _icon="filter">
-                <main>
-                    <b-label xs>Filters</b-label>
-                    <div>
-                        <b-icon name="filter"></b-icon>
-                        ${this.filters.length} <b-text muted sm>of</b-text> <b-text muted>${this.filters.size}</b-text>
-                    </div>
-                </main>
-            </b-btn>
         
         `:html`
             <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" clear lg noshrink
@@ -171,16 +160,12 @@ customElements.define('b-list-filters', class extends LitElement{
         )
     }
 
-    openFiltersPanel(){
-        this.filters.openFiltersPanel()
-    }
-
     applyQueuedFilters(){
         this.filters.queuing = false
     }
 
     resetFilters(){
-        this.filters.reset()
+        this.filters.reset({}, {stopQueuing: false})
     }
 
     connectedCallback(){
