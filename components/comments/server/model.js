@@ -87,6 +87,10 @@ module.exports = class Comments extends Model {
 
             // comments NOT by this uer
             where['c.uid'] = new Value('!=', userID)
+            where['c.type'] = 'user' // skip system comments since they shouldn't have any mentions
+            
+            // ignore comments more than 3 months old (to speed things up)
+            where.semiRecent = new UnsafeSQL('c.ts_created >= CURDATE() - INTERVAL 90 DAY')
             
             // NOT marked read or new comment
             where.unread = new Group({
