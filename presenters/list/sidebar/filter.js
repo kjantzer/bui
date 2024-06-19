@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit'
 
-customElements.define('b-list-filters-sidebar-filter', class extends LitElement{
+customElements.define('b-list-sidebar-filter', class extends LitElement{
 
     // static listeners = {
     //     model: {'change': 'requestUpdate'}
@@ -87,4 +87,4 @@ customElements.define('b-list-filters-sidebar-filter', class extends LitElement{
 
 })
 
-export default customElements.get('b-list-filters-sidebar-filter')
+export default customElements.get('b-list-sidebar-filter')

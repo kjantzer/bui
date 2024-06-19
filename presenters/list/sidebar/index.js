@@ -4,7 +4,7 @@ import './filters-history'
 import './term-search'
 import device from '../../../util/device'
 
-customElements.define('b-list-filters-sidebar', class extends LitElement{
+customElements.define('b-list-sidebar', class extends LitElement{
 
     static get properties(){return {
         count: {type: Number},
@@ -56,13 +56,13 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
             border-top: solid 2px var(--theme-bgd-accent);
         }
 
-        b-list-filters-sidebar-filter,
+        b-list-sidebar-filter,
         b-list-filters-saved {
             border-bottom: solid 1px var(--theme-bgd-accent);
             padding: 1em;
         }
 
-        b-list-filters-sidebar-filter[active] {
+        b-list-sidebar-filter[active] {
             background-color: var(--theme-bgd-accent2);
         }
 
@@ -83,7 +83,7 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
             padding: 1em;
         }
 
-        b-list-filters-sidebar-history {
+        b-list-sidebar-history {
             /*margin: 0 -1em -1em;*/
         }
 
@@ -192,7 +192,7 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
 
             <b-term-search-results .coll=${this.filtersMenu} .item=${item=>html`
 
-                <b-list-filters-sidebar-filter .model=${item.filter} ?active=${item.active}></b-list-filters-sidebar-filter>
+                <b-list-sidebar-filter .model=${item.filter} ?active=${item.active}></b-list-sidebar-filter>
 
             `}></b-term-search-results>
 
@@ -204,7 +204,7 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
 
         </div>
 
-        <b-list-filters-sidebar-history icon="history" .filters=${this.filters}></b-list-filters-sidebar-history>
+        <b-list-sidebar-history icon="history" .filters=${this.filters}></b-list-sidebar-history>
 
         <slot></slot>
 
@@ -268,4 +268,4 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
 
 })
 
-export default customElements.get('b-list-filters-sidebar')
+export default customElements.get('b-list-sidebar')

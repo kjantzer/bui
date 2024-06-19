@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit'
 
-customElements.define('b-list-filters-sidebar-history', class extends LitElement{
+customElements.define('b-list-sidebar-history', class extends LitElement{
 
     static icon = 'history'
 
@@ -96,4 +96,4 @@ customElements.define('b-list-filters-sidebar-history', class extends LitElement
 
 })
 
-export default customElements.get('b-list-filters-sidebar-history')
+export default customElements.get('b-list-sidebar-history')
