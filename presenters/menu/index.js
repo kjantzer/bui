@@ -884,6 +884,7 @@ customElements.define('b-menu', class extends LitElement{
 
 		if( (e.which >= 65 && e.which <= 90) // a-z
 		|| (e.which >= 48 && e.which <= 57) // 0-9
+		|| (e.which >= 96 && e.which <= 105) // numpad 0-9
 		|| [8].includes(e.which) ){ // delete
 			if( e.metaKey || e.ctrlKey )
 				setTimeout(()=>{ // allow paste action to finish
