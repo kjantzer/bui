@@ -95,7 +95,10 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
     `
 
     show(){ this.toggleView?.show() }
-    hide(){ this.toggleView?.hide() }
+    hide(){ 
+        this.cancelQueuedFilters()
+        this.toggleView?.hide()
+    }
 
     focus(){
         this.show() // this view may be hidden, tell it to show
@@ -221,14 +224,17 @@ customElements.define('b-list-filters-sidebar', class extends LitElement{
             this.filters.queuing = true
             this.queuing = 0
         }else{
+            delete this.__originalFilters
             this.filters.queuing = false
             this.queuing = undefined
         }
     }
 
     cancelQueuedFilters(){
-        this.filters.reset(this.__originalFilters, {stopQueuing:false})
-        this.toggleQueue()
+        if( this.__originalFilters )
+            this.filters.reset(this.__originalFilters, {stopQueuing:false})
+        if( this.queuing !== undefined )
+            this.toggleQueue()
     }
 
     connectedCallback(){
