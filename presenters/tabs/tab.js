@@ -74,7 +74,7 @@ export default class TabView {
             <slot name="menu:before:${this.id}"></slot>
             <div class="tab-bar-item" ?active=${this.active} .tabView=${this} @click=${onClick}>
                 <slot name="menu:${this.id}">
-                    <b-icon name=${this.icon} style="font-size: 1.1em;"></b-icon>
+                    <b-icon name=${this.icon} style="font-size: 1.1em;" ?hidden=${this.title}></b-icon>
                     ${this.title||(this.icon?'':(this.id||'[unnamed]'))}
                 </slot>
             </div>
