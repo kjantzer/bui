@@ -1,3 +1,9 @@
+/*
+    QR Code
+    
+    - Requires `qr-code-styling` package
+    - Will lazy-load on first use of this element
+*/
 import { LitElement, html, css } from 'lit'
 import colorScheme from '../util/color-scheme'
 
