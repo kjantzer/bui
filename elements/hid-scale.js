@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit'
 import hidDevice from '../util/hidDevice'
 import '../helpers/lit/events'
 
-customElements.define('b-scale', class extends LitElement{
+customElements.define('b-hid-scale', class extends LitElement{
 
     // https://www.hogentogler.com/fairbanks/29824c-shipping-scale.asp
     get scale(){ return hidDevice.fairbanksScale }
@@ -113,4 +113,4 @@ customElements.define('b-scale', class extends LitElement{
 
 })
 
-export default customElements.get('b-scale')
+export default customElements.get('b-hid-scale')
