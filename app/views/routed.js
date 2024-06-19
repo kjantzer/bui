@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit'
-import router from '../../router'
+import router from '../router'
 import {cache} from 'lit/directives/cache.js'
 
 export {LitElement, html, css}

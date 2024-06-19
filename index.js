@@ -9,7 +9,7 @@ import './elements/flex'
 import './elements/grid'
 import './elements/media-query'
 
-import router from './router'
+import router from './app/router'
 import device from './util/device'
 
 // core presenters

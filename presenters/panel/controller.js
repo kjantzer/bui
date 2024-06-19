@@ -1,6 +1,6 @@
 import {LitElement, html, css} from 'lit'
 import Menu from '../menu'
-import router from '../../router'
+import router from '../../app/router'
 import device from '../../util/device'
 import overscroll from '../../util/overscroll'
 import CollMap from '../../util/collmap'
