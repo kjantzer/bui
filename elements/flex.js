@@ -91,7 +91,7 @@ customElements.define('b-flex', class extends LitElement{
             content: ' / ';
             display: inline;
             margin-right: 0.35ch;
-            vertical-align: middle;
+            vertical-align: top;
         }
 
         /* comma separated list! */
