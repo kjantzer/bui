@@ -48,9 +48,9 @@ customElements.define('b-root-titlebar', class extends LitElement{
             --size: 1.5rem;
         }
 
-        ::slotted(b-btn:last-child) {
+        /*::slotted(b-btn:last-child) {
             margin-right: .35em;
-        }
+        }*/
     `}
 
     firstUpdated(){
