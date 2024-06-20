@@ -338,7 +338,7 @@ customElements.define('b-list-header', class extends LitElement{
         if( !rowEl ) return html``
 
         let styles = rowEl.sharedStyles || this.constructor.sharedStyles
-        let render = (this.slot&&rowEl[this.slot]&&rowEl[this.slot].call(this.parentElement)) || ''
+        let render = (this.slot&&rowEl[this.slot]&&rowEl[this.slot].call(this.parentElement.host||this.parentElement)) || ''
 
         return html`
             ${render}
