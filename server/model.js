@@ -1,4 +1,5 @@
 const related = require('./related')
+const PromiseArray = require('../util/promise-array')
 require('../util/promise.series')
 const findFK = require('./db/findForeignKeyConstraints')
 
@@ -6,7 +7,50 @@ const defaultConfig = {
     idAttribute: 'id'
 }
 
-// const TempTablesCache = {}
+// called in context of the model
+function proxyDB(){
+    
+    // keep track of open/running connections so we can kill if needed
+    let connections = this._dbConnections = new Set()
+
+    return new Proxy(this.db, {
+
+        get(target, prop) {
+
+            // when db.query() is called, intercept first
+            if( prop == 'query' ){
+                return function(sql, data, opts={}){
+                    
+                    return new PromiseArray(async (resolve)=>{
+                        
+                        // create connection and keep ref to it
+                        opts.conn = await target.getConnection()
+
+                        // to be safe, lets only track and kill "SELECT" type queries
+                        // thinking if user initiates an add/update and it take a few seconds, but the user
+                        // closes or navigates await from page, it would trigger kill if though we dont wish for that
+                        if( sql.startsWith('SELECT'))
+                            connections.add(opts.conn)
+
+                        // continue performing query
+                        let query = target[prop].call(target, sql, data, opts)
+
+                        // when query finishes, clear connection ref
+                        let resp = await query.finally(resp=>{
+                            connections.delete(opts.conn)
+                            return resp
+                        })
+
+                        resolve(resp)
+                    })
+                }
+            }
+
+            // everything else can stay the same
+            return target[prop];
+        }
+    })
+}
 
 module.exports = class Model {
 
@@ -87,6 +131,13 @@ module.exports = class Model {
     async beforeDestroy(where){ /* noop */ }
     afterDestroy(){ /* noop */ }
 
+    // shouldn't need to change this
+    onClientTerminated(){
+        // let post/put/delete actions continue
+        if( this.req.method == 'GET' )
+            this.db.kill(this._dbConnections)
+    }
+
 // =================================================
     
     constructor(attrs, req, opts={}){
@@ -95,6 +146,9 @@ module.exports = class Model {
 
         if( !this.db )
             console.warn('Model.db has not been set yet')
+
+        // intercept query calls so we can kill them on client terminated
+        this.db = proxyDB.call(this)
         
         this.req = req || {query:{}}
         this.attrs = attrs || {}
@@ -462,6 +516,11 @@ module.exports = class Model {
     }
 
     async findExtendRowData(row, opts={}){
+
+        // client terminated connection, stop getting more data
+        // continue if we were in put/post/delete methods (we probably want the action to continue)
+        if( this.req?.res?.destroyed && this.req.method == 'GET' ) 
+            return //console.log('client terminated');
 
         if( !row.attrs ) return // model not found
 

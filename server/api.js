@@ -136,7 +136,14 @@ module.exports = class API {
                 if( ['add', 'update', 'patch'].includes(fnName) )
                     args.push(req.body)
 
+                let onClientTerminated = model.onClientTerminated?.bind(model)
+                if( onClientTerminated )
+                    req.res.addListener('close', onClientTerminated)
+
 				let resp = await model[fnName].apply(model, args)
+
+                if( onClientTerminated )
+                    req.res.removeListener('close', onClientTerminated)
 
                 if( opts.cacheable ||
                     (opts.cacheable !== false && Class.api.cacheable)

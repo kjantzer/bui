@@ -117,6 +117,10 @@ function _allowCorsPrivateNetwork(req, res, next){
 
 function handleUncaughtException(fn){
     fn = typeof fn == 'function' ? fn : function(err) {
+
+        if( err.code == 'ER_QUERY_INTERRUPTED')
+            return console.log('Query was killed');
+
         console.log('UNCAUGHT EXCEPTION');
         console.trace(err)
         if( err.lastQuery )

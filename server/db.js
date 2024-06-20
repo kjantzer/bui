@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const PromiseArray = require('../util/promise-array')
 const groupBy = require('../util/array.groupBy')
 const arrayChunk = require('../util/array.chunk')
 require('../util/promise.series')
@@ -41,20 +42,24 @@ module.exports = class DB {
         })
     }
 
-    query(sql, data, {timeout=30000, debug=false, logFailure=false, preSql=null}={}){
-		return new QueryPromise(async (resolve, reject)=>{
+    query(sql, data, {timeout=30000, debug=false, logFailure=false, preSql=null, conn}={}){
+
+        return new PromiseArray(async (resolve, reject)=>{
 
             if( Array.isArray(data) )
                 for( let d of data ){ composeClauses(this, d) }
             else
                 composeClauses(this, data)
 
-			sql = mysql.format(sql, data)
+            sql = mysql.format(sql, data)
 
             if( debug )
                 console.log(sql);
 
-            let conn = await this.getConnection()
+            // callee may want to init connection before hand to capture the threadId (for killing)
+            // if not, create/get the connection now
+            if( !conn )
+                conn = await this.getConnection()
 
             try{
 
@@ -84,7 +89,9 @@ module.exports = class DB {
                         
                         humanifyError(err)
 
-                        err.lastQuery = sql // NOTE: I don think I need this, err.sql is already present
+                        if( !sql.startsWith('KILL') )
+                            err.lastQuery = sql // NOTE: I don think I need this, err.sql is already present
+
                         reject(err)
                     }else{
 
@@ -106,7 +113,7 @@ module.exports = class DB {
                 throw err
             }
 
-		})
+        })
 	}
 
     /* 
@@ -279,21 +286,24 @@ module.exports = class DB {
         return [fields, values]
     }
 
-}
+    async kill(conn){
+        // set of connections
+        if( conn instanceof Set )
+            conn = Array.from(conn)
+        // single connection
+        else if( !Array.isArray(conn) )
+            conn = [conn]
 
-// TODO: change this to a Proxy so ANY array method can be called and redirected
-class QueryPromise extends Promise {
+        // get thread ids from connection
+        let threadIds = conn.map(conn=>{
+            if( conn instanceof Number ) return conn // threadID was given
+            return conn.threadId
+        }).filter(v=>v)
 
-    get values(){ return this.then(r=>r.values) }
-    get value(){ return this.then(r=>r.value) }
-    get first(){ return this.then(r=>r.first) }
-    get last(){ return this.then(r=>r.last) }
-    get length(){ return this.then(r=>r.length) }
+        if( threadIds.length )
+            return this.query(/*sql*/`KILL QUERY ?`, [threadIds])
+    }
 
-    groupBy(...args){ return this.then(r=>r.groupBy(...args)) }
-    filter(...args){ return this.then(r=>r.filter(...args)) }
-    map(...args){ return this.then(r=>r.map(...args)) }
-    find(...args){ return this.then(r=>r.find(...args)) }
 }
 
 class DBResults extends Array {

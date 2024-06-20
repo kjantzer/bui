@@ -464,7 +464,11 @@ customElements.define('b-list', class extends LitElement {
             if( e.key == 'Escape'
             && !e.ctrlKey && !e.metaKey && !e.shiftKey // ignore if extra keys pressed
             ){
-                this.sidebar?.hide()
+                if( this.coll?.isFetching ){
+                    this.dataSource?.abortFetch()
+                }else{
+                    this.sidebar?.hide()
+                }
             }
 
             // Like Google search results, focus search when `/` is pressed
