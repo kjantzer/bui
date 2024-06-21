@@ -85,14 +85,17 @@ module.exports = class ExpressApp {
     patch(...args){ return this.app.patch(...args) }
     delete(...args){ return this.app.delete(...args) }
 
-    start({port=8080, publicPort=true, name="App"}={}){
+    start({port=8080, publicPort=true, name="App", io}={}){
         this.server = http.Server(this.app)
         
         if( publicPort === true ) publicPort = port
 
         this.server.listen(port, ()=>{
             console.log(`\n${name} running on http://localhost:${publicPort}`)
-        });
+        })
+
+        if( io )
+            io.attach(this.server)
     }
 
 }
