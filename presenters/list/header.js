@@ -12,7 +12,7 @@ export function sharedStyles(host=':host'){return css`
 
     ${unsafeCSS(host)} > * {
         position: relative;
-        padding: var(--list-cell-padding-y, .5rem) var(--list-cell-padding-x, .5rem);
+        padding: var(--list-cell-padding-y, .75rem) var(--list-cell-padding-x, .75rem);
         box-sizing: border-box;
         border-bottom: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .1));
     }
@@ -211,7 +211,7 @@ customElements.define('b-list-header', class extends LitElement{
         disableHideShowMenu: {type: Boolean}
     }
 
-    static get styles(){return [this.sharedStyles, css`
+    static get styles(){return [this.sharedStyles, grayHeaderStyles(), css`
 
         ${scrollbars.hide()}
 
@@ -223,8 +223,14 @@ customElements.define('b-list-header', class extends LitElement{
         :host > div,
         :host > b-text,
         :host > span {
-            font-size: var(--b-list-header-font-size, .75em);
+            font-size: var(--b-list-header-font-size, 1em);
             font-weight: bold;
+        }
+
+        :host([sm]) > div,
+        :host([sm]) > b-text,
+        :host([sm]) > span {
+            font-size: var(--b-list-header-font-size, .75em);
         }
 
         [name="selection"] {
@@ -249,6 +255,24 @@ customElements.define('b-list-header', class extends LitElement{
             color: inherit;
             z-index: 1000;
             width: calc(2rem - 2px);
+        }
+
+        [part="cell"] {
+            
+            --list-cell-padding-y: .75em;
+            background-color: var(--divider-bgd, var(--theme-bgd-accent));
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        :host {
+            /*border-top: solid 1px rgba(var(--theme-text-rgb), .1);*/
+            background-color: var(--divider-bgd, var(--theme-bgd-accent));
+            --list-cell-sticky-bgd: var(--divider-bgd, var(--theme-bgd-accent));
+        }
+
+        [part="selection-slot"] {
+            background-color: var(--divider-bgd, var(--theme-bgd-accent));
         }
     `]}
 

@@ -10,8 +10,6 @@ customElements.define('b-list-sidebar-history', class extends LitElement{
             position:relative;
             max-height: 400px;
             overflow: auto;
-            border-top: solid 2px var(--theme-bgd-accent);
-            border-bottom: solid 2px var(--theme-bgd-accent);
         }
 
         .meta {

@@ -37,7 +37,7 @@ customElements.define('b-list-sidebar', class extends LitElement{
         :host([slot*="sidebar"]) {
             width: 220px;
             border-top: solid 1px var(--theme-bgd-accent);
-            box-shadow: var(--theme-shadow-3);
+            /*box-shadow: var(--theme-shadow-3);*/
             z-index: 10;
         }
 
@@ -92,6 +92,24 @@ customElements.define('b-list-sidebar', class extends LitElement{
         }
         
         b-tabs > * { padding: 0;}
+        b-tabs > [pad] {
+            padding: 1em;
+        }
+
+        [name="settings"]::slotted(*) { padding: 0; }
+
+        .settings {
+            overflow: auto;
+            height: 100%;
+        }
+
+        .tips {
+            margin-top: 2em;
+        }
+
+        .remove-padding {
+            margin-bottom: -2em;
+        }
     `
 
     show(){ this.toggleView?.show() }
@@ -207,6 +225,19 @@ customElements.define('b-list-sidebar', class extends LitElement{
         <b-list-sidebar-history icon="history" .filters=${this.filters}></b-list-sidebar-history>
 
         <slot></slot>
+
+            <div pad icon="settings" class="settings">
+        
+                <slot name="settings"><div class="remove-padding"></div></slot>
+
+                <b-grid cols=1 gap="1" class="tips">
+                    <b-text xbold>Tips</b-text>
+                    <b-text dim body>• <b-code>f</b-code> to toggle this pane</b-text>
+                    <b-text dim body>• <b-code>/</b-code> to focus list search</b-text>
+                    <b-text dim body>• <b-code>s</b-code> to turn on selection (if enabled)</b-text>
+                    <b-text dim body>• <b-code>esc</b-code> to cancel selection, close this pane, or stop the fetching data</b-text>
+                </b-grid>
+            </div>
 
         </b-tabs>
 
