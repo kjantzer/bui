@@ -32,6 +32,7 @@ customElements.define('b-flex', class extends LitElement{
         }
 
         :host([right]) {
+            margin-left: auto;
             justify-content: flex-end;
         }
 
