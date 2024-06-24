@@ -9,6 +9,10 @@ export {applyGrouping}
 
 customElements.defineShared('b-list-group-by', class extends LitElement{
 
+    static properties = {
+        disabled: {type: Boolean, reflect: true}
+    }
+
     static icon = 'layers'
 
     static styles = css`
@@ -16,6 +20,10 @@ customElements.defineShared('b-list-group-by', class extends LitElement{
             display: block;
             position:relative;
             overflow: auto;
+        }
+
+        :host([disabled]) {
+            color: var(--theme-text-accent);
         }
 
         :host([hidden]) { display: none; }
@@ -145,7 +153,7 @@ customElements.defineShared('b-list-group-by', class extends LitElement{
             <b-text xbold>Data Grouping</b-text>
             
             <b-grid cols=1 gap=" " class="options" @change=${this.onChange}>
-                <b-sortable item=".option" @sort-changed=${this.onSort}></b-sortable>
+                <b-sortable item=".option" @sort-changed=${this.onSort} ?disabled=${this.disabled}></b-sortable>
 
             ${this.valuesList?.map(d=>html`
                 
@@ -167,6 +175,7 @@ customElements.defineShared('b-list-group-by', class extends LitElement{
     `}
 
     _toggle(e){
+        if( this.disabled ) return
         e.currentTarget.querySelector('check-box')?.toggle()
     }
 
