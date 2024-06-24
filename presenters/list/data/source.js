@@ -157,7 +157,7 @@ export default class DataSource {
                 if( this.coll?.applyGrouping )
                     this.data = this.coll.applyGrouping(this.data)
                 
-                if( this.sorts && !this.sorts.sortOnDB )
+                if( this.sorts && (!this.sorts.sortOnDB || this.coll?.applyGrouping) )
                     await this.sort()
 
                 this._filteredData = this.data
