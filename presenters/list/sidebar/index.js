@@ -226,9 +226,9 @@ customElements.define('b-list-sidebar', class extends LitElement{
 
         <slot></slot>
 
-            <div pad icon="settings" class="settings">
+            <div pad icon="help_center" class="help">
         
-                <slot name="settings"><div class="remove-padding"></div></slot>
+                <slot name="help"><div class="remove-padding"></div></slot>
 
                 <b-grid cols=1 gap="1" class="tips">
                     <b-text xbold>Tips</b-text>
