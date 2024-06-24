@@ -202,6 +202,7 @@ customElements.define('b-comment-row', class extends LitElement {
         let avatar = document.createElement(avatarTag)
         avatar.classList.add('avatar')
         avatar.uid = this.model ? this.model.get('uid') : 'me'
+        avatar.part = 'avatar'
         return avatar
     }
 
@@ -226,9 +227,9 @@ customElements.define('b-comment-row', class extends LitElement {
 
             ${this.renderAvatar()}
 
-            <main>
+            <main part="main">
             
-                <header>
+                <header part="header">
 
                     <div>
                         <b-text bold sm muted class="name">
@@ -260,12 +261,12 @@ customElements.define('b-comment-row', class extends LitElement {
                 </header>
 
                 ${this.editing?html`
-                    <b-write-comment .model=${this.model} .meta=${this.meta} auto-focus
+                    <b-write-comment .model=${this.model} .meta=${this.meta} auto-focus part="comment"
                         placeholder=${this.placeholder}
                         @saved=${this.doneEditing}
                         @canceled=${this.doneEditing}></b-write-comment>
                 `:html`
-                    <section class="comment ProseMirror" @dblclick=${this.beginEditing}>${unsafeHTML(this.model.get('comment'))}</section>
+                    <section part="comment" class="comment ProseMirror" @dblclick=${this.beginEditing}>${unsafeHTML(this.model.get('comment'))}</section>
                     
                     ${this._renderMeta()}
                 `}

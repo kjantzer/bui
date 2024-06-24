@@ -72,6 +72,20 @@ customElements.define('b-comments', class extends LitElement{
         .view-all:hover {
             --color: var(--btn-bgd-color-hover, var(--theme-bgd-accent2, #ddd));
         }
+
+        :host([inline]) ::part(main) {
+            display: flex;
+            flex-wrap: wrap;
+            column-gap: 1ch;
+        }
+
+        :host([inline]) ::part(avatar) {
+            display: none;
+        }
+
+        :host([inline]) ::part(comment) { order: -1;}
+
+        :host([inline]) ::part(header) { align-items: center;}
     `}
 
     constructor(){
