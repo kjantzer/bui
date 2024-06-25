@@ -112,6 +112,13 @@ customElements.define('radio-group', class extends LitElement{
 			--theme-text-rgb: var(--dark-text-rgb);
 		}
 
+		:host([segment="inverse"]) ::slotted(radio-btn[active]) {
+			background-color: var(--theme-inverse-bgd);
+			--theme-text: var(--theme-inverse-text);
+			color: var(--theme-text);
+			--theme-text-rgb: var(--theme-inverse-text-rgb);
+		}
+
 		:host([segment]:not([disabled]):not([focused])) ::slotted(radio-btn:not([active]):hover) {
 			background-color: var(--radio-segment-hover-bgd, var(--theme-bgd-accent2, #eee));
 		}
