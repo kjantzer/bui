@@ -78,6 +78,11 @@ customElements.define('b-comments', class extends LitElement{
             flex-wrap: wrap;
             column-gap: 1ch;
         }
+        
+        :host([inline]) b-comment-row {
+            padding-top: .25em !important;
+            padding-bottom: .25em !important;
+        }
 
         :host([inline]) ::part(avatar) {
             display: none;
