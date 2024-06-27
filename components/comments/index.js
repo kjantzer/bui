@@ -29,7 +29,8 @@ customElements.define('b-comments', class extends LitElement{
         plural: {type: String},
         uploads: {type: Object},
         replies: {type: Boolean}, // not supported yet
-        nosummary: {type: Boolean}
+        nosummary: {type: Boolean},
+        disabled: {type: Boolean}
     }}
 
     static get styles(){return css`
@@ -220,6 +221,7 @@ customElements.define('b-comments', class extends LitElement{
 
         <!-- write new comment -->
         <b-comment-row 
+            ?hidden=${this.disabled}
             part="write-comment" 
             .coll=${this.coll} 
             .meta=${this.meta}
@@ -230,7 +232,10 @@ customElements.define('b-comments', class extends LitElement{
 
         ${this.coll.length==0&&this.unread?html`
             <b-empty-state>
-                <slot name="unread-empty">No unread ${this.plural}</slot>
+                <slot name="unread-empty">
+                    No unread ${this.plural}
+                    <b-btn sm clear color="theme" block @click=${this.viewAllComments} class="view-all">View previous</b-btn>
+                </slot>
             </b-empty-state>
         `:''}
 
@@ -241,6 +246,7 @@ customElements.define('b-comments', class extends LitElement{
             `:''}
             
             <b-comment-row 
+                ?disabled=${this.disabled}
                 part="comment" 
                 .renderMeta=${this.renderMeta}
                 .model=${m} 
@@ -251,10 +257,6 @@ customElements.define('b-comments', class extends LitElement{
             ></b-comment-row>
 
         `).reverse()}
-
-        ${this.unread?html`
-            <b-btn sm color="white" block @click=${this.viewAllComments} class="view-all">Fetch all</b-btn>
-        `:''}
 
         <slot name="after"></slot>
     `}

@@ -28,7 +28,8 @@ customElements.define('b-comment-row', class extends LitElement {
         editing: {type: Boolean, reflect: true},
         placeholderBtn: {type: String},
         placeholder: {type: String},
-        replies: {type: Boolean}
+        replies: {type: Boolean},
+        disabled: {type: Boolean, reflect: true},
     }}
 
     constructor(){
@@ -56,6 +57,8 @@ customElements.define('b-comment-row', class extends LitElement {
             grid-template-columns: auto 1fr;
             gap: .5em;
         }
+
+        :host([hidden]) { display: none !important; }
 
         :host([no-avatar]) {
             grid-template-columns: 1fr;
@@ -160,6 +163,10 @@ customElements.define('b-comment-row', class extends LitElement {
 
         .extras b-hr {
             margin: 0 1em;
+        }
+
+        :host([disabled]) .extras {
+            display: none;
         }
 
         :host(:not(:hover)) .extras b-hr {
@@ -336,6 +343,7 @@ customElements.define('b-comment-row', class extends LitElement {
     }
 
     beginEditing(){
+        if( this.disabled ) return
         if( this.willTakeAction(this.model?'edit':'new-comment').allowed )
             this.editing = true
     }
@@ -350,6 +358,8 @@ customElements.define('b-comment-row', class extends LitElement {
     }
 
     showMenu(e){
+
+        if( this.disabled ) return
 
         e.preventDefault()
         e.stopPropagation()
