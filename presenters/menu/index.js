@@ -74,6 +74,9 @@ customElements.define('b-menu', class extends LitElement{
 
 		args.push(selected)
 
+		if( selected.href )
+			return window.open(selected.href)
+
 		if( selected.fn && typeof selected.fn == 'function'){
 			setTimeout(()=>{ // move to end of call stack
 				selected.fn.apply(handler, args)
