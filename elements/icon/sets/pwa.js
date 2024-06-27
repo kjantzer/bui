@@ -16,5 +16,7 @@ export default StandardIcons.concat([
     ['more_vert', require(`@material-icons/svg/svg/more_vert/baseline.svg`)],
     ['more_horz', require(`@material-icons/svg/svg/more_horiz/baseline.svg`)],
 
-    ['library_add_check', require('@material-icons/svg/svg/library_add_check/baseline.svg')]
+    ['library_add_check', require('@material-icons/svg/svg/library_add_check/baseline.svg')],
+    ['tune', require('@material-icons/svg/svg/tune/baseline.svg')],
+    ['filter', require('@material-icons/svg/svg/filter_alt/baseline.svg')]
 ])
