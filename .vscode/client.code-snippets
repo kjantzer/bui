@@ -54,32 +54,6 @@
   ],
   "description": "Routed View"
 },
-"b-list row": {
-  "prefix": "row",
-  "body": [
-    "import { LitElement, html, css } from 'lit'",
-    "import ListHeader from 'bui/presenters/list/header'",
-    "",
-    "customElements.define('c-${1:element-name}-row', class extends LitElement{",
-    "",
-    "    static styles = [ListHeader.sharedStyles, css`",
-    "        ",
-    "    `]",
-    "",
-    "    static header(){ return html`",
-    "        <div w=\"1fr\">Label</div>",
-    "    `}",
-    "",
-    "    render(){return html`",
-    "        <div>Label</div>",
-    "    `}",
-    "",
-    "})",
-    "",
-    "export default customElements.get('c-${1:element-name}-row')"
-  ],
-  "description": "b-list row"
-},
 "Set model": {
   "prefix": ".model=${}",
   "body": [

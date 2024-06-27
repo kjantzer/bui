@@ -1,0 +1,49 @@
+{
+"List Action": {
+  "prefix": "listaction",
+  "body": [
+    "import Action, {Dialog} from 'bui/presenters/list/action'",
+    "",
+    "export default class ListAction extends Action {",
+    "    ",
+    "    async do(){",
+    "",
+    "        $1",
+    "",
+    "        await this.saveModels(async model=>{",
+    "            ",
+    "        })",
+    "    }",
+    "}"
+  ],
+  "description": "List Action"
+},
+"b-list row": {
+  "prefix": "listrow",
+  "body": [
+    "import { LitElement, html, css } from 'lit'",
+    "import ListHeader from 'bui/presenters/list/header'",
+    "",
+    "customElements.define('c-${1:element-name}-row', class extends LitElement{",
+    "",
+    "    static styles = [ListHeader.sharedStyles, css`",
+    "        ",
+    "    `]",
+    "",
+    "    static header(){ return html`",
+    "        <b-text sep w=\"minmax(200px, 1fr)\">Label</b-text>",
+    "        <b-text sep w=\"minmax(120px, 1fr)\">Created</b-text>",
+    "    `}",
+    "",
+    "    render(){return html`",
+    "        <b-text sep>${this.get('title')}</b-text>",
+    "        <b-text sep><b-ts .date=${this.get('ts_created')}></b-ts></b-text>",
+    "    `}",
+    "",
+    "})",
+    "",
+    "export default customElements.get('c-${1:element-name}-row')"
+  ],
+  "description": "b-list row"
+},
+}
