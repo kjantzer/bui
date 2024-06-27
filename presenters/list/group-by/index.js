@@ -101,7 +101,12 @@ customElements.defineShared('b-list-group-by', class extends LitElement{
         this.requestUpdate('value', oldVal)
     }
     
-    get value(){ return Array.from(this.__value ?? (JSON.parse(localStorage.getItem(this._storeKey)) || [])) }
+    get value(){ return Array.from(this.__value ?? (JSON.parse(localStorage.getItem(this._storeKey)) || this.#_defaultValues())) }
+
+    // make sure default values formatted as we expect
+    #_defaultValues(){
+        return this.defaultValues?.map(k=>[k, true]) || []
+    }
 
     firstUpdated(){
         // this.makeSortable()

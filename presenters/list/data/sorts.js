@@ -195,6 +195,25 @@ export default class Sorts extends CollMap {
         // return
 		let sorts = this.active
 
+        // if collection is grouping, then let always include a "grouping" sort first
+        if( this.list?.coll?.applyGrouping ){
+
+            // user defined, else create our own
+            let groupingSort = this.get('grouping') || this._groupingSort
+            
+            if( !this.get('grouping') ){
+                groupingSort = new Sort('grouping', {
+                    desc: false,
+                    sortBy(m){ return m.sortLabelPartial }
+                })
+                groupingSort.sorts = this
+                this._groupingSort = groupingSort
+            }
+                
+            // always sort by grouping first
+            sorts.unshift(groupingSort)
+        }
+
 		return new Promise(resolve=>{
 			
 			if( sorts.length == 0 ) return resolve(data)
