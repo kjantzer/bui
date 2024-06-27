@@ -37,7 +37,6 @@ customElements.define('b-list-sidebar', class extends LitElement{
 
         :host([slot*="sidebar"]) {
             width: 220px;
-            border-top: solid 1px var(--theme-bgd-accent);
             /*box-shadow: var(--theme-shadow-3);*/
             z-index: 10;
 
