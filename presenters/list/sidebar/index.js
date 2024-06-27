@@ -23,6 +23,7 @@ customElements.define('b-list-sidebar', class extends LitElement{
 
     static styles = css`
         :host {
+            position: relative;
             display: grid;
             grid-template-rows: 1fr;
         }
@@ -39,21 +40,30 @@ customElements.define('b-list-sidebar', class extends LitElement{
             border-top: solid 1px var(--theme-bgd-accent);
             /*box-shadow: var(--theme-shadow-3);*/
             z-index: 10;
+
+            padding: .5em .5em .5em 0;
+            background: linear-gradient(to bottom, var(--theme-bgd-accent), transparent);
         }
 
         :host([slot="sidebar:left"]) {
-            border-right: solid 2px var(--theme-bgd-accent);
+            
         }
 
         :host([slot="sidebar:right"]) {
-            border-left: solid 2px var(--theme-bgd-accent);
+            
         }
 
         :host([slot="header"]) {
             width: unset;
-            max-height: 50vh;
+            height: 40vh;
             order: -20 !important;
-            border-top: solid 2px var(--theme-bgd-accent);
+            
+            padding: .5em;
+            background: var(--theme-bgd-accent);
+        }
+
+        :host([slot="header"]) b-tabs {
+            box-shadow: var(--theme-shadow-3);
         }
 
         b-list-sidebar-filter,
@@ -88,7 +98,10 @@ customElements.define('b-list-sidebar', class extends LitElement{
         }
 
         b-tabs {
-            background-color: transparent !important;
+            /*background-color: transparent !important;*/
+            background: var(--theme-bgd) !important;
+            border-radius: 12px;
+            box-shadow: var(--b-panel-shadow, var(--theme-shadow-3));
         }
         
         b-tabs > * { padding: 0;}
@@ -109,6 +122,13 @@ customElements.define('b-list-sidebar', class extends LitElement{
 
         .remove-padding {
             margin-bottom: -2em;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            z-index: 100;
         }
     `
 
@@ -170,6 +190,8 @@ customElements.define('b-list-sidebar', class extends LitElement{
     render(){return html`
 
         <b-toggle-view key=${this.filters?.key+':sidebar-panel'} type="show"></b-toggle-view>
+
+        <!--<b-btn xs pill icon="close" class="close-btn" @click=${this.close}></b-btn>-->
 
         <slot name="before"></slot>
 
@@ -244,6 +266,10 @@ customElements.define('b-list-sidebar', class extends LitElement{
         <slot name="after"></slot>
 
     `}
+
+    close(){
+        this.toggleView.hide()
+    }
 
     resetFilters(){
         this.filters.reset({}, {stopQueuing: false})
