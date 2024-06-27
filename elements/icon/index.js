@@ -13,6 +13,8 @@ export default class IconElement extends HTMLElement {
 
 			if( Array.isArray(icon) )
 				[name, icon, opts] = icon
+
+			if( !icon ) return
 			
 			// if imported with `default` instead of icon src
 			if( icon.default )
