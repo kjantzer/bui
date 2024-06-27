@@ -11,6 +11,9 @@ export default class Action {
     static icon = ''
     static label = ''
 
+    prompt(opts){ return Dialog.prompt(opts).popOver(this.target) }
+    promptModal(opts){ return Dialog.prompt(opts).modal() }
+
     // NOTE: getter so subclassing can change and default saveModels read it
     get sequentialSave(){ return false } // should wait for model to save before saving next?
 
