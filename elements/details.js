@@ -91,7 +91,7 @@ customElements.define('b-details', class extends LitElement{
             </slot>
             <slot name="summary" @click=${this.maybeToggle}></slot>
         </div>
-        <slot class="content"></slot>
+        <slot class="content" part="content"></slot>
     `}
 
     toggle(){
