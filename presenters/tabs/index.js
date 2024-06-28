@@ -413,6 +413,7 @@ customElements.define('b-tabs', class extends LitElement {
         this.dispatchEvent(new CustomEvent('menu-clicked',{
             detail: {
                 tabView: e.currentTarget.tabView,
+                // subView: e.currentTarget.subView,
                 oldTabView: this.views.get(oldVal)
             },
             bubbles: false, 

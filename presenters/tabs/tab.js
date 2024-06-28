@@ -1,6 +1,16 @@
 import {html} from 'lit'
 
-export default class TabView {
+// function subViews(views){
+//     if( views.strings )
+//         views = views.strings.raw[0]
+
+//     return views.split(`\n`)
+//         .map(s=>s.trim())
+//         .filter(s=>s)
+//         .map(s=>new TabView(s))
+// }
+
+class TabView {
 
     // `view` should be a string name of custom element or a real element
     constructor(view){
@@ -31,6 +41,11 @@ export default class TabView {
                 view.title = '' // clear title attribute so hover doesn't show tooltip
             }
         }
+
+        // start of idea...waiting
+        // if( this._viewClass?.tabViews ) {
+        //     this.subViews = subViews(this._viewClass?.tabViews())
+        // }
     }
 
     get title(){ return this._viewClass?.title || this._view?.getAttribute('tab-title') }
@@ -88,6 +103,8 @@ export default class TabView {
         // tab views visible
         if( this._view && !this.view.hidden )
             this.view.model = model
+
+        // this.subViews?.map(tabView=>tabView.model = model)
     }
 
     get active(){ return this.__active }
@@ -137,3 +154,5 @@ export default class TabView {
         // return this._viewClass.canDisplay
     }
 }
+
+export default TabView
