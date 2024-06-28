@@ -456,7 +456,7 @@ customElements.define('b-list', class extends LitElement {
             && !e.ctrlKey && !e.metaKey && !e.shiftKey // ignore if extra keys pressed
             ){
                 // if selections is allowed (and not already on)
-                if( this.listOptions.selection && !this.selection.isOn ){
+                if( this.listOptions?.selection && !this.selection?.isOn ){
                     // turn on selection IF this is the top level/active list
                     this._ifInDOM().then(e=>{
                         this.selection.begin()
