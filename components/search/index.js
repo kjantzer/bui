@@ -238,6 +238,7 @@ export default class extends LitElement{
             grid-row: 5;
             box-shadow: none;
             border-top: solid 1px var(--theme-bgd-accent);
+            background: none;
         }
 
         b-list {
