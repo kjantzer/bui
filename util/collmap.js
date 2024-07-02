@@ -38,6 +38,11 @@ module.exports = class CollMap extends Map {
         // delete first so the new value is added to end of stack (thus keeping in order of adding)
         if( this.opts?.storeInOrder )
             super.delete(...args)
+        
+        if( this.opts?.appendKey ){
+            let k = typeof this.opts.appendKey == 'string' ? this.opts.appendKey : 'key'
+            args[1][k] = args[0]
+        }
 
         super.set(...args)
 
