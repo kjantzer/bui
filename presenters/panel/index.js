@@ -315,7 +315,7 @@ export class Panel extends LitElement {
             this.html = view
 
         }else if( typeof view == 'string' ){
-            this.view = document.createElement(view)
+            this.view = new (customElements.get(view))(opts) //document.createElement(view)
 
         }else if( view instanceof HTMLElement ){
             this.view = view
