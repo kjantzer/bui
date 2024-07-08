@@ -18,5 +18,7 @@ export default StandardIcons.concat([
 
     ['library_add_check', require('@material-icons/svg/svg/library_add_check/baseline.svg')],
     ['tune', require('@material-icons/svg/svg/tune/baseline.svg')],
-    ['filter', require('@material-icons/svg/svg/filter_alt/baseline.svg')]
+    ['filter', require('@material-icons/svg/svg/filter_alt/baseline.svg')],
+    ['warning', require('@material-icons/svg/svg/warning/baseline.svg')],
+    ['error', require('@material-icons/svg/svg/error/baseline.svg')]
 ])
