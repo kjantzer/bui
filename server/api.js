@@ -52,7 +52,10 @@ module.exports = class API {
         if( !Class.prototype.hasOwnProperty('apiPath') )
         Object.defineProperty(Class.prototype, 'apiPath', {
             get: function apiPath() {
-                let params = {...this, id: this.id, ...(this.attrs || {})}
+                // include all api params as empty string by default
+                // NOTE: could maybe cause issues in some cases? if missing param is null, error is thrown
+                let apiParams = Object.fromEntries(this.apiPathPattern.names.map(k=>[k,'']))
+                let params = {...apiParams, ...this, id: this.id, ...(this.attrs || {})}
                 return this.apiPathPattern.stringify(params)
             }
         });
