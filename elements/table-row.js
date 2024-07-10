@@ -36,6 +36,12 @@ customElements.define('b-table-row', class extends LitElement{
             padding: var(--table-cell-padding, .75em);
         }
 
+        :host([dense]) ::slotted(*),
+        :host([dense]) main > *:not(slot) {
+            padding-top: .25em;
+            padding-bottom: .25em;
+        }
+
         main ::slotted(b-btn),
         main > b-btn {
             padding: 0;
@@ -49,6 +55,10 @@ customElements.define('b-table-row', class extends LitElement{
         [name="before"]::slotted(*) {
             padding-left: var(--table-cell-padding, .75em);
             padding-right: var(--table-cell-padding, .75em);
+        }
+
+        ::slotted([colspan]) {
+            grid-column: 1/-1;
         }
     `
 
