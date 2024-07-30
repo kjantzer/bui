@@ -73,7 +73,7 @@ module.exports = class PreQuery extends Model {
     findWhere(where, opts){
         let filters = this.filters
 
-        this.reportEngine.applyTo(where, {filters})
+        this.reportEngine.applyTo(where, {filters, ignore: opts.ignore, only: opts.only})
 
         // if now where clause applied, bail from query and return no results....
         // (unless findJoins resets it)
