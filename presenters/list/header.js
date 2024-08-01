@@ -17,6 +17,10 @@ export function sharedStyles(host=':host'){return css`
         border-bottom: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .1));
     }
 
+    ${unsafeCSS(host)} > [sticky] {
+        border-bottom: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .2));
+    }
+
     
     ${host==':host'
     ?unsafeCSS(`${host}([viewing])`)
@@ -47,6 +51,15 @@ export function sharedStyles(host=':host'){return css`
 
     ${unsafeCSS(host)} > [sep*="after"] {
         border-right: solid var(--row-sep-width, 1px) var(--border-color, rgba(var(--theme-text-rgb), .1));
+    }
+
+    ${unsafeCSS(host)} > [sticky][sep]:not([sep*="after"]),
+    ${unsafeCSS(host)} > [sticky][sep*="before"] {
+        border-left: solid var(--row-sep-width, 1px) var(--border-color, rgba(var(--theme-text-rgb), .2));
+    }
+
+    ${unsafeCSS(host)} > [sep*="after"] {
+        border-right: solid var(--row-sep-width, 1px) var(--border-color, rgba(var(--theme-text-rgb), .2));
     }
 
     ${unsafeCSS(host)} > [sep][thick],

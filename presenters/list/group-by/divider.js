@@ -51,6 +51,8 @@ customElements.define('b-group-by-divider', class extends LitElement{
         :host([level="2"]) ::slotted(.label),
         :host([level="2"]) .label {
             text-align: left;
+            color: var(--theme);
+            font-weight: 600;
         }
 
         :host([level="3"]) {
