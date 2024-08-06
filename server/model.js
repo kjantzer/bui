@@ -700,7 +700,7 @@ module.exports = class Model {
         let args = arguments
 
         // let subclass remove or modify attributes to be updated
-        attrs = await this.validateUpdate(attrs)
+        attrs = await this.validateUpdate(attrs, args[1])
         let where = {[this.idAttribute]:this.id}
         
         let beforeUpdate = await this.beforeUpdate(attrs, where, args[1])
