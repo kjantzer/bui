@@ -59,9 +59,9 @@ export default class IconElement extends HTMLElement {
 			background: #f44336;
 		}
 
-		:host([rotate90]) svg { transform: rotate(90deg)}
-		:host([rotate180]) svg { transform: rotate(180deg)}
-		:host([rotate-90]) svg { transform: rotate(-90deg)}
+		:host([rotate90]) svg, :host([rotate="90"]) svg { transform: rotate(90deg)}
+		:host([rotate180]) svg, :host([rotate="180"]) svg { transform: rotate(180deg)}
+		:host([rotate-90]) svg, :host([rotate="-90"]) svg { transform: rotate(-90deg)}
 
 		svg {
 			height: 100%;
