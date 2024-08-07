@@ -6,15 +6,16 @@ import {mediaQuery} from '../util/mediaQueries'
 
 export default class BtnElement extends LitElement {
 
-    static get properties() { return {
+    static properties = {
         href: {type: String, reflect: true},
         value: {type: String, reflect: true},
         icon: { type: String },
         tooltip: {type: String},
         spin: {type: Boolean, reflect: true, attribute: 'spin'},
         spinicon: {type: Boolean, reflect: true},
-        squareicon: {type: Boolean}
-    }}
+        squareicon: {type: Boolean},
+        rotateicon: {type: String}
+    }
 
     static get styles(){ return css`
     
@@ -431,7 +432,9 @@ export default class BtnElement extends LitElement {
                 <slot name="icon">
                     ${this.icon?html`
                         <b-icon part="icon" name="${this.icon}"
-                            ?spin=${this.spinicon} ?square=${this.squareicon}></b-icon>
+                            ?spin=${this.spinicon} 
+                            rotate=${this.rotateicon}
+                            ?square=${this.squareicon}></b-icon>
                     `:''}
                 </slot>
             </span>
