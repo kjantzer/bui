@@ -27,7 +27,8 @@ customElements.define('b-toggle-view', class extends LitElement{
     connectedCallback(){
         super.connectedCallback()
         window.addEventListener('storage', this.onChange)
-        this.parent = this.parentElement || this.getRootNode()?.host
+        // manually set target, else use the parent element or host element
+        this.parent = this.target || this.parentElement || this.getRootNode()?.host
         if( this.parent )
             this.parent.toggleView = this
         this.apply()
@@ -47,8 +48,19 @@ customElements.define('b-toggle-view', class extends LitElement{
         this.apply()
     }
 
+    get active(){ return !!this.value }
+    get value(){ return localStorage.getItem(this.key) }
+
     apply(){
-        let val = localStorage.getItem(this.key)
+        let val = this.value
+
+        // default logic is to show/hide
+        // else, apply the type as an attribute
+        if( this.type && !['show', 'hide'].includes(this.type) ){
+            this.parent.toggleAttribute(this.type, !!val)
+            return
+        }
+
         let hide = (this.type == 'hide' && val) || (this.type == 'show' && !val)
 
         if( this.parent )

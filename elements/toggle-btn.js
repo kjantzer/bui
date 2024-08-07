@@ -4,6 +4,7 @@ import store from '../util/store'
 customElements.define('b-toggle-btn', class extends Btn{
 
     static properties = {
+        ...Btn.properties,
         key: {type: String},
     }
 
