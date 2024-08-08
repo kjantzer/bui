@@ -168,6 +168,12 @@ module.exports = class FileManager extends Model {
         let filename = file.name
         let ext = file.name.split('.').pop()
 
+        // make sure extensions are lowercase
+        if( ext ){
+            filename = filename.replace(new RegExp(ext+'$'), ext.toLowerCase())
+            ext = ext.toLowerCase()
+        }
+
         let info = {
             parent_id: this.parent_id || null,
             group_name: this.group,
