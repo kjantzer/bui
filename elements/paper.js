@@ -79,7 +79,7 @@ export class PaperElement extends LitElement {
             --padding: 0;
         }
 
-        /* DEPRECATED - should use .bleed now */
+        /* DEPRECATED - should use [bleed] now */
         ::slotted(header:first-child) {
             border-radius: 3px 3px 0 0;
             margin: calc(var(--padding) * -1);
