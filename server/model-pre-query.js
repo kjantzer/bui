@@ -38,7 +38,7 @@ module.exports = class PreQuery extends Model {
         if( !join ) throw new APIError('applyPreSql requires `join`')
 
         // generate the SQL
-        let sql = await this.find({}, {returnSql:true})
+        let sql = await this.find({}, {...opts, returnSql:true})
 
         // see if we already generated this exact query
         let tmpTable = TMP_TABLES.get(sql)
