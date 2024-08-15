@@ -31,14 +31,26 @@ customElements.define('b-sortable', class extends LitElement{
 
     render(){return html``}
 
-    get target(){ return this.parentElement } // FIXME: improve?
+    get target(){ 
+        if( typeof this.__target == 'function' ){
+            return this.__target.call(this)
+        }
+        return this.__target || this.parentElement
+    }
+
+    set target(target){ this.__target = target}
+
 
     connectedCallback(){
         super.connectedCallback()
-        this.enable()
+        clearTimeout(this.__enable)
+        this.__enable = setTimeout(()=>{
+            this.enable()
+        })
     }
 
     disconnectedCallback(){
+        clearTimeout(this.__enable)
         super.disconnectedCallback()
         this.disable()
     }
