@@ -14,7 +14,7 @@ customElements.define('b-x-out', class extends LitElement{
             pointer-events: none;
         }
 
-        :host[hidden] { display:  none; }
+        :host([hidden]) { display:  none !important; }
 
         svg {
             top: 0;
