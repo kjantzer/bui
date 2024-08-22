@@ -34,7 +34,7 @@ export default class EmptyState extends LitElement {
         }
 
         /* if anything but simple text string is in slot, deafult back to normal text color */
-        slot::slotted(*) {
+        slot::slotted(*:not(b-btn)) {
             color: var(--theme-text);
         }
 
