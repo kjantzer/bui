@@ -488,7 +488,7 @@ customElements.define('b-list', class extends LitElement {
             // ctrl+a = turn on bulk selection
             if( (e.ctrlKey || e.metaKey) && (e.key == 'a') ){
                 // if selections is allowed (and not already on)
-                if( this.listOptions.selection && !this.selection.isOn ){
+                if( this.listOptions?.selection && !this.selection.isOn ){
                     e.preventDefault()
                     // turn on selection IF this is the top level/active list
                     this._ifInDOM().then(e=>{
