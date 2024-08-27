@@ -727,10 +727,14 @@ export class Panel extends LitElement {
             display: grid;
             grid-template-rows: 1fr;
             max-height: 100%;
+            
+            transition: ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        :host > main ::slotted(*) {
             background: var(--b-panel-bgd, #fff);
             box-shadow: var(--b-panel-shadow, var(--theme-shadow-2));
             border-radius: var(--radius-top) var(--radius-top) var(--radius-bottom) var(--radius-bottom);
-            transition: ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         :host([type="modal"]) {
@@ -782,11 +786,19 @@ export class Panel extends LitElement {
             border-radius: var(--radius) 0 0 var(--radius);
         }
 
+        :host([anchor="right"]) :host > main ::slotted(*) {
+            border-radius: var(--radius) 0 0 var(--radius);
+        }
+
         :host([anchor="left"]) > main {
             right: auto;
             left: 0;
             transform: translateX(calc(-1 * var(--panel-animation-shift)));
             height: 100%;
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        :host([anchor="left"]) > main ::slotted(*){
             border-radius: 0 var(--radius) var(--radius) 0;
         }
 
@@ -823,7 +835,7 @@ export class Panel extends LitElement {
             transform: translateY(var(--panel-animation-shift));
         }
 
-        :host([anchor^="center"]) > main {
+        :host([anchor^="center"]) > main ::slotted(*) {
             border-radius: var(--radius);
         }
 
@@ -842,6 +854,10 @@ export class Panel extends LitElement {
         :host([anchor="top"]) > main {
             margin-top: 0 !important;
             transform: translateY(calc(-1 * var(--panel-animation-shift)));
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+
+        :host([anchor="top"]) > main ::slotted(*) {
             border-radius: 0 0 var(--radius) var(--radius);
         }
 
@@ -921,6 +937,10 @@ export class Panel extends LitElement {
             --radius: var(--b-panel-inset-radius, 12px);
         }
 
+        :host([inset][height="100%"][anchor="right"]) main ::slotted(*) {
+            border-radius: var(--b-panel-inset-radius, 12px);
+        }
+
         .inlinehtml {
             display: contents;
         }
@@ -952,6 +972,10 @@ export class Panel extends LitElement {
             :host > main {
                 width: 100% !important;
                 border-radius: 0;
+                box-shadow: none;
+            }
+
+            :host > main ::slotted(*) {
                 box-shadow: none;
             }
         }
