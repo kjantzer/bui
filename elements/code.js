@@ -27,6 +27,20 @@ customElements.define('b-code', class extends LitElement{
         :host([block]) code {
             white-space: pre-wrap;
         }
+
+        :host([keyboard]) {
+            /*color: var(--theme-inverse-text);
+            background: var(--theme-inverse-bgd);
+            background: linear-gradient(to bottom, var(--theme-text-accent2), var(--theme-inverse-bgd-accent));*/
+            padding: 0 1px;
+            border-radius: .25em;
+            font-size: .9em;
+            padding: 2px 3px;
+            min-width: .85em;
+            vertical-align: text-bottom;
+            box-shadow: 0 -1px 0 var(--theme-text-accent) inset;
+        }
+        
     `}
 
     connectedCallback(){
