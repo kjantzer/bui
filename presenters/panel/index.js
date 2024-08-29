@@ -428,7 +428,7 @@ export class Panel extends LitElement {
         <main part="main" style="${this.width?`width:${this.width};`:''}${this.height?`height:${this.height};`:''}">
             <b-btn icon="close" squareicon pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closebtn!==true}></b-btn>
             <slot></slot>
-            <div class="inlinehtml">
+            <div class="inlinehtml" ?filled=${!!this.html}>
                 ${this.html}
             </div>
         </main>
@@ -731,7 +731,8 @@ export class Panel extends LitElement {
             transition: ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        :host > main ::slotted(*) {
+        :host > main ::slotted(*),
+        .inlinehtml[filled] > * {
             background: var(--b-panel-bgd, #fff);
             box-shadow: var(--b-panel-shadow, var(--theme-shadow-2));
             border-radius: var(--radius-top) var(--radius-top) var(--radius-bottom) var(--radius-bottom);
