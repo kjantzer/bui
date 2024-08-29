@@ -51,6 +51,10 @@ class SpinnerElement extends HTMLElement {
 			
         this.shadowRoot.appendChild(temp.content.cloneNode(true));
     }
+
+	spin(spin=true){
+		this.toggleAttribute('spin', spin)
+	}
 }
 
 customElements.define('b-spinner', SpinnerElement)
