@@ -32,6 +32,17 @@ class RegisteredPanels {
         this.register = new CollMap()
     }
 
+    openPanels({controller='root'}={}){
+        return this.register
+        .filter(d=>{
+            // default to only panels in the "root" controller
+            if( controller && d.panel?.panelController?.name != controller ) return
+            return d.panel?.isOpen
+        })
+        // then sort from top most panel to lowest
+        .sort((a,b)=>a.panel.style.zIndex > b.panel.style.zIndex ? -1 : 1)
+    }
+
     set(key, data){
         return this.register.set(key, data)
     }
