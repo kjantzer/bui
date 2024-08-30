@@ -46,7 +46,7 @@ module.exports = class SearchType {
                 if( row.type === undefined ) // DEPRECATED - can conflict with result data
                     row.type = this.type
 
-                row.result_type=this.type||row.type
+                row.result_type ||= this.type||row.type
 
                 await this.parseRow(row, i, {term, ids})
             }))
