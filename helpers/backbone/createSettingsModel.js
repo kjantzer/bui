@@ -11,11 +11,6 @@ export function createSettingsModel(key, defaults={}){
     let storeCache = store.create(storeKey, defaults)
     let model = new SettingsModel(storeCache())
 
-    model.save = function(...args){
-        model.set(...args)
-        model.store(this.toJSON())
-    }
-
     model.store = storeCache
     model.storeKey = storeKey
 
@@ -33,6 +28,12 @@ class SettingsModel extends Model {
         this.on('change', e=>{
             this.applyToTargets()
         })
+    }
+
+    // override default save to only save in local storage
+    save(...args){
+        this.set(...args)
+        this.store(this.toJSON())
     }
 
     addTarget(target){
