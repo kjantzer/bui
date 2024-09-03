@@ -160,10 +160,21 @@ customElements.define('demo-markdown-docs', class extends LitElement{
         }
 
         :host > main > [header="h1"] {
-            background: var(--theme-bgd-accent2);
+            background: var(--theme-bgd);
             position: sticky;
             top: 0;
             z-index: 100;
+        }
+
+        :host > main > [header="h2"] {
+            background: var(--theme-bgd);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        :host > main > [header="h1"] ~ [header="h1"] ~ [header="h2"] {
+            top: 2.1em;
         }
 
         :host *:first-child {
@@ -240,7 +251,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
         }
 
         .toc [level] {
-            margin-left: 1.25em;
+            margin-left: 1.35rem;
             padding: .25em 0;
             color: rgba(var(--theme-text-rgb), .7);
         }
@@ -251,7 +262,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
         
         .toc [level="1"] {
             margin-left: 0;
-            font-weight: bold;
+            font-weight: 800;
             font-size: 1.2em;
             color: inherit;
         }
@@ -260,10 +271,18 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             display: none;
         }
 
-        .toc [level="2"] { margin-left: 0em; color: inherit; }
-        .toc [level="3"] { margin-left: .75em; }
+        :host(:not(showTitle)) .toc [level="1"]:first-of-type ~ [level="1"] {
+            margin-top: 1em;
+        }
 
-        .toc [level="5"] { font-size: .75em; }
+        .toc [level="2"] { margin-left: 0em; color: inherit; font-weight: 500; }
+        .toc [level="3"] { margin-left: .75em; }
+        .toc [level="4"] { font-size: var(--font-size-sm); }
+        .toc [level="5"] { font-size: var(--font-size-sm); }
+
+        .toc [level="2"] + [level="2"] {
+            margin-top: .5em;
+        }
 
         /* .toc [level="3"]:before,
         .toc [level="4"]:before,
@@ -275,8 +294,13 @@ customElements.define('demo-markdown-docs', class extends LitElement{
     `}
 
     scrollTo(name){
-        let el = this.$$(`.anchor[name="${name}"]`)
-        el&&el.scrollIntoView()
+        let el = this.$$(`.anchor[name="${name}"]`)?.parentElement
+        if( !el ) return
+
+        el.previousElementSibling ? el.previousElementSibling.scrollIntoView() : el.scrollIntoView()
+
+        el.style.color = 'var(--theme)'
+        setTimeout(()=>{el.style.color = ''}, 700)
     }
 
     tocClick(e){

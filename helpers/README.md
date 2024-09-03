@@ -20,22 +20,22 @@ import 'bui/helpers/lit/listeners'
 ```
 
 Adds support for listening to Backbone Model/Collection/ChildCollection
-events and responding. Most events should just be calling `update` which
+events and responding. Most events should just be calling `requestUpdate` which
 will rerender the view.
 
 ```javascript
 static get listeners(){ return {
     'model': {
-        'change reset': 'update'
+        'change reset': 'requestUpdate'
     },
     'child-collection': {
-        'reset': 'update'
+        'reset': 'requestUpdate'
     }
 }}
 
 // ^ equivalent to:
-this.model.on('change reset', this.update.bind(this))
-this.model.get('child-collection').on('reset', this.update.bind(this))
+this.model.on('change reset', this.requestUpdate.bind(this))
+this.model.get('child-collection').on('reset', this.requestUpdate.bind(this))
 ```
 
 ## Events
@@ -46,7 +46,7 @@ import 'bui/helpers/lit/events'
 
 #### `emitEvent`
 To simplify event dispatching from inside the shadow dom, an `emitEvent`
-method has been added to lit-element
+method has been added to lit-element. It uses `CustomEvent` and `dispatchEvent`
 
 ```js
 this.emitEvent(eventName[, detail])
@@ -87,7 +87,7 @@ onAction(e){
 }
 ```
 
-## Contextmenu
+## Click Menus
 ```js
 import 'bui/helpers/lit/contextmenu'
 ```
@@ -116,7 +116,7 @@ Shortcut to `this.model.get()` that also supports `defaultValue`
 this.get('some_key', 'default Value')
 ```
 
-## Model / Coll
+## Model / Coll Props
 
 ```js
 import 'bui/helpers/lit/model'
@@ -287,6 +287,34 @@ Backbone.registerModelAttrType('date', val=>{
 //....
 myModel.get('ts_created').format('l')
 ```
+
+## Settings Model
+
+Sets up a model that will read/write to localStorage. Default values can be set. The created models are deduped by `key`. Multiple calls of createSettingsModel() with the same key will return the same model.
+ 
+```js
+createSettingsModel(key, defaultOpts={})
+```
+
+```js
+import { createSettingsModel } from 'bui/helpers/backbone/createSettingsModel'
+
+let settings = createSettingsModel('some-key', {
+    optional: 'defaultValues'
+})
+
+settings.get('optional') // = defaultValues
+settings.save('optional', 'changedVal') // set to localStorage
+```
+
+### Targets
+
+It can be useuful to set the values of the settings on an element to alter styles via CSS. This can be done with the `target` methods
+
+#### `addTarget(element)`
+#### `removeTarget(element)`
+#### `applyToTargets()`
+Sets `settings-key="val"` on the targets. This is called whenever the settings model changes or when `addTarget` is used.
 
 ## Relations
 Any non-trivial app will require models contain nested children. This helper aids in the implementation

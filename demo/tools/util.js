@@ -31,12 +31,10 @@ customElements.define('demo-util', class extends LitElement{
     `}
 
     render(){return html`
-    	<b-paper>
-            <b-h1>Util</b-h1>
+            <b-text-divider bottom thick xbold xl heading>Util</b-text-divider>
 			<demo-markdown-docs .docs=${docs}></demo-markdown-docs>
 
             <demo-markdown-docs .docs=${barcodeDocs}></demo-markdown-docs>
-		</b-paper>
     `}
 
 })

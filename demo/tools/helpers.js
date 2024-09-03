@@ -30,11 +30,10 @@ customElements.define('demo-helpers', class extends LitElement{
     `}
 
     render(){return html`
-    	<b-paper>
-            <b-h1>Helpers</b-h1>
+    	
+            <b-text-divider bottom thick xbold xl heading>Helpers</b-text-divider>
 			<demo-markdown-docs .docs=${docs}></demo-markdown-docs>
             <demo-markdown-docs .docs=${docsRelations}></demo-markdown-docs>
-		</b-paper>
     `}
 
 })
