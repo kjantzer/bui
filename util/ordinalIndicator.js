@@ -1,3 +1,12 @@
+/*
+    # Ordinal Indicator
+
+    Add `st`, `nd`, `rd` and `th` to numbers
+
+    ```js
+    ordinalIndicator(100) // 100th
+    ```
+*/
 module.exports = function ordinalIndicator(i) {
     var j = i % 10,
         k = i % 100;

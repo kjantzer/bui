@@ -15,19 +15,7 @@ let btn = new Btn()
 
 ## `<b-paper>`
 
-A white box with rounded corners and a shadow.
 
-<!--
-<b-paper>Paper element</b-paper>
--->
-
-#### Attributes
-- `color` - blue, green, red, orange, yellow, purple
-- `border` - only if a color is set
-- `dense` - less padding
-- `compact` - no padding
-- `empty` - no background and a dashed border
-- `outline` - no shadow, just border
 
 ## `<b-grid>`
 Align children elements in a grid
@@ -367,33 +355,7 @@ Shows an overlay over the parent element with a `b-spinner` and optional label
 
 
 
-## `<b-code>`
-```html
-<b-code>inline code</b-code>
-<b-code block>
-{
-    code: 'block'
-}
-</b-code>
-```
-<!--
-<b-code>inline code</b-code>
-<b-code block>
-{
-    code: 'block'
-}
-</b-code>
--->
 
-## `<b-embed>`
-For embedding iframes and videos (like youtube) that responsively scale
-
-```html
-<b-embed url="https://www.youtube.com/watch?v=sK1ODp0nDbM"></b-embed>
-```
-<!--
-<b-embed url="https://www.youtube.com/watch?v=sK1ODp0nDbM"></b-embed>
--->
 
 ## `<b-audio>`
 Display an audio control bar for playing audio. Provides seeking keyboard 

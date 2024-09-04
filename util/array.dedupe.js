@@ -1,3 +1,11 @@
+/*
+    # Array.Dedupe
+
+    ```js
+    import dedupe from 'bui/util/array.dedupe'
+    dedupe.call(someArray)
+    ```
+*/
 const groupBy = require('./array.groupBy')
 
 module.exports = function dedupe(cb){

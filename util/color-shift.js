@@ -1,7 +1,10 @@
-// https://stackoverflow.com/a/17433060/484780
+/*
+    # Color Shift
 
-// Changes the RGB/HEX temporarily to a HSL-Value, modifies that value 
-// and changes it back to RGB/HEX.
+    Changes the RGB/HEX temporarily to a HSL-Value, modifies that value and changes it back to RGB/HEX.
+
+    Based on: https://stackoverflow.com/a/17433060/484780
+*/
 
 export function changeHue(rgb, degree) {
     var hsl = rgbToHSL(rgb);

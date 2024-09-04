@@ -1,3 +1,9 @@
+/*
+    # Download
+
+    `download(url, filename)`  
+    Can be used to download a file such as an image or CSV file from the network
+*/
 import device from './device'
 
 const fileTypes = {
@@ -9,6 +15,10 @@ const fileTypes = {
     'image/gif': 'gif'
 }
 
+/*
+    `downloadContent(content, filename, opts)`  
+    Will encode `content` based on filename extension. Supported types: `json`, `csv`, else "plain/text" assumed
+*/
 export const downloadContent = (content, filename, opts={})=>{
 
     if( !opts.type ){
@@ -39,6 +49,10 @@ export const downloadContent = (content, filename, opts={})=>{
     URL.revokeObjectURL(url)
 }
 
+/*
+    `downloadCSV(content, filename, opts)`  
+    Speciality method that uses `downloadContent`
+*/
 export const downloadCSV = (content, filename, opts={})=>{
     if( typeof content != 'string' )
         console.warn('Invalid csv content; Use `toCSV` to format a csv string');

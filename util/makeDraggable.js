@@ -1,5 +1,6 @@
 /*
-    Make Draggable
+    # Make Draggable [DEPRECATED]
+
     callback will return `{left, top}` in the event detail
     a `dragging:done` event will also be emitted
 
@@ -11,7 +12,7 @@
 
     Initial code pulled from: https://stackoverflow.com/a/21569684/484780
 
-    DEPRECATED - use b-draggable element
+    DEPRECATED - use <b-draggable> element
 */
 
 

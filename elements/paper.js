@@ -1,3 +1,23 @@
+/*
+    A white box with rounded corners and a shadow.
+
+    ```html
+    <b-paper>Paper element</b-paper>
+    <b-paper dense color="postit">Paper element</b-paper>
+    ```
+
+    #### Attributes
+    - `color` - blue, green, red, orange, yellow, purple
+    - `border` - only if a color is set
+    - `dense` - less padding
+    - `compact` - no padding
+    - `empty` - no background and a dashed border
+    - `outline` - no shadow, just border
+
+    #### CSS Props
+    - `--radius`
+    - `--b-paper-shadow`
+*/
 import { LitElement, html, css } from 'lit';
 // https://brumm.af/shadows
 export class PaperElement extends LitElement {

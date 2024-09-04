@@ -1,3 +1,12 @@
+/*
+    Embed
+    
+    For embedding iframes and videos (like youtube) that responsively scale
+
+    ```html
+    <b-embed url="https://www.youtube.com/watch?v=sK1ODp0nDbM"></b-embed>
+    ```
+*/
 import { LitElement, html, css } from 'lit'
 
 // https://embedresponsively.com/ 

@@ -1,3 +1,19 @@
+/*
+    # Code
+
+    Render inline or block code
+
+    ```html
+    <b-code>inline code</b-code>
+    <b-code keyboard>ctrl+o</b-code>
+    
+    <b-code block>
+    {
+        code: 'block'
+    }
+    </b-code>
+    ```
+*/
 import { LitElement, html, css } from 'lit'
 
 customElements.define('b-code', class extends LitElement{

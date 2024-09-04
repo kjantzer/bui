@@ -1,4 +1,16 @@
+/*
+    # Array.GroupBy
 
+    ```js
+    import groupBy from 'bui/util/array.groupBy'
+    groupBy.call(someArray, opts)
+    ```
+    
+    #### Opts
+    - `forceArray` (false) - each grouped set will always ben an array
+    - `deleteKeyedValue`
+    - `returnAsArray` - instead of by key that was grouped by
+*/
 module.exports = function groupBy(key, {
     forceArray=false,
     deleteKeyedValue=false,

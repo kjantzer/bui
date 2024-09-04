@@ -1,3 +1,10 @@
+/*
+    # HID Device
+
+    Connect to an HID device (human interface device) such as a shipping scale
+
+    Check out the `<b-scale>` element for implementation.
+*/
 import Emitter from 'component-emitter'
 import {throttle as throttleFn} from './throttle'
 

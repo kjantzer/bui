@@ -1,10 +1,26 @@
 /*
-    NOTE: should this move to server/util?
+    # fs (node)
+
+    Some basic methods for working with files using native require('fs')
+
+    ```js
+    import {readDir, readFile, getFileInfo, fs} from 'bui/util/fs'
+    ```
 */
 const path = require('path')
 const fs = require('fs')
 const csvToArray = require('./csvToArray')
 
+/*
+    ### `readDir(path, opts)`
+    
+    Get a list of files/directories at the path given
+
+    #### Options
+    - `whitelist`
+    - `blacklist`
+    - `recursive` (true)
+*/
 const readDir = (dirPath, {
     whitelist=false,
     blacklist=['.DS_Store'],
@@ -41,6 +57,10 @@ const readDir = (dirPath, {
     return info
 }
 
+/*
+    ### `getFileInfo`
+    Get info like dates modified and extension of file
+*/
 const getFileInfo = (dirPath, file='')=>{
 
     if( !file ){
@@ -67,6 +87,11 @@ const getFileInfo = (dirPath, file='')=>{
     return fileInfo
 }
 
+/*
+    ### `readFile(path)`
+
+    Reads file and parses to proper format for some extension types (json, csv, txt, md, html, svg, csv)
+*/
 const readFile = (filePath, {raw=false, csvOpts={}}={})=>{
     if( !fs.existsSync(filePath) )
         throw Error('does not exist')

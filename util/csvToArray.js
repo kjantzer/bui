@@ -1,7 +1,29 @@
-// ref: http://stackoverflow.com/a/1293163/2343
-// This will parse a delimited string into an array of
-// arrays. The default delimiter is the comma, but this
-// can be overriden in the second argument.
+/*
+    # csvToArray
+
+    This will parse a delimited string into an array of
+    arrays. The default delimiter is the comma, but this
+    can be overriden in the second argument.
+
+    ```js
+    let data = csvToArray('name,gender\njohn,male', opts)
+    ```
+
+    ### Opts
+
+    - strDelimiter=','
+    - hasHeader=true
+    - mergeHeader=true
+    - normalizeHeader=false
+    - formatHeader=null
+    - rowLengthThreshold=0.3 // rows must be greater (ratio of non-empty cells to determined "row cell length")
+    - headerLengthThreshold=true // true means use rowLengthThreshold
+    -ignoreComments=true,
+    - ignoreEmptyLines=true
+
+    ref: http://stackoverflow.com/a/1293163/2343
+*/
+
 const mode = require('./math').mode
 
 function csvToArray(strData, {

@@ -10,10 +10,11 @@
     },
     "scripts": {
         "start": "npm run build-icons && npm run build-sw && parcel demo/index.html --no-autoinstall --out-dir demo/dist",
-        "build": "npm run build-icons && npm run build-sw && parcel build demo/index.html --no-autoinstall --out-dir public --public-url ./ --no-minify && cp ./CNAME ./public/CNAME",
+        "build": "npm run build-icons && build-code-comment-docs && npm run build-sw && parcel build demo/index.html --no-autoinstall --out-dir public --public-url ./ --no-minify && cp ./CNAME ./public/CNAME",
         "build-sw": "parcel build demo/sw/src/index.js --no-autoinstall --out-dir ./demo --out-file ./sw.js --no-minify",
         "publish-pages": "npm run build && bash update-github-pages.sh",
-        "build-icons": "node generate-all-material-icons.js"
+        "build-icons": "node generate-all-material-icons.js",
+        "build-code-comment-docs": "node demo/comment-docs"
     },
     "keywords": [
         "custom elements",

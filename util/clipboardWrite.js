@@ -1,7 +1,19 @@
 /*
-    NOTE: I think this is only supported in chrome
-    - could probably use some checks before attempting to copy
-    - maybe fallback to doc.exec?
+    # Clipboard Write
+
+    Requires (ClipboardItem)[https://caniuse.com/?search=ClipboardItem]. Else, use `copyText` instead
+
+    ```js
+    import {clipboardWrite, copyHTML, copyText} from 'bui/util/clipboardWrite'
+
+    clipboardWrite('some text', {type: 'text/plain'})
+    copyHTML(el.innerHTML)
+    copyText('some text')
+    ```
+
+    > NOTES:  
+    > - could probably use some checks before attempting to copy
+    > - maybe fallback to doc.exec?
 */
 export default function clipboardWrite(str, {
     type='text/plain'

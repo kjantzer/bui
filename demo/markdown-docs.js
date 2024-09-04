@@ -221,6 +221,8 @@ customElements.define('demo-markdown-docs', class extends LitElement{
         [blockquote] :last-child { margin-bottom:0; }
         [blockquote] {
             /* margin-left: 1em; */
+            margin-top: 1em;
+            margin-bottom: 1em;
             border-width: 0;
             border-left-width: 6px;
             border-radius: 0;
@@ -290,7 +292,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             content: '— ';
         } */
         
-
+   
     `}
 
     scrollTo(name){

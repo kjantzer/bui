@@ -1,3 +1,19 @@
+/*
+    # Device
+
+    Determine certain characteristics of the current device
+
+    - isiOS
+    - isAndroid
+    - isMobile
+    - isWindows
+    - isMac
+    - isLinux
+    - isInstalled (PWA installed)
+    - isTouch
+    
+    see source code more complete list
+*/
 import {colorScheme, ThemeColors} from './color-scheme'
 
 const UA = navigator.userAgent

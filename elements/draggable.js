@@ -1,5 +1,14 @@
 /*
-    Draggable
+    # Draggable
+
+    Add as child of any element to make the parent element draggable
+
+    ```html
+    <!-- div will be draggable -->
+    <div>
+        <b-draggable></b-draggable>
+    </div>
+    ```
 
     Initial code pulled from: https://stackoverflow.com/a/21569684/484780
 */
@@ -184,7 +193,7 @@ customElements.define('b-draggable', class extends LitElement{
 
 export default customElements.get('b-draggable')
 
-
+// TODO: move to ./util?
 function snapToEdge(target, {left=0, top=0}={}){
 
     if( !target.offsetParent ) return {left, top}

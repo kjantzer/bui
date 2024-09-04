@@ -1,19 +1,18 @@
 /*
-    USB Printer (defaults to Zebra label printers)
+    # USB Printer 
+    
+    > defaults to Zebra label printers
 
-    https://github.com/mkxml/zpl-webusb
-    https://github.com/drffej/webusb.printer
-
-    NOTE: for this to work on windows, the WinUSB driver must be installed
-    See: https://stackoverflow.com/a/49244318/484780
-    FYI: it appears the WinUSB driver will make the device offline for 
-    native windows, but Chrome (and other browsers?) will be able to use it
+    > NOTE: for this to work on windows, the WinUSB driver must be installed  
+    > See: https://stackoverflow.com/a/49244318/484780  
+    > FYI: it appears the WinUSB driver will make the device offline for
+    > native windows, but Chrome (and other browsers?) will be able to use it
 
     For windows driver: https://zadig.akeo.ie/
 
     Example Use:
     ```js
-    import UsbPrinter from 'bui/util/usbPrinter
+    import UsbPrinter from 'bui/util/usbPrinter'
     UsbPrinter.default.print('zpl string here') // default printer is Zebra
 
     let specialPrinter = UsbPrinter.shared('specialPrinter', {vendorID: someVendorID})
@@ -22,6 +21,8 @@
     UsbPrinter.shared('specialPrinter').print('...')
     ```
 
+    - https://github.com/mkxml/zpl-webusb
+    - https://github.com/drffej/webusb.printer
 */
 import Emitter from 'component-emitter'
 import store from './store'

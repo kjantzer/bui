@@ -1,4 +1,31 @@
+/*
+	# Avatar
 
+	Create scalable avatars with initials or image with from a url or gravatar GUID
+
+	```html
+	<b-avatar initials="KJ" size="40"></b-avatar>
+	<b-avatar initials="BT" size="40"></b-avatar>
+	<b-avatar initials="JD" size="40"></b-avatar>
+	<b-avatar initials="KJ" bgd="#E91E63" size="40"></b-avatar>
+	<b-avatar gravatar="6bd69795f929a40746cdf026a03b703e" size="40"></b-avatar>
+	<b-avatar url="https://i.imgur.com/6QKG2AG.png" size="40"></b-avatar>
+	```
+
+	#### Attributes
+	- `initials` - will display a dash if not set
+	- `bgd` - defaults to selecting a color keyed from the initials
+	- `color` - text color, defaults to white
+	- `size` - default: 24
+	- `gravatar` - the GUID of a [gravatar](https://en.gravatar.com/) account
+	- `url` - specify a custom image to use
+
+	#### Changing default colors
+	```js
+	import {BgdColors} from 'avatar'
+	BgdColors = ['color', 'color2']
+	```
+*/
 const InvalidImages = []
 export const BgdColors = ['#2196F3', '#f44336', '#673AB7', '#00BCD4', '#009688', '#4CAF50', '#FFC107', '#FF5722', '#795548', '#607D8B']
 export const DefaultBgd = '#aaa';

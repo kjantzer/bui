@@ -1,7 +1,20 @@
 /*
-    Note: 
-    - only supported in Android
-    - also cannot tell if NFC hardware actually exists
+	# NFC
+
+	Use a devices NFC hardware to scan things like NFC chips
+
+	```js
+	NFC.isSupported // does browser implement (no way to know if device has the hardware)
+
+	NFC.shared.scan({onScan, onAbort})
+	NFC.shared.stop()
+	
+	let str = await NFC.shared.readOne()
+	```
+
+    > Note: 
+    > - only supported in (Android)[https://caniuse.com/?search=NDEFReader]
+    > - also cannot tell if NFC hardware actually exists
 */
 let instance
 export default class NFC {

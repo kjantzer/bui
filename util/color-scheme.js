@@ -1,3 +1,13 @@
+/*
+    # ColorScheme
+
+    Determine colors and dark/light mode for the current device.
+
+    #### Methods (some)
+    - `isDarkMode`
+    - `isWhatMode` - dark/light
+    - `getCssVar('--some-var')`
+*/
 import colorizeFavicon from './colorize-favicon'
 import {changeHue} from './color-shift'
 

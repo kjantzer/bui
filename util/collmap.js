@@ -1,5 +1,19 @@
 /*
-    Collection (Coll) Map
+    # Collection (Coll) Map
+
+    An extension of the native `Map` object but with additional methods
+    to use as a "collection" of data
+
+    #### Methods
+    - `map`
+    - `flatMap`
+    - `first`
+    - `at(index)`
+    - `filter`
+    - `find`
+
+    ### Store
+    Docs needed; can pass a `store` option to save values in localStorage
 */
 module.exports = class CollMap extends Map {
 
