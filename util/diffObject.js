@@ -1,4 +1,21 @@
-module.exports = function diffObject(before={}, after={}, {includeChanged=true,includeRemoved=true, returnBefore=false}={}){
+/*
+    # diffObject
+
+    Get the differences betwen two objects
+
+    ```js
+    diffObject(before, after, {
+        includeChanged=true,
+        includeRemoved=true,
+        returnBefore=false
+    })
+    ```
+*/
+module.exports = function diffObject(before={}, after={}, {
+    includeChanged=true, 
+    includeRemoved=true, 
+    returnBefore=false
+}={}){
 
     let changes = {}
     let changesBefore = {}

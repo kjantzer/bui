@@ -12,7 +12,7 @@
 
     Initial code pulled from: https://stackoverflow.com/a/21569684/484780
 
-    DEPRECATED - use <b-draggable> element
+    > DEPRECATED - use `<b-draggable>` element
 */
 
 

@@ -1,3 +1,18 @@
+/*
+    # AJAX
+
+    Simple class for when needing to use `XMLHttpRequest` instead of `Fetch`
+
+    ```js
+    let req = new AJAX(method, url)
+
+    req.on('progress', e=>{
+        console.log(e.loaded, e.total)
+    })
+
+    let resp = await req.send(formData)
+    ```
+*/
 export default class AJAX {
 
     constructor(method, url){

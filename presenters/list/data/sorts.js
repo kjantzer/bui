@@ -1,6 +1,6 @@
 import {html} from 'lit'
 import Menu from '../../menu'
-import titleize from '../../../util/titleize'
+import {titleize} from '../../../util/string'
 import Emitter from 'component-emitter'
 import CollMap from '../../../util/collmap'
 

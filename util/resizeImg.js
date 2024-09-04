@@ -1,5 +1,17 @@
 /*
-    NOTE: consider https://github.com/GoogleChromeLabs/squoosh/tree/dev/libsquoosh
+    # Resize Img (client)
+
+    Can be used to resize an image client-side before uploading to the server
+
+    ```js
+    let img = await resizeImg(file, {
+        size=1440,
+        quality=.7,
+        enlarge=false // if smaller than given size
+    })
+    ```
+
+    > NOTE: consider https://github.com/GoogleChromeLabs/squoosh/tree/dev/libsquoosh
 */
 export default function resizeImg(file, {
     size=1440,

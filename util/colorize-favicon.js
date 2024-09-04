@@ -1,4 +1,18 @@
-// https://blog.roomanna.com/09-24-2011/dynamically-coloring-a-favicon
+/*
+    # colorizeFavicon
+
+    ```js
+    colorizeFavicon(color, method='hue', {
+        shape='rounded', // square, circle, rounded (square)
+        radius= 6 // for "rounded" shape
+    })
+
+    colorizeFavicon('#4CAF50') // make it green
+    colorizeFavicon('#ccc') // gray
+    ```
+
+    > https://blog.roomanna.com/09-24-2011/dynamically-coloring-a-favicon
+*/
 
 let favicon
 
@@ -11,9 +25,9 @@ export default (color=false, method="hue", {
 
     if( !icon ) return
 
-    if( !favicon ){;
+    // if( !favicon ){;
         favicon = icon.cloneNode()
-    }
+    // }
 
     if( !color ){
         icon.type = favicon.type

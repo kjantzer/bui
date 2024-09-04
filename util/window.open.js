@@ -1,8 +1,19 @@
+/*
+    # window.open
+
+    Better window opening for chrome installed apps. Default logic used otherwise
+
+    ```js
+    import 'bui/util/window.open'
+    ```
+
+    > NOTE: will override the default `window.open` function
+*/
+// TODO should this really be a "helper"?
 import device from './device'
 
 const windowOpen = window.open
 
-// better window opening for chrome installed apps
 window.open = function(url, windowName, windowFeatures={}){
 
     return new Promise(resolve=>{

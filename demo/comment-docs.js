@@ -31,8 +31,16 @@ function writeDoc(file, {prefix=''}={}){
 
     let title = docs.match(/^# (.+)\n/)?.[1] || file.name.replace('.'+file.ext, '')
 
+    let tags = ['wip', 'deprecated']
+    let tag = title.match(new RegExp(`\\[(${tags.join('|')})\\]`, 'i'))?.[1] || ''
+
+    if( tag ){
+        title = title.replace(`[${tag}]`, '')
+    }
+
     output.push({
         title,
+        tag: tag.toLowerCase(),
         name: file.name,
         path: file.path,
         docs: docs || ''

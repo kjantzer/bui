@@ -1,4 +1,22 @@
+/*
+    # Touch Events
 
+    #### `bindLongpress`
+    Mobile/touch devices do not have right+click abilities. In many cases, a long press can
+    be good alternative. By default, `bindLongPress` will trigger a `contextmenu` event
+    after the user has touched down for `500ms` without dragging.
+
+    ```js
+    import {bindLongpress} from 'bui/util/touch-events'
+
+    bindLongpress(el) // use defaults
+    bindLongress(el, {
+        touchOnly: true, // change to false if you want to watch for mouse long press too
+        event: 'contextmenu', // (default) what event to fire after long press
+        delay: 500 // (default) how long until triggering event
+    })
+    ```
+*/
 export const bindLongpress = (el, {
     touchOnly=true,
     event='contextmenu',

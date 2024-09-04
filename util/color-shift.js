@@ -3,6 +3,15 @@
 
     Changes the RGB/HEX temporarily to a HSL-Value, modifies that value and changes it back to RGB/HEX.
 
+    ```js
+    import {changeHue, rgbToHSL, hslToRGB, rgbToHex} from 'bui/util/color-shift'
+
+    changeHue(rgb, degree)
+    rgbToHSL(rgb)
+    hslToRGB(hsl)
+    rgbToHex(r, g, b)
+    ```
+
     Based on: https://stackoverflow.com/a/17433060/484780
 */
 

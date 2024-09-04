@@ -1,7 +1,7 @@
 /*
     # USB Printer 
     
-    > defaults to Zebra label printers
+    Defaults to Zebra label printers
 
     > NOTE: for this to work on windows, the WinUSB driver must be installed  
     > See: https://stackoverflow.com/a/49244318/484780  

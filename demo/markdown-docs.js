@@ -16,7 +16,17 @@ window.marked = marked
 const rendererOverrides = {
     
     blockquote(str){
-        return `<b-paper outline blockquote>${str}</b-paper>`
+        let types = ['note', 'deprecated']
+        
+        let type = str.match(new RegExp(`^<p>(${types.join('|')}) ?[:-] `, 'i'))?.[1] || ''
+        
+        str = str.replace(new RegExp(`^<p>(${types.join('|')}) ?[:-] +</p>`, 'i'), '')
+        str = str.replace(new RegExp(`^<p>(?:${types.join('|')}) ?[:-] `, 'i'), '<p>')
+
+        return `<b-paper type="${type.toLowerCase()}" outline blockquote>
+            ${str}
+            ${type?`<b-label filled>${type.toUpperCase()}</b-label>`:''}
+        </b-paper>`
     },
     _code(str, info, escaped){
         return `<b-code block>${str}</b-code>`
@@ -177,7 +187,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             top: 2.1em;
         }
 
-        :host *:first-child {
+        :host > main > *:first-child {
             margin-top: 0;
         }
 
@@ -217,8 +227,8 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             max-width: 100%;
         }
 
-        [blockquote] :first-child {margin-top: 0;}
-        [blockquote] :last-child { margin-bottom:0; }
+        [blockquote][type=""] :first-child {margin-top: 0;}
+        [blockquote][type=""] :last-child { margin-bottom:0; }
         [blockquote] {
             /* margin-left: 1em; */
             margin-top: 1em;
@@ -229,6 +239,30 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             padding-top: 0;
             padding-bottom: 0;
             color: rgba(var(--theme-text-rgb), .7);
+            background-color: rgba(var(--type-color), .15);
+            border-color: rgb(var(--type-color));
+            position: relative;
+        }
+
+        [blockquote]:not([type=""]) {
+            padding-top: .25em;
+            padding-bottom: .25em;
+        }
+
+        [blockquote] b-label {
+            position: absolute;
+            right: .5em;
+            top: .5em;
+            --bgd: rgb(var(--type-color));
+        }
+        
+        [blockquote][type="note"] {
+            --type-color: 33, 150, 243; /* blue */
+            --type-color: 255, 179, 0; /* amber */
+        }
+
+        [blockquote][type="deprecated"] {
+            --type-color: 255, 23, 68;
         }
 
         h2 {

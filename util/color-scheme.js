@@ -1,12 +1,17 @@
 /*
-    # ColorScheme
+    # colorScheme
 
-    Determine colors and dark/light mode for the current device.
+    Detect OS level [color schemes](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme) and react to changes. You can do this with CSS, this utilty is for use in JS if needed.
 
-    #### Methods (some)
-    - `isDarkMode`
-    - `isWhatMode` - dark/light
-    - `getCssVar('--some-var')`
+    ```js
+    import { colorScheme } from 'util/device'
+
+    colorScheme.isDarkMode
+    colorScheme.isLightMode
+    colorScheme.isSupported
+
+    colorScheme.onChange(mode=>console.log(mode))
+    ```
 */
 import colorizeFavicon from './colorize-favicon'
 import {changeHue} from './color-shift'

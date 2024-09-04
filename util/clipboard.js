@@ -1,17 +1,19 @@
 /*
-    # Clipboard Write
+    # Clipboard
 
-    Requires (ClipboardItem)[https://caniuse.com/?search=ClipboardItem]. Else, use `copyText` instead
+    Use `util/copyText` if legacy browser support needed
 
     ```js
-    import {clipboardWrite, copyHTML, copyText} from 'bui/util/clipboardWrite'
+    import {clipboardWrite, copyHTML, copyText} from 'bui/util/clipboard'
 
     clipboardWrite('some text', {type: 'text/plain'})
+
+    // shorthands
     copyHTML(el.innerHTML)
     copyText('some text')
     ```
 
-    > NOTES:  
+    > NOTE:  
     > - could probably use some checks before attempting to copy
     > - maybe fallback to doc.exec?
 */

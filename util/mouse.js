@@ -1,6 +1,18 @@
 /*
+    # Mouse
+    
     Tracks the mouse location and provides helpful methods for 
-    finding what elements are underneath 
+    finding what elements are underneath
+
+    ```js
+    Mouse.track()
+
+    Mouse.pageX
+    Mouse.pageY
+    Mouse.elementUnder()
+    ```
+
+    Check src file for all methods
 */
 let isTracking = false
 

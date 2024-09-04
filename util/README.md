@@ -194,31 +194,6 @@ await wait(ms) // default is zero which will let the event loop finish
 await wait(1000) // wait 1 second
 ```
 
-## `toCSV`
-Convert an array of data to a CSV string (or tab delimited)
-```js
-let data = [{title: 'title 1', info: 'info'}, {title: 'title 2', info: 'info'}]
-let csvData = toCSV(data, {title: 'My Data'})
-```
-
->The array of data can also contain backbone models or custom objects that implement `toCSV` or `toJSON`
-
-##### Options
-- `delimiter: ','`
-- `newline: "\n"`
-- `title: ''` - title at the top of the csv data
-- `description: ''` - similar to title ^ 
-- `header: true` - show header row?
-
-##### Downloading
-You can use `util/download` to download your csv data to a file
-
-```js
-import {downloadCSV} from 'bui/util/download'
-downloadCSV(csvData)
-downloadCSV(csvData, 'custom-file-name.csv')
-```
-
 ## `csvToArray`
 Convert a CSV string to an array
 ```js
@@ -232,22 +207,4 @@ let data = csvToArray(str)
 Read a [file](https://developer.mozilla.org/en-US/docs/Web/API/File) to text (async)
 ```js
 let text = await readFile(file)
-```
-
-## Touch Events
-
-`bindLongpress`  
-Mobile/touch devices do not have right+click abilities. In many cases, a long press can
-be good alternative. By default, `bindLongPress` will trigger a `contextmenu` event
-after the user has touched down for `500ms` without dragging.
-
-```js
-import {bindLongpress} from 'bui/util/touch-events'
-
-bindLongpress(el) // use defaults
-bindLongress(el, {
-    touchOnly: true, // change to false if you want to watch for mouse long press too
-    event: 'contextmenu', // (default) what event to fire after long press
-    delay: 500 // (default) how long until triggering event
-})
 ```

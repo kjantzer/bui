@@ -1,3 +1,31 @@
+/*
+	# toCSV
+	
+	Convert an array of data to a CSV string (or tab delimited)
+
+	```js
+	let data = [{title: 'title 1', info: 'info'}, {title: 'title 2', info: 'info'}]
+	let csvData = toCSV(data, {title: 'My Data'})
+	```
+
+	> NOTE: The array of data can also contain backbone models or custom objects that implement `toCSV` or `toJSON`
+
+	##### Options
+	- `delimiter: ','`
+	- `newline: "\n"`
+	- `title: ''` - title at the top of the csv data
+	- `description: ''` - similar to title ^ 
+	- `header: true` - show header row?
+
+	##### Downloading
+	You can use `util/download` to download your csv data to a file
+
+	```js
+	import {downloadCSV} from 'bui/util/download'
+	downloadCSV(csvData)
+	downloadCSV(csvData, 'custom-file-name.csv')
+	```
+*/
 const {titleize} = require('./string')
 
 module.exports = (rawData, opts)=>{

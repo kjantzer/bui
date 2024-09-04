@@ -1,4 +1,16 @@
-// https://en.wikipedia.org/wiki/Serial_comma
+/*
+    # serialComma
+
+    https://en.wikipedia.org/wiki/Serial_comma
+
+    ```js
+    serialComma(['John', 'Mark', 'Jane'])
+    // John, Mark, and Jane
+
+    serialComma(['John', 'Mark', 'Jane'], {limit: 1})
+    // John and 2 more
+    ```
+*/
 module.exports = function serialComma(strings, {limit=0, conjunction='and'}={}){
     
     strings = [...strings] // make sure we dont alter the orig array
