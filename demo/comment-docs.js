@@ -40,7 +40,7 @@ function writeDoc(file, {prefix=''}={}){
 }
 
 let dir = 'util'
-let files = readDir('../'+dir, {blacklist:['.DS_Store', 'index.js']})
+let files = readDir(__dirname+'/../'+dir, {blacklist:['.DS_Store', 'index.js']})
 // console.log(files);
 
 let output = []
@@ -49,6 +49,6 @@ for( let file of files ){
     writeDoc(file)
 }
 
-fs.writeFileSync(`./dist/docs-${dir}.js`, 'export default '+JSON.stringify(output, null, 4))
+fs.writeFileSync(__dirname+`/dist/docs-${dir}.js`, 'export default '+JSON.stringify(output, null, 4))
 
 // writeDoc()
