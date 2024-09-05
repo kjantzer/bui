@@ -2,7 +2,7 @@ import GroupedData from '../../../util/grouping/groupedData'
 
 function applyGrouping(models, opts){
         
-    let groupBy = opts.groupBy || this.groupByView?.valuesSelected || []
+    let groupBy = opts?.groupBy || this.groupByView?.valuesSelected || []
 
     if( !groupBy.length ) return models.map(m=>{
         m.groupParent = null // clear this
