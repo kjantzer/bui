@@ -1,3 +1,10 @@
+/*
+    # Network Monitor
+
+    Watches for a loss of network connection and will display a red notif when offline.
+
+    > See: `util/network`
+*/
 import Dialog from '../presenters/dialog'
 import network from '../util/network'
 

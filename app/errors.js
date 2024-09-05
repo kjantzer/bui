@@ -1,3 +1,18 @@
+/*
+    # Custom Errors
+
+    #### `UIAlertError`
+    Generic alert. Defaults to `Dialog.alert`
+
+    #### `UIPermissionError`
+    For when a user is not allowed to do something. Defaults to `Dialog.stopped`
+
+    #### `UIWarningError`
+    Defaults to `Dialog.warning`
+
+    #### `UIDeniedError`
+    Defaults to `Dialog.error`
+*/
 import Dialog from '../presenters/dialog'
 import vibrate from '../util/vibrate'
 

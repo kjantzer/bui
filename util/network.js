@@ -1,7 +1,17 @@
 /*
+    # Network
+
+    Simplified network connection data
+
+    ```js
+    import network from 'bui/util/network'
+
+    network.online // true
+    ```
+
     https://developer.mozilla.org/en-US/docs/Web/API/Network_Information_API
 
-    NOTE: doesn't work on safari or firefox
+    > NOTE: only works on desktop chrome/edge and android
 */
 const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
 

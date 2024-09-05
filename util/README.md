@@ -1,25 +1,6 @@
 Util
 ========
 
-## `AppInstaller`
-Makes it easy to prompt user to install the PWA app. It's a singleton class so you can import and use in many places.
-
-```js
-// import this early in your code to capture the installer event
-import 'bui/app/installer'
-
-//... somehwere else (say your app header)
-import AppInstaller from 'bui/app/installer'
-
-html`
-    ${AppInstaller.canInstall?html`
-        <b-btn @click=${AppInstaller.install}>Install</b-btn>
-    `:''}
-`
-
-// if you need to react to when the installer becomes available...
-AppInstaller.canInstallPromise.then(canInstall=>this.update())
-```
 
 ## `AJAX`
 A wrapper around [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) to simplify and provide async/await. 

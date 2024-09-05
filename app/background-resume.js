@@ -1,7 +1,9 @@
 /*
-    Background Resume
+    # Background Resume
 
-    ```
+    ```js
+    import 'bui/app/background-resume'
+
     window.addEventListener('background-resume', e=>{ do something })
     ```
 

@@ -1,3 +1,30 @@
+/*
+    # Error Handler
+    A catch-all error handler with support for custom UI errors. 
+
+    ```js
+    // import near the top of your app entry
+    import 'bui/app/error-handler`
+    ```
+
+    After importing the error handler any uncaught error or promises will be caught and
+    displayed to the use via `notif`.
+
+    If a custom error was thrown (see `helpers/errors`) the handler will let the 
+    custom error determine how to handle.
+
+    Any subclassed `Error` with a `.handle` function will be handled this way
+
+    ```js
+    // Default example (displays as `notif`)
+    if( !label )
+        throw new UIWarningError('A label is required')
+
+    // Example error with a target (will display with popover)
+    if( !label )
+        throw new UIDeniedError('A label is required', {target: inputEl})
+    ```
+*/
 import Notif from '../presenters/notif'
 import * as CustomErrors from './errors'
 
