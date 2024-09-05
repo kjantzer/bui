@@ -10,7 +10,7 @@ import Notif from '../../presenters/notif'
 import Dialog from '../../presenters/dialog'
 import Menu from '../../presenters/menu'
 import copyText from '../../util/copyText'
-import '../../helpers/lit/events'
+import '../../helpers/lit/emitEvent'
 import '../../elements/btn'
 import {slugify} from '../../util/string'
 

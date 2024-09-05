@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import Menu from '../../../menu'
-import isLitHTML from '../../../../helpers/lit/is-lit-html'
+import isLitHTML from '../../../../helpers/lit/isLitHTML'
 
 customElements.define('b-list-filter-view-search', class extends LitElement{
 

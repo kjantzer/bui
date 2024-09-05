@@ -7,7 +7,7 @@ import '../../elements/flex'
 import '../../elements/animate'
 import uniq from '../../util/uniq'
 import copyText from '../../util/copyText'
-import '../../helpers/lit/events'
+import '../../helpers/lit/emitEvent'
 
 const RegisteredIcons = Icon.registeredIconNames()
 const Categories = uniq(MaterialIcons.icons.flatMap(icon=>icon.categories))

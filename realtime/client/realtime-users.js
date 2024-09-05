@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import '../../elements/avatar'
-import isLitHTML from '../../helpers/lit/is-lit-html'
+import isLitHTML from '../../helpers/lit/isLitHTML'
 
 let realtime = null
 let currentUserID = null

@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit'
-import '../../../../helpers/lit/events'
+import '../../../../helpers/lit/emitEvent'
 import '../../../../helpers/lit/selectors'
 import './token'
 import autoComplete from './auto-complete'

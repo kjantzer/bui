@@ -1,5 +1,5 @@
 /*
-    # Model (property)
+    # .model (property)
 
     Effectively sets up a `.model` prop on all LitElements. The element will update anytime `.model` is changed
 

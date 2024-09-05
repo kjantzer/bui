@@ -6,7 +6,7 @@
     https://schema.org/
 */
 import { LitElement, html, css } from 'lit'
-import '../helpers/lit/will-take-action'
+import '../helpers/lit/willTakeAction'
 
 // make sure "dragend" fires immediately
 document.addEventListener("dragover", e=>e.preventDefault(), false);

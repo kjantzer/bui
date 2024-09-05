@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import {unsafeHTML} from 'lit/directives/unsafe-html.js'
-import isLitHTML from '../helpers/lit/is-lit-html'
+import isLitHTML from '../helpers/lit/isLitHTML'
 
 customElements.define('b-text', class extends LitElement{
 

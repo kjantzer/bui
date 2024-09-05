@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import '../../elements/btn-group'
-import '../../helpers/lit/events'
+import '../../helpers/lit/emitEvent'
 import '../../helpers/day-js'
 import dayjs from 'dayjs'
 import './day'

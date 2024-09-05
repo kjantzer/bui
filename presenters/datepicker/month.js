@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit'
-import '../../helpers/lit/events'
+import '../../helpers/lit/emitEvent'
 
 customElements.define('b-datepicker-month', class extends LitElement{
 

@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit'
 import Coll, { markCommentRead } from './models'
 import Comment from './comment'
 import WriteComment from './write'
-import '../../helpers/lit/events'
+import '../../helpers/lit/emitEvent'
 import '../../helpers/lit/listeners'
 
 customElements.define('b-comments', class extends LitElement{

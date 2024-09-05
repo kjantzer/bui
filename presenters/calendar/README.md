@@ -46,7 +46,7 @@ html`
 If rendered content wants to move slots, this can be called
 
 ```js
-import 'bui/helpers/lit/events'
+import 'bui/helpers/lit/emitEvent'
 
 //inside content...
 this.emitEvent('move-to', newSlot)

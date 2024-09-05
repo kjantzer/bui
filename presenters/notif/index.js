@@ -4,7 +4,7 @@ import device from '../../util/device'
 import style from './style'
 import TYPES from './types'
 import '../dialog/element'
-import isLitHTML from '../../helpers/lit/is-lit-html'
+import isLitHTML from '../../helpers/lit/isLitHTML'
 
 // list of open notifs
 const NOTIFS = new Map()

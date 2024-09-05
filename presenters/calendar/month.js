@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit'
-import '../../helpers/lit/events'
+import '../../helpers/lit/emitEvent'
 import scrollbars from '../../helpers/scrollbars'
 
 customElements.define('b-calendar-month', class extends LitElement{

@@ -7,7 +7,7 @@ import './controller'
 import './toolbar'
 import '../../elements/btn'
 import CollMap from '../../util/collmap'
-import isLitHTML from '../../helpers/lit/is-lit-html'
+import isLitHTML from '../../helpers/lit/isLitHTML'
 
 export const PanelDefaults = {
     type: '',

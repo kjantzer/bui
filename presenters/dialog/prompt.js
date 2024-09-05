@@ -10,7 +10,7 @@ import '../form/controls/radio-group'
 import '../form/controls/radio-btn'
 import '../form/control'
 import '../form/handler'
-import isLitHTML from '../../helpers/lit/is-lit-html'
+import isLitHTML from '../../helpers/lit/isLitHTML'
 
 customElements.define('b-dialog-prompt', class extends Dialog{
 

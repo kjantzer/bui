@@ -6,7 +6,7 @@
 import { LitElement, html, css } from 'lit'
 import Coll, {edit} from './models'
 import {Menu} from 'bui'
-import 'bui/helpers/lit/will-take-action'
+import 'bui/helpers/lit/willTakeAction'
 import './item'
 
 customElements.define('b-list-filters-saved', class extends LitElement{

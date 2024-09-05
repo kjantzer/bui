@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit'
 import {unsafeHTML} from 'lit/directives/unsafe-html.js'
 import {live} from 'lit/directives/live.js'
 import {isDivider} from './util'
-import isLitHTML from '../../helpers/lit/is-lit-html'
+import isLitHTML from '../../helpers/lit/isLitHTML'
 
 customElements.define('b-menu-item', class extends LitElement{
 

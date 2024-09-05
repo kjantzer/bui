@@ -13,7 +13,7 @@
     Initial code pulled from: https://stackoverflow.com/a/21569684/484780
 */
 import { LitElement, html, css } from 'lit'
-import '../helpers/lit/will-take-action'
+import '../helpers/lit/willTakeAction'
 import store from '../util/store'
 
 customElements.define('b-draggable', class extends LitElement{

@@ -3,9 +3,9 @@ import {unsafeHTML} from 'lit/directives/unsafe-html.js'
 import {mediaQuery} from '../../util/mediaQueries'
 import Button from './btn'
 import '../../elements/spinner'
-import '../../helpers/lit/events'
+import '../../helpers/lit/emitEvent'
 import scollbars from '../../helpers/scrollbars'
-import isLitHTML from '../../helpers/lit/is-lit-html'
+import isLitHTML from '../../helpers/lit/isLitHTML'
 
 const basicConverter = { 
     toAttribute: (value, type) => { 

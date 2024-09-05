@@ -1,5 +1,5 @@
 /*
-    # Will Take Action
+    # willTakeAction
     
     Emits with a specially formatted `detail` object for informing parent views of the action
     and providing them the opportunity to cancel/disallow
@@ -33,7 +33,7 @@
     ```
 */
 import {LitElement} from 'lit'
-import './events'
+import './emitEvent'
 
 export const willTakeAction = function(name, detail={}, eventOpts={}){
     

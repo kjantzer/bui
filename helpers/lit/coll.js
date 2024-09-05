@@ -1,5 +1,5 @@
 /*
-    # Coll (property)
+    # .coll (property)
 
     Effectively sets up a `.coll` prop on all LitElements. The element will update anytime `.coll` is changed
 

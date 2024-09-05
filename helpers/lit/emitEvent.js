@@ -1,5 +1,5 @@
 /*
-    # Events
+    # emitEvent
 
     To simplify event dispatching from inside the shadow dom, an `emitEvent`
     method has been added to lit-element. It uses `CustomEvent` and `dispatchEvent`
