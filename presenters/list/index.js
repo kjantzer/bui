@@ -368,7 +368,7 @@ customElements.define('b-list', class extends LitElement {
             <slot name="toolbar:before" slot="before"></slot>
             <slot name="toolbar:after" slot="after"></slot>
             <slot name="toolbar:refresh" slot="refresh-btn">
-                <b-btn clear lg icon="refresh" @click=${this.refresh}></b-btn>
+                <b-btn clear lg icon="refresh" @click=${this.refresh} ?hidden=${this.listOptions?.refreshBtn===false}></b-btn>
             </slot>
             <!-- <b-label slot="after" class="queuing-label">Queuing filters, release to apply</b-label> -->
             <b-list-selection-bar part="selectionbar">
