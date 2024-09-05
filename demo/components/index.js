@@ -5,6 +5,7 @@ import './filebrowser'
 import './filemanager'
 import './tag-list'
 import './screen-record'
+import '../tools/pi-pico'
 import docs from '../../components/README.md'
 import printViewDocs from '../../components/print-view/README.md'
 import metadataDocs from '../../components/metadata/README.md'
@@ -46,6 +47,7 @@ customElements.define('demo-components', class extends LitElement{
             demo-components-filebrowser
             demo-components-tag-list
             demo-components-screen-record
+            demo-components-pipico
 
             <div title="Print View" path="print-view" id="print-view">
                 <!-- <b-paper> -->

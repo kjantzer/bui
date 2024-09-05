@@ -2,6 +2,8 @@ const {readFile, readDir, fs} = require('../util/fs')
 const extract = require('extract-comments')
 const {capitalize} = require('../util/string')
 
+const TAGS = ['wip', 'deprecated']
+
 function writeDoc(file, {title, prefix=''}={}){
 
     // if a directory, look for a readme
@@ -24,8 +26,6 @@ function writeDoc(file, {title, prefix=''}={}){
     }else{
         docs = extract(docs)
 
-        // console.log(docs);
-
         docs = docs
         .filter(d=>d.type=='BlockComment'&&d.value.match(/\n/)&&d.value.match(/^[\s\t]+(#|`)/))
         .map(d=>d.value)
@@ -38,8 +38,7 @@ function writeDoc(file, {title, prefix=''}={}){
 
         title ||= docs.match(/^# (.+)\n/)?.[1] || file.name.replace('.'+file.ext, '')
 
-        let tags = ['wip', 'deprecated']
-        tag = title.match(new RegExp(`\\[(${tags.join('|')})\\]`, 'i'))?.[1] || ''
+        tag = title.match(new RegExp(`\\[(${TAGS.join('|')})\\]`, 'i'))?.[1] || ''
 
         if( tag ){
             title = title.replace(`[${tag}]`, '')
@@ -55,32 +54,39 @@ function writeDoc(file, {title, prefix=''}={}){
     }
 }
 
-function writeDirDocs(dir, _files=[]){
+function writeDirDocs(dir){
 
-    let files = readDir(__dirname+'/../'+dir, {blacklist:['.DS_Store', 'index.js', '_README.md']})
-
-    // console.log(files);
-    // return
+    let files = readDir(__dirname+'/../'+dir, {
+        blacklist:['.DS_Store', 'index.js']
+    })
 
     let output = []
 
     for( let file of files ){
         let docs = writeDoc(file)
-        if( docs ) output.push(docs)
+        if( docs ){
+            docs.dir = dir
+            docs.path = docs.path.replace(__dirname+'/../', '')
+            docs.id = docs.path // for backbone coll
+            output.push(docs)
+        }
     }
-
-    // output = output.sort((a,b)=>{
-    //     if( a.tag == 'deprecated' ) return 1
-    //     return a.title < b.title ? -1 : 1
-    // })
 
     let filename = dir.replace(/\//g, '-')
 
+    // write JSON file with docs
     fs.writeFileSync(__dirname+`/dist/docs-${filename}.js`, 'export default '+JSON.stringify(output, null, 4))
 
+    return output
 }
 
 
-writeDirDocs('util')
-writeDirDocs('helpers/backbone')
-writeDirDocs('helpers/lit')
+let output = []
+
+output.push(...writeDirDocs('app'))
+output.push(...writeDirDocs('elements'))
+output.push(...writeDirDocs('util'))
+output.push(...writeDirDocs('helpers/backbone'))
+output.push(...writeDirDocs('helpers/lit'))
+
+fs.writeFileSync(__dirname+`/dist/docs-complete.js`, 'export default '+JSON.stringify(output, null, 4))

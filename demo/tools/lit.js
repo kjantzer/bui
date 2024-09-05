@@ -1,5 +1,5 @@
 import CommentDocs from '../docs-list'
-import docs from '../dist/docs-helpers-lit.js'
+import docs from '../dist/docs-complete.js'
 
 customElements.define('demo-lit-helpers', class extends CommentDocs{
 

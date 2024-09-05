@@ -3,9 +3,10 @@ import App from 'bui/app/tabbar'
 import './overview'
 import './elements'
 import './presenters'
-import './tools'
+// import './tools'
 import './server'
 import './components'
+import './tools/docs'
 
 customElements.define('demo-main', class extends App{
 
@@ -21,7 +22,7 @@ customElements.define('demo-main', class extends App{
             demo-elements
             demo-presenters
             demo-components
-            demo-tools
+            demo-all-docs
             demo-server
         `
     }
