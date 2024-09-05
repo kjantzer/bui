@@ -1,5 +1,8 @@
 import { LitElement, html, css } from 'lit'
 import './utils'
+import './lit'
+import './backbone'
+
 import './util'
 import './helpers'
 import './pi-pico'
@@ -23,6 +26,9 @@ customElements.define('demo-tools', class extends LitElement{
     render(){return html`
         <b-tabs-router path="tools/" key="tools" layout="left" >
             demo-utils
+            demo-lit-helpers
+            demo-backbone-helpers
+
             demo-util
             demo-helpers
             demo-components-pipico

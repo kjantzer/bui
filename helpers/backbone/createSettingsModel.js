@@ -1,3 +1,18 @@
+/*
+    # Settings Model
+
+    Creates a singleton model that saves it's values to localStorage. Can be init with default values.
+
+    ```js
+    let settings = createSettingsModel('app-settings', {
+        view: 'list',
+        theme: 'blue'
+    })
+
+    settings.get('view')
+    settings.save('view', 'grid')
+    ```
+*/
 import {Model} from 'backbone'
 import store from '../../util/store'
 

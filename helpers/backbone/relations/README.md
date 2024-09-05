@@ -1,8 +1,4 @@
-# Backbone Relations
-
-> Formerly "Backbone Child Collections"
-
-![Version 1.2.0](https://img.shields.io/badge/Version-1.2.0-blue.svg)
+# Relations
 
 > Create lazy-loading relations between Backbone.js models and collections with minimal effort. Perfect for REST APIs
 
@@ -250,37 +246,3 @@ A benefit of using dot notation is if a nested item does not exist a fatal error
 `.get('file.jpg', {dotnotation:false})`  
 or escape with square brackets:  
 `.get('files.file[.]jpg')`
-
-
-## Changelog
-
-#### next ver - 11/2/18
-- added `getBefore(model)` and `getAfter(model)` to collections
-
-#### v1.2.0 - 10/4/18
-- can set a `defaultID` in a child model definition for when the attribute is null or undefined
-
-#### v1.1.0 - 9/14/18
-- child model lookup via `coll` property can be a custom function.
-
-#### v1.0.0 - 6/26/18
-- ready for commonjs loaders such as Webpack
-
-#### v0.12.0 - 6/25/18
-- child `collections` can be grouped under a common key – helpful for organized modular loading
-- child models have reference to collection they fetched from via `refColl`
-
-#### v0.11.1
-- `id` is not longer required, the key name will be used to find the ID on the model attributes
-- if model `info.coll` is a string, it will also check for it on the window
-
-#### v0.11.0
-- dot notation logic changed: index retrieval must be prefixed with "at". ex: `at0`. If not, a normal `get()` will happen
-- access to parentModel via `name` will traverse all the way to the top (previously limited to first parentModel)
-- getOrFetch accepts `silent` option
-- model info defined as a function will be called in context of model
-- model info.coll can be a string which will retrieved with dot notation
-
-## License
-
-MIT © [Kevin Jantzer](http://kevinjantzer.com) - Blackstone Publishing

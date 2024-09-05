@@ -1,3 +1,16 @@
+/*
+    # Singleton
+    Export a a Collection as a singleton
+
+    ```js
+    import 'helpers/backbone/singleton'
+    import {Collection, singleton} from 'backbone'
+
+    class Coll extends Collection{}
+
+    export default singleton(Coll)
+    ```
+*/
 import Backbone from 'backbone'
 
 /*

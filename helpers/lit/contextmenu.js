@@ -1,3 +1,18 @@
+/*
+    # Contextmenu
+
+    Hooks up click events that will call `clickMenu` and `contextMenu` if those methods exist
+
+    ```js
+    customElements.define('element-name', class extends LitElement{
+
+        clickMenu(){ console.log('element was clicked') }
+
+        contextMenu(){ console.log('element was right+clicked') }
+    })
+    ```
+*/
+// TODO: rename to `click-events`
 import {LitElement} from 'lit'
 
 const LitElement_firstUpdated = LitElement.prototype.firstUpdated

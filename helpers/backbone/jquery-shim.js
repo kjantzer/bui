@@ -1,4 +1,6 @@
 /*
+    # jQuery Shim
+    
     Backbone imports jQuery and Webpack complains if it can't import
     jQuery. Here we are faking out the jQuery import (see alias in
     webpack.config.js) and then only implementing the absolute 

@@ -1,7 +1,9 @@
 /*
+    # Subview (sv) [DEPRECATED]
+    
     Creates a linked subview if needed
 
-    DEPRECATED
+    > DEPRECATED - do not use
 */
 import {LitElement} from 'lit'
 

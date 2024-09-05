@@ -1,7 +1,6 @@
-Pi Pico with Kaluma over WebSerial
-========================================
+# Pi Pico
 
-Inspired by: https://www.mathsuniverse.com/pico
+with Kaluma over WebSerial. Inspired by: https://www.mathsuniverse.com/pico
 
 ### Basic Use
 

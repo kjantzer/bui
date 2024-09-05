@@ -1,6 +1,11 @@
 /*
-    Tells the element to update when a new backbone model
-    is assigned
+    # Model (property)
+
+    Effectively sets up a `.model` prop on all LitElements. The element will update anytime `.model` is changed
+
+    It also automatically calls `bindListeners` from the "listeners" helper
+
+    > NOTE: also see ./coll
 */
 import {LitElement} from 'lit'
 

@@ -1,7 +1,9 @@
 /*
+    # Lit HTML Views [DEPRECATED]
+    
     Extensions for using lit-html with Backbone Views
 
-    !! DEPRECATED
+    > DEPRECATED - do not use
 */
 import {render} from 'lit';
 import {View} from 'backbone'

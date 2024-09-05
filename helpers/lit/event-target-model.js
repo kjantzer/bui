@@ -1,11 +1,12 @@
 /*
+    # Event Target Model
+
     A pattern at Blackstone when using lit-html is to render 
     a collection of items as a set of controls. Buttons and actions
     are taken that need access to the model which has been set at the top
     level of the html item. This extension makes it easer to access 
     the model, top parent target, and clicked target
 
-    ex:
     ```js
     html`<div class="item" .model=${m}>
         <p>stuff here</p>

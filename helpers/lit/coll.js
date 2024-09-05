@@ -1,6 +1,11 @@
 /*
-    Tells the element to update when a new backbone coll
-    is assigned
+    # Coll (property)
+
+    Effectively sets up a `.coll` prop on all LitElements. The element will update anytime `.coll` is changed
+
+    It also automatically calls `bindListeners` from the "listeners" helper
+
+    > NOTE: also see ./model
 */
 import {LitElement} from 'lit'
 

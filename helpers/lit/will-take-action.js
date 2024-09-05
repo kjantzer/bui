@@ -1,17 +1,33 @@
 /*
-    Let parent elements detect action and optional modify/deny action
-
-    Example:
+    # Will Take Action
     
-    if( !this.willTakeAction('action-name').allowed ) return
+    Emits with a specially formatted `detail` object for informing parent views of the action
+    and providing them the opportunity to cancel/disallow
 
+    `this.willTakeAction(actionName, detail)`
+
+    ```js
+    if( !this.willTakeAction('delete').allowed ) return
+    if( this.willTakeAction('delete').notAllowed ) return
+
+    let action = this.willTakeAction('show-menu', {menu: [...]})
+    if( action.allowed )
+        console.log(action.menu) // could be different if parent changed it
     ```
-    // on the parent element:
-    @will-take-action=this.onTakeAction
 
-    onTakeAction(e){
+    ```html
+    <child-el @will-take-action=${onAction}></child-el>
+    ```
+
+    ```js
+    onAction(e){
         let {action} = e.detail
-        action.allowed = false
+
+        if( action.name == 'delete' )
+            action.allowed = false
+
+        if( action.name == 'show-menu' )
+            action.menu = action.menu.filter(d=>d.val!='delete')
     }
     ```
 */

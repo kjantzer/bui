@@ -1,6 +1,19 @@
-
 /*
-	NOTE: this concept is still in it's early stages
+	# Edited
+
+	Allows for backbone models to be "edited" without being officially saved.
+
+	```js
+	model.editAttrs({key: val})
+	
+	model.editedAttrs() // {key: val}
+	model.isEdited() // true
+
+	model.resetEdited() // abort edit
+	model.saveEdited() 
+	```
+
+	> Note: see `<b-edited-model-btns>` for a view that uses this
 */
 import {Model} from 'backbone'
 import './promises'

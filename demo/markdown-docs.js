@@ -89,7 +89,7 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             //     pad = 2
 
              return `
-                <${tag} block ${size} pad="${pad}" ${bold} header="h${level}" ${level==1?'thick':''}>
+                <${tag} block ${size} pad="${pad}" ${bold} header="h${level}" ${level==1?'thick':''} part="heading h${level}">
                 <a name="${slug}" class="anchor" href="#${slug}">
                     <span class="header-link"></span>
                 </a>

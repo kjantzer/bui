@@ -1,5 +1,17 @@
 /*
+    # Promises
     Creates some promised verions of Backbone methods
+
+    ```js
+    import 'helpers/backbone/promises'
+
+    await model.fetchSync()
+    await model.saveSync()
+    await model.destroySync()
+
+    await collection.fetchSync()
+    await collection.createSync()
+    ```
 */
 
 import {Model, Collection} from 'backbone'

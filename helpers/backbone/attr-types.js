@@ -1,4 +1,9 @@
 /*
+	# Attribute Types
+
+	Makes sure `.get()` attributes returns data in the expected type (e.g. a number or date object rather than a string)
+*/
+/*
 	Backbone Model Attributes Types
 
 	A non-obtrusive plugin to force `get()`ing of attributes to return values in
@@ -72,3 +77,55 @@ function convertToType(attr, type, val){
 
 	return this.__attributes[key]
 }
+
+/*
+	```js
+	// Supported Types
+	const ModelAttrTypes = {
+		'string': function(val){ return String(val) },
+		'json': function(val){ return typeof val == 'string' ? JSON.parse(val) : val },
+		'bool': function(val){ return !!val },
+		'boolish': function(val){ return !!val && val !== '0' && val !== 0},
+		'int': function(val){ return val ? parseInt(val) : 0 },
+		'float': function(val){ return val ? parseFloat(val) : 0 },
+		'num': function(val){ return val ? parseFloat(val) : 0 },
+		'date': function(val){ return new Date(val) }
+	}
+	```
+
+	How to use
+
+	```js
+	import 'helpers/backbone/attr-types'
+
+	class MyModel extends Backbone.Model {
+
+		get attrTypes(){return {
+			is_active: 'bool',
+			ts_created: 'date',
+		}}
+	}
+
+	let myModel = new MyModel({
+		is_active:'1',
+		ts_created: '2019-10-24 10:30:16'
+	})
+
+	myModel.get('is_active') // true
+	myModel.get('ts_created') // Date()
+	```
+
+	> Note: Attributes will be cached and only re-evaluated to their type after changed
+
+	#### Registering your own attribute type
+	```js
+	import dayjs from 'dayjs'
+
+	Backbone.registerModelAttrType('date', val=>{
+		return dayjs(val)
+	})
+
+	//....
+	myModel.get('ts_created').format('l')
+	```
+*/

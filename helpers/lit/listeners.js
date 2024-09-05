@@ -1,17 +1,27 @@
 /*
-    Adds support for listening to Backbone Model/Collection/ChildCollection
-    events and responding. Most events should just be calling `update` which
+    # Listeners
+    
+    Adds support for listening to Backbone  Model/Collection/Relation`
+    events and responding. Most events should just be calling `requestUpdate` which
     will rerender the view.
 
     Updates `connectedCallback` and `disconnectedCallback`
 
-    Example:
-    ```
+    ```javascript
+    import 'bui/helpers/lit/listeners'
+
     static get listeners(){ return {
-        model: {
-            'change reset': 'update'
+        'model': {
+            'change reset': 'requestUpdate'
+        },
+        'some-relation': {
+            'reset': 'requestUpdate'
         }
     }}
+
+    // ^ equivalent to:
+    this.model.on('change reset', this.requestUpdate.bind(this))
+    this.model.get('some-relation').on('reset', this.requestUpdate.bind(this))
     ```
 */
 import { LitElement } from "lit";

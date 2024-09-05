@@ -1,4 +1,8 @@
+/*
+    # Metadata [DEPRECATED]
 
+    > DEPRECATED - not sure why I wrote this
+*/
 const metadata = {
     
     // example: metadata.save.call(model, 'traits', 'width', '400px')

@@ -1,7 +1,7 @@
 /*
-    Collection "Storehouse"
+    # Storehouse
 
-    Used to make a single collection able to fetch sets of data and merge with existsing
+	Used to make a single collection able to fetch sets of data and merge with existsing
 */
 export function EnableStorehouseColl(Class, {urlPrefix=''}={}){
 

@@ -13,30 +13,6 @@ Extend [LitElement](http://lit.dev) to fit our needs. I like doing this so that 
 import 'bui/helpers/lit'
 ```
 
-## Listeners
-
-```js
-import 'bui/helpers/lit/listeners'
-```
-
-Adds support for listening to Backbone Model/Collection/ChildCollection
-events and responding. Most events should just be calling `requestUpdate` which
-will rerender the view.
-
-```javascript
-static get listeners(){ return {
-    'model': {
-        'change reset': 'requestUpdate'
-    },
-    'child-collection': {
-        'reset': 'requestUpdate'
-    }
-}}
-
-// ^ equivalent to:
-this.model.on('change reset', this.requestUpdate.bind(this))
-this.model.get('child-collection').on('reset', this.requestUpdate.bind(this))
-```
 
 ## Events
 
@@ -44,48 +20,9 @@ this.model.get('child-collection').on('reset', this.requestUpdate.bind(this))
 import 'bui/helpers/lit/events'
 ```
 
-#### `emitEvent`
-To simplify event dispatching from inside the shadow dom, an `emitEvent`
-method has been added to lit-element. It uses `CustomEvent` and `dispatchEvent`
+###
 
-```js
-this.emitEvent(eventName[, detail])
-this.emitEvent('element-event', {id: 1})
-```
-
-The emitted event with have `bubbles: true` and `composed: true` so that the even
-will bubble up and out of the shadow dom
-
-#### `willTakeAction`
-Emits with a specially formatted `detail` object for informing parent views of the action
-and providing them the opportunity to cancel/disallow
-
-```js
-this.willTakeAction(actionName[, detail])
-
-if( !this.willTakeAction('delete').allowed ) return
-if( this.willTakeAction('delete').notAllowed ) return
-
-let action = this.willTakeAction('show-menu', {menu: [/*...*/]})
-if( action.allowed )
-    console.log(action.menu) // could be different if parent changed it
-```
-
-```html
-<child-el @will-take-action=${onAction}></child-el>
-```
-
-```js
-onAction(e){
-    let {action} = e.detail
-
-    if( action.name == 'delete' )
-        action.allowed = false
-
-    if( action.name == 'show-menu' )
-        action.menu = action.menu.filter(d=>d.val!='delete')
-}
-```
+###
 
 ## Click Menus
 ```js

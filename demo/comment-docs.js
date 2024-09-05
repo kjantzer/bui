@@ -1,62 +1,86 @@
 const {readFile, readDir, fs} = require('../util/fs')
 const extract = require('extract-comments')
+const {capitalize} = require('../util/string')
 
-function writeDoc(file, {prefix=''}={}){
+function writeDoc(file, {title, prefix=''}={}){
 
-    if( file.ext != 'js' ) return
+    // if a directory, look for a readme
+    if( file.type == 'd' ){
+        file = file.files.find(f=>f.name == 'README.md')
 
-    // if( file.name != 'color-scheme.js' ) return // TEMP
+    // ignore top level readme
+    }else if( file?.name == 'README.md' )
+        return
+
+    if( file?.ext != 'js' && file?.name != 'README.md' ) return
 
     let filename = file.name
-    // let filename = 'avatar.js'
-    let js = String(readFile(file.path))
+    let docs = String(readFile(file.path))
+    let tag = ''
 
-    let docs = extract(js)
+    if( filename == 'README.md'){
+        title = docs.match(/^# (.+)\n/)?.[1] || capitalize(file.path.match(/\/([a-z]+)\/README.md/i)?.[1] || '[unknown]')
 
-    // console.log(docs);
+    }else{
+        docs = extract(docs)
 
-    docs = docs
-    .filter(d=>d.type=='BlockComment'&&d.value.match(/\n/)&&d.value.match(/^[\s\t]+(#|`)/))
-    .map(d=>d.value)
-    .join(`\n`)
-    .trim()
-    .split('\n')
-    .map(s=>s.replace(/^\s{1,4}/, ''))
-    .map(s=>s.replace(/^\t/, ''))
-    .join(`\n`)
+        // console.log(docs);
 
-    // if( !docs ) return
+        docs = docs
+        .filter(d=>d.type=='BlockComment'&&d.value.match(/\n/)&&d.value.match(/^[\s\t]+(#|`)/))
+        .map(d=>d.value)
+        .join(`\n`)
+        .trim()
+        .split('\n')
+        .map(s=>s.replace(/^\s{1,4}/, ''))
+        .map(s=>s.replace(/^\t/, ''))
+        .join(`\n`)
 
-    // fs.writeFileSync('./_built-docs/'+prefix+filename+'.md', docs)
+        title ||= docs.match(/^# (.+)\n/)?.[1] || file.name.replace('.'+file.ext, '')
 
-    let title = docs.match(/^# (.+)\n/)?.[1] || file.name.replace('.'+file.ext, '')
+        let tags = ['wip', 'deprecated']
+        tag = title.match(new RegExp(`\\[(${tags.join('|')})\\]`, 'i'))?.[1] || ''
 
-    let tags = ['wip', 'deprecated']
-    let tag = title.match(new RegExp(`\\[(${tags.join('|')})\\]`, 'i'))?.[1] || ''
-
-    if( tag ){
-        title = title.replace(`[${tag}]`, '')
+        if( tag ){
+            title = title.replace(`[${tag}]`, '')
+        }
     }
 
-    output.push({
+    return {
         title,
         tag: tag.toLowerCase(),
         name: file.name,
         path: file.path,
         docs: docs || ''
-    })
+    }
 }
 
-let dir = 'util'
-let files = readDir(__dirname+'/../'+dir, {blacklist:['.DS_Store', 'index.js']})
-// console.log(files);
+function writeDirDocs(dir, _files=[]){
 
-let output = []
+    let files = readDir(__dirname+'/../'+dir, {blacklist:['.DS_Store', 'index.js', '_README.md']})
 
-for( let file of files ){
-    writeDoc(file)
+    // console.log(files);
+    // return
+
+    let output = []
+
+    for( let file of files ){
+        let docs = writeDoc(file)
+        if( docs ) output.push(docs)
+    }
+
+    // output = output.sort((a,b)=>{
+    //     if( a.tag == 'deprecated' ) return 1
+    //     return a.title < b.title ? -1 : 1
+    // })
+
+    let filename = dir.replace(/\//g, '-')
+
+    fs.writeFileSync(__dirname+`/dist/docs-${filename}.js`, 'export default '+JSON.stringify(output, null, 4))
+
 }
 
-fs.writeFileSync(__dirname+`/dist/docs-${dir}.js`, 'export default '+JSON.stringify(output, null, 4))
 
-// writeDoc()
+writeDirDocs('util')
+writeDirDocs('helpers/backbone')
+writeDirDocs('helpers/lit')
