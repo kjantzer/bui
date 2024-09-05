@@ -7,6 +7,7 @@
     `this.willTakeAction(actionName, detail)`
 
     ```js
+    // before taking action...
     if( !this.willTakeAction('delete').allowed ) return
     if( this.willTakeAction('delete').notAllowed ) return
 

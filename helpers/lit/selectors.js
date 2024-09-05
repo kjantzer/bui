@@ -1,5 +1,25 @@
 /*
-    Creates shortcuts for selector querying
+    # Selectors
+
+    Creates shortcuts for selector querying the shadow dom
+
+    ```js
+    import 'bui/helpers/lit/selctors'
+
+    this.$('.class') // one in DOM
+    this.$all('.class') // all in DOM
+
+    this.$$('.class') // one in shadow DOM
+    this.$$all('.class') // all in shadow DOM
+    ```
+
+    #### Caching
+
+    Pass `true` or a key string as second arg to cache the result
+
+    ```js
+    let el = this.$$('.class', true)
+    ```
 */
 import {LitElement} from 'lit'
 

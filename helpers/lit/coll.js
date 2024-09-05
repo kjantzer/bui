@@ -5,6 +5,18 @@
 
     It also automatically calls `bindListeners` from the "listeners" helper
 
+    ```js
+    class El extends LitElement {
+        render(){return html`
+            ${this.coll?.length}
+        `}
+    }
+    
+    el = new El()
+    el.coll = coll1
+    el.coll = coll2
+    ```
+
     > NOTE: also see ./model
 */
 import {LitElement} from 'lit'
