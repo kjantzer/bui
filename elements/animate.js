@@ -1,3 +1,18 @@
+/*
+    #  Animate
+
+    Wrap around any element to add some basic animation on hover
+
+    ```html-preview
+    <b-animate scale><b-text>default</b-text></b-animate>
+    <b-animate scale="1.4"><b-text>larger</b-text></b-animate>
+    <b-animate scale="1.4" speed="500"><b-text>slower</b-text></b-animate>
+    ```
+
+    Props
+    - `scale` (1.05)
+    - `speed` (120ms)
+*/
 import { LitElement, html, css } from 'lit'
 
 customElements.define('b-animate', class extends LitElement{

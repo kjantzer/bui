@@ -4,15 +4,6 @@ import {marked} from 'marked'
 import hljs from 'highlight.js'
 import {codeHightlighStyle} from './code-hightlight-style'
 
-marked.setOptions({
-    highlight: function(code, language) {
-        const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
-        return hljs.highlight(validLanguage, code).value;
-    }
-});
-
-window.marked = marked
-
 const rendererOverrides = {
     
     blockquote(str){
@@ -28,8 +19,27 @@ const rendererOverrides = {
             ${type?`<b-label filled>${type.toUpperCase()}</b-label>`:''}
         </b-paper>`
     },
-    _code(str, info, escaped){
-        return `<b-code block>${str}</b-code>`
+    code(str, language, escaped){
+
+        let preview = false
+
+        if( language == 'preview' )
+            return `<div class="preview">${str}</div>`
+
+        if( language == 'html-preview' ){
+            language = 'html'
+            preview = true
+        }
+        
+        const validLanguage = hljs.getLanguage(language) ? language : 'plaintext'
+        let formattedStr = hljs.highlight(validLanguage, str).value
+
+        formattedStr = `<pre><code>${formattedStr}\n</code></pre>`
+
+        if( preview )
+            formattedStr = `<div class="preview">${str}</div>\n${formattedStr}`
+
+        return formattedStr
     },
     _codespan(str, info, escaped){
         return `<b-code>${str}</b-code>`
@@ -189,6 +199,10 @@ customElements.define('demo-markdown-docs', class extends LitElement{
 
         :host > main > *:first-child {
             margin-top: 0;
+        }
+
+        :host > main > .preview {
+            margin: 1em 0;
         }
 
         [header="h3"] { margin: 2em 0 .5em;}

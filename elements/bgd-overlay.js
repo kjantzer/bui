@@ -1,4 +1,16 @@
-import { LitElement, html, css } from 'lit'
+/*
+    # Bgd Overlay
+
+    a full width/height background color with opacity
+
+    ```preview
+    <div style="position: relative; padding: 1em;">
+        <b-bgd-overlay></b-bgd-overlay>
+        Content here with a bgd overlay behind
+    </div>
+    ```
+*/
+import { LitElement, css, html } from 'lit'
 
 customElements.define('b-bgd-overlay', class extends LitElement{
 

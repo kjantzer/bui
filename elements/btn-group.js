@@ -1,3 +1,15 @@
+/*
+    # Button Group
+
+    Use with `<b-btn>` elements to group them together (alters the styling to be grouped)
+
+    ```html-preview
+    <b-btn-group>
+        <b-btn>One</b-btn>
+        <b-btn>Two</b-btn>
+    </b-btn-group>
+    ```
+*/
 import { LitElement, html, css } from 'lit'
 
 customElements.define('b-btn-group', class extends LitElement{

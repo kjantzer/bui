@@ -3,7 +3,7 @@
 
 	Create scalable avatars with initials or image with from a url or gravatar GUID
 
-	```html
+	```html-preview
 	<b-avatar initials="KJ" size="40"></b-avatar>
 	<b-avatar initials="BT" size="40"></b-avatar>
 	<b-avatar initials="JD" size="40"></b-avatar>

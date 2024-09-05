@@ -1,4 +1,14 @@
+/*
+    # Time
 
+    Return an object with time units: `{d, h, m, s, ms}
+
+    `secondsToTime(seconds, opts)`
+    `msToTime(ms, opts)` 
+
+    #### Opts
+    - `days` - include number of days (false will use just hours)
+*/
 function secondsToTime(secs, {days=true}={}){
 
     let d = 0

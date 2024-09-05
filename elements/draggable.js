@@ -3,10 +3,11 @@
 
     Add as child of any element to make the parent element draggable
 
-    ```html
+    ```html-preview
     <!-- div will be draggable -->
     <div>
         <b-draggable></b-draggable>
+        Drag me
     </div>
     ```
 

@@ -1,5 +1,9 @@
 /*
-    Camera
+    # Camera
+
+    ```html
+    <b-camera></b-camera>
+    ```
 */
 import { LitElement, html, css } from 'lit'
 import '../helpers/lit/selectors'
@@ -83,7 +87,7 @@ customElements.define('b-camera', class extends LitElement{
     render(){return html`
         <canvas hidden></canvas>
         <video autoplay playsinline part="video"></video>
-        <b-empty-state part="placeholder">${this.placeholder}</b-empty-state>
+        <b-empty-state overlay part="placeholder">${this.placeholder}</b-empty-state>
         <slot></slot>
     `}
 
@@ -314,3 +318,16 @@ customElements.define('b-camera', class extends LitElement{
 })
 
 export default customElements.get('b-barcode-camera-scanner')
+
+/*
+    ```preview
+    <b-grid cols="auto,1">
+        <b-camera></b-camera>
+        <div>
+            <b-btn onclick="this.parentElement.previousElementSibling.toggleStart()">Start/Stop</b-btn>
+            <b-btn onclick="this.parentElement.previousElementSibling.startRecording()">Record</b-btn>
+            <b-btn onclick="this.parentElement.previousElementSibling.stopRecording({download: true})">Stop/Save Recording</b-btn>
+        </div>
+    </b-grid>
+    ```
+*/

@@ -3,7 +3,7 @@
 
     Render inline or block code
 
-    ```html
+    ```html-preview
     <b-code>inline code</b-code>
     <b-code keyboard>ctrl+o</b-code>
     

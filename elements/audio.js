@@ -1,5 +1,9 @@
+/*
+    # Audio
+
+    A simple styled audio bar with controls
+*/
 import { LitElement, html, css } from 'lit'
-// import Menu from '../presenters/menu'
 import './icon'
 import '../presenters/form/controls/range-slider'
 import dayjs from 'dayjs'

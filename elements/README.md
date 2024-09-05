@@ -73,28 +73,7 @@ Effectively a "span" tag with attributes to apply styles
 
 ## `<b-btn>`
 
-<!--
-<b-btn>Default Button</b-btn>
-<b-btn color="blue">Blue Button</b-btn>
-<b-btn color="red" outline>Outline Button</b-btn>
-<b-btn text>Text Button</b-btn>
--->
 
-#### Attributes
-- `icon`
-- `color`
-- `outline`
-- `pill`
-- `text` - no button outline until hover
-- `clear`
-- `fab` - floating action button
-- `stacked`
-- `thin` - reduces top/bottom padding
-- `xs`, `sm`, `lg`, `xl`
-- `icon-only="mobile"` - label will be hidden on small devices
-
-#### Properties
-- `spin` - set to `true` to show a spinner
 
 ## `<b-btn-group>`
 Visually groups buttons together
