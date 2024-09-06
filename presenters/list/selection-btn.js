@@ -1,3 +1,8 @@
+/*
+    # Selection Button
+
+    Will toggle list selection. Best to put this in the list-header view, but could be in header too
+*/
 import {css} from 'lit'
 import Btn from '../../elements/btn'
 import Notif from '../notif'

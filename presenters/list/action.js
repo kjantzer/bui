@@ -1,5 +1,56 @@
 /*
-    Base class for taking "action" on a model or set of models
+    # Actions
+
+    When needing to take "action" on a model or set of models, the `Action` class can be used. It has features to enable easier implementation
+
+    ```js
+    import Action from 'bui/presenters/list/action'
+
+    class ListAction extends Action {
+
+        // for menus
+        static icon = ''
+        static label = ''
+
+        // should wait for model to save before saving next?
+        get sequentialSave(){ return false }
+        
+        async do(){
+
+            // prompt user, run a test, format data, etc
+            
+            // all models
+            this.models
+
+            // first model in this.models
+            this.model
+
+            // let attrs = await this.prompt(...)
+
+            await this.saveModels(async model=>{
+                // perform saving    
+            })
+        }
+    }
+    ```
+
+    Trigger from click event
+
+    ```html
+    <b-btn @click=${ListAction.clickHandler()}></b-btn>
+    ```
+
+    Include in a menu
+
+    ```js
+    onClick(){
+
+        new Menu([
+            ListAction.menuOption()
+            ...
+        ])...
+    }
+    ```
 */
 import Dialog from '../dialog'
 import Menu from '../menu'

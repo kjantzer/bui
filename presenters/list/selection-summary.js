@@ -1,9 +1,11 @@
 /*
-    Selection Summary
-
+    # Selection Summary [DEPRECATED]
+    
     Will show in slot when selection is turned on and remove from slot when selection ends
     - Has hooks for when list data changes or selection changes
     - subclass is responsible for summary data and re-render
+
+    > DEPRECATED - ./footer should probably be used instead
 */
 import { LitElement, html, css } from 'lit'
 

@@ -54,17 +54,19 @@ function writeDoc(file, {title, prefix=''}={}){
     }
 }
 
-function writeDirDocs(dir){
+function writeDirDocs(dir, {files=[], ignoreEmpty=false}={}){
 
-    let files = readDir(__dirname+'/../'+dir, {
+    files = [...(dir?readDir(__dirname+'/../'+dir, {
         blacklist:['.DS_Store', 'index.js']
-    })
+    }):[]), ...files]
 
     let output = []
 
     for( let file of files ){
         let docs = writeDoc(file)
-        if( docs ){
+        if( ignoreEmpty && !docs?.docs ){
+            // ignore
+        }else if( docs ){
             docs.dir = dir
             docs.path = docs.path.replace(__dirname+'/../', '')
             docs.id = docs.path // for backbone coll
@@ -82,6 +84,8 @@ function writeDirDocs(dir){
 
 
 let output = []
+
+// writeDirDocs('presenters/list', {ignoreEmpty: true})
 
 output.push(...writeDirDocs('app'))
 output.push(...writeDirDocs('elements'))
