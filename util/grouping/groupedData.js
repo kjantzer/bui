@@ -1,5 +1,5 @@
 import GroupsOfGroupedData from './groups'
-import rangeOfDates from './rangeOfDates'
+import rangeOfDates from '../rangeOfDates'
 import {avg} from '../math'
 import {capitalize} from '../string'
 
