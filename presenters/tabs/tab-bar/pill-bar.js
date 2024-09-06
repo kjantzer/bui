@@ -7,7 +7,6 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
         :host(.tab-bar) {
             display: flex;
             justify-content: center;
-            margin-bottom: 1em;
             border-bottom: none !important;
             padding: .35em 0;
         }
