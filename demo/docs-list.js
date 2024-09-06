@@ -23,6 +23,8 @@ export default class DocsList extends LitElement {
 
     static get styles(){return css`
         :host {
+            height: 100%;
+            background-color: var(--theme-bgd);
             display: block;
             position:relative;
             padding: var(--view-gutter);

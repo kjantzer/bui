@@ -1,7 +1,7 @@
 /*
     # Listeners
     
-    Adds support for listening to Backbone  Model/Collection/Relation`
+    Adds support for listening to Backbone  `Model/Collection/Relation`
     events and responding. Most events should just be calling `requestUpdate` which
     will rerender the view.
 

@@ -1,16 +1,16 @@
 /*
     # Custom Errors
 
-    #### `UIAlertError`
+    `UIAlertError`  
     Generic alert. Defaults to `Dialog.alert`
 
-    #### `UIPermissionError`
+    `UIPermissionError`  
     For when a user is not allowed to do something. Defaults to `Dialog.stopped`
 
-    #### `UIWarningError`
+    `UIWarningError`  
     Defaults to `Dialog.warning`
 
-    #### `UIDeniedError`
+    `UIDeniedError`  
     Defaults to `Dialog.error`
 */
 import Dialog from '../presenters/dialog'
