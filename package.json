@@ -10,7 +10,7 @@
     },
     "scripts": {
         "start": "npm run build-icons && npm run build-sw && parcel demo/index.html --no-autoinstall --out-dir demo/dist",
-        "build": "npm run build-icons && build-code-comment-docs && npm run build-sw && parcel build demo/index.html --no-autoinstall --out-dir public --public-url ./ --no-minify && cp ./CNAME ./public/CNAME",
+        "build": "npm run build-icons && npm run build-code-comment-docs && npm run build-sw && parcel build demo/index.html --no-autoinstall --out-dir public --public-url ./ --no-minify && cp ./CNAME ./public/CNAME",
         "build-sw": "parcel build demo/sw/src/index.js --no-autoinstall --out-dir ./demo --out-file ./sw.js --no-minify",
         "publish-pages": "npm run build && bash update-github-pages.sh",
         "build-icons": "node generate-all-material-icons.js",
@@ -43,7 +43,8 @@
         "marked": "4.0.16",
         "parcel-bundler": "^1.12.5",
         "parcel-plugin-markdown-string": "^1.4.2",
-        "parcel-plugin-svg-as-inline-string": "github:kjantzer/parcel-plugin-svg-as-inline-string"
+        "parcel-plugin-svg-as-inline-string": "github:kjantzer/parcel-plugin-svg-as-inline-string",
+        "extract-comments": "^1.1.0"
     },
     "dependencies": {
         "@fnando/sparkline": "^0.3.10",
