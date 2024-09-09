@@ -80,7 +80,7 @@ export default class GroupedData {
     uniqueValues(key){ return Array.from(new Set(this.values(key)))}
 
     dateRange({unit, startDate, endDate, dateKey}){ 
-        if( !endDate && this.opts.dateRangeEndDate )
+        if( !endDate && this.opts?.dateRangeEndDate )
             endDate = this.opts.dateRangeEndDate
 
         return rangeOfDates.call(this, {unit, startDate, endDate, dateKey})
