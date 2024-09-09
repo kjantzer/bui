@@ -4,10 +4,6 @@ import './markdown-docs'
 import '../presenters/list/group-by'
 import {applyGrouping} from '../presenters/list/group-by/util'
 
-const GROUP_BY_VALS = [
-    {label: 'Type', val: 'dir'}
-]
-
 class Coll extends Collection {
 
     applyGrouping(models){

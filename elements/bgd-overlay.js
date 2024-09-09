@@ -3,7 +3,7 @@
 
     a full width/height background color with opacity
 
-    ```preview
+    ```html-preview
     <div style="position: relative; padding: 1em;">
         <b-bgd-overlay></b-bgd-overlay>
         Content here with a bgd overlay behind
