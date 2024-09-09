@@ -40,6 +40,7 @@ module.exports = function rangeOfDates({
         dates = (this !== globalThis && this?.map(m=>dayjs(m.get(dateKey)).format(format))) || []
 
     dates.sort()
+    dates = dates.filter(d=>d) // remove empty values
 
     // if start/end dates are numbers, assume number of `units` from current date (or other date given)
     if( startDate && typeof startDate == 'number' )
