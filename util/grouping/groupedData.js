@@ -52,7 +52,8 @@ export default class GroupedData {
     }
 
     avg(key, {decimals=0}={}){
-        return avg(this.values(key), decimals)
+        let vals = this.values(key)
+        return vals?.length ? avg(vals, decimals) : 0
     }
 
     max(key){ return this.map(m=>get(m, key)).sort().pop() }
