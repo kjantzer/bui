@@ -1,5 +1,19 @@
 /*
-    Details - mimics the native `<details>` element
+    # Details
+    
+    Mimics the native `<details>` element
+
+    ```html-preview
+    <b-details>
+        <b-text toggles>Header</b-text>
+        <b-text>Details content</b-text>
+    </b-details>
+    ```
+
+    Opts
+    - use `toggles` to enable the entire header to be clickable
+    - set `noicon` on root to disable
+    - change the icon with `slot="icon"`
 */
 import { LitElement, html, css } from 'lit'
 

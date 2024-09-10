@@ -1,4 +1,8 @@
-// DEPRECATED - use `b-text`
+/*
+    # Headers [DEPRECATED]
+
+    > DEPRECATED - use `b-text` with size props like `lg` or `xl`
+*/
 import { LitElement, html, css } from 'lit'
 
 customElements.define('b-h1', class extends LitElement {

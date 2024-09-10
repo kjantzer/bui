@@ -1,3 +1,16 @@
+/*
+    # Flex
+
+    ```html
+    <b-flex>
+        <b-text>content</b-text>
+        <b-text>more</b-text>
+    </b-flex>
+
+    <b-flex left></b-flex>
+    <b-flex left wrap></b-flex>
+    ```
+*/
 import { LitElement, html, css } from 'lit'
 
 customElements.define('b-flex', class extends LitElement{

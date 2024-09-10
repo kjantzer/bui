@@ -1,3 +1,13 @@
+/*
+    # Circle Progress
+
+    A simple pie chart to signify progress
+
+    ```html-preview
+    <b-circle-progress val="25"></b-circle-progress>
+    <b-circle-progress val="65" style="--circle-progress-color: blue"></b-circle-progress>
+    ```
+*/
 import { LitElement, html, css } from 'lit'
 
 // TODO: maybe rename?

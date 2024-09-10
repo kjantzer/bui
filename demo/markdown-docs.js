@@ -37,7 +37,7 @@ const rendererOverrides = {
         formattedStr = `<pre><code>${formattedStr}\n</code></pre>`
 
         if( preview )
-            formattedStr = `<div class="preview">${str}</div>\n${formattedStr}`
+            formattedStr = `${formattedStr}\n<div class="preview">${str}</div>`
 
         return formattedStr
     },
@@ -340,6 +340,25 @@ customElements.define('demo-markdown-docs', class extends LitElement{
             content: '— ';
         } */
         
+        .preview {
+            padding: 1em;
+            border: solid 1px var(--theme-bgd-accent);
+            position: relative;
+        }
+
+        .preview::after {
+            content: 'preview';
+            color: var(--theme-text-accent);
+            position: absolute;
+            top: -1em;
+            left: .5em;
+            font-size: var(--font-size-xs);
+            background: var(--theme-bgd);
+            display: block;
+            padding: 0 4px;
+            text-transform: uppercase;
+            font-weight: bold;
+                }
    
     `}
 

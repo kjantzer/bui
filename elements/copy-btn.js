@@ -1,3 +1,12 @@
+/*
+    # Copy Btn
+
+    Subclass of `b-btn` that will copy the text of the parent elemnt it is in. Or set `.value` on the btn (can be string or custom function)
+
+    ```html-preview
+    <div>String of text <b-copy-btn clear></b-copy-btn></div>
+    ```
+*/
 import {css} from 'lit'
 import Btn from './btn'
 import copyText from '../util/copyText'

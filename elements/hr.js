@@ -1,3 +1,13 @@
+/*
+    # Horizontal Rule
+
+    ```html-preview
+        <b-hr></b-hr>
+        <b-hr thick short></b-hr>
+        <b-hr vert thick></b-hr>
+        <b-hr pad=0></b-hr>
+    ```
+*/
 import { LitElement, html, css } from 'lit'
 
 customElements.define('b-hr', class extends LitElement{

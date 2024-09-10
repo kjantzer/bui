@@ -1,7 +1,9 @@
 /*
-    Camera Controls
+    # Camera Controls
 
-    ```
+    Basic right-click control to change camera input
+
+    ```html
     <b-camera>
         <b-camera-controls></b-camera-controls>
     </b-camera>
