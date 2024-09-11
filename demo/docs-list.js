@@ -5,6 +5,9 @@ import './markdown-docs'
 import '../presenters/list/group-by'
 import {applyGrouping} from '../presenters/list/group-by/util'
 import '../elements/hid-scale'
+import '../elements/toggle-btn'
+import '../elements/toggle-view'
+import '../elements/x-out'
 
 class Coll extends Collection {
 

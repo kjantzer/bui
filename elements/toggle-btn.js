@@ -1,3 +1,12 @@
+/*
+    # Toggle Btn
+
+    A subclass of `b-btn` that will toggle localStorage. Use with `b-toggle-view`
+
+    ```html-preview
+    <b-toggle-btn key="demo">Toggle the view</b-toggle-btn>
+    ```
+*/
 import Btn from './btn'
 import store from '../util/store'
 

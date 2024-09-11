@@ -1,5 +1,23 @@
 /*
+    # Toggle View
+    
     Generally used with `b-toggle-btn`
+
+    ```html-preview
+    <b-flex>
+        <b-toggle-view key="demo" type="hide"></b-toggle-view>
+        I will be hidden if you click on the toggle button
+    </b-flex>
+    <b-flex>
+        <b-toggle-view key="demo" type="show"></b-toggle-view>
+        I'm hidden until you click toggle button
+    </b-flex>
+    ```
+
+    ### Types
+    - `show` - view is hidden by default
+    - `hide` - view is shown by default
+    - `other-value` - any string; will be applied as an attribute
 */
 import { LitElement, html, css } from 'lit'
 import store, {forceStorageEventsLocally} from '../util/store'

@@ -1,4 +1,14 @@
-// inspired by: https://codepen.io/nelsonleite/pen/jMjMdB
+/*
+    # X-out
+
+    Cross out an element. Inspired by: https://codepen.io/nelsonleite/pen/jMjMdB
+
+    ```html-preview
+    <div style="height: 4em">
+        <b-x-out></b-x-out>
+    </div>
+    ```
+*/
 import { LitElement, html, css } from 'lit'
 
 customElements.define('b-x-out', class extends LitElement{
