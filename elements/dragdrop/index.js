@@ -6,7 +6,11 @@
     https://schema.org/
 */
 import { LitElement, html, css } from 'lit'
-import '../helpers/lit/willTakeAction'
+import '../../helpers/lit/willTakeAction'
+import DragDropPreview from './preview'
+import * as dataTransfer from './datatransfer'
+
+export {dataTransfer, DragDropPreview}
 
 // make sure "dragend" fires immediately
 document.addEventListener("dragover", e=>e.preventDefault(), false);
@@ -182,7 +186,7 @@ customElements.define('b-dragdrop', class extends LitElement{
         }
 
         if( this.url )
-            URL(e, this.url)
+            dataTransfer.url(e, this.url)
 
         if( this.preview !== 'false' && this.preview !== false ){
             DragPreview = document.createElement(this.preview)
@@ -285,106 +289,3 @@ customElements.define('b-dragdrop', class extends LitElement{
 })
 
 export default customElements.get('b-dragdrop')
-
-// TODO: prefix these with `DataTransfer...` so they make more sense when imported
-export function DownloadURL(e, filename, url){
-    e.dataTransfer.setData('DownloadURL', [
-        `application/octet-stream:${filename}:${url}`
-    ]);
-}
-
-// TODO: set mimetype by extension?
-export function DownloadContent(e, filename, content, {mimetype}={}){
-    
-    if( !mimetype && typeof content == 'object' && !Array.isArray(content) ){
-        mimetype = 'application/json'
-        content = JSON.stringify(content)
-
-    }else if( !mimetype && Array.isArray(content) ){
-        mimetype = 'text/csv'
-        content = JSON.stringify(content)
-    }
-
-    if( !mimetype )
-        mimetype = 'text/plain'
-
-    let b64 = btoa(content)
-        
-    return DownloadURL(e, filename, `data:${mimetype};base64,${b64}`)
-}
-
-
-export function PlainText(e, text){
-    e.dataTransfer.setData('text/plain', text);
-}
-
-// Navigates to the URL when dropping on the URL bar or browser page
-export function URL(e, url){
-    if( url[0] == '/' )
-        url = location.protocol+'//'+location.host+url
-    e.dataTransfer.setData('text/uri-list', url);
-}
-
-// https://schema.org/ImageObject
-// https://json-ld.org/
-export function jsonLD(e, type, data){
-    data = Object.assign(data, {
-        '@context': 'https://schema.org',
-        '@type': type
-    });
-
-    e.dataTransfer.setData('application/ld+json', JSON.stringify(data));
-}
-
-
-// import { LitElement, html, css } from 'lit'
-
-// not used by default
-customElements.define('b-dragdrop-preview', class extends LitElement{
-
-    static properties = {
-        value: {type: String}
-    }
-
-    static styles = css`
-        :host {
-            display: block;
-            position:relative;
-            position: absolute;
-            z-index: 10000;
-            left: -10000px;
-            pointer-events: none;
-            padding: 1em;
-            box-sizing: border-box;
-            border-radius: 12px;
-            box-shadow: var(--theme-shadow-2);
-            background: var(--theme-bgd);
-
-            /*background: rgba(var(--theme-text-rgb), .2);*/
-
-        }
-    `
-
-    matchSize = true
-
-    render(){return html`
-        ${this.value}
-    `}
-
-    set data(val){
-        let oldVal = this.data
-        this.__data = val
-    
-        this.requestUpdate('data', oldVal)
-    }
-    
-    get data(){ return this.__data}
-
-    onLeave(){
-        this.value = ''
-    }
-
-})
-
-const DragDropPreview = customElements.get('b-dragdrop-preview')
-export {DragDropPreview}

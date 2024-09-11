@@ -4,7 +4,7 @@ import './filter-btn'
 import './filter-saved-presets' // TODO: make this opt-in?
 import Dialog from '../../../presenters/dialog'
 import Menu from '../../../presenters/menu'
-import {DownloadContent} from '../../../elements/dragdrop'
+import {dataTransfer} from '../../../elements/dragdrop'
 import readFile from '../../../util/readFile'
 import '../../../elements/uploader'
 
@@ -115,7 +115,7 @@ customElements.define('b-list-filters', class extends LitElement{
         let filters = this.filters.value()
         let filename = `filters-${this.filters.length}-${this.filters.key}.bui`
         
-        DownloadContent(action.evt, filename, {
+        dataTransfer.downloadContent(action.evt, filename, {
             key: this.filters.key,
             filters
         })
