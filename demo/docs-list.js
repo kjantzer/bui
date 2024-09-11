@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import {Collection} from 'backbone'
-import 'list/intersection-observer'
+import '../presenters/list/intersection-observer'
 import './markdown-docs'
 import '../presenters/list/group-by'
 import {applyGrouping} from '../presenters/list/group-by/util'
