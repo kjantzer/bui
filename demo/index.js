@@ -5,6 +5,11 @@ router.config({
     prefix: '#/'
 })
 
+if( !window.goTo )
+window.goTo = (path, props, e)=>{
+    return router.goTo(path, props||{})
+}
+
 import 'bui/util/window.open'
 import 'bui/app/error-handler'
 import '../elements/icon/legacy/_all'

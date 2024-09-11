@@ -74,11 +74,8 @@ export default class DocsList extends LitElement {
     }
 
     didBecomeActive(){
-        setTimeout(()=>this.goToRef(),100)
-    }
-
-    firstUpdated(){
-        setTimeout(()=>this.goToRef(),500)
+        if( this._firstUpdated )
+            setTimeout(()=>this.goToRef(),100)
     }
 
     goToRef(){
@@ -96,6 +93,8 @@ export default class DocsList extends LitElement {
     }
 
     onIntersectionChanged(e){
+        if( !this._firstUpdated ) return
+
         let {model} = e.detail
         this.tabView.route.update({
             path: model ? 'docs/'+model.id : 'docs'
@@ -136,6 +135,12 @@ export default class DocsList extends LitElement {
 
     contentChanged(){
         this.requestUpdate()
+
+        if( !this._firstUpdated ){
+            this.goToRef()
+            this._firstUpdated = true
+        }
+
     }
 
     navTo(e){
