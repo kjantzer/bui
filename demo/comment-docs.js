@@ -61,6 +61,7 @@ function writeDirDocs(dir, {files=[], ignoreEmpty=false}={}){
     }):[]), ...files]
 
     let output = []
+    let dirRoot = __dirname.replace('/demo', '')
 
     for( let file of files ){
         let docs = writeDoc(file)
@@ -68,8 +69,11 @@ function writeDirDocs(dir, {files=[], ignoreEmpty=false}={}){
             // ignore
         }else if( docs ){
             docs.dir = dir
-            docs.path = docs.path.replace(__dirname+'/../', '')
-            docs.id = docs.path // for backbone coll
+            // change path to relative
+            docs.path = docs.path.replace(new RegExp(dirRoot+'\\/(demo\\/)?(\\.\\.)?\\/?'), '')
+            // make ID that can be in url slug
+            docs.id = docs.path.replace(/(\/README)?\.[a-z]{2,3}$/i, '').replace(/[\.\/ ]/g, '-')
+
             output.push(docs)
         }
     }
