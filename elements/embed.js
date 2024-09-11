@@ -1,9 +1,9 @@
 /*
-    Embed
+    # Embed
     
     For embedding iframes and videos (like youtube) that responsively scale
 
-    ```html
+    ```html-preview
     <b-embed url="https://www.youtube.com/watch?v=sK1ODp0nDbM"></b-embed>
     ```
 */

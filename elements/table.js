@@ -1,3 +1,23 @@
+/*
+    # Table
+
+    Create simple tables with a header
+
+    ```html-preview
+    <b-table>
+        <b-table-row slot="header">
+            <b-text w="100px">ID</b-text>
+            <b-text w="2fr">Title</b-text>
+            <b-text w="1fr">Meta</b-text>
+        </b-table-row>
+        <b-table-row>
+            <b-text>1234</b-text>
+            <b-text>Some record</b-text>
+            <b-text>data</b-text>
+        </b-table-row>
+    </b-table>
+    ```
+*/
 // TODO: add css vars and/or props for borders
 import { LitElement, html, css } from 'lit'
 import '../helpers/lit/selectors'

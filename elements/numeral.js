@@ -1,3 +1,19 @@
+/*
+    # Numeral
+
+    Uses numeral.js to format and display numbers
+
+    ```html-preview
+    <b-flex left wrap>
+        <b-num num="10000"></b-num>
+        <b-num-large num="10000"></b-num-large>
+        <b-currency-acct num="-279"></b-currency-acct>
+
+        <!-- custom format -->
+        <b-num num="1000.37" format="0,0.[00]"></b-num>
+    </b-flex>
+    ```
+*/
 import { LitElement, html, css } from 'lit'
 import numeral from 'numeral'
 

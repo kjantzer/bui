@@ -1,3 +1,42 @@
+/*
+    # File Icon
+
+    ```html-preview
+    <b-file-icon ext="pdf" style="--size:4em"></b-file-icon>
+    <b-file-icon ext="docx" style="--size:4em"></b-file-icon>
+    <b-file-icon ext="xlsx" style="--size:4em"></b-file-icon>
+    <b-file-icon ext="psd" style="--size:4em"></b-file-icon>
+    <b-file-icon ext="indd" style="--size:4em"></b-file-icon>
+    <b-file-icon ext="ai" style="--size:4em"></b-file-icon>
+    <b-file-icon ext="mp3" style="--size:4em"></b-file-icon>
+    <b-file-icon ext="mp4" style="--size:4em"></b-file-icon>
+    <b-file-icon ext="html" style="--size:4em"></b-file-icon>
+    <b-file-icon ext="xml" style="--size:4em"></b-file-icon>
+    <b-file-icon ext="zip" style="--size:4em"></b-file-icon>
+    ```
+
+    File icon has some default file formats defined, but you will inevitably want to add your own.
+    To support this, you must deliberately call the "define" function before using the custom element.
+
+    ```js
+    import { css } from 'lit'
+    import defineFileIcon from 'bui/elements/file-icon'
+
+    // use default colors
+    defineFileIcon()
+
+    // use defaults with your own colors
+    defineFileIcon({
+        // must be defined with lit-element css
+        jpg: css`
+            :host([ext="jpg"]),
+            :host([ext="jpeg"]) {
+                --color: orange;
+            }
+        `
+    })
+    ```
+*/
 
 import { LitElement, html, css } from 'lit'
 import './text'

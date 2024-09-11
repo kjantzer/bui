@@ -57,7 +57,7 @@ function writeDoc(file, {title, prefix=''}={}){
 function writeDirDocs(dir, {files=[], ignoreEmpty=false}={}){
 
     files = [...(dir?readDir(__dirname+'/../'+dir, {
-        blacklist:['.DS_Store', 'index.js']
+        blacklist:['.DS_Store', 'index.js', 'logo.js']
     }):[]), ...files]
 
     let output = []

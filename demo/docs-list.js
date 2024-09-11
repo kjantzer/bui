@@ -4,6 +4,7 @@ import 'list/intersection-observer'
 import './markdown-docs'
 import '../presenters/list/group-by'
 import {applyGrouping} from '../presenters/list/group-by/util'
+import '../elements/hid-scale'
 
 class Coll extends Collection {
 

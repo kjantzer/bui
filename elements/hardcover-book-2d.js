@@ -1,3 +1,14 @@
+/*
+    # Hardcover Book 2D
+
+    Render an image like a hardcover book
+
+    ```html-preview
+    <b-hardcover-book-2d 
+        src="https://cdn.blackstonepublishing.com/cdn-cgi/image/width=240,quality=75/c/k/ck5w/ck5w-rectangle.jpg"
+    ></b-hardcover-book-2d>
+    ```
+*/
 import { LitElement, html, css } from 'lit'
 
 customElements.define('b-hardcover-book-2d', class extends LitElement{

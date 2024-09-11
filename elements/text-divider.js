@@ -1,3 +1,22 @@
+/*
+    # Text Divider
+
+    A subclass of `b-text` but with a line and additional slots
+
+    ```html-preview
+    <b-text-divider xbold thick icon="info">
+        Divider
+        <b-btn clear color="theme" slot="right">Button</b-btn>
+    </b-text-divider>
+    ```
+
+    ### Attributes
+    - `icon` - display an icon before the title
+    - `center` - put divider in middle
+    - `thick` - make line thicker
+    - `bottom` - put line at the bottom
+
+*/
 import { LitElement, html, css } from 'lit'
 import Text from './text'
 import './hr'

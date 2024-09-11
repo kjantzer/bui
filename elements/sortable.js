@@ -1,9 +1,26 @@
 /*
-    Sortable
+    # Sortable
 
-    NOTE: this is a very basic implementation; subject to change
+    This is a simple and opinionated tool that is intended to be used in lit-html and therefore is designed to put the moved item back to where it was. An event is fired to inform of where the item SHOULD be moved to. It is up to the host to make the move and re-render
 
-    https://github.com/SortableJS/Sortable
+    Uses SortableJS https://github.com/SortableJS/Sortable
+
+    ```html-preview
+    <div>
+        <b-sortable item="b-text"></b-sortable>
+        <b-text block>Line 1</b-text>
+        <b-text block>Line 2</b-text>
+        <b-text block>Line 3</b-text>
+    </div>
+    ```
+
+    ```js
+    host.addEventListener('sort-changed', e=>{
+        // save the change
+    })
+    ```
+
+    > NOTE: this is a very basic implementation; subject to change
 
     TODO
     - make sorting an option?

@@ -1,3 +1,24 @@
+/*
+    # HID Scale
+
+    Uses `util/hidDevice` to connect and use a common shipping scale: https://www.hogentogler.com/fairbanks/29824c-shipping-scale.asp
+
+    Will show the weight of the scale. If no scale connected, can be clicked to prompt connecting to one.
+
+    ```html-preview
+    <b-hid-scale></b-hid-scale>
+    ```
+
+    ```js
+    render(){ return html`
+        <b-hid-scale @change=${this.onScaleChange} @stable=${this.onScaleStable}></b-hid-scale>
+    `}
+
+    onScaleStable(){
+        console.log(scaleEl.weight)
+    }
+    ```
+*/
 import { LitElement, html, css } from 'lit'
 import hidDevice from '../util/hidDevice'
 import '../helpers/lit/emitEvent'

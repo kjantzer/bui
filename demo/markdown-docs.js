@@ -85,8 +85,8 @@ customElements.define('demo-markdown-docs', class extends LitElement{
                 text: text
             });
 
-            let size = [, 'xl', 'lg', 'md', ''][level] || ''
-            let bold = [, 'xbold', 'xbold', 'bold', 'semibold'][level] || 'semibold'
+            let size = [, 'xl', 'lg', '', ''][level] || ''
+            let bold = [, 'xbold', 'xbold', 'xbold', 'bold'][level] || 'semibold'
             let tag = 'b-text'
             let pad = '1'
 

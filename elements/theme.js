@@ -1,11 +1,13 @@
 /*
-    Can be used to change the theme for a particular element/view
+    # Theme
 
-    Example: force dark mode
-    ```html
-    <my-custom-view>
-        <b-theme mode="dark"></b-theme>
-    <my-custom-view>
+    Can be used to change the theme (dark/light) for a particular element/view
+
+    ```html-preview
+    <div style="background: var(--theme-bgd);">
+        This content should flip color schemes
+        <b-theme mode="inverse"></b-theme>
+    <div>
     ```
 */
 import { LitElement, html, css } from 'lit'

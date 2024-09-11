@@ -11,7 +11,7 @@ If `.target` isn't set, the parentElement will be used
 </div>
 ```
 
-#### Events
+### Events
 
 The events use `willTakeAction`, allowing for cancelling/disallowing the actions (with the exception of `leave`)
 
@@ -30,7 +30,7 @@ dragdropEl.addEventListener('will-take-action', e=>{
 
 })
 
-// or setup listner for specific action
+// or setup listener for specific action
 dragdropEl.addEventListener('dragged', e=>{})
 ```
 
@@ -44,7 +44,7 @@ The following events require `drop` attribute on the `b-dragdrop` element
 
 `dropped` - dragzone
 
-#### DataTransfer
+### DataTransfer
 
 The native drag/drop api can use DataTransfer to transfer data types to other apps or views.
 

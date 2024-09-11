@@ -1,3 +1,25 @@
+/*
+    # Grid
+
+    A simplifed element for displaying common grid layouts
+
+    ```html-preview
+    <b-grid>
+        <b-text>col 1 equal</b-text>
+        <b-text>col 2 equal</b-text>
+    </b-grid>
+
+    <b-grid cols="auto,1">
+        <b-text>col 1 auto</b-text>
+        <b-text>col 2 fills the rest</b-text>
+    </b-grid>
+    ```
+
+    ### Props
+    - `cols` - some predefined (1-8, "2,1", "1,2", "auto,1", "1,auto")
+    - `gap` - some gap adjustments (0, " ", .5, 1, 2)
+    - `gap-row` - set uniq gap for the row (^same values)
+*/
 import { LitElement, html, css } from 'lit'
 import {mediaQuery} from '../util/mediaQueries'
 

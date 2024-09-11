@@ -1,5 +1,16 @@
 /*
-    https://undraw.co/illustrations
+    # Empty State
+
+    Can render a message only if the first or last child
+
+    ```html-preview
+    <b-btn onclick="this.remove()">Remove me to see empty state</b-btn>
+    <b-empty-state if="first">No results</b-empty-state>
+    ```
+
+    ### Props
+    - `xs`, `md`, `lg` - adjust font size
+    - `overlay` - overlay over entire view
 */
 import { LitElement, html, css } from "lit";
 

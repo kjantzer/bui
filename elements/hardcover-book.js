@@ -1,3 +1,16 @@
+/*
+    # Hardcover Book
+
+    Based on https://tympanus.net/codrops/2013/07/11/animated-books-with-css-3d-transforms/
+
+    ```html-preview
+    <b-hardcover-book animated>
+        <img slot="cover-img" src="https://cdn.blackstonepublishing.com/cdn-cgi/image/width=240,quality=75/c/k/ck5w/ck5w-rectangle.jpg">
+    </b-hardcover-book>
+    ```
+
+    > NOTE: not the best looking implementation. Looks like something got messed up with the styling
+*/
 import { LitElement, html, css } from 'lit'
 
 customElements.define('b-hardcover-book', class extends LitElement{

@@ -1,3 +1,8 @@
+/*
+    # Table Row
+
+    See `<b-table>` for how to use
+*/
 // TODO: add css vars for padding, borders, etc
 import { LitElement, html, css } from 'lit'
 
