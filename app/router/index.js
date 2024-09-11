@@ -41,7 +41,7 @@ export class Router {
             requireState: false
         }, opts)
 
-        this.states = new HistoryStates()
+        this.states = new HistoryStates(config)
 
         // listen for state changes and change routes accordingly
         // I tried to add an async with this cb method but it takes quite a while

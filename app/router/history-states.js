@@ -2,18 +2,27 @@
 import HistoryState from './history-state'
 
 export default class HistoryStates {
-    constructor(){
+
+    constructor(config){
         let storedData = sessionStorage.getItem('history-states')
         this.states = JSON.parse(storedData||'[]').map(props=>new HistoryState(this, JSON.parse(props)))
 
         this._current = history.state && history.state.num || -1
 
-        // set initial state data
-        this.add({
+        let initialState = {
             path: location.pathname,
             hash: location.hash,
             query: location.search
-        })
+        }
+
+        // if using hash in routes, then we need to append it to the pathname
+        if( config.PATH_PREFIX.startsWith('#') ){
+            initialState.path += initialState.hash||''
+            initialState.hash = null
+        }
+
+        // set initial state data
+        this.add(initialState)
     }
 
     get length(){ return this.states.length }
