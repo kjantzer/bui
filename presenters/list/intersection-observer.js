@@ -37,6 +37,10 @@ customElements.define('b-list-intersection-observer', class extends LitElement{
         return this.intersectionObserver.observe(...arguments)
     }
 
+    unobserve(){
+        return this.intersectionObserver.unobserve(...arguments)
+    }
+
     onChange(entries){
 
         let rows = entries.filter(ent=>ent.target.model)
