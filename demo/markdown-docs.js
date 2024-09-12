@@ -112,6 +112,12 @@ customElements.define('demo-markdown-docs', class extends LitElement{
 
         this.content = marked(this.docs, {renderer})
 
+        if( this.model ){
+            let toc = this._toc
+            if( toc[0]?.level == 1 ) toc.shift()
+            this.model.set('toc', toc)
+        }
+
         this.requestUpdate()
     }
 

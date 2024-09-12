@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import {Collection} from 'backbone'
+import scrollbars from '../helpers/scrollbars'
 import '../presenters/list/intersection-observer'
 import './markdown-docs'
 import '../presenters/list/group-by'
@@ -37,12 +38,18 @@ export default class DocsList extends LitElement {
             grid-template-rows: 1fr;
             padding: 0;
         }
+
+        b-list::part(toolbar) {
+            z-index: 40;
+        }
         
         .toc {
             padding: var(--gutter);
             padding-right: 1em;
             overflow: auto;
         }
+
+        ${scrollbars.hide('.toc')}
 
         [tag="deprecated"] {
             text-decoration: line-through;
@@ -54,13 +61,15 @@ export default class DocsList extends LitElement {
         }
 
         .sidebar .group {
-            border-bottom: solid 2px var(--theme-bgd-accent);
+            background: var(--theme-bgd-accent);
             padding-bottom: .25em;
             padding-top: .25em;
             position: sticky;
             top: var(--gutter-negative);
-            background: var(--theme-bgd);
             z-index: 1;
+            margin-left: var(--gutter-negative);
+            padding-left: var(--gutter);
+            border-radius: 0 2em 2em 0;
         }
 
         .sidebar .group:not(:first-of-type) {
@@ -75,7 +84,10 @@ export default class DocsList extends LitElement {
 
     constructor(){
         super()
-        this.docs = new Coll(this.constructor.docs || [])
+        let docs = this.constructor.docs || []
+        // docs = docs.filter(d=>d.id=='presenters-list') // TEMP
+        this.docs = new Coll(docs)
+        
     }
 
     didBecomeActive(){
@@ -84,17 +96,14 @@ export default class DocsList extends LitElement {
     }
 
     goToRef(){
-        let ref = this.tabView.route.state?.params?.ref
+        let {ref} = this.tabView.route.state?.params
+        let {slug} = this.tabView.route.state.props
         if( !ref ) return 
 
         let m = this.docs.get(ref)
         if( !m ) return
 
-        m.trigger('navTo')
-        
-        // if TOC at the top (probably just loaded the view), then scroll down to the active item
-        if( this.$$('.toc')?.scrollTop == 0 ) 
-            this.$$('.toc .item.'+m.id)?.scrollIntoView({block: 'center'})
+        m.trigger('navTo', {slug})
     }
 
     onIntersectionChanged(e){
@@ -104,6 +113,14 @@ export default class DocsList extends LitElement {
         this.tabView.route.update({
             path: model ? 'docs/'+model.id : 'docs'
         })
+
+        if( this.activeModel && this.activeModel != model )
+            this.activeModel.set('active', false)
+        
+        this.activeModel = model
+        this.activeModel?.set('active', true)
+
+        this.$$(`.toc [model="${model.id}"]`)?.scrollIntoViewIfNeeded()
     }
 
     render(){return html`
@@ -126,10 +143,7 @@ export default class DocsList extends LitElement {
                     ${m.level == 1 ?html`
                         <b-text xbold md caps class="group">${m.name}</b-text>
                     `:html`
-                    <b-text .index=${i} .model=${m} link class="item ${m.id}"
-                        ?dim=${!m.get('docs')}
-                        tag=${m.get('tag')}
-                        @click=${this.navTo}>${m.get('title')}</b-text>
+                        <demo-docs-list-toc-item .index=${i} .model=${m} ></demo-docs-list-toc-item>
                     `}
                 `)}
             </b-grid>
@@ -146,11 +160,6 @@ export default class DocsList extends LitElement {
             this._firstUpdated = true
         }
 
-    }
-
-    navTo(e){
-        if( e.model )
-            goTo('docs/'+e.model.id)
     }
 }
 
@@ -179,6 +188,73 @@ const filters = {
     }
 }
 
+customElements.define('demo-docs-list-toc-item', class extends LitElement{
+
+    static listeners = {
+        model: {'change:toc change:active': 'requestUpdate'}
+    }
+
+    static styles = [ css`
+        :host {
+            display: block;
+        }
+
+        b-details > b-text {
+            font-weight: 500;
+        }
+
+        b-details:not([noicon])::part(summary) {
+            margin-left: -1.25em;
+            position: sticky;
+            top: 0;
+            background: var(--theme-bgd);
+        }
+
+        .toc {
+            color: var(--theme-text-dim);
+            border-left: solid 1px var(--theme-bgd-accent);
+            border-bottom: solid 1px var(--theme-bgd-accent);
+            padding-left: .5em;
+            padding-bottom: .5em;
+        }
+
+        .toc [level="2"] { margin-left: 0em; color: var(--theme-text)}
+        .toc [level="3"] { margin-left: .5em; }
+        .toc [level="4"] { margin-left: 1em; font-size: var(--font-size-sm); }
+        .toc [level="5"] { font-size: var(--font-size-sm); margin-left: 1.5em }
+    `]
+
+    get hasTOC(){ return this.model.get('toc')?.length > 2}
+
+    render(){return html`
+        <b-details ?open=${this.hasTOC&&this.model.get('active')} ?noicon=${!this.hasTOC}>
+            <b-text link class="item ${this.model.id}"
+                ?gradient=${this.model.get('active')}
+                ?dim=${!this.model.get('active')&&!this.model.get('docs')}
+                tag=${this.model.get('tag')}
+                @click=${this.navTo}>${this.model.get('title')}</b-text>
+
+            ${this.hasTOC?html`
+            <b-grid class="toc" cols=1 gap=".5">
+            ${this.model.get('toc')?.map(d=>d.level==1?'':html`
+                <b-text link .html=${d.title} .slug=${d.slug} level=${d.level} @click=${this.tocClick}></b-text>
+            `)}
+            </b-grid>
+            `:''}
+
+        </b-details>
+    `}
+    
+    tocClick(e){
+        goTo('docs/'+this.model.id, {slug: e.currentTarget.slug})
+    }
+
+    navTo(e){
+        goTo('docs/'+this.model.id)
+    }
+
+})
+
 customElements.define('demo-docs-list-row-divider', class extends LitElement{
 
     static styles = [ css`
@@ -187,7 +263,7 @@ customElements.define('demo-docs-list-row-divider', class extends LitElement{
             position: sticky;
             top: calc(var(--gutter-negative) + .5rem);
             background-color: var(--theme-bgd);
-            z-index: 13;
+            z-index: 33;
             padding: var(--gutter);
             padding-bottom: .25rem;
         }
@@ -205,8 +281,15 @@ customElements.define('demo-docs-list-row', class extends LitElement{
         model: {'navTo': 'navTo'}
     }
 
-    navTo(){
-        this.scrollIntoView()
+    navTo({slug}={}){
+        let scrollTo = this
+        
+        if( slug )
+            scrollTo = this.$$('demo-markdown-docs')?.$$(`[href="#${slug}"]`)
+            
+        console.log(scrollTo);
+
+        (scrollTo||this).scrollIntoView()
     }
 
     static styles = css`
@@ -216,17 +299,27 @@ customElements.define('demo-docs-list-row', class extends LitElement{
             padding: var(--gutter);
         }
 
+        /*:host(:hover) {
+            box-shadow: var(--theme-shadow-3);
+            z-index: 20;
+        }*/
+
         b-text-divider {
             position: sticky;
             background-color: var(--theme-bgd);
             top: 2.3rem;
-            z-index: 11;
+            z-index: 31;
         }
 
         demo-markdown-docs::part(heading h2){
             top: 4.2rem;
             font-size: var(--font-size-xs);
-            z-index: 10;
+            z-index: 30;
+        }
+
+        demo-markdown-docs::part(heading h3),
+        demo-markdown-docs::part(heading h4){
+            font-size: var(--font-size-sm);
         }
     `
 
@@ -245,7 +338,7 @@ customElements.define('demo-docs-list-row', class extends LitElement{
             ${this.model.get('title')}
             <b-text muted slot="right">${this.model.get('name')}</b-text>
         </b-text-divider>
-        <demo-markdown-docs notoc .docs=${this.model.get('docs')||'see source code'}></demo-markdown-docs>
+        <demo-markdown-docs notoc .model=${this.model} .docs=${this.model.get('docs')||'see source code'}></demo-markdown-docs>
     `}
 
 })

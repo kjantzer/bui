@@ -68,11 +68,14 @@ function writeDirDocs(dir, {files=[], ignoreEmpty=false}={}){
         if( ignoreEmpty && !docs?.docs ){
             // ignore
         }else if( docs ){
-            docs.dir = dir
+            docs.dir = dir.replace(/\//g, ' / ')
             // change path to relative
             docs.path = docs.path.replace(new RegExp(dirRoot+'\\/(demo\\/)?(\\.\\.)?\\/?'), '')
             // make ID that can be in url slug
             docs.id = docs.path.replace(/(\/README)?\.[a-z]{2,3}$/i, '').replace(/[\.\/ ]/g, '-')
+
+            if( docs.filename == 'README.md' )
+                docs.filename = docs.path.replace(/(\/README)?\.[a-z]{2,3}$/i, '')
 
             output.push(docs)
         }
@@ -93,6 +96,7 @@ let output = []
 
 output.push(...writeDirDocs('app'))
 output.push(...writeDirDocs('elements'))
+output.push(...writeDirDocs('presenters'))
 output.push(...writeDirDocs('util'))
 output.push(...writeDirDocs('helpers/backbone'))
 output.push(...writeDirDocs('helpers/lit'))

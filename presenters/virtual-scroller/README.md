@@ -1,4 +1,4 @@
-Virtual Scroller
+# Virtual Scroller
 ==================
 
 Uses [lit-virtualizer](https://github.com/PolymerLabs/uni-virtualizer) to render a virtualized list
