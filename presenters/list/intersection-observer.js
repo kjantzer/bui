@@ -14,7 +14,7 @@ customElements.define('b-list-intersection-observer', class extends LitElement{
         let opts = {
             // threshold: 1,
             root: this.list,
-            rootMargin: '-25% 0px -25% 0px', // when within middle 50% of list
+            rootMargin: this.getAttribute('rootmargin') || '-25% 0px -25% 0px', // when within middle 50% of list
             ...this.opts||{}
         }
 
@@ -47,17 +47,18 @@ customElements.define('b-list-intersection-observer', class extends LitElement{
 
         rows.map(row=>{
             if( row.isIntersecting )
-                this.visible.add(row.target.model)
+                this.visible.add(row.target)
             else
-                this.visible.delete(row.target.model)
+                this.visible.delete(row.target)
         })
 
-        let models = Array.from(this.visible)
-        let model = this.list.list.scrollTop < this.lastScrollTop ? models[models.length-1] : models[0]
+        let visible = Array.from(this.visible)
+        let target = this.list.list.scrollTop < this.lastScrollTop ? visible[visible.length-1] : visible[0]
+        let model = target.model
 
         this.lastScrollTop = this.list.list.scrollTop
         
-        this.emitEvent('intersection-changed', {model, models, entries})
+        this.emitEvent('intersection-changed', {model, target, visible, entries})
     }
 
 })
