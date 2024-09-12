@@ -1,9 +1,19 @@
+/*
+    # Timestamp (ts)
+
+    Render a date. Uses day.js and accepts a range of different date types (string, date object, dayjs object)
+
+    ```html-preview
+    <b-ts date="2024-09-12"></b-ts>
+    ```
+*/
 import { LitElement, html, css } from 'lit'
 import dayjs from '../helpers/day-js'
 
 customElements.define('b-ts', class extends LitElement{
 
     static get properties(){return {
+        date: {},
         format: {type: String},
         fallback: {type: String},
         trackAge: {type: String},

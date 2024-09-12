@@ -1,3 +1,13 @@
+/*
+    # Ribbon
+
+    ```html-preview
+    <div style="height: 4em">
+        <b-ribbon>Ribbon</b-ribbon>
+        <b-ribbon pos="right">Ribbon</b-ribbon>
+    </div>
+    ```
+*/
 import { LitElement, html, css } from 'lit'
 
 customElements.define('b-ribbon', class extends LitElement{

@@ -3,6 +3,7 @@ const extract = require('extract-comments')
 const {capitalize} = require('../util/string')
 
 const TAGS = ['wip', 'deprecated']
+const BLACKLIST = ['.DS_Store', 'index.js', 'logo.js', 'sub.js', 'sup.js', 'headers.js']
 
 function writeDoc(file, {title, prefix=''}={}){
 
@@ -57,7 +58,7 @@ function writeDoc(file, {title, prefix=''}={}){
 function writeDirDocs(dir, {files=[], ignoreEmpty=false}={}){
 
     files = [...(dir?readDir(__dirname+'/../'+dir, {
-        blacklist:['.DS_Store', 'index.js', 'logo.js']
+        blacklist: BLACKLIST
     }):[]), ...files]
 
     let output = []

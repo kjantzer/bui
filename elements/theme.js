@@ -7,8 +7,11 @@
     <div style="background: var(--theme-bgd);">
         This content should flip color schemes
         <b-theme mode="inverse"></b-theme>
-    <div>
+    </div>
     ```
+
+    ### Attributes
+    - `mode` - light, dark, inverse
 */
 import { LitElement, html, css } from 'lit'
 import colorScheme from '../util/color-scheme'

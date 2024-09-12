@@ -1,12 +1,17 @@
 /*
-    A white box with rounded corners and a shadow.
+    # Paper
+    
+    A box with rounded corners and a shadow.
 
-    ```html
-    <b-paper>Paper element</b-paper>
-    <b-paper dense color="postit">Paper element</b-paper>
+    ```html-preview
+    <b-paper>Standard paper element</b-paper>
+    <br>
+    <b-paper overshadow>Overshadow</b-paper>
+    <br>
+    <b-paper dense color="postit">Postit color</b-paper>
     ```
 
-    #### Attributes
+    ### Attributes
     - `color` - blue, green, red, orange, yellow, purple
     - `border` - only if a color is set
     - `dense` - less padding
@@ -14,7 +19,7 @@
     - `empty` - no background and a dashed border
     - `outline` - no shadow, just border
 
-    #### CSS Props
+    ### CSS Props
     - `--radius`
     - `--b-paper-shadow`
 */

@@ -1,7 +1,7 @@
 /*
     # Grouped Collection [DEPRECATED]
 
-    > DEPRECATED - Similar to bui/util/groupedData
+    > DEPRECATED - Similar to bui/util/grouping
 */
 import {Collection, Model} from 'backbone'
 import CollMap from '../../util/collmap'

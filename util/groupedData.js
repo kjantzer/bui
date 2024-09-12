@@ -1,16 +1,19 @@
 /*
-    Grouped Data
+    # Grouped Data [DEPRECATED]
 
     Provides a structure for grouping and calculating data
     - grouped data can be grouped further
     - the chain is maintained and provides pathName and pathValue for knowing level
 
-    Ex:
+    ```js
     let rawData = [{type: 'art', qty: 1}, {type: 'art', qty: 2}, {type: 'text', qty: 3}]
     let data = new GroupedData(null, null, rawData)
 
     data.total('qty') = 6
     data.groupBy('type').map(d=>d.total('qty')) // 3, 3
+    ```
+
+    > DEPRECATED - use `util/grouping` instead
 */
 import {round} from './math'
 import uniq from './uniq'

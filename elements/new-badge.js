@@ -1,3 +1,13 @@
+/*
+    # New Badge
+
+    Renders red "new" badge that will auto hide after 10 seconds. The timer is cancelled when the document is not in focus. The timer restarts when focus is regained.
+
+    ```html-preview
+    <b-btn onclick="el=document.createElement('b-new-badge');el.innerHTML='New';this.insertAdjacentElement('afterend', el)">Create badge</b-btn>
+    <b-new-badge>New</b-new-badge>
+    ```
+*/
 import Label from './label'
 
 const DEFAULT_HIDE_TIME = 10 // seconds

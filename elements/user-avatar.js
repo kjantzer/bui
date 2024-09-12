@@ -1,13 +1,22 @@
 /*
+    # User Avatar
+
     A subclass for rendering an avatar for User.js models
 
+    ```html
     <b-user-avatar .model=${userModel}></b-user-avavtar>
+    ```
 
-    // OR
+    ```js
+    import UserAvatar from 'bui/elements/user-avatar'
     UserAvatar.users = UsersColl
-    <b-user-avatar uid="1"></b-user-avavtar>
 
-    NOTE: this does make some assumptions regarding the user models
+    html`
+        <b-user-avatar uid="1"></b-user-avavtar>
+    `
+    ```
+
+    > NOTE: this does make some assumptions regarding the user models
 */
 import { LitElement, html, css } from 'lit';
 import './avatar'

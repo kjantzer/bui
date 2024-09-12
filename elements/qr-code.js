@@ -1,5 +1,9 @@
 /*
-    QR Code
+    # QR Code
+
+    ```html-preview
+    <b-qr-code color="black" size="100" value="https://example.com"></b-qr-code>
+    ```
     
     - Requires `qr-code-styling` package
     - Will lazy-load on first use of this element

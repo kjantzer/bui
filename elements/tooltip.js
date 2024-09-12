@@ -1,5 +1,14 @@
 /*
-    Tooltip (uses Popover to display)
+    # Tooltip 
+    
+    uses Popover to display a tooltip when hovering over the target.
+
+    ```html-preview
+    <b-text>
+        Hover over me for a moment to see a tooltip
+        <b-tooltip>Hello!</b-tooltip>
+    </b-text>
+    ```
 */
 import { LitElement, html, css } from 'lit'
 import Popover from '../presenters/popover'

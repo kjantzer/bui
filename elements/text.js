@@ -1,3 +1,34 @@
+/*
+    # Text
+
+    The go-to element for rendering text. Usually used in place of `span` and often `div`
+
+    ```html-preview
+    <b-flex left wrap>
+        <b-text>Some text</b-text>
+        <b-text bold italic>Bolded and italc</b-text>
+        <b-text clip style="max-width:140px">Clip this text when it gets to long</b-text>
+    </b-flex>
+    ```
+
+    ### Attributes
+    - `block` - change to a block element
+    - `xs`, `sm`, `lg`, `xl`, `xxl` - size
+    - `tone` - critical, warning, info, muted
+    - `muted` - shorthand for `tone="muted"`
+    - `dim` - darker than muted
+    - `bold`, `italic`
+    - `ucase`, `lcase`, `capitalize`
+    - `align` - left, center, right, justify
+    - `link` - changes color on hover
+    - `clip` - keeps text on one line, clipping with ellipsis
+    - `clip="2"` - (2-7) clip to N lines
+    - `sup`, `sub` - super/sub vertical align
+    - `monospace`
+
+
+    > See source code for complete options
+*/
 import { LitElement, html, css } from 'lit'
 import {unsafeHTML} from 'lit/directives/unsafe-html.js'
 import isLitHTML from '../helpers/lit/isLitHTML'

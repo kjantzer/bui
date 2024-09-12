@@ -11,6 +11,8 @@ import '../elements/table-row'
 import '../elements/toggle-btn'
 import '../elements/toggle-view'
 import '../elements/x-out'
+import '../elements/ribbon'
+import '../elements/qr-code'
 
 class Coll extends Collection {
 
@@ -50,11 +52,6 @@ export default class DocsList extends LitElement {
         }
 
         ${scrollbars.hide('.toc')}
-
-        [tag="deprecated"] {
-            text-decoration: line-through;
-            color: var(--theme-text-accent);
-        }
 
         .sidebar {
             width : 180px;
@@ -210,6 +207,10 @@ customElements.define('demo-docs-list-toc-item', class extends LitElement{
             background: var(--theme-bgd);
         }
 
+        [active] .item {
+            color: var(--theme);
+        }
+
         .toc {
             color: var(--theme-text-dim);
             border-left: solid 1px var(--theme-bgd-accent);
@@ -227,9 +228,9 @@ customElements.define('demo-docs-list-toc-item', class extends LitElement{
     get hasTOC(){ return this.model.get('toc')?.length > 2}
 
     render(){return html`
-        <b-details ?open=${this.hasTOC&&this.model.get('active')} ?noicon=${!this.hasTOC}>
+        <b-details ?open=${this.hasTOC&&this.model.get('active')} ?noicon=${!this.hasTOC} ?active=${this.model.get('active')}>
             <b-text link class="item ${this.model.id}"
-                ?gradient=${this.model.get('active')}
+                ?strike=${this.model.get('tag')=='deprecated'}
                 ?dim=${!this.model.get('active')&&!this.model.get('docs')}
                 tag=${this.model.get('tag')}
                 @click=${this.navTo}>${this.model.get('title')}</b-text>
@@ -312,7 +313,7 @@ customElements.define('demo-docs-list-row', class extends LitElement{
         }
 
         demo-markdown-docs::part(heading h2){
-            top: 4.2rem;
+            top: 4.1rem;
             font-size: var(--font-size-xs);
             z-index: 30;
         }
@@ -335,9 +336,10 @@ customElements.define('demo-docs-list-row', class extends LitElement{
 
     render(){return html`
         <b-text-divider bottom heading md xbold>
-            ${this.model.get('title')}
-            <b-text muted slot="right">${this.model.get('name')}</b-text>
+            <b-text ?strike=${this.model.get('tag')=='deprecated'}>${this.model.get('title')}</b-text>
+            <b-text muted slot="right">${this.model.get('dir')}/${this.model.get('name')}</b-text>
         </b-text-divider>
+
         <demo-markdown-docs notoc .model=${this.model} .docs=${this.model.get('docs')||'see source code'}></demo-markdown-docs>
     `}
 

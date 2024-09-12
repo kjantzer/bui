@@ -1,9 +1,12 @@
 /*
+	# Spinner
+
 	SVG and idea taken from https://ant.design/components/button/
 	
-	Examples: 
-	<circle-spinner/>
-	<circle-spinner style="--size:.8em; color: white"/>
+	```html-preview
+	<b-spinner spin></b-spinner>
+	<b-spinner spin style="--size:1.6em; color: red"></b-spinner>
+	```
 */
 
 class SpinnerElement extends HTMLElement {
