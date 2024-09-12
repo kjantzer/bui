@@ -34,7 +34,7 @@ customElements.define('b-qr-code', class extends LitElement{
 
     firstUpdated(){
         import('qr-code-styling').then((QRCodeStyling)=>{
-            this.qrCode = new QRCodeStyling.default()
+            this.qrCode = new (QRCodeStyling.default||QRCodeStyling)()
             this.qrCode.append(this)
             this.requestUpdate()
         })
