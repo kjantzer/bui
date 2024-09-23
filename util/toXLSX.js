@@ -60,7 +60,7 @@ module.exports = function toXLSX(data, opts){
 
 	// Create Header Row and set column width based on the longest value in the column + 2
 	worksheet.columns = Object.keys(data[0]).map((key)=>{
-		let columnWidth = Math.max(key.length, ...data.map(row=>row[key]?.toString().length || 10)) + 2;
+		let columnWidth = Math.max(key.length, ...data.map(row=>row[key]?.toString().length || 10)) + 4;
 
 		// Limit the column width to 45 in case of extremely long strings
 		// TODO: make this an maxCellWidth option
