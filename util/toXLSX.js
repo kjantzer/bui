@@ -58,7 +58,8 @@ module.exports = function toXLSX(data, opts){
 	// 		top: 0.75, bottom: 0.75, left: 0.25, right: 0.25
 	// 	}
 
-	// Create Header Row and set column width based on the longest value in the column + 2
+	// Create Header Row and set column width based on the longest value plus a buffer
+	// 'total' rows which are generated later
 	worksheet.columns = Object.keys(data[0]).map((key)=>{
 		let columnWidth = Math.max(key.length, ...data.map(row=>row[key]?.toString().length || 10)) + 4;
 
