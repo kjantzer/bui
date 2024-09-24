@@ -122,17 +122,25 @@ module.exports = function toXLSX(data, opts){
 		worksheet.views = [{state: 'frozen', xSplit: 0, ySplit: freeze, topLeftCell: 'A' + (freeze + 1)}]
 	}
 
-		// Create a Total Row if totalColumns are provided
-	if( opts.totalColumns.length ) {
+	// Create a Total Row if totalColumns are provided
+	if (opts.totalColumns.length) {
 		let totalRow = worksheet.addRow([])
 		totalRow.getCell(1).value = 'TOTAL:'
-		totalRow.font = {bold: true}
-		totalRow.fill = {type: 'pattern', pattern:'solid', fgColor:{argb:'FFDDDDDD'}}
+		totalRow.font = { bold: true }
+		totalRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFDDDDDD' } }
 
-		opts.totalColumns.forEach(col=>{
+		opts.totalColumns.forEach(col => {
 			let columnIndex = worksheet.getColumn(col).number
 			let cell = totalRow.getCell(columnIndex)
-			let total = data.reduce((acc, row)=>acc + row[col], 0)
+			let total = data.reduce((acc, row) => {
+				// Check if the row is a pool row
+				let isPoolRow = row.title === '' && row.author && row.author.includes('Pool')
+				// Exclude "Royalties Earned" for pool rows
+				if (isPoolRow && col === 'Royalties Earned') {
+						return acc
+				}
+				return acc + (row[col] || 0)
+			}, 0)
 			cell.value = total
 		})
 	}
