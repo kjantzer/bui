@@ -6,9 +6,8 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
     
         :host(.tab-bar) {
             display: flex;
-            justify-content: center;
             border-bottom: none !important;
-            padding: .35em 0;
+            padding: .35em 2em;
         }
 
         ::slotted(b-btn),
@@ -20,9 +19,9 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
             display: flex;
             background: var(--theme-bgd-accent);
             border-radius: 1em;
-            width: fit-content;
+            width: 100%;
             height: 2em;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
         }
 
@@ -43,7 +42,7 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
         }
         
         .bar b-btn[active] {
-            --bgdColor: var(--theme);
+            --bgdColor: var(--theme-gradient);
             color: var(--theme-inverse-text);
             font-weight: 500;
             box-shadow: 1px 1px 4px var(--dark-shadow);
