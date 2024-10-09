@@ -1,5 +1,4 @@
-Tag List
-=============
+# Tag List
 
 ## Overview
 

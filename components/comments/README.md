@@ -1,11 +1,10 @@
-Comments
-============
+# Comments
 
-# Client
+## Client
 
 Allows for realtime comments to be added to any view/section. Comments are grouped under a "group" and "ID" for that group (`gid`)
 
-## Setup
+### Setup
 
 ```js
 import Comments from 'bui/components/comments'
@@ -43,7 +42,7 @@ customElements.define('mention-element', class extends MentionElement {
 Comments.extensions = [mentionPlugin('mention-element')]
 ```
 
-## Use
+### Use
 
 Here's an example for adding comments to a book record:
 
@@ -96,7 +95,7 @@ You can give the comment a model and the `GID` and `Meta` will be set using that
 <b-comments group="book" .model=${this.model}></b-comments>
 ```
 
-## File Attachments
+### File Attachments
 Comments can support attaching files with the `.uploads` option. When writing a new comment, files can be dropped onto the input to attach. The file(s) will be uploaded when the comment is submitted.
 
 ```html
@@ -109,7 +108,7 @@ Comments can support attaching files with the `.uploads` option. When writing a 
 
 > In the future, `.uploads` may support a hash of options such as `.uploads=${{accept:".pdf"}}`
 
-## Styling
+### Styling
 
 ### Parts
 - `write-comment`
@@ -126,9 +125,9 @@ b-comment::part(comment) {
 }
 ```
 
-## Events
+### Events
 
-### Will Take Action
+#### Will Take Action
 
 - `new-comment`
 - `show-menu` - right+click menu about to be shown
@@ -141,7 +140,7 @@ b-comment::part(comment) {
 
 ***
 
-# Server
+## Server
 
 ```js
 const Comments = require(bui`components/comments/server/model`)
@@ -152,7 +151,7 @@ new API(app, [
 ], {root: '/api'})
 ```
 
-## Push Messages
+### Push Messages
 
 Comments support a push msg hook for when new comments are added. By default, nothing happens. Add a `PushMsg` class to enable this feature.
 
@@ -189,7 +188,7 @@ class MyComments extends Comments(){
 }
 ```
 
-## Files
+### Files
 Comments can support uploaded attachments. You can override the default upload location if desired:
 
 ```js
@@ -201,7 +200,7 @@ Comments.FileOpts = {
 }
 ```
 
-## Notes
+### Notes
 - no permisions right now
     - anyone can edit an existing comment
     - anyone an delete

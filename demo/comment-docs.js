@@ -98,6 +98,7 @@ let output = []
 output.push(...writeDirDocs('app'))
 output.push(...writeDirDocs('elements'))
 output.push(...writeDirDocs('presenters'))
+output.push(...writeDirDocs('components'))
 output.push(...writeDirDocs('util'))
 output.push(...writeDirDocs('helpers/backbone'))
 output.push(...writeDirDocs('helpers/lit'))

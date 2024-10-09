@@ -1,5 +1,4 @@
-Screen Recorder
-=================
+# Screen Recorder
 
 A simple shared component that allows for a screen to be recorded. Includes webcam and mic.
 

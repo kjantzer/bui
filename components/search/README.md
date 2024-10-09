@@ -1,5 +1,4 @@
-Search
-====================
+# Search [deprecated]
 
 A "spotlight" / "Alfred app" like view for doing global app searches
 
