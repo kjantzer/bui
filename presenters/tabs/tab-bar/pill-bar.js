@@ -23,6 +23,7 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
             height: 2em;
             justify-content: space-between;
             align-items: center;
+            position: relative;
         }
 
         .bar b-btn{
@@ -34,6 +35,8 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
             transition-property: all;
             transition-duration: 200ms;
             --borderColor: transparent;
+            position: relative;
+            z-index: 1;
         }
 
         .bar b-btn:not([active]) {
@@ -42,10 +45,18 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
         }
         
         .bar b-btn[active] {
-            --bgdColor: var(--theme-gradient);
             color: var(--theme-inverse-text);
             font-weight: 500;
-            box-shadow: 1px 1px 4px var(--dark-shadow);
+        }
+
+        .slider {
+            position: absolute;
+            height: 1.8em;
+            background: var(--theme-gradient);
+            border-radius: 1em;
+            transition: transform 200ms ease;
+            z-index: 0;
+            box-shadow: 1px 1px 4px var(--theme-shadow);
         }
 
         
@@ -56,7 +67,7 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
         <slot name="menu:before"></slot>
 
         <div class="bar">
-
+            <div class="slider" id="slider"></div>
             ${this.views.map(v=>html`
                 ${v.canDisplay?html`
 
@@ -74,8 +85,46 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
         <slot name="menu:after"></slot>
     `}
 
-    onClick(e){
-        this.onMenuClick(e)
+    firstUpdated(){
+        this.firstUpdate = true
+        this.updateSliderPosition()
     }
 
+    onClick(e){
+        this.onMenuClick(e)
+        this.updateSliderPosition()
+    }
+
+    refresh(){
+        setTimeout(()=>{
+            this.updateSliderPosition()
+        }, 100)
+    }
+
+    updateSliderPosition(){
+        let activeBtn = this.$$('b-btn[active]')
+
+        if (!activeBtn) 
+            this.refresh()
+
+        let slider = this.shadowRoot.getElementById('slider')
+
+        if(activeBtn && slider){
+
+            let rect = activeBtn.getBoundingClientRect()
+
+            let barRect = this.shadowRoot.querySelector('.bar').getBoundingClientRect()
+
+            slider.style.width = `${rect.width}px`
+
+            if(this.firstUpdate){
+                slider.style.transition = 'none'
+                slider.style.transform = `translateX(${rect.left - barRect.left}px)`
+                this.firstUpdate = false
+            } else {
+                slider.style.transition = 'transform 200ms ease'
+                slider.style.transform = `translateX(${rect.left - barRect.left}px)`
+            }
+        }
+    }
 })
