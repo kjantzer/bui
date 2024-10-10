@@ -93,6 +93,10 @@ function writeDirDocs(dir, {files=[], ignoreEmpty=false}={}){
 
 let output = []
 
+if( !fs.existsSync(__dirname+`/dist`) ){
+    fs.mkdirSync(__dirname+`/dist`)
+}
+
 // writeDirDocs('presenters/list', {ignoreEmpty: true})
 
 output.push(...writeDirDocs('app'))
