@@ -1,5 +1,5 @@
-Print View
-===============
+# Print View
+
 
 ```js
 PrintView.shared.open(models, {

@@ -18,7 +18,7 @@ import '../../elements/btn'
 import '../../elements/btn-group'
 import '../../elements/grid'
 import '../../elements/code'
-import Draw from '../draw'
+import Draw from '../../elements/draw'
 import CollMap from '../../util/collmap'
 import store from '../../util/store'
 

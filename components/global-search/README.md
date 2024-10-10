@@ -9,8 +9,8 @@ import {register} from 'bui/components/global-search'
 
 register({
     url: '/api/search', // default, change if needed
-    searchSets, // see blow
-    resultRender,
+    searchSets, // see below
+    resultRender, // see below
     filters: {
         // optional filters for results list
     }
@@ -41,7 +41,7 @@ Special targeted searches can be enabled with `searchSets`.
 
 ```js
 const searchSets = {
-    '/u ': {label: 'Users', icon: 'person', url: '/api/v6/search/user'},
-    '/p ': {label: 'Person', icon: 'person', url: '/api/v6/search/person'},
+    '/u ': {label: 'Users', icon: 'person', url: '/api/search/user'},
+    '/p ': {label: 'Person', icon: 'person', url: '/api/search/person'},
 }
 ```

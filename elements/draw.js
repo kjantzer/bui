@@ -1,12 +1,18 @@
 /*
-    Draw
+    # Draw
 
     Initial code from: https://www.geeksforgeeks.org/how-to-draw-with-mouse-in-html-5-canvas/
+
+    ```html
+    <b-draw></b-draw>
+    ```
 
     TODO:
     - smooth out drawn lines
     - custom colors?
     - resize when window changes?
+
+    > NOTE: currently expects to fill the entire window
 */
 import { LitElement, html, css } from 'lit'
 
@@ -99,7 +105,7 @@ customElements.define('b-draw', class extends LitElement{
 
     drawStopAfterLeave(){
         clearTimeout(this._drawStopAfterLeave)
-        this._drawStopAfterLeave = setTimeout(this.drawStart, 500)
+        this._drawStopAfterLeave = setTimeout(this.drawStop, 500)
     }
 
     drawStart(e){
