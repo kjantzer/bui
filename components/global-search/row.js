@@ -58,6 +58,24 @@ customElements.define('b-global-seach-row', class extends LitElement{
                 </b-text>
             </b-global-search-result-row-template>
         `
+
+        if( this.get('type')=='searchSet' )
+            return html`
+            <b-global-search-result-row-template sm icon=${this.get('icon')=='apps'?'apps':'search'}>
+                
+                <b-text style="line-height: 1.1em">
+                    <b-text block>
+                        <b-text bold>${this.get('label')||this.get('title')||this.get('name')}</b-text>
+                    </b-text>
+
+                    <b-text dim block sm italic ?hidden=${!this.get('val')?.description}>${this.get('val')?.description}</b-text>
+                </b-text>
+
+                <b-text slot="right">
+                    <b-code keyboard>${this.get('val').key}</b-code>
+                </b-text>
+            </b-global-search-result-row-template>
+        `
         
         return html`
         <b-grid cols=1 gap=" ">
