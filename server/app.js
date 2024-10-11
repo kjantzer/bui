@@ -91,7 +91,7 @@ module.exports = class ExpressApp {
         if( publicPort === true ) publicPort = port
 
         this.server.listen(port, ()=>{
-            console.log(`\n${name} running on http://localhost:${publicPort}`)
+            console.log(`\n🚀 ${name} running on http://localhost:${publicPort}`)
         })
 
         if( io )
