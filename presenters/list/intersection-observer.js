@@ -54,11 +54,12 @@ customElements.define('b-list-intersection-observer', class extends LitElement{
 
         let visible = Array.from(this.visible)
         let target = this.list.list.scrollTop < this.lastScrollTop ? visible[visible.length-1] : visible[0]
-        let model = target.model
+        let model = target?.model
 
         this.lastScrollTop = this.list.list.scrollTop
         
-        this.emitEvent('intersection-changed', {model, target, visible, entries})
+        if( target )
+            this.emitEvent('intersection-changed', {model, target, visible, entries})
     }
 
 })
