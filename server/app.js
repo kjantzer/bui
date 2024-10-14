@@ -1,5 +1,62 @@
 /*
-    An opinionated express app for BUI apps
+    # App
+    
+    An opinionated express app
+
+    ```js
+    const ExpressApp = require(bui`server/app`)
+    const app = global.app = new ExpressApp(options)
+
+    app.start({
+        port=8080, 
+        publicPort=true, // true = same as port
+        name="App"
+    })
+    ```
+
+    ## Default Options
+
+    ```js
+    const DEFAULT_OPTS = {
+        cors: false,
+        corsPrivateNetwork: false,
+        compression: true,
+        parseCookies: true,
+        bodyParser: {
+            text: true, // parse text
+            json: true // and json types
+        },
+        fileUploads: false, // see express-fileupload
+        parseSocketIDs: true, // will set `req.socketIDs` from header 'x-socket-ids'
+        staticPaths: [],
+        beforeMiddleware: null, // optional hook
+        handleUncaughtException: true,
+        handleUnhandledRejection: true,
+    }
+    ```
+
+    ## Example
+
+    ```js
+    const ExpressApp = require(bui`server/app`)
+    const app = global.app = new ExpressApp({
+        staticPaths: [DIST_PATH, PUBLIC_PATH],
+        cors: false,
+        corsPrivateNetwork: false,
+        bodyParser: {
+            text: {
+                // change default
+                type: ['text/plain', 'application/vnd.cip4-jmf+xml'],
+                limit: '50mb'
+            },
+            json: true
+        },
+        fileUploads: true,
+        beforeMiddleware(){
+            // do something before middleware is attached
+        },
+    });
+    ```
 */
 const express = require('express')
 const http = require('http')

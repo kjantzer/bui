@@ -7,10 +7,10 @@ if( !fs.existsSync(__dirname+`/dist`) ){
     fs.mkdirSync(__dirname+`/dist`)
 }
 
-;['app', 'elements', 'presenters', 'components', 'util', 'helpers/backbone', 'helpers/lit'].forEach(path=>{
+;['app', 'elements', 'presenters', 'components', 'util', 'helpers/backbone', 'helpers/lit', 'server'].forEach(path=>{
 
     output.push(...parseDirDocComments(path, {
-        blacklist: ['index.js', 'logo.js', 'sub.js', 'sup.js', 'headers.js']
+        blacklist: ['index.js', 'logo.js', 'sub.js', 'sup.js', 'headers.js', 'fileManager.js']
     }))
 
 })

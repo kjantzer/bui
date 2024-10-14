@@ -1,5 +1,7 @@
 /*
-    Related Models
+    # Related Models
+
+    Easily create references to other related models
 */
 
 function setup(Model){

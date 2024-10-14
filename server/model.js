@@ -1,3 +1,41 @@
+/*
+    # Model
+
+    Define a data model that can retrieve from the database and standup related API endpoints
+
+    ```js
+    class MyModel extends Model {
+
+        static api = {
+            root: '/my-model',
+            routes: [
+                ['get', '/:id?', 'find']
+                ['post', '/', 'add']
+                ['put', '/:id?', 'update']
+                ['delete', '/:id?', 'destroy']
+
+                ['get', '/:id/special-action', 'specialAction']
+            ]
+        }
+
+        config = {
+            table: 'my_model_table',
+            tableAlias: 'mmt', // optional
+
+            // use these to properly parse/convert when reading/writing from db
+            jsonFields: [],
+            csvFields: [],
+            nullFields: [] // will save "empty" values as `null`
+        }
+
+        specialAction(){}
+    }
+
+    // Then give this class to `server/api`
+    ```
+
+    See server/model docs for more info
+*/
 const related = require('./related')
 const PromiseArray = require('../util/promise-array')
 require('../util/promise.series')

@@ -1,7 +1,9 @@
 /*
+    # Errors (server)
+
     Creates new Error class globals
 
-    API.js knows how to handle them
+    `server/api` knows how to handle them
 */
 class APIError extends Error {
 

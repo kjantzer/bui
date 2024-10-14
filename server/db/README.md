@@ -79,7 +79,6 @@ let resp = await this.db.bulkInsert('table_name', rows, {
 ```
 
 ## Clauses
-> In development, but useable
 
 Predefined clauses can be used to aid in creation of queries, particularly when clauses are optional or given from an outside source.
 

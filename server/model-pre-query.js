@@ -1,15 +1,16 @@
 /*
-    Model Pre Query
+    # Model Pre Query
 
-    WIP - new concept being ironed out...
+    > WIP - new concept being ironed out...
 
     This class can be used to pre-query for a list of records before making a query for "real" data
     Ex: get list of records for a ref table, THEN query records that match
 
-    Use:
+    ```js
     async findWhere(where, opts){
         await ModelPreQuery.applyTo(this, opts)
     }
+    ```
 */
 const Model = require('./model')
 

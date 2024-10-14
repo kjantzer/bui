@@ -1,3 +1,8 @@
+/*
+    # Auth
+
+    A standard login with Passport; to be used with along with `server/app`
+*/
 const passport = require('passport')
 
 module.exports = class PassportAuth {
@@ -13,6 +18,7 @@ module.exports = class PassportAuth {
     }={}){
 
         this.opts = arguments[0]
+
 
         const session = require('express-session')
         let RedisStore = require('connect-redis')(session)

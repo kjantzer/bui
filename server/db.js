@@ -1,3 +1,8 @@
+/*
+    # DB
+
+    For all interactions with MySQL
+*/
 const mysql = require('mysql');
 const PromiseArray = require('../util/promise-array')
 const groupBy = require('../util/array.groupBy')
