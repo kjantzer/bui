@@ -4,7 +4,7 @@
     Detect OS level [color schemes](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme) and react to changes. You can do this with CSS, this utilty is for use in JS if needed.
 
     ```js
-    import { colorScheme } from 'util/device'
+    import { colorScheme } from 'util/color-scheme'
 
     colorScheme.isDarkMode
     colorScheme.isLightMode

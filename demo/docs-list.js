@@ -337,7 +337,7 @@ customElements.define('demo-docs-list-row', class extends LitElement{
     render(){return html`
         <b-text-divider bottom heading md xbold>
             <b-text ?strike=${this.model.get('tag')=='deprecated'}>${this.model.get('title')}</b-text>
-            <b-text muted slot="right">${this.model.get('dir')}/${this.model.get('name')}</b-text>
+            <b-text muted slot="right">${this.model.get('path')}</b-text>
         </b-text-divider>
 
         <demo-markdown-docs notoc .model=${this.model} .docs=${this.model.get('docs')||'see source code'}></demo-markdown-docs>
