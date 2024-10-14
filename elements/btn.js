@@ -503,7 +503,7 @@ export default class BtnElement extends LitElement {
             return goTo(goto)
 
         if( this.href ){
-            e.stopPropagation()
+            e?.stopPropagation()
             if( this.getAttribute('target') == '_blank' )
                 window.open(this.href)
             else
