@@ -526,7 +526,6 @@ customElements.define('b-global-search', class extends RoutedView {
     }
 
      async fetchResults(){
-        console.log('fetch');
         
         this.fetching = true
 
