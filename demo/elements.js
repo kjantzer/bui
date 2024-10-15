@@ -29,6 +29,7 @@ import 'bui/helpers/day-js'
 import './elements/icons'
 import './elements/uploader'
 import './elements/camera'
+import './elements/colors'
 
 import buttons from './elements/buttons'
 import text from './elements/text'
@@ -39,9 +40,9 @@ import elementDocs, {allDocs} from './elements/docs'
 
 customElements.define('demo-elements', class extends LitElement{
 
-    static get title(){ return 'Elements' }
+    static get title(){ return 'Core' }
     static get icon(){ return 'code' }
-    static get path(){ return 'elements(/:tab)' }
+    static get path(){ return 'core(/:tab)' }
 
     static get styles(){return css`
         :host {
@@ -133,6 +134,7 @@ customElements.define('demo-elements', class extends LitElement{
             </section>
 
             b-demo-icons
+            b-demo-colors
 
             <section title="Layout">
 

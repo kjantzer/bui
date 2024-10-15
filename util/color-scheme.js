@@ -179,6 +179,7 @@ export const colorScheme = {
     },
 
 	// https://css-tricks.com/converting-color-spaces-in-javascript/
+    // FIXME: use color-shift.js instead
 	hexToRGB(h, {string=false, array=false}={}) {
 		let r = 0, g = 0, b = 0;
 
