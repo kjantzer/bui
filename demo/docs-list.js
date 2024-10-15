@@ -13,6 +13,7 @@ import '../elements/toggle-view'
 import '../elements/x-out'
 import '../elements/ribbon'
 import '../elements/qr-code'
+import './docs-detail'
 
 class Coll extends Collection {
 
