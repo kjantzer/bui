@@ -52,6 +52,7 @@ customElements.define('b-text-divider', class extends Text{
 
         b-icon {
             --size: .9em;
+            margin-right: -.25em;
         }
         
         [name="right"]::slotted(:first-child) {
