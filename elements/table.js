@@ -36,6 +36,10 @@ customElements.define('b-table', class extends LitElement{
             overflow: auto;
         }
 
+        :host([rounded]) {
+            border-radius: 4px;
+        }
+
         header {
             position: sticky;
             top: 0;
