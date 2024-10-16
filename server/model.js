@@ -396,6 +396,9 @@ module.exports = class Model {
         if( this.req.query.relations !== undefined )
             return this.relationChain()
 
+        if( opts?.filters )
+            this.opts.filters = {...(this.opts.filters||{}), ...opts.filters}
+
         // NOTE: the preferred syntax is now:
         // find(opts={where, [select, with]})
         if( opts == undefined && where && (where.where || where.select || where.with) ){
