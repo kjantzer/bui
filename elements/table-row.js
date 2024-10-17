@@ -65,6 +65,16 @@ customElements.define('b-table-row', class extends LitElement{
         ::slotted([colspan]) {
             grid-column: 1/-1;
         }
+
+        ::slotted([icon="add_box"][cell="no"]) {
+            position: absolute;
+            right: 0;
+            bottom: -1em;
+        }
+
+        :host-context(b-table:not(:hover)) ::slotted([icon="add_box"][cell="no"]:not(.popover-open)) {
+            display: none;
+        }
     `
 
     render(){return html`
