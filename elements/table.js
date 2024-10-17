@@ -23,7 +23,9 @@ import { LitElement, html, css } from 'lit'
 import '../helpers/lit/selectors'
 
 function isCell(el){
-    return !el.hidden && !el.slot && el.tagName != 'STYLE' && el.getAttribute('cell') != 'no' && el.checkVisibility()
+    return !el.hidden && !el.slot && el.tagName != 'STYLE' && el.getAttribute('cell') != 'no' 
+    // cell should be visible, unless the parent isn't either (assume rendering in a few not visible yet; ie b-tabs)
+    && (el.checkVisibility() || !el.parentElement.checkVisibility())
 }
 
 customElements.define('b-table', class extends LitElement{
