@@ -114,6 +114,10 @@ customElements.define('b-app-tab-bar', class extends LitElement{
         ${scrollbars.hide('main')}
     `}
 
+    firstUpdated(){
+        this.part = 'tab-bar'
+    }
+
     render(){return html`
 
         <slot name="before"></slot>
