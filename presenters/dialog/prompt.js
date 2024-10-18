@@ -231,7 +231,7 @@ function makePrompt(opts, i=0, globalOpts){
 			<radio-group segment="theme" ?stacked=${opts.segment?.stacked!==false}
 			?disabled=${opts.disabled}
 			key="${opts.key}"
-			style="${opts.w?`width:${opts.w}px;`:''}"
+			style="${opts.w?`width:${opts.w}px;`:''} ${gridArea}"
 			.value=${opts.val}
 			.hideIf=${opts.hideIf}
 			.disableIf=${opts.disableIf}
