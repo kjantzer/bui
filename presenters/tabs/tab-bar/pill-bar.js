@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit'
 
+// TODO: separate the animated bgd part to an "animated bgd" element (like: https://motion-primitives.com/docs/animated-background)
 customElements.define('b-tab-bar-pill-bar', class extends LitElement{
 
     static get styles(){return css`
@@ -8,7 +9,7 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
             display: flex;
             border-bottom: none !important;
             width: auto;
-            margin: 1em auto;
+            margin: 0 auto;
         }
 
         ::slotted(b-btn),
@@ -18,10 +19,11 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
 
         .bar {
             display: flex;
+            flex-wrap: wrap;
             background: var(--theme-bgd-accent);
-            border-radius: 1em;
+            border-radius: 1.5em;
             width: 100%;
-            height: 2em;
+            padding: .25em;
             justify-content: space-between;
             align-items: center;
             position: relative;
@@ -38,6 +40,10 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
             --borderColor: transparent;
             position: relative;
             z-index: 1;
+            background: none;
+            --hoverBgdColor: none;
+            white-space: nowrap;
+            flex-grow: 1;
         }
 
         .bar b-btn:not([active]) {
@@ -47,7 +53,7 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
         
         .bar b-btn[active] {
             color: var(--theme-inverse-text);
-            font-weight: 500;
+            
         }
 
         .slider {
@@ -55,11 +61,14 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
             height: 1.8em;
             background: var(--theme-gradient);
             border-radius: 1em;
-            transition: transform 200ms ease;
+            
             z-index: 0;
             box-shadow: 1px 1px 4px var(--theme-shadow);
-        }
 
+            transition-duration: 300ms;
+            transition-property: all;
+            transition-timing-function: cubic-bezier(.4,0,.2,1);
+        }
         
     `}
 
@@ -68,7 +77,9 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
         <slot name="menu:before"></slot>
 
         <div class="bar">
-            <div class="slider" id="slider"></div>
+            
+            <div class="slider"></div>
+
             ${this.views.map(v=>html`
                 ${v.canDisplay?html`
 
@@ -87,7 +98,6 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
     `}
 
     firstUpdated(){
-        this.firstUpdate = true
         this.updateSliderPosition()
     }
 
@@ -104,28 +114,16 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
 
     updateSliderPosition(){
         let activeBtn = this.$$('b-btn[active]')
+        let slider = this.$$('.slider', true)
 
-        if (!activeBtn) 
-            this.refresh()
+        if( !activeBtn )
+            return this.refresh()
 
-        let slider = this.shadowRoot.getElementById('slider')
-
-        if(activeBtn && slider){
-
-            let rect = activeBtn.getBoundingClientRect()
-
-            let barRect = this.shadowRoot.querySelector('.bar').getBoundingClientRect()
-
-            slider.style.width = `${rect.width}px`
-
-            if(this.firstUpdate){
-                slider.style.transition = 'none'
-                slider.style.transform = `translateX(${rect.left - barRect.left}px)`
-                this.firstUpdate = false
-            } else {
-                slider.style.transition = 'transform 200ms ease'
-                slider.style.transform = `translateX(${rect.left - barRect.left}px)`
-            }
+        if( slider ){
+            slider.style.width = activeBtn.clientWidth+'px'
+            slider.style.height = activeBtn.clientHeight+'px'
+            slider.style.left = activeBtn.offsetLeft+'px'
+            slider.style.top = activeBtn.offsetTop+'px'
         }
     }
 })
