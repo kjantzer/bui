@@ -7,7 +7,8 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
         :host(.tab-bar) {
             display: flex;
             border-bottom: none !important;
-            padding: .35em 2em;
+            width: auto;
+            margin: 1em auto;
         }
 
         ::slotted(b-btn),
