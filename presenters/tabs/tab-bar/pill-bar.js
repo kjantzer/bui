@@ -85,7 +85,7 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
 
                     <slot name="before:${v.id}"></slot>
                     
-                    <b-btn pill icon="${v.icon}" ?active=${v.active} .tabView=${v} @click=${this.onClick}>
+                    <b-btn pill icon="${v.icon}" ?active=${v.active} .tabView=${v} @click=${this.onMenuClick}>
                         <span>${v.title}</span>
                     </b-btn>
 
@@ -97,12 +97,7 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
         <slot name="menu:after"></slot>
     `}
 
-    firstUpdated(){
-        this.updateSliderPosition()
-    }
-
-    onClick(e){
-        this.onMenuClick(e)
+    updated(){
         this.updateSliderPosition()
     }
 

@@ -1,26 +1,28 @@
 import { LitElement, html, css } from 'lit'
-import Menu from '../menu'
+// import Menu from '../menu'
+import './tab-bar'
 import TabViews from './tabs'
-import TabView from './tab'
-import debounce from '../../util/debounce'
+// import TabView from './tab'
+// import debounce from '../../util/debounce'
 
 customElements.define('b-tabs', class extends LitElement {
 
     static get properties(){return {
         key: {type: String, reflect: true},
         layout: {type: String, reflect: true},
-        singlemenu: {type: Boolean, reflect: true}
+        // singlemenu: {type: Boolean, reflect: true}
     }}
 
     constructor(){
         super()
-        this.singlemenu = false
+        // this.singlemenu = false
         this.key = ''
         this.layout = 'top'
 
-        this._resizeHandler = debounce(()=>{
-            this.singlemenu = this.shouldBeSingleMenu
-        }, 250)
+        // TODO: fix/re-enable
+        // this._resizeHandler = debounce(()=>{
+        //     this.singlemenu = this.shouldBeSingleMenu
+        // }, 250)
     }
 
     setupMutationObserver(){
@@ -60,13 +62,13 @@ customElements.define('b-tabs', class extends LitElement {
     }
 
     // this breaks down when last item is hidden
-    get shouldBeSingleMenu(){
-        if( this.offsetWidth == 0 ) return false
-        let menuItems = this.shadowRoot.querySelectorAll('.tab-bar-item')
-        let last = menuItems[menuItems.length-1]
-        if( !last ) return false
-        return last.offsetLeft+last.offsetWidth >= this.offsetWidth || last.offsetTop+last.offsetHeight >= this.offsetHeight
-    }
+    // get shouldBeSingleMenu(){
+    //     if( this.offsetWidth == 0 ) return false
+    //     let menuItems = this.shadowRoot.querySelectorAll('.tab-bar-item')
+    //     let last = menuItems[menuItems.length-1]
+    //     if( !last ) return false
+    //     return last.offsetLeft+last.offsetWidth >= this.offsetWidth || last.offsetTop+last.offsetHeight >= this.offsetHeight
+    // }
 
     get views(){ 
 
@@ -121,43 +123,14 @@ customElements.define('b-tabs', class extends LitElement {
 
         .tab-bar::-webkit-scrollbar { display: none; width: 0 !important; height: 0 !important; }
 
-        .tab-bar-item {
-            display: flex;
-            padding: var(--menuItemPadding);
-            cursor: pointer;
-            box-sizing: border-box;
-            color: var(--inactiveColor);
-        }
-
         
-        :host([layout="top"]) .tab-bar,
-        :host([layout="bottom"]) .tab-bar {
-            overflow-x: auto;
-            overflow-y: hidden;
-        }
-
-        :host([layout="top"]) .tab-bar-item,
-        :host([layout="bottom"]) .tab-bar-item {
-            white-space: nowrap;
-        }
-
-        :host([layout="top"][stretch]) .tab-bar-item,
-        :host([layout="bottom"][stretch]) .tab-bar-item {
-            flex-grow: 1;
-            justify-content: center;
-        }
 
         :host([layout="left"]) .tab-bar,
         :host([layout="right"]) .tab-bar{
             overflow-y: auto;
         }
 
-        .tab-bar-item[active] {
-            color: var(--activeColor)
-        }
-
-        :host(:not([singlemenu])) .single-menu {display: none;}
-        :host([singlemenu]) .tab-bar-item:not(.single-menu) {display: none;}
+        
 
         :host([sticky]) {
             --menuBgd: #fff;
@@ -194,21 +167,6 @@ customElements.define('b-tabs', class extends LitElement {
         :host([layout="left"]) .tab-bar { border-right: solid 1px var(--border-color); }
         :host([layout="right"]) .tab-bar { border-left: solid 1px var(--border-color); }
 
-        :host([layout="top"]) .tab-bar-item { border-bottom: solid 2px transparent; }
-        :host([layout="bottom"]) .tab-bar-item { border-top: solid 2px transparent; }
-        :host([layout="left"]) .tab-bar-item { border-right: solid 2px transparent; }
-        :host([layout="right"]) .tab-bar-item { border-left: solid 2px transparent; }
-
-        :host([layout="top"]) .tab-bar-item:hover { border-bottom-color: currentColor; }
-        :host([layout="bottom"]) .tab-bar-item:hover { border-top-color: currentColor; }
-        :host([layout="left"]) .tab-bar-item:hover { border-right-color: currentColor; }
-        :host([layout="right"]) .tab-bar-item:hover { border-left-color: currentColor; }
-
-        :host([layout="top"]) .tab-bar-item[active] { border-bottom-color: currentColor; }
-        :host([layout="bottom"]) .tab-bar-item[active] { border-top-color: currentColor; }
-        :host([layout="left"]) .tab-bar-item[active] { border-right-color: currentColor; }
-        :host([layout="right"]) .tab-bar-item[active] { border-left-color: currentColor; }
-
         @media (max-width: 550px) {
 
             :host([layout="left"]),
@@ -224,21 +182,6 @@ customElements.define('b-tabs', class extends LitElement {
                 -webkit-overflow-scrolling: touch;
                 border-bottom: solid 1px rgba(0,0,0,.1);
             }
-
-            :host([layout="left"]) .tab-bar-item { border-right: none; }
-            :host([layout="right"]) .tab-bar-item { border-left: none; }
-
-            :host([layout="left"]) .tab-bar-item, 
-            :host([layout="right"]) .tab-bar-item {
-                border-bottom: solid 2px transparent;
-                flex-shrink: 0;
-            }
-
-            :host([layout="left"]) .tab-bar-item:hover, 
-            :host([layout="right"]) .tab-bar-item:hover { border-bottom-color: currentColor; }
-
-            :host([layout="left"]) .tab-bar-item[active], 
-            :host([layout="right"]) .tab-bar-item[active] { border-bottom-color: currentColor; }
         }
 
         /*
@@ -335,54 +278,44 @@ customElements.define('b-tabs', class extends LitElement {
     `}
 
     renderTabBar(){
+        
+        let tabBarName = this.getAttribute('tab-bar') || 'b-tab-bar-default'
 
-        if( ['none', 'false'].includes(this.getAttribute('tab-bar')) )
+        if( ['none', 'false'].includes(tabBarName) )
             return html`<div></div>`
 
-        if( this.getAttribute('tab-bar') ){
+        if( !this.__tabBar ){
+            
+            let TabBar = customElements.get(tabBarName)
+            if( !TabBar ) return console.error(`Tabs: ${tabBarName} does not exist`)
 
-            if( !this.__customTabBar ){
-                
-                let TabBar = customElements.get(this.getAttribute('tab-bar'))
-                if( !TabBar ) return console.error(`Tabs: ${this.getAttribute('tab-bar')} does not exist`)
+            this.__tabBar = new TabBar()
+            this.__tabBar.part = 'tab-bar'
+            this.__tabBar.host = this
+            this.__tabBar.model = this.model
+            this.__tabBar.views = this.views
 
-                this.__customTabBar = new TabBar()
-                this.__customTabBar.host = this
-                this.__customTabBar.model = this.model
-                this.__customTabBar.views = this.views
-                this.__customTabBar.onMenuClick = this.menuClick.bind(this)
-                this.__customTabBar.classList.add('tab-bar')
-                this.__customTabBar.setAttribute('layout', this.layout)
-                this.__customTabBar.part = 'tab-bar'
-                this.__customTabBar.setAttribute('minimizable', this.minimizable)
-                this.__customTabBar.innerHTML = /*html*/`
-                    <slot name="menu:before" slot="before"></slot>
-                    <slot name="menu:after" slot="after"></slot>
-                    ${this.views.map(v=>/*html*/`
-                        <slot name="menu:before:${v.id}" slot="before:${v.id}"></slot>
-                        <slot name="menu:after:${v.id}" slot="after:${v.id}"></slot>
-                        <slot name="menu:inside:${v.id}" slot="inside:${v.id}"></slot>
-                    `)}
-                `
-            }else{
-                this.__customTabBar.update() // TODO: change to requestUpdate?
-            }
+            this.__tabBar.onMenuClick = this.menuClick.bind(this)
 
-            return this.__customTabBar
-
+            this.__tabBar.classList.add('tab-bar')
+            this.__tabBar.setAttribute('layout', this.layout)
+            this.__tabBar.setAttribute('minimizable', this.minimizable)
+            
+            this.__tabBar.innerHTML = /*html*/`
+                <slot name="menu:before" slot="before"></slot>
+                <slot name="menu:after" slot="after"></slot>
+                ${this.views.map(v=>/*html*/`
+                    <slot name="menu:before:${v.id}" slot="before:${v.id}"></slot>
+                    <slot name="menu:after:${v.id}" slot="after:${v.id}"></slot>
+                    <slot name="menu:inside:${v.id}" slot="inside:${v.id}"></slot>
+                `)}
+            `
         }else{
-
-            return html`
-            <header class="tab-bar" part="tab-bar">
-                <slot name="menu:before"></slot>
-                <div class="tab-bar-item single-menu" active @click=${this.popoverMenu}>
-                    <b-icon name="menu"></b-icon>
-                    ${this.views.active?this.views.active.title:''}
-                </div>
-                ${this.views.map(v=>v.render(this.menuClick))}
-                <slot name="menu:after"></slot>
-            </header>`
+            this.__tabBar.views = this.views // could have changed
+            this.__tabBar.requestUpdate()
         }
+
+        return this.__tabBar
     }
 
     render(){return html`
@@ -392,16 +325,6 @@ customElements.define('b-tabs', class extends LitElement {
             <b-empty-state ?hidden=${this.views.size>0}>No views</b-empty-state>
         </slot>
     `}
-
-    async popoverMenu(e){
-
-        let selected = await new Menu(this.views.map(v=>{
-            return {label: v.title, val: v}
-        })).popOver(e.target)
-
-        if( selected )
-            this.active = selected.val
-    }
 
     menuClick(e){
         let oldVal = this.active
