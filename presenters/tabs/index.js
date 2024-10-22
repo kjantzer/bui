@@ -3,26 +3,18 @@ import { LitElement, html, css } from 'lit'
 import './tab-bar'
 import TabViews from './tabs'
 // import TabView from './tab'
-// import debounce from '../../util/debounce'
 
 customElements.define('b-tabs', class extends LitElement {
 
     static get properties(){return {
         key: {type: String, reflect: true},
         layout: {type: String, reflect: true},
-        // singlemenu: {type: Boolean, reflect: true}
     }}
 
     constructor(){
         super()
-        // this.singlemenu = false
         this.key = ''
         this.layout = 'top'
-
-        // TODO: fix/re-enable
-        // this._resizeHandler = debounce(()=>{
-        //     this.singlemenu = this.shouldBeSingleMenu
-        // }, 250)
     }
 
     setupMutationObserver(){
@@ -60,15 +52,6 @@ customElements.define('b-tabs', class extends LitElement {
 
 		this.mutationObserver.observe(this, {attributes: false, childList: true, subtree: false});
     }
-
-    // this breaks down when last item is hidden
-    // get shouldBeSingleMenu(){
-    //     if( this.offsetWidth == 0 ) return false
-    //     let menuItems = this.shadowRoot.querySelectorAll('.tab-bar-item')
-    //     let last = menuItems[menuItems.length-1]
-    //     if( !last ) return false
-    //     return last.offsetLeft+last.offsetWidth >= this.offsetWidth || last.offsetTop+last.offsetHeight >= this.offsetHeight
-    // }
 
     get views(){ 
 
