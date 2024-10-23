@@ -38,6 +38,7 @@ customElements.define('b-table-row', class extends LitElement{
 
         main ::slotted(*),
         main > *:not(slot) {
+            min-width: 0;
             padding: var(--table-cell-padding, .75em);
         }
 
