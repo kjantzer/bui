@@ -129,7 +129,7 @@ customElements.define('b-app-tab-bar', class extends LitElement{
 
                 <slot name="before:${v.id}"></slot>
 
-                <b-app-tab-bar-btn .tabView=${v} ?active=${v.active} @click=${this.onClick}>
+                <b-app-tab-bar-btn .tabView=${v} ?active=${v.active} @click=${this.onClick} .model=${this.model}>
                     <slot slot="outer" name="inside:${v.id}"></slot>
                 </b-app-tab-bar-btn>
 

@@ -127,7 +127,7 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
 
             ${this.tabView._viewClass?.tabBarBtn?html`
 
-                ${this.tabView._viewClass.tabBarBtn}
+                ${this.tabView._viewClass.tabBarBtn(this)}
 
             `:html`
 

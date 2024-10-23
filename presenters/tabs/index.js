@@ -294,6 +294,7 @@ customElements.define('b-tabs', class extends LitElement {
                 `)}
             `
         }else{
+            this.__tabBar.model = this.model
             this.__tabBar.views = this.views // could have changed
             this.__tabBar.requestUpdate()
         }
