@@ -62,6 +62,7 @@ class PanelToolbar extends LitElement {
 
         .middle {
             overflow: hidden;
+            height: 100%;
             min-width: 20%;
         }
 
