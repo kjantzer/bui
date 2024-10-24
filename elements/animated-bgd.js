@@ -1,7 +1,7 @@
 /*
     # Animated Bgd
 
-    Animates a background over the active nestec child (can be used for menus, segment controls, etc)
+    Animates a background over the active nested child (can be used for menus, segment controls, etc)
 
     ```html-preview
     <b-animated-bgd>
