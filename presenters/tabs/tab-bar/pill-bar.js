@@ -62,7 +62,7 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
 
         <slot name="menu:before"></slot>
 
-        <b-animated-bgd class="bar">
+        <b-animated-bgd class="bar" color="theme-gradient" shadow>
 
             ${this.views.map(v=>html`
                 ${v.canDisplay?html`

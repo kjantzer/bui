@@ -4,13 +4,24 @@
     Animates a background over the active nested child (can be used for menus, segment controls, etc)
 
     ```html-preview
-    <b-animated-bgd>
+    <b-animated-bgd color="theme-gradient" shadow>
         <radio-group segment value=1>
             <radio-btn value=1>Option 1</radio-btn>
             <radio-btn value=2>Option 2</radio-btn>
         </radio-group>
     </b-animated-bgd>
     ```
+
+    Use `::part(bgd)` to add additional styles
+
+    #### Props
+    - `color` - bgd, inverse, theme, theme-gradient
+    - `shadow` - add shadow to the bgd
+    - `block` change to block style element
+
+    #### Styles
+    - `--animated-bgd-duration`
+    - `--animated-bgd-timing`
 */
 import { LitElement, html, css } from 'lit'
 
@@ -18,36 +29,63 @@ customElements.define('b-animated-bgd', class extends LitElement{
 
     static styles = css`
         :host {
-            display: block;
+            display: inline-grid;
             position:relative;
             /* set these here so nested children can use them */
-            --animated-bgd-text-color: #fff;
+            --animated-bgd-text-color: var(--theme-text);
+            --animated-bgd-bgd-color: var(--theme-bgd-accent);
             --animated-bgd-duration: 300ms;
             --animated-bgd-timing: cubic-bezier(.4,0,.2,1);
         }
+
+        :host([block]) { display: grid; }
 
         .bgd {
             position: absolute;
             z-index: 0;
 
-            background: var(--theme-gradient);
-            box-shadow: 1px 1px 4px var(--theme-shadow);
+            background: var(--animated-bgd-bgd-color);
 
             transition-duration: var(--animated-bgd-duration);
             transition-property: all;
             transition-timing-function: var(--animated-bgd-timing);
+        }
+
+        :host([shadow]) .bgd {
+            box-shadow: 1px 1px 4px var(--theme-shadow);
+        }
+
+        :host([color="bgd"]) { 
+            --animated-bgd-bgd-color: var(--theme-bgd);
+        }
+
+        :host([color="inverse"]) { 
+            --animated-bgd-bgd-color: var(--theme-inverse-bgd);
+            --animated-bgd-text-color: var(--theme-inverse-text);
+        }
+
+        :host([color="theme"]) { 
+            --animated-bgd-bgd-color: var(--theme);
+            --animated-bgd-text-color: #fff;
+        }
+
+        :host([color="theme-gradient"]) { 
+            --animated-bgd-bgd-color: var(--theme-gradient);
+            --animated-bgd-text-color: #fff;
         }
     `
 
     constructor(){
         super()
         this.onMutation = this.onMutation.bind(this)
+        this.onResize = this.onResize.bind(this)
 	}
 
     connectedCallback(){
         super.connectedCallback()
 
-        this.observer ||= new MutationObserver(this.onMutation);
+        this.observer ||= new MutationObserver(this.onMutation)
+        this.resizeObserver ||= new ResizeObserver(this.onResize)
         
         // todo: opts to change?
         this.observeElement = this.children.length == 1 ? this.children[0] : this
@@ -57,12 +95,15 @@ customElements.define('b-animated-bgd', class extends LitElement{
             attributeFilter: ['active'], // todo: opts to change?
             subtree: true,
             childList: false
-        });
+        })
+
+        this.resizeObserver.observe(this.observeElement)
     }
 
     disconnectedCallback(){
         super.disconnectedCallback()
         this.observer.disconnect()
+        this.resizeObserver.unobserve(this.observeElement)
     }
 
 	onMutation(mutations){
@@ -100,12 +141,14 @@ customElements.define('b-animated-bgd', class extends LitElement{
         <slot></slot>
     `}
 
-    updatePos(){
+    updatePos({animate=true}={}){
         
         let activeEl = this.active
         let bgd = this.$$('.bgd', true)
 
         if( !bgd ) return
+
+        clearTimeout(this._onResize)
 
         // no active, hide bgd
         if( !activeEl ){
@@ -117,7 +160,7 @@ customElements.define('b-animated-bgd', class extends LitElement{
         }
 
         // don't animate when becoming visible
-        if( !bgd.style.height ) bgd.style.transitionDuration = '0ms'
+        if( animate === false || !bgd.style.height ) bgd.style.transitionDuration = '0ms'
             
         // todo: make opt-in?
         let style = window.getComputedStyle(activeEl)
@@ -129,6 +172,13 @@ customElements.define('b-animated-bgd', class extends LitElement{
         bgd.style.top = activeEl.offsetTop+'px'
 
         bgd.style.transitionDuration = null
+    }
+
+    onResize(){
+        clearTimeout(this._onResize)
+        this._onResize = setTimeout(()=>{
+            this.updatePos({animate:false})
+        },100)
     }
 
 })
