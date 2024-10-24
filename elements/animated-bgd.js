@@ -79,7 +79,7 @@ customElements.define('b-animated-bgd', class extends LitElement{
         super()
         this.onMutation = this.onMutation.bind(this)
         this.onResize = this.onResize.bind(this)
-	}
+    }
 
     connectedCallback(){
         super.connectedCallback()
@@ -106,7 +106,7 @@ customElements.define('b-animated-bgd', class extends LitElement{
         this.resizeObserver.unobserve(this.observeElement)
     }
 
-	onMutation(mutations){
+    onMutation(mutations){
 
         let active = null
 
