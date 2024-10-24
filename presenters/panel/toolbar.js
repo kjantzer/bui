@@ -62,7 +62,6 @@ class PanelToolbar extends LitElement {
 
         .middle {
             overflow: hidden;
-            height: 100%;
             min-width: 20%;
         }
 
@@ -114,6 +113,7 @@ class PanelToolbar extends LitElement {
             min-width: 0;
             align-items: center;
             gap: var(--b-panel-toolbar-content-gap, .5em);
+            height: 100%;
         }
 
         slot::slotted(b-btn[lg]) {
