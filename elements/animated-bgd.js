@@ -152,15 +152,15 @@ customElements.define('b-animated-bgd', class extends LitElement{
 
         // no active, hide bgd
         if( !activeEl ){
-            bgd.style.transitionDuration = '0ms'
+            bgd.style.transitionProperty = 'none'
             bgd.style.width = ''
             bgd.style.height = ''
-            bgd.style.transitionDuration = null
+            bgd.style.transitionProperty = null
             return
         }
 
         // don't animate when becoming visible
-        if( animate === false || !bgd.style.height ) bgd.style.transitionDuration = '0ms'
+        if( animate === false || !bgd.style.height ) bgd.style.transitionProperty = 'none'
             
         // todo: make opt-in?
         let style = window.getComputedStyle(activeEl)
@@ -171,13 +171,16 @@ customElements.define('b-animated-bgd', class extends LitElement{
         bgd.style.left = activeEl.offsetLeft+'px'
         bgd.style.top = activeEl.offsetTop+'px'
 
-        bgd.style.transitionDuration = null
+        bgd.style.transitionProperty = null
     }
 
-    onResize(){
+    onResize(e){
         clearTimeout(this._onResize)
         this._onResize = setTimeout(()=>{
-            this.updatePos({animate:false})
+            
+            // only update pos if active is still visible
+            if( this.active?.checkVisibility() )
+                this.updatePos({animate:false})
         },100)
     }
 
