@@ -41,6 +41,13 @@ customElements.define('b-text-divider', class extends Text{
             flex-wrap: wrap;
         }
 
+        :host([sticky]) {
+            position: sticky;
+            top: 0;
+            background: var(--theme-bgd);
+            z-index: 1000;
+        }
+
         @media (max-width: 599px) {
             :host {
                 flex-wrap: wrap;
