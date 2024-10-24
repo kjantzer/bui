@@ -162,8 +162,15 @@ customElements.define('b-animated-bgd', class extends LitElement{
         // don't animate when becoming visible
         if( animate === false || !bgd.style.height ) bgd.style.transitionProperty = 'none'
             
-        // todo: make opt-in?
         let style = window.getComputedStyle(activeEl)
+        
+        // todo: improve this? (this makes a lot of assumptions)
+        if( style.display == 'contents' ){
+            activeEl = activeEl.shadowRoot?.children?.[0] || activeEl.children[0]
+            style = window.getComputedStyle(activeEl)
+        }
+
+        // todo: make opt-in?
         bgd.style.borderRadius = style.borderRadius
 
         bgd.style.width = activeEl.clientWidth+'px'
