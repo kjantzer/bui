@@ -1,7 +1,7 @@
 // not accessible yet
 import { LitElement, html, css } from 'lit'
-import RoutedView from 'bui/app/views/routed'
-import Panel from 'panel'
+import RoutedView from '../app/views/routed'
+import Panel from '../presenters/panel'
 import docs from './dist/docs-complete.js'
 import {Collection} from 'backbone'
 
