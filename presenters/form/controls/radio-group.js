@@ -122,6 +122,17 @@ customElements.define('radio-group', class extends LitElement{
 		:host([segment]:not([disabled]):not([focused])) ::slotted(radio-btn:not([active]):hover) {
 			background-color: var(--radio-segment-hover-bgd, var(--theme-bgd-accent2, #eee));
 		}
+
+		:host-context(b-animated-bgd):host([segment]) ::slotted(radio-btn) {
+			z-index: 1;
+			background: none;
+			transition: color var(--animated-bgd-duration, 300ms);
+			transition-timing-function: var(--animated-bgd-timing);
+		}
+
+		:host-context(b-animated-bgd):host([segment]) ::slotted(radio-btn[active]) {
+			color: var(--animated-bgd-text-color, var(--theme-text));
+		}
 	`}
 
 	render(){return html`

@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit'
+import '../../../elements/animated-bgd'
 
-// TODO: separate the animated bgd part to an "animated bgd" element (like: https://motion-primitives.com/docs/animated-background)
 customElements.define('b-tab-bar-pill-bar', class extends LitElement{
 
     static get styles(){return css`
@@ -36,7 +36,8 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
             font-size: 1em;
             font-weight: 350;
             transition-property: all;
-            transition-duration: 200ms;
+            transition-duration: var(--animated-bgd-duration);
+            transition-timing-function: var(--animated-bgd-timing);
             --borderColor: transparent;
             position: relative;
             z-index: 1;
@@ -52,22 +53,7 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
         }
         
         .bar b-btn[active] {
-            color: var(--theme-inverse-text);
-            
-        }
-
-        .slider {
-            position: absolute;
-            height: 1.8em;
-            background: var(--theme-gradient);
-            border-radius: 1em;
-            
-            z-index: 0;
-            box-shadow: 1px 1px 4px var(--theme-shadow);
-
-            transition-duration: 300ms;
-            transition-property: all;
-            transition-timing-function: cubic-bezier(.4,0,.2,1);
+            color: var(--animated-bgd-text-color);
         }
         
     `}
@@ -76,9 +62,7 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
 
         <slot name="menu:before"></slot>
 
-        <div class="bar">
-            
-            <div class="slider"></div>
+        <b-animated-bgd class="bar">
 
             ${this.views.map(v=>html`
                 ${v.canDisplay?html`
@@ -92,33 +76,8 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
                     <slot name="after:${v.id}"></slot>
                 `:''}
             `)}
-        </div>
+        </b-animated-bgd>
 
         <slot name="menu:after"></slot>
     `}
-
-    updated(){
-        this.updateSliderPosition()
-    }
-
-    refresh(){
-        setTimeout(()=>{
-            this.updateSliderPosition()
-        }, 100)
-    }
-
-    updateSliderPosition(){
-        let activeBtn = this.$$('b-btn[active]')
-        let slider = this.$$('.slider', true)
-
-        if( !activeBtn )
-            return this.refresh()
-
-        if( slider ){
-            slider.style.width = activeBtn.clientWidth+'px'
-            slider.style.height = activeBtn.clientHeight+'px'
-            slider.style.left = activeBtn.offsetLeft+'px'
-            slider.style.top = activeBtn.offsetTop+'px'
-        }
-    }
 })
