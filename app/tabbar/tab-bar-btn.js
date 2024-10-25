@@ -96,7 +96,7 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             b-btn > span {
                 display: inline-block;
                 line-height: 1em;
-                font-size: .85em;
+                font-size: var(--font-size-sm);
                 margin-top: .5em;
             }
 
