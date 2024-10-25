@@ -16,7 +16,7 @@ if( navigator.serviceWorker ){
         // a new service worker is waiting to be used
         if( reg.waiting )
             setTimeout(()=>{ // delay to let DOM load
-                newUpdateNotif(reg.waiting)
+                newUpdateNotif(reg.waiting, reg.active)
             })
 
         // a new service woker was found
@@ -29,7 +29,7 @@ if( navigator.serviceWorker ){
             // once installed, prompt user to use update
             worker.addEventListener('statechange', ()=>{
                 if( worker.state == 'installed' ){
-                    newUpdateNotif(worker)
+                    newUpdateNotif(worker, reg.active)
                 }
             })
         });
@@ -39,7 +39,7 @@ if( navigator.serviceWorker ){
 }
 
 
-function newUpdateNotif(worker){
+function newUpdateNotif(worker, oldWorker){
     if( !navigator.serviceWorker.controller ) return
 
     new Notif({
@@ -52,6 +52,8 @@ function newUpdateNotif(worker){
         anchor: 'top-right',
         onClick(notif, btn){
             if( btn ){
+                // https://allanchain.github.io/blog/post/pwa-skipwaiting/
+                oldWorker?.postMessage({action: 'abortConnections'})
                 worker.postMessage({action:'skipWaiting'})
             }
         }
