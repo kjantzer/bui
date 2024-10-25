@@ -32,6 +32,10 @@ customElements.define('b-table-row', class extends LitElement{
             border-color: rgba(var(--theme-text-rgb), .1) !important;
         }
 
+        :host([slot="header"]) main {
+            align-items: center;
+        }
+
         :host([slot="header"]) main ::slotted(*) {
             border-color: rgba(var(--theme-text-rgb), .1);
         }
