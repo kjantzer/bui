@@ -551,6 +551,7 @@ customElements.define('b-global-search', class extends RoutedView {
         this._selectResult(1)
 
         if( this.coll.length == 1 && this.shouldAutoOpen ){
+            this.close()
             this.goToSelected()
         }
     }
