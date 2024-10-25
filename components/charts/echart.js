@@ -97,7 +97,7 @@ customElements.define('b-echart', class extends LitElement{
         }
     }
 
-    set(options){
+    set(options={}){
 
         // will be applied a different way
         this.dataZoom = options.dataZoom
