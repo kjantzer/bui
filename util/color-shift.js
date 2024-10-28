@@ -15,6 +15,7 @@
     Based on: https://stackoverflow.com/a/17433060/484780
 */
 
+// DEPRECATED - use `changeHSL`
 export function changeHue(rgb, degree) {
     var hsl = rgbToHSL(rgb);
     hsl.h += degree;
@@ -25,6 +26,35 @@ export function changeHue(rgb, degree) {
         hsl.h += 360;
     }
     return hslToRGB(hsl);
+}
+
+// FIXME: not sure this is 100% right yet
+export function changeHSL(hsl, {h=0, s=0, l=0}={}){
+    let isHex = hsl.startsWith('#')
+    
+    if( isHex )
+        hsl = rgbToHSL(hsl)
+
+    hsl.s = Math.round(hsl.s*100)
+    hsl.l = Math.round(hsl.l*100)
+
+    hsl.h += h;
+    if( hsl.h > 360 ) hsl.h -= 360;
+    else if( hsl.h < 0 ) hsl.h += 360;
+
+    hsl.s += s;
+    if( hsl.s > 100 ) hsl.s -= 100;
+    else if( hsl.s < 0 ) hsl.s += 100;
+
+    hsl.l += l;
+    if( hsl.l > 100 ) hsl.l -= 100;
+    else if( hsl.l < 0 ) hsl.l += 100;
+
+    hsl.s = hsl.s/100
+    hsl.l = hsl.l/100
+
+    if( isHex ) return hslToRGB(hsl)
+    return hsl
 }
 
 export default changeHue
