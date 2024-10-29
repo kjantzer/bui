@@ -99,6 +99,10 @@ customElements.define('b-text', class extends LitElement{
             text-wrap: balance;
         }
 
+        :host([pretty]), :host([pretty][clip]:not([clip=""])) {
+            text-wrap: pretty;
+        }
+
         :host([clip="1"]) { --clip-max-lines: 1; }
         :host([clip="2"]) { --clip-max-lines: 2; }
         :host([clip="3"]) { --clip-max-lines: 3; }
