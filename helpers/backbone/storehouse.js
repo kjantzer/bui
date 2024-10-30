@@ -5,7 +5,7 @@
 */
 export function EnableStorehouseColl(Class, {urlPrefix=''}={}){
 
-    const ClassFetch = Class.prototype.fetch
+    const ClassFetch = Class.prototype.fetchSync
 
     Class.prototype.fetchSet = function (key, {force=false}={}){
 
@@ -14,7 +14,7 @@ export function EnableStorehouseColl(Class, {urlPrefix=''}={}){
 		// if we already did, or currently are fetching the requested key, skip fetching again (unless force requested)
 		if( force !== true
 		&& (this.hasFetchedStorehouse(key) || this.isFetchingStorehouse(key) ))
-			return;
+			return Promise.resolve()
 
         let url = this.url+'/'+urlPrefix+key;
 
@@ -23,16 +23,18 @@ export function EnableStorehouseColl(Class, {urlPrefix=''}={}){
 		return ClassFetch.call(this, {
             url,
 			update: true,
-			remove: false,
-			success: this._onStorehouseFetch.bind(this, key)
-		});
+			remove: false
+		}).then(resp=>{
+			this._onStorehouseFetch.bind(this, key, resp)
+			return resp
+		})
 	}
 
 	// mark the type/foreign_id as "fetched"
-	Class.prototype._onStorehouseFetch = function (key){
+	Class.prototype._onStorehouseFetch = function (key, resp){
 		this._storehouseFetching = null; // no longer fetching data
 		this._storehouseFetched.push(key)
-		this.trigger('sync:'+key);
+		this.trigger('sync:'+key, resp);
 	}
 
 	Class.prototype._storehouseFetched = [], // holds array of `key`
