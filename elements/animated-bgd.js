@@ -94,7 +94,7 @@ customElements.define('b-animated-bgd', class extends LitElement{
             attributes: true,
             attributeFilter: ['active'], // todo: opts to change?
             subtree: true,
-            childList: false
+            childList: true
         })
 
         this.resizeObserver.observe(this.observeElement)
@@ -106,12 +106,22 @@ customElements.define('b-animated-bgd', class extends LitElement{
         this.resizeObserver.unobserve(this.observeElement)
     }
 
+    firstUpdated(){
+        if( !this.active )
+            this.active = Array.from(this.children).find(el=>el.hasAttribute?.('active'))
+    }
+
     onMutation(mutations){
 
         let active = null
 
         mutations.forEach(d=>{
 
+            if( d.type == 'childList' ){
+                let _active = Array.from(d.addedNodes).find(el=>el.hasAttribute?.('active'))
+                if( _active ) active = _active
+            }
+            
             if( d.type == 'attributes' 
             && d.target != this.observeElement
             && d.target.hasAttribute(d.attributeName) // this target is "active"
