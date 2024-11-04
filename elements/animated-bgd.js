@@ -24,6 +24,7 @@
     - `--animated-bgd-timing`
 */
 import { LitElement, html, css } from 'lit'
+import '../helpers/lit/selectors'
 
 customElements.define('b-animated-bgd', class extends LitElement{
 
@@ -108,7 +109,9 @@ customElements.define('b-animated-bgd', class extends LitElement{
 
     firstUpdated(){
         if( !this.active )
-            this.active = Array.from(this.children).find(el=>el.hasAttribute?.('active'))
+            setTimeout(()=>{
+                this.active = Array.from(this.children).find(el=>el.hasAttribute?.('active'))
+            })
     }
 
     onMutation(mutations){
