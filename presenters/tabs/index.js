@@ -267,12 +267,36 @@ customElements.define('b-tabs', class extends LitElement {
         if( ['none', 'false'].includes(tabBarName) )
             return html`<div></div>`
 
+        let slot = this.$$('[name="tabbar"]')
+        if( !slot ) return // not ready yet
+
+        // check for custom slotted tabbar
+        let slottedTabbar = slot.assignedElements()[0]
+
+        // not yet stup
         if( !this.__tabBar ){
             
-            let TabBar = customElements.get(tabBarName)
-            if( !TabBar ) return console.error(`Tabs: ${tabBarName} does not exist`)
+            // use slotted tabbar
+            if( slottedTabbar ){
+                this.__tabBar = slottedTabbar
 
-            this.__tabBar = new TabBar()
+            // else fallback to creating it now
+            }else{
+                let TabBar = customElements.get(tabBarName)
+                if( !TabBar ) return console.error(`Tabs: ${tabBarName} does not exist`)
+
+                this.__tabBar = new TabBar()
+                this.__tabBar.innerHTML = /*html*/`
+                    <slot name="menu:before" slot="before"></slot>
+                    <slot name="menu:after" slot="after"></slot>
+                    ${this.views.map(v=>/*html*/`
+                        <slot name="menu:before:${v.id}" slot="before:${v.id}"></slot>
+                        <slot name="menu:after:${v.id}" slot="after:${v.id}"></slot>
+                        <slot name="menu:inside:${v.id}" slot="inside:${v.id}"></slot>
+                    `)}
+                `
+            }
+
             this.__tabBar.part = 'tab-bar'
             this.__tabBar.host = this
             this.__tabBar.model = this.model
@@ -283,27 +307,19 @@ customElements.define('b-tabs', class extends LitElement {
             this.__tabBar.classList.add('tab-bar')
             this.__tabBar.setAttribute('layout', this.layout)
             this.__tabBar.setAttribute('minimizable', this.minimizable)
-            
-            this.__tabBar.innerHTML = /*html*/`
-                <slot name="menu:before" slot="before"></slot>
-                <slot name="menu:after" slot="after"></slot>
-                ${this.views.map(v=>/*html*/`
-                    <slot name="menu:before:${v.id}" slot="before:${v.id}"></slot>
-                    <slot name="menu:after:${v.id}" slot="after:${v.id}"></slot>
-                    <slot name="menu:inside:${v.id}" slot="inside:${v.id}"></slot>
-                `)}
-            `
+            this.__tabBar.requestUpdate?.() // may not be custom element
+           
         }else{
             this.__tabBar.model = this.model
             this.__tabBar.views = this.views // could have changed
-            this.__tabBar.requestUpdate()
+            this.__tabBar.requestUpdate?.() // may not be custom element
         }
 
-        return this.__tabBar
+        return slottedTabbar ? '' : this.__tabBar
     }
 
     render(){return html`
-        ${this.renderTabBar()}
+        <slot name="tabbar">${this.renderTabBar()}</slot>
         <slot class="content" part="content"></slot>
         <slot name="empty">
             <b-empty-state ?hidden=${this.views.size>0}>No views</b-empty-state>

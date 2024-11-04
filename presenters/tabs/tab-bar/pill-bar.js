@@ -1,9 +1,9 @@
-import { LitElement, html, css } from 'lit'
+import BaseTabBar, {html, css} from './_base'
 import '../../../elements/animated-bgd'
 
-customElements.define('b-tab-bar-pill-bar', class extends LitElement{
+customElements.define('b-tab-bar-pill-bar', class extends BaseTabBar{
 
-    static get styles(){return css`
+    static styles = css`
     
         :host(.tab-bar) {
             display: flex;
@@ -56,28 +56,17 @@ customElements.define('b-tab-bar-pill-bar', class extends LitElement{
             color: var(--animated-bgd-text-color);
         }
         
+    `
+
+    renderLoop(){ return html`
+        <b-animated-bgd class="bar" color="theme-gradient" shadow>
+            ${super.renderLoop()}
+        </b-animated-bgd>
     `}
 
-    render(){return html`
-
-        <slot name="menu:before"></slot>
-
-        <b-animated-bgd class="bar" color="theme-gradient" shadow>
-
-            ${this.views.map(v=>html`
-                ${v.canDisplay?html`
-
-                    <slot name="before:${v.id}"></slot>
-                    
-                    <b-btn pill icon="${v.icon}" ?active=${v.active} .tabView=${v} @click=${this.onMenuClick}>
-                        <span>${v.title}</span>
-                    </b-btn>
-
-                    <slot name="after:${v.id}"></slot>
-                `:''}
-            `)}
-        </b-animated-bgd>
-
-        <slot name="menu:after"></slot>
+    renderBtn(view){ return html`
+        <b-btn pill icon="${view.icon}" ?active=${view.active} .tabView=${view} @click=${this.onMenuClick}>
+            <span>${view.title}</span>
+        </b-btn>
     `}
 })
