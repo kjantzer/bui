@@ -18,4 +18,5 @@ module.exports = class PromiseArray extends Promise {
     filter(...args){ return this.then(r=>r.filter(...args)) }
     map(...args){ return this.then(r=>r.map(...args)) }
     find(...args){ return this.then(r=>r.find(...args)) }
+    forEach(...args){ return this.then(r=>{r.forEach(...args); return r}) }
 }
