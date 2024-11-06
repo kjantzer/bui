@@ -184,9 +184,9 @@ module.exports = class Model {
 
         if( !this.db )
             console.warn('Model.db has not been set yet')
-
         // intercept query calls so we can kill them on client terminated
-        this.db = proxyDB.call(this)
+        else
+            this.db = proxyDB.call(this)
         
         this.req = req || {query:{}}
         this.attrs = attrs || {}
