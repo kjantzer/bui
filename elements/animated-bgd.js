@@ -150,7 +150,7 @@ customElements.define('b-animated-bgd', class extends LitElement{
     get active(){ return this.__active}
 
     render(){return html`
-        <div class="bgd" part="bgd"></div>
+        <div class="bgd" part="bgd"><slot name="bgd"></slot></div>
         <slot></slot>
     `}
 
