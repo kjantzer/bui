@@ -59,7 +59,7 @@ function proxyDB(){
             if( prop == 'query' ){
                 return function(sql, data, opts={}){
                     
-                    return new PromiseArray(async (resolve)=>{
+                    return new PromiseArray(async (resolve, reject)=>{
                         
                         // create connection and keep ref to it
                         opts.conn = await target.getConnection()
@@ -74,12 +74,14 @@ function proxyDB(){
                         let query = target[prop].call(target, sql, data, opts)
 
                         // when query finishes, clear connection ref
-                        let resp = await query.finally(resp=>{
+                        await query.finally(resp=>{
                             connections.delete(opts.conn)
                             return resp
+                        }).then(resp=>{
+                            resolve(resp)
+                        }).catch(err=>{
+                            reject(err)
                         })
-
-                        resolve(resp)
                     })
                 }
             }
@@ -872,9 +874,17 @@ module.exports = class Model {
 
         // update all foreign keys to use the primary ID
         await Promise.all(foreignKeys.map(fk=>{
-            this.db.query(/*sql*/`
-                UPDATE ${fk.TABLE_NAME} SET ${fk.COLUMN_NAME} = ? WHERE ${fk.COLUMN_NAME} IN(?)
-            `, [primaryID, ids])
+            return this.db.query(/*sql*/`
+                UPDATE IGNORE ${fk.TABLE_NAME} SET ${fk.COLUMN_NAME} = ? WHERE ${fk.COLUMN_NAME} IN(?)
+            `, [primaryID, ids]).then(async resp=>{
+        
+                // then perform a delete in case UPDATE INGORE didn't switch some values (duplicates)
+                await this.db.query(/*sql*/`
+                    DELETE FROM ${fk.TABLE_NAME} WHERE ${fk.COLUMN_NAME} IN(?)
+                `, [ids])
+
+                return resp
+            })
         }))
 
         await this._mergeDelete({ids, primaryID, foreignKeys})
