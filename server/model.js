@@ -172,6 +172,7 @@ module.exports = class Model {
     afterDestroy(){ /* noop */ }
 
     // shouldn't need to change this
+    // used by api.js
     onClientTerminated(){
         // let post/put/delete actions continue
         if( this.req.method == 'GET' )
