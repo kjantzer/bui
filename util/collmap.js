@@ -61,10 +61,12 @@ module.exports = class CollMap extends Map {
         super.set(...args)
 
         // timeout used in case single object set from above
-        clearTimeout(this._setStore)
-        this._setStore = setTimeout(()=>{
-            this._storeUpdate(...args)
-        })
+        if( this.store ){
+            clearTimeout(this._setStore)
+            this._setStore = setTimeout(()=>{
+                this._storeUpdate(...args)
+            })
+        }
     }
 
     delete(...args){
