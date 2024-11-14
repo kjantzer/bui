@@ -1,5 +1,6 @@
 const { XMLParser } = require('fast-xml-parser')
 const CollMap = require(`../collmap`)
+const createHash = require('../createHash')
 const Elements3 = require('./specs/elements-3.0')
 const Elements2 = require('./specs/elements-2.1')
 
@@ -23,7 +24,7 @@ class Onix extends CollMap {
 
     static async parse(xml, opts){ return onixParse(xml, opts) }
 
-    constructor(data, {name='ONIX', element, release, parent, level=0, index, raw}={}){
+    constructor(data, {name='ONIX', element, release, parent, level=0, index, raw, hash}={}){
 
         if( data.ONIXmessage )
             data = data.ONIXmessage
@@ -41,6 +42,7 @@ class Onix extends CollMap {
         this.index = index
         this.parent = parent
         this.raw = raw
+        this.hash = hash
 
         if( this.has('#text') ){
             let val = this.get('#text')
@@ -266,6 +268,18 @@ module.exports = {Onix, OnixArray}
 */
 async function onixParse(xml, opts={}){
 
+    opts = {
+        captureRaw: true,
+        createHash: false,
+        progress: null,
+        // limit: 10,
+        ...opts
+    }
+
+    function progress(){
+        if( opts.progress && typeof opts.progress == 'function' ) opts.progress(...arguments)
+    }
+
     // Chunk data...
     // split xml by starting product tag so we can chunk parsing
     // doing this to potentially allow for faster processing? 
@@ -292,6 +306,8 @@ async function onixParse(xml, opts={}){
         }
     });
 
+    progress('parsing header', {products: products.length})
+
     let xmlStr = parser.parse(onix)
     onix = new Onix(xmlStr, {raw: xmlStr})
     onix.set('product', new OnixArray())
@@ -300,16 +316,27 @@ async function onixParse(xml, opts={}){
 
         if( opts.limit && i >= opts.limit ) return
 
+        progress(`parsing product`, {product: i})
+
         // xml string to JSON data
         let xmlStr = products[i]
         let data = parser.parse(xmlStr)
+        let hash = null
 
-        let product = new Onix(data, {
+        if( opts.createHash ){
+            progress(`creating hash of product`, {product: i})
+            hash = await createHash(xmlStr)
+        }
+        
+        progress('converting to ONIX framework', {product: i})
+        let product = new Onix(data.product[0], {
+            name: 'product',
             parent: onix,
             level: onix.level+1,
             index: i,
-            raw: xmlStr // make optional?
-        })?.get('product.0')
+            raw: opts.captureRaw ? xmlStr : null,
+            hash
+        })
 
         onix.get('product').push(product)
 
