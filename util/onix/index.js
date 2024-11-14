@@ -7,7 +7,7 @@ class Onix extends CollMap {
 
     static async parse(xml, opts){ return onixParse(xml, opts) }
 
-    constructor(data, {name='ONIX', element, release, parent, level=0, index}={}){
+    constructor(data, {name='ONIX', element, release, parent, level=0, index, raw}={}){
 
         if( data.ONIXmessage )
             data = data.ONIXmessage
@@ -24,6 +24,7 @@ class Onix extends CollMap {
         this.level = level
         this.index = index
         this.parent = parent
+        this.raw = raw
 
         if( this.has('value') ){
             // this.top.flatLookup.set(name, this)
@@ -45,7 +46,7 @@ class Onix extends CollMap {
                 if( Array.isArray(d) )
                     d = OnixArray.from(d.map((d,i)=>{
 
-                        if( typeof d == 'string' )
+                        if( typeof d != 'object' )
                             d = {value: d}
 
                         return new Onix(d, {
@@ -267,8 +268,8 @@ async function onixParse(xml, opts={}){
         }
     });
 
-    onix = parser.parse(onix, {})
-    onix = new Onix(onix)
+    let xmlStr = parser.parse(onix)
+    onix = new Onix(xmlStr, {raw: xmlStr})
     onix.set('product', new OnixArray())
 
     // shouldn't need to worry about attributes with the rest
@@ -279,12 +280,14 @@ async function onixParse(xml, opts={}){
         if( opts.limit && i >= opts.limit ) return
 
         // xml string to JSON data
-        let data = parser.parse(products[i])
+        let xmlStr = products[i]
+        let data = parser.parse(xmlStr)
 
         let product = new Onix(data, {
             parent: onix,
             level: onix.level+1,
-            index: i
+            index: i,
+            raw: xmlStr // make optional?
         })?.get('product.0')
 
         onix.get('product').push(product)
