@@ -28,17 +28,20 @@ class Onix extends CollMap {
 
         if( data.ONIXmessage )
             data = data.ONIXmessage
+        if( data.ONIXMessage )
+            data = data.ONIXMessage
         
         super(data)
 
         if( level == 0 ){            
-            this.release = release || data?.['@_release'] || '3.0'
-            this.elements = this.release == '2.1' ? Elements2 : Elements3
+            release = release || data?.['@_release'] || '2.1'
+            this.elements = release == '2.1' ? Elements2 : Elements3
         }
 
         this.name = name
         this.element = element
         this.level = level
+        this.release = release 
         this.index = index
         this.parent = parent
         this.raw = raw
@@ -63,8 +66,17 @@ class Onix extends CollMap {
 
                 // ignore attributes
                 if( k?.[0] == '@' ) return
+
+                k = k.toLowerCase() // standardize on lowercase
                 
                 let element = this.top.elements.getTag(k)
+                let props = {
+                    name: k, 
+                    element,
+                    parent: this, 
+                    release: this.release,
+                    level: this.level+1
+                }
 
                 if( typeof d != 'object' )
                     d = {value:d}
@@ -76,29 +88,14 @@ class Onix extends CollMap {
                             d = {value: d}
 
                         return new Onix(d, {
-                            name: k, element, 
-                            parent: this, 
-                            level: this.level+1,
+                            ...props,
                             index: i
                         })
                     }))
                 else
-                    d = new Onix(d, {
-                        name: k, element, 
-                        parent: this, 
-                        level: this.level+1
-                    })
-
-                // if( k == 'a001')
-                //     this.set('a001', d)
-                // else
-                //     this.set(k, d)
+                    d = new Onix(d, props)
                 
-                // console.log(element?.name||k);
                 mapped[element?.shortTag||k] = d
-                
-
-                // this.root.flatLookup.set(k, d)
             })
 
             this.clear()
@@ -165,6 +162,11 @@ class Onix extends CollMap {
     }
 
     get pathName(){ return this.path.map(d=>d.name) }
+
+    toString(){
+        if( this.has('value') ) return this.get('value')
+        return this.name
+    }
 
     toJSON(opts={}){
         let o = {}
@@ -284,7 +286,7 @@ async function onixParse(xml, opts={}){
     // split xml by starting product tag so we can chunk parsing
     // doing this to potentially allow for faster processing? 
     // rather than wait for all products to be parsed before doing anything with the data
-    xml = xml.toString().split('<product>')
+    xml = xml.toString().split(/<product>/i)
     
     // create a basic onix message with should only contain a "header"
     let onix = xml.shift()
@@ -308,8 +310,8 @@ async function onixParse(xml, opts={}){
 
     progress('parsing header', {products: products.length})
 
-    let xmlStr = parser.parse(onix)
-    onix = new Onix(xmlStr, {raw: xmlStr})
+    let onixMsg = await parser.parse(onix)
+    onix = new Onix(onixMsg, {raw: onix})
     onix.set('product', new OnixArray())
 
     for( let i in products ){
@@ -320,19 +322,20 @@ async function onixParse(xml, opts={}){
 
         // xml string to JSON data
         let xmlStr = products[i]
-        let data = parser.parse(xmlStr)
+        let data = await parser.parse(xmlStr)
         let hash = null
 
         if( opts.createHash ){
-            progress(`creating hash of product`, {product: i})
+            // progress(`creating hash of product`, {product: i})
             hash = await createHash(xmlStr)
         }
         
-        progress('converting to ONIX framework', {product: i})
+        // progress('converting to ONIX framework', {product: i})
         let product = new Onix(data.product[0], {
             name: 'product',
             parent: onix,
             level: onix.level+1,
+            release: onix.release,
             index: i,
             raw: opts.captureRaw ? xmlStr : null,
             hash

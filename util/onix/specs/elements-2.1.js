@@ -150,7 +150,10 @@ module.exports = new OnixElements({
       "ConferenceDate": "b054",
       "ConferencePlace": "b055"
     },
-    "EditionTypeCode": "b056",
+    "EditionTypeCode": {
+      "shortTag": "b056",
+      "codeList": "21"
+    },
     "EditionNumber": "b057",
     "EditionStatement": "b058",
     "Language": {
@@ -264,7 +267,10 @@ module.exports = new OnixElements({
     "PublishingStatus": "b394",
     "AnnouncementDate": "b086",
     "TradeAnnouncementDate": "b362",
-    "PublicationDate": "b003",
+    "PublicationDate": {
+      "shortTag": "b003",
+      "formatList": "55",
+    },
     "CopyrightStatement": {
       "CopyrightYear": "b087",
       "CopyrightOwner": {
