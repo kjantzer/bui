@@ -306,7 +306,7 @@ export class UploaderElement extends LitElement {
         else
             this.files = valid
 
-        this.emitEvent('change', {invalid: invalid.length > 0 ? invalid : false})
+        this.emitEvent('change', {files: this.files, invalid: invalid.length > 0 ? invalid : false})
 
         if( this.autoUpload && this.url ){
             this.upload()
