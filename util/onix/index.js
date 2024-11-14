@@ -3,6 +3,22 @@ const CollMap = require(`../collmap`)
 const Elements3 = require('./specs/elements-3.0')
 const Elements2 = require('./specs/elements-2.1')
 
+ // per docs, if format not given, default is `YYYYMMDD`
+function formatDate(val, format="YYYYMMDD"){
+
+    let map = {
+        'YYYYMMDD': [/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'],
+        'YYYYMM': [/(\d{4})(\d{2})/, '$1-$2']
+    }
+
+    format = map[format]
+    if( format ){
+        val = String(val).replace(format[0], format[1])
+    }
+    
+    return val
+}
+
 class Onix extends CollMap {
 
     static async parse(xml, opts){ return onixParse(xml, opts) }
@@ -26,9 +42,17 @@ class Onix extends CollMap {
         this.parent = parent
         this.raw = raw
 
+        if( this.has('#text') ){
+            let val = this.get('#text')
+
+            if( element?.name == 'Date' )
+                val = formatDate(val, element?.formatList[this.get('@_dateformat')]?.value)
+
+            this.set('value', val)
+        }
+
         if( this.has('value') ){
-            // this.top.flatLookup.set(name, this)
-            // this.top.shortNameLookup.set(this.get('shortName'), this)
+            // nothing else to do, keep values as they are
         }
         else{
             let mapped = {}
@@ -257,23 +281,20 @@ async function onixParse(xml, opts={}){
     
     const parser = new XMLParser({
         ignoreDeclaration: true, // dont care about <?xml> tag
-        ignoreAttributes: false, // we want to capture `release` attribute
+        ignoreAttributes: false, // we want to capture `release` and `dateformat` attributes
         numberParseOptions: {
             leadingZeros: false, // keep values like "01" as a string
         },
         isArray: (name, jpath, isLeafNode, isAttribute) => {
             // always return products as an array
             // TODO: possibly add more elements here?
-            return ['product'].includes(name)
+            return ['product', 'relatedproduct'].includes(name.toLowerCase())
         }
     });
 
     let xmlStr = parser.parse(onix)
     onix = new Onix(xmlStr, {raw: xmlStr})
     onix.set('product', new OnixArray())
-
-    // shouldn't need to worry about attributes with the rest
-    parser.options.ignoreAttributes = true
 
     for( let i in products ){
 

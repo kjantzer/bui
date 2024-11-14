@@ -1,15 +1,16 @@
 const CollMap = require(`../../collmap`)
 const CodeList3 = require('./codelists-3.0')
+const CodeList2 = CodeList3 // FIXME:
 
 class OnixElements extends CollMap {
 
-    constructor(data, {name='ONIX', codelist, version, parent, level=0}={}){
+    constructor(data, {name='ONIX', version, parent, level=0}={}){
         
         super(data)
 
         if( level == 0 ){
-            this.codelist = codelist
             this.version = version
+            this.codelist = version == '2.1' ? CodeList2 : CodeList3
             this.flatLookup = new CollMap()
             this.shortTagLookup = new CollMap()
         }
@@ -45,10 +46,12 @@ class OnixElements extends CollMap {
         return [key, data]
     }
 
+    get codeList(){ return this.has('codeList') ? this.top.codelist?.[this.get('codeList')] : null }
+    get formatList(){ return this.has('formatList') ? this.top.codelist?.[this.get('formatList')] : null }
+
     valueOf(code, {noCode=true}={}){
         if( !this.has('codeList') ) return code
-        let list = CodeList3[this.get('codeList')]
-        let value = list?.[code]?.value
+        let value = this.codeList?.[code]?.value
         return noCode ? value : [value, code]
     }
 

@@ -372,7 +372,8 @@ module.exports = new OnixElements({
             "codeList": "177"
           },
           "Date": {
-            "shortTag": "b306"
+            "shortTag": "b306",
+            "formatList": "55"
           }
         },
         "ProfessionalAffiliation": {
@@ -621,7 +622,8 @@ module.exports = new OnixElements({
           "codeList": "154"
         },
         "Text": {
-          "shortTag": "d104"
+          "shortTag": "d104",
+          "formatList": "34"
         },
         "ReviewRating": {
           "Rating": {
@@ -649,7 +651,8 @@ module.exports = new OnixElements({
             "codeList": "155"
           },
           "Date": {
-            "shortTag": "b306"
+            "shortTag": "b306",
+            "formatList": "55"
           }
         }
       },
@@ -687,7 +690,8 @@ module.exports = new OnixElements({
             "codeList": "155"
           },
           "Date": {
-            "shortTag": "b306"
+            "shortTag": "b306",
+            "formatList": "55"
           }
         }
       },
@@ -742,7 +746,8 @@ module.exports = new OnixElements({
               "codeList": "155"
             },
             "Date": {
-              "shortTag": "b306"
+              "shortTag": "b306",
+              "formatList": "55"
             }
           }
         }
@@ -841,7 +846,8 @@ module.exports = new OnixElements({
           "codeList": "163"
         },
         "Date": {
-          "shortTag": "b306"
+          "shortTag": "b306",
+          "formatList": "55"
         }
       },
       "LatestReprintNumber": {
@@ -1204,7 +1210,8 @@ module.exports = new OnixElements({
             "codeList": "163"
           },
           "Date": {
-            "shortTag": "b306"
+            "shortTag": "b306",
+            "formatList": "55"
           }
         },
         "PromotionCampaign": {
@@ -1270,7 +1277,8 @@ module.exports = new OnixElements({
             "codeList": "166"
           },
           "Date": {
-            "shortTag": "b306"
+            "shortTag": "b306",
+            "formatList": "55"
           }
         },
         "OrderTime": {
@@ -1478,7 +1486,8 @@ module.exports = new OnixElements({
               "codeList": "173"
             },
             "Date": {
-              "shortTag": "b306"
+              "shortTag": "b306",
+              "formatList": "55"
             }
           }
         }
