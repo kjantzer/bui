@@ -344,7 +344,7 @@ async function onixParse(xml, opts={}){
         onix.get('product').push(product)
 
         if( opts.process ){
-            await opts.process(product)
+            await opts.process(product, {i})
             
             // reset array of products (to attempt better memory management)
             onix.get('product').length = 0
