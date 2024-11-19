@@ -163,6 +163,18 @@ class Onix extends CollMap {
 
     get pathName(){ return this.path.map(d=>d.name) }
 
+    get senderName(){
+        let header = this.top.get('header')
+        if( !header ) return null
+        return header.getValue('sender.x298') || header.getValue('fromcompany') || header.getValue('m174')
+    }
+
+    get sentDate(){
+        let header = this.top.get('header')
+        if( !header ) return null
+        // FIXME: find and return in standard format
+    }
+
     toString(){
         if( this.has('value') ) return this.get('value')
         return this.name
@@ -304,7 +316,8 @@ async function onixParse(xml, opts={}){
         isArray: (name, jpath, isLeafNode, isAttribute) => {
             // always return products as an array
             // TODO: possibly add more elements here?
-            return ['product', 'relatedproduct'].includes(name.toLowerCase())
+            // TODO: elements should have value for "many" and then that should be used to create this list
+            return ['product', 'relatedproduct', 'supportingresource', 'textcontent'].includes(name.toLowerCase())
         }
     });
 
@@ -314,9 +327,12 @@ async function onixParse(xml, opts={}){
     onix = new Onix(onixMsg, {raw: onix})
     onix.set('product', new OnixArray())
 
+    if( opts.preprocess )
+        await opts.preprocess(onix, products, opts)
+
     for( let i in products ){
 
-        if( opts.limit && i >= opts.limit ) return
+        if( opts.limit && i >= opts.limit ) break
 
         progress(`parsing product`, {product: i})
 
