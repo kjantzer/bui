@@ -1494,4 +1494,4 @@ module.exports = new OnixElements({
       }
     }
   }
-}, {version: '3.0'})
+}, {release: '3.0'})

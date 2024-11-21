@@ -7,406 +7,1335 @@
 const OnixElements = require('./_elements')
 
 module.exports = new OnixElements({
-  "Product": {
-    "RecordReference": "a001",
-    "NotificationType": "a002",
-    "RecordSourceType": "a194",
-    "RecordSourceName": "al97",
-    "ProductIdentifier": {
-      "ProductIDType": "b221",
-      "IDTypeName": "b233",
-      "IDValue": "b244"
-    },
-    "Barcode": "b246",
-    "ProductForm": "b012",
-    "ProductFormDetail": "b333",
-    "ProductFormFeature": {
-      "ProductFormFeatureType": "b334",
-      "ProductFormFeatureValue": "b335",
-      "ProductFormFeatureDescription": "b336"
-    },
-    "ProductPackaging": "b225",
-    "ProductFormDescription": "b014",
-    "NumberOfPieces": "b210",
-    "TradeCategory": "b384",
-    "ProductContentType": "b385",
-    "ContainedItem": {
-      "ProductIdentifier": {
-        "ProductIDType": "b221",
-        "IDTypeName": "b233",
-        "IDValue": "b244"
-      },
-      "ProductForm": "b012",
-      "ProductFormDetail": "b333",
-      "NumberOfPieces": "b210",
-      "ItemQuantity": "b015"
-    },
-    "ProductClassification": {
-      "ProductClassificationType": "b274",
-      "ProductClassificationCode": "b275",
-      "Percent": "b337"
-    },
-    "EpubType": "b211",
-    "EpubTypeVersion": "b212",
-    "EpubTypeDescription": "b213",
-    "EpubFormat": "b214",
-    "EpubFormatVersion": "b215",
-    "EpubFormatDescription": "b216",
-    "EpubTypeNote": "b277",
-    "Series": {
-      "SeriesIdentifier": {
-        "SeriesIDType": "b273",
-        "IDTypeName": "b233",
-        "IDValue": "b244"
-      },
-      "TitleOfSeries": "b018",
-      "Title": {
-        "TitleType": "b202",
-        "TitleText": "b203",
-        "TitlePrefix": "b030",
-        "TitleWithoutPrefix": "b031",
-        "Subtitle": "b029"
-      },
-      "NumberWithinSeries": "b019",
-      "YearOfAnnual": "b020"
-    },
-    "Set": {
-      "ProductIdentifier": {
-        "ProductIDType": "b221",
-        "IDTypeName": "b233",
-        "IDValue": "b244"
-      },
-      "TitleOfSet": "b023",
-      "Title": {
-        "TitleType": "b202",
-        "TitleText": "b203",
-        "TitlePrefix": "b030",
-        "TitleWithoutPrefix": "b031",
-        "Subtitle": "b029"
-      },
-      "SetPartNumber": "b024",
-      "SetPartTitle": "b025",
-      "ItemNumberWithinSet": "b026",
-      "SetItemTitle": "b281"
-    },
-    "Title": {
-      "TitleType": "b202",
-      "TitleText": "b203",
-      "TitlePrefix": "b030",
-      "TitleWithoutPrefix": "b031",
-      "Subtitle": "b029"
-    },
-    "WorkIdentifier": {
-      "WorkIDType": "b201",
-      "IDTypeName": "b233",
-      "IDValue": "b244"
-    },
-    "Website": {
-      "WebsiteRole": "b367",
-      "WebsiteDescription": "b294",
-      "WebsiteLink": "b295"
-    },
-    "Contributor": {
-      "SequenceNumber": "b034",
-      "ContributorRole": "b035",
-      "LanguageCode": "b252",
-      "SequenceNumberWithinRole": "b340",
-      "PersonName": "b036",
-      "PersonNameInverted": "b037",
-      "TitlesBeforeNames": "b038",
-      "NamesBeforeKey": "b039",
-      "PrefixToKey": "b247",
-      "KeyNames": "b040",
-      "SuffixToKey": "b248",
-      "LettersAfterNames": "b042",
-      "PersonNameIdentifier": {
-        "PersonNameIDType": "b390",
-        "IDTypeName": "b233",
-        "IDValue": "b244"
-      },
-      "PersonDate": {
-        "PersonDateRole": "b305",
-        "Date": "b306"
-      },
-      "ProfessionalAffiliation": {
-        "ProfessionalPosition": "b045",
-        "Affiliation": "b046"
-      },
-      "CorporateName": "b047",
-      "BiographicalNote": "b044",
-      "Website": {
-        "WebsiteRole": "b367",
-        "WebsiteLink": "b295"
-      },
-      "ContributorDescription": "b048",
-      "CountryCode": "b251",
-      "RegionCode": "b398"
-    },
-    "ContributorStatement": "b049",
-    "Conference": {
-      "ConferenceName": "b052",
-      "ConferenceAcronym": "b341",
-      "ConferenceNumber": "b053",
-      "ConferenceDate": "b054",
-      "ConferencePlace": "b055"
-    },
-    "EditionTypeCode": {
-      "shortTag": "b056",
-      "codeList": "21"
-    },
-    "EditionNumber": "b057",
-    "EditionStatement": "b058",
-    "Language": {
-      "LanguageRole": "b253",
-      "LanguageCode": "b252"
-    },
-    "NumberOfPages": "b061",
-    "Extent": {
-      "ExtentType": "b218",
-      "ExtentValue": "b219",
-      "ExtentUnit": "b220"
-    },
-    "NumberOfIllustrations": "b125",
-    "IllustrationsNote": "b062",
-    "Illustrations": {
-      "IllustrationType": "b256",
-      "IllustrationTypeDescription": "b361",
-      "Number": "b257"
-    },
-    "MapScale": "b063",
-    "BASICMainSubject": "b064",
-    "BASICVersion": "b200",
-    "BICMainSubject": "b065",
-    "BICVersion": "b066",
-    "MainSubject": {
-      "MainSubjectSchemeIdentifier": "b191",
-      "SubjectSchemeVersion": "b068",
-      "SubjectCode": "b069",
-      "SubjectHeadingText": "b070"
-    },
-    "Subject": {
-      "SubjectSchemeIdentifier": "b067",
-      "SubjectSchemeName": "b171",
-      "SubjectSchemeVersion": "b068",
-      "SubjectCode": "b069",
-      "SubjectHeadingText": "b070"
-    },
-    "PlaceAsSubject": "b072",
-    "AudienceCode": "b073",
-    "Audience": {
-      "AudienceCodeType": "b204",
-      "AudienceCodeTypeName": "b205",
-      "AudienceCodeValue": "b206"
-    },
-    "AudienceRange": {
-      "AudienceRangeQualifier": "b074",
-      "AudienceRangePrecision1": "b075",
-      "AudienceRangeValue1": "b076",
-      "AudienceRangePrecision2": "b075",
-      "AudienceRangeValue2": "b076"
-    },
-    "AudienceDescription": "b207",
-    "Complexity": {
-      "ComplexitySchemeIdentifier": "b077",
-      "ComplexityCode": "b078"
-    },
-    "OtherText": {
-      "TextTypeCode": "d102",
-      "TextFormat": "d103",
-      "Text": "d104",
-      "TextLinkType": "d105",
-      "TextLink": "d106",
-      "TextAuthor": "d107",
-      "TextSourceCorporate": "b374",
-      "TextSourceTitle": "d108",
-      "TextPublicationDate": "d109"
-    },
-    "MediaFile": {
-      "MediaFileTypeCode": "f114",
-      "MediaFileFormatCode": "f115",
-      "ImageResolution": "f259",
-      "MediaFileLinkTypeCode": "f116",
-      "MediaFileLink": "f117",
-      "TextWithDownload": "f118",
-      "DownloadCaption": "f119",
-      "DownloadCredit": "f120",
-      "DownloadCopyrightNotice": "f121",
-      "DownloadTerms": "f122",
-      "MediaFileDate": "f373"
-    },
-    "ProductWebsite": {
-      "WebsiteRole": "b367",
-      "ProductWebsiteDescription": "f170",
-      "ProductWebsiteLink": "f123"
-    },
-    "Prize": {
-      "PrizeName": "g126",
-      "PrizeYear": "g127",
-      "PrizeCountry": "g128",
-      "PrizeCode": "g129"
-    },
-    "Imprint": {
-      "NameCodeType": "b241",
-      "NameCodeTypeName": "b242",
-      "NameCodeValue": "b243",
-      "ImprintName": "b079"
-    },
-    "Publisher": {
-      "PublishingRole": "b291",
-      "NameCodeType": "b241",
-      "NameCodeTypeName": "b242",
-      "NameCodeValue": "b243",
-      "PublisherName": "b081",
-      "Website": {
-        "WebsiteRole": "b367",
-        "WebsiteLink": "b295"
-      }
-    },
-    "CityOfPublication": "b209",
-    "CountryOfPublication": "b083",
-    "PublishingStatus": "b394",
-    "AnnouncementDate": "b086",
-    "TradeAnnouncementDate": "b362",
-    "PublicationDate": {
-      "shortTag": "b003",
-      "formatList": "55",
-    },
-    "CopyrightStatement": {
-      "CopyrightYear": "b087",
-      "CopyrightOwner": {
-        "CopyrightOwnerIdentifier": {
-          "CopyrightOwnerIDType": "b392",
-          "IDTypeName": "b233",
-          "IDValue": "b244"
-        },
-        "PersonName": "b036",
-        "CorporateName": "b047"
-      }
-    },
-    "CopyrightYear": "b087",
-    "YearFirstPublished": "b088",
-    "SalesRights": {
-      "SalesRightsType": "b089",
-      "RightsCountry": "b090",
-      "RightsTerritory": "b388"
-    },
-    "NotForSale": {
-      "RightsCountry": "b090",
-      "RightsTerritory": "b388",
-      "ProductIdentifier": {
-        "ProductIDType": "b221",
-        "IDValue": "b244"
-      }
-    },
-    "SalesRestriction": {
-      "SalesRestrictionType": "b381",
-      "SalesOutlet": {
-        "SalesOutletIdentifier": {
-          "SalesOutletIDType": "b393",
-          "IDTypeName": "b233",
-          "IDValue": "b244"
-        },
-        "SalesOutletName": "b382"
-      }
-    },
-    "Measure": {
-      "MeasureTypeCode": "c093",
-      "Measurement": "c094",
-      "MeasureUnitCode": "c095"
-    },
-    "RelatedProduct": {
-      "RelationCode": "h208",
-      "ProductIdentifier": {
-        "ProductIDType": "b221",
-        "IDTypeName": "b233",
-        "IDValue": "b244"
-      },
-      "ProductForm": "b012",
-      "ProductFormDetail": "b333",
-      "EpubType": "b211"
-    },
-    "OutOfPrintDate": "h134",
-    "SupplyDetail": {
-      "SupplierEANLocationNumber": "j135",
-      "SupplierSAN": "j136",
-      "SupplierIdentifier": {
-        "SupplierIDType": "j345",
-        "IDTypeName": "b233",
-        "IDValue": "b244"
-      },
-      "SupplierName": "j137",
-      "TelephoneNumber": "j270",
-      "FaxNumber": "j271",
-      "EmailAddress": "j272",
-      "SupplierRole": "j292",
-      "SupplyToCountry": "j138",
-      "SupplyToTerritory": "j397",
-      "SupplyToCountryExcluded": "j140",
-      "ReturnsCodeType": "j268",
-      "ReturnsCode": "j269",
-      "LastDateForReturns": "j387",
-      "ProductAvailability": "j396",
-      "NewSupplier": {
-        "SupplierIdentifier": {
-          "SupplierIDType": "j345",
-          "IDValue": "b244"
-        },
-        "SupplierName": "j137"
-      },
-      "ExpectedShipDate": "j142",
-      "OnSaleDate": "j143",
-      "OrderTime": "j144",
-      "Stock": {
-        "LocationName": "j349",
-        "OnHand": "j350",
-        "OnOrder": "j351",
-        "CBO": "j375"
-      },
-      "PackQuantity": "j145",
-      "AudienceRestrictionFlag": "j146",
-      "AudienceRestrictionNote": "j147",
-      "UnpricedItemType": "j192",
-      "Price": {
-        "PriceTypeCode": "j148",
-        "PriceQualifier": "j261",
-        "PriceTypeDescription": "j262",
-        "ClassOfTrade": "j149",
-        "BICDiscountGroupCode": "j150",
-        "DiscountCoded": {
-          "DiscountCodeType": "j363",
-          "DiscountCodeTypeName": "j378",
-          "DiscountCode": "j364"
-        },
-        "DiscountPercent": "j267",
-        "PriceStatus": "j266",
-        "PriceAmount": "j151",
-        "CurrencyCode": "j152",
-        "CountryCode": "b251",
-        "TaxRateCode1": "j153",
-        "TaxRatePercent1": "j154",
-        "TaxableAmount1": "j155",
-        "TaxAmount1": "j156",
-        "TaxRateCode2": "j157",
-        "TaxRatePercent2": "j158",
-        "TaxableAmount2": "j159",
-        "TaxAmount2": "j160",
-        "PriceEffectiveFrom": "j161",
-        "PriceEffectiveUntil": "j162"
-      }
-    },
-    "MarketRepresentation": {
-      "AgentName": "j401",
-      "AgentRole": "j402",
-      "MarketCountry": "j403",
-      "MarketTerritory": "j404",
-      "MarketPublishingStatus": "j407",
-      "MarketDate": {
-        "MarketDateRole": "j408",
-        "Date": "b306"
-      }
-    },
-    "PromotionCampaign": "k165",
-    "PromotionContact": "k166",
-    "InitialPrintRun": "k167"
-  }
-}, {version: '2.1'})
+    "Product": {
+        "shortTag": "product",
+        "required": true,
+        "components": {
+            "RecordReference": {
+                "shortTag": "a001",
+                "type": "string",
+                "required": true
+            },
+            "NotificationType": {
+                "shortTag": "a002",
+                "type": "code",
+                "codeList": 1,
+                "required": true
+            },
+            "DeletionCode": {
+                "shortTag": "a198",
+                "type": "code",
+                "codeList": 2
+            },
+            "RecordSourceType": {
+                "shortTag": "a194",
+                "type": "code",
+                "codeList": 3
+            },
+            "ProductIdentifier": {
+                "shortTag": "productidentifier",
+                "type": "composite",
+                "repeatable": true,
+                "required": true,
+                "components": {
+                    "ProductIDType": {
+                        "shortTag": "b221",
+                        "type": "code",
+                        "codeList": 5,
+                        "required": true
+                    },
+                    "IDTypeName": {
+                        "shortTag": "b233",
+                        "type": "string"
+                    },
+                    "IDValue": {
+                        "shortTag": "b244",
+                        "type": "string",
+                        "required": true
+                    }
+                }
+            },
+            "ProductForm": {
+                "shortTag": "b012",
+                "type": "code",
+                "codeList": 7,
+                "required": true
+            },
+            "ProductFormDetail": {
+                "shortTag": "b333",
+                "type": "code",
+                "codeList": 78,
+                "repeatable": true
+            },
+            "ProductFormFeature": {
+                "shortTag": "productformfeature",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "ProductFormFeatureType": {
+                        "shortTag": "b334",
+                        "type": "code",
+                        "codeList": 79,
+                        "required": true
+                    },
+                    "ProductFormFeatureValue": {
+                        "shortTag": "b335",
+                        "type": "string"
+                    },
+                    "ProductFormFeatureDescription": {
+                        "shortTag": "b336",
+                        "type": "text"
+                    }
+                }
+            },
+            "BookFormDetail": {
+                "shortTag": "b013",
+                "type": "code",
+                "codeList": 8,
+                "repeatable": true
+            },
+            "ProductPackaging": {
+                "shortTag": "b225",
+                "type": "code",
+                "codeList": 80
+            },
+            "ProductFormDescription": {
+                "shortTag": "b014",
+                "type": "text"
+            },
+            "NumberOfPieces": {
+                "shortTag": "b210",
+                "type": "integer"
+            },
+            "TradeCategory": {
+                "shortTag": "b384",
+                "type": "code",
+                "codeList": 12
+            },
+            "ProductContentType": {
+                "shortTag": "b385",
+                "type": "code",
+                "codeList": 81,
+                "repeatable": true
+            },
+            "EpubType": {
+                "shortTag": "b211",
+                "type": "code",
+                "codeList": 10
+            },
+            "EpubFormat": {
+                "shortTag": "b214",
+                "type": "code",
+                "codeList": 11
+            },
+            "EpubSource": {
+                "shortTag": "b278",
+                "type": "code",
+                "codeList": 11
+            },
+            "EpubTypeVersion": {
+                "shortTag": "b212",
+                "type": "string"
+            },
+            "EpubFormatVersion": {
+                "shortTag": "b215",
+                "type": "string"
+            },
+            "EpubTypeDescription": {
+                "shortTag": "b213",
+                "type": "text"
+            },
+            "EpubFormatDescription": {
+                "shortTag": "b216",
+                "type": "text"
+            },
+            "EpubTypeNote": {
+                "shortTag": "b277",
+                "type": "text"
+            },
+            "Series": {
+                "shortTag": "series",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "SeriesIdentifier": {
+                        "shortTag": "seriesidentifier",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "SeriesIDType": {
+                                "shortTag": "b273",
+                                "type": "code",
+                                "codeList": 13,
+                                "required": true
+                            },
+                            "IDTypeName": {
+                                "shortTag": "b233",
+                                "type": "string"
+                            },
+                            "IDValue": {
+                                "shortTag": "b244",
+                                "type": "string",
+                                "required": true
+                            }
+                        }
+                    },
+                    "TitleOfSeries": {
+                        "shortTag": "b018",
+                        "type": "string"
+                    },
+                    "SeriesPartName": {
+                        "shortTag": "b019",
+                        "type": "string",
+                        "repeatable": true
+                    },
+                    "NumberWithinSeries": {
+                        "shortTag": "b020",
+                        "type": "string"
+                    }
+                }
+            },
+            "Set": {
+                "shortTag": "set",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "ISBNOfSet": {
+                        "shortTag": "b021",
+                        "type": "string"
+                    },
+                    "EAN13OfSet": {
+                        "shortTag": "b022",
+                        "type": "string"
+                    },
+                    "TitleOfSet": {
+                        "shortTag": "b023",
+                        "type": "string"
+                    },
+                    "SetPartNumber": {
+                        "shortTag": "b024",
+                        "type": "string"
+                    },
+                    "SetPartTitle": {
+                        "shortTag": "b025",
+                        "type": "string"
+                    },
+                    "ItemNumberWithinSet": {
+                        "shortTag": "b026",
+                        "type": "string"
+                    },
+                    "LevelSequenceNumber": {
+                        "shortTag": "b284",
+                        "type": "string"
+                    },
+                    "SetItemTitle": {
+                        "shortTag": "b281",
+                        "type": "string"
+                    }
+                }
+            },
+            "Title": {
+                "shortTag": "title",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "TitleType": {
+                        "shortTag": "b202",
+                        "type": "code",
+                        "codeList": 15,
+                        "required": true
+                    },
+                    "AbbreviatedLength": {
+                        "shortTag": "b276",
+                        "type": "integer"
+                    },
+                    "TitleText": {
+                        "shortTag": "b203",
+                        "type": "string",
+                        "textcase": "title"
+                    },
+                    "TitlePrefix": {
+                        "shortTag": "b030",
+                        "type": "string"
+                    },
+                    "TitleWithoutPrefix": {
+                        "shortTag": "b031",
+                        "type": "string",
+                        "textcase": "title"
+                    },
+                    "Subtitle": {
+                        "shortTag": "b029",
+                        "type": "string",
+                        "textcase": "title"
+                    }
+                }
+            },
+            "WorkIdentifier": {
+                "shortTag": "workidentifier",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "WorkIDType": {
+                        "shortTag": "b201",
+                        "type": "code",
+                        "codeList": 16,
+                        "required": true
+                    },
+                    "IDTypeName": {
+                        "shortTag": "b233",
+                        "type": "string"
+                    },
+                    "IDValue": {
+                        "shortTag": "b244",
+                        "type": "string",
+                        "required": true
+                    }
+                }
+            },
+            "Website": {
+                "shortTag": "website",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "WebsiteRole": {
+                        "shortTag": "b367",
+                        "type": "code",
+                        "codeList": 73
+                    },
+                    "WebsiteDescription": {
+                        "shortTag": "b294",
+                        "type": "text"
+                    },
+                    "WebsiteLink": {
+                        "shortTag": "b295",
+                        "type": "string",
+                        "required": true
+                    }
+                }
+            },
+            "Contributor": {
+                "shortTag": "contributor",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "SequenceNumber": {
+                        "shortTag": "b034",
+                        "type": "integer"
+                    },
+                    "ContributorRole": {
+                        "shortTag": "b035",
+                        "type": "code",
+                        "codeList": 17,
+                        "repeatable": true,
+                        "required": true
+                    },
+                    "PersonNameIdentifier": {
+                        "shortTag": "personnameidentifier",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "PersonNameIDType": {
+                                "shortTag": "b390",
+                                "type": "code",
+                                "codeList": 101,
+                                "required": true
+                            },
+                            "IDTypeName": {
+                                "shortTag": "b233",
+                                "type": "string"
+                            },
+                            "IDValue": {
+                                "shortTag": "b244",
+                                "type": "string",
+                                "required": true
+                            }
+                        }
+                    },
+                    "PersonName": {
+                        "shortTag": "b036",
+                        "type": "string"
+                    },
+                    "PersonNameInverted": {
+                        "shortTag": "b037",
+                        "type": "string"
+                    },
+                    "TitlesBeforeNames": {
+                        "shortTag": "b038",
+                        "type": "string"
+                    },
+                    "NamesBeforeKey": {
+                        "shortTag": "b039",
+                        "type": "string"
+                    },
+                    "PrefixToKey": {
+                        "shortTag": "b247",
+                        "type": "string"
+                    },
+                    "KeyNames": {
+                        "shortTag": "b040",
+                        "type": "string"
+                    },
+                    "NamesAfterKey": {
+                        "shortTag": "b041",
+                        "type": "string"
+                    },
+                    "SuffixToKey": {
+                        "shortTag": "b248",
+                        "type": "string"
+                    },
+                    "LettersAfterNames": {
+                        "shortTag": "b042",
+                        "type": "string"
+                    },
+                    "TitlesAfterNames": {
+                        "shortTag": "b043",
+                        "type": "string"
+                    },
+                    "CorporateName": {
+                        "shortTag": "b047",
+                        "type": "string"
+                    },
+                    "BiographicalNote": {
+                        "shortTag": "b044",
+                        "type": "text"
+                    },
+                    "ProfessionalAffiliation": {
+                        "shortTag": "professionalaffiliation",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "ProfessionalPosition": {
+                                "shortTag": "b045",
+                                "type": "string"
+                            },
+                            "Affiliation": {
+                                "shortTag": "b046",
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "ContributorDescription": {
+                        "shortTag": "b048",
+                        "type": "text"
+                    },
+                    "UnnamedPersons": {
+                        "shortTag": "b249",
+                        "type": "code",
+                        "codeList": 19
+                    }
+                }
+            },
+            "PublicationDate": {
+                "shortTag": "b003",
+                "formatList": "55",
+            },
+            "OtherText": {
+                "shortTag": "othertext",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "TextTypeCode": {
+                        "shortTag": "d102",
+                        "type": "code",
+                        "codeList": 33,
+                        "required": true
+                    },
+                    "TextFormat": {
+                        "shortTag": "d103",
+                        "type": "code",
+                        "codeList": 34
+                    },
+                    "Text": {
+                        "shortTag": "d104",
+                        "type": "text"
+                    },
+                    "TextLinkType": {
+                        "shortTag": "d105",
+                        "type": "code",
+                        "codeList": 35
+                    },
+                    "TextLink": {
+                        "shortTag": "d106",
+                        "type": "string"
+                    },
+                    "TextAuthor": {
+                        "shortTag": "d107",
+                        "type": "string"
+                    },
+                    "TextSourceCorporate": {
+                        "shortTag": "b374",
+                        "type": "string"
+                    },
+                    "TextSourceTitle": {
+                        "shortTag": "d108",
+                        "type": "string"
+                    },
+                    "TextPublicationDate": {
+                        "shortTag": "d109",
+                        "type": "string"
+                    },
+                    "StartDate": {
+                        "shortTag": "b324",
+                        "type": "string"
+                    },
+                    "EndDate": {
+                        "shortTag": "b325",
+                        "type": "string"
+                    }
+                }
+            },
+            "Language": {
+                "shortTag": "language",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "LanguageRole": {
+                        "shortTag": "b253",
+                        "type": "code",
+                        "codeList": 22,
+                        "required": true
+                    },
+                    "LanguageCode": {
+                        "shortTag": "b252",
+                        "type": "code",
+                        "codeList": 74,
+                        "required": true
+                    }
+                }
+            },
+            "EditionTypeCode": {
+                "shortTag": "b056",
+                "codeList": "21"
+            },
+            "BASICMainSubject": {
+                "shortTag": "b064"
+            },
+            "Extent": {
+                "shortTag": "extent",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "ExtentType": {
+                        "shortTag": "b218",
+                        "type": "code",
+                        "codeList": 23,
+                        "required": true
+                    },
+                    "ExtentValue": {
+                        "shortTag": "b219",
+                        "type": "integer",
+                        "required": true
+                    },
+                    "ExtentUnit": {
+                        "shortTag": "b220",
+                        "type": "code",
+                        "codeList": 24,
+                        "required": true
+                    }
+                }
+            },
+            "Illustrations": {
+                "shortTag": "illustrations",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "IllustrationType": {
+                        "shortTag": "b256",
+                        "type": "code",
+                        "codeList": 25
+                    },
+                    "IllustrationTypeDescription": {
+                        "shortTag": "b361",
+                        "type": "text"
+                    },
+                    "Number": {
+                        "shortTag": "b257",
+                        "type": "integer"
+                    }
+                }
+            },
+            "Subject": {
+                "shortTag": "subject",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "SubjectSchemeIdentifier": {
+                        "shortTag": "b067",
+                        "type": "code",
+                        "codeList": 27,
+                        "required": true
+                    },
+                    "SubjectSchemeName": {
+                        "shortTag": "b171",
+                        "type": "string"
+                    },
+                    "SubjectSchemeVersion": {
+                        "shortTag": "b068",
+                        "type": "string"
+                    },
+                    "SubjectCode": {
+                        "shortTag": "b069",
+                        "type": "string"
+                    },
+                    "SubjectHeadingText": {
+                        "shortTag": "b070",
+                        "type": "string"
+                    }
+                }
+            },
+            "Audience": {
+                "shortTag": "audience",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "AudienceCodeType": {
+                        "shortTag": "b204",
+                        "type": "code",
+                        "codeList": 29,
+                        "required": true
+                    },
+                    "AudienceCodeValue": {
+                        "shortTag": "b205",
+                        "type": "string",
+                        "required": true
+                    },
+                    "AudienceCodeTypeName": {
+                        "shortTag": "b206",
+                        "type": "string"
+                    }
+                }
+            },
+            "AudienceRange": {
+                "shortTag": "audiencerange",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "AudienceRangeQualifier": {
+                        "shortTag": "b074",
+                        "type": "code",
+                        "codeList": 30,
+                        "required": true
+                    },
+                    "AudienceRangePrecision": {
+                        "shortTag": "b075",
+                        "type": "code",
+                        "codeList": 31,
+                        "repeatable": true
+                    },
+                    "AudienceRangeValue": {
+                        "shortTag": "b076",
+                        "type": "string",
+                        "repeatable": true
+                    }
+                }
+            },
+            "Complexity": {
+                "shortTag": "complexity",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "ComplexitySchemeIdentifier": {
+                        "shortTag": "b077",
+                        "type": "code",
+                        "codeList": 32,
+                        "required": true
+                    },
+                    "ComplexityCode": {
+                        "shortTag": "b078",
+                        "type": "string"
+                    }
+                }
+            },
+            "Publisher": {
+                "shortTag": "publisher",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "PublishingRole": {
+                        "shortTag": "b291",
+                        "type": "code",
+                        "codeList": 45,
+                        "required": true
+                    },
+                    "PublisherIdentifier": {
+                        "shortTag": "publisheridentifier",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "PublisherIDType": {
+                                "shortTag": "b241",
+                                "type": "code",
+                                "codeList": 44,
+                                "required": true
+                            },
+                            "IDTypeName": {
+                                "shortTag": "b233",
+                                "type": "string"
+                            },
+                            "IDValue": {
+                                "shortTag": "b244",
+                                "type": "string",
+                                "required": true
+                            }
+                        }
+                    },
+                    "PublisherName": {
+                        "shortTag": "b081",
+                        "type": "string"
+                    },
+                    "Website": {
+                        "shortTag": "website",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "WebsiteRole": {
+                                "shortTag": "b367",
+                                "type": "code",
+                                "codeList": 73
+                            },
+                            "WebsiteDescription": {
+                                "shortTag": "b294",
+                                "type": "text"
+                            },
+                            "WebsiteLink": {
+                                "shortTag": "b295",
+                                "type": "string",
+                                "required": true
+                            }
+                        }
+                    }
+                }
+            },
+            "PublishingStatus": {
+                "shortTag": "publishingstatus",
+                "type": "composite",
+                "components": {
+                    "PublishingStatusCode": {
+                        "shortTag": "b394",
+                        "type": "code",
+                        "codeList": 64
+                    },
+                    "PublishingStatusNote": {
+                        "shortTag": "b395",
+                        "type": "text"
+                    }
+                }
+            },
+            "PublishingDate": {
+                "shortTag": "publishingdate",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "PublishingDateRole": {
+                        "shortTag": "b306",
+                        "type": "code",
+                        "codeList": 163,
+                        "required": true
+                    },
+                    "DateFormat": {
+                        "shortTag": "j260",
+                        "type": "code",
+                        "codeList": 55
+                    },
+                    "Date": {
+                        "shortTag": "b306",
+                        "type": "string",
+                        "required": true
+                    }
+                }
+            },
+            "SalesRights": {
+                "shortTag": "salesrights",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "SalesRightsType": {
+                        "shortTag": "b089",
+                        "type": "code",
+                        "codeList": 46,
+                        "required": true
+                    },
+                    "RightsCountry": {
+                        "shortTag": "b090",
+                        "type": "code",
+                        "codeList": 91,
+                        "repeatable": true
+                    },
+                    "RightsTerritory": {
+                        "shortTag": "b388",
+                        "type": "code",
+                        "codeList": 49
+                    },
+                    "RightsRegion": {
+                        "shortTag": "b091",
+                        "type": "code",
+                        "codeList": 47,
+                        "repeatable": true
+                    }
+                }
+            },
+            "RelatedProduct": {
+                "shortTag": "relatedproduct",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "RelationCode": {
+                        "shortTag": "h208",
+                        "type": "code",
+                        "codeList": 51,
+                        "required": true
+                    },
+                    "ProductIdentifier": {
+                        "shortTag": "productidentifier",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "ProductIDType": {
+                                "shortTag": "b221",
+                                "type": "code",
+                                "codeList": 5,
+                                "required": true
+                            },
+                            "IDTypeName": {
+                                "shortTag": "b233",
+                                "type": "string"
+                            },
+                            "IDValue": {
+                                "shortTag": "b244",
+                                "type": "string",
+                                "required": true
+                            }
+                        }
+                    },
+                    "ProductForm": {
+                        "shortTag": "b012",
+                        "type": "code",
+                        "codeList": 7
+                    }
+                }
+            },
+            "SupplyDetail": {
+                "shortTag": "supplydetail",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "SupplierIdentifier": {
+                        "shortTag": "supplieridentifier",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "SupplierIDType": {
+                                "shortTag": "j345",
+                                "type": "code",
+                                "codeList": 92,
+                                "required": true
+                            },
+                            "IDTypeName": {
+                                "shortTag": "b233",
+                                "type": "string"
+                            },
+                            "IDValue": {
+                                "shortTag": "b244",
+                                "type": "string",
+                                "required": true
+                            }
+                        }
+                    },
+                    "SupplierRole": {
+                        "shortTag": "j292",
+                        "type": "code",
+                        "codeList": 93,
+                        "required": true
+                    },
+                    "SupplierName": {
+                        "shortTag": "j137",
+                        "type": "string"
+                    },
+                    "TelephoneNumber": {
+                        "shortTag": "j270",
+                        "type": "string"
+                    },
+                    "FaxNumber": {
+                        "shortTag": "j271",
+                        "type": "string"
+                    },
+                    "EmailAddress": {
+                        "shortTag": "j272",
+                        "type": "string"
+                    },
+                    "Website": {
+                        "shortTag": "website",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "WebsiteRole": {
+                                "shortTag": "b367",
+                                "type": "code",
+                                "codeList": 73
+                            },
+                            "WebsiteDescription": {
+                                "shortTag": "b294",
+                                "type": "text"
+                            },
+                            "WebsiteLink": {
+                                "shortTag": "b295",
+                                "type": "string",
+                                "required": true
+                            }
+                        }
+                    },
+                    "SupplyToCountry": {
+                        "shortTag": "j138",
+                        "type": "code",
+                        "codeList": 91,
+                        "repeatable": true
+                    },
+                    "SupplyToTerritory": {
+                        "shortTag": "j397",
+                        "type": "code",
+                        "codeList": 49
+                    },
+                    "SupplyToRegion": {
+                        "shortTag": "j139",
+                        "type": "code",
+                        "codeList": 47,
+                        "repeatable": true
+                    },
+                    "ReturnsCodeType": {
+                        "shortTag": "j268",
+                        "type": "code",
+                        "codeList": 53
+                    },
+                    "ReturnsCode": {
+                        "shortTag": "j269",
+                        "type": "string"
+                    },
+                    "LastDateForReturns": {
+                        "shortTag": "j387",
+                        "type": "string"
+                    },
+                    "ProductAvailability": {
+                        "shortTag": "j396",
+                        "type": "code",
+                        "codeList": 65,
+                        "required": true
+                    },
+                    "NewSupplier": {
+                        "shortTag": "newsupplier",
+                        "type": "composite",
+                        "components": {
+                            "SupplierIdentifier": {
+                                "shortTag": "supplieridentifier",
+                                "type": "composite",
+                                "repeatable": true,
+                                "components": {
+                                    "SupplierIDType": {
+                                        "shortTag": "j345",
+                                        "type": "code",
+                                        "codeList": 92,
+                                        "required": true
+                                    },
+                                    "IDTypeName": {
+                                        "shortTag": "b233",
+                                        "type": "string"
+                                    },
+                                    "IDValue": {
+                                        "shortTag": "b244",
+                                        "type": "string",
+                                        "required": true
+                                    }
+                                }
+                            },
+                            "SupplierRole": {
+                                "shortTag": "j292",
+                                "type": "code",
+                                "codeList": 93,
+                                "required": true
+                            },
+                            "SupplierName": {
+                                "shortTag": "j137",
+                                "type": "string"
+                            },
+                            "TelephoneNumber": {
+                                "shortTag": "j270",
+                                "type": "string"
+                            },
+                            "FaxNumber": {
+                                "shortTag": "j271",
+                                "type": "string"
+                            },
+                            "EmailAddress": {
+                                "shortTag": "j272",
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "Stock": {
+                        "shortTag": "stock",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "OnHand": {
+                                "shortTag": "j350",
+                                "type": "integer"
+                            },
+                            "OnOrder": {
+                                "shortTag": "j351",
+                                "type": "integer"
+                            },
+                            "CBO": {
+                                "shortTag": "j375",
+                                "type": "integer"
+                            },
+                            "LocationIdentifier": {
+                                "shortTag": "locationidentifier",
+                                "type": "composite",
+                                "repeatable": true,
+                                "components": {
+                                    "LocationIDType": {
+                                        "shortTag": "j377",
+                                        "type": "code",
+                                        "codeList": 94,
+                                        "required": true
+                                    },
+                                    "IDTypeName": {
+                                        "shortTag": "b233",
+                                        "type": "string"
+                                    },
+                                    "IDValue": {
+                                        "shortTag": "b244",
+                                        "type": "string",
+                                        "required": true
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "PackQuantity": {
+                        "shortTag": "j145",
+                        "type": "integer"
+                    },
+                    "Price": {
+                        "shortTag": "price",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "PriceTypeCode": {
+                                "shortTag": "j148",
+                                "type": "code",
+                                "codeList": 58,
+                                "required": true
+                            },
+                            "PriceQualifier": {
+                                "shortTag": "j261",
+                                "type": "code",
+                                "codeList": 59
+                            },
+                            "PriceTypeDescription": {
+                                "shortTag": "j262",
+                                "type": "text"
+                            },
+                            "PriceAmount": {
+                                "shortTag": "j151",
+                                "type": "decimal",
+                                "required": true
+                            },
+                            "CurrencyCode": {
+                                "shortTag": "j152",
+                                "type": "code",
+                                "codeList": 96
+                            },
+                            "PriceStatus": {
+                                "shortTag": "j266",
+                                "type": "code",
+                                "codeList": 61
+                            },
+                            "MinimumOrderQuantity": {
+                                "shortTag": "j263",
+                                "type": "integer"
+                            },
+                            "ClassOfTrade": {
+                                "shortTag": "j149",
+                                "type": "string"
+                            },
+                            "DiscountCoded": {
+                                "shortTag": "discountcoded",
+                                "type": "composite",
+                                "repeatable": true,
+                                "components": {
+                                    "DiscountCodeType": {
+                                        "shortTag": "j363",
+                                        "type": "code",
+                                        "codeList": 100,
+                                        "required": true
+                                    },
+                                    "DiscountCodeTypeName": {
+                                        "shortTag": "j378",
+                                        "type": "string"
+                                    },
+                                    "DiscountCode": {
+                                        "shortTag": "j364",
+                                        "type": "string",
+                                        "required": true
+                                    }
+                                }
+                            },
+                            "PriceEffectiveFrom": {
+                                "shortTag": "j161",
+                                "type": "string"
+                            },
+                            "PriceEffectiveUntil": {
+                                "shortTag": "j162",
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "MarketRepresentation": {
+                        "shortTag": "marketrepresentation",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "AgentIdentifier": {
+                                "shortTag": "agentidentifier",
+                                "type": "composite",
+                                "repeatable": true,
+                                "components": {
+                                    "AgentIDType": {
+                                        "shortTag": "j400",
+                                        "type": "code",
+                                        "codeList": 92,
+                                        "required": true
+                                    },
+                                    "IDTypeName": {
+                                        "shortTag": "b233",
+                                        "type": "string"
+                                    },
+                                    "IDValue": {
+                                        "shortTag": "b244",
+                                        "type": "string",
+                                        "required": true
+                                    }
+                                }
+                            },
+                            "AgentName": {
+                                "shortTag": "j401",
+                                "type": "string"
+                            },
+                            "AgentRole": {
+                                "shortTag": "j402",
+                                "type": "code",
+                                "codeList": 69,
+                                "required": true
+                            },
+                            "MarketCountry": {
+                                "shortTag": "j403",
+                                "type": "code",
+                                "codeList": 91,
+                                "repeatable": true
+                            },
+                            "MarketTerritory": {
+                                "shortTag": "j404",
+                                "type": "code",
+                                "codeList": 49
+                            },
+                            "MarketRegion": {
+                                "shortTag": "j405",
+                                "type": "code",
+                                "codeList": 47,
+                                "repeatable": true
+                            },
+                            "MarketDate": {
+                                "shortTag": "marketdate",
+                                "type": "composite",
+                                "repeatable": true,
+                                "components": {
+                                    "MarketDateRole": {
+                                        "shortTag": "j408",
+                                        "type": "code",
+                                        "codeList": 67,
+                                        "required": true
+                                    },
+                                    "DateFormat": {
+                                        "shortTag": "j260",
+                                        "type": "code",
+                                        "codeList": 55
+                                    },
+                                    "Date": {
+                                        "shortTag": "b306",
+                                        "type": "string",
+                                        "required": true
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "SalesPromotion": {
+                        "shortTag": "salespromotion",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "PromotionType": {
+                                "shortTag": "k165",
+                                "type": "code",
+                                "codeList": 71,
+                                "required": true
+                            },
+                            "PromotionDescription": {
+                                "shortTag": "k166",
+                                "type": "text"
+                            },
+                            "PromotionStartDate": {
+                                "shortTag": "k167",
+                                "type": "string"
+                            },
+                            "PromotionEndDate": {
+                                "shortTag": "k168",
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "ContainedItem": {
+                        "shortTag": "containeditem",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "ISBN": {
+                                "shortTag": "b004",
+                                "type": "string"
+                            },
+                            "EAN13": {
+                                "shortTag": "b005",
+                                "type": "string"
+                            },
+                            "ProductIdentifier": {
+                                "shortTag": "productidentifier",
+                                "type": "composite",
+                                "repeatable": true,
+                                "components": {
+                                    "ProductIDType": {
+                                        "shortTag": "b221",
+                                        "type": "code",
+                                        "codeList": 5,
+                                        "required": true
+                                    },
+                                    "IDTypeName": {
+                                        "shortTag": "b233",
+                                        "type": "string"
+                                    },
+                                    "IDValue": {
+                                        "shortTag": "b244",
+                                        "type": "string",
+                                        "required": true
+                                    }
+                                }
+                            },
+                            "ItemQuantity": {
+                                "shortTag": "b015",
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            },
+            "MediaFile": {
+                "shortTag": "mediafile",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "MediaFileTypeCode": {
+                        "shortTag": "f114",
+                        "type": "code",
+                        "codeList": 38,
+                        "required": true
+                    },
+                    "MediaFileFormatCode": {
+                        "shortTag": "f115",
+                        "type": "code",
+                        "codeList": 39
+                    },
+                    "MediaFileLinkTypeCode": {
+                        "shortTag": "f116",
+                        "type": "code",
+                        "codeList": 40
+                    },
+                    "MediaFileLink": {
+                        "shortTag": "f117",
+                        "type": "string"
+                    },
+                    "TextWithMediaFile": {
+                        "shortTag": "f118",
+                        "type": "text"
+                    },
+                    "DownloadTerms": {
+                        "shortTag": "f119",
+                        "type": "text"
+                    },
+                    "MediaFileDate": {
+                        "shortTag": "f120",
+                        "type": "string"
+                    }
+                }
+            },
+            "Imprint": {
+                "shortTag": "imprint",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "ImprintIdentifier": {
+                        "shortTag": "imprintidentifier",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "ImprintIDType": {
+                                "shortTag": "b241",
+                                "type": "code",
+                                "codeList": 44,
+                                "required": true
+                            },
+                            "IDTypeName": {
+                                "shortTag": "b233",
+                                "type": "string"
+                            },
+                            "IDValue": {
+                                "shortTag": "b244",
+                                "type": "string",
+                                "required": true
+                            }
+                        }
+                    },
+                    "ImprintName": {
+                        "shortTag": "b079",
+                        "type": "string"
+                    }
+                }
+            },
+            "CopyrightStatement": {
+                "shortTag": "copyrightstatement",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "CopyrightYear": {
+                        "shortTag": "b087",
+                        "type": "string",
+                        "required": true
+                    },
+                    "CopyrightOwner": {
+                        "shortTag": "copyrightowner",
+                        "type": "composite",
+                        "repeatable": true,
+                        "components": {
+                            "PersonName": {
+                                "shortTag": "b036",
+                                "type": "string"
+                            },
+                            "CorporateName": {
+                                "shortTag": "b047",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}, {release: '2.1'})

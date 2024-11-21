@@ -1,16 +1,16 @@
 const CollMap = require(`../../collmap`)
-const CodeList3 = require('./codelists-3.0')
-const CodeList2 = CodeList3 // FIXME:
+const CodeLists67 = require('./codelists67')
+const CodeLists36 = require('./codelists36')
 
 class OnixElements extends CollMap {
 
-    constructor(data, {name='ONIX', version, parent, level=0}={}){
+    constructor(data, {name='ONIX', release, parent, level=0}={}){
         
         super(data)
 
         if( level == 0 ){
-            this.version = version
-            this.codelist = version == '2.1' ? CodeList2 : CodeList3
+            this.release = release
+            this.codelist = release == '2.1' ? CodeLists36 : CodeLists67
             this.flatLookup = new CollMap()
             this.shortTagLookup = new CollMap()
         }
@@ -20,10 +20,15 @@ class OnixElements extends CollMap {
         this.parent = parent
 
         if( this.get('shortTag') ){
-            this.top.flatLookup.set(name.toLowerCase(), this)
-            this.top.shortTagLookup.set(this.get('shortTag'), this)
-        }
-        else{
+
+            if( this.get('components') ){
+                this.set('components', new OnixElements(this.get('components'), {name: 'components', parent: this, level: this.level}))
+            }else{
+                this.top.flatLookup.set(name.toLowerCase(), this)
+                this.top.shortTagLookup.set(this.get('shortTag'), this)
+            }
+
+        }else{
             let mapped = {}
             this.forEach((d,k)=>{
 
@@ -46,12 +51,34 @@ class OnixElements extends CollMap {
         return [key, data]
     }
 
-    get codeList(){ return this.has('codeList') ? this.top.codelist?.[this.get('codeList')] : null }
+    // _get(key){
+    //     // support dotnotation
+    //     let keys = key.toLowerCase().split('.')
+    //     key = keys.shift()
+
+    //     // attemp to get the item
+    //     let resp = super.get(key)
+
+    //     keys = keys.join('.')
+        
+    //     // looks like we have further dotnotation to follow
+    //     if( keys && resp)
+    //         return resp.get(keys)
+    //     else
+    //         return resp
+    // }
+
+    get codeList(){ 
+        if( !this.has('codeList') ) return null 
+        return this.top.codelist?.[this.get('codeList')]
+        || this.top.codelist?.['List'+this.get('codeList')]
+    }
     get formatList(){ return this.has('formatList') ? this.top.codelist?.[this.get('formatList')] : null }
 
     valueOf(code, {noCode=true}={}){
         if( !this.has('codeList') ) return code
-        let value = this.codeList?.[code]?.value
+        let list = this.codeList
+        let value = list?.[code]?.value || list?.['codes']?.[code]
         return noCode ? value : [value, code]
     }
 
