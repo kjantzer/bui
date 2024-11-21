@@ -171,7 +171,7 @@ module.exports = class Model {
     async beforeDestroy(where){ /* noop */ }
     afterDestroy(){ /* noop */ }
 
-    // shouldn't need to change this
+    // shouldn't need to change this unless you need to add an additional running script
     // used by api.js
     onClientTerminated(){
         // let post/put/delete actions continue
@@ -863,6 +863,9 @@ module.exports = class Model {
 
         let {ids, primaryID} = this.req.body
         let foreignKeys = await this.findForeignKeyConstraints()
+
+        if( !primaryID && this.id )
+            primaryID = this.id
 
         // make sure primary ID is NOT in set of IDs to merge
         ids = ids.filter(id=>id!=primaryID)
