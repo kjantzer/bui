@@ -19,7 +19,7 @@ import Backbone from 'backbone'
 // Collections dont have urlRoot by default; but let's add one now for relations
 Backbone.Collection.prototype.urlRoot = function(){
 	let url = this.parentModel?.url
-	if( typeof url == 'function' ) return url()
+	if( typeof url == 'function' ) return url.call(this.parentModel)
 	return url || Backbone.API_ROOT || '/api'
 }
 
