@@ -22,9 +22,17 @@ module.exports = class OnixProductModel {
                 data[key] = this[key]
         }
 
+        if( opts.array ){
+            let dataArray = []
+            for( let k in data ){
+                dataArray.push({key: k, val: data[k]})
+            }
+            return dataArray
+        }
+
         if( opts.string )
             return JSON.stringify(data, null, 2)
-        
+
         return data
     }
 
