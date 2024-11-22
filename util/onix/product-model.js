@@ -13,7 +13,7 @@ module.exports = class OnixProductModel {
         return this[key]
     }
 
-    toJSON(){
+    toJSON(opts){
         let data = {}
         let getters = Object.getOwnPropertyDescriptors(this.constructor.prototype)
         for( let key in getters ){
@@ -21,6 +21,10 @@ module.exports = class OnixProductModel {
             if( !getter.set && getter.get && !['is2', 'is3'].includes(key) )
                 data[key] = this[key]
         }
+
+        if( opts.string )
+            return JSON.stringify(data, null, 2)
+        
         return data
     }
 
