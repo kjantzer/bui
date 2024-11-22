@@ -1,14 +1,13 @@
 const CollMap = require(`../collmap`)
 const OnixArray = require('./onix-array')
 const {formatDate} = require('./util')
-const parse = require('./parse')
+// const parse = require('./parse')
 
 const Elements3 = require('./specs/elements-3.0')
 const Elements2 = require('./specs/elements-2.1')
 
 class Onix extends CollMap {
 
-    static async parse(xml, opts){ return parse(xml, opts) }
     formatDate(){ return formatDate(...arguments) }
 
     constructor(data, {name='ONIX', element, release, parent, level=0, index, raw, hash}={}){

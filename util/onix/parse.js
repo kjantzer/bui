@@ -5,8 +5,12 @@
 */
 const { XMLParser } = require('fast-xml-parser')
 const createHash = require('../createHash')
+const Onix = require('./onix')
+const OnixArray = require('./onix-array')
+// const Elements3 = require('./specs/elements-3.0')
+const Elements2 = require('./specs/elements-2.1')
 
-module.exports = async function onixParse(xml, opts={}){
+async function parse(xml, opts={}){
 
     opts = {
         captureRaw: true,
@@ -100,3 +104,7 @@ module.exports = async function onixParse(xml, opts={}){
 
     return onix
 }
+
+Onix.parse = function(xml, opts){ return parse(xml, opts) }
+
+module.exports = parse
