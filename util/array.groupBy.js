@@ -19,7 +19,7 @@ module.exports = function groupBy(key, {
     let group = {}
     this.forEach(row=>{
         
-        let rowKey = typeof key == 'function' ? String(key(row)) : row[key]
+        let rowKey = !key ? row : typeof key == 'function' ? String(key(row)) : row[key]
 
         if( rowKey !== undefined ){ // NOTE: should I allow undefined?
 
