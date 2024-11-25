@@ -859,6 +859,19 @@ module.exports = class Model {
         return resp
     }
 
+    async mergeReview() {
+        let {ids} = this.req.body
+        if( typeof ids == 'string' )
+            ids = ids.split(/[,\n]/)
+        
+        if( !Array.isArray(ids) )
+            throw new APIError('Invalid IDs given')
+
+        ids = ids.map(id=>id.trim())
+
+        return this.find({[this.idAttribute]: ids})
+    }
+
     async merge(){
 
         let {ids, primaryID} = this.req.body
