@@ -13,7 +13,7 @@ module.exports = class OnixProductModel {
         return this[key]
     }
 
-    toJSON(opts){
+    toJSON(opts={}){
         let data = {}
         let getters = Object.getOwnPropertyDescriptors(this.constructor.prototype)
         for( let key in getters ){
