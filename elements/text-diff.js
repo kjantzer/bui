@@ -29,8 +29,16 @@ customElements.define('b-text-diff', class extends Text{
                 oldValue = String(oldValue).split(sep).sort().join(sep)
                 newValue = String(newValue).split(sep).sort().join(sep)
             }
-
-            this.diff = diff.diffWords(oldValue, newValue)
+            
+            let diffFn = {
+                'chars': 'diffChars',
+                'words': 'diffWords',
+                'lines': 'diffLines',
+                'sentences': 'diffSentences'
+            }[this.opts?.type] || 'diffWords'
+            diffFn = diff[diffFn] || diff.diffWords
+            
+            this.diff = diffFn(oldValue, newValue)
 
             this.requestUpdate()
             // this.diff = diff.diffWords(oldValue, newValue)
