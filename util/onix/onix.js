@@ -122,6 +122,13 @@ class Onix extends CollMap {
             return resp
     }
 
+    getArray(key){
+        let val = this.get(key)
+        if( !Array.isArray(val) )
+            val = new OnixArray(val)
+        return val
+    }
+
     getValue(key, opts){
         return this.get(key)?.value(opts)
     }
