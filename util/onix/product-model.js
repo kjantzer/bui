@@ -2,6 +2,7 @@
     An opionated model class for gathering important data from both versions of Onix
 */
 const dayjs = require('dayjs')
+const groupBy = require('../array.groupBy')
 
 module.exports = class OnixProductModel {
 
@@ -230,16 +231,32 @@ module.exports = class OnixProductModel {
     get credits(){
         let credits = this.is2 ? this.onix.get('contributor') : this.onix.get('DescriptiveDetail.Contributor')
 
-        return credits.map(d=>{
+        credits = credits.map(d=>{
             return {
                 name: d.getValue('PersonName'),
                 first: d.getValue('NamesBeforeKey'),
                 last: d.getValue('KeyNames'),
                 ordinal: d.getValue('SequenceNumber'),
                 bio: d.getValue('BiographicalNote'),
-                roles: d.get('ContributorRole').map(m=>m.get('value'))
+                roles: d.getArray('ContributorRole')?.map(m=>m.get?.('value'))
             }
         })
+
+        // group credits by the same name (should only be cause of separate roles)
+        credits = groupBy.call(credits, 'name', {forceArray: true, returnAsArray: true})
+
+        // now reduce to one of each person, but combine the roles listed
+        credits = credits.map(credits=>{
+            // combine all roles
+            let roles = credits.flatMap(credit=>credit.roles)
+
+            return {
+                ...credits[0],
+                roles
+            }
+        })
+
+        return credits
     }
 
     get availability(){
@@ -250,16 +267,16 @@ module.exports = class OnixProductModel {
     get embargo(){
         // TODO: v2
         let date = this.onix.get('ProductSupply.SupplyDetail.0.SupplyDate')
-        if( date.getValue('SupplyDateRole') == 'Sales embargo date' )
+        if( date?.getValue('SupplyDateRole') == 'Sales embargo date' )
             return date.getValue('Date')
     }
 
     get price(){
-        return this.prices.find(d=>d.currency == 'USD')?.price
+        return this.prices?.find(d=>d.currency == 'USD')?.price
     }
 
     get prices(){
-        return this.onix.get('ProductSupply.SupplyDetail.Price').filter(m=>{
+        return this.onix.get('ProductSupply.SupplyDetail.Price')?.filter(m=>{
             return !m.getValue('PriceQualifier') || ['Consumer price', 'Unqualified price'].includes(m.getValue('PriceQualifier'))
         }).map(m=>{
             return {
