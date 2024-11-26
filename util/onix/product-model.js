@@ -223,7 +223,8 @@ module.exports = class OnixProductModel {
     }
 
     get illustrationNote(){
-        return 'WIP'
+        if( this.is2 ) return this.onix.getValue('IllustrationsNote')
+        return this.onix.getValue('DescriptiveDetail.IllustrationsNote')
     }
 
     get credits(){
@@ -235,7 +236,36 @@ module.exports = class OnixProductModel {
                 first: d.getValue('NamesBeforeKey'),
                 last: d.getValue('KeyNames'),
                 ordinal: d.getValue('SequenceNumber'),
-                bio: d.getValue('BiographicalNote')
+                bio: d.getValue('BiographicalNote'),
+                roles: d.get('ContributorRole').map(m=>m.get('value'))
+            }
+        })
+    }
+
+    get availability(){
+        // TODO: v2
+        return this.onix.getValue('ProductSupply.SupplyDetail.0.ProductAvailability')
+    }
+
+    get embargo(){
+        // TODO: v2
+        let date = this.onix.get('ProductSupply.SupplyDetail.0.SupplyDate')
+        if( date.getValue('SupplyDateRole') == 'Sales embargo date' )
+            return date.getValue('Date')
+    }
+
+    get price(){
+        return this.prices.find(d=>d.currency == 'USD')?.price
+    }
+
+    get prices(){
+        return this.onix.get('ProductSupply.SupplyDetail.Price').filter(m=>{
+            return !m.getValue('PriceQualifier') || ['Consumer price', 'Unqualified price'].includes(m.getValue('PriceQualifier'))
+        }).map(m=>{
+            return {
+                price: m.getValue('PriceAmount'),
+                currency: m.get('CurrencyCode.value'),
+                territory: m.get('Territory').toJSON()
             }
         })
     }
