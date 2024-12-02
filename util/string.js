@@ -4,6 +4,8 @@
     Various functions for common strings modifications
 */
 
+const UpperCaseWords = ['id', 'isbn']
+
 /*
     `capitalize(str)`  
     "some string of text" => "Some String Of Text"
@@ -14,7 +16,10 @@ function capitalize(str){
     .trim()
     .toLowerCase() // in case all uppercase
     .split(' ')
-    .map(s=>s?(s[0].toUpperCase()+s.substr(1)):'')
+    .map(s=>{
+        if( UpperCaseWords.includes(s) ) return s.toUpperCase()
+        return s?(s[0].toUpperCase()+s.substr(1)):''
+    })
     .join(' ')
 }
 
@@ -45,7 +50,7 @@ function slugify(str, {spaces='_', lowerCase=true, removeCamelcase=false}={}){
 */
 // TODO: better name?
 function camelcaseUndo(str, {delimiter='_'}={}){
-    return str?.split(/([A-Z])/).map(s=>s.match(/[A-Z]/)?delimiter+s.toLowerCase():s).join('')
+    return str?.split(/(ID|\d+|[A-Z])/).map(s=>s.match(/ID|\d+|[A-Z]/)?delimiter+s.toLowerCase():s).join('')
 }
 
 /*
@@ -76,4 +81,4 @@ function removeTags(str) {
     return str.replace( /(<([^>]+)>)/ig, '');
 }
 
-module.exports = {capitalize, titleize, slugify, replaceAccents, removeTags, camelcaseUndo}
+module.exports = {capitalize, titleize, slugify, replaceAccents, removeTags, camelcaseUndo, UpperCaseWords}
