@@ -8,21 +8,34 @@
     ```
 */
 import Btn from './btn'
-import store from '../util/store'
+import LocalStoreController from '../helpers/lit/local-store-controller'
 
 customElements.define('b-toggle-btn', class extends Btn{
 
     static properties = {
         ...Btn.properties,
         key: {type: String},
+        active: {type: Boolean, reflect: true}
+    }
+
+    localStore = new LocalStoreController(this)
+
+    storeChange(){
+        this.active = this.localStore.value
+    }
+
+    updated(){
+        if( this.hasAttribute('icon-active') && this.hasAttribute('icon-inactive') )
+            this.icon = this.active ? this.getAttribute('icon-active') : this.getAttribute('icon-inactive')
     }
 
     onClick(e){
-        if( !this.key ) return
-        let val = store(this.key)
-        store(this.key, val?null:true)
+        let val = this.localStore.value
+        this.localStore.value = val?null:true
     }
 
 })
 
 export default customElements.get('b-toggle-btn')
+
+

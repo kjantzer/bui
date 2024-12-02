@@ -20,11 +20,12 @@
     - `other-value` - any string; will be applied as an attribute
 */
 import { LitElement, html, css } from 'lit'
-import store, {forceStorageEventsLocally} from '../util/store'
-forceStorageEventsLocally()
+import LocalStoreController from '../helpers/lit/local-store-controller'
 
 
 customElements.define('b-toggle-view', class extends LitElement{
+
+    localStore = new LocalStoreController(this)
 
     static properties = {
         key: {type: String},
@@ -36,38 +37,27 @@ customElements.define('b-toggle-view', class extends LitElement{
             display: contents;
         }
     `
-    
-    constructor(){
-        super()
-        this.onChange = this.onChange.bind(this)
-    }
 
     connectedCallback(){
         super.connectedCallback()
-        window.addEventListener('storage', this.onChange)
         // manually set target, else use the parent element or host element
         this.parent = this.target || this.parentElement || this.getRootNode()?.host
         if( this.parent )
             this.parent.toggleView = this
-        this.apply()
     }
 
     disconnectedCallback(){
         super.disconnectedCallback()
-        window.removeEventListener('storage', this.onChange)
         if( this.parent && this.parent.toggleView == this )
             delete this.parent.toggleView
     }
 
-    onChange(e){
-        let key = e.detail?.key || e.key
-        if( !this.key || key != this.key ) return
-        
+    storeChange(){
         this.apply()
     }
 
     get active(){ return !!this.value }
-    get value(){ return localStorage.getItem(this.key) }
+    get value(){ return this.localStore.value }
 
     apply(){
         let val = this.value
@@ -87,13 +77,13 @@ customElements.define('b-toggle-view', class extends LitElement{
 
     show(){
         let val = this.type == 'hide' ? null : true
-        store(this.key, val)
+        this.localStore.value = val
         this.apply()
     }
 
     hide(){
         let val = this.type == 'hide' ? true : null
-        store(this.key, val)
+        this.localStore.value = val
         this.apply()
     }
 
