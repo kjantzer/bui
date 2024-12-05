@@ -698,7 +698,7 @@ module.exports = class Model {
             throw Error('failed to insert')
         }
 
-        let id = result.insertId || this.id
+        let id = result.insertId || this.id || attrs[this.idAttribute]
 
         // NOTE: I think merge should default to true, but to minimize legacy issues, 
         // keep original logic in place
