@@ -202,6 +202,10 @@ module.exports = class DB {
         return `ON DUPLICATE KEY UPDATE ${updates.join(', ')}`
     }
 
+    async insert(table, data, opts){
+        return this.bulkInsert(table, [data], opts)
+    }
+
     async bulkInsert(table, rows, {ignore=true, replace=false, update=false, chunk=false}={}){
 
         let resp = {affectedRows: 0}
