@@ -282,7 +282,7 @@ module.exports = class OnixProductModel {
             return {
                 price: m.getValue('PriceAmount'),
                 currency: m.get('CurrencyCode.value'),
-                territory: m.get('Territory').toJSON()
+                territory: m.get('Territory')?.toJSON()
             }
         })
     }
