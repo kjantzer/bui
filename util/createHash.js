@@ -1,11 +1,23 @@
+/*
+  # createHash
 
-module.exports = async function createHash(input, length) {
+  ```js
+  let hash = createHash('some string')
+  let hash = createHash('some string', {type: 'SHA-256', length: 10})
+  ```
+
+  > See: https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+*/
+module.exports = async function createHash(input, {type='SHA-256', length}={}) {
+
+  if( typeof input != 'string' )
+    try{ input = JSON.stringify(input) }catch(err){}
   
   const encoder = new TextEncoder()
   const data = encoder.encode(input)
 
   // Create SHA-256 hash
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  const hashBuffer = await crypto.subtle.digest(type, data)
 
   // Convert ArrayBuffer to hex string
   const hashArray = Array.from(new Uint8Array(hashBuffer))
