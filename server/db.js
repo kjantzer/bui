@@ -145,6 +145,8 @@ module.exports = class DB {
                 if( typeof query == 'string' )
                     query = [query]
 
+                if( !query ) resolve()
+
                 query.push((err, results, fields)=>{
                     if( err ) return reject(err)
                     queryResults.push(results)
