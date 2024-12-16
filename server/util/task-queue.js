@@ -87,7 +87,7 @@ module.exports = class TaskQueue {
     }
 
     async process(task){
-        this.progress('process', null, task)
         await this.opts.process?.(task)
+        this.progress('process', null, task)
     }
 }
