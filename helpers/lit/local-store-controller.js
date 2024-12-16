@@ -52,7 +52,7 @@ export default class LocalStoreController {
     }
 
     onChange(e){
-        let {key} = e.detail
+        let {key} = e.detail || e
         if( key && key == (this.key||this.host?.key) )
             this.host?.storeChange?.call(this.host)
     }
