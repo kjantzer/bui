@@ -290,6 +290,7 @@ export default class BtnElement extends LitElement {
         :host([color^="theme-secondary"])  { --color: var(--theme-secondary); }
         :host([color^="black"])  { --color: var(--theme-text-accent, #222); --textColor: var(--theme-bgd, #fff); }
         :host([color^="white"])  { --color: var(--theme-bgd-accent2, #ddd); --textColor: var(--theme-text, #111); }
+        :host([color^="bgd-accent"])  { --color: var(--theme-bgd-accent); --textColor: var(--theme-text); }
         :host([color^="orange"]) { --color: var(--orange); }
         :host([color^="deep-orange"]) { --color: var(--deep-orange); }
         :host([color^="blue"])   { --color: var(--blue); }
@@ -306,6 +307,7 @@ export default class BtnElement extends LitElement {
         :host([color*="hover-theme"]:hover)  { --color: var(--theme); }
         :host([color*="hover-theme-secondary"]:hover)  { --color: var(--theme-secondary); }
         :host([color*="hover-black"]:hover)  { --color: var(--black); }
+        :host([color*="bgd-accent"]:hover)  { --color: color-mix(in srgb, var(--theme-bgd-accent), var(--theme-text) 10%); }
         :host([color*="hover-orange"]:hover) { --color: var(--orange); }
         :host([color*="hover-blue"]:hover)   { --color: var(--blue); }
         :host([color*="hover-red"]:hover)    { --color: var(--red); }
