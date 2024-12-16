@@ -23,8 +23,13 @@ export class Sync extends Map {
             query: window._realtimeConnectionQueryData // FIXME: hacky
         });
 
+        this.socket.on('disconnect', ()=>{ this.onDisconnect() })
         this.socket.on('connect', ()=>{ this.reconnect() })
         this.socket.on('sync', payload=>{ this.onSync(payload) })
+    }
+
+    onDisconnect(){
+        this.forEach(syncPath=>{syncPath.onDisconnect()})
     }
 
     onSync(payload){

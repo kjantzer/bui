@@ -24,6 +24,13 @@ export default class SyncPath extends Map {
         this.set(object, object)
     }
 
+    onDisconnect(){
+        this.forEach(obj=>{
+            if( obj.onSyncDisconnect )
+                obj.onSyncDisconnect(...arguments)
+        })
+    }
+
     reconnect(){
         if( !this.isConnected ) return
         this.connect()
