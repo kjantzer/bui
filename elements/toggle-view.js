@@ -87,6 +87,9 @@ customElements.define('b-toggle-view', class extends LitElement{
         this.apply()
     }
 
+    enable(){ return this.show() }
+    disable(){ return this.hide() }
+
 })
 
 export default customElements.get('b-toggle-view')
