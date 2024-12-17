@@ -171,6 +171,14 @@ Collection.prototype.createSync = function(attrs, opts={}){
 }
 
 Model.prototype.destroySync = function(opts={}){
+
+    if( opts.data && typeof opts.data == 'object' )
+        try{
+            opts.data = JSON.stringify(opts.data)
+        }catch(err){
+            
+        }
+
     return new Promise((resolve, reject)=>{
         opts.success = function(){
             resolve(arguments)
