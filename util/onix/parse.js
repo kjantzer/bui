@@ -56,7 +56,7 @@ async function parse(xml, opts={}){
         }
     });
 
-    progress('parsing header', {products: products.length})
+    progress('parsing header', {total: products.length})
 
     let onixMsg = await parser.parse(onix)
     onix = new Onix(onixMsg, {raw: onix})
@@ -69,7 +69,7 @@ async function parse(xml, opts={}){
 
         if( opts.limit && i >= opts.limit ) break
 
-        progress(`parsing product`, {product: i})
+        progress(`parsing product`, {i, total: products.length})
 
         // xml string to JSON data
         let xmlStr = products[i]
