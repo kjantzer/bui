@@ -20,7 +20,7 @@ module.exports = class OnixProductModel {
         for( let key in getters ){
             let getter = getters[key]
             if( !getter.set && getter.get && !['is2', 'is3'].includes(key) )
-                data[key] = this[key]
+                data[key] = this.onix ? this[key] : null
         }
 
         if( opts.array ){
@@ -37,7 +37,7 @@ module.exports = class OnixProductModel {
         return data
     }
 
-    get release(){ return this.onix.release }
+    get release(){ return this.onix?.release }
     get is2(){ return this.release == '2.1' }
     get is3(){ return this.release ==  '3.0' }
 
@@ -230,6 +230,8 @@ module.exports = class OnixProductModel {
 
     get credits(){
         let credits = this.is2 ? this.onix.get('contributor') : this.onix.get('DescriptiveDetail.Contributor')
+
+        if( !credits ) return credits
 
         credits = credits.map(d=>{
             return {
