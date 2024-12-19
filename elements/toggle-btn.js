@@ -18,7 +18,7 @@ customElements.define('b-toggle-btn', class extends Btn{
         active: {type: Boolean, reflect: true}
     }
 
-    localStore = new LocalStoreController(this)
+    localStore = new LocalStoreController(this, {emit: true})
 
     storeChange(){
         this.active = this.localStore.value
