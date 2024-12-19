@@ -45,6 +45,7 @@ customElements.define('b-table', class extends LitElement{
         header {
             position: sticky;
             top: 0;
+            z-index: 10;
         }
 
         ::slotted(*) {
