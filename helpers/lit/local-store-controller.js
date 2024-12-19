@@ -22,9 +22,10 @@ export default class LocalStoreController {
 
     host;
 
-    constructor(host, key){
+    constructor(host, opts={}){
         this.host = host
-        this.key = key
+        this.key = opts.key
+        this.opts = opts
         host.addController(this)
         this.onChange = this.onChange.bind(this)
     }
@@ -43,7 +44,7 @@ export default class LocalStoreController {
         window.addEventListener('storage', this.onChange)
         // wait till end of stack
         setTimeout(()=>{
-            this.host?.storeChange?.call(this.host)
+            this.emitChange()
         })
     }
 
@@ -54,6 +55,12 @@ export default class LocalStoreController {
     onChange(e){
         let {key} = e.detail || e
         if( key && key == (this.key||this.host?.key) )
-            this.host?.storeChange?.call(this.host)
+            this.emitChange()
+    }
+
+    emitChange(){
+        this.host?.storeChange?.call(this.host)
+        if( this.opts.emit && this.host?.emitEvent )
+            this.host.emitEvent('change', {value: this.value}, {bubbles: false})
     }
 }
