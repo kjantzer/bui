@@ -282,14 +282,6 @@ customElements.define('b-menu', class extends LitElement{
 
         super()
 
-		if( menu.toMenu )
-			menu = menu.toMenu()
-		else if( menu.toOptions )
-			menu = menu.toOptions()
-
-		// remove null/empty values
-		menu = menu.filter(i=>i)
-
 		this.opts = Object.assign({}, DefaultOpts, opts)
 		this.menu = menu
 		
@@ -343,6 +335,13 @@ customElements.define('b-menu', class extends LitElement{
 
 		if( typeof menu == 'function' )
 			menu = menu()
+		else if( menu.toMenu )
+			menu = menu.toMenu()
+		else if( menu.toOptions )
+			menu = menu.toOptions()
+
+		// remove null/empty values
+		menu = menu.filter(i=>i)
 
 		if( !menu )
 			menu = []
