@@ -81,4 +81,19 @@ function removeTags(str) {
     return str.replace( /(<([^>]+)>)/ig, '');
 }
 
-module.exports = {capitalize, titleize, slugify, replaceAccents, removeTags, camelcaseUndo, UpperCaseWords}
+// https://stackoverflow.com/a/29824550/484780
+function decodeHtmlEntity(str){
+    if( !str || typeof str !== 'string') return str
+    return str.replace(/&#(\d+);/g, (match, dec)=>String.fromCharCode(dec))
+};
+
+function encodeHtmlEntity(str){
+    if( !str || typeof str !== 'string') return str
+    var buf = []
+    for (var i=str.length-1;i>=0;i--) {
+        buf.unshift(['&#', str[i].charCodeAt(), ';'].join(''))
+    }
+    return buf.join('')
+}
+
+module.exports = {capitalize, titleize, slugify, replaceAccents, removeTags, camelcaseUndo, UpperCaseWords, decodeHtmlEntity, encodeHtmlEntity}
