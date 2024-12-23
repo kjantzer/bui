@@ -3,6 +3,7 @@
 */
 const dayjs = require('dayjs')
 const groupBy = require('../array.groupBy')
+const {decodeHtmlEntity} = require('../string')
 
 module.exports = class OnixProductModel {
 
@@ -84,12 +85,12 @@ module.exports = class OnixProductModel {
                 title = prefix+' '+title
         }
 
-        return title
+        return decodeHtmlEntity(title)
     }
     
     get subtitle(){ 
-        if( this.is2 ) return this.onix.getValue('Title.Subtitle')
-        return this.onix.getValue('DescriptiveDetail.TitleDetail.TitleElement.Subtitle')
+        if( this.is2 ) return decodeHtmlEntity(this.onix.getValue('Title.Subtitle'))
+        return decodeHtmlEntity(this.onix.getValue('DescriptiveDetail.TitleDetail.TitleElement.Subtitle'))
     }
 
     get releaseDate(){
@@ -98,7 +99,7 @@ module.exports = class OnixProductModel {
     }
 
     get seriesName(){ 
-        return this.onix.getValue('DescriptiveDetail.Collection.TitleDetail.TitleElement.TitleText')
+        return decodeHtmlEntity(this.onix.getValue('DescriptiveDetail.Collection.TitleDetail.TitleElement.TitleText'))
     }
 
     get seriesNum(){ 
@@ -235,9 +236,9 @@ module.exports = class OnixProductModel {
 
         credits = credits.map(d=>{
             return {
-                name: d.getValue('PersonName'),
-                first: d.getValue('NamesBeforeKey'),
-                last: d.getValue('KeyNames'),
+                name: decodeHtmlEntity(d.getValue('PersonName')),
+                first: decodeHtmlEntity(d.getValue('NamesBeforeKey')),
+                last: decodeHtmlEntity(d.getValue('KeyNames')),
                 ordinal: d.getValue('SequenceNumber'),
                 bio: d.getValue('BiographicalNote'),
                 roles: d.getArray('ContributorRole')?.map(m=>m.get?.('value'))
