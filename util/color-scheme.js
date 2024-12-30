@@ -16,14 +16,12 @@
 import colorizeFavicon from './colorize-favicon'
 import {changeHue} from './color-shift'
 
-window.colorizeFavicon = colorizeFavicon // TEMP
-
 // https://medium.com/@jonas_duri/enable-dark-mode-with-css-variables-and-javascript-today-66cedd3d7845
 export const colorScheme = {
 
-    get isDarkMode(){ return window.matchMedia("(prefers-color-scheme: dark)").matches },
-    get isLightMode(){ return window.matchMedia("(prefers-color-scheme: light)").matches },
-    get isUnset(){ return window.matchMedia("(prefers-color-scheme: no-preference)").matches },
+    get isDarkMode(){ return globalThis?.matchMedia?.("(prefers-color-scheme: dark)").matches },
+    get isLightMode(){ return globalThis?.matchMedia?.("(prefers-color-scheme: light)").matches },
+    get isUnset(){ return globalThis?.matchMedia?.("(prefers-color-scheme: no-preference)").matches },
 
     get isDaytime(){
         const hours = new Date().getHours()
@@ -58,8 +56,8 @@ export const colorScheme = {
         if( !this._watchers ){
             this._watchers = new Map()
 
-            window.matchMedia("(prefers-color-scheme: dark)").addListener(e => e.matches && this._dispatchChange('dark'))
-            window.matchMedia("(prefers-color-scheme: light)").addListener(e => e.matches && this._dispatchChange('light'))
+            globalThis?.matchMedia?.("(prefers-color-scheme: dark)").addListener(e => e.matches && this._dispatchChange('dark'))
+            globalThis?.matchMedia?.("(prefers-color-scheme: light)").addListener(e => e.matches && this._dispatchChange('light'))
         }
 
         this._watchers.set(cb, cb)
