@@ -50,7 +50,7 @@ async function parse(xml, opts={}){
             leadingZeros: false, // keep values like "01" as a string
         },
         isArray: (name, jpath, isLeafNode, isAttribute) => {
-            // always return products as an array
+            // always return some elements as an array
             // TODO: possibly add more elements here?
             // TODO: elements should have value for "many" and then that should be used to create this list
 
