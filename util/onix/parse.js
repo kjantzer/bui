@@ -9,6 +9,8 @@ const Onix = require('./onix')
 const OnixArray = require('./onix-array')
 // const Elements3 = require('./specs/elements-3.0')
 const Elements2 = require('./specs/elements-2.1')
+const chunk = require('../array.chunk')
+
 
 async function parse(xml, opts={}){
 
@@ -28,7 +30,7 @@ async function parse(xml, opts={}){
     // split xml by starting product tag so we can chunk parsing
     // doing this to potentially allow for faster processing? 
     // rather than wait for all products to be parsed before doing anything with the data
-    xml = xml.toString().split(/<product>/i)
+    xml = xml.toString().replace(/<\/ONIXmessage>/i, '').split(/<product>/i)
     
     // create a basic onix message with should only contain a "header"
     let onix = xml.shift()
@@ -105,6 +107,41 @@ async function parse(xml, opts={}){
     return onix
 }
 
+
+async function split(xml, {size=1000, num, cb}={}){
+
+    xml = xml.toString().replace(/<\/ONIXmessage>/i, '').split(/<product>/i)
+    
+    // create a basic onix message with should only contain a "header"
+    let onixStart = xml.shift()
+    let onixEnd = '</ONIXmessage>'
+
+    // put back product start tag
+    let products = xml.map(s=>'<product>'+s)
+
+    if( num )
+        size = Math.ceil(products.length/num)
+    else size = parseInt(size)
+
+    let output = []
+
+    await chunk.call(products, async (chunk, i)=>{
+        // TODO: option to return as json?
+        let numProducts = chunk.length
+        chunk = onixStart+chunk.join(`\n`)+onixEnd
+    
+        if( cb ){
+            await cb(chunk, i, numProducts)
+            output.push(i)
+        }
+        else output.push(chunk)
+
+    }, {size})
+
+    return cb ? output.length : output
+}
+
 Onix.parse = function(xml, opts){ return parse(xml, opts) }
+Onix.split = function(xml, opts){ return split(xml, opts) }
 
 module.exports = parse
