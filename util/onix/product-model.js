@@ -337,6 +337,25 @@ module.exports = class OnixProductModel {
         return credits
     }
 
+    // WIP
+    set credit(data){
+
+        let onix = {
+            PersonName: data.name,
+            KeyNames: data.last,
+            NamesBeforeKey: data.first,
+            ContributorRole: data.roles,
+            BiographicalNote: data.bio
+        }
+
+        if( !onix.PersonName ){
+            // use first/last
+        }
+        
+        this.onix.set(this.is2?'Contributor':'DescriptiveDetail.Contributor', onix)
+
+    }
+
     get availability(){
         // TODO: v2
         return this.onix.getValue('ProductSupply.SupplyDetail.0.ProductAvailability')
