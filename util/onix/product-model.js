@@ -20,7 +20,7 @@ module.exports = class OnixProductModel {
         let getters = Object.getOwnPropertyDescriptors(this.constructor.prototype)
         for( let key in getters ){
             let getter = getters[key]
-            if( !getter.set && getter.get && !['is2', 'is3'].includes(key) )
+            if( getter.get && !['is2', 'is3'].includes(key) )
                 data[key] = this.onix ? this[key] : null
         }
 
@@ -43,14 +43,28 @@ module.exports = class OnixProductModel {
     get is3(){ return this.release ==  '3.0' }
 
     get recordID(){ return this.onix.getValue('RecordReference')}
+    set recordID(id){ return this.onix.set('RecordReference', id)}
+
     get isbn13(){ return this.onix.get('ProductIdentifier')?.getValue('IDValue', {ProductIDType: 'ISBN-13'}) }
     get isbn10(){ return this.onix.get('ProductIdentifier')?.getValue('IDValue', {ProductIDType: 'ISBN-10'}) }
     get gtin13(){ return this.onix.get('ProductIdentifier')?.getValue('IDValue', {ProductIDType: 'GTIN-13'}) }
+
+    // TODO: add check for existing and update?
+    set isbn13(id){ return this.onix.set('ProductIdentifier', {IDValue: id, ProductIDType: 'ISBN-13'}) }
+    set isbn10(id){ return this.onix.set('ProductIdentifier', {IDValue: id, ProductIDType: 'ISBN-10'}) }
+    set gtin13(id){ return this.onix.set('ProductIdentifier', {IDValue: id, ProductIDType: 'GTIN-13'}) }
     
     get workID(){
         if( this.is2 ) return this.onix.getValue('WorkIdentifier.IDValue')
         return this.onix.getValue('RelatedMaterial.RelatedWork.WorkIdentifier.IDValue')
     }
+
+    set workID(id){
+        if( this.is2 ) return this.onix.set('WorkIdentifier.IDValue', id)
+        return this.onix.set('RelatedMaterial.RelatedWork.WorkIdentifier.IDValue', id)
+    }
+
+
     get relatedIDs(){ 
         if( this.is2 ) return this.onix.get('RelatedProductInfo')?.getValues('ProductIdentifier.IDValue')
         return this.onix.get('RelatedMaterial.RelatedProduct')?.getValues('ProductIdentifier.IDValue')
@@ -65,9 +79,19 @@ module.exports = class OnixProductModel {
         return this.onix.get('PublishingDetail.Publisher')?.getValue('PublisherName')
     }
 
+    set publisherName(name){
+        if( this.is2 ) return this.onix.set('Publisher.PublisherName', name)
+        return this.onix.set('PublishingDetail.Publisher.PublisherName', name)
+    }
+
     get imprintName(){
         if( this.is2 ) return this.onix.get('Imprint')?.getValue('ImprintName')
         return this.onix.get('PublishingDetail.Imprint')?.getValue('ImprintName')
+    }
+
+    set imprintName(name){
+        if( this.is2 ) return this.onix.set('Imprint.ImprintName', name)
+        return this.onix.set('PublishingDetail.Imprint.ImprintName', name)
     }
     
     get title(){
@@ -87,10 +111,23 @@ module.exports = class OnixProductModel {
 
         return decodeHtmlEntity(title)
     }
+
+    set title(title){
+
+        if( this.is2 )
+            return this.onix.set('Title.TitleText', title)
+        
+        this.onix.set('DescriptiveDetail.TitleDetail.TitleElement.TitleText', title)
+    }
     
     get subtitle(){ 
         if( this.is2 ) return decodeHtmlEntity(this.onix.getValue('Title.Subtitle'))
         return decodeHtmlEntity(this.onix.getValue('DescriptiveDetail.TitleDetail.TitleElement.Subtitle'))
+    }
+
+    set subtitle(subtitle){ 
+        if( this.is2 ) return this.onix.set('Title.Subtitle', subtitle)
+        return this.onix.set('DescriptiveDetail.TitleDetail.TitleElement.Subtitle', subtitle)
     }
 
     get releaseDate(){
@@ -98,17 +135,36 @@ module.exports = class OnixProductModel {
         return date ? dayjs(date).format('YYYY-MM-DD') : date
     }
 
+    set releaseDate(date){
+        date = dayjs(date).format('YYYY-MM-DD')
+
+        this.is2 ? this.onix.set('PublicationDate', date) : this.onix.set('PublishingDetail.PublishingDate.Date', date)
+    }
+
     get seriesName(){ 
         return decodeHtmlEntity(this.onix.getValue('DescriptiveDetail.Collection.TitleDetail.TitleElement.TitleText'))
+    }
+
+    set seriesName(series){ 
+        return this.onix.set('DescriptiveDetail.Collection.TitleDetail.TitleElement.TitleText', series)
     }
 
     get seriesNum(){ 
         return this.onix.getValue('DescriptiveDetail.Collection.TitleDetail.TitleElement.PartNumber')
     }
 
+    set seriesNum(num){ 
+        return this.onix.set('DescriptiveDetail.Collection.TitleDetail.TitleElement.PartNumber', num)
+    }
+
     get productForm(){ 
         if( this.is2 ) return this.onix.getValue('ProductForm')
         return this.onix.getValue('DescriptiveDetail.ProductForm')
+    }
+
+    set productForm(form){ 
+        if( this.is2 ) return this.onix.set('ProductForm', form)
+        return this.onix.set('DescriptiveDetail.ProductForm', form)
     }
 
     get productFormCode(){ 
@@ -137,6 +193,11 @@ module.exports = class OnixProductModel {
         return this.onix.getValue('DescriptiveDetail.Language.LanguageCode')
     }
 
+    set language(lang){
+        if( this.is2 ) return this.onix.set('Language', {LanguageCode: lang, LanguageRole: 'Language of text'})
+        return this.onix.set('DescriptiveDetail.Language', {LanguageCode: lang, LanguageRole: 'Language of text'})
+    }
+
     // mainbisac|otherbisac,otherbisac
     get bisacs(){
         
@@ -155,6 +216,14 @@ module.exports = class OnixProductModel {
     get keywords(){ 
         if( this.is2 ) return this.onix.get('subject')?.getValue('SubjectHeadingText', {SubjectSchemeIdentifier: 'Keywords'})
         return this.onix.get('DescriptiveDetail.subject')?.getValue('SubjectHeadingText', {SubjectSchemeIdentifier: 'Keywords'})
+    }
+
+    set keywords(keywords){ 
+        if( Array.isArray(keywords) )
+            keywords = keywords.join(',')
+
+        if( this.is2 ) return this.onix.get('subject', {SubjectHeadingText: keywords, SubjectSchemeIdentifier: 'Keywords'})
+        return this.onix.set('DescriptiveDetail.subject', {SubjectHeadingText: keywords, SubjectSchemeIdentifier: 'Keywords'})
     }
 
     get territories(){ 
@@ -218,6 +287,12 @@ module.exports = class OnixProductModel {
         })
 
         return text
+    }
+
+    set copy(copy){
+        this.is2 
+        ? this.onix.set('OtherText', {Text: copy, TextTypeCode: 'Main description'}) 
+        : this.onix.set('CollateralDetail.TextContent', {Text: copy, TextType: 'Description'})
     }
 
     get quotes(){

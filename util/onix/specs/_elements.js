@@ -19,14 +19,20 @@ class OnixElements extends CollMap {
         this.level = level
         this.parent = parent
 
-        if( this.get('shortTag') ){
+        if( this.get('shortTag') || this.get('components') ){
+
+            if( !this.get('shortTag') )
+                this.set('shortTag', name.toLowerCase())
 
             if( this.get('components') ){
                 this.set('components', new OnixElements(this.get('components'), {name: 'components', parent: this, level: this.level}))
-            }else{
-                this.top.flatLookup.set(name.toLowerCase(), this)
-                this.top.shortTagLookup.set(this.get('shortTag'), this)
             }
+            
+            if( !this.top.flatLookup.has(name.toLowerCase()))
+                this.top.flatLookup.set(name.toLowerCase(), this)
+
+            if( !this.top.shortTagLookup.has(this.get('shortTag')) )
+                this.top.shortTagLookup.set(this.get('shortTag'), this)
 
         }else{
             let mapped = {}
@@ -39,7 +45,9 @@ class OnixElements extends CollMap {
 
                 k = k.toLowerCase()
                 mapped[k] = d
-                this.root.flatLookup.set(k, d)
+
+                if( !this.root.flatLookup.has(k) )
+                    this.root.flatLookup.set(k, d)
             })
 
             this.clear()

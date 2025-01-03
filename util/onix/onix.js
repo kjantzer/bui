@@ -1,6 +1,7 @@
 const CollMap = require(`../collmap`)
 const OnixArray = require('./onix-array')
 const {formatDate} = require('./util')
+const {XMLBuilder} = require('fast-xml-parser')
 // const parse = require('./parse')
 
 const Elements3 = require('./specs/elements-3.0')
@@ -10,6 +11,110 @@ class Onix extends CollMap {
 
     formatDate(){ return formatDate(...arguments) }
 
+    set(key, val){
+
+        // got a single string/number with no "key", so treat as the {value}
+        if( val === undefined && typeof key !== 'object' ){
+            val = key
+            key = 'value'
+        }
+
+        // if we got an object of {#text}, then treat that as the {value}
+        if( key['#text'] ){
+            val = key['#text']
+
+            // TODO check this
+            if( this.element?.name == 'Date' )
+                val = formatDate(val, this.element?.formatList[key['@_dateformat']]?.value)
+
+            key = 'value'
+        }
+
+        // when we have the value, save as simple string...no other conversino needed
+        if( key == 'value' ){
+
+            // swap value for the "code" if this component is supposed to be code based
+            if( this.element?.codeList && !this.element.codeList[val] ){
+
+                for( let k in this.element.codeList ){
+                    if( this.element.codeList[k].value == val ){
+                        val = k
+                    }
+                }
+            }
+
+            return super.set(key, val)
+        }
+
+        // got object as single arg, process each key/value
+        let args = arguments
+        if( args.length == 1 && typeof args[0] == 'object' ){
+            for( let key in args[0] ){
+                this.set(key, args[0][key])
+            }
+            return
+        }
+
+        let keys = Array.isArray(key) ? key : key.split('.')
+        key = keys.shift()
+
+        // ignore attributes (as parsed by XMLParser)
+        if( key?.[0] == '@' ) return
+
+        let props = this.createProps(key)
+        let onixVal = this.get(props.key)
+        
+        if( Array.isArray(val) )
+
+            if( onixVal )
+                onixVal.push(...val.map((d,i)=>new Onix(d, {...props, index: i+onixVal.length})))
+            else
+                onixVal = OnixArray.from(val.map((d,i)=>new Onix(d, {...props, index: i})))
+
+        else if( props.element?.get('repeatable') ){
+            
+            if( onixVal )
+                onixVal.push(new Onix(val, {...props, index: onixVal.length}))
+            else
+                onixVal = new OnixArray(new Onix(val, {...props, index: 0}))
+
+        }else {
+
+            if( keys.length ){
+                onixVal ||= new Onix({}, props)
+                onixVal.set(keys, val)
+            }else if( onixVal )
+                onixVal.set( Array.isArray(onixVal) ? new Onix(val, props) : val)
+            else
+                onixVal = new Onix(val, props)
+        }
+
+        super.set(props.key, onixVal)
+
+        return onixVal
+    }
+
+    createProps(key){
+
+        key = key.toLowerCase() // standardize on lowercase
+
+        let element = this.top.elements.getTag(key)
+        let props = {
+            name: key,
+            element,
+            parent: this, 
+            release: this.release,
+            level: this.level+1,
+            key: element?.shortTag || key
+        }
+
+        return props
+    }
+
+    get(){
+        return super.get(...arguments)
+    }
+
     constructor(data, {name='ONIX', element, release, parent, level=0, index, raw, hash}={}){
 
         if( data.ONIXmessage )
@@ -17,7 +122,7 @@ class Onix extends CollMap {
         if( data.ONIXMessage )
             data = data.ONIXMessage
         
-        super(data)
+        super()
 
         if( level == 0 ){            
             release = release || data?.['@_release'] || '2.1'
@@ -33,60 +138,7 @@ class Onix extends CollMap {
         this.raw = raw
         this.hash = hash
 
-        if( this.has('#text') ){
-            let val = this.get('#text')
-
-            if( element?.name == 'Date' )
-                val = formatDate(val, element?.formatList[this.get('@_dateformat')]?.value)
-
-            this.set('value', val)
-        }
-
-        if( this.has('value') ){
-            // nothing else to do, keep values as they are
-        }
-        else{
-            let mapped = {}
-
-            this.forEach((d,k)=>{
-
-                // ignore attributes
-                if( k?.[0] == '@' ) return
-
-                k = k.toLowerCase() // standardize on lowercase
-                
-                let element = this.top.elements.getTag(k)
-                let props = {
-                    name: k, 
-                    element,
-                    parent: this, 
-                    release: this.release,
-                    level: this.level+1
-                }
-
-                if( typeof d != 'object' )
-                    d = {value:d}
-
-                if( Array.isArray(d) )
-                    d = OnixArray.from(d.map((d,i)=>{
-
-                        if( typeof d != 'object' )
-                            d = {value: d}
-
-                        return new Onix(d, {
-                            ...props,
-                            index: i
-                        })
-                    }))
-                else
-                    d = new Onix(d, props)
-                
-                mapped[element?.shortTag||k] = d
-            })
-
-            this.clear()
-            this.set(mapped)
-        }
+        this.set(data)
     }
 
     value(opts){
@@ -190,6 +242,22 @@ class Onix extends CollMap {
         })
 
         return o
+    }
+
+    toXML(){
+
+        let data = this.toJSON({shortTags: true, codes: true})
+
+        const options = {
+            ignoreAttributes : false,
+            format: true
+        }
+
+        data = {[this.name]: data}
+
+        const builder = new XMLBuilder(options);
+
+        return `<?xml version="1.0" encoding="UTF-8"?>\n`+builder.build(data);
     }
 }
 

@@ -1,6 +1,16 @@
 // will contain an array of Onix objects
 module.exports = class OnixArray extends Array {
 
+    get name(){ return this[0]?.name }
+    get element(){ return this[0]?.element }
+    get parent(){ return this[0]?.parent }
+    get release(){ return this[0]?.release }
+    get level(){ return this[0]?.level }
+
+    createProps(key){
+        return this[0]?.createProps(key)
+    }
+
     value(opts){ return this[0]?.value(opts) }
 
     get(key){
@@ -18,6 +28,10 @@ module.exports = class OnixArray extends Array {
             return resp.get(keys)
         else
             return resp
+    }
+
+    set(key, val){
+        this.push( val === undefined ? key : val)
     }
 
     getValues(key, filterFn, {one=false}={}){
@@ -67,7 +81,14 @@ module.exports = class OnixArray extends Array {
     find(fn){ return this.filter(fn)[0]}
 
     toJSON(opts){
-        return this.map(d=>d.toJSON?.(opts)||d)
+        return this.map(d=>{
+
+            if( d.has?.('value') ){
+                return opts.codes ? d.get('value') : d.value(opts)
+            }
+
+            return d.toJSON?.(opts)||d
+        })
     }
 }
 
