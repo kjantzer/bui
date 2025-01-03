@@ -6,6 +6,9 @@
   let hash = createHash('some string', {type: 'SHA-256', length: 10})
   ```
 
+  > NOTE: crypto only available since node v20+  
+  > node.js code should set `globalThis.crypto = require('crypto')`
+
   > See: https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
 */
 module.exports = async function createHash(input, {type='SHA-256', length}={}) {
@@ -17,6 +20,8 @@ module.exports = async function createHash(input, {type='SHA-256', length}={}) {
   const data = encoder.encode(input)
 
   // Create SHA-256 hash
+  // NOTE: crypto only available since node v20+
+  // node.js code should set `globalThis.crypto = require('crypto')`
   const hashBuffer = await crypto.subtle.digest(type, data)
 
   // Convert ArrayBuffer to hex string
