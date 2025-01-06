@@ -229,6 +229,13 @@ module.exports = class FileManager extends Model {
             info.traits.dpi = metadata.density
         }
 
+        // if stripping metadata or limiting size AND the src file is possibly "raw" (DNG, etc)
+        // the saved file will no longer be raw, so change to jpg
+        if( isImg && (this.stripMetadata || this.fullSize !== true) && !['jpg', 'jpeg', 'png', 'avif', 'gif'].includes(info.ext)){
+            info.filename = filename = filename.replace(new RegExp(info.ext+'$'), 'jpg')   
+            info.ext = 'jpg'
+        }
+
         let {syncData} = await this.add(info, {manualSync:true})
 
         if( !this.id )
@@ -240,10 +247,17 @@ module.exports = class FileManager extends Model {
 
         let fileMoved = await new Promise(async resolve=>{
             
+            // only strip metada on jpeg images
             if( this.stripMetadata && sharpImg )
                 try{
-                    // by default does not keep metadata
-                    await sharpImg.toFile(this.dirPath+'/'+filename)
+            
+                    // by default sharp.js does not keep metadata
+                    await sharpImg
+                        // https://github.com/lovell/sharp/issues/1360#issuecomment-417325248
+                        // "most cases, 100% quality increases original file size. 95% should be enough."
+                        .jpeg({quality: 95, mozjpeg: true})
+                        .toFile(this.dirPath+'/'+filename)
+                        
                     resolve(true)
                 }catch(err){
                     reject(err)
@@ -467,6 +481,7 @@ module.exports = class FileManager extends Model {
                         withoutEnlargement: true,
                         background:'#ffffff'
                 })
+                .jpeg({quality: 80, mozjpeg: true})
                 .flatten({background:'#ffffff'}) // in case png with transparency is uploaded
                 .toFile(this.dirPath+'/'+filename+'.preview.jpg')
             
