@@ -29,9 +29,10 @@ module.exports = class FileManager extends Model {
     get group(){ return '' }
 
     skipDuplicates = false // only applies when same parent_id
+    stripMetadata = false // images only
     waitForPreviewGeneration = false // upload response wont return until preview saved
     autoRotate = false
-    fullSize=true // set to number to save a smaller size (orig file will be overwritten)
+    fullSize = true // set to number to save a smaller size (orig file will be overwritten)
     previewSize = 800
 
     // TODO: 
@@ -141,7 +142,7 @@ module.exports = class FileManager extends Model {
         return !!dupe
     }
 
-    async upload(file, src='', {traits={}, description=null, stripMetadata=false}={}){
+    async upload(file, src='', {traits={}, description=null}={}){
 
         if( !file ){
             file = this.req.files.file
@@ -239,7 +240,7 @@ module.exports = class FileManager extends Model {
 
         let fileMoved = await new Promise(async resolve=>{
             
-            if( stripMetadata && sharpImg )
+            if( this.stripMetadata && sharpImg )
                 try{
                     // by default does not keep metadata
                     await sharpImg.toFile(this.dirPath+'/'+filename)
@@ -382,9 +383,12 @@ module.exports = class FileManager extends Model {
 
             filename = filename.replace(new RegExp(this.attrs.ext+'$'), ext)
 
-            await sharpImg.resize(this.fullSize, this.fullSize, {
+            await sharpImg
+            .withMetadata() // stripMetadata would have already removed if needed
+            .resize(this.fullSize, this.fullSize, {
                 fit: 'inside'
-            }).sharpen().toFile(this.dirPath+'/'+filename)
+            })
+            .toFile(this.dirPath+'/'+filename)
             
             sharpImg = sharp(this.dirPath+'/'+filename)
             metadata = await sharpImg.metadata()
