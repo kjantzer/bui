@@ -141,7 +141,7 @@ module.exports = class FileManager extends Model {
         return !!dupe
     }
 
-    async upload(file, src='', {traits={}, description=null}={}){
+    async upload(file, src='', {traits={}, description=null, stripMetadata=false}={}){
 
         if( !file ){
             file = this.req.files.file
@@ -237,11 +237,20 @@ module.exports = class FileManager extends Model {
         filename = `${this.id}-${filename}`
         await this.update({filename}, {manualSync:true})
 
-        let fileMoved = await new Promise(resolve=>{
+        let fileMoved = await new Promise(async resolve=>{
             
-            file.mv(this.dirPath+'/'+filename, err=>{
-                err ? resolve(err) : resolve(true)
-            })
+            if( stripMetadata && sharpImg )
+                try{
+                    // by default does not keep metadata
+                    await sharpImg.toFile(this.dirPath+'/'+filename)
+                    resolve(true)
+                }catch(err){
+                    reject(err)
+                }
+            else
+                file.mv(this.dirPath+'/'+filename, err=>{
+                    err ? resolve(err) : resolve(true)
+                })
         })
 
         if( fileMoved === true ){
