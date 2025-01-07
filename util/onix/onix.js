@@ -211,7 +211,10 @@ class Onix extends CollMap {
     get senderName(){
         let header = this.top.get('header')
         if( !header ) return null
-        return header.getValue('sender.x298') || header.getValue('fromcompany') || header.getValue('m174')
+        return header.getValue('sender.x298') 
+        || header.getValue('sender.sendername') 
+        || header.getValue('fromcompany') 
+        || header.getValue('m174')
     }
 
     get sentDate(){
