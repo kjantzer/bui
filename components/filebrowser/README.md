@@ -1,7 +1,7 @@
 File Browser
 ===============
 
-A component for browseing files (ftp, network, etc).
+A component for browsing files (ftp, network, etc).
 
 Mimics file explorer (windows) and finder (mac)
 

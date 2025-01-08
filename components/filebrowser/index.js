@@ -41,15 +41,11 @@ customElements.define('b-filebrowser', class extends RoutedView{
         }
 
         b-list-header {
-            padding-left: .5rem;
-            padding-right: .5rem;
             order: 2;
         }
 
         b-filebrowser-breadcrumbs {
-            padding: .5rem;
-            padding-bottom: 0;
-            order: 1;
+            margin: -1em -.5em;
         }
         
     `]}
@@ -75,8 +71,9 @@ customElements.define('b-filebrowser', class extends RoutedView{
             @clickitem=${this.itemClick}
         >
             <b-root-titlebar title="${this.constructor.title}"></b-root-titlebar>
-            <b-list-header></b-list-header>
-            <b-filebrowser-breadcrumbs slot="header" .host=${this} .coll=${this.coll}></b-filebrowser-breadcrumbs>
+            <b-list-header>
+                <b-filebrowser-breadcrumbs slot="name" .host=${this} .coll=${this.coll}></b-filebrowser-breadcrumbs>
+            </b-list-header>
 
         </b-list>
     `}

@@ -7,18 +7,17 @@ customElements.define('b-filebrowser-file', class extends LitElement{
 
         :host {
             user-select: none;
+            margin: 0 !important;
         }
 
         b-file-icon {
             --size: 1.4em;
-            margin: -.5rem 0;
             vertical-align: middle;
         }
 
         b-icon[name="folder"] {
             color: var(--theme);
             font-size: 1.2em;
-            margin: -.5rem 0;
         }
 
         :host(.popover-open) .name {
@@ -28,24 +27,28 @@ customElements.define('b-filebrowser-file', class extends LitElement{
     `]}
 
     static header(){ return html`
-        <div w="32px"></div>
-        <div w="minmax(40%, 1fr)">Name</div>
+        <b-flex w="minmax(40%, 1fr)" label="Path"><slot name="name"></slot></b-flex>
         <div w="120px">Size</div>
         <div w="180px">Date</div>
     `}
 
     render(){return html`
 
-        <div>
-        ${this.model.get('type')=='d'?html`
-            <b-icon name="folder"></b-icon>
-        `:html`
-            <b-file-icon ext="${this.model.get('ext')}"></b-file-icon>
-        `}
+        
+        <b-flex sep left>
+            <div>
+            ${this.model.get('type')=='d'?html`
+                <b-icon name="folder"></b-icon>
+            `:html`
+                <b-file-icon ext="${this.model.get('ext')}"></b-file-icon>
+            `}
 
-        </div>
+            </div>
 
-        <b-text clip class="name">${this.model.get('name')}</b-text>
+            <b-text clip class="name">${this.model.get('name')}</b-text>
+
+        </b-flex>
+        
 
         <b-text>
             ${this.model.get('type')=='d'?'—':html`

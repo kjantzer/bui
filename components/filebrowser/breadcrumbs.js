@@ -9,10 +9,10 @@ customElements.define('b-filebrowser-breadcrumbs', class extends LitElement{
 
     static get styles(){return css`
         :host {
-            display: block;
+            display: inline-flex;
             position:relative;
             align-self: stretch;
-            display: flex;
+            
             align-items: center;
             overflow-x: auto;
         }
@@ -39,7 +39,7 @@ customElements.define('b-filebrowser-breadcrumbs', class extends LitElement{
 
     render(){return html`
         
-        <b-btn text icon="home" index="" @click=${this.navTo}></b-btn>
+        <b-btn clear lg icon="home" index="" @click=${this.navTo}></b-btn>
         
         ${this.coll.path.map((path,i)=>html`
             <b-text sep>/</b-text>
