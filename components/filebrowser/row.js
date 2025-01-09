@@ -15,7 +15,8 @@ customElements.define('b-filebrowser-file', class extends LitElement{
             vertical-align: middle;
         }
 
-        b-icon[name="folder"] {
+        b-icon[name="folder"],
+        b-icon[name="dns"] {
             color: var(--theme);
             font-size: 1.2em;
         }
@@ -23,13 +24,28 @@ customElements.define('b-filebrowser-file', class extends LitElement{
         :host(.popover-open) .name {
             color: var(--theme);
         }
+        
+        [dot] {
+            margin-left: -.5em; 
+            background-color: var(--color);
+            align-self: baseline;
+        }
+        /*b-ts { color: var(--theme-text-accent); }*/
+
+        :host([age="0"]) { --color: var(--red); }
+        :host([age="-1"]) { --color: var(--orange); }
+        :host([age="-2"]) { --color: var(--yellow); }
+        
+        :host([age="-3"]) { --color: var(--theme-text-accent); }
+        :host([age="-4"]) { --color: var(--theme-text-accent); }
+        :host([age="-5"]) { --color: var(--theme-text-accent); }
 
     `]}
 
     static header(){ return html`
         <b-flex w="minmax(40%, 1fr)" label="Path"><slot name="name"></slot></b-flex>
-        <div w="120px">Size</div>
         <div w="180px">Date</div>
+        <div w="120px">Size</div>
     `}
 
     render(){return html`
@@ -38,7 +54,7 @@ customElements.define('b-filebrowser-file', class extends LitElement{
         <b-flex sep left>
             <div>
             ${this.model.get('type')=='d'?html`
-                <b-icon name="folder"></b-icon>
+                <b-icon name="${this.model.get('host')?'dns':'folder'}"></b-icon>
             `:html`
                 <b-file-icon ext="${this.model.get('ext')}"></b-file-icon>
             `}
@@ -49,6 +65,10 @@ customElements.define('b-filebrowser-file', class extends LitElement{
 
         </b-flex>
         
+        <b-flex left gap="0">
+            <b-label dot></b-label>
+            <b-ts .date=${this.model.get('date')} format="MMM D, YYYY LT" trackAge="day" .trackAgeTarget=${this}></b-ts>
+        </b-flex>
 
         <b-text>
             ${this.model.get('type')=='d'?'—':html`
@@ -56,9 +76,6 @@ customElements.define('b-filebrowser-file', class extends LitElement{
             `}
         </b-text>
 
-        <b-text>
-            <b-ts .date=${this.model.get('date')} format="MMM D, YYYY LT"></b-ts>
-        </b-text>
     `}
 
     firstUpdated(){

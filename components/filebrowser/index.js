@@ -99,7 +99,7 @@ customElements.define('b-filebrowser', class extends RoutedView{
 const sorts = {
     defaults: ['type', 'name'] ,
     type(m){ return m.get('type') == 'd' ? 0 : 1 },
-    name(m){ return m.get('name') },
+    name(m){ return String(m.get('name')).toLowerCase() },
     size(m){ return m.get('size') },
     date: {desc: true, sortBy(m){ return m.get('date') }}
 }

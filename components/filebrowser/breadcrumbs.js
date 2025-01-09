@@ -39,7 +39,7 @@ customElements.define('b-filebrowser-breadcrumbs', class extends LitElement{
 
     render(){return html`
         
-        <b-btn clear lg icon="home" index="" @click=${this.navTo}></b-btn>
+        <b-btn clear lg icon="dns" index="" @click=${this.navTo}></b-btn>
         
         ${this.coll.path.map((path,i)=>html`
             <b-text sep>/</b-text>
