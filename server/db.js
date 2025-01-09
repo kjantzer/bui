@@ -369,3 +369,23 @@ function humanifyError(err){
     }
 
 }
+
+// TODO: maybe move this?
+globalThis.Date.prototype.toMysqlDate = function({time=true}={}){
+    
+    const pad = (num) => num.toString().padStart(2, '0');
+
+    const year = this.getFullYear();
+    const month = pad(this.getMonth() + 1); // Months are 0-based
+    const day = pad(this.getDate());
+    const hours = pad(this.getHours());
+    const minutes = pad(this.getMinutes());
+    const seconds = pad(this.getSeconds());
+
+    let date = `${year}-${month}-${day}`;
+
+    if( time )
+        date += ` ${hours}:${minutes}:${seconds}`
+
+    return date
+}
