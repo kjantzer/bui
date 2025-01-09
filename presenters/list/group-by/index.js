@@ -155,9 +155,9 @@ customElements.defineShared('b-list-group-by', class extends LitElement{
     render(){return html`
         <b-grid cols=1 gap="1">
             
-            <b-text xbold>Data Grouping</b-text>
+            <b-text xbold part="title">Data Grouping</b-text>
             
-            <b-grid cols=1 gap=" " class="options" @change=${this.onChange}>
+            <b-grid cols=1 gap=" " part="options" class="options" @change=${this.onChange}>
                 <b-sortable item=".option" @sort-changed=${this.onSort} ?disabled=${this.disabled}></b-sortable>
 
             ${this.valuesList?.map(d=>html`
@@ -170,7 +170,7 @@ customElements.defineShared('b-list-group-by', class extends LitElement{
             `)}
             </b-grid>
 
-            <b-details noicon display-contents>
+            <b-details noicon display-contents part="info">
                 <b-text dim link italic sm toggles><b-icon name="info"></b-icon>&nbsp;Tips</b-text>
                 <b-text dim italic sm>Drag values to change the order of grouping</b-text>
                 <b-text dim italic sm>Note: table data may not change if there are no differences for the selected group bys.</b-text>

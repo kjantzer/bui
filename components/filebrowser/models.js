@@ -1,4 +1,5 @@
-import {Collection} from 'backbone'
+import {Collection, Model} from 'backbone'
+import {applyGrouping} from '../../presenters/list/group-by/util'
 
 export default class Coll extends Collection {
 
@@ -6,6 +7,12 @@ export default class Coll extends Collection {
         super()
         this.urlRoot = root
         this.path = []
+    }
+
+    get model(){ return FileDirModel }
+
+    applyGrouping(models){
+        return applyGrouping.call(this, models)
     }
     
     get url(){ return this.urlRoot+(this.path.length>0?('/'+this.path.join('/')):'') }
@@ -42,3 +49,35 @@ export default class Coll extends Collection {
         this.trigger('change:path')
     }
 }
+
+class FileDirModel extends Model {
+
+    attrTypes = {
+        date: 'date'
+    }
+
+    get typeSort(){
+        return this.get('type') == 'd' ? 'Dir' : this.get('ext')
+    }
+
+    get dateSort(){
+        let date = this.get('date')
+        if( !date?.isValid() ) return '4_Older'
+
+        let age = date.diff(new Date(), 'day')
+
+        if( age == 0 && !date.isSame(new Date(), 'date') )
+            age = -1
+
+        let label = {
+            '0': '0_Today',
+            '-1': '1_Yesterday',
+            '-2': '2_2 Days Ago',
+        }[age] || '3_Recent'
+
+        if( age < -7 ) label = '4_Older'
+
+        return label
+    }
+}
+
