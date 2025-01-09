@@ -209,7 +209,7 @@ customElements.define('b-list-header', class extends LitElement{
         @media (hover){
             :host(:hover) > *,
             :host(.popover-open) > * {
-                background-color: var(--theme-bgd-accent)
+                background-color: var(--theme-bgd-accent) !important;
             }
         }
     `}
