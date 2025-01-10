@@ -82,6 +82,9 @@ module.exports = class TaskQueue {
                 await this.load()
         }
 
+        if( this.opts.delay )
+            await new Promise(resolve=>setTimeout(()=>resolve(), this.opts.delay))
+
         if( this._running )
             setImmediate(this.run)
     }
