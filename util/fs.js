@@ -116,6 +116,12 @@ const readFile = (filePath, {raw=false, csvOpts={}}={})=>{
     return contents
 }
 
+/*
+    # `downloadRemoteFile(url, {destFile})`
+
+    Download a file from a remote url. Will write to destFile or return resp that you can `resp.pipe` yourself
+    Can follow 302 redirects    
+*/
 function downloadRemoteFile(url, {destFile}={}){
     
     const http = url.startsWith('https') ? https : http
