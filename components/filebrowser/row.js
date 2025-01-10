@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit'
 import ListHeader from '../../presenters/list/header'
+import {bindLongPress} from '../../util/touch-events'
 
 customElements.define('b-filebrowser-file', class extends LitElement{
 
@@ -7,7 +8,6 @@ customElements.define('b-filebrowser-file', class extends LitElement{
 
         :host {
             user-select: none;
-            margin: 0 !important;
         }
 
         b-file-icon {
@@ -80,7 +80,10 @@ customElements.define('b-filebrowser-file', class extends LitElement{
     `}
 
     firstUpdated(){
+        bindLongPress(this, {touchOnly: false, event: 'longpress', delay: 250})
+
         this.addEventListener('dblclick', this.open)
+        this.addEventListener('longpress', this.onLongPress)
         this.addEventListener('click', this.onClick)
         this.addEventListener('contextmenu', this.onClick)
     }

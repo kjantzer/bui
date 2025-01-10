@@ -81,7 +81,7 @@ customElements.define('b-filebrowser', class extends RoutedView{
             key="${this.key}"
             row="${this.row}"
             groupByRow="b-filebrowser-group-by-row"
-            .listOptions=${{_fetchOnLoad: false}}
+            .listOptions=${{selection: true}}
             .sorts=${sorts}
             .filters=${this.filters}
             .coll=${this.coll}
