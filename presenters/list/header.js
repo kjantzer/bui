@@ -185,10 +185,10 @@ customElements.define('b-list-header', class extends LitElement{
             padding-right: .5rem;
         }
 
-        :host(:not([slot="header"])) {
+        /*:host(:not([slot="header"])) {
             margin-left: .5rem;
             margin-right: .5rem;
-        }
+        }*/
 
         :host(:not([slot="header"])) > * {
             border-bottom: none;
