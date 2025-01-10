@@ -51,7 +51,7 @@ customElements.define('b-filebrowser', class extends RoutedView{
         }
 
         b-filebrowser-breadcrumbs {
-            margin: -1em -.5em;
+            margin: -1em -.65em;
         }
 
         [icon="layers"] { order: -1; }
