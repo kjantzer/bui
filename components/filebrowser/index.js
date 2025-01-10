@@ -11,6 +11,8 @@ import './row'
 import './row-group-by'
 import './breadcrumbs'
 
+export {html, css}
+
 const GROUP_BY = [
     {label: 'Type', val: 'typeSort'},
     {label: 'Date', val: 'dateSort'}
@@ -99,6 +101,8 @@ customElements.define('b-filebrowser', class extends RoutedView{
             <b-list-group-by .values=${GROUP_BY} .defaultValues=${['dateSort']} slot="toolbar:after">
                 <b-toggle-view type="show" key=${this.tagName+'-group-by'}></b-toggle-view>
             </b-list-group-by>
+
+            ${this.renderMore?.()}
 
         </b-list>
     `}
