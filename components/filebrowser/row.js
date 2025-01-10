@@ -43,13 +43,12 @@ customElements.define('b-filebrowser-file', class extends LitElement{
     `]}
 
     static header(){ return html`
-        <b-flex w="minmax(40%, 1fr)" label="Path"><slot name="name"></slot></b-flex>
-        <div w="180px">Date</div>
-        <div w="120px">Size</div>
+        <b-flex sep w="minmax(40%, 1fr)" label="Path"><slot name="name"></slot></b-flex>
+        <div sep w="180px">Date</div>
+        <div sep w="120px">Size</div>
     `}
 
     render(){return html`
-
         
         <b-flex sep left>
             <div>
@@ -64,13 +63,15 @@ customElements.define('b-filebrowser-file', class extends LitElement{
             <b-text clip class="name">${this.model.get('name')}</b-text>
 
         </b-flex>
+
+        ${this.renderMore?.()}
         
-        <b-flex left gap="0">
+        <b-flex sep left gap="0">
             <b-label dot></b-label>
-            <b-ts .date=${this.model.get('date')} format="MMM D, YYYY LT" trackAge="day" .trackAgeTarget=${this}></b-ts>
+            <b-ts .date=${this.model.get('date')} format="MM/DD/YYYY LT" trackAge="day" .trackAgeTarget=${this}></b-ts>
         </b-flex>
 
-        <b-text>
+        <b-text sep>
             ${this.model.get('type')=='d'?'—':html`
             <b-bytes num=${this.model.get('size')}></b-bytes>
             `}
