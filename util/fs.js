@@ -9,6 +9,8 @@
 */
 const path = require('path')
 const fs = require('fs')
+const https = require('https')
+const http = require('http')
 const csvToArray = require('./csvToArray')
 
 /*
@@ -114,4 +116,52 @@ const readFile = (filePath, {raw=false, csvOpts={}}={})=>{
     return contents
 }
 
-module.exports = {readDir, readFile, getFileInfo, fs}
+function downloadRemoteFile(url, {destFile}={}){
+    
+    const http = url.startsWith('https') ? https : http
+
+    return new Promise((resolve, reject) => {
+        
+        http.get(url, resp=>{
+
+            // retry download with the redirect url
+            if( resp.statusCode == 302 ){
+
+                // add file extension from redirect url if the destFile doesn't have one
+                if( destFile && !destFile.match(/\..{2,4}$/) ){
+                    let [,ext] = resp.headers.location.match(/\.(.{2,4})$/)
+                    destFile += ext ? '.'+ext : ''
+                }
+
+                return downloadRemoteFile(resp.headers.location, {destFile})
+                    .then(resp=>{resolve(resp)})
+                    .catch(err=>reject(err))
+            }
+
+            if( resp.statusCode !== 200 )
+                return reject(new Error(`Failed to get '${url}' (${resp.statusCode})`));
+
+            // TODO: use content-type to add extension if missing?
+            // console.log(resp.headers['content-type']);
+
+            if( destFile ){
+
+                const file = fs.createWriteStream(destFile);
+
+                resp.pipe(file);
+
+                file.on('finish', () => {
+                    file.close(() => resolve(destFile));
+                });
+
+            }else{
+                resolve(resp)
+            }
+
+        }).on('error', (err) => {
+            fs.unlink(destFile, () => reject(err));
+        });
+    });
+}
+
+module.exports = {readDir, readFile, getFileInfo, downloadRemoteFile, fs}
