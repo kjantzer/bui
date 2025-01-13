@@ -295,10 +295,6 @@ module.exports = class OnixProductModel {
         : this.onix.set('CollateralDetail.TextContent', {Text: copy, TextType: 'Description'})
     }
 
-    get quotes(){
-        return 'WIP'
-    }
-
     get illustrationNote(){
         if( this.is2 ) return this.onix.getValue('IllustrationsNote')
         return this.onix.getValue('DescriptiveDetail.IllustrationsNote')
@@ -357,13 +353,22 @@ module.exports = class OnixProductModel {
     }
 
     get availability(){
-        // TODO: v2
-        return this.onix.getValue('ProductSupply.SupplyDetail.0.ProductAvailability')
+        return this.is2
+        ? this.onix.getValue('SupplyDetail.0.ProductAvailability')
+        : this.onix.getValue('ProductSupply.SupplyDetail.0.ProductAvailability')
+    }
+
+    get availabilityCode(){
+        return this.is2 
+        ? String(this.onix.get('SupplyDetail.0.ProductAvailability.value'))
+        : String(this.onix.get('ProductSupply.SupplyDetail.0.ProductAvailability.value'))
     }
 
     get embargo(){
-        // TODO: v2
-        let date = this.onix.get('ProductSupply.SupplyDetail.0.SupplyDate')
+        let date = this.is2
+            ? this.onix.get('SupplyDetail.0.SupplyDate')
+            : this.onix.get('ProductSupply.SupplyDetail.0.SupplyDate')
+
         if( date?.getValue('SupplyDateRole') == 'Sales embargo date' )
             return date.getValue('Date')
     }
@@ -382,5 +387,14 @@ module.exports = class OnixProductModel {
                 territory: m.get('Territory')?.toJSON()
             }
         })
+    }
+
+    get drm(){
+        return null // FIXME:
+    }
+
+    get cartonQty(){
+        if( this.is2 ) this.onix.get('SupplyDetail.0.PackQuantity')
+        return this.onix.get('ProductSupply.SupplyDetail.0.PackQuantity')
     }
 }
