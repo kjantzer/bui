@@ -63,6 +63,9 @@ module.exports = class TaskQueue {
         
         this._queue = await this.opts.load?.()
 
+        // TODO: possible we reloaded queue while a task is running
+        // we should make sure to remove the current task from the reloaded queue
+
         if( !this._queue?.length )
             this._queue = null // means no more to load (paginated)
 
