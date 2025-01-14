@@ -229,6 +229,8 @@ class Onix extends CollMap {
     }
 
     toJSON(opts={}){
+        let asString = opts.string
+        delete opts.string
         let o = {}
 
         this.forEach((d,k)=>{
@@ -244,12 +246,12 @@ class Onix extends CollMap {
             o[k] = d
         })
 
-        return o
+        return asString ? JSON.stringify(o, null, 2) : o
     }
 
-    toXML(){
+    toXML(opts={}){
 
-        let data = this.toJSON({shortTags: true, codes: true})
+        let data = this.toJSON({shortTags: true, codes: true, ...opts})
 
         const options = {
             ignoreAttributes : false,
