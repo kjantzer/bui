@@ -227,6 +227,8 @@ module.exports = class OnixProductModel {
     }
 
     get territories(){ 
+        // TODO: combine RightsCountry too
+        // TODO: may have many SalesRights
         if( this.is2 ) return this.onix.getValue('SalesRights.RightsTerritory')
         return this.onix.getValue('PublishingDetail.SalesRights.Territory.CountriesIncluded')
     }
@@ -283,6 +285,9 @@ module.exports = class OnixProductModel {
 
         if( texts )
         type.find(type=>{
+            if( this.is2 )
+                return text = texts.getValue('Text', {TextTypeCode: type})
+
             return text = texts.getValue('Text', {TextType: type})
         })
 
