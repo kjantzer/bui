@@ -33,6 +33,10 @@ customElements.define('b-code', class extends LitElement{
             color: inherit;
         }
 
+        :host([breakall]) {
+            word-break: break-all;
+        }
+
         :host([block]) {
             display: block;
             font-family: monospace;
