@@ -20,7 +20,7 @@ module.exports = class OnixProductModel {
         let getters = Object.getOwnPropertyDescriptors(this.constructor.prototype)
         for( let key in getters ){
             let getter = getters[key]
-            if( getter.get && !['is2', 'is3'].includes(key) )
+            if( getter.get && !['is2', 'is3', 'release'].includes(key) )
                 data[key] = this.onix ? this[key] : null
         }
 
@@ -142,6 +142,7 @@ module.exports = class OnixProductModel {
     }
 
     get seriesName(){ 
+        if( this.is2 ) return decodeHtmlEntity(this.onix.getValue('Series.TitleOfSeries'))
         return decodeHtmlEntity(this.onix.getValue('DescriptiveDetail.Collection.TitleDetail.TitleElement.TitleText'))
     }
 
@@ -150,6 +151,7 @@ module.exports = class OnixProductModel {
     }
 
     get seriesNum(){ 
+        if( this.is2 ) return this.onix.getValue('Series.SeriesPartName')
         return this.onix.getValue('DescriptiveDetail.Collection.TitleDetail.TitleElement.PartNumber')
     }
 
@@ -227,9 +229,9 @@ module.exports = class OnixProductModel {
     }
 
     get territories(){ 
-        // TODO: combine RightsCountry too
+        // NOTE: use RightsTerritory too?
         // TODO: may have many SalesRights
-        if( this.is2 ) return this.onix.getValue('SalesRights.RightsTerritory')
+        if( this.is2 ) return this.onix.getValue('SalesRights.RightsCountry')
         return this.onix.getValue('PublishingDetail.SalesRights.Territory.CountriesIncluded')
     }
 
