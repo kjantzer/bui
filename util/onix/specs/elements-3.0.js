@@ -517,16 +517,19 @@ module.exports = new OnixElements({
         }
       },
       "Extent": {
-        "ExtentType": {
-          "shortTag": "b218",
-          "codeList": "23"
-        },
-        "ExtentValue": {
-          "shortTag": "b219"
-        },
-        "ExtentUnit": {
-          "shortTag": "b220",
-          "codeList": "24"
+        "repeatable": true,
+        "components": {
+          "ExtentType": {
+            "shortTag": "b218",
+            "codeList": "23"
+          },
+          "ExtentValue": {
+            "shortTag": "b219"
+          },
+          "ExtentUnit": {
+            "shortTag": "b220",
+            "codeList": "24"
+          }
         }
       },
       "NumberOfIllustrations": {

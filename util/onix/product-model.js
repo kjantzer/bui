@@ -205,14 +205,17 @@ module.exports = class OnixProductModel {
         
         if( this.is2 )
             return [
-                this.onix.getValue('BASICMainSubject')
-            ]
+                this.onix.getValue('BASICMainSubject'),
+                this.onix.get('Subject')?.getValues('SubjectCode', {
+                    SubjectSchemeIdentifier: 'BISAC Subject Heading', MainSubject: false}).join(',')
+            ].filter(s=>s).join('|')
+            
         return [
             this.onix.get('DescriptiveDetail.subject')?.getValue('SubjectCode', {
                 SubjectSchemeIdentifier: 'BISAC Subject Heading', MainSubject: true}),
             this.onix.get('DescriptiveDetail.subject')?.getValues('SubjectCode', {
                 SubjectSchemeIdentifier: 'BISAC Subject Heading', MainSubject: false}).join(','),
-        ].join('|')
+        ].filter(s=>s).join('|')
     }
 
     get keywords(){ 
@@ -261,7 +264,7 @@ module.exports = class OnixProductModel {
 
         let val = dur?.getValue('ExtentValue', {ExtentType: 'Duration'})
         let h, m, s;
-        let unit = dur?.get('ExtentUnit.value')
+        let unit = String(dur?.find({ExtentType: 'Duration'}).get('ExtentUnit.value'))
 
         switch(unit){
             // minutes
