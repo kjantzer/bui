@@ -132,7 +132,13 @@ module.exports = class OnixProductModel {
 
     get releaseDate(){
         let date = this.is2 ? this.onix.formatDate(this.onix.get('PublicationDate')) : this.onix.getValue('PublishingDetail.PublishingDate.Date')
-        return date ? dayjs(date).format('YYYY-MM-DD') : date
+        date = date ? dayjs(date).format('YYYY-MM-DD') : date
+
+        // I think we want to do this? (at least, may be what we did before)
+        if( !date )
+            date = this.availabilityDate
+
+        return date
     }
 
     set releaseDate(date){
@@ -386,11 +392,18 @@ module.exports = class OnixProductModel {
 
         if( this.is2 )
             return this.onix.formatDate(this.onix.getValue('SupplyDetail.0.OnSaleDate'))
-        
-        let date = this.onix.get('ProductSupply.SupplyDetail.0.SupplyDate')
 
-        if( date?.getValue('SupplyDateRole') == 'Sales embargo date' )
-            return date.getValue('Date')
+        return this.onix.get('ProductSupply.SupplyDetail.0.SupplyDate')
+            .getValue('Date', {SupplyDateRole: 'Sales embargo date'})
+    }
+
+    get availabilityDate(){
+        
+        if( this.is2 )
+            return this.onix.formatDate(this.onix.getValue('SupplyDetail.0.ExpectedShipDate'))
+
+        return this.onix.get('ProductSupply.SupplyDetail.0.SupplyDate')
+            .getValue('Date', {SupplyDateRole: 'Expected availability date'})
     }
 
     get price(){

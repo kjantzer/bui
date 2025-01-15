@@ -1297,13 +1297,16 @@ module.exports = new OnixElements({
           "codeList": "65"
         },
         "SupplyDate": {
-          "SupplyDateRole": {
-            "shortTag": "x461",
-            "codeList": "166"
-          },
-          "Date": {
-            "shortTag": "b306",
-            "formatList": "55"
+          "repeatable": true,
+          "components": {
+            "SupplyDateRole": {
+              "shortTag": "x461",
+              "codeList": "166"
+            },
+            "Date": {
+              "shortTag": "b306",
+              "formatList": "55"
+            }
           }
         },
         "OrderTime": {

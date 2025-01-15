@@ -144,6 +144,16 @@ findJoins(){
 }
 ```
 
+### `findAdditionalData()`
+After row(s) fetched via find, add or fetch more data for the rows
+
+```js
+findAdditionalData(resp, opts){
+    let ids = resp.map(d=>d.id)
+    // fetech more data
+}
+```
+
 ### `findParseRow()`
 Use this hook to parse the data from the DB query (before it is converted into classes)
 
