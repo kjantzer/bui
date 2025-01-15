@@ -115,7 +115,7 @@ export default Numeral
 
 
 customElements.define('b-bytes', class extends Numeral{
-    get defaultFormat(){ return '0.00b' }
+    get defaultFormat(){ return '0.00 b' }
 })
 
 customElements.define('b-currency', class extends Numeral{
