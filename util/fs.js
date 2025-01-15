@@ -26,16 +26,19 @@ const csvToArray = require('./csvToArray')
 const readDir = (dirPath, {
     whitelist=false,
     blacklist=['.DS_Store'],
-    recursive=true
+    recursive=true,
+    forceArray=false
 }={})=>{
 
     if( !fs.existsSync(dirPath) )
         return []
         
     let stats = fs.lstatSync(dirPath)
+    let info = []
 
     if( stats.isFile() ){
-        return getFileInfo(dirPath)
+        info = getFileInfo(dirPath)
+        return forceArray ? [info] : info
     }
 
     let files = fs.readdirSync(dirPath).filter(file=>{
@@ -44,7 +47,7 @@ const readDir = (dirPath, {
         else
             return !blacklist.includes(file)
     })
-    let info = []
+    
 
     for( let file of files ){
 
