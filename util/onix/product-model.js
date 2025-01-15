@@ -243,12 +243,14 @@ module.exports = class OnixProductModel {
             return this.onix.get('SalesRights')
             ?.filter(d=>['00', '01', '02'].includes(d.get('SalesRightsType.value')))// exlusive and non-exclusive
             .map(d=>d.getValue('RightsCountry'))
-            .join(' ')
+            .join(' ').split(' ').sort().join(' ')
         }
         //return this.onix.getValue('SalesRights.RightsCountry')
 
-        // TODO: match 2.1 logic?
-        return this.onix.getValue('PublishingDetail.SalesRights.Territory.CountriesIncluded')
+        return this.onix.get('PublishingDetail.SalesRights')
+            ?.filter(d=>['00', '01', '02'].includes(d.get('SalesRightsType.value')))// exlusive and non-exclusive
+            .map(d=>d.getValue('Territory.CountriesIncluded'))
+            .join(' ').split(' ').sort().join(' ')
     }
     // TODO: get territories by exclusive vs non? then a a combined?
 
@@ -394,7 +396,7 @@ module.exports = class OnixProductModel {
             return this.onix.formatDate(this.onix.getValue('SupplyDetail.0.OnSaleDate'))
 
         return this.onix.get('ProductSupply.SupplyDetail.0.SupplyDate')
-            .getValue('Date', {SupplyDateRole: 'Sales embargo date'})
+            ?.getValue('Date', {SupplyDateRole: 'Sales embargo date'})
     }
 
     get availabilityDate(){
@@ -403,7 +405,7 @@ module.exports = class OnixProductModel {
             return this.onix.formatDate(this.onix.getValue('SupplyDetail.0.ExpectedShipDate'))
 
         return this.onix.get('ProductSupply.SupplyDetail.0.SupplyDate')
-            .getValue('Date', {SupplyDateRole: 'Expected availability date'})
+            ?.getValue('Date', {SupplyDateRole: 'Expected availability date'})
     }
 
     get price(){
