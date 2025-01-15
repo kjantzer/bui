@@ -383,9 +383,11 @@ module.exports = class OnixProductModel {
     }
 
     get embargo(){
-        let date = this.is2
-            ? this.onix.get('SupplyDetail.0.SupplyDate')
-            : this.onix.get('ProductSupply.SupplyDetail.0.SupplyDate')
+
+        if( this.is2 )
+            return this.onix.formatDate(this.onix.getValue('SupplyDetail.0.OnSaleDate'))
+        
+        let date = this.onix.get('ProductSupply.SupplyDetail.0.SupplyDate')
 
         if( date?.getValue('SupplyDateRole') == 'Sales embargo date' )
             return date.getValue('Date')

@@ -819,6 +819,12 @@ module.exports = new OnixElements({
                 "type": "composite",
                 "repeatable": true,
                 "components": {
+                    "ExpectedShipDate": {
+                        "shortTag": "j142"
+                    },
+                    "OnSaleDate": {
+                        "shortTag": "j143"
+                    },
                     "SupplierIdentifier": {
                         "shortTag": "supplieridentifier",
                         "type": "composite",
