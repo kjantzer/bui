@@ -230,10 +230,18 @@ module.exports = class OnixProductModel {
 
     get territories(){ 
         // NOTE: use RightsTerritory too?
-        // TODO: may have many SalesRights
-        if( this.is2 ) return this.onix.getValue('SalesRights.RightsCountry')
+        if( this.is2 ){
+            return this.onix.get('SalesRights')
+            ?.filter(d=>['00', '01', '02'].includes(d.get('SalesRightsType.value')))// exlusive and non-exclusive
+            .map(d=>d.getValue('RightsCountry'))
+            .join(' ')
+        }
+        //return this.onix.getValue('SalesRights.RightsCountry')
+
+        // TODO: match 2.1 logic?
         return this.onix.getValue('PublishingDetail.SalesRights.Territory.CountriesIncluded')
     }
+    // TODO: get territories by exclusive vs non? then a a combined?
 
     // not reliable
     // get img(){ return this.onix.getValue('CollateralDetail.SupportingResource.ResourceVersion.ResourceLink')}
@@ -385,7 +393,9 @@ module.exports = class OnixProductModel {
     }
 
     get prices(){
-        return this.onix.get('ProductSupply.SupplyDetail.Price')?.filter(m=>{
+        let prices = this.is2 ? this.onix.get('SupplyDetail.Price') : this.onix.get('ProductSupply.SupplyDetail.Price')
+        
+        return prices?.filter(m=>{
             return !m.getValue('PriceQualifier') || ['Consumer price', 'Unqualified price'].includes(m.getValue('PriceQualifier'))
         }).map(m=>{
             return {
