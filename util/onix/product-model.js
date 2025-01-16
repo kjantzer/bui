@@ -431,7 +431,7 @@ module.exports = class OnixProductModel {
     }
 
     get cartonQty(){
-        if( this.is2 ) this.onix.get('SupplyDetail.0.PackQuantity')
-        return this.onix.get('ProductSupply.SupplyDetail.0.PackQuantity')
+        if( this.is2 ) this.onix.getValue('SupplyDetail.0.PackQuantity')
+        return this.onix.getValue('ProductSupply.SupplyDetail.0.PackQuantity')
     }
 }
