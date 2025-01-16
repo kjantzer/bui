@@ -1,3 +1,25 @@
+/*
+    # Broadcast
+
+    Talk to other tabs/windows on the same host
+
+    ```js
+    class Broadcaster extends Broadcast {
+        _nav(data){
+            console.log('requested to nav', data)
+        }
+    }
+
+    let broadcast = new Broadcaster()
+    
+    let clients = await broadcast.getClients()
+
+    let home = clients.find(c=>c.path=='/home')
+    
+    broadcast.emit('nav', 'extra data', {client: home})
+    broadcast.emit('nav', {other:'data'}, {allClients: true})
+    ```
+*/
 import CollMap from '../collmap'
 import mouse from '../mouse'
 import ClientSelctor from './client-selector'
@@ -30,8 +52,10 @@ export default class Broadcast {
 
     async emit(key, data, opts={}){
 
+        let client = opts.client
+
         // ask user which client (if more than one)
-        if( key !== 'getClients' && opts.allClients !== true ){
+        if( key !== 'getClients' && opts.allClients !== true && !client ){
 
             let clients = await this.getClients()
 
@@ -51,10 +75,10 @@ export default class Broadcast {
                 : await ClientSelctor.shared.open(clients, mouse.event)
 
             if( !client ) return false
-            
-            if( client?.id )
-                opts.forClient = client.id
         }
+
+        if( client )
+            opts.forClient = client.id || client
 
         return this.bc.postMessage({key, data, opts})
     }
