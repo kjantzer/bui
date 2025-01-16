@@ -136,7 +136,7 @@ const sorts = {
     type(m){ return m.get('type') == 'd' ? 0 : 1 },
     name(m){ return String(m.get('name')).toLowerCase() },
     size(m){ return m.get('size') },
-    date: {desc: true, sortBy(m){ return m.get('date') }}
+    date: {desc: true, sortBy(m){ return m.get('date').sortValue() }}
 }
 
 
