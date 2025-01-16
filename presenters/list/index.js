@@ -776,6 +776,8 @@ customElements.define('b-list', class extends LitElement {
 
     async onFilterTermChange(){
 
+        if( this.spinner.show ) return
+
         // TODO: probably need an opt in feature
         if( this.listOptions && this.listOptions.fetch == 'more' ){
             this.dataSource.reset()
