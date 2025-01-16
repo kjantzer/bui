@@ -412,16 +412,27 @@ module.exports = class OnixProductModel {
         return this.prices?.find(d=>d.currency == 'USD')?.price
     }
 
-    get prices(){
+     get prices() {
         let prices = this.is2 ? this.onix.get('SupplyDetail.Price') : this.onix.get('ProductSupply.SupplyDetail.Price')
-        
-        return prices?.filter(m=>{
-            return !m.getValue('PriceQualifier') || ['Consumer price', 'Unqualified price'].includes(m.getValue('PriceQualifier'))
-        }).map(m=>{
+
+        // NOTE: what bout "Corporate price"?
+        let PriceTypes = ['Consumer price', 'Unqualified price']
+
+        return prices?.filter(m => {
+            return !m.getValue('PriceQualifier') || PriceTypes.includes(m.getValue('PriceQualifier'))
+        }).map(m => {
+
+            let territory = m.get('Territory')?.toJSON()
+
+            if( this.is2 )
+                territory = {
+                    CountriesIncluded: m.get('CountryCode')?.map(d=>d.value()).join(' ')
+                }
+
             return {
                 price: m.getValue('PriceAmount'),
                 currency: m.get('CurrencyCode.value'),
-                territory: m.get('Territory')?.toJSON()
+                territory
             }
         })
     }

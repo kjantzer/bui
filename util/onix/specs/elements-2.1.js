@@ -1093,7 +1093,12 @@ module.exports = new OnixElements({
                             "PriceEffectiveUntil": {
                                 "shortTag": "j162",
                                 "type": "string"
-                            }
+                            },
+                            "CountryCode": {
+                                "shortTag": "b251",
+                                "codeList": "91",
+                                "repeatable": true
+                            },
                         }
                     },
                     "MarketRepresentation": {
