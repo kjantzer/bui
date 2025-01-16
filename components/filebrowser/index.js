@@ -71,7 +71,10 @@ customElements.define('b-filebrowser', class extends RoutedView{
 
     load(id, attrs, state){        
         this.coll.path = state.params._ || []
-        if( this.list ) this.list.refresh()
+        if( this.list ){
+            this.list.refresh()
+            this.list.term = ''
+        }
         this.route.update({
             title: this.constructor.title+': '+this.coll.pathString
         })
