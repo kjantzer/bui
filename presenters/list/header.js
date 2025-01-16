@@ -202,7 +202,7 @@ customElements.define('b-list-header', class extends LitElement{
             border-radius: 0 4px 4px 0;
         }
 
-        :host(:nth-child(even)) > * {
+        :host(:nth-child(even):not([isselected])) > * {
             background-color: var(--theme-bgd-accent2);
         }
 
@@ -210,6 +210,11 @@ customElements.define('b-list-header', class extends LitElement{
             :host(:hover) > *,
             :host(.popover-open) > * {
                 background-color: var(--theme-bgd-accent) !important;
+            }
+
+            :host([isselected]:hover) > *,
+            :host(.popover-open[isselected]) > * {
+                background-color: var(--list-cell-viewing-bgd, rgba(var(--theme-rgb), .2)) !important;
             }
         }
     `}
