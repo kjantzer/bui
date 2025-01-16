@@ -19,7 +19,7 @@ The events use `willTakeAction`, allowing for cancelling/disallowing the actions
 // react to any of the vents
 dragdropEl.addEventListener('will-take-action', e=>{
 
-    let {action} = e.data
+    let {action} = e.detail
 
     if( action.name == 'dragged' )
         action.data = {add: 'more data to be used by dropzones'}
