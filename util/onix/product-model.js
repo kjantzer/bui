@@ -338,7 +338,7 @@ module.exports = class OnixProductModel {
             // assume first bio text goes with the first credit
             // this fits based on the 2.1 onix I looked at (by Hachette)
             if( !bio && this.is2 && i == 0 ){
-                bio = this.onix.get('OtherText').getValue('Text', {TextTypeCode: 'Biographical note'})
+                bio = this.onix.get('OtherText')?.getValue('Text', {TextTypeCode: 'Biographical note'})
             }
 
             return {
