@@ -97,7 +97,7 @@ module.exports = class OnixProductModel {
     get title(){
 
         if( this.is2 )
-            return this.onix.getValue('Title.TitleText')
+            return decodeHtmlEntity(this.onix.getValue('Title.TitleText'))
         
         let title = this.onix.getValue('DescriptiveDetail.TitleDetail.TitleElement.TitleText')
 
