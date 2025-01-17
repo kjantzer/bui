@@ -34,3 +34,19 @@ class APIAccessError extends APIError {
 
 global.APIError = APIError
 global.APIAccessError = APIAccessError
+
+Error.prototype.messageTrace = function({lines=1, replaceSingleQuotes=true}={}){
+    let msg = this.stack
+        .split('\n')
+        .slice(0,1+lines)
+        .map(s=>s.trim())
+        .join(' ')
+
+    if( replaceSingleQuotes ) // can mess up db inserts, so replace
+        msg = msg.replace(/'/g, '’')
+
+    if( globalThis.ROOT_PATH )
+        msg = msg.replaceAll(ROOT_PATH, '')
+
+    return msg
+}
