@@ -131,7 +131,10 @@ module.exports = class OnixProductModel {
     }
 
     get releaseDate(){
-        let date = this.is2 ? this.onix.formatDate(this.onix.get('PublicationDate')) : this.onix.getValue('PublishingDetail.PublishingDate.Date')
+        let date = this.is2 
+            ? this.onix.formatDate(this.onix.get('PublicationDate')) 
+            : this.onix.formatDate(this.onix.getValue('PublishingDetail.PublishingDate.Date'))
+            
         date = date ? dayjs(date).format('YYYY-MM-DD') : date
 
         // I think we want to do this? (at least, may be what we did before)
