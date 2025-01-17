@@ -70,7 +70,10 @@ export class UICustomError extends Error {
             else if( this.detail.target.scrollIntoView )
                 this.detail.target.scrollIntoView()
 
-            presenter.popOver(this.detail.target, this.detail?.popover||{})
+            presenter.popOver(this.detail.target, {
+                overflowBoundry: 'window',
+                ...(this.detail?.popover||{})
+            })
 
             if( this.detail.target.focus )
                 this.detail.target.focus()
