@@ -115,7 +115,7 @@ class Onix extends CollMap {
         return super.get(...arguments)
     }
 
-    constructor(data, {name='ONIX', element, release, parent, level=0, index, raw, hash}={}){
+    constructor(data, {name='ONIXMessage', element, release, parent, level=0, index, raw, hash}={}){
 
         if( data.ONIXmessage )
             data = data.ONIXmessage
@@ -259,6 +259,16 @@ class Onix extends CollMap {
         }
 
         data = {[this.name]: data}
+
+        // if a product, wrap with other required tags to make a properly (mostly) formatted onix
+        if( data.Product )
+            data = {
+                ONIXMessage: {
+                    '@_release': this.release,
+                    Header: {},
+                    ...data
+                }
+            }
 
         const builder = new XMLBuilder(options);
 
