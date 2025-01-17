@@ -331,13 +331,22 @@ module.exports = class OnixProductModel {
 
         if( !credits ) return credits
 
-        credits = credits.map(d=>{
+        credits = credits.map((d, i)=>{
+
+            let bio = d.getValue('BiographicalNote')
+
+            // assume first bio text goes with the first credit
+            // this fits based on the 2.1 onix I looked at (by Hachette)
+            if( !bio && this.is2 && i == 0 ){
+                bio = this.onix.get('OtherText').getValue('Text', {TextTypeCode: 'Biographical note'})
+            }
+
             return {
                 name: decodeHtmlEntity(d.getValue('PersonName')),
                 first: decodeHtmlEntity(d.getValue('NamesBeforeKey')),
                 last: decodeHtmlEntity(d.getValue('KeyNames')),
                 ordinal: d.getValue('SequenceNumber'),
-                bio: d.getValue('BiographicalNote'),
+                bio: decodeHtmlEntity(bio),
                 roles: d.getArray('ContributorRole')?.map(m=>m.get?.('value'))
             }
         })
