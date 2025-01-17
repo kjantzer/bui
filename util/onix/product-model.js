@@ -72,7 +72,7 @@ module.exports = class OnixProductModel {
 
     // aliases to match old php
     get partnerRef(){ return this.gtin13 || this.isbn13 }
-    get providerRef(){ return this.workID }
+    // get providerRef(){ return this.workID }
 
     get publisherName(){
         if( this.is2 ) return this.onix.get('Publisher')?.getValue('PublisherName')
