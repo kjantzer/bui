@@ -57,6 +57,13 @@ const fetchSync = function(opts={}){
         // }
     }
 
+    if( opts.headers ){
+        for( let headerKey in opts.headers ){
+            if( opts.headers[headerKey] && typeof opts.headers[headerKey] == 'object' )
+                try{ opts.headers[headerKey] = JSON.stringify(opts.headers[headerKey]) }catch(err){}
+        }
+    }
+
     return this.__fetchSyncPromise = new Promise((resolve, reject)=>{
         let model = this
         opts.success = function(){
