@@ -134,7 +134,7 @@ module.exports = class OnixProductModel {
         let date = this.is2 
             ? this.onix.formatDate(this.onix.get('PublicationDate')) 
             : this.onix.formatDate(this.onix.getValue('PublishingDetail.PublishingDate.Date'))
-            
+
         date = date ? dayjs(date).format('YYYY-MM-DD') : date
 
         // I think we want to do this? (at least, may be what we did before)
@@ -241,21 +241,22 @@ module.exports = class OnixProductModel {
     }
 
     get territories(){ 
-        // NOTE: use RightsTerritory too?
         if( this.is2 ){
             return this.onix.get('SalesRights')
             ?.filter(d=>['00', '01', '02'].includes(d.get('SalesRightsType.value')))// exlusive and non-exclusive
-            .map(d=>d.getValue('RightsCountry'))
+            .map(d=>[d.getValue('RightsCountry'), d.getValue('RightsTerritory')] )
+            .flatMap(a=>a)
+            .filter(s=>s)
             .join(' ').split(' ').sort().join(' ')
         }
-        //return this.onix.getValue('SalesRights.RightsCountry')
 
         return this.onix.get('PublishingDetail.SalesRights')
             ?.filter(d=>['00', '01', '02'].includes(d.get('SalesRightsType.value')))// exlusive and non-exclusive
-            .map(d=>d.getValue('Territory.CountriesIncluded'))
+            .map(d=>[d.getValue('Territory.CountriesIncluded'), d.getValue('Territory.RegionsIncluded')])
+            .flatMap(a=>a)
+            .filter(s=>s)
             .join(' ').split(' ').sort().join(' ')
     }
-    // TODO: get territories by exclusive vs non? then a a combined?
 
     // not reliable
     // get img(){ return this.onix.getValue('CollateralDetail.SupportingResource.ResourceVersion.ResourceLink')}
