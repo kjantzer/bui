@@ -28,8 +28,11 @@
 import { LitElement, html, css } from 'lit';
 import './spinner'
 import './icon'
-import './tooltip'
 import {mediaQuery} from '../util/mediaQueries'
+
+// note: not imported here cause it would require Popover and a lot more deps
+// parent code can import tooltip element if its going to be used
+// import './tooltip'
 
 export default class BtnElement extends LitElement {
 
