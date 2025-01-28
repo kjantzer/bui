@@ -103,7 +103,7 @@ customElements.define('b-sortable', class extends LitElement{
 
     onSort(e){
 
-        if( e.oldIndex == e.newIndex ) return //console.log('same sort');
+        if( e.oldIndex == e.newIndex && e.from == e.to ) return
 
         this.emitEvent('sort-changed', e)
 
