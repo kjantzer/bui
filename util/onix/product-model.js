@@ -463,9 +463,9 @@ module.exports = class OnixProductModel {
             if( date ){
                 let daysleft = new dayjs(date[1]).diff(new Date(), 'days')
                 
-                // ignore prices that expire in under 2 weeks
+                // ignore prices that expire in under 30 days
                 // in my tests, the regular price was also present in the feed
-                if( daysleft < 14 )
+                if( daysleft < 30 )
                     return null
 
                 attrs.date = date
