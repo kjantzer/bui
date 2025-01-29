@@ -425,7 +425,7 @@ module.exports = class OnixProductModel {
         return this.prices?.find(d=>d.currency == 'USD')?.price
     }
 
-     get prices() {
+    get prices() {
         let prices = this.is2 ? this.onix.get('SupplyDetail.Price') : this.onix.get('ProductSupply.SupplyDetail.Price')
 
         // NOTE: what bout "Corporate price"?
@@ -436,18 +436,44 @@ module.exports = class OnixProductModel {
         }).map(m => {
 
             let territory = m.get('Territory')?.toJSON()
+            let date = m.get('PriceDate')
+
+            // some have a date range (ex: on sale for a month)
+            if( date ){
+                date = [
+                    date.getValue('Date', {PriceDateRole: 'From date'}),
+                    date.getValue('Date', {PriceDateRole: 'Until date'})
+                ].filter(d=>d)
+                
+                if( date.length != 2 )
+                    date = null
+            }
 
             if( this.is2 )
                 territory = {
                     CountriesIncluded: m.get('CountryCode')?.map(d=>d.value()).join(' ')
                 }
 
-            return {
+            let attrs = {
                 price: m.getValue('PriceAmount'),
                 currency: m.get('CurrencyCode.value'),
                 territory
             }
-        })
+
+            if( date ){
+                let daysleft = new dayjs(date[1]).diff(new Date(), 'days')
+                
+                // ignore prices that expire in under 2 weeks
+                // in my tests, the regular price was also present in the feed
+                if( daysleft < 14 )
+                    return null
+
+                attrs.date = date
+            }
+
+            return attrs
+
+        }).filter(d=>d)
     }
 
     get drm(){
