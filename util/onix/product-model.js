@@ -278,6 +278,8 @@ module.exports = class OnixProductModel {
         let h, m, s;
         let unit = String(dur?.find({ExtentType: 'Duration'}).get('ExtentUnit.value'))
 
+        if( !val ) return null
+
         switch(unit){
             // minutes
             case '05': val = val * 60; break;
@@ -288,13 +290,13 @@ module.exports = class OnixProductModel {
             
             // HHHMM
             case '15':
-                [, h, m] = val.match(/(\d{3})(\d{2})/)
+                [, h, m] = String(val).match(/(\d{3})(\d{2})/)
                 val = (parseFloat(m)*60) + (parseFloat(h)*60*60);
                 break;
         
             // HHHMMSS
             case '16':
-                [, h, m, s] = val.match(/(\d{3})(\d{2})(\d{2})/)
+                [, h, m, s] = String(val).match(/(\d{3})(\d{2})(\d{2})/)
                 val = parseFloat(s) + (parseFloat(m)*60) + (parseFloat(h)*60*60);
                 break;
         }
