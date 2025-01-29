@@ -24,10 +24,10 @@
     onAction(e){
         let {action} = e.detail
 
-        if( action.name == 'delete' )
+        if( action == 'delete' )
             action.allowed = false
 
-        if( action.name == 'show-menu' )
+        if( action == 'show-menu' )
             action.menu = action.menu.filter(d=>d.val!='delete')
     }
     ```
@@ -41,6 +41,9 @@ export const willTakeAction = function(name, detail={}, eventOpts={}){
         model: this.model,
         target: this
     }, detail, {name: name, allowed: true})
+
+    // allows for `action == 'name'` instead of `action.name == 'name'`
+    action.toString = function(){return this.name}
 
     this.emitEvent(name, {action}, eventOpts)
 
