@@ -276,7 +276,7 @@ module.exports = class OnixProductModel {
 
         let val = dur?.getValue('ExtentValue', {ExtentType: 'Duration'})
         let h, m, s;
-        let unit = String(dur?.find({ExtentType: 'Duration'}).get('ExtentUnit.value'))
+        let unit = String(dur?.find({ExtentType: 'Duration'})?.get('ExtentUnit.value'))
 
         if( !val ) return null
 
