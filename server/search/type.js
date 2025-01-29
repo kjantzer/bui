@@ -1,5 +1,5 @@
 const Fuse = require('fuse.js')
-const { replaceAccents } = require('../../util/string')
+const { replaceAccents, hasAccents } = require('../../util/string')
 
 module.exports = class SearchType {
     
@@ -25,13 +25,17 @@ module.exports = class SearchType {
     }
 
     query(term){
+        let stripAccents = !hasAccents(term)
         term = this.formatTerm(term)
         let sql = this.searchSql
         if( typeof sql == 'function' ) sql = sql(term)
         return this.db.query(sql, term).then(rows=>{
             rows.forEach(row=>{
                 row.type=row.type||this.type
-                if( row.label )
+
+                // if term given has not accents, then don't replace accents in results for better fuse.js match
+                // a human likely won't type accents, but code might
+                if( row.label && stripAccents )
                     row.label = replaceAccents(row.label)
             })
             return rows

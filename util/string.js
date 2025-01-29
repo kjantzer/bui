@@ -65,6 +65,10 @@ function replaceAccents(str){
 	return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove accents
 }
 
+function hasAccents(str){
+    return !!str.normalize('NFD').match(/[\u0300-\u036f]/g)
+}
+
 /*
     `removeTags(str)`  
     lightweight tag strip: https://www.geeksforgeeks.org/how-to-strip-out-html-tags-from-a-string-using-javascript/
@@ -96,4 +100,4 @@ function encodeHtmlEntity(str){
     return buf.join('')
 }
 
-module.exports = {capitalize, titleize, slugify, replaceAccents, removeTags, camelcaseUndo, UpperCaseWords, decodeHtmlEntity, encodeHtmlEntity}
+module.exports = {capitalize, titleize, slugify, replaceAccents, hasAccents, removeTags, camelcaseUndo, UpperCaseWords, decodeHtmlEntity, encodeHtmlEntity}
