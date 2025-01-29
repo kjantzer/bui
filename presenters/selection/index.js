@@ -191,13 +191,21 @@ export default class Selection {
         let {items, start, end, oldStart, oldEnd} = this.getItems(startItem, item)
         let shouldSelect = startItem.hasAttribute(this.SELECTED)
 
+        let selectItems = []
+
         items.forEach((_item,i)=>{
             if( i >= start && i <= end)
-               shouldSelect ? this._select(_item) : this._deselect(_item)
+               shouldSelect ? selectItems.push(_item) : this._deselect(_item)
             
             else if( oldStart !== false && oldEnd !== false && i >= oldStart && i <= oldEnd)
                 this._deselect(_item)
         })
+
+        // select the items in order of start to end based on the user
+        if( selectItems.length && selectItems[0] != startItem )
+            selectItems.reverse()
+
+        selectItems.forEach(item=>this._select(item))
 
         this._emit('change', this.result)
         
