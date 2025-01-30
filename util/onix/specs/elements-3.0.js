@@ -1509,13 +1509,16 @@ module.exports = new OnixElements({
             }
           },
           "PriceDate": {
-            "PriceDateRole": {
-              "shortTag": "x476",
-              "codeList": "173"
-            },
-            "Date": {
-              "shortTag": "b306",
-              "formatList": "55"
+            "repeatable": true,
+            "components": {
+              "PriceDateRole": {
+                "shortTag": "x476",
+                "codeList": "173"
+              },
+              "Date": {
+                "shortTag": "b306",
+                  "formatList": "55"
+              }
             }
           }
         }
