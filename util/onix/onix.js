@@ -71,14 +71,43 @@ class Onix extends CollMap {
             else
                 onixVal = OnixArray.from(val.map((d,i)=>new Onix(d, {...props, index: i})))
 
-        else if( props.element?.get('repeatable') ){
+        else {
             
-            if( onixVal )
-                onixVal.push(new Onix(val, {...props, index: onixVal.length}))
-            else
-                onixVal = new OnixArray(new Onix(val, {...props, index: 0}))
+            let onixValArray
+             
+            if( props.element?.get('repeatable') ){
+                onixValArray = onixVal
 
-        }else {
+                // first time, create an array
+                if( !onixValArray )
+                    onixValArray = new OnixArray()
+                // already set, but not an array, so convert to array
+                else if( !Array.isArray(onixValArray) )
+                    onixValArray = new OnixArray(onixValArray)
+
+                // resume setting data on the last item added to array (could be none)
+                onixVal = onixValArray.last()
+
+                // we want to continue updating the first onix array element...
+                // unless the value being updated exists and is not repeatable (repeat at parent level instead)
+                if( onixVal)
+                    props.element.get('components').map(d=>{
+            
+                        if( onixVal?.get(d.name) && keys.includes(d.name) && !d.get('repeatable') ){
+                            onixVal = null
+                        }
+
+                        if( val[d.name] && !d.get('repeatable'))
+                            onixVal = null
+
+                    })
+            }
+             
+            if( !onixVal ){
+                onixVal = new Onix({}, props)
+                if( onixValArray )
+                    onixValArray.push(onixVal)
+            }
 
             if( keys.length ){
                 onixVal ||= new Onix({}, props)
@@ -87,6 +116,8 @@ class Onix extends CollMap {
                 onixVal.set( Array.isArray(onixVal) ? new Onix(val, props) : val)
             else
                 onixVal = new Onix(val, props)
+                
+            onixVal = onixValArray || onixVal
         }
 
         super.set(props.key, onixVal)

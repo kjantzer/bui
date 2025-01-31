@@ -7,6 +7,10 @@ module.exports = class OnixArray extends Array {
     get release(){ return this[0]?.release }
     get level(){ return this[0]?.level }
 
+    first(){ return this[0] }
+    last(){ return this[this.length-1] }
+    at(i){ return this[i] }
+
     createProps(key){
         return this[0]?.createProps(key)
     }

@@ -166,6 +166,7 @@ module.exports = class OnixProductModel {
     }
 
     set seriesNum(num){ 
+        if( this.is2 ) return this.onix.set('Series.SeriesPartName', num)
         return this.onix.set('DescriptiveDetail.Collection.TitleDetail.TitleElement.PartNumber', num)
     }
 
@@ -192,6 +193,11 @@ module.exports = class OnixProductModel {
     get edition(){
         if( this.is2 ) return this.onix.getValue('EditionTypeCode')
         return this.onix.getValue('DescriptiveDetail.EditionType')
+    }
+
+    set edition(edition){
+        if( this.is2 ) return this.onix.set('EditionTypeCode', edition)
+        return this.onix.set('DescriptiveDetail.EditionType', edition)
     }
 
     // TODO: check
@@ -228,6 +234,28 @@ module.exports = class OnixProductModel {
         ].filter(s=>s).join('|')
     }
 
+    set bisacs(bisacs){
+
+        bisacs = Array.isArray(bisacs) ? bisacs : bisacs.split(',')
+
+        return bisacs.map((bisac, i)=>{
+
+            if( this.is2 ) 
+                return i == 0 
+                ? this.onix.set('BASICMainSubject', bisac)
+                : this.onix.set('Subject', {
+                    SubjectCode: bisac,
+                    SubjectSchemeIdentifier: 'BISAC Subject Heading'
+                })
+
+            return this.onix.set('DescriptiveDetail.Subject', {
+                SubjectCode: bisac, 
+                SubjectSchemeIdentifier: 'BISAC Subject Heading',
+                ...(i==0?{MainSubject: true}:{})
+            })
+        })
+    }
+
     get keywords(){
         let keywords
         if( this.is2 ) keywords = this.onix.get('subject')?.getValue('SubjectHeadingText', {SubjectSchemeIdentifier: 'Keywords'})
@@ -244,7 +272,7 @@ module.exports = class OnixProductModel {
         if( Array.isArray(keywords) )
             keywords = keywords.join(',')
 
-        if( this.is2 ) return this.onix.get('subject', {SubjectHeadingText: keywords, SubjectSchemeIdentifier: 'Keywords'})
+        if( this.is2 ) return this.onix.set('subject', {SubjectHeadingText: keywords, SubjectSchemeIdentifier: 'Keywords'})
         return this.onix.set('DescriptiveDetail.subject', {SubjectHeadingText: keywords, SubjectSchemeIdentifier: 'Keywords'})
     }
 
@@ -312,6 +340,10 @@ module.exports = class OnixProductModel {
         return Math.round((val / 60 / 60)*100)/100 // hours
     }
 
+    set duration(dur){
+        // TODO
+    }
+
     get copy(){
         // order of preference
         let text = null
@@ -338,6 +370,11 @@ module.exports = class OnixProductModel {
     get illustrationNote(){
         if( this.is2 ) return this.onix.getValue('IllustrationsNote')
         return this.onix.getValue('DescriptiveDetail.IllustrationsNote')
+    }
+
+    set illustrationNote(note){
+        if( this.is2 ) return this.onix.set('IllustrationsNote', note)
+        return this.onix.set('DescriptiveDetail.IllustrationsNote', note)
     }
 
     get credits(){
@@ -382,8 +419,19 @@ module.exports = class OnixProductModel {
         return credits
     }
 
-    // WIP
-    set credit(data){
+    set credits(data){
+
+        if( Array.isArray(data) ){
+            return data.map(d=>this.credits = d)
+        }
+
+        if( data.name && !data.last && !data.first ){
+            let name = data.name.split(' ')
+            data.last = name.pop()
+            data.first = name.join('')
+        }else if( !data.name && data.last && data.first ){
+            data.name = data.first+' '+data.last
+        }
 
         let onix = {
             PersonName: data.name,
@@ -393,18 +441,23 @@ module.exports = class OnixProductModel {
             BiographicalNote: data.bio
         }
 
-        if( !onix.PersonName ){
-            // use first/last
-        }
+        Object.keys(onix).forEach(key=>{
+            if( !onix[key] )
+                delete onix[key]
+        })
         
         this.onix.set(this.is2?'Contributor':'DescriptiveDetail.Contributor', onix)
-
     }
 
     get availability(){
         return this.is2
         ? this.onix.getValue('SupplyDetail.0.ProductAvailability')
         : this.onix.getValue('ProductSupply.SupplyDetail.0.ProductAvailability')
+    }
+
+    set availability(avail){
+        if( this.is2 ) return this.onix.set('SupplyDetail.ProductAvailability', avail)
+        return this.onix.set('ProductSupply.SupplyDetail.ProductAvailability', avail)
     }
 
     get availabilityCode(){
@@ -422,6 +475,13 @@ module.exports = class OnixProductModel {
             ?.getValue('Date', {SupplyDateRole: 'Sales embargo date'})
     }
 
+    set embargo(date){
+        date = dayjs(date).format('YYYY-MM-DD')
+
+        if( this.is2 ) return this.onix.set('SupplyDetail.OnSaleDate', date)
+        return this.onix.set('ProductSupply.SupplyDetail.SupplyDate', {Date: date, SupplyDateRole: 'Sales embargo date'})
+    }
+
     get availabilityDate(){
         
         if( this.is2 )
@@ -433,6 +493,11 @@ module.exports = class OnixProductModel {
 
     get price(){
         return this.prices?.find(d=>d.currency == 'USD')?.price
+    }
+
+    set price(price){
+        if( this.is2 ) return this.onix.set('SupplyDetail.Price', {PriceAmount: price, PriceQualifier: 'Consumer price'})
+        return this.onix.set('ProductSupply.SupplyDetail.Price', {PriceAmount: price, PriceQualifier: 'Consumer price'})
     }
 
     get prices() {
@@ -493,5 +558,10 @@ module.exports = class OnixProductModel {
     get cartonQty(){
         if( this.is2 ) this.onix.getValue('SupplyDetail.0.PackQuantity')
         return this.onix.getValue('ProductSupply.SupplyDetail.0.PackQuantity')
+    }
+
+    set cartonQty(qty){
+        if( this.is2 ) return this.onix.set('SupplyDetail.PackQuantity', qty)
+        return this.onix.set('ProductSupply.SupplyDetail.PackQuantity', qty)
     }
 }
