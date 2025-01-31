@@ -89,4 +89,14 @@ model.subtitle // A Novel
 model.releaseDate // 2012-05-10
 model.price
 // see the file for all available methods
+
+// most methods have setters as well
+model.title = 'New Title'
+model.isbn13 = '9780316033864'
+model.price = 12.99
+model.credits = {
+    name: 'John Doe',
+    roles: ['A01'],
+    bio: 'The bio for this person'
+}
 ```
