@@ -15,4 +15,11 @@ function formatDate(val, format="YYYYMMDD"){
     return val
 }
 
-module.exports = {formatDate}
+function uniformAndDedupeCSV(str){
+    if( !str ) return str
+    return Array.from(
+        new Set(String(str)?.split(/,|;/g)) // dedupe
+    ).map(s=>s.trim()).sort().join(';') // order and unify delimiter
+}
+
+module.exports = {formatDate, uniformAndDedupeCSV}

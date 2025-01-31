@@ -4,6 +4,7 @@
 const dayjs = require('dayjs')
 const groupBy = require('../array.groupBy')
 const {decodeHtmlEntity} = require('../string')
+const {uniformAndDedupeCSV} = require('./util')
 
 module.exports = class OnixProductModel {
 
@@ -227,9 +228,16 @@ module.exports = class OnixProductModel {
         ].filter(s=>s).join('|')
     }
 
-    get keywords(){ 
-        if( this.is2 ) return this.onix.get('subject')?.getValue('SubjectHeadingText', {SubjectSchemeIdentifier: 'Keywords'})
-        return this.onix.get('DescriptiveDetail.subject')?.getValue('SubjectHeadingText', {SubjectSchemeIdentifier: 'Keywords'})
+    get keywords(){
+        let keywords
+        if( this.is2 ) keywords = this.onix.get('subject')?.getValue('SubjectHeadingText', {SubjectSchemeIdentifier: 'Keywords'})
+        else keywords = this.onix.get('DescriptiveDetail.subject')?.getValue('SubjectHeadingText', {SubjectSchemeIdentifier: 'Keywords'})
+
+        // keep keywords in order and dedupe
+        if( keywords )
+            keywords = uniformAndDedupeCSV(keywords)
+
+        return keywords
     }
 
     set keywords(keywords){ 
