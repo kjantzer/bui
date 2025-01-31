@@ -1,3 +1,19 @@
+/*
+    Onix
+
+    Takes a json/js object and converts to nested structure of Map objects
+
+    example:
+    Map
+        key1: Map1
+            key2: Map2
+                key3: Map3
+
+    provides dot notation acces to values
+
+    Map.get('key1.key2.key3') // Map3
+    Map.set('key1.key2.key3', 'Map3')
+*/
 const CollMap = require(`../collmap`)
 const OnixArray = require('./onix-array')
 const {formatDate} = require('./util')

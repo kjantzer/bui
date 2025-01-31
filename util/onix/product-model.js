@@ -496,8 +496,11 @@ module.exports = class OnixProductModel {
     }
 
     set price(price){
-        if( this.is2 ) return this.onix.set('SupplyDetail.Price', {PriceAmount: price, PriceQualifier: 'Consumer price'})
-        return this.onix.set('ProductSupply.SupplyDetail.Price', {PriceAmount: price, PriceQualifier: 'Consumer price'})
+        if( price?.PriceAmount )
+            price = {PriceAmount: price, PriceQualifier: 'Consumer price', CurrencyCode: 'USD'}
+
+        if( this.is2 ) return this.onix.set('SupplyDetail.Price', price)
+        return this.onix.set('ProductSupply.SupplyDetail.Price', price)
     }
 
     get prices() {
