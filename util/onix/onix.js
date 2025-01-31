@@ -36,8 +36,9 @@ class Onix extends CollMap {
             // swap value for the "code" if this component is supposed to be code based
             if( this.element?.codeList && !this.element.codeList[val] ){
 
-                for( let k in this.element.codeList ){
-                    if( this.element.codeList[k].value == val ){
+                for( let k in (this.element.codeList.codes||this.element.codeList) ){
+                    if( this.element.codeList.codes?.[k] == val // 2.1
+                    || this.element.codeList[k]?.value == val ){ // 3.0
                         val = k
                     }
                 }
