@@ -6,6 +6,8 @@ const groupBy = require('../array.groupBy')
 const {decodeHtmlEntity} = require('../string')
 const {uniformAndDedupeCSV} = require('./util')
 
+const TO_JSON_BLACKLIST = ['release', 'is2', 'is3', 'series']
+
 module.exports = class OnixProductModel {
 
     constructor(onix){
@@ -21,7 +23,7 @@ module.exports = class OnixProductModel {
         let getters = Object.getOwnPropertyDescriptors(this.constructor.prototype)
         for( let key in getters ){
             let getter = getters[key]
-            if( getter.get && !['is2', 'is3', 'release'].includes(key) )
+            if( getter.get && !TO_JSON_BLACKLIST.includes(key) )
                 data[key] = this.onix ? this[key] : null
         }
 
@@ -43,17 +45,23 @@ module.exports = class OnixProductModel {
     get is2(){ return this.release == '2.1' }
     get is3(){ return this.release ==  '3.0' }
 
+    get notificationType(){ return this.onix.getValue('NotificationType') }
+    set notificationType(type){ return this.onix.set('NotificationType', type) }
+
     get recordID(){ return this.onix.getValue('RecordReference')}
     set recordID(id){ return this.onix.set('RecordReference', id)}
+
+    get proprietaryID(){ return this.onix.get('ProductIdentifier')?.getValue('IDValue', {ProductIDType: 'Proprietary'}) }
+    set proprietaryID(id){ return this.onix.set('ProductIdentifier', {ProductIDType: 'Proprietary', IDValue: id}) }
 
     get isbn13(){ return this.onix.get('ProductIdentifier')?.getValue('IDValue', {ProductIDType: 'ISBN-13'}) }
     get isbn10(){ return this.onix.get('ProductIdentifier')?.getValue('IDValue', {ProductIDType: 'ISBN-10'}) }
     get gtin13(){ return this.onix.get('ProductIdentifier')?.getValue('IDValue', {ProductIDType: 'GTIN-13'}) }
 
     // TODO: add check for existing and update?
-    set isbn13(id){ return this.onix.set('ProductIdentifier', {IDValue: id, ProductIDType: 'ISBN-13'}) }
-    set isbn10(id){ return this.onix.set('ProductIdentifier', {IDValue: id, ProductIDType: 'ISBN-10'}) }
-    set gtin13(id){ return this.onix.set('ProductIdentifier', {IDValue: id, ProductIDType: 'GTIN-13'}) }
+    set isbn13(id){ return this.onix.set('ProductIdentifier', {ProductIDType: 'ISBN-13', IDValue: id}) }
+    set isbn10(id){ return this.onix.set('ProductIdentifier', {ProductIDType: 'ISBN-10', IDValue: id}) }
+    set gtin13(id){ return this.onix.set('ProductIdentifier', {ProductIDType: 'GTIN-13', IDValue: id}) }
     
     get workID(){
         if( this.is2 ) return this.onix.getValue('WorkIdentifier.IDValue')
@@ -64,7 +72,6 @@ module.exports = class OnixProductModel {
         if( this.is2 ) return this.onix.set('WorkIdentifier.IDValue', id)
         return this.onix.set('RelatedMaterial.RelatedWork.WorkIdentifier.IDValue', id)
     }
-
 
     get relatedIDs(){ 
         if( this.is2 ) return this.onix.get('RelatedProductInfo')?.getValues('ProductIdentifier.IDValue')
@@ -81,8 +88,8 @@ module.exports = class OnixProductModel {
     }
 
     set publisherName(name){
-        if( this.is2 ) return this.onix.set('Publisher.PublisherName', name)
-        return this.onix.set('PublishingDetail.Publisher.PublisherName', name)
+        if( this.is2 ) return this.onix.set('Publisher', {PublishingRole: 'Publisher', PublisherName: name})
+        return this.onix.set('PublishingDetail.Publisher', {PublishingRole: 'Publisher', PublisherName: name})
     }
 
     get imprintName(){
@@ -118,6 +125,7 @@ module.exports = class OnixProductModel {
         if( this.is2 )
             return this.onix.set('Title.TitleText', title)
         
+        this.onix.set('DescriptiveDetail.TitleDetail.TitleType', '01')
         this.onix.set('DescriptiveDetail.TitleDetail.TitleElement.TitleText', title)
     }
     
@@ -157,7 +165,17 @@ module.exports = class OnixProductModel {
     }
 
     set seriesName(series){ 
-        return this.onix.set('DescriptiveDetail.Collection.TitleDetail.TitleElement.TitleText', series)
+        this.onix.set('DescriptiveDetail.Collection.CollectionType', 'Publisher collection')
+        this.onix.set('DescriptiveDetail.Collection.TitleDetail.TitleType', '01')
+        this.onix.set('DescriptiveDetail.Collection.TitleDetail.TitleElement', {
+            TitleElementLevel: 'Collection level',
+            TitleText: series
+        })
+    }
+
+    set series({name, num}){
+        if( name ) this.seriesName = name
+        if( num ) this.seriesNum = num
     }
 
     get seriesNum(){ 
@@ -168,6 +186,16 @@ module.exports = class OnixProductModel {
     set seriesNum(num){ 
         if( this.is2 ) return this.onix.set('Series.SeriesPartName', num)
         return this.onix.set('DescriptiveDetail.Collection.TitleDetail.TitleElement.PartNumber', num)
+    }
+
+    get productComposition(){
+        if( this.is2 ) return this.onix.getValue('ProductComposition')
+        return this.onix.getValue('DescriptiveDetail.ProductComposition')
+    }
+
+    set productComposition(comp){
+        if( this.is2 ) return this.onix.set('ProductComposition', comp)
+        return this.onix.set('DescriptiveDetail.ProductComposition', comp)
     }
 
     get productForm(){ 
@@ -244,14 +272,14 @@ module.exports = class OnixProductModel {
                 return i == 0 
                 ? this.onix.set('BASICMainSubject', bisac)
                 : this.onix.set('Subject', {
-                    SubjectCode: bisac,
-                    SubjectSchemeIdentifier: 'BISAC Subject Heading'
+                    SubjectSchemeIdentifier: 'BISAC Subject Heading',
+                    SubjectCode: bisac
                 })
 
             return this.onix.set('DescriptiveDetail.Subject', {
-                SubjectCode: bisac, 
+                MainSubject: i==0,
                 SubjectSchemeIdentifier: 'BISAC Subject Heading',
-                ...(i==0?{MainSubject: true}:{})
+                SubjectCode: bisac
             })
         })
     }
@@ -272,8 +300,8 @@ module.exports = class OnixProductModel {
         if( Array.isArray(keywords) )
             keywords = keywords.join(',')
 
-        if( this.is2 ) return this.onix.set('subject', {SubjectHeadingText: keywords, SubjectSchemeIdentifier: 'Keywords'})
-        return this.onix.set('DescriptiveDetail.subject', {SubjectHeadingText: keywords, SubjectSchemeIdentifier: 'Keywords'})
+        if( this.is2 ) return this.onix.set('subject', {SubjectSchemeIdentifier: 'Keywords', SubjectHeadingText: keywords})
+        return this.onix.set('DescriptiveDetail.subject', {SubjectSchemeIdentifier: 'Keywords', SubjectHeadingText: keywords})
     }
 
     get territories(){ 
@@ -341,7 +369,20 @@ module.exports = class OnixProductModel {
     }
 
     set duration(dur){
-        // TODO
+        dur = {ExtentType: 'Duration', ExtentValue: dur, ExtentUnit: '05'} // minutes
+        if( this.is2 ) return this.onix.set('Extent', dur)
+        return this.onix.set('DescriptiveDetail.Extent', dur)
+    }
+
+    get pages(){
+        let val = this.is2 ? this.onix.get('Extent') : this.onix.get('DescriptiveDetail.Extent')
+        return val?.getValue('ExtentValue', {ExtentType: 'Main content page count', ExtentUnit: 'Pages'})
+    }
+
+    set pages(pages){
+        pages = {ExtentType: 'Main content page count', ExtentValue: pages, ExtentUnit: 'Pages'}
+        if( this.is2 ) return this.onix.set('Extent', pages)
+        return this.onix.set('DescriptiveDetail.Extent', pages)
     }
 
     get copy(){
@@ -434,6 +475,7 @@ module.exports = class OnixProductModel {
         }
 
         let onix = {
+            SequenceNumber: (this.credits?.length||0)+1,
             PersonName: data.name,
             KeyNames: data.last,
             NamesBeforeKey: data.first,

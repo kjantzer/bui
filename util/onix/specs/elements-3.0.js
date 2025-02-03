@@ -554,7 +554,8 @@ module.exports = new OnixElements({
         "repeatable": true,
         "components": {
           "MainSubject": {
-            "shortTag": "x425"
+            "shortTag": "x425",
+            "empty": true
           },
           "SubjectSchemeIdentifier": {
             "shortTag": "b067",

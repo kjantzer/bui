@@ -49,6 +49,11 @@ class Onix extends CollMap {
         // when we have the value, save as simple string...no other conversino needed
         if( key == 'value' ){
 
+            if( this.element?.get('empty') ){
+                if( val ) val = null
+                else val = false // will be removed below
+            }
+
             // swap value for the "code" if this component is supposed to be code based
             if( this.element?.codeList && !this.element.codeList[val] ){
 
@@ -136,6 +141,10 @@ class Onix extends CollMap {
                 
             onixVal = onixValArray || onixVal
         }
+
+        // empty type component that should not be set (ie: MainSubject)
+        if( onixVal?.has?.('value') && onixVal.element?.get('empty') && onixVal.get('value') !== null )
+            return
 
         super.set(props.key, onixVal)
 
@@ -289,12 +298,12 @@ class Onix extends CollMap {
                 d = opts.codes ? d.get('value') : d.value(opts)
             }
 
-            if( d.toJSON ) d = d.toJSON(opts)
+            if( d?.toJSON ) d = d.toJSON(opts)
 
             o[k] = d
         })
 
-        return asString ? JSON.stringify(o, null, 2) : o
+        return asString ? JSON.stringify(o, null, opts.indent||2) : o
     }
 
     toXML(opts={}){
