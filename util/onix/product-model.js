@@ -408,6 +408,20 @@ module.exports = class OnixProductModel {
         : this.onix.set('CollateralDetail.TextContent', {Text: copy, TextType: 'Description'})
     }
 
+    set quotes(quotes){
+
+        if( !Array.isArray(quotes) ) quotes =[quotes]
+
+        quotes = quotes.map(quote=>{
+
+            if( typeof quote == 'string' ) quote = {text: quote, src: ''}
+            
+            this.is2 
+            ? this.onix.set('OtherText', {TextTypeCode: 'Review quote', Text: quote.text, TextSourceTitle: quote.src})
+            : this.onix.set('CollateralDetail.TextContent', {TextType: 'Review quote', Text: quote.text, SourceTitle: quote.src})
+        })
+    }
+
     get illustrationNote(){
         if( this.is2 ) return this.onix.getValue('IllustrationsNote')
         return this.onix.getValue('DescriptiveDetail.IllustrationsNote')
