@@ -240,6 +240,8 @@ class TextFieldElement extends HTMLElement {
 		this._editor.addEventListener('keyup', this._onKeypress.bind(this), true)
 		this._editor.addEventListener('blur', this._onBlur.bind(this))
 		this._input.addEventListener('blur', this._onBlur.bind(this))
+		this._editor.addEventListener('change', this._onChange.bind(this))
+		this._input.addEventListener('change', this._onChange.bind(this))
 
 		this.shadowRoot.addEventListener('click', this._onClick.bind(this))
 		this.addEventListener('click', this._onClick.bind(this))
@@ -681,6 +683,11 @@ class TextFieldElement extends HTMLElement {
 
 		if( opts && opts.select )
 			this.select(opts.select===true?'all':opts.select)
+	}
+
+	// needed in case auto-fill is used
+	_onChange(e){
+		this._updateValue()
 	}
 
 	_onBlur(){
