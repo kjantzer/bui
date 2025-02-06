@@ -19,6 +19,7 @@ module.exports = class OnixArray extends Array {
     }
 
     value(opts){ return this[0]?.value(opts) }
+    has(){ return this[0]?.has(...arguments) }
 
     get(key){
 

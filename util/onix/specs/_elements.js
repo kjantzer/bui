@@ -94,6 +94,7 @@ class OnixElements extends CollMap {
     get formatList(){ return this.has('formatList') ? this.top.codelist?.[this.get('formatList')] : null }
 
     valueOf(code, {noCode=true}={}){
+        if( this.get('empty') ) return true // existence of element means true
         if( !this.has('codeList') ) return code
         let list = this.codeList
         let value = list?.[code]?.value || list?.['codes']?.[code]
@@ -107,7 +108,7 @@ class OnixElements extends CollMap {
 
     tagAllowed(name){
         name = name?.toLowerCase()
-        return this.get('components').find(m=>m.name.toLowerCase() == name || m.get('shortTag') == name)
+        return !!this.get('components').find(m=>m.name.toLowerCase() == name || m.get('shortTag') == name)
     }
     
     get shortTag(){ return this.get('shortTag') }

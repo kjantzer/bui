@@ -67,8 +67,7 @@ class Onix extends CollMap {
         if( key == 'value' ){
 
             if( this.element?.get('empty') ){
-                if( val ) val = null
-                else val = false // will be removed below
+                if( val !== false ) val = null
             }
 
             // swap value for the "code" if this component is supposed to be code based
