@@ -28,20 +28,24 @@ class Onix extends CollMap {
     formatDate(){ return formatDate(...arguments) }
 
     isValid(){
+        return this.isInvalid() === false
+    }
+
+    isInvalid(){
 
         if( ['product', 'header'].includes(this.name) && this.parent?.name == 'ONIXMessage' )
-            return true
+            return false
         
-        if( !this.element ) return false
-        if( this.parent && !this.parent.element?.tagAllowed?.(this.name) ) return false
+        if( !this.element ) return 'no matched element'
+        if( this.parent && !this.parent.element?.tagAllowed?.(this.name) ) return 'not allowed by parent'
 
         // must have required children
         if( this.element.get('components') ){
             let reqTags = this.element.get('components').filter(d=>d.get('required')).map(d=>d.shortTag)
-            if( reqTags.find(shortTag=>!this.get(shortTag)) ) return false
+            if( reqTags.find(shortTag=>!this.get(shortTag)) ) return 'missing required children'
         }
 
-        return true
+        return false
     }
 
     set(key, val){
@@ -201,10 +205,6 @@ class Onix extends CollMap {
             release = release || data?.['@_release'] || '2.1'
             this.elements = release == '2.1' ? Elements2 : Elements3
         }
-
-        if( name == 'product' )
-            console.log('produt??');
-            
 
         this.name = name
         this.element = element

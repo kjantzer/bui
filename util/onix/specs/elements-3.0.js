@@ -300,7 +300,7 @@ module.exports = new OnixElements({
                       },
                       "TitleText": {
                         "shortTag": "b203",
-                        "required": true
+                        "deprecated": true
                       },
                       "TitlePrefix": {
                         "shortTag": "b030"
