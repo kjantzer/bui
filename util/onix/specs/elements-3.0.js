@@ -8,6 +8,7 @@ const OnixElements = require('./_elements')
 
 module.exports = new OnixElements({
   "Product": {
+    "repeatable": true,
     "components": {
       "RecordReference": {
         "shortTag": "a001",

@@ -7,7 +7,7 @@ const { XMLParser } = require('fast-xml-parser')
 const createHash = require('../createHash')
 const Onix = require('./onix')
 const OnixArray = require('./onix-array')
-// const Elements3 = require('./specs/elements-3.0')
+const Elements3 = require('./specs/elements-3.0')
 const Elements2 = require('./specs/elements-2.1')
 const chunk = require('../array.chunk')
 
@@ -38,10 +38,10 @@ async function parse(xml, opts={}){
 
     // put back starting product tag on all products
     let products = xml.map(s=>'<product>'+s)
-    let repeatableElements = Elements2.flatLookup.filter(d=>d.get('repeatable')).map(d=>d.get('shortTag'))
-
-    // FIXME:
-    repeatableElements.push(...['product', 'relatedproduct', 'supportingresource', 'textcontent', 'othertext', 'subject'])
+    let repeatableElements = [
+        ...Elements2.flatLookup.filter(d=>d.get('repeatable')).map(d=>d.get('shortTag')),
+        ...Elements3.flatLookup.filter(d=>d.get('repeatable')).map(d=>d.get('shortTag'))
+    ]
     
     const parser = new XMLParser({
         ignoreDeclaration: true, // dont care about <?xml> tag

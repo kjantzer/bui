@@ -10,6 +10,7 @@ module.exports = new OnixElements({
     "Product": {
         "shortTag": "product",
         "required": true,
+        "repeatable": true,
         "components": {
             "RecordReference": {
                 "shortTag": "a001",
@@ -31,6 +32,14 @@ module.exports = new OnixElements({
                 "shortTag": "a194",
                 "type": "code",
                 "codeList": 3
+            },
+            "RecordSourceName": {
+                "shortTag": "a197",
+                "type": "string"
+            },
+            "RecordSourceIdentifier": {
+                "shortTag": "a195",
+                "type": "string"
             },
             "ProductIdentifier": {
                 "shortTag": "productidentifier",
