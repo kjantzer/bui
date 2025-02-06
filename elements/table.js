@@ -38,6 +38,10 @@ customElements.define('b-table', class extends LitElement{
             overflow: auto;
         }
 
+        :host([hidden]) {
+            display: none;
+        }
+
         :host([rounded]) {
             border-radius: 4px;
         }
