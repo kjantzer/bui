@@ -10,11 +10,13 @@ module.exports = new OnixElements({
   "Product": {
     "components": {
       "RecordReference": {
-        "shortTag": "a001"
+        "shortTag": "a001",
+        "required": true
       },
       "NotificationType": {
         "shortTag": "a002",
-        "codeList": "1"
+        "codeList": "1",
+        "required": true
       },
       "DeletionText": {
         "shortTag": "a199"
@@ -31,13 +33,15 @@ module.exports = new OnixElements({
         "components": {
           "ProductIDType": {
             "shortTag": "b221",
-            "codeList": "5"
+            "codeList": "5",
+            "required": true
           },
           "IDTypeName": {
             "shortTag": "b233"
           },
           "IDValue": {
-            "shortTag": "b244"
+            "shortTag": "b244",
+            "required": true
           }
         }
       },
@@ -46,7 +50,8 @@ module.exports = new OnixElements({
         "components": {
           "BarcodeType": {
             "shortTag": "x312",
-            "codeList": "141"
+            "codeList": "141",
+            "required": true
           },
           "PositionOnProduct": {
             "shortTag": "x313",
@@ -61,11 +66,13 @@ module.exports = new OnixElements({
           },
           "ProductComposition": {
             "shortTag": "x314",
-            "codeList": "2"
+            "codeList": "2",
+            "required": true
           },
           "ProductForm": {
             "shortTag": "b012",
-            "codeList": "150"
+            "codeList": "150",
+            "required": true
           },
           "ProductFormDetail": {
             "shortTag": "b333",
@@ -76,7 +83,8 @@ module.exports = new OnixElements({
             "components": {
               "ProductFormFeatureType": {
                 "shortTag": "b334",
-                "codeList": "79"
+                "codeList": "79",
+                "required": true
               },
               "ProductFormFeatureValue": {
                 "shortTag": "b335"
@@ -110,14 +118,17 @@ module.exports = new OnixElements({
             "components": {
               "MeasureType": {
                 "shortTag": "x315",
-                "codeList": "48"
+                "codeList": "48",
+                "required": true
               },
               "Measurement": {
-                "shortTag": "c094"
+                "shortTag": "c094",
+                "required": true
               },
               "MeasureUnitCode": {
                 "shortTag": "c095",
-                "codeList": "50"
+                "codeList": "50",
+                "required": true
               }
             }
           },
@@ -134,20 +145,24 @@ module.exports = new OnixElements({
             "components": {
               "EpubUsageType": {
                 "shortTag": "x318",
-                "codeList": "145"
+                "codeList": "145",
+                "required": true
               },
               "EpubUsageStatus": {
                 "shortTag": "x319",
-                "codeList": "146"
+                "codeList": "146",
+                "required": true
               },
               "EpubUsageLimit": {
                 "components": {
                   "Quantity": {
-                    "shortTag": "x320"
+                    "shortTag": "x320",
+                    "required": true
                   },
                   "EpubUsageUnit": {
                     "shortTag": "x321",
-                    "codeList": "147"
+                    "codeList": "147",
+                    "required": true
                   }
                 }
               }
@@ -161,10 +176,12 @@ module.exports = new OnixElements({
             "components": {
               "ProductClassificationType": {
                 "shortTag": "b274",
-                "codeList": "9"
+                "codeList": "9",
+                "required": true
               },
               "ProductClassificationCode": {
-                "shortTag": "b275"
+                "shortTag": "b275",
+                "required": true
               },
               "Percent": {
                 "shortTag": "b337"
@@ -181,19 +198,22 @@ module.exports = new OnixElements({
                 "components": {
                   "ProductIDType": {
                     "shortTag": "b221",
-                    "codeList": "5"
+                    "codeList": "5",
+                    "required": true
                   },
                   "IDTypeName": {
                     "shortTag": "b233"
                   },
                   "IDValue": {
-                    "shortTag": "b244"
+                    "shortTag": "b244",
+                    "required": true
                   }
                 }
               },
               "ProductForm": {
                 "shortTag": "b012",
-                "codeList": "150"
+                "codeList": "150",
+                "required": true
               },
               "ProductFormDetail": {
                 "shortTag": "b333",
@@ -212,7 +232,8 @@ module.exports = new OnixElements({
             "components": {
               "CollectionType": {
                 "shortTag": "x329",
-                "codeList": "148"
+                "codeList": "148",
+                "required": true
               },
               "SourceName": {
                 "shortTag": "x330"
@@ -222,13 +243,15 @@ module.exports = new OnixElements({
                 "components": {
                   "CollectionIDType": {
                     "shortTag": "x344",
-                    "codeList": "13"
+                    "codeList": "13",
+                    "required": true
                   },
                   "IDTypeName": {
                     "shortTag": "b233"
                   },
                   "IDValue": {
-                    "shortTag": "b244"
+                    "shortTag": "b244",
+                    "required": true
                   }
                 }
               },
@@ -237,13 +260,15 @@ module.exports = new OnixElements({
                 "components": {
                   "CollectionSequenceType": {
                     "shortTag": "x479",
-                    "codeList": "197"
+                    "codeList": "197",
+                    "required": true
                   },
                   "CollectionSequenceTypeName": {
                     "shortTag": "x480"
                   },
                   "CollectionSequenceNumber": {
-                    "shortTag": "x481"
+                    "shortTag": "x481",
+                    "required": true
                   }
                 }
               },
@@ -252,7 +277,8 @@ module.exports = new OnixElements({
                 "components": {
                   "TitleType": {
                     "shortTag": "b202",
-                    "codeList": "15"
+                    "codeList": "15",
+                    "required": true
                   },
                   "TitleElement": {
                     "repeatable": true,
@@ -262,7 +288,8 @@ module.exports = new OnixElements({
                       },
                       "TitleElementLevel": {
                         "shortTag": "x409",
-                        "codeList": "149"
+                        "codeList": "149",
+                        "required": true
                       },
                       "PartNumber": {
                         "shortTag": "x410"
@@ -271,7 +298,8 @@ module.exports = new OnixElements({
                         "shortTag": "b020"
                       },
                       "TitleText": {
-                        "shortTag": "b203"
+                        "shortTag": "b203",
+                        "required": true
                       },
                       "TitlePrefix": {
                         "shortTag": "b030"
@@ -296,7 +324,8 @@ module.exports = new OnixElements({
             "components": {
               "TitleType": {
                 "shortTag": "b202",
-                "codeList": "15"
+                "codeList": "15",
+                "required": true
               },
               "TitleElement": {
                 "repeatable": true,
@@ -306,7 +335,8 @@ module.exports = new OnixElements({
                   },
                   "TitleElementLevel": {
                     "shortTag": "x409",
-                    "codeList": "149"
+                    "codeList": "149",
+                    "required": true
                   },
                   "PartNumber": {
                     "shortTag": "x410"
@@ -315,7 +345,8 @@ module.exports = new OnixElements({
                     "shortTag": "b020"
                   },
                   "TitleText": {
-                    "shortTag": "b203"
+                    "shortTag": "b203",
+                    "required": true
                   },
                   "TitlePrefix": {
                     "shortTag": "b030"
@@ -342,7 +373,8 @@ module.exports = new OnixElements({
               "ContributorRole": {
                 "repeatable": true,
                 "shortTag": "b035",
-                "codeList": "17"
+                "codeList": "17",
+                "required": true
               },
               "FromLanguage": {
                 "shortTag": "x412",
@@ -361,13 +393,15 @@ module.exports = new OnixElements({
                 "components": {
                   "NameIDType": {
                     "shortTag": "x415",
-                    "codeList": "44"
+                    "codeList": "44",
+                    "required": true
                   },
                   "IDTypeName": {
                     "shortTag": "b233"
                   },
                   "IDValue": {
-                    "shortTag": "b244"
+                    "shortTag": "b244",
+                    "required": true
                   }
                 }
               },
@@ -407,7 +441,8 @@ module.exports = new OnixElements({
                 "components": {
                   "NameType": {
                     "shortTag": "x414",
-                    "codeList": "18"
+                    "codeList": "18",
+                    "required": true
                   },
                   "TitlesBeforeNames": {
                     "shortTag": "b038"
@@ -419,7 +454,8 @@ module.exports = new OnixElements({
                     "shortTag": "b247"
                   },
                   "KeyNames": {
-                    "shortTag": "b040"
+                    "shortTag": "b040",
+                    "required": true
                   }
                 }
               },
@@ -428,11 +464,13 @@ module.exports = new OnixElements({
                 "components": {
                   "ContributorDateRole": {
                     "shortTag": "x417",
-                    "codeList": "177"
+                    "codeList": "177",
+                    "required": true
                   },
                   "Date": {
                     "shortTag": "b306",
-                    "formatList": "55"
+                    "formatList": "55",
+                    "required": true
                   }
                 }
               },
@@ -440,10 +478,12 @@ module.exports = new OnixElements({
                 "repeatable": true,
                 "components": {
                   "ProfessionalPosition": {
-                    "shortTag": "b045"
+                    "shortTag": "b045",
+                    "required": true
                   },
                   "Affiliation": {
-                    "shortTag": "b046"
+                    "shortTag": "b046",
+                    "required": true
                   }
                 }
               },
@@ -461,7 +501,8 @@ module.exports = new OnixElements({
                     "shortTag": "b294"
                   },
                   "WebsiteLink": {
-                    "shortTag": "b295"
+                    "shortTag": "b295",
+                    "required": true
                   }
                 }
               },
@@ -473,7 +514,8 @@ module.exports = new OnixElements({
                 "components": {
                   "ContributorPlaceRelator": {
                     "shortTag": "x418",
-                    "codeList": "151"
+                    "codeList": "151",
+                    "required": true
                   },
                   "CountryCode": {
                     "shortTag": "b251",
@@ -495,10 +537,12 @@ module.exports = new OnixElements({
             "components": {
               "EventRole": {
                 "shortTag": "x515",
-                "codeList": "20"
+                "codeList": "20",
+                "required": true
               },
               "EventName": {
-                "shortTag": "x516"
+                "shortTag": "x516",
+                "required": true
               },
               "EventAcronym": {
                 "shortTag": "x517"
@@ -566,7 +610,8 @@ module.exports = new OnixElements({
                 "components": {
                   "ReligiousTextFeatureType": {
                     "shortTag": "b358",
-                    "codeList": "89"
+                    "codeList": "89",
+                    "required": true
                   },
                   "ReligiousTextFeatureCode": {
                     "shortTag": "b359",
@@ -584,11 +629,13 @@ module.exports = new OnixElements({
             "components": {
               "LanguageRole": {
                 "shortTag": "b253",
-                "codeList": "22"
+                "codeList": "22",
+                "required": true
               },
               "LanguageCode": {
                 "shortTag": "b252",
-                "codeList": "74"
+                "codeList": "74",
+                "required": true
               }
             }
           },
@@ -597,14 +644,17 @@ module.exports = new OnixElements({
             "components": {
               "ExtentType": {
                 "shortTag": "b218",
-                "codeList": "23"
+                "codeList": "23",
+                "required": true
               },
               "ExtentValue": {
-                "shortTag": "b219"
+                "shortTag": "b219",
+                "required": true
               },
               "ExtentUnit": {
                 "shortTag": "b220",
-                "codeList": "24"
+                "codeList": "24",
+                "required": true
               }
             }
           },
@@ -619,7 +669,8 @@ module.exports = new OnixElements({
             "components": {
               "AncillaryContentType": {
                 "shortTag": "x423",
-                "codeList": "25"
+                "codeList": "25",
+                "required": true
               },
               "AncillaryContentDescription": {
                 "shortTag": "x424"
@@ -638,7 +689,8 @@ module.exports = new OnixElements({
               },
               "SubjectSchemeIdentifier": {
                 "shortTag": "b067",
-                "codeList": "27"
+                "codeList": "27",
+                "required": true
               },
               "SubjectSchemeName": {
                 "shortTag": "b171"
@@ -664,13 +716,15 @@ module.exports = new OnixElements({
             "components": {
               "AudienceCodeType": {
                 "shortTag": "b204",
-                "codeList": "29"
+                "codeList": "29",
+                "required": true
               },
               "AudienceCodeTypeName": {
                 "shortTag": "b205"
               },
               "AudienceCodeValue": {
-                "shortTag": "b206"
+                "shortTag": "b206",
+                "required": true
               }
             }
           },
@@ -679,14 +733,17 @@ module.exports = new OnixElements({
             "components": {
               "AudienceRangeQualifier": {
                 "shortTag": "b074",
-                "codeList": "30"
+                "codeList": "30",
+                "required": true
               },
               "AudienceRangePrecision1": {
                 "shortTag": "b075",
-                "codeList": "31"
+                "codeList": "31",
+                "required": true
               },
               "AudienceRangeValue1": {
-                "shortTag": "b076"
+                "shortTag": "b076",
+                "required": true
               },
               "AudienceRangePrecision2": {
                 "shortTag": "b075",
@@ -705,10 +762,12 @@ module.exports = new OnixElements({
             "components": {
               "ComplexitySchemeIdentifier": {
                 "shortTag": "b077",
-                "codeList": "32"
+                "codeList": "32",
+                "required": true
               },
               "ComplexityCode": {
-                "shortTag": "b078"
+                "shortTag": "b078",
+                "required": true
               }
             }
           }
@@ -721,23 +780,28 @@ module.exports = new OnixElements({
             "components": {
               "TextType": {
                 "shortTag": "x426",
-                "codeList": "153"
+                "codeList": "153",
+                "required": true
               },
               "ContentAudience": {
                 "shortTag": "x427",
-                "codeList": "154"
+                "codeList": "154",
+                "required": true
               },
               "Text": {
                 "shortTag": "d104",
-                "formatList": "34"
+                "formatList": "34",
+                "required": true
               },
               "ReviewRating": {
                 "components": {
                   "Rating": {
-                    "shortTag": "x525"
+                    "shortTag": "x525",
+                    "required": true
                   },
                   "RatingLimit": {
-                    "shortTag": "x526"
+                    "shortTag": "x526",
+                    "required": true
                   },
                   "RatingUnits": {
                     "shortTag": "x527"
@@ -758,11 +822,13 @@ module.exports = new OnixElements({
                 "components": {
                   "ContentDateRole": {
                     "shortTag": "x429",
-                    "codeList": "155"
+                    "codeList": "155",
+                    "required": true
                   },
                   "Date": {
                     "shortTag": "b306",
-                    "formatList": "55"
+                    "formatList": "55",
+                    "required": true
                   }
                 }
               }
@@ -773,11 +839,13 @@ module.exports = new OnixElements({
             "components": {
               "CitedContentType": {
                 "shortTag": "x430",
-                "codeList": "156"
+                "codeList": "156",
+                "required": true
               },
               "ContentAudience": {
                 "shortTag": "x427",
-                "codeList": "154"
+                "codeList": "154",
+                "required": true
               },
               "SourceType": {
                 "shortTag": "x431",
@@ -803,11 +871,13 @@ module.exports = new OnixElements({
                 "components": {
                   "ContentDateRole": {
                     "shortTag": "x429",
-                    "codeList": "155"
+                    "codeList": "155",
+                    "required": true
                   },
                   "Date": {
                     "shortTag": "b306",
-                    "formatList": "55"
+                    "formatList": "55",
+                    "required": true
                   }
                 }
               }
@@ -818,22 +888,26 @@ module.exports = new OnixElements({
             "components": {
               "ResourceContentType": {
                 "shortTag": "x436",
-                "codeList": "158"
+                "codeList": "158",
+                "required": true
               },
               "ContentAudience": {
                 "shortTag": "x427",
-                "codeList": "154"
+                "codeList": "154",
+                "required": true
               },
               "ResourceMode": {
                 "shortTag": "x437",
-                "codeList": "159"
+                "codeList": "159",
+                "required": true
               },
               "ResourceFeature": {
                 "repeatable": true,
                 "components": {
                   "ResourceFeatureType": {
                     "shortTag": "x438",
-                    "codeList": "160"
+                    "codeList": "160",
+                    "required": true
                   },
                   "FeatureValue": {
                     "shortTag": "x439"
@@ -848,14 +922,16 @@ module.exports = new OnixElements({
                 "components": {
                   "ResourceForm": {
                     "shortTag": "x441",
-                    "codeList": "161"
+                    "codeList": "161",
+                    "required": true
                   },
                   "ResourceVersionFeature": {
                     "repeatable": true,
                     "components": {
                       "ResourceVersionFeatureType": {
                         "shortTag": "x442",
-                        "codeList": "162"
+                        "codeList": "162",
+                        "required": true
                       },
                       "FeatureValue": {
                         "shortTag": "x439"
@@ -866,18 +942,21 @@ module.exports = new OnixElements({
                     }
                   },
                   "ResourceLink": {
-                    "shortTag": "x435"
+                    "shortTag": "x435",
+                    "required": true
                   },
                   "ContentDate": {
                     "repeatable": true,
                     "components": {
                       "ContentDateRole": {
                         "shortTag": "x429",
-                        "codeList": "155"
+                        "codeList": "155",
+                        "required": true
                       },
                       "Date": {
                         "shortTag": "b306",
-                        "formatList": "55"
+                        "formatList": "55",
+                        "required": true
                       }
                     }
                   }
@@ -889,7 +968,8 @@ module.exports = new OnixElements({
             "repeatable": true,
             "components": {
               "PrizeName": {
-                "shortTag": "g126"
+                "shortTag": "g126",
+                "required": true
               },
               "PrizeYear": {
                 "shortTag": "g127"
@@ -922,13 +1002,15 @@ module.exports = new OnixElements({
                 "components": {
                   "ImprintIDType": {
                     "shortTag": "x445",
-                    "codeList": "44"
+                    "codeList": "44",
+                    "required": true
                   },
                   "IDTypeName": {
                     "shortTag": "b233"
                   },
                   "IDValue": {
-                    "shortTag": "b244"
+                    "shortTag": "b244",
+                    "required": true
                   }
                 }
               },
@@ -942,20 +1024,23 @@ module.exports = new OnixElements({
             "components": {
               "PublishingRole": {
                 "shortTag": "b291",
-                "codeList": "45"
+                "codeList": "45",
+                "required": true
               },
               "PublisherIdentifier": {
                 "repeatable": true,
                 "components": {
                   "PublisherIDType": {
                     "shortTag": "x447",
-                    "codeList": "44"
+                    "codeList": "44",
+                    "required": true
                   },
                   "IDTypeName": {
                     "shortTag": "b233"
                   },
                   "IDValue": {
-                    "shortTag": "b244"
+                    "shortTag": "b244",
+                    "required": true
                   }
                 }
               },
@@ -973,7 +1058,8 @@ module.exports = new OnixElements({
                     "shortTag": "b294"
                   },
                   "WebsiteLink": {
-                    "shortTag": "b295"
+                    "shortTag": "b295",
+                    "required": true
                   }
                 }
               }
@@ -998,7 +1084,8 @@ module.exports = new OnixElements({
             "components": {
               "PublishingDateRole": {
                 "shortTag": "x448",
-                "codeList": "163"
+                "codeList": "163",
+                "required": true
               },
               "Date": {
                 "shortTag": "b306",
@@ -1027,13 +1114,15 @@ module.exports = new OnixElements({
                     "components": {
                       "CopyrightOwnerIDType": {
                         "shortTag": "b392",
-                        "codeList": "44"
+                        "codeList": "44",
+                        "required": true
                       },
                       "IDTypeName": {
                         "shortTag": "b233"
                       },
                       "IDValue": {
-                        "shortTag": "b244"
+                        "shortTag": "b244",
+                        "required": true
                       }
                     }
                   },
@@ -1052,7 +1141,8 @@ module.exports = new OnixElements({
             "components": {
               "SalesRightsType": {
                 "shortTag": "b089",
-                "codeList": "46"
+                "codeList": "46",
+                "required": true
               },
               "Territory": {
                 "components": {
@@ -1079,7 +1169,8 @@ module.exports = new OnixElements({
                 "components": {
                   "SalesRestrictionType": {
                     "shortTag": "b381",
-                    "codeList": "71"
+                    "codeList": "71",
+                    "required": true
                   },
                   "SalesOutlet": {
                     "repeatable": true,
@@ -1089,13 +1180,15 @@ module.exports = new OnixElements({
                         "components": {
                           "SalesOutletIDType": {
                             "shortTag": "b393",
-                            "codeList": "102"
+                            "codeList": "102",
+                            "required": true
                           },
                           "IDTypeName": {
                             "shortTag": "b233"
                           },
                           "IDValue": {
-                            "shortTag": "b244"
+                            "shortTag": "b244",
+                            "required": true
                           }
                         }
                       },
@@ -1120,13 +1213,15 @@ module.exports = new OnixElements({
                 "components": {
                   "ProductIDType": {
                     "shortTag": "b221",
-                    "codeList": "5"
+                    "codeList": "5",
+                    "required": true
                   },
                   "IDTypeName": {
                     "shortTag": "b233"
                   },
                   "IDValue": {
-                    "shortTag": "b244"
+                    "shortTag": "b244",
+                    "required": true
                   }
                 }
               },
@@ -1144,7 +1239,8 @@ module.exports = new OnixElements({
             "components": {
               "SalesRestrictionType": {
                 "shortTag": "b381",
-                "codeList": "71"
+                "codeList": "71",
+                "required": true
               },
               "SalesOutlet": {
                 "repeatable": true,
@@ -1154,13 +1250,15 @@ module.exports = new OnixElements({
                     "components": {
                       "SalesOutletIDType": {
                         "shortTag": "b393",
-                        "codeList": "102"
+                        "codeList": "102",
+                        "required": true
                       },
                       "IDTypeName": {
                         "shortTag": "b233"
                       },
                       "IDValue": {
-                        "shortTag": "b244"
+                        "shortTag": "b244",
+                        "required": true
                       }
                     }
                   },
@@ -1183,20 +1281,23 @@ module.exports = new OnixElements({
             "components": {
               "WorkRelationCode": {
                 "shortTag": "x454",
-                "codeList": "164"
+                "codeList": "164",
+                "required": true
               },
               "WorkIdentifier": {
                 "repeatable": true,
                 "components": {
                   "WorkIDType": {
                     "shortTag": "b201",
-                    "codeList": "16"
+                    "codeList": "16",
+                    "required": true
                   },
                   "IDTypeName": {
                     "shortTag": "b233"
                   },
                   "IDValue": {
-                    "shortTag": "b244"
+                    "shortTag": "b244",
+                    "required": true
                   }
                 }
               }
@@ -1207,20 +1308,23 @@ module.exports = new OnixElements({
             "components": {
               "ProductRelationCode": {
                 "shortTag": "x455",
-                "codeList": "51"
+                "codeList": "51",
+                "required": true
               },
               "ProductIdentifier": {
                 "repeatable": true,
                 "components": {
                   "ProductIDType": {
                     "shortTag": "b221",
-                    "codeList": "5"
+                    "codeList": "5",
+                    "required": true
                   },
                   "IDTypeName": {
                     "shortTag": "b233"
                   },
                   "IDValue": {
-                    "shortTag": "b244"
+                    "shortTag": "b244",
+                    "required": true
                   }
                 }
               },
@@ -1246,13 +1350,15 @@ module.exports = new OnixElements({
                 "components": {
                   "ProductIDType": {
                     "shortTag": "b221",
-                    "codeList": "5"
+                    "codeList": "5",
+                    "required": true
                   },
                   "IDTypeName": {
                     "shortTag": "b233"
                   },
                   "IDValue": {
-                    "shortTag": "b244"
+                    "shortTag": "b244",
+                    "required": true
                   }
                 }
               },
@@ -1260,17 +1366,20 @@ module.exports = new OnixElements({
                 "components": {
                   "SpecificationDetail": {
                     "shortTag": "x560",
-                    "codeList": "248"
+                    "codeList": "248",
+                    "required": true
                   },
                   "SpecificationFeature": {
                     "repeatable": true,
                     "components": {
                       "SpecificationFeatureType": {
                         "shortTag": "x561",
-                        "codeList": "249"
+                        "codeList": "249",
+                        "required": true
                       },
                       "SpecificationFeatureValue": {
-                        "shortTag": "x562"
+                        "shortTag": "x562",
+                        "required": true
                       },
                       "SpecificationFeatureDescription": {
                         "shortTag": "x563"
@@ -1284,7 +1393,8 @@ module.exports = new OnixElements({
                         "shortTag": "b034"
                       },
                       "ResourceFileLink": {
-                        "shortTag": "x572"
+                        "shortTag": "x572",
+                        "required": true
                       }
                     }
                   }
@@ -1294,17 +1404,20 @@ module.exports = new OnixElements({
                 "components": {
                   "SpecificationDetail": {
                     "shortTag": "x560",
-                    "codeList": "248"
+                    "codeList": "248",
+                    "required": true
                   },
                   "SpecificationFeature": {
                     "repeatable": true,
                     "components": {
                       "SpecificationFeatureType": {
                         "shortTag": "x561",
-                        "codeList": "249"
+                        "codeList": "249",
+                        "required": true
                       },
                       "SpecificationFeatureValue": {
-                        "shortTag": "x562"
+                        "shortTag": "x562",
+                        "required": true
                       },
                       "SpecificationFeatureDescription": {
                         "shortTag": "x563"
@@ -1318,7 +1431,8 @@ module.exports = new OnixElements({
                         "shortTag": "b034"
                       },
                       "ResourceFileLink": {
-                        "shortTag": "x572"
+                        "shortTag": "x572",
+                        "required": true
                       }
                     }
                   }
@@ -1359,7 +1473,8 @@ module.exports = new OnixElements({
                 "components": {
                   "SalesRestrictionType": {
                     "shortTag": "b381",
-                    "codeList": "71"
+                    "codeList": "71",
+                    "required": true
                   },
                   "SalesOutlet": {
                     "repeatable": true,
@@ -1369,13 +1484,15 @@ module.exports = new OnixElements({
                         "components": {
                           "SalesOutletIDType": {
                             "shortTag": "b393",
-                            "codeList": "102"
+                            "codeList": "102",
+                            "required": true
                           },
                           "IDTypeName": {
                             "shortTag": "b233"
                           },
                           "IDValue": {
-                            "shortTag": "b244"
+                            "shortTag": "b244",
+                            "required": true
                           }
                         }
                       },
@@ -1404,20 +1521,23 @@ module.exports = new OnixElements({
                 "components": {
                   "AgentRole": {
                     "shortTag": "j402",
-                    "codeList": "69"
+                    "codeList": "69",
+                    "required": true
                   },
                   "AgentIdentifier": {
                     "repeatable": true,
                     "components": {
                       "AgentIDType": {
                         "shortTag": "j400",
-                        "codeList": "92"
+                        "codeList": "92",
+                        "required": true
                       },
                       "IDTypeName": {
                         "shortTag": "b233"
                       },
                       "IDValue": {
-                        "shortTag": "b244"
+                        "shortTag": "b244",
+                        "required": true
                       }
                     }
                   },
@@ -1431,20 +1551,23 @@ module.exports = new OnixElements({
                 "components": {
                   "ProductContactRole": {
                     "shortTag": "x482",
-                    "codeList": "198"
+                    "codeList": "198",
+                    "required": true
                   },
                   "ProductContactIdentifier": {
                     "repeatable": true,
                     "components": {
                       "ProductContactIDType": {
                         "shortTag": "x483",
-                        "codeList": "44"
+                        "codeList": "44",
+                        "required": true
                       },
                       "IDTypeName": {
                         "shortTag": "b233"
                       },
                       "IDValue": {
-                        "shortTag": "b244"
+                        "shortTag": "b244",
+                        "required": true
                       }
                     }
                   },
@@ -1461,18 +1584,21 @@ module.exports = new OnixElements({
               },
               "MarketPublishingStatus": {
                 "shortTag": "j407",
-                "codeList": "68"
+                "codeList": "68",
+                "required": true
               },
               "MarketDate": {
                 "repeatable": true,
                 "components": {
                   "MarketDateRole": {
                     "shortTag": "j408",
-                    "codeList": "163"
+                    "codeList": "163",
+                    "required": true
                   },
                   "Date": {
                     "shortTag": "b306",
-                    "formatList": "55"
+                    "formatList": "55",
+                    "required": true
                   }
                 }
               },
@@ -1494,20 +1620,23 @@ module.exports = new OnixElements({
                 "components": {
                   "SupplierRole": {
                     "shortTag": "j292",
-                    "codeList": "93"
+                    "codeList": "93",
+                    "required": true
                   },
                   "SupplierIdentifier": {
                     "repeatable": true,
                     "components": {
                       "SupplierIDType": {
                         "shortTag": "j345",
-                        "codeList": "92"
+                        "codeList": "92",
+                        "required": true
                       },
                       "IDTypeName": {
                         "shortTag": "b233"
                       },
                       "IDValue": {
-                        "shortTag": "b244"
+                        "shortTag": "b244",
+                        "required": true
                       }
                     }
                   },
@@ -1530,30 +1659,35 @@ module.exports = new OnixElements({
                 "components": {
                   "ReturnsCodeType": {
                     "shortTag": "j268",
-                    "codeList": "53"
+                    "codeList": "53",
+                    "required": true
                   },
                   "ReturnsCodeTypeName": {
                     "shortTag": "x460"
                   },
                   "ReturnsCode": {
-                    "shortTag": "j269"
+                    "shortTag": "j269",
+                    "required": true
                   }
                 }
               },
               "ProductAvailability": {
                 "shortTag": "j396",
-                "codeList": "65"
+                "codeList": "65",
+                "required": true
               },
               "SupplyDate": {
                 "repeatable": true,
                 "components": {
                   "SupplyDateRole": {
                     "shortTag": "x461",
-                    "codeList": "166"
+                    "codeList": "166",
+                    "required": true
                   },
                   "Date": {
                     "shortTag": "b306",
-                    "formatList": "55"
+                    "formatList": "55",
+                    "required": true
                   }
                 }
               },
@@ -1567,13 +1701,15 @@ module.exports = new OnixElements({
                     "components": {
                       "SupplierIDType": {
                         "shortTag": "j345",
-                        "codeList": "92"
+                        "codeList": "92",
+                        "required": true
                       },
                       "IDTypeName": {
                         "shortTag": "b233"
                       },
                       "IDValue": {
-                        "shortTag": "b244"
+                        "shortTag": "b244",
+                        "required": true
                       }
                     }
                   },
@@ -1623,19 +1759,22 @@ module.exports = new OnixElements({
                     "components": {
                       "PriceIDType": {
                         "shortTag": "x506",
-                        "codeList": "217"
+                        "codeList": "217",
+                        "required": true
                       },
                       "IDTypeName": {
                         "shortTag": "b233"
                       },
                       "IDValue": {
-                        "shortTag": "b244"
+                        "shortTag": "b244",
+                        "required": true
                       }
                     }
                   },
                   "PriceType": {
                     "shortTag": "x462",
-                    "codeList": "58"
+                    "codeList": "58",
+                    "required": true
                   },
                   "PriceQualifier": {
                     "shortTag": "j261",
@@ -1646,21 +1785,25 @@ module.exports = new OnixElements({
                     "components": {
                       "PriceConstraintType": {
                         "shortTag": "x529",
-                        "codeList": "230"
+                        "codeList": "230",
+                        "required": true
                       },
                       "PriceConstraintStatus": {
                         "shortTag": "x530",
-                        "codeList": "146"
+                        "codeList": "146",
+                        "required": true
                       },
                       "PriceConstraintLimit": {
                         "repeatable": true,
                         "components": {
                           "Quantity": {
-                            "shortTag": "x320"
+                            "shortTag": "x320",
+                            "required": true
                           },
                           "PriceConstraintUnit": {
                             "shortTag": "x531",
-                            "codeList": "147"
+                            "codeList": "147",
+                            "required": true
                           }
                         }
                       }
@@ -1674,21 +1817,25 @@ module.exports = new OnixElements({
                     "components": {
                       "PriceConditionType": {
                         "shortTag": "x463",
-                        "codeList": "167"
+                        "codeList": "167",
+                        "required": true
                       },
                       "PriceConditionQuantity": {
                         "repeatable": true,
                         "components": {
                           "PriceConditionQuantityType": {
                             "shortTag": "x464",
-                            "codeList": "168"
+                            "codeList": "168",
+                            "required": true
                           },
                           "Quantity": {
-                            "shortTag": "x320"
+                            "shortTag": "x320",
+                            "required": true
                           },
                           "QuantityUnit": {
                             "shortTag": "x466",
-                            "codeList": "169"
+                            "codeList": "169",
+                            "required": true
                           }
                         }
                       },
@@ -1697,13 +1844,15 @@ module.exports = new OnixElements({
                         "components": {
                           "ProductIDType": {
                             "shortTag": "b221",
-                            "codeList": "5"
+                            "codeList": "5",
+                            "required": true
                           },
                           "IDTypeName": {
                             "shortTag": "b233"
                           },
                           "IDValue": {
-                            "shortTag": "b244"
+                            "shortTag": "b244",
+                            "required": true
                           }
                         }
                       }
@@ -1714,13 +1863,15 @@ module.exports = new OnixElements({
                     "components": {
                       "DiscountCodeType": {
                         "shortTag": "j363",
-                        "codeList": "100"
+                        "codeList": "100",
+                        "required": true
                       },
                       "DiscountCodeTypeName": {
                         "shortTag": "j378"
                       },
                       "DiscountCode": {
-                        "shortTag": "j364"
+                        "shortTag": "j364",
+                        "required": true
                       }
                     }
                   },
@@ -1729,7 +1880,8 @@ module.exports = new OnixElements({
                     "components": {
                       "DiscountType": {
                         "shortTag": "x467",
-                        "codeList": "170"
+                        "codeList": "170",
+                        "required": true
                       },
                       "Quantity": {
                         "shortTag": "x320"
@@ -1747,14 +1899,16 @@ module.exports = new OnixElements({
                     "codeList": "61"
                   },
                   "PriceAmount": {
-                    "shortTag": "j151"
+                    "shortTag": "j151",
+                    "required": true
                   },
                   "Tax": {
                     "repeatable": true,
                     "components": {
                       "TaxType": {
                         "shortTag": "x470",
-                        "codeList": "171"
+                        "codeList": "171",
+                        "required": true
                       },
                       "TaxRateCode": {
                         "shortTag": "x471",
@@ -1773,7 +1927,8 @@ module.exports = new OnixElements({
                   },
                   "CurrencyCode": {
                     "shortTag": "j152",
-                    "codeList": "96"
+                    "codeList": "96",
+                    "required": true
                   },
                   "Territory": {
                     "components": {
@@ -1800,11 +1955,13 @@ module.exports = new OnixElements({
                     "components": {
                       "PriceDateRole": {
                         "shortTag": "x476",
-                        "codeList": "173"
+                        "codeList": "173",
+                        "required": true
                       },
                       "Date": {
                         "shortTag": "b306",
-                        "formatList": "55"
+                        "formatList": "55",
+                        "required": true
                       }
                     }
                   }
