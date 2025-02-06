@@ -956,6 +956,59 @@ module.exports = {
         "15": "XPS"
       }
     },
+    "List38": {
+      "name": "Media file type code",
+      "codes": {
+        "01": "Whole product",
+        "02": "Application: software demo",
+        "03": "Image: whole cover",
+        "04": "Image: front cover",
+        "05": "Image: whole cover, high quality",
+        "06": "Image: front cover, high quality", 
+        "07": "Image: front cover thumbnail",
+        "08": "Image: contributor(s)",
+        "10": "Image: for series",
+        "11": "Image: series logo",
+        "12": "Image: product logo",
+        "16": "Image: Master brand logo",
+        "17": "Image: publisher logo",
+      }
+    },
+    "List39": {
+      "name": "Media file format code",
+      "codes": {
+        "02": "GIF",
+        "03": "JPEG",
+        "04": "PDF",
+        "05": "TIF",
+        "06": "RealAudio 28.8",
+        "07": "MP3",
+        "08": "MPEG-4",
+        "09": "PNG",
+        "10": "WMA",
+        "11": "AAC",
+        "12": "WAV",
+        "13": "AIFF",
+        "14": "WMV",
+        "15": "OGG",
+        "16": "AVI",
+        "17": "MOV",
+        "18": "Flash",
+        "19": "3GP",
+        "20": "WebM"
+      }
+    },
+    "List40": {
+      "name": "Media file link type code",
+      "codes": {
+        "01": "URL",
+        "02": "DOI",
+        "03": "PURL",
+        "04": "URN",
+        "05": "FTP address",
+        "06": "filename"
+      }
+    },
     "List41": {
       "name": "Prize or award achievement",
       "codes": {

@@ -734,19 +734,9 @@ module.exports = new OnixElements({
                 }
             },
             "PublishingStatus": {
-                "shortTag": "publishingstatus",
-                "type": "composite",
-                "components": {
-                    "PublishingStatusCode": {
-                        "shortTag": "b394",
-                        "type": "code",
-                        "codeList": 64
-                    },
-                    "PublishingStatusNote": {
-                        "shortTag": "b395",
-                        "type": "text"
-                    }
-                }
+                "shortTag": "b394",
+                "type": "code",
+                "codeList": 64
             },
             "PublishingDate": {
                 "shortTag": "publishingdate",
