@@ -1,6 +1,9 @@
 // will contain an array of Onix objects
 module.exports = class OnixArray extends Array {
 
+    isArray = true
+    isValid(){ return true }
+
     get name(){ return this[0]?.name }
     get element(){ return this[0]?.element }
     get parent(){ return this[0]?.parent }
@@ -18,6 +21,8 @@ module.exports = class OnixArray extends Array {
     value(opts){ return this[0]?.value(opts) }
 
     get(key){
+
+        if( ['value'].includes(key) ) return
 
         if( typeof key == 'object' )
             return this.find(key)

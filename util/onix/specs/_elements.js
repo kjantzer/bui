@@ -2,6 +2,16 @@ const CollMap = require(`../../collmap`)
 const CodeLists67 = require('./codelists67')
 const CodeLists36 = require('./codelists36')
 
+// TODO:
+function tempUnifiyCodelist(codelist){
+    data = Object.entries(data).map(([key, value])=>{
+        if( typeof value !== 'object') value = {value}
+        return {key, ...value}
+    })
+
+    data = data.sort((a,b)=>a.key<b.key?-1:1)
+}
+
 class OnixElements extends CollMap {
 
     constructor(data, {name='ONIX', release, parent, level=0}={}){
@@ -24,15 +34,15 @@ class OnixElements extends CollMap {
             if( !this.get('shortTag') )
                 this.set('shortTag', name.toLowerCase())
 
-            if( this.get('components') ){
-                this.set('components', new OnixElements(this.get('components'), {name: 'components', parent: this, level: this.level}))
-            }
-            
             if( !this.top.flatLookup.has(name.toLowerCase()))
                 this.top.flatLookup.set(name.toLowerCase(), this)
 
             if( !this.top.shortTagLookup.has(this.get('shortTag')) )
                 this.top.shortTagLookup.set(this.get('shortTag'), this)
+
+            if( this.get('components') ){
+                this.set('components', new OnixElements(this.get('components'), {name: 'components', parent: this, level: this.level}))
+            }
 
         }else{
             let mapped = {}
@@ -95,6 +105,11 @@ class OnixElements extends CollMap {
         return this.top.flatLookup.get(name) || this.top.shortTagLookup.get(name)
     }
 
+    tagAllowed(name){
+        name = name?.toLowerCase()
+        return this.get('components').find(m=>m.name.toLowerCase() == name || m.get('shortTag') == name)
+    }
+    
     get shortTag(){ return this.get('shortTag') }
 
     get top(){ return this.root }
@@ -112,7 +127,9 @@ class OnixElements extends CollMap {
         let obj = this
         while(obj?.parent){ 
             obj = obj.parent
-            path.unshift(obj)
+
+            if( obj?.name != 'components' )
+                path.unshift(obj)
         }
         return path
     }

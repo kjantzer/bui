@@ -27,6 +27,23 @@ class Onix extends CollMap {
 
     formatDate(){ return formatDate(...arguments) }
 
+    isValid(){
+
+        if( ['product', 'header'].includes(this.name) && this.parent?.name == 'ONIXMessage' )
+            return true
+        
+        if( !this.element ) return false
+        if( this.parent && !this.parent.element?.tagAllowed?.(this.name) ) return false
+
+        // must have required children
+        if( this.element.get('components') ){
+            let reqTags = this.element.get('components').filter(d=>d.get('required')).map(d=>d.shortTag)
+            if( reqTags.find(shortTag=>!this.get(shortTag)) ) return false
+        }
+
+        return true
+    }
+
     set(key, val){
 
         // got a single string/number with no "key", so treat as the {value}
@@ -185,6 +202,10 @@ class Onix extends CollMap {
             release = release || data?.['@_release'] || '2.1'
             this.elements = release == '2.1' ? Elements2 : Elements3
         }
+
+        if( name == 'product' )
+            console.log('produt??');
+            
 
         this.name = name
         this.element = element

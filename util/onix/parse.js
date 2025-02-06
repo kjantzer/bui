@@ -85,11 +85,7 @@ async function parse(xml, opts={}){
         
         // progress('converting to ONIX framework', {product: i})
         let product = new Onix(data.product[0], {
-            name: 'product',
-            parent: onix,
-            level: onix.level+1,
-            release: onix.release,
-            index: i,
+            ...onix.createProps('product'),
             raw: opts.captureRaw ? xmlStr : null,
             hash
         })
