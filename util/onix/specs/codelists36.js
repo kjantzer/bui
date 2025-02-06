@@ -2051,14 +2051,14 @@ module.exports = {
         "zza": "Zaza"
       },
     },
-    "list75": {
+    "List75": {
       "name": "Person date role",
       "codes": {
         "50": "Date of birth",
         "51": "Date of death"
       }
     },
-    "list76": {
+    "List76": {
       "name": "Product form feature value - Operating system compatibility",
       "codes": {
         "01": "Windows",
@@ -2068,7 +2068,7 @@ module.exports = {
         "05": "Other operating system(s)"
       }
     },
-    "list77": {
+    "List77": {
       "name": "Product form feature value - Device requirements",
       "codes": {
         "01": "CD-ROM drive",
@@ -2078,29 +2078,225 @@ module.exports = {
         "05": "Sound card"
       }
     },
-    "list78": {
-      "name": "Product form feature value - Operating system requirements",
+    "List78": {
+      "name": "Product form detail",
       "codes": {
-        "01": "Windows 95",
-        "02": "Windows 98",
-        "03": "Windows ME",
-        "04": "Windows NT",
-        "05": "Windows 2000",
-        "06": "Windows XP",
-        "07": "Mac OS 7",
-        "08": "Mac OS 8",
-        "09": "Mac OS 9",
-        "10": "Mac OS X"
+        "A101": "CD standard audio format",
+        "A102": "SACD super audio format",
+        "A103": "MP3 format",
+        "A104": "WAV format",
+        "A105": "Real Audio format",
+        "A106": "WMA",
+        "A107": "AAC",
+        "A108": "Ogg/Vorbis",
+        "A109": "Audible",
+        "A110": "FLAC",
+        "A111": "AIFF",
+        "A112": "ALAC",
+        "A201": "DAISY 2: full audio with title only (no navigation)",
+        "A202": "DAISY 2: full audio with navigation (no text)",
+        "A203": "DAISY 2: full audio with navigation and partial text",
+        "A204": "DAISY 2: full audio with navigation and full text",
+        "A205": "DAISY 2: full text with navigation and partial audio",
+        "A206": "DAISY 2: full text with navigation and no audio",
+        "A207": "DAISY 3: full audio with title only (no navigation)",
+        "A208": "DAISY 3: full audio with navigation (no text)",
+        "A209": "DAISY 3: full audio with navigation and partial text",
+        "A210": "DAISY 3: full audio with navigation and full text",
+        "A211": "DAISY 3: full text with navigation and partial audio",
+        "A212": "DAISY 3: full text with navigation and no audio",
+        "A301": "Standalone audio",
+        "A302": "Readalong audio",
+        "A303": "Playalong audio",
+        "A304": "Speakalong audio",
+        "A305": "Synchronised audio",
+        "A310": "Sound effects",
+        "A311": "Background music",
+        "A410": "Mono",
+        "A420": "Stereo",
+        "A421": "Stereo 2.1",
+        "A441": "Surround 4.1",
+        "A451": "Surround 5.1",
+        "A461": "Surround 6.1",
+        "A471": "Surround 7.1",
+        "B101": "Mass market (rack) paperback",
+        "B102": "Trade paperback (US)",
+        "B103": "Digest format paperback",
+        "B104": "A-format paperback",
+        "B105": "B-format paperback",
+        "B106": "Trade paperback (UK)",
+        "B107": "Tall rack paperback (US)",
+        "B108": "A5 size Tankobon",
+        "B109": "JIS B5 size Tankobon",
+        "B110": "JIS B6 size Tankobon",
+        "B111": "A6 size Bunko",
+        "B112": "B40-dori Shinsho",
+        "B113": "Pocket (Sweden, Norway, France)",
+        "B114": "Storpocket (Sweden)",
+        "B115": "Kartonnage (Sweden)",
+        "B116": "Flexband (Sweden)",
+        "B117": "Mook / Bookazine",
+        "B118": "Dwarsligger",
+        "B119": "46 size",
+        "B120": "46-Henkei size",
+        "B121": "A4",
+        "B122": "A4-Henkei size",
+        "B123": "A5-Henkei size",
+        "B124": "B5-Henkei size",
+        "B125": "B6-Henkei size",
+        "B126": "AB size",
+        "B127": "JIS B7 size",
+        "B128": "Kiku size",
+        "B129": "Kiku-Henkei size",
+        "B130": "JIS B4 size",
+        "B131": "Paperback (DE)",
+        "B132": "Libro de bolsillo",
+        "B133": "Pocket-sized",
+        "B134": "A5",
+        "B135": "Mass market max paperback",
+        "B201": "Coloring / join-the-dot book",
+        "B202": "Lift-the-flap book",
+        "B203": "Fuzzy-felt book",
+        "B204": "Miniature book",
+        "B205": "Moving picture / flicker book",
+        "B206": "Pop-up book",
+        "B207": "Scented / 'smelly' book",
+        "B208": "Sound story / 'noisy' book",
+        "B209": "Sticker book",
+        "B210": "Touch-and-feel book",
+        "B211": "Toy / die-cut book",
+        "B212": "Wallchart",
+        "B213": "Pull-the-tab book",
+        "B214": "Lift-the-flap-and-see book",
+        "B215": "Moon book",
+        "B216": "Braille book",
+        "B221": "Picture book",
+        "B222": "'Carousel' book",
+        "B223": "Pull-out book or chart",
+        "B301": "Loose leaf – sheets and binder",
+        "B302": "Loose leaf – binder only",
+        "B303": "Loose leaf – sheets only",
+        "B304": "Sewn",
+        "B305": "Unsewn / adhesive bound",
+        "B306": "Library binding",
+        "B307": "Reinforced binding",
+        "B308": "Half bound",
+        "B309": "Quarter bound",
+        "B310": "Saddle-sewn",
+        "B311": "Comb bound",
+        "B312": "Wire-O",
+        "B313": "Concealed wire",
+        "B314": "Coiled wire bound",
+        "B315": "Trade binding",
+        "B316": "Swiss binding",
+        "B317": "Notched binding",
+        "B400": "Self-covered",
+        "B401": "Cloth over boards",
+        "B402": "Paper over boards",
+        "B403": "Leather, real",
+        "B404": "Leather, imitation",
+        "B405": "Leather, bonded",
+        "B406": "Vellum",
+        "B409": "Cloth",
+        "B410": "Imitation cloth",
+        "B411": "Velvet",
+        "B412": "Silk",
+        "B413": "Laminated cover",
+        "B414": "Card cover",
+        "B415": "Duplex printed cover",
+        "B416": "No cover",
+        "B501": "With dust jacket",
+        "B502": "With printed dust jacket",
+        "B503": "With translucent dust cover",
+        "B504": "With flaps",
+        "B505": "With thumb index",
+        "B506": "With ribbon marker(s)",
+        "B507": "With zip fastener",
+        "B508": "With button snap fastener",
+        "B509": "With leather edge lining",
+        "B510": "Rough front",
+        "B511": "Foldout",
+        "B512": "Wide margin",
+        "B513": "With fastening strap",
+        "B514": "With perforated pages",
+        "B515": "With illustrations",
+        "B516": "With original print",
+        "B601": "Turn-around book",
+        "B602": "Concertina-fold book",
+        "B603": "Dos-à-dos book",
+        "B604": "French fold book",
+        "B610": "Unflipped manga format",
+        "D101": "Real Video format",
+        "D102": "QuickTime format",
+        "D103": "AVI format",
+        "D104": "WMV format",
+        "D105": "MPEG-4",
+        "D201": "MS-DOS",
+        "D202": "Windows",
+        "D203": "Macintosh",
+        "D204": "UNIX / LINUX",
+        "D205": "Other operating system(s)",
+        "D206": "Palm OS",
+        "D207": "Windows Mobile",
+        "D301": "Microsoft XBox",
+        "D302": "Nintendo Gameboy Color",
+        "D303": "Nintendo Gameboy Advance",
+        "D304": "Nintendo Gameboy",
+        "D305": "Nintendo GameCube",
+        "D306": "Nintendo 64",
+        "D307": "Nintendo DS",
+        "D308": "Sony PlayStation 1",
+        "D309": "Sony PlayStation 2",
+        "D310": "Sony PlayStation 3",
+        "D311": "Nintendo Wii",
+        "D312": "Sony PlayStation Portable (PSP)",
+        "D313": "Nintendo Entertainment System (NES)",
+        "D314": "Super Nintendo Entertainment System (SNES)",
+        "D315": "Sega Dreamcast",
+        "D316": "Sega Genesis/Megadrive",
+        "D317": "Sega Saturn",
+        "D318": "Sony PlayStation 4",
+        "D319": "Microsoft XBox 360",
+        "D320": "Microsoft XBox One",
+        "D321": "Sony PlayStation 5",
+        "D322": "Microsoft XBox Series X/S",
+        "D323": "Nintendo Switch",
+        "P101": "Desk calendar",
+        "P102": "Mini calendar",
+        "P103": "Engagement calendar",
+        "P104": "Day by day calendar",
+        "P105": "Poster calendar",
+        "P106": "Wall calendar",
+        "P107": "Perpetual calendar",
+        "P108": "Advent calendar",
+        "P109": "Bookmark calendar",
+        "P110": "Student calendar",
+        "P111": "Project calendar",
+        "P112": "Almanac calendar",
+        "P113": "Other calendar",
+        "P114": "Other calendar or organiser product",
+        "P120": "Picture card",
+        "P121": "Postcard book or pack",
+        "P122": "Greeting card book or pack",
+        "V201": "PAL",
+        "V202": "NTSC",
+        "V203": "SECAM",
+        "V220": "Home Theater (PAL)",
+        "V221": "Home Theater (NTSC)",
+        "V222": "Home Theater (SECAM)",
+        "V300": "Stereoscopic",
+        "V301": "IMAX",
+        "Z101": "Tactile book"
       }
     },
-    "list79": {
+    "List79": {
       "name": "Product form feature value - Software requirements",
       "codes": {
         "01": "QuickTime"
       }
     },
     
-    "list80": {
+    "List80": {
       "name": "Product packaging type",
       "codes": {
         "00": "No outer packaging",
@@ -2115,7 +2311,7 @@ module.exports = {
         "12": "Shrinkwrap"
       }
     },
-    "list81": {
+    "List81": {
       "name": "Product content type",
       "codes": {
         "01": "CD-ROM",
@@ -2130,7 +2326,7 @@ module.exports = {
         "10": "UMD"
       }
     },
-    "list82": {
+    "List82": {
       "name": "Bible contents",
       "codes": {
         "AP": "Apocrypha (Catholic canon)",
@@ -2169,7 +2365,7 @@ module.exports = {
         "ZZ": "Other contents"
       }
     },
-    "list83": {
+    "List83": {
       "name": "Bible version",
       "codes": {
         "ALV": "Alberto de Castellanos",
@@ -2238,7 +2434,7 @@ module.exports = {
         "ZZZ": "Other"
       }
     },
-    "list84": {
+    "List84": {
       "name": "Bible purpose",
       "codes": {
         "AW": "Award",
@@ -2270,7 +2466,7 @@ module.exports = {
       }
     },
     
-    "list85": {
+    "List85": {
       "name": "Bible text organization",
       "codes": {
         "CHR": "Chronological",
@@ -2282,7 +2478,7 @@ module.exports = {
         "ZZZ": "Other"
       }
     },
-    "list86": {
+    "List86": {
       "name": "Bible reference location",
       "codes": {
         "CCL": "Center column",
@@ -2293,7 +2489,7 @@ module.exports = {
         "ZZZ": "Other"
       }
     },
-    "list87": {
+    "List87": {
       "name": "Bible text feature",
       "codes": {
         "BL": "Black letter",
@@ -2305,7 +2501,7 @@ module.exports = {
         "ZZ": "Other"
       }
     },
-    "list88": {
+    "List88": {
       "name": "Religious text feature",
       "codes": {
         "BL": "Black letter",
@@ -2313,7 +2509,7 @@ module.exports = {
         "ZZ": "Other"
       }
     },
-    "list89": {
+    "List89": {
       "name": "Religious text identifier - Bible",
       "codes": {
         "ALV": "Alberto de Castellanos",
@@ -2382,7 +2578,7 @@ module.exports = {
         "ZZZ": "Other"
       }
     },
-    "list90": {
+    "List90": {
       "name": "Religious text identifier - Torah",
       "codes": {
         "ASH": "Artscroll",
@@ -2395,7 +2591,7 @@ module.exports = {
       }
     },
     
-    "list92": {
+    "List92": {
       "name": "Supplier role",
       "codes": {
         "00": "Unspecified",
@@ -2409,7 +2605,7 @@ module.exports = {
         "08": "Retailer"
       }
     },
-    "list93": {
+    "List93": {
       "name": "Supplier identifier type",
       "codes": {
         "01": "Proprietary",
@@ -2423,7 +2619,7 @@ module.exports = {
         "23": "VAT Identity Number"
       }
     },
-    "list94": {
+    "List94": {
       "name": "Default linear unit",
       "codes": {
         "cm": "Centimeters",
@@ -2431,7 +2627,7 @@ module.exports = {
         "mm": "Millimeters"
       }
     },
-    "list95": {
+    "List95": {
       "name": "Default weight unit",
       "codes": {
         "gr": "Grams",
@@ -2440,7 +2636,7 @@ module.exports = {
       }
     },
     
-    "list97": {
+    "List97": {
       "name": "Bible text organization",
       "codes": {
         "AW": "Award",
@@ -2470,7 +2666,7 @@ module.exports = {
         "YT": "Youth"
       }
     },
-    "list98": {
+    "List98": {
       "name": "Product content type",
       "codes": {
         "01": "Images",
@@ -2481,7 +2677,7 @@ module.exports = {
         "06": "Software"
       }
     },
-    "list99": {
+    "List99": {
       "name": "Source name scheme identifier",
       "codes": {
         "01": "Proprietary",
@@ -2496,7 +2692,7 @@ module.exports = {
         "50": "ISBN"
       }
     },
-    "list100": {
+    "List100": {
       "name": "Discount code type",
       "codes": {
         "01": "BIC discount group code",
@@ -2507,7 +2703,7 @@ module.exports = {
         "06": "BIC commission group code"
       }
     },
-    "list101": {
+    "List101": {
       "name": "Person name identifier type",
       "codes": {
         "01": "Proprietary",
@@ -2519,7 +2715,7 @@ module.exports = {
       }
     },
     
-    "list102": {
+    "List102": {
       "name": "Sales outlet identifier type",
       "codes": {
         "01": "Proprietary",
@@ -2527,7 +2723,7 @@ module.exports = {
         "03": "ONIX retail sales outlet ID code"
       }
     },
-    "list103": {
+    "List103": {
       "name": "Sales outlet name scheme identifier",
       "codes": {
         "01": "Proprietary",
@@ -2535,7 +2731,7 @@ module.exports = {
         "03": "ONIX retail sales outlet name code"
       }
     },
-    "list104": {
+    "List104": {
       "name": "Tax rate type",
       "codes": {
         "R": "Retail tax rate",
@@ -2543,7 +2739,7 @@ module.exports = {
         "Z": "Zero-rated"
       }
     },
-    "list105": {
+    "List105": {
       "name": "Product form feature type",
       "codes": {
         "01": "Color of cover",
@@ -2573,7 +2769,7 @@ module.exports = {
         "25": "App store identifier type"
       }
     },
-    "list106": {
+    "List106": {
       "name": "Product form feature value - DVD region",
       "codes": {
         "0": "All regions",
@@ -2590,7 +2786,7 @@ module.exports = {
         "C": "Blu-Ray region C"
       }
     },
-    "list107": {
+    "List107": {
       "name": "Text format",
       "codes": {
         "02": "HTML",
@@ -2602,7 +2798,7 @@ module.exports = {
       }
     },
     
-    "list108": {
+    "List108": {
       "name": "Cited content type",
       "codes": {
         "01": "Review",
@@ -2612,7 +2808,7 @@ module.exports = {
         "05": "'One locality, one book' program"
       }
     },
-    "list109": {
+    "List109": {
       "name": "E-publication format type",
       "codes": {
         "01": "HTML",
@@ -2635,7 +2831,7 @@ module.exports = {
         "18": "Digital certificate"
       }
     },
-    "list110": {
+    "List110": {
       "name": "E-publication format version number",
       "codes": {
         "101A": "EPUB 2.0.1",
@@ -2647,7 +2843,7 @@ module.exports = {
         "116B": "Kindle KF8"
       }
     },
-    "list111": {
+    "List111": {
       "name": "E-publication format description",
       "codes": {
         "01": "Standard",
@@ -2659,7 +2855,7 @@ module.exports = {
         "07": "Print replica"
       }
     },
-    "list112": {
+    "List112": {
       "name": "ONIX adult audience rating",
       "codes": {
         "00": "Unrated",
@@ -2672,7 +2868,7 @@ module.exports = {
         "07": "No rating advisory"
       }
     },
-    "list113": {
+    "List113": {
       "name": "ONIX controlled vocabulary genre code",
       "codes": {
         "A1": "Action/Adventure",
@@ -2720,7 +2916,7 @@ module.exports = {
         "E7": "Young adult"
       }
     },
-        "list114": {
+        "List114": {
       "name": "Title type",
       "codes": {
         "00": "Undefined",
@@ -2739,7 +2935,7 @@ module.exports = {
         "13": "Transliterated title"
       }
     },
-    "list115": {
+    "List115": {
       "name": "Price type",
       "codes": {
         "01": "RRP excluding tax",
@@ -2766,7 +2962,7 @@ module.exports = {
         "42": "Publishers retail price including tax"
       }
     },
-    "list116": {
+    "List116": {
       "name": "Price type qualifier",
       "codes": {
         "00": "Unqualified price",
@@ -2781,7 +2977,7 @@ module.exports = {
         "09": "Linked price"
       }
     },
-    "list117": {
+    "List117": {
       "name": "Price type description",
       "codes": {
         "01": "Proprietary",
@@ -2789,7 +2985,7 @@ module.exports = {
         "03": "Finnish Miki Book price code"
       }
     },
-    "list118": {
+    "List118": {
       "name": "Price condition type",
       "codes": {
         "00": "No conditions",
@@ -2802,7 +2998,7 @@ module.exports = {
         "11": "Rental to purchase"
       }
     },
-    "list119": {
+    "List119": {
       "name": "Price condition quantity type",
       "codes": {
         "01": "Time period",
@@ -2812,7 +3008,7 @@ module.exports = {
         "05": "Number of users"
       }
     },
-        "list120": {
+        "List120": {
       "name": "Price condition unit",
       "codes": {
         "01": "Days",
@@ -2821,7 +3017,7 @@ module.exports = {
         "04": "Years"
       }
     },
-    "list121": {
+    "List121": {
       "name": "Price condition status",
       "codes": {
         "01": "Current price",
@@ -2833,7 +3029,7 @@ module.exports = {
         "07": "Proprietary price point"
       }
     },
-    "list122": {
+    "List122": {
       "name": "Price type amount modifier",
       "codes": {
         "01": "Price amount before modifier",
@@ -2841,7 +3037,7 @@ module.exports = {
         "03": "Price amount change"
       }
     },
-    "list123": {
+    "List123": {
       "name": "Currency zone",
       "codes": {
         "EUR": "Eurozone",
@@ -2849,7 +3045,7 @@ module.exports = {
         "USD": "US Dollar zone"
       }
     },
-    "list124": {
+    "List124": {
       "name": "Tax rate type code",
       "codes": {
         "H": "Higher rate",
@@ -2860,7 +3056,7 @@ module.exports = {
         "Z": "Zero-rate"
       }
     },
-    "list125": {
+    "List125": {
       "name": "Tax rate type name",
       "codes": {
         "01": "VAT",
@@ -2869,7 +3065,7 @@ module.exports = {
         "04": "PVM"
       }
     },
-    "list126": {
+    "List126": {
       "name": "E-publication technical protection",
       "codes": {
         "00": "None",
@@ -2882,7 +3078,7 @@ module.exports = {
         "07": "Sony DRM"
       }
     },
-    "list127": {
+    "List127": {
       "name": "E-publication usage type",
       "codes": {
         "01": "Preview",
@@ -2897,7 +3093,7 @@ module.exports = {
         "10": "Preview on premises"
       }
     },
-    "list128": {
+    "List128": {
       "name": "E-publication usage status",
       "codes": {
         "01": "Permitted unlimited",
@@ -2906,7 +3102,7 @@ module.exports = {
         "04": "Not permitted"
       }
     },
-    "list129": {
+    "List129": {
       "name": "E-publication usage unit",
       "codes": {
         "01": "Copies",
@@ -2922,7 +3118,7 @@ module.exports = {
         "11": "Percentage per time period"
       }
     },
-        "list130": {
+        "List130": {
       "name": "Prices dates role",
       "codes": {
         "01": "Publication date",
@@ -2942,7 +3138,7 @@ module.exports = {
         "15": "Publication date of e-book counterpart"
       }
     },
-    "list131": {
+    "List131": {
       "name": "Return conditions type code",
       "codes": {
         "00": "No conditions",
@@ -2955,7 +3151,7 @@ module.exports = {
         "07": "Firm sale"
       }
     },
-    "list132": {
+    "List132": {
       "name": "Supplier own coding type",
       "codes": {
         "01": "Proprietary",
@@ -2967,7 +3163,7 @@ module.exports = {
         "07": "Supplier's handling terms"
       }
     },
-    "list133": {
+    "List133": {
       "name": "Price type date role",
       "codes": {
         "01": "From date",
@@ -2977,7 +3173,7 @@ module.exports = {
         "05": "On date"
       }
     },
-    "list134": {
+    "List134": {
       "name": "Collection sequence type",
       "codes": {
         "01": "Proprietary",
@@ -2989,7 +3185,7 @@ module.exports = {
         "07": "Suggested display order"
       }
     },
-    "list135": {
+    "List135": {
       "name": "Text type",
       "codes": {
         "01": "Sender's description",
@@ -3037,7 +3233,7 @@ module.exports = {
         "43": "Errata"
       }
     },
-        "list136": {
+        "List136": {
       "name": "Product form detail - Book binding and special material",
       "codes": {
         "01": "Quarter bound",
@@ -3063,7 +3259,7 @@ module.exports = {
         "21": "Pamphlet binding"
       }
     },
-    "list137": {
+    "List137": {
       "name": "Article type code",
       "codes": {
         "01": "Acknowledgments",
@@ -3080,7 +3276,7 @@ module.exports = {
         "12": "Book review"
       }
     },
-    "list138": {
+    "List138": {
       "name": "Image/audio/video file type code",
       "codes": {
         "01": "Front cover",
@@ -3115,7 +3311,7 @@ module.exports = {
         "30": "Audio segment"
       }
     },
-    "list139": {
+    "List139": {
       "name": "Image/audio/video file format code",
       "codes": {
         "02": "GIF",
@@ -3139,7 +3335,7 @@ module.exports = {
         "20": "WebM"
       }
     },
-    "list140": {
+    "List140": {
       "name": "Image/audio/video file link type",
       "codes": {
         "01": "URL",
@@ -3150,7 +3346,7 @@ module.exports = {
         "06": "filename"
       }
     },
-        "list141": {
+        "List141": {
       "name": "Barcode indicator",
       "codes": {
         "00": "Not barcoded",
@@ -3163,7 +3359,7 @@ module.exports = {
         "07": "UPC12+5 (price encoded)"
       }
     },
-    "list142": {
+    "List142": {
       "name": "Position on product",
       "codes": {
         "00": "Unknown/not applicable",
@@ -3179,7 +3375,7 @@ module.exports = {
         "10": "On outer sleeve/box"
       }
     },
-    "list143": {
+    "List143": {
       "name": "Product form detail - Book trim",
       "codes": {
         "01": "Deckle-edged",
@@ -3191,7 +3387,7 @@ module.exports = {
         "07": "Round-cornered"
       }
     },
-    "list144": {
+    "List144": {
       "name": "E-publication technical protection type",
       "codes": {
         "01": "None",
@@ -3205,7 +3401,7 @@ module.exports = {
         "09": "PSN DRM"
       }
     },
-    "list145": {
+    "List145": {
       "name": "Usage type",
       "codes": {
         "00": "No constraints",
@@ -3221,7 +3417,7 @@ module.exports = {
         "10": "Preview on premises"
       }
     },
-    "list146": {
+    "List146": {
       "name": "Usage status",
       "codes": {
         "01": "Permitted unlimited",
@@ -3230,7 +3426,7 @@ module.exports = {
         "04": "Not permitted"
       }
     },
-    "list147": {
+    "List147": {
       "name": "Unit of usage",
       "codes": {
         "01": "Copies",
@@ -3247,7 +3443,7 @@ module.exports = {
         "15": "Years"
       }
     },
-        "list148": {
+        "List148": {
       "name": "Collection type",
       "codes": {
         "00": "Unspecified",
@@ -3261,7 +3457,7 @@ module.exports = {
         "41": "Sous-série"
       }
     },
-    "list149": {
+    "List149": {
       "name": "Title element level",
       "codes": {
         "01": "Product",
@@ -3272,7 +3468,7 @@ module.exports = {
         "06": "Sub-subcollection"
       }
     },
-    "list150": {
+    "List150": {
       "name": "Product form",
       "codes": {
         "00": "Undefined",
@@ -3431,7 +3627,7 @@ module.exports = {
         "ZZ": "Other merchandise"
       }
     },
-      "list151": {
+      "List151": {
       "name": "Contributor place relator",
       "codes": {
         "00": "Associated with",
@@ -3447,7 +3643,7 @@ module.exports = {
         "10": "Operating from"
       }
     },
-    "list152": {
+    "List152": {
       "name": "Illustrated/non-illustrated",
       "codes": {
         "01": "No illustrations",
@@ -3469,7 +3665,7 @@ module.exports = {
         "17": "Mixed black and white and color illustrations, photographs and tables"
       }
     },
-    "list153": {
+    "List153": {
       "name": "Text type",
       "codes": {
         "01": "Unspecified, see description",
@@ -3504,7 +3700,7 @@ module.exports = {
         "30": "Study notes"
       }
     },
-    "list154": {
+    "List154": {
       "name": "Content audience",
       "codes": {
         "00": "Unspecified",
@@ -3528,7 +3724,7 @@ module.exports = {
         "18": "Foreign language learning"
       }
     },
-    "list155": {
+    "List155": {
       "name": "Content date role",
       "codes": {
         "01": "Publication date",
@@ -3555,7 +3751,7 @@ module.exports = {
         "22": "Date of first publication in current format, territory and language"
       }
     },
-        "list156": {
+        "List156": {
       "name": "Citation note type",
       "codes": {
         "01": "Review",
@@ -3571,7 +3767,7 @@ module.exports = {
         "11": "Religious recommendations"
       }
     },
-    "list157": {
+    "List157": {
       "name": "Content source type",
       "codes": {
         "01": "Printed media",
@@ -3584,7 +3780,7 @@ module.exports = {
         "08": "Social media"
       }
     },
-    "list158": {
+    "List158": {
       "name": "Resource content type",
       "codes": {
         "01": "Application: software demo",
@@ -3640,7 +3836,7 @@ module.exports = {
         "51": "Video: test bank"
       }
     },
-    "list159": {
+    "List159": {
       "name": "Resource mode",
       "codes": {
         "01": "Application",
@@ -3651,7 +3847,7 @@ module.exports = {
         "06": "Multi-mode"
       }
     },
-    "list160": {
+    "List160": {
       "name": "Resource feature type",
       "codes": {
         "01": "Required credit",
@@ -3667,7 +3863,7 @@ module.exports = {
         "11": "Resource usage constraints"
       }
     },
-        "list161": {
+        "List161": {
       "name": "Resource form",
       "codes": {
         "01": "Linkable resource",
@@ -3676,7 +3872,7 @@ module.exports = {
         "04": "Streaming resource"
       }
     },
-    "list162": {
+    "List162": {
       "name": "Resource version feature type",
       "codes": {
         "01": "File format",
@@ -3689,7 +3885,7 @@ module.exports = {
         "08": "SHA-256 hash value"
       }
     },
-    "list163": {
+    "List163": {
       "name": "Publishing date role",
       "codes": {
         "01": "Publication date",
@@ -3715,7 +3911,7 @@ module.exports = {
         "32": "Open access embargo date"
       }
     },
-    "list164": {
+    "List164": {
       "name": "Work relation code",
       "codes": {
         "01": "Manifestation of",
@@ -3764,7 +3960,7 @@ module.exports = {
         "45": "Supplemented by"
       }
     },
-    "list165": {
+    "List165": {
       "name": "Supplier own code type",
       "codes": {
         "01": "Supplier's sales classification",
@@ -3776,7 +3972,7 @@ module.exports = {
         "07": "Supplier's invoice type"
       }
     },
-      "list166": {
+      "List166": {
       "name": "Supply date role",
       "codes": {
         "02": "Sales embargo date",
@@ -3789,7 +3985,7 @@ module.exports = {
         "51": "Supplier end date"
       }
     },
-    "list167": {
+    "List167": {
       "name": "Price condition quantity type",
       "codes": {
         "01": "Time period",
@@ -3805,7 +4001,7 @@ module.exports = {
         "11": "Number of articles"
       }
     },
-    "list168": {
+    "List168": {
       "name": "Tax type",
       "codes": {
         "01": "VAT",
@@ -3817,7 +4013,7 @@ module.exports = {
         "07": "Import tax"
       }
     },
-    "list169": {
+    "List169": {
       "name": "Quantity unit",
       "codes": {
         "00": "Units",
@@ -3835,7 +4031,7 @@ module.exports = {
         "18": "Credit Hours"
       }
     },
-    "list170": {
+    "List170": {
       "name": "Stock quantity coding scheme",
       "codes": {
         "01": "Proprietary",
@@ -3847,7 +4043,7 @@ module.exports = {
         "07": "ISLI stock quantity code"
       }
     },
-    "list171": {
+    "List171": {
       "name": "Tax rate coded",
       "codes": {
         "A": "VAT at standard rate",
@@ -3861,7 +4057,7 @@ module.exports = {
         "Z": "Zero-rated"
       }
     },
-        "list172": {
+        "List172": {
       "name": "Currency zone",
       "codes": {
         "EUR": "Eurozone",
@@ -3883,7 +4079,7 @@ module.exports = {
         "THB": "Thai Baht zone"
       }
     },
-    "list173": {
+    "List173": {
       "name": "Price date role",
       "codes": {
         "01": "Publication date",
@@ -3905,7 +4101,7 @@ module.exports = {
         "17": "Last date for export orders"
       }
     },
-    "list174": {
+    "List174": {
       "name": "Price precision",
       "codes": {
         "00": "Unspecified",
@@ -3920,7 +4116,7 @@ module.exports = {
         "09": "Free of charge"
       }
     },
-    "list175": {
+    "List175": {
       "name": "Product form detail - packaging",
       "codes": {
         "00": "No outer packaging",

@@ -127,6 +127,15 @@ module.exports = new OnixElements({
                 "codeList": 81,
                 "repeatable": true
             },
+            "Barcode": {
+                "shortTag": "b246",
+                "type": "code",
+                "codeList": 6
+            },
+            "NoSeries": {
+                "shortTag": "n338",
+                "empty": true
+            },
             "EpubType": {
                 "shortTag": "b211",
                 "type": "code",
@@ -438,6 +447,12 @@ module.exports = new OnixElements({
                 "shortTag": "b003",
                 "formatList": "55",
             },
+            "AudienceCode": {
+                "shortTag": "b073",
+                "type": "code",
+                "codeList": 28,
+                "repeatable": true
+            },
             "OtherText": {
                 "shortTag": "othertext",
                 "type": "composite",
@@ -518,6 +533,9 @@ module.exports = new OnixElements({
             },
             "BASICMainSubject": {
                 "shortTag": "b064"
+            },
+            "BASICVersion": {
+                "shortTag": "b200"
             },
             "Extent": {
                 "shortTag": "extent",
@@ -753,6 +771,19 @@ module.exports = new OnixElements({
                     }
                 }
             },
+            "CopyrightYear": {
+                "shortTag": "b087",
+                "type": "string"
+            },
+            "CountryOfPublication": {
+                "shortTag": "b083", 
+                "type": "code",
+                "codeList": 91
+            },
+            "CityOfPublication": {
+                "shortTag": "b209",
+                "type": "string"
+            },
             "SalesRights": {
                 "shortTag": "salesrights",
                 "type": "composite",
@@ -779,6 +810,22 @@ module.exports = new OnixElements({
                         "shortTag": "b091",
                         "type": "code",
                         "codeList": 47,
+                        "repeatable": true
+                    }
+                }
+            },
+            "NotForSale": {
+                "shortTag": "notforsale",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "RightsTerritory": {
+                        "shortTag": "j308",
+                        "type": "string"
+                    },
+                    "RightsCountry": {
+                        "shortTag": "j304",
+                        "type": "string",
                         "repeatable": true
                     }
                 }
@@ -860,7 +907,6 @@ module.exports = new OnixElements({
                         "shortTag": "j292",
                         "type": "code",
                         "codeList": 93,
-                        "required": true
                     },
                     "SupplierName": {
                         "shortTag": "j137",
@@ -915,6 +961,11 @@ module.exports = new OnixElements({
                         "type": "code",
                         "codeList": 47,
                         "repeatable": true
+                    },
+                    "AvailabilityCode": {
+                        "shortTag": "j141",
+                        "type": "code",
+                        "codeList": 54
                     },
                     "ReturnsCodeType": {
                         "shortTag": "j268",
@@ -1293,6 +1344,21 @@ module.exports = new OnixElements({
                     "MediaFileDate": {
                         "shortTag": "f120",
                         "type": "string"
+                    }
+                }
+            },
+            "ProductWebsite": {
+                "shortTag": "productwebsite",
+                "type": "composite",
+                "repeatable": true,
+                "components": {
+                    "ProductWebsiteLink": {
+                        "shortTag": "f123",
+                        "type": "string"
+                    },
+                    "ProductWebsiteDescription": {
+                        "shortTag": "f170", 
+                        "type": "text"
                     }
                 }
             },
