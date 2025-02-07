@@ -405,7 +405,7 @@ module.exports = class OnixProductModel {
     set copy(copy){
         this.is2 
         ? this.onix.set('OtherText', {Text: copy, TextTypeCode: 'Main description'}) 
-        : this.onix.set('CollateralDetail.TextContent', {Text: copy, TextType: 'Description'})
+        : this.onix.set('CollateralDetail.TextContent', {Text: copy, TextType: 'Description', ContentAudience: 'Unrestricted'})
     }
 
     set quotes(quotes){
@@ -418,7 +418,7 @@ module.exports = class OnixProductModel {
             
             this.is2 
             ? this.onix.set('OtherText', {TextTypeCode: 'Review quote', Text: quote.text, TextSourceTitle: quote.src})
-            : this.onix.set('CollateralDetail.TextContent', {TextType: 'Review quote', Text: quote.text, SourceTitle: quote.src})
+            : this.onix.set('CollateralDetail.TextContent', {TextType: 'Review quote', Text: quote.text, SourceTitle: quote.src, ContentAudience: 'Unrestricted'})
         })
     }
 
