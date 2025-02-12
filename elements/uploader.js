@@ -260,7 +260,8 @@ export class UploaderElement extends LitElement {
         this.dragging = false
         // let files = new Files(e.dataTransfer)
         this._selectFiles(e.dataTransfer.files, {
-            append: (e.metaKey||e.ctrlKey)
+            append: (e.metaKey||e.ctrlKey),
+            items: e.dataTransfer.items
         })
     }
 
@@ -268,7 +269,7 @@ export class UploaderElement extends LitElement {
         this._selectFiles(e.target.files)
     }
 
-    _selectFiles(files, {append=false}={}){
+    _selectFiles(files, {append=false, items=[]}={}){
 
         if( this.uploading ) return
 
@@ -279,9 +280,10 @@ export class UploaderElement extends LitElement {
             files = files.slice(0,1)
 
         let valid = []
+        let validItems = []
         let invalid = []
 
-        files.forEach(file=>{
+        files.forEach((file, i)=>{
             if( !this._acceptFile(file) )
                 return invalid.push(file)
 
@@ -298,6 +300,7 @@ export class UploaderElement extends LitElement {
 
             }else{
                 valid.push(file)
+                validItems.push(items[i])
             }
         })
 
@@ -306,7 +309,7 @@ export class UploaderElement extends LitElement {
         else
             this.files = valid
 
-        this.emitEvent('change', {files: this.files, invalid: invalid.length > 0 ? invalid : false})
+        this.emitEvent('change', {files: this.files, invalid: invalid.length > 0 ? invalid : false, items: validItems})
 
         if( this.autoUpload && this.url ){
             this.upload()
