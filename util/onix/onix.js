@@ -51,7 +51,7 @@ class Onix extends CollMap {
     set(key, val){
 
         // got a single string/number with no "key", so treat as the {value}
-        if( val === undefined && typeof key !== 'object' ){
+        if( val === undefined && (!key || typeof key !== 'object') ){
             val = key
             key = 'value'
         }
@@ -251,9 +251,10 @@ class Onix extends CollMap {
             return resp
     }
 
+    // DEPRECATED - elements have `repeatable` property now
     getArray(key){
         let val = this.get(key)
-        if( !Array.isArray(val) )
+        if( val && !Array.isArray(val) )
             val = new OnixArray(val)
         return val
     }
@@ -314,7 +315,7 @@ class Onix extends CollMap {
 
             k = opts.shortTags ? k : d.element?.name||k
             
-            if( d.has?.('value') ){
+            if( !d.isArray && d.has?.('value') ){
                 d = opts.codes ? d.get('value') : d.value(opts)
             }
 
