@@ -54,6 +54,18 @@ function camelcaseUndo(str, {delimiter='_'}={}){
 }
 
 /*
+    `separatePrefix(str)`  
+    "The Book of the New Sun" => {prefix: "The", label: "Book of the New Sun"}
+*/
+function separatePrefix(str){
+	let [, prefix, label] = str.trim().match(/(^The |^A |^An )(.*)/i)
+	
+	if( prefix ) prefix = prefix.trim()
+
+	return {prefix, label}
+}
+
+/*
     `replaceAccents(str)`  
     Example: `Shōgun` will become `Shogun`
 
@@ -100,4 +112,4 @@ function encodeHtmlEntity(str){
     return buf.join('')
 }
 
-module.exports = {capitalize, titleize, slugify, replaceAccents, hasAccents, removeTags, camelcaseUndo, UpperCaseWords, decodeHtmlEntity, encodeHtmlEntity}
+module.exports = {capitalize, titleize, slugify, separatePrefix, replaceAccents, hasAccents, removeTags, camelcaseUndo, UpperCaseWords, decodeHtmlEntity, encodeHtmlEntity}
