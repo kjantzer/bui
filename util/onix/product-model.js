@@ -3,7 +3,7 @@
 */
 const dayjs = require('dayjs')
 const groupBy = require('../array.groupBy')
-const {decodeHtmlEntity} = require('../string')
+const {decodeHtmlEntity, separatePrefix} = require('../string')
 const {uniformAndDedupeCSV} = require('./util')
 
 const TO_JSON_BLACKLIST = ['release', 'is2', 'is3', 'series']
@@ -128,6 +128,19 @@ module.exports = class OnixProductModel {
         this.onix.set('DescriptiveDetail.TitleDetail.TitleType', '01')
         this.onix.set('DescriptiveDetail.TitleDetail.TitleElement.TitleText', title)
     }
+
+    set titleAndPrefix(title){
+        let {prefix, label} = separatePrefix(title)
+        
+        if( this.is2 )
+            return this.onix.set('Title', {TitleWithoutPrefix: label, TitlePrefix: prefix})
+        
+        this.onix.set('DescriptiveDetail.TitleDetail.TitleType', '01')
+        this.onix.set('DescriptiveDetail.TitleDetail.TitleElement', {
+            TitleWithoutPrefix: label,
+            TitlePrefix: prefix
+        })
+    }
     
     get subtitle(){ 
         if( this.is2 ) return decodeHtmlEntity(this.onix.getValue('Title.Subtitle'))
@@ -135,6 +148,7 @@ module.exports = class OnixProductModel {
     }
 
     set subtitle(subtitle){ 
+        if( !subtitle ) return
         if( this.is2 ) return this.onix.set('Title.Subtitle', subtitle)
         return this.onix.set('DescriptiveDetail.TitleDetail.TitleElement.Subtitle', subtitle)
     }
@@ -623,4 +637,31 @@ module.exports = class OnixProductModel {
         if( this.is2 ) return this.onix.set('SupplyDetail.PackQuantity', qty)
         return this.onix.set('ProductSupply.SupplyDetail.PackQuantity', qty)
     }
+
+    get prize(){
+        return this.onix.get('CollateralDetail.Prize')
+    }
+
+    set prize(prize){
+        if( this.is2 ) return false // not supported
+
+        if( Array.isArray(prize) )
+            return prize.map(p=>this.prize = p)
+
+        let data = {}
+        prize = typeof prize == 'string' ? {PrizeName: prize} : prize
+
+        for( let key in prize ){
+            
+            if( !key.startsWith('Prize') ){
+                data['Prize'+key.charAt(0).toUpperCase()+key.slice(1)] = prize[key]
+                delete prize[key]
+            }else{
+                data[key] = prize[key]
+            }
+        }
+        
+        return this.onix.set('CollateralDetail.Prize', data)
+    }
+    
 }
