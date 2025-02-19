@@ -8,10 +8,10 @@ export default class BaseTabBar extends LitElement{
 
     `
 
-    constructor(){
-        super()
-        this.slot = 'tabbar'
-    }
+    // constructor(){
+    //     super()
+    //     this.slot = 'tabbar'
+    // }
 
     render(){return html`
 
@@ -22,10 +22,10 @@ export default class BaseTabBar extends LitElement{
         <slot name="after"></slot>
     `}
 
-    firstUpdated(){
-        if( !this.parentElement?.views )
-            this.slot = null
-    }
+    // firstUpdated(){
+    //     if( !this.parentElement?.views )
+    //         this.slot = null
+    // }
 
     // in case subclass wants to wrap buttons in another element
     renderLoop(){ return html`
