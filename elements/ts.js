@@ -71,7 +71,7 @@ customElements.define('b-ts', class extends LitElement{
             if( this.date.isValid() )
                 age = this.date.diff(new Date(), this.trackAge)
             
-            if( this.trackAge = 'day' && age == 0 && !this.date.isSame(new Date(), 'date') )
+            if( this.trackAge == 'day' && age == 0 && !this.date.isSame(new Date(), 'date') )
                 age = -1
 
             if( age && this.roundAge ){
