@@ -16,13 +16,12 @@ await Onix.parse(onixXmlString, {
     limit: null, // set to only process some of the products
 
     progress(msg, {i, total}){ 
-        // log or forward progress
+        // log or inform client ofprogress
     },
     preprocess: async (onix, products) =>{
         // before processing a anything
     },
     // process each product so we dont ever keep all of them in memory
-    // we'll keep up to chunkSize and then insert before moving on
     process: async (product)=>{
         // actually do something with the product data
         console.log(product.get('RecordReference'))
@@ -30,7 +29,7 @@ await Onix.parse(onixXmlString, {
 })
 ```
 
-> NOTE: AI was used to create the nested definition of elements (components) and the codelists. There could be errors. Common data has mostly been vetted. 3.0 does not list all `repeatable` elements as it ideally should.
+> NOTE: AI was used to create the nested definition of elements (components) and the codelists. There could be errors. Common data has mostly been vetted.
 
 If you omit the `process` function, `parse` will return the root `Onix` object with all products parsed. If parsing a large file, it is best to use the `process` function so that the entire file is not kept in memory.
 
@@ -48,7 +47,7 @@ onix.get('product').forEach(product=>{
 
 The onix object nests each subset of data (component) as another instance of the onix class. This allows for chaining of data.
 
-The data can be retrieved with short or standard tag names. For values that are coded, the code or value can be used.
+The data can be retrieved with short or standard tag names (case insensitive). For components with coded values, the code or label can be used.
 
 ```js
 let product = onix.get('product.0')
@@ -58,7 +57,8 @@ product.is3 // 3.0 onix
 
 product.get('RecordReference')
 product.get('ProductIdentifier')?.getValue('IDValue', {ProductIDType: 'ISBN-13'})
-product.getValue('DescriptiveDetail.TitleDetail.TitleElement.Subtitle')
+product.get('DescriptiveDetail.TitleDetail.TitleElement.Subtitle').value()
+product.getValue('DescriptiveDetail.TitleDetail.TitleElement.Subtitle') // same as above
 
 // human readable output of all data
 product.toJSON()
@@ -68,6 +68,7 @@ product.toJSON({shortTags: true, codes: true})
 
 // NOTE: this is not 100% perfect. In particular it does not allow for setting the header
 product.toXML() // string
+product.toXML({shortTags: false, codes: false}) // change defaults
 ```
 
 ## Product Model
