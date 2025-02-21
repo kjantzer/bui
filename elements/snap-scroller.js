@@ -109,7 +109,7 @@ customElements.define('b-snap-scroller', class extends LitElement{
             justify-content: space-between;
         }
 
-        :host(:not([buttons])) [name="button"] {
+        :host(:not([buttons])) [name="buttons"] {
             display: none;
         }
 
