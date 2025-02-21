@@ -13,7 +13,8 @@
     - `dir` - `x` or `y`
     - `align` - `start`, `center`, or `end`
     - `scale` - scale the items on hover
-    
+    - `buttons` - show buttons (="always" to show always, otherwise only show on hover)
+
     ## CSS Variables
     - `--gap` - gap between items
     - `--size` - size of the items (width for `x`, height for `y`)
@@ -108,6 +109,10 @@ customElements.define('b-snap-scroller', class extends LitElement{
             justify-content: space-between;
         }
 
+        :host(:not([buttons])) [name="button"] {
+            display: none;
+        }
+
         :host([dir="x"]) [name="buttons"] {
             align-self: anchor-center;
             left: 0;
@@ -125,7 +130,7 @@ customElements.define('b-snap-scroller', class extends LitElement{
             pointer-events: auto;
         }
 
-        :host(:not(:hover)) [name="buttons"] {
+        :host(:not(:hover):not([buttons="always"])) [name="buttons"] {
             visibility: hidden;
         }
 
@@ -144,6 +149,28 @@ customElements.define('b-snap-scroller', class extends LitElement{
                 transform: scale(1.03);
             }
         }
+
+        [name="buttons"] {
+            font-size: 1em;
+        }
+
+        [name="buttons"] > slot {
+            display: block;
+            pointer-events: auto;
+        }
+
+        [name="buttons"] > slot::slotted(*),
+        [name="buttons"] > slot > * {
+            pointer-events: none;
+        }
+
+        .btn svg {
+            height: 1em;
+        }
+
+        :host([dir="x"]) .btn.prev { rotate: 90deg; }
+        :host([dir="x"]) .btn.next { rotate: -90deg; }
+        :host([dir="y"]) .btn.prev { rotate: 180deg; }
     `
 
     constructor(){
@@ -157,7 +184,16 @@ customElements.define('b-snap-scroller', class extends LitElement{
     }
 
     render(){return html`
-        <slot name="buttons" @click=${this.buttonClick}></slot>
+        <slot name="buttons" @click=${this.buttonClick}>
+            <slot name="button-prev" part="button prev">
+                <div class="btn prev"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+            </slot>
+            
+            <slot name="button-next" part="button next">
+                <div class="btn next"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+            </slot>
+        </slot>
+
         <div class="scroller" part="scroller">
             <div class="spacer" part="spacer start"></div>
             <slot class="main"></slot>
@@ -167,7 +203,8 @@ customElements.define('b-snap-scroller', class extends LitElement{
 
     // NOTE: not sure this is the best way
     buttonClick(e){
-        let index = e.currentTarget.assignedElements().indexOf(e.target)
+        // let index = e.currentTarget.assignedElements().indexOf(e.target)
+        let index = Array.from(e.currentTarget.children).indexOf(e.target)
         if( index == 0 ) this.prev()
         if( index == 1 ) this.next()
     }
