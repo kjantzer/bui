@@ -14,7 +14,7 @@ import '../elements/x-out'
 import '../elements/ribbon'
 import '../elements/qr-code'
 import '../elements/animated-bgd'
-import '../elements/snap-scroll'
+import '../elements/snap-scroller'
 import './docs-detail'
 
 class Coll extends Collection {
