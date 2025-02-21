@@ -260,7 +260,13 @@ customElements.define('b-tabs', class extends LitElement {
         }
     `}
 
-    renderTabBar(){
+    firstUpdated(){
+        this._firstUpdated = true
+    }
+
+    renderTabBar(){  
+
+        if( !this._firstUpdated ) return
         
         let tabBarName = this.getAttribute('tab-bar') || 'b-tab-bar-default'
 
@@ -272,6 +278,8 @@ customElements.define('b-tabs', class extends LitElement {
 
         // check for custom slotted tabbar
         let slottedTabbar = slot.assignedElements()[0]
+
+        if( tabBarName == 'inline' && !slottedTabbar ) return
 
         // not yet stup
         if( !this.__tabBar ){
