@@ -77,11 +77,11 @@ customElements.define('b-snap-scroller', class extends LitElement{
         }
 
         :host([dir="x"]) [part="spacer end"] {
-            margin-right: calc(-1 * var(--gap));
+            margin-left: calc(-1 * var(--gap));
         }
 
         :host([dir="y"]) [part="spacer end"] {
-            margin-bottom: calc(-1 * var(--gap));
+            margin-top: calc(-1 * var(--gap));
         }
 
         ${scrollbars.hide('.scroller')}
@@ -251,7 +251,12 @@ customElements.define('b-snap-scroller', class extends LitElement{
     }
 
     get scrollerChildren(){
-        return Array.from(this.scrollerSlot.assignedElements())
+        let children = Array.from(this.scrollerSlot.assignedElements())
+
+        if( children.length == 1 && children[0].tagName == 'SLOT' )
+            children = Array.from(children[0].assignedElements())
+
+        return children
     }
 
     // utilities for getting element size/pos props depending on direction
