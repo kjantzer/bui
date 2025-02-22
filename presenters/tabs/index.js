@@ -177,6 +177,7 @@ customElements.define('b-tabs', class extends LitElement {
             border-radius: var(--contentRadius);
             overflow: var(--overflow, auto);
             contain: layout;
+            min-width: 0;
         }
 
         .content::slotted(*) {
@@ -184,6 +185,7 @@ customElements.define('b-tabs', class extends LitElement {
             align-self: flex-start;
             max-height: 100%;
             box-sizing: border-box;
+            min-width: 0;
         }
         
         /* dont add padding to custom elements */
