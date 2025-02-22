@@ -175,7 +175,7 @@ customElements.define('b-snap-scroller', class extends LitElement{
 
     constructor(){
         super()
-        this.align = 'center'
+        this.align = 'start'
         this.dir = 'x'
     }
 
