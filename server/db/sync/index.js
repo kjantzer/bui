@@ -9,7 +9,7 @@ const DEFAULT_OPTS = [
     '--skip-triggers',
     '--compress',
     '--set-gtid-purged=OFF',
-    '--default-character-set=utf8',
+    '--default-character-set=utf8mb4',
     '--hex-blob',
 ]
 
@@ -31,7 +31,9 @@ module.exports = function syncDB({
     historyDays=30,
     largeTableSize=2000, // MB
     presets=[],
+    tableClauses={},
     dryRun=false,
+    // TODO: improve silent to report bad DB connections
     silent=true // change to false to test for errors in the last mysqldump part
 }={}){ return new Promise(async (resolve, reject)=>{
 
@@ -59,7 +61,7 @@ module.exports = function syncDB({
 
     let tables = await prompt([
         chalk.cyan(`List tables to import`),
-        chalk.gray(`blank for all, table names separated by spaces, or...\n- \`wildcard*\` table name matching\n- use \`>m\` for all tables starting at M (greater or equal to M)`),
+        chalk.gray(`blank for all, table names separated by spaces, or...\n- \`wildcard*\` table name matching\n- \`>m\` for all tables starting at M (greater or equal to M)`),
         ...tablePromptOptions,
         ``
     ], '')
@@ -178,6 +180,42 @@ module.exports = function syncDB({
         dumpOptions.push('--replace', '--no-create-info')
     }
 
+    let customWhere = ''
+    if( tables.length == 1 && !historyDays ){
+
+        let thisTableClauses = tableClauses[tables[0]] || []
+        
+        let useClause = await prompt([
+            chalk.red(`🔎 Use table where clause?`),
+            chalk.gray(`  : All data`),
+            chalk.gray(`c : Custom clause`),
+            ...thisTableClauses.map((d,i)=> chalk.gray(`${i} : ${d.label}`) ),
+            ``
+        ])
+
+        if( useClause == 'c' ){
+            customWhere = await prompt([
+                chalk.red(`🔎 Custom where clause?\n`),
+            ], customWhere)
+
+        }else if( useClause ){
+            useClause = thisTableClauses[parseInt(useClause)] || ''
+
+            if( useClause && useClause.where ){
+                customWhere = await useClause.where({prompt, shell}).catch(err=>{
+                    reject(err)
+                })
+            }
+        }
+
+        if( !customWhere )
+            customWhere = ''
+        else{
+            // replace data without dropping existing data
+            dumpOptions.push('--replace', '--no-create-info')
+        }
+    }
+
     // create regex tester for structure only tables
     let structureOnlyPatt = tablesStructureOnly ? new RegExp(tablesStructureOnly.map(patt=>{
         return '^'+patt.replace(/^\*|\*$/, '.+')+'$'
@@ -228,12 +266,16 @@ module.exports = function syncDB({
                 title += chalk.magenta(` [${historyDays} day history]`)
                 options.push(`"--where=${historyField} > now() - interval ${historyDays} day"`)
             }
+        }else if(customWhere){
+            options.push(`"--where=${customWhere}"`)
+            title += chalk.gray(` WHERE: '${customWhere}'`)
         }
         options = options.join(' ')
 
         let _silent = silent ? '2>/dev/null' : ''
         let cmd = [
             `mysqldump ${PULL} ${table} ${options} ${_silent}`, // dump the data
+            // TODO: make this optional
             `pv --name "${title}" -t -b -r`, // show a timer, bytes transfer, and rate of transfer
             `mysql ${PUSH} ${_silent}` // import the data
         ].join(' | ')

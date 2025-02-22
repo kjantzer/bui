@@ -21,6 +21,20 @@ function prompt(question, defaultVal){
     })
 }
 
+prompt.ID = async function(msg='ID', {type='int'}={}){
+
+    let id = await prompt(msg+': ')
+    
+    if( type == 'int' )
+        id = parseInt(id)
+
+    if( !id ){
+        throw new Error(`Invalid ${msg}`)
+    }
+
+    return id
+}
+
 
 function shell(cmd, {stdio='pipe'}={}){
     return new Promise((resolve, reject)=>{
