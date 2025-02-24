@@ -1,7 +1,15 @@
 /*
+    # requireNonJS
+    
     Require certain non-JS files 
 
-    NOTE: apparently this is deprecated now :shrug:
+    ```js
+    require(bui`server/util/requireNonJS`)(['html', 'svg', 'sql'])
+
+    const svg = require('./some-file.svg') // svg string
+    ```
+
+    > NOTE: apparently this is deprecated now :shrug:
 */
 const fs = require('fs')
 
