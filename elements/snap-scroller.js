@@ -2,7 +2,7 @@
     # Snap Scroller
 
     ```html-preview
-    <b-snap-scroller dir="x" scale style="--gap: 1em; --size: 66%;">
+    <b-snap-scroller dir="x" style="--gap: 1em; --size: 66%;">
         <div style="background: gray; height: 200px;">Item 1</div>
         <div style="background: gray; height: 200px;">Item 2</div>
         <div style="background: gray; height: 200px;">Item 3</div>
