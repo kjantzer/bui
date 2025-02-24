@@ -262,13 +262,13 @@ customElements.define('b-tabs', class extends LitElement {
         }
     `}
 
-    firstUpdated(){
-        this._firstUpdated = true
-    }
+    // firstUpdated(){
+    //     this._firstUpdated = true
+    // }
 
     renderTabBar(){  
 
-        if( !this._firstUpdated ) return
+        // if( !this._firstUpdated ) return
         
         let tabBarName = this.getAttribute('tab-bar') || 'b-tab-bar-default'
 
