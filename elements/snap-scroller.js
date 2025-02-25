@@ -210,7 +210,7 @@ customElements.define('b-snap-scroller', class extends LitElement{
     }
 
     next(){
-        let nextEl = this.scrollerChildren.find(el=>this.offset(el) > this.indexAt)
+        let nextEl = this.scrollerChildren.find(el=>this.offset(el) - (this.clientSize(el)/4) > this.indexAt)
         this.scrollTo(nextEl)
     }
 
@@ -225,7 +225,7 @@ customElements.define('b-snap-scroller', class extends LitElement{
 
         el?.scrollIntoView({
             behavior: 'smooth',
-            block: 'nearest',
+            [this.dir=='x'?'block':'inline']: 'nearest',
             [this.dir=='x'?'inline':'block']: this.align
         });
     }
