@@ -7,7 +7,7 @@
     // import this early in your code to capture the installer event
     import 'bui/app/installer'
 
-    //... somehwere else (say your app header)
+    //... somewhere else (say your app header)
     import AppInstaller from 'bui/app/installer'
 
     html`
