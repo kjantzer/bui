@@ -150,6 +150,10 @@ customElements.define('b-tabs', class extends LitElement {
         :host([layout="left"]) .tab-bar { border-right: solid 1px var(--border-color); }
         :host([layout="right"]) .tab-bar { border-left: solid 1px var(--border-color); }
 
+        :host([layout="bottom"]) .tab-bar {
+            height: max-content;
+        }
+
         @media (max-width: 550px) {
 
             :host([layout="left"]),
