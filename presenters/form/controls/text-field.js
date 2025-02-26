@@ -678,8 +678,10 @@ class TextFieldElement extends HTMLElement {
 	focus(opts={}){
 		if( this.input )
 			this._input.focus()
-		else
+		else{
 			this.select('end')
+			this._editor.focus()
+		}
 
 		if( opts && opts.select )
 			this.select(opts.select===true?'all':opts.select)
