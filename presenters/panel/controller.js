@@ -121,8 +121,8 @@ class PanelController extends LitElement {
                 PanelControllers[this.name] = this
         }
 
-        // TODO: support this in Android? make feature opt in?
-        if( this.name == 'root' && device.isiOS ){
+        // TODO: support this in Android?
+        if( this.name == 'root' && device.isiOS && this.hasAttribute('overscroll') ){
 
             const overscrollEl = overscroll.watch()
             let topPanel = null
