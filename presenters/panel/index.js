@@ -775,9 +775,21 @@ export class Panel extends LitElement {
             padding-top: env(safe-area-inset-top);
         } */
 
+       :host([type="actionsheet"][anchor="top"]) > main {
+            top: calc(-1 * env(safe-area-inset-top));
+       }
+
+       :host([type="actionsheet"][anchor="top"]) > main ::slotted(*) {
+            padding-top: env(safe-area-inset-top);
+        }
+
         :host([type="actionsheet"][anchor="bottom"]) > main {
+            padding-bottom: 0;
+        }
+
+        :host([type="actionsheet"][anchor="bottom"]) > main ::slotted(*) {
             padding-bottom: env(safe-area-inset-bottom);
-            /* border-radius: var(--radius) var(--radius) 0 0; */
+            /*margin-bottom: calc(-1 * env(safe-area-inset-bottom));*/
         }
 
         :host([open]) {
