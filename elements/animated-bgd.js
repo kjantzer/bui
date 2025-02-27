@@ -111,6 +111,7 @@ customElements.define('b-animated-bgd', class extends LitElement{
         if( !this.active )
             setTimeout(()=>{
                 this.active = Array.from(this.children).find(el=>el.hasAttribute?.('active'))
+                this.active?.scrollIntoView()
             })
     }
 

@@ -80,6 +80,17 @@ customElements.define('b-table-row', class extends LitElement{
         :host-context(b-table:not(:hover)) ::slotted([icon="add_box"][cell="no"]:not(.popover-open)) {
             display: none;
         }
+
+        ::slotted([sticky]) {
+            position: sticky;
+            left: 0;
+            background: var(--theme-bgd);
+        }
+
+        :host([slot="header"]) ::slotted([sticky]) {
+            background: var(--theme-bgd-accent);
+        }
+        
     `
 
     render(){return html`

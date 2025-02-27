@@ -1,5 +1,6 @@
 import BaseTabBar, {html, css} from './_base'
 import '../../../elements/animated-bgd'
+import scrollbars from '../../../helpers/scrollbars'
 
 customElements.define('b-tab-bar-pill-bar', class extends BaseTabBar{
 
@@ -19,7 +20,7 @@ customElements.define('b-tab-bar-pill-bar', class extends BaseTabBar{
 
         .bar {
             display: flex;
-            flex-wrap: wrap;
+            overflow: auto;
             background: var(--theme-bgd-accent);
             border-radius: 1.5em;
             width: 100%;
@@ -29,7 +30,10 @@ customElements.define('b-tab-bar-pill-bar', class extends BaseTabBar{
             position: relative;
         }
 
+        ${scrollbars.hide('.bar')}
+
         .bar b-btn{
+            flex-shrink: 0;
             --bgdColor: none;
             text-align: center;
             height: 1.8em;
