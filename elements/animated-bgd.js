@@ -110,7 +110,12 @@ customElements.define('b-animated-bgd', class extends LitElement{
     firstUpdated(){
         if( !this.active )
             setTimeout(()=>{
-                this.active = Array.from(this.children).find(el=>el.hasAttribute?.('active'))
+                this.active = Array.from(this.children).find(el=>el.hasAttribute?.('active')||el.active)
+                
+                // slotted element is specifying the active element (ie: radio-group)
+                if( this.active.active )
+                    this.active = this.active.active 
+
                 this.active?.scrollIntoView()
             })
     }
