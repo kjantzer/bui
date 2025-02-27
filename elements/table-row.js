@@ -85,6 +85,7 @@ customElements.define('b-table-row', class extends LitElement{
             position: sticky;
             left: 0;
             background: var(--theme-bgd);
+            z-index: 20;
         }
 
         :host([slot="header"]) ::slotted([sticky]) {
