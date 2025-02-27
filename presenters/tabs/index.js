@@ -398,6 +398,14 @@ customElements.define('b-tabs', class extends LitElement {
 
         if( view.parentElement != this && !view.slot )
             this.appendChild( view )
+
+        
+    }
+
+    scrollToTop(){
+        let view = this.views.active?.view
+        if( view )
+            view.scrollTop = 0
     }
 
 })
