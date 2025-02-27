@@ -133,6 +133,7 @@ customElements.define('b-list', class extends LitElement {
         slot[name="footer"] {
             display: grid;
             overflow-x: auto;
+            min-height: 0;
         }
 
         slot[name="header"]::slotted(*),

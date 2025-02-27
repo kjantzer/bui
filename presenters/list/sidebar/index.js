@@ -54,7 +54,7 @@ customElements.define('b-list-sidebar', class extends LitElement{
 
         :host([slot="header"]) {
             width: unset;
-            height: 40vh;
+            
             order: -20 !important;
             
             padding: .5em;
