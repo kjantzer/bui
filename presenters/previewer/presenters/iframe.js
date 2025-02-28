@@ -3,7 +3,7 @@ import { LitElement, html, css } from 'lit'
 customElements.define('b-previewer-iframe', class extends LitElement{
 
     static useFor(ext){
-        return ['pdf', 'mp3', 'mp4', 'webm', 'm4a', 'doc', 'docx', 'xlsx', 'xls', 'html'].includes(ext?.toLowerCase())
+        return ['pdf', 'mp3', 'mp4', 'webm', 'wav', 'm4a', 'doc', 'docx', 'xlsx', 'xls', 'html'].includes(ext?.toLowerCase())
     }
 
     static get styles(){return css`
