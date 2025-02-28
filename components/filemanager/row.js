@@ -139,7 +139,7 @@ customElements.define('b-file-row', class extends LitElement{
     render(){return html`
         <b-paper compact ?overshadow=${this.overshadow}>
 
-            <b-empty-state class="drag-msg" md>
+            <b-empty-state class="drag-msg" md overlay>
                 <b-text class="drag">
                     <b-text xl><b-icon name="download"></b-icon></b-text>
                     <br>

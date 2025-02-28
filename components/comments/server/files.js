@@ -5,7 +5,7 @@ module.exports = class CommentFiles extends FileManager {
 
     static set opts(val){ opts = val }
 
-    get ASSETS_PATH(){ return opts?.ASSETS_PATH || '/mnt/data'}
+    get STORAGE_PATH(){ return opts?.STORAGE_PATH || '/mnt/data'}
     get rootDir(){ return opts?.rootDir || '' }
 
     get group(){ return 'comments' } // track all files under the "comments" group

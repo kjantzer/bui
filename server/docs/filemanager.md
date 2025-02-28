@@ -20,7 +20,7 @@ module.exports = class Attachements extends FileManager {
         ]
     }}
 
-    get ASSETS_PATH(){ return '/mnt/data' }
+    get STORAGE_PATH(){ return '/mnt/data' }
     get group(){ return 'attachments' }
     // waitForPreviewGeneration = false
     // skipDuplicates = false
