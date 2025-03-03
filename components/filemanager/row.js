@@ -162,7 +162,7 @@ customElements.define('b-file-row', class extends LitElement{
                     ${this.model.isVideo?html`
                     
                         <b-label slot="top-right" filled="black" xs part="duration">
-                            <b-timer time=${this.model.duration*1000}></b-timer>
+                            <b-timer .startAt=${this.model.duration*1000} fixed></b-timer>
                         </b-label>
 
                         <b-label slot="top-left" xs filled="black" part="resolution" ?hidden=${!this.model.resolution}>
@@ -173,7 +173,7 @@ customElements.define('b-file-row', class extends LitElement{
                     ${this.model.isAudio?html`
                     
                         <b-label slot="top-right" filled="black" xs part="duration">
-                            <b-timer time=${this.model.duration*1000}></b-timer>
+                            <b-timer .startAt=${this.model.duration*1000} fixed></b-timer>
                         </b-label>
 
                     `:''}
