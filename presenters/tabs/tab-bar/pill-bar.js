@@ -8,7 +8,7 @@ customElements.define('b-tab-bar-pill-bar', class extends BaseTabBar{
     
         :host(.tab-bar) {
             display: flex;
-            border-bottom: none !important;
+            border-bottom: none;
             width: auto;
             margin: 0 auto;
         }
@@ -21,7 +21,7 @@ customElements.define('b-tab-bar-pill-bar', class extends BaseTabBar{
         .bar {
             display: flex;
             overflow: auto;
-            background: var(--theme-bgd-accent);
+            background: var(--pill-bar-bgd, var(--theme-bgd-accent));
             border-radius: 1.5em;
             width: 100%;
             padding: .25em;
@@ -74,3 +74,5 @@ customElements.define('b-tab-bar-pill-bar', class extends BaseTabBar{
         </b-btn>
     `}
 })
+
+export default customElements.get('b-tab-bar-pill-bar')

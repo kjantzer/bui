@@ -175,9 +175,9 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             `:html`
 
                 ${!this.icon&&typeof this.tabView.icon !== 'string'?html`
-                    <span slot="icon">${this.tabView.icon}</span>
+                    <span slot="icon" part="icon">${this.tabView.icon}</span>
                 `:''}
-                <span>${this.label||this.tabView.toolbarTitle}</span>
+                <span part="label">${this.label||this.tabView.toolbarTitle}</span>
 
             `}
 
@@ -188,4 +188,4 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
 
 })
 
-export default customElements.get('b-app-tab-bar')
+export default customElements.get('b-app-tab-bar-btn')

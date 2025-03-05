@@ -4,6 +4,7 @@ import {mediaQuery} from '../../util/mediaQueries'
 import scrollbars from '../../helpers/scrollbars'
 import './tab-bar-btn'
 import BaseTabBar from '../../presenters/tabs/tab-bar/_base'
+import '../../helpers/lit/emitEvent'
 
 customElements.define('b-app-tab-bar', class extends BaseTabBar{
 
@@ -92,9 +93,7 @@ customElements.define('b-app-tab-bar', class extends BaseTabBar{
 
                 <slot name="before:${v.id}"></slot>
 
-                <b-app-tab-bar-btn .tabView=${v} ?active=${v.active} @click=${this.onClick} .model=${this.model}>
-                    <slot slot="outer" name="inside:${v.id}"></slot>
-                </b-app-tab-bar-btn>
+                ${this.renderBtn(v)}
 
                 <slot name="after:${v.id}"></slot>
 
@@ -102,9 +101,7 @@ customElements.define('b-app-tab-bar', class extends BaseTabBar{
         `)}
 
         ${this.shouldShowSearch?html`
-            <b-app-tab-bar-btn @click=${this.focusSearch} icon="search" class="search-btn">
-                
-            </b-app-tab-bar-btn>
+            <b-app-tab-bar-btn @click=${this.focusSearch} icon="search" class="search-btn"></b-app-tab-bar-btn>
         `:''}
 
         
@@ -115,6 +112,20 @@ customElements.define('b-app-tab-bar', class extends BaseTabBar{
         <b-btn icon="unfold_more" hidden pill black class="maximize" @click=${this.toggleMinimize}></b-btn>
         `:''}
     `}
+
+    renderBtn(view){ 
+
+        let btn = html`
+        <b-app-tab-bar-btn .tabView=${view} ?active=${view.active} @click=${this.onClick}>
+            <slot slot="outer" name="inside:${view.id}"></slot>
+        </b-app-tab-bar-btn>
+        `
+
+        if( this.tabBarBtnRender )
+            return this.tabBarBtnRender(btn, view, this.onClick)
+
+        return btn
+    }
 
     toggleMinimize(){
         this.toggleAttribute('minimized', !this.hasAttribute('minimized'))
@@ -131,7 +142,7 @@ customElements.define('b-app-tab-bar', class extends BaseTabBar{
     }
 
     onClick(e){
-        this.onMenuClick(e)
+        this.emitEvent('menu-click', {target: e.currentTarget, tabView: e.currentTarget.tabView})
     }
 
 })

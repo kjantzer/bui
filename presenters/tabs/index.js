@@ -296,6 +296,7 @@ customElements.define('b-tabs', class extends LitElement {
             this.__tabBar.host = this
             this.__tabBar.model = this.model
             this.__tabBar.views = this.views
+            this.__tabBar.tabBarBtnRender = this.tabBarBtnRender
 
             this.__tabBar.onMenuClick = this.menuClick.bind(this)
 
@@ -316,12 +317,18 @@ customElements.define('b-tabs', class extends LitElement {
 
     render(){return html`
         <slot name="before"></slot>
-        <slot name="tabbar">${this.renderTabBar()}</slot>
+        <slot name="tabbar" @menu-click=${this._onMenuClick}>${this.renderTabBar()}</slot>
         <slot class="content" part="content"></slot>
         <slot name="empty">
             <b-empty-state ?hidden=${this.views.size>0}>No views</b-empty-state>
         </slot>
     `}
+
+    _onMenuClick(e){
+        this.menuClick({
+            currentTarget: e.detail.target,
+        })
+    }
 
     menuClick(e){
         let oldVal = this.active
