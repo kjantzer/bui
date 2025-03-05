@@ -9,12 +9,14 @@ customElements.define('b-tabs', class extends LitElement {
     static get properties(){return {
         key: {type: String, reflect: true},
         layout: {type: String, reflect: true},
+        layoutMobile: {type: String, reflect: true},
     }}
 
     constructor(){
         super()
         this.key = ''
         this.layout = 'top'
+        this.layoutMobile = 'top'
     }
 
     setupMutationObserver(){
@@ -91,12 +93,8 @@ customElements.define('b-tabs', class extends LitElement {
         }
 
         .tab-bar {
-            display: flex;
             font-size: var(--menuFontSize);
             min-width: 0;
-            overflow: hidden;
-            overflow-y: auto;
-            background: var(--menuBgd);
             order: var(--tab-bar-order, 0);
         }
 
@@ -105,15 +103,6 @@ customElements.define('b-tabs', class extends LitElement {
         }
 
         .tab-bar::-webkit-scrollbar { display: none; width: 0 !important; height: 0 !important; }
-
-        
-
-        :host([layout="left"]) .tab-bar,
-        :host([layout="right"]) .tab-bar{
-            overflow-y: auto;
-        }
-
-        
 
         :host([sticky]) {
             --menuBgd: #fff;
@@ -130,11 +119,6 @@ customElements.define('b-tabs', class extends LitElement {
         :host([layout="left"]) { grid-template-columns: auto 1fr; }
         :host([layout="right"]) { grid-template-columns: 1fr auto; }
 
-        :host([layout="left"]) .tab-bar,
-        :host([layout="right"]) .tab-bar {
-            flex-direction: column;
-        }
-
         :host([layout="top"]),
         :host([layout="left"]) {
             --tab-bar-order: 1;
@@ -145,30 +129,27 @@ customElements.define('b-tabs', class extends LitElement {
             --tab-bar-order: 3;
         }
 
-        :host([layout="top"]) .tab-bar { border-bottom: solid 1px var(--border-color); }
-        :host([layout="bottom"]) .tab-bar { border-top: solid 1px var(--border-color); }
-        :host([layout="left"]) .tab-bar { border-right: solid 1px var(--border-color); }
-        :host([layout="right"]) .tab-bar { border-left: solid 1px var(--border-color); }
-
         :host([layout="bottom"]) .tab-bar {
             height: max-content;
         }
 
-        @media (max-width: 550px) {
+        @media (max-width: 899px) and (orientation:portrait) {
 
-            :host([layout="left"]),
-            :host([layout="right"]) {
-                grid-template-columns: none;
-                grid-template-rows: auto 1fr;
+            :host([layoutmobile="top"]) { grid-template-rows: auto 1fr; grid-template-columns: 1fr; }
+            :host([layoutmobile="bottom"]) { grid-template-rows: 1fr auto; grid-template-columns: 1fr; }
+            :host([layoutmobile="left"]) { grid-template-rows: 1fr; grid-template-columns: auto 1fr; }
+            :host([layoutmobile="right"]) { grid-template-rows: 1fr; grid-template-columns: 1fr auto; }
+
+            :host([layoutmobile="top"]),
+            :host([layoutmobile="left"]) {
+                --tab-bar-order: 1;
             }
 
-            :host([layout="left"]) .tab-bar,
-            :host([layout="right"]) .tab-bar {
-                flex-direction: row;
-                overflow: auto;
-                -webkit-overflow-scrolling: touch;
-                border-bottom: solid 1px rgba(0,0,0,.1);
+            :host([layoutmobile="bottom"]),
+            :host([layoutmobile="right"]) {
+                --tab-bar-order: 3;
             }
+
         }
 
         /*
@@ -320,6 +301,7 @@ customElements.define('b-tabs', class extends LitElement {
 
             this.__tabBar.classList.add('tab-bar')
             this.__tabBar.setAttribute('layout', this.layout)
+            this.__tabBar.setAttribute('layoutmobile', this.layoutMobile)
             this.__tabBar.setAttribute('minimizable', this.minimizable)
             this.__tabBar.requestUpdate?.() // may not be custom element
            
@@ -333,6 +315,7 @@ customElements.define('b-tabs', class extends LitElement {
     }
 
     render(){return html`
+        <slot name="before"></slot>
         <slot name="tabbar">${this.renderTabBar()}</slot>
         <slot class="content" part="content"></slot>
         <slot name="empty">

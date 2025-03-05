@@ -4,7 +4,7 @@ import scrollbars from '../../../helpers/scrollbars'
 
 customElements.define('b-tab-bar-pill-bar', class extends BaseTabBar{
 
-    static styles = css`
+    static styles = [super.styles, css`
     
         :host(.tab-bar) {
             display: flex;
@@ -60,7 +60,7 @@ customElements.define('b-tab-bar-pill-bar', class extends BaseTabBar{
             color: var(--animated-bgd-text-color);
         }
         
-    `
+    `]
 
     renderLoop(){ return html`
         <b-animated-bgd class="bar" color="theme-gradient" shadow>

@@ -121,29 +121,6 @@ customElements.define('b-app', class extends LitElement {
         b-tabs-router > b-hr{
             display: none;
         }
-
-        ${mediaQuery('b-app-landscape', css`
-            b-tabs-router {
-                grid-template-columns: auto 1fr;
-                --b-app-tab-bar-btn-min-width: 60px;
-            }
-
-            b-tabs-router > b-hr {
-                display: inline-block;
-                margin: 0;
-            }
-
-            b-panel-toolbar::part(close-btn) {
-                height: 60px;
-                margin: -2em 0px -2em 1em;
-                top: -0.25em;
-            }
-
-            b-root-titlebar::part(close-btn) {
-                height: 60px;
-                margin: -1em 1em -1em 0.5em;
-            }
-        `)}
     `}
 
     get key(){ return 'app-view' }
@@ -181,7 +158,8 @@ customElements.define('b-app', class extends LitElement {
 
     render(){return html`
         <b-tabs-router 
-            layout="bottom"
+            layout="left"
+            layoutmobile="bottom"
             key="${this.key}"
             tab-bar="${this.tabBar}" 
             .model=${this.model}

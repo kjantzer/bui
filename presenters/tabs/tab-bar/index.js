@@ -1,10 +1,11 @@
 import { LitElement, html, css } from 'lit'
+import BaseTabBar from './_base'
 
-customElements.define('b-tab-bar-default', class extends LitElement{
+customElements.define('b-tab-bar-default', class extends BaseTabBar{
 
-    static styles = css`
+    static styles = [super.styles, css`
         :host {
-            display: block;
+            display: flex;
             position:relative;
         }
 
@@ -14,18 +15,13 @@ customElements.define('b-tab-bar-default', class extends LitElement{
             cursor: pointer;
             box-sizing: border-box;
             color: var(--inactiveColor);
+            white-space: nowrap;
         }
 
         .tab-bar-item[active] {
             color: var(--activeColor)
         }
 
-        
-        :host([layout="top"]) .tab-bar,
-        :host([layout="bottom"]) .tab-bar {
-            overflow-x: auto;
-            overflow-y: hidden;
-        }
 
         :host([layout="top"]) .tab-bar-item,
         :host([layout="bottom"]) .tab-bar-item {
@@ -38,7 +34,8 @@ customElements.define('b-tab-bar-default', class extends LitElement{
             justify-content: center;
         }
 
-        :host([layout="top"]) .tab-bar-item { border-bottom: solid 2px transparent; }
+        /* FIXME: */
+        /*:host([layout="top"]) .tab-bar-item { border-bottom: solid 2px transparent; }
         :host([layout="bottom"]) .tab-bar-item { border-top: solid 2px transparent; }
         :host([layout="left"]) .tab-bar-item { border-right: solid 2px transparent; }
         :host([layout="right"]) .tab-bar-item { border-left: solid 2px transparent; }
@@ -52,8 +49,9 @@ customElements.define('b-tab-bar-default', class extends LitElement{
         :host([layout="bottom"]) .tab-bar-item[active] { border-top-color: currentColor; }
         :host([layout="left"]) .tab-bar-item[active] { border-right-color: currentColor; }
         :host([layout="right"]) .tab-bar-item[active] { border-left-color: currentColor; }
+        */
 
-        @media (max-width: 550px) {
+        /*@media (max-width: 550px) {
 
             :host([layout="left"]) .tab-bar-item { border-right: none; }
             :host([layout="right"]) .tab-bar-item { border-left: none; }
@@ -69,8 +67,8 @@ customElements.define('b-tab-bar-default', class extends LitElement{
 
             :host([layout="left"]) .tab-bar-item[active], 
             :host([layout="right"]) .tab-bar-item[active] { border-bottom-color: currentColor; }
-        }
-    `
+        }*/
+    `]
 
     render(){return html`
         <slot name="before"></slot>

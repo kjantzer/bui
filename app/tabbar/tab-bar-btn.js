@@ -25,11 +25,12 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             padding-top: .25em;
             padding-bottom: .25em;
             --b-btn-stacked-icon-opacity: var(--b-app-tab-bar-bgd-stacked-icon-opacity, .3);
+            
 
             border-radius: var(--btn-radius);
             margin: .25em 0;
             min-width: var(--b-app-tab-bar-btn-min-width, 70px);
-            flex-grow: 1;
+            /*flex-grow: 1;*/
             flex-shrink: 0;
         }
 
@@ -70,13 +71,60 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             --hoverBgdColor: rgba(var(--theme-text-rgb), .1);
         }
 
-        :host([part="close-btn"]) b-btn {
+        :host([part="close-btn"]),
+        :host(.search-btn) {
+            position: sticky;
+            right: 0;
+            top: 0;
+        }
+
+        :host([part="close-btn"]) b-btn,
+        :host(.search-btn) b-btn  {
             flex-grow: 0;
             margin: 0;
             border-radius: 0px;
-            box-shadow: var(--theme-shadow-2);
             min-width: 0;
-            border-right: solid 1px var(--light-text);
+            /*border-right: solid 1px var(--light-text);*/
+
+            position: sticky;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            
+            background: var(--b-app-tab-bar-sticky-bgd, var(--theme-bgd));
+
+            height: 3em;
+            
+            min-width: 3em;
+        }
+
+        :host(.search-btn) {
+            margin-top: auto;
+        }
+
+        :host(.search-btn) b-btn {
+            left: auto;
+            right: 0;
+        }
+
+        @media (max-width: 899px) and (orientation:portrait) {
+
+            :host([part="close-btn"]) b-btn,
+            :host(.search-btn) b-btn  {
+                height: calc(100% + env(safe-area-inset-bottom));
+                box-shadow: var(--theme-shadow-2);
+                padding-bottom: env(safe-area-inset-bottom);
+                margin-bottom: calc(env(safe-area-inset-bottom) * -1);
+            }
+
+            :host(.search-btn) {
+                margin-left: auto;
+                margin-top: 0;
+            }
+
+            :host(.search-btn) b-btn {
+                margin-left: .5em;
+            }
         }
 
         :host([part="close-btn"]) b-btn::part(icon) {
@@ -98,12 +146,7 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
                 line-height: 1em;
                 font-size: var(--font-size-sm);
                 margin-top: .5em;
-            }
-
-            :host([part="close-btn"]) b-btn {
-                border-right: 0;
-                height: 2.43em; /* NOTE: bit hacky */
-                box-shadow: var(--theme-shadow-0);
+                max-width: min-content;
             }
         `)}
     `
