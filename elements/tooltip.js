@@ -149,15 +149,15 @@ customElements.define('b-tooltip', class extends LitElement{
         super.connectedCallback()
 
         setTimeout(()=>{
-            this.triggerElement.addEventListener('mouseleave', this.clearTrigger)
-            this.triggerElement.addEventListener('mouseenter', this.onTrigger)
+            this.triggerElement?.addEventListener('mouseleave', this.clearTrigger)
+            this.triggerElement?.addEventListener('mouseenter', this.onTrigger)
         })
     }
 
     disconnectedCallback(){
         super.disconnectedCallback()
-        this.triggerElement.removeEventListener('mouseleave', this.clearTrigger)
-        this.triggerElement.removeEventListener('mouseenter', this.onTrigger)
+        this.triggerElement?.removeEventListener('mouseleave', this.clearTrigger)
+        this.triggerElement?.removeEventListener('mouseenter', this.onTrigger)
         this._triggerElement = null
     }
 
