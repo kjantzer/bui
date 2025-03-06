@@ -64,7 +64,8 @@ const device = {
 
     get isiOS(){
         return /iPad|iPhone|iPod/.test(UA)
-        || (device.isMac && navigator.standalone !== undefined ) // iPadOS 13+
+        // FIXME: matches desktop; is this really still needed?
+        //|| (device.isMac && navigator.standalone !== undefined ) // iPadOS 13+
     },
 
     get isiPad(){
