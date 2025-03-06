@@ -24,7 +24,7 @@ customElements.define('b-app-tab-bar', class extends BaseTabBar{
                 --b-app-tab-bar-bgd: var(--theme-gradient);
                 --b-app-tab-bar-text-color: var(--dark-text);
                 --b-app-tab-bar-bgd-stacked-icon-opacity: .75;
-                --b-app-tab-bar-sticky-bgd: hsl( from var(--theme) h 100% calc(l - 15));
+                --b-app-tab-bar-sticky-bgd: color-mix(in srgb, var(--theme),black 20%);
             }
         }
 
