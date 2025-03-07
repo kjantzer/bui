@@ -408,7 +408,8 @@ slot[name="help"] {
 	border-bottom-color: var(--borderColor);
 }
 
-:host([note]:not([empty])) {
+:host([note]:not([empty])),
+:host([note="always"]) {
 	background: var(--b-paper-postit-bgd, var(--amber-100));
 	padding: .5em;
 	--selectionBgd: white;
