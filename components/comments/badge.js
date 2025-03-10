@@ -8,7 +8,8 @@ import CommentsView from './index'
 customElements.define('b-comments-badge', class extends CommentsView{
 
     static properties = {
-        color: {type: 'String'}
+        color: {type: String},
+        muted: {type: Boolean, reflect: true}
     }
 
     static get styles(){return css`
@@ -30,7 +31,7 @@ customElements.define('b-comments-badge', class extends CommentsView{
         }
 
         b-label {
-            padding: 0.15em .3em;
+            padding: var(--padding, 0.15em .3em);
         }
     `}
 
@@ -41,7 +42,8 @@ customElements.define('b-comments-badge', class extends CommentsView{
 
     render(){return html`
 
-        <b-label badge="${this.coll.numUnread?'red':(this.color||'white')}" part="badge">
+        <b-label badge="${this.coll.numUnread?'red':(this.color||'white')}" part="badge" ?muted=${this.muted}>
+            <slot></slot>
             ${this.coll.length}
             <!-- <b-label badge="red" dot></b-label> -->
         </b-label>
