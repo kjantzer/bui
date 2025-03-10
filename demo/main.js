@@ -12,7 +12,7 @@ customElements.define('demo-main', class extends App{
 
     static styles = [App.styles, css`
         :host {
-            background-color: var(--theme-bgd);
+            --b-app-tab-bar-bgd: var(--theme-bgd) !important;
         }
     `]
 
