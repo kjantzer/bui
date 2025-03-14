@@ -203,7 +203,7 @@ customElements.define('b-global-search', class extends RoutedView {
         this.expanded = this.$$('b-toggle-view')?.active
     }
 
-    get shouldAutoOpen(){ return this.list?.filters.get('auto_open').value !== false }
+    get shouldAutoOpen(){ return this.list?.filters.get('auto_open')?.value !== false }
 
     render(){return html`
         <b-toggle-view key="global-search:expanded" type="expanded"></b-toggle-view>
