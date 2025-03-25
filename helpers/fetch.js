@@ -10,7 +10,15 @@ export const fetchJSON = function(url, opts={}){
         opts.body = JSON.stringify(opts.body)
 
     return fetch(url, opts)
-    .then(r=>r.json())
+    .then(async r=>{
+        let str = await r.text()
+        try{
+            return JSON.parse(str)
+        }catch(e){
+            console.error(e)
+            return str
+        }
+    })
     .then(r=>{
         if( r && r.error ){
             if( Error.fromAPI )
