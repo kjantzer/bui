@@ -965,6 +965,19 @@ export class Panel extends LitElement {
             border-radius: var(--b-panel-inset-radius, 12px);
         }
 
+        :host([inset][height="100%"][anchor="left"]) main {
+            height: calc(100% - (calc(2 * var(--inset-margin, .5em)))) !important;
+            width: calc(100% - var(--inset-margin, .5em)) !important;
+            left: var(--inset-margin, .5em);
+            top: var(--inset-margin, .5em);
+            border-radius: var(--b-panel-inset-radius, 12px);
+            --radius: var(--b-panel-inset-radius, 12px);
+        }
+
+        :host([inset][height="100%"][anchor="left"]) main ::slotted(*) {
+            border-radius: var(--b-panel-inset-radius, 12px);
+        }
+
         .inlinehtml {
             display: contents;
         }

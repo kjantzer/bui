@@ -150,7 +150,8 @@ customElements.define('b-list', class extends LitElement {
             height: 0 !important;
         }
 
-        slot[name="sidebar:right"]::slotted(b-panels) {
+        slot[name="sidebar:right"]::slotted(b-panels),
+        slot[name="sidebar:left"]::slotted(b-panels) {
             background: linear-gradient(to bottom, var(--theme-bgd-accent), transparent);
         }
 
