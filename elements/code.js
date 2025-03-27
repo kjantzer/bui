@@ -83,7 +83,7 @@ customElements.define('b-code', class extends LitElement{
     }
 
     render(){return html`
-        <code><slot></slot></code>
+        <code part="code"><slot></slot></code>
     `}
 
 })
