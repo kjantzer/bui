@@ -509,7 +509,7 @@ export default class BtnElement extends LitElement {
 
         if( this.href ){
             e?.stopPropagation()
-            if( this.getAttribute('target') == '_blank' )
+            if( this.getAttribute('target') == '_blank' || e.ctrlKey || e.metaKey )
                 window.open(this.href)
             else
                 window.location = this.href
