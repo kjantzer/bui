@@ -6,6 +6,12 @@
     ```js
     let queue = new TaskQueue({
         autoStart: false // default true
+        autoReload: true (use all defaults, or set to false)
+        autoReload: {
+            delay: 60 * 1000, // 1 minute
+            whenEmpty: true // only reload if queue is empty
+        },
+        delay: false, // delay before processing next task (default none)
         progress: ({action, msg, data})=>{
             console.log(action)
         },
@@ -20,7 +26,11 @@
 
     queue.start()
     queue.stop()
+
+    queue.load() // force a reload of the queue (if you know new tasks are available)
     ```
+
+    If you dont want to call `.load()` you can choose to set the `autoReload` option which will contiue to call `load()` after a delay
 */
 module.exports = class TaskQueue {
 
@@ -30,6 +40,16 @@ module.exports = class TaskQueue {
         this._queue = null
         this.start = this.start.bind(this)
         this.run = this.run.bind(this)
+
+        // default to auto reload
+        if( opts?.autoReload !== false )
+            this.opts.autoReload = {
+                delay: 60 * 1000, // 1 minute
+                whenEmpty: true,
+
+                // could have set `true` (use all defaults) or provided custom opts
+                ...(typeof this.opts.autoReload === 'object' ? this.opts.autoReload : {})
+            }
         
         if( opts?.autoStart !== false )
             setImmediate(this.start)
@@ -61,10 +81,8 @@ module.exports = class TaskQueue {
     async load(){
         let len = this._queue?.length || 0
         
+        this._queueLoadedAt = new Date().getTime()
         this._queue = await this.opts.load?.()
-
-        // TODO: possible we reloaded queue while a task is running
-        // we should make sure to remove the current task from the reloaded queue
 
         if( !this._queue?.length )
             this._queue = null // means no more to load (paginated)
@@ -82,6 +100,18 @@ module.exports = class TaskQueue {
                 await this.process(task)
             // attempt to load next batch of paginated tasks
             else 
+                await this.load()
+        }
+
+        autoreload: if( this.opts.autoReload ){
+
+            // dont reload until queue is empty
+            if( this.opts.autoReload.whenEmpty && this._queue?.length ) 
+                break autoreload
+
+            let tsElapsed = new Date().getTime() - this._queueLoadedAt
+
+            if( tsElapsed > this.opts.autoReload.delay )
                 await this.load()
         }
 
