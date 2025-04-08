@@ -245,7 +245,7 @@ module.exports = class DB {
 
         vals.forEach(valsRow=>{
             valsRow.forEach((val, i)=>{
-                if( val && typeof val == 'object' )
+                if( val && typeof val == 'object' && !val.toSqlString )
                     valsRow[i] = JSON.stringify(val)
             })
         })
