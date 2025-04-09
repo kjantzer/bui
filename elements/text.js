@@ -272,7 +272,11 @@ customElements.define('b-text', class extends LitElement{
         if( href ){
             e.stopPropagation()
             if( !href.match(/^mailto/) && href.match(/@/) ) href = 'mailto:'+href
-            location.href = href
+
+            if( this.getAttribute('target') == '_blank' || e.ctrlKey || e.metaKey )
+                window.open(href, '_blank')
+            else
+                location.href = href
         }
 
         // Blackstone app pattern
