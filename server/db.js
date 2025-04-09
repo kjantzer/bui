@@ -243,12 +243,13 @@ module.exports = class DB {
         let vals = rows = rows.map(r=>Object.values(r))
         cols = cols.map(col=>this.escapeId(col))
 
-        vals.forEach(valsRow=>{
-            valsRow.forEach((val, i)=>{
-                if( val && typeof val == 'object' && !val.toSqlString )
-                    valsRow[i] = JSON.stringify(val)
-            })
-        })
+        // vals.forEach(valsRow=>{
+        //     valsRow.forEach((val, i)=>{
+        //         if( val && typeof val == 'object' && !val.toSqlString )
+        //             valsRow[i] = JSON.stringify(val)
+        //     })
+        // })
+        
         return [cols, vals]
     }
 
