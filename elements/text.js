@@ -74,12 +74,17 @@ customElements.define('b-text', class extends LitElement{
             display: none !important;
         }
 
-        :host([clip]) {
+        :host([clip]){
             max-width: 100%;
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
             vertical-align: text-bottom;
+        }
+
+        :host([clip-start]) {
+            text-align: left;
+            direction: rtl;
         }
 
         :host([nowrap]) {
