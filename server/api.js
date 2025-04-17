@@ -45,7 +45,7 @@
 */
 const UrlPattern = require('url-pattern')
 const CollMap = require('../util/collmap')
-
+const toCSV = require('../util/toCSV')
 const DEFAULT_OPTS = {
     root: '/api'
 }
@@ -268,6 +268,11 @@ module.exports = class API {
                         })
                 })
 
+        }else if( resp && req.query.csv !== undefined ){
+            res.set('Content-disposition', `attachment; filename=${req.query.csv||resp.filename||'api'}.csv`);
+            if( !Array.isArray(resp) ) resp = [resp]
+            resp = toCSV(resp)
+            res.send(resp)
         }else if( req.query.downloadReq && req.headers['user-agent'].match('iPhone') ){
             let path = (req.query.download === 'preview' && resp.previewPath) || resp.path
             // res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private')
