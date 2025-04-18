@@ -250,13 +250,14 @@ module.exports = class FileManager extends Model {
             // only strip metada on jpeg images
             if( this.stripMetadata && sharpImg )
                 try{
+
+                    // https://github.com/lovell/sharp/issues/1360#issuecomment-417325248
+                    // "most cases, 100% quality increases original file size. 95% should be enough."
+                    if( file.name.match(/jpe?g/i) )
+                        await sharpImg.jpeg({quality: 95, mozjpeg: true})
             
                     // by default sharp.js does not keep metadata
-                    await sharpImg
-                        // https://github.com/lovell/sharp/issues/1360#issuecomment-417325248
-                        // "most cases, 100% quality increases original file size. 95% should be enough."
-                        .jpeg({quality: 95, mozjpeg: true})
-                        .toFile(this.dirPath+'/'+filename)
+                    await sharpImg.toFile(this.dirPath+'/'+filename)
                         
                     resolve(true)
                 }catch(err){
