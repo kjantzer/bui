@@ -4,7 +4,7 @@
     Various functions for common strings modifications
 */
 
-const UpperCaseWords = ['id', 'isbn']
+const UpperCaseWords = ['id', 'isbn', 'upc', 'ean', 'gtin', 'drm']
 
 /*
     `capitalize(str)`  
