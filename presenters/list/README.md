@@ -77,6 +77,7 @@ const filters = {
         // optional
         placeholder: 'Search',
         delay: 500 // how long of delay in user typing to begin searching?
+        minMatchCharLength: 3,
         //...specify other fuse.js options
     },
 
