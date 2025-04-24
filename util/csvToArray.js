@@ -202,7 +202,7 @@ function csvToArray(strData, {
             dataHeader = dataHeader.map(str=>_normalizeHeader(str?.trim()))
 
         if( formatHeader )
-            dataHeader = formatdataHeader(header)
+            dataHeader = formatHeader(dataHeader)
         
         if( mergeHeader )
             arrData = arrData.map(line=>{
