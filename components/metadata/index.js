@@ -6,6 +6,7 @@ import '../../presenters/form/controls/text-field'
 import '../../elements/text'
 import '../../elements/text-divider'
 import '../../elements/btn'
+import { capitalize } from '../../util/string'
 
 customElements.define('b-metadata', class extends LitElement{
 
@@ -31,17 +32,13 @@ customElements.define('b-metadata', class extends LitElement{
         return this.custom || this.values.length == 0 
     }
 
+    createRenderRoot() {
+        return this;
+    }
+
     static get styles(){return css`
         :host {
             display: contents;
-        }
-
-        /* form-control[material=""] {
-            min-width: 60px;
-        } */
-
-        form-control[material="hover"] {
-            --padY: .35em;
         }
     `}
 
@@ -79,36 +76,55 @@ customElements.define('b-metadata', class extends LitElement{
     }
 
     labelFor(key){
-        return this.opts.formatLabel ? this.opts.formatLabel(key) : key
+        return this.opts.formatLabel ? this.opts.formatLabel(key) : capitalize(key)
     }
 
     contentFor(key){
         return this.opts.contentFor ? this.opts.contentFor(key) : ''
     }
 
+    renderItem(t){ return html`
+        <form-control key="${t.key}" ${this.opts.table?'':`material="${this.material}"`} part="control" no-handler>
+                
+            ${t.options?html`
+            <select-field .value=${t.val} .options=${t.options} multiple
+                placeholder=${this.opts.placeholder||'select'}
+                @change=${this.clearMeta}
+            ></select-field>
+            `:html`
+            <text-field .value=${t.val} 
+                nowrap
+                placeholder=${this.opts.placeholder}
+                @blur=${this.clearMeta}></text-field>
+            `}
+
+            ${this.opts.table?'':html`
+                <b-text slot="label">${this.labelFor(t.key)}</b-text>
+            `}
+            
+            ${this.contentFor(t.key)}
+            
+        </form-control>
+    `}
+
     render(){return html`
     
         ${this.metadata.map(t=>html`
-        
-            <form-control key="${t.key}" material="${this.material}">
-                
-                ${t.options?html`
-                <select-field .value=${t.val} .options=${t.options} multiple
-                    placeholder=${this.opts.placeholder||'select'}
-                    @change=${this.clearMeta}
-                ></select-field>
-                `:html`
-                <text-field .value=${t.val} 
-                    nowrap
-                    placeholder=${this.opts.placeholder}
-                    @blur=${this.clearMeta}></text-field>
-                `}
 
-                <b-text capitalize slot="label">${this.labelFor(t.key)}</b-text>
+            ${this.opts.table?html`
+            <b-table-row>
                 
-                ${this.contentFor(t.key)}
-                
-            </form-control>
+                <b-text semibold>${this.labelFor(t.key)}</b-text>
+
+                ${this.renderItem(t)}
+            </b-table-row>
+            `:html`
+                ${this.renderItem(t)}
+            `}
+        
+            
+
+            
         `)}
 
         <b-btn icon="add_box" clear @click=${this.addMeta} title="${this.add?'':'Add Metadata'}">
@@ -167,7 +183,7 @@ customElements.define('b-metadata', class extends LitElement{
             throw new UIWarningError('That metadata already exists')
 
         this._saveMeta(key, '')
-        this.update()
+        this.requestUpdate()
 
         setTimeout(()=>{
             let el = this.$$(`[key="${key}"]`)
@@ -218,7 +234,7 @@ customElements.define('b-metadata', class extends LitElement{
 
         // meta will be removed
         if( !val )
-            this.update()
+            this.requestUpdate()
     }
     
 
