@@ -73,6 +73,8 @@ class FormHandler extends HTMLElement {
 		// TODO: change to `controls`?
 		this.controls = this.editors = Array.from(this.querySelectorAll('form-control[key], check-box[key], radio-group[key], text-field[key], select-field[key]'))
 
+		this.controls = this.editors = this.controls.filter(el=>!el.hasAttribute('no-handler'))
+
 		let changeDelay = this.getAttribute('change-delay') || false
 
 		this.controls.forEach(el=>{
@@ -259,6 +261,9 @@ class FormHandler extends HTMLElement {
 		let val = e.detail.value
 		
 		if( !key ) return
+
+		// this handler is not supposed to watch this change
+		if( !this.controls.find(el=>el.key==key) ) return
 
 		e.stopPropagation()
 		
