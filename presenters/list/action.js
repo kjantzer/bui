@@ -81,6 +81,10 @@ export default class Action {
         let Action = this
 
         return function(e){
+
+            if( opts.turnOnSelection && !this.list?.selection.isOn )
+                return this.list.selection.begin()
+
             let model = opts.model || (this.list?.selection.isOn ? this.list.currentModels : this.model)
             return new Action(this, e, model, opts)
         }
