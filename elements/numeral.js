@@ -142,6 +142,22 @@ customElements.define('b-currency-acct-lg', class extends Numeral{
     `}
 })
 
+customElements.define('b-currency-acct-sm', class extends Numeral{
+    get defaultFormat(){ return '($0,0.[0000])' }
+
+    render(){return html`
+        ${this.numeral}<slot></slot>
+    `}
+})
+
+customElements.define('b-currency-acct-xs', class extends Numeral{
+    get defaultFormat(){ return '($0,0.[000000])' }
+
+    render(){return html`
+        ${this.numeral}<slot></slot>
+    `}
+})
+
 customElements.define('b-currency-large', class extends Numeral{
     get defaultFormat(){ return '0.[0]a' }
 
