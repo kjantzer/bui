@@ -7,6 +7,8 @@ import '../../elements/text'
 import '../../elements/text-divider'
 import '../../elements/btn'
 import { capitalize } from '../../util/string'
+import {ifDefined} from 'lit/directives/if-defined.js';
+
 
 customElements.define('b-metadata', class extends LitElement{
 
@@ -84,7 +86,7 @@ customElements.define('b-metadata', class extends LitElement{
     }
 
     renderItem(t){ return html`
-        <form-control key="${t.key}" ${this.opts.table?'':`material="${this.material}"`} part="control" no-handler>
+        <form-control key="${t.key}" material=${ifDefined(this.opts.table?undefined:this.material)} part="control" no-handler>
                 
             ${t.options?html`
             <select-field .value=${t.val} .options=${t.options} multiple
