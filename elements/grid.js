@@ -95,6 +95,7 @@ customElements.define('b-grid', class extends LitElement{
         `)}
 
         :host([gap="0"]), :host([gap="none"]) { gap: 0; }
+        :host([gap="gutter"]) { gap: var(--gutter, 1em); }
         :host([gap=" "]) { gap: .5ch; }
         :host([gap=".17"]) { gap: .17em; }
         :host([gap=".25"]) { gap: .25em; }
@@ -103,6 +104,7 @@ customElements.define('b-grid', class extends LitElement{
         :host([gap="2"]) { gap: 2em; }
 
         :host([gap-col="0"]), :host([gap-col="none"]) { column-gap: 0; }
+        :host([gap-col="gutter"]) { column-gap: var(--gutter, 1em); }
         :host([gap-col=" "]) { column-gap: .5ch; }
         :host([gap-col=".25"]) { column-gap: .25em; }
         :host([gap-col=".5"]) { column-gap: .5em; }
@@ -110,6 +112,7 @@ customElements.define('b-grid', class extends LitElement{
         :host([gap-col="2"]) { column-gap: 2em; }
 
         :host([gap-row="0"]), :host([gap-row="none"]) { row-gap: 0; }
+        :host([gap-row="gutter"]) { row-gap: var(--gutter, 1em); }
         :host([gap-row=" "]) { row-gap: .5ch; }
         :host([gap-row=".25"]) { row-gap: .25em; }
         :host([gap-row=".5"]) { row-gap: .5em; }
