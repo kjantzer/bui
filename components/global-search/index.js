@@ -588,7 +588,7 @@ function bindShortcut(key='k'){
 bindShortcut(['k', 'o', '/'])
 
 
-
+// FIXME: should not be in BUI
 function goToSelected(selected, metaKey){
 
     let url, props;
@@ -626,7 +626,7 @@ function goToSelected(selected, metaKey){
 
     // assume product search means inventory
     if( ['product', 'inventory'].includes(type) )
-        url = 'inventory/'+id
+        url = 'product/'+id
     
     if( ['shipment', 'shipment-by-name'].includes(type) )
         url = 'shipments/'+id
