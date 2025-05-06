@@ -39,6 +39,7 @@ customElements.define('b-app-tab-bar', class extends BaseTabBar{
     
         .search-btn {
             display: var(--app-tab-bar-search-display, inline-block);
+            order: 10;
         }
 
         /* for now, only support on small screens */
