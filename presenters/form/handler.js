@@ -263,7 +263,7 @@ class FormHandler extends HTMLElement {
 		if( !key ) return
 
 		// this handler is not supposed to watch this change
-		if( !this.controls.find(el=>el.key==key) ) return
+		if( !this.controls.find(el=>el.getAttribute('key')==key) ) return
 
 		e.stopPropagation()
 		
