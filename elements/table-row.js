@@ -23,6 +23,11 @@ customElements.define('b-table-row', class extends LitElement{
             background-color: var(--theme-bgd-accent2);
         }
 
+        :host([hover]:hover) ::slotted([sticky]),
+        :host(.popover-open) ::slotted([sticky]) {
+            background-color: var(--theme-bgd-accent2);
+        }
+
         :host([hidden]) {
             display: none !important;
         }
