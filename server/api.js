@@ -300,7 +300,9 @@ module.exports = class API {
             if( resp.name )
                 res.set('Filename', resp.name);
 
-            if( path.startsWith('http') )
+            if( path instanceof Buffer )
+                res.send(path)
+            else if( path.startsWith('http') )
                 res.redirect(path)
             else
                 res.sendFile(path, err=>{
