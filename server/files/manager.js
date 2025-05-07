@@ -1,7 +1,7 @@
 const Model = require('../model')
 const mkdirp = require('mkdirp')
 const path = require('path')
-const fs = require('fs')
+const {fs, encryptFile, decryptFile} = require('../../util/fs')
 const sharp = require('sharp')
 const office = require('./preview/office')
 const {psdPreview} = require('./preview/psd')
@@ -34,6 +34,8 @@ module.exports = class FileManager extends Model {
     autoRotate = false
     fullSize = true // set to number to save a smaller size (orig file will be overwritten)
     previewSize = 800
+    blurPreview = false // true or amt to blur
+    encrypt = false // set to a password string to encrypt the file
 
     // TODO: 
     // capturePalette = true // make this an opt-out?
@@ -74,6 +76,7 @@ module.exports = class FileManager extends Model {
     get dirPath(){ return [this.STORAGE_PATH, this.rootDir, this.groupPath].filter(s=>s).join('/')}
     get path(){ return this.dirPath+'/'+this.fileName }
     get filePath(){ return path.join(this.dirPath, this.fileName||'') }
+    get encryptKey(){ return this.encrypt }
 
     get displayPath(){
         if( this.attrs.has_preview
@@ -85,6 +88,13 @@ module.exports = class FileManager extends Model {
 
         if( this.req.query.size || this.req.query.display )
             return this.previewPath
+
+        // cannot display encrypted files, so decrypt and return buffer
+        // TODO: support permisions?
+        if( this.encryptKey ){
+            this.res.set('Content-Type', this.attrs.type)
+            return decryptFile(this.filePath, this.encryptKey)
+        }
 
         return this.filePath
     }
@@ -142,7 +152,7 @@ module.exports = class FileManager extends Model {
         return !!dupe
     }
 
-    async upload(file, src='', {traits={}, description=null}={}){
+    async upload(file, src='', {traits={}, description=null, blurPreview}={}){
 
         if( !file ){
             file = this.req.files.file
@@ -282,10 +292,20 @@ module.exports = class FileManager extends Model {
                 }
             }
             
-            let generatePreview = this.generatePreview({metadata, sharpImg, filename, fileType: info.type})
+            let generatePreview = this.generatePreview({metadata, sharpImg, filename, fileType: info.type, blurPreview}).then(resp=>{
+
+                // dont want a preview of an encrypted file, so encypt after
+                if( this.encryptKey ){
+                    let filePath = this.dirPath+'/'+filename
+                    // overwrite the file with the encrypted version
+                    fs.writeFileSync(filePath, encryptFile(filePath, this.encryptKey))
+                }
+
+            })
 
             if( this.waitForPreviewGeneration )
                 await generatePreview
+            
 
             if( syncData )
                 syncData()
@@ -299,7 +319,7 @@ module.exports = class FileManager extends Model {
         return this
     }
 
-    async generatePreview({metadata, sharpImg, filename, fileType}={}){
+    async generatePreview({metadata, sharpImg, filename, fileType, blurPreview}={}){
 
         // keep track of attrs we want to change at the end of this routine
         let updateAttrs = {}
@@ -497,6 +517,13 @@ module.exports = class FileManager extends Model {
             }catch(err){
                 console.log('could not find palette', err);
             }
+        }
+
+        // blur the preview image
+        if( blurPreview ?? this.blurPreview ){
+            let blurAmt = typeof this.blurPreview == 'number' ? this.blurPreview : 3
+            let previewBuffer = await sharp(this.dirPath+'/'+filename+'.preview.jpg').blur(blurAmt).toBuffer()
+            await sharp(previewBuffer).toFile(this.dirPath+'/'+filename+'.preview.jpg')
         }
 
         // create additional sizes if specified
