@@ -173,4 +173,49 @@ function downloadRemoteFile(url, {destFile}={}){
     });
 }
 
-module.exports = {readDir, readFile, getFileInfo, downloadRemoteFile, fs}
+// const fs = require('fs');
+const crypto = require('crypto');
+
+// Encryption settings
+// https://mohammedshamseerpv.medium.com/encrypt-and-decrypt-files-in-node-js-a-step-by-step-guide-using-aes-256-cbc-c25b3ef687c3
+const algorithm = 'aes-256-cbc';
+const iterations = 100000;
+const keyLength = 32;
+const ivLength = 16;
+
+// Function to derive a key and IV from a passphrase and salt
+function deriveKeyAndIV(password, salt) {
+  // Derive the key using PBKDF2
+  const key = crypto.pbkdf2Sync(password, salt, iterations, keyLength, 'sha256');
+  const iv = key.slice(0, ivLength); // Use the first 16 bytes as the IV
+  return { key, iv };
+}
+
+// Function to encrypt the file content
+function encryptFile(filePath, password) {
+
+    const salt = crypto.randomBytes(16);
+    const { key, iv } = deriveKeyAndIV(password, salt);
+    
+    const fileData = fs.readFileSync(filePath);
+    
+    const cipher = crypto.createCipheriv(algorithm, key, iv);
+    const encryptedData = Buffer.concat([cipher.update(fileData), cipher.final()]);
+
+    return Buffer.concat([salt, encryptedData])
+}
+
+function decryptFile(filePath, password) {
+
+    const fileData = fs.readFileSync(filePath);
+
+    const salt = fileData.slice(0, 16);
+    const encryptedData = fileData.slice(16);
+
+    const { key, iv } = deriveKeyAndIV(password, salt);
+    const decipher = crypto.createDecipheriv(algorithm, key, iv);
+
+    return Buffer.concat([decipher.update(encryptedData), decipher.final()]);
+}
+
+module.exports = {readDir, readFile, getFileInfo, downloadRemoteFile, fs, encryptFile, decryptFile}
