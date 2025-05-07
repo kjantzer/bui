@@ -22,6 +22,10 @@ const styles = css`
 	min-width: .25em;
 }
 
+:host([hidden]) {
+	display: none;
+}
+
 :host(:not([disabled])){
 	cursor: text;
 }
