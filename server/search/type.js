@@ -24,10 +24,29 @@ module.exports = class SearchType {
         return term.replace(/[\(\)\*\-+]/g, ' ').replace(/\s{2,}/g, ' ')
     }
 
+    get filters(){
+        let filters = this.req?.query?.filters
+        if( filters ){
+            try{
+                filters = JSON.parse(filters)
+            }catch(e){
+                filters = null
+            }
+        }
+
+        return filters
+    }
+
     query(term){
         let stripAccents = !hasAccents(term)
         term = this.formatTerm(term)
+        let filters = this.filters
+        
         let sql = this.searchSql
+
+        // can be a function if term/filters are needed
+        if( typeof sql == 'function' ) sql = sql.call(this, term, filters)
+
         if( typeof sql == 'function' ) sql = sql(term)
         return this.db.query(sql, term).then(rows=>{
             rows.forEach(row=>{
@@ -65,6 +84,16 @@ module.exports = class SearchType {
         if( data.length == 0 )
             return data
 
+        // NOTE: this? or shoud I use `ignoreDiacritics`
+        function simplifyStr(str){
+            return str.replace(/[, '’”]/g, '').toLowerCase()
+        }
+
+        data = data.map(row=>{
+            row.label = simplifyStr(row.label)
+            return row
+        })
+
         // further reduce and sort the results from a string search
         let fuse = new Fuse(data, {
             threshold: this.threshold,
@@ -72,7 +101,7 @@ module.exports = class SearchType {
             keys: ["label"]
         })
 
-        let result = fuse.search(term)
+        let result = fuse.search(simplifyStr(term))
 
         // use Map so order is retained
         let mappedResult = new Map() // NOTE: not really needed now
