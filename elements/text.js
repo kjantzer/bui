@@ -276,7 +276,7 @@ customElements.define('b-text', class extends LitElement{
         let href = this.getAttribute('href')
         if( href ){
             e.stopPropagation()
-            if( !href.match(/^mailto/) && href.match(/@/) ) href = 'mailto:'+href
+            if( !href.match(/^mailto/) && href.match(/@/) && !href.match(/^http/) ) href = 'mailto:'+href
 
             if( this.getAttribute('target') == '_blank' || e.ctrlKey || e.metaKey )
                 window.open(href, '_blank')
