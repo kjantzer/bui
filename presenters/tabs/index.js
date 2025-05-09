@@ -288,7 +288,7 @@ customElements.define('b-tabs', class extends LitElement {
                         <slot name="menu:before:${v.id}" slot="before:${v.id}"></slot>
                         <slot name="menu:after:${v.id}" slot="after:${v.id}"></slot>
                         <slot name="menu:inside:${v.id}" slot="inside:${v.id}"></slot>
-                    `)}
+                    `).join(' ')}
                 `
             }
 
