@@ -7,6 +7,19 @@ import { LitElement, html, css } from 'lit'
 import TabsRouter from './routed-tabs'
 import PillBar from '../../presenters/tabs/tab-bar/pill-bar'
 import TabBarBtn from '../tabbar/tab-bar-btn'
+import { MediaQueries, mediaQuery } from '../../util/mediaQueries'
+
+MediaQueries.set('layoutstandard', styles=>css`
+    @media (orientation:landscape), (min-width: 900px) {
+        ${styles}
+    }
+`)
+
+MediaQueries.set('layoutmobile', styles=>css`
+    @media (max-width: 899px) and (orientation:portrait) {
+        ${styles}
+    }
+`)
 
 customElements.define('b-app-tab-bar-2025-pill', class extends PillBar{
 
@@ -155,7 +168,6 @@ customElements.define('b-tabs-router-2025', class extends TabsRouter{
             --b-app-tab-bar-sticky-bgd: transparent;
         }
 
-
         [part="tab-bar"] {
             grid-row: 1 / span 2;
             border: none;
@@ -185,7 +197,7 @@ customElements.define('b-tabs-router-2025', class extends TabsRouter{
             scrollbar-width: none;
         }
 
-        @media (max-width: 899px) and (orientation:portrait) {
+        ${mediaQuery('layoutmobile', css`
 
             :host([layoutmobile="bottom"]) {
                 grid-template-rows: auto 1fr auto;
@@ -199,12 +211,10 @@ customElements.define('b-tabs-router-2025', class extends TabsRouter{
                 border-radius: var(--radius) var(--radius) 0 0;
                 box-shadow: var(--theme-shadow-2);
             }
-        }
-
-        @media (max-width: 899px) and (orientation:portrait){
+        
             [name="tabbar"] ::slotted(aside) { display: none; }
             [name="before"]::slotted(header) { padding: 1em; }
-        }
+        `)}
 
         @media (max-height: 599px) and (orientation:landscape) {
             [name="before"]::slotted(header) {
