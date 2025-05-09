@@ -95,6 +95,12 @@ customElements.define('b-global-search-result-row-template', class extends LitEl
             --size: 1.2em;
         }
 
+        .img ::slotted([mark="auto"]){
+            width: auto;
+            height: auto;
+            border-radius: 3px;
+        }
+
         .icon {
             background-color: var(--theme-bgd-accent);
             border-radius: 8px;
