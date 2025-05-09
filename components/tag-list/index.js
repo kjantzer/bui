@@ -23,7 +23,8 @@ customElements.define('b-tag-list', class extends LitElement{
         presets: {type: Array},
         value: {type: Array},
         prefix: {type:String},
-        type: {type: String}
+        type: {type: String},
+        lengthLimit: {type: Number}
     }
 
     static get styles(){return css`
@@ -176,6 +177,10 @@ customElements.define('b-tag-list', class extends LitElement{
             placeholder: `Type ${this.name}, press enter`,
             btns: false,
             onSubmit: (val, control)=>{
+
+                if( this.lengthLimit && val.length > this.lengthLimit )
+                    throw new UIWarningError(`Must be less than ${this.lengthLimit} characters`)
+
                 if( this._addTag(val) )
                     didAdd = true
                 control.value = ''
