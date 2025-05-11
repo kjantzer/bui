@@ -138,19 +138,19 @@ const device = {
     // alias
     get isStandalone(){ return device.isInstalled },
 
-    applyClasses(){
-        const html = document.documentElement
-        if( !html ) return
-        html.classList.toggle('mobile', device.isMobile)
-        html.classList.toggle('ios', device.isiOS)
-        html.classList.toggle('electron', device.isElectron)
-        html.classList.toggle('android', device.isAndroid)
-        html.classList.toggle('chromeos', device.isChromeOS)
-        html.classList.toggle('touch', device.isTouch)
-        html.classList.toggle('tablet', device.isTablet)
-        html.classList.toggle('mac', device.isMac)
-        html.classList.toggle('windows', device.isWindows)
-        html.classList.toggle('installed', device.isInstalled)
+    applyClasses(el){
+        el = el || document.documentElement
+        if( !el ) return
+        el.classList.toggle('mobile', device.isMobile)
+        el.classList.toggle('ios', device.isiOS)
+        el.classList.toggle('electron', device.isElectron)
+        el.classList.toggle('android', device.isAndroid)
+        el.classList.toggle('chromeos', device.isChromeOS)
+        el.classList.toggle('touch', device.isTouch)
+        el.classList.toggle('tablet', device.isTablet)
+        el.classList.toggle('mac', device.isMac)
+        el.classList.toggle('windows', device.isWindows)
+        el.classList.toggle('installed', device.isInstalled)
     }
     
 }
