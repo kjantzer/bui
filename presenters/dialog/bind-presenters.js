@@ -52,7 +52,8 @@ const presenters = {
 	},
 	
 	modal(opts={}, mobileOpts){
-		mobileOpts = Object.assign({
+
+		mobileOpts = mobileOpts === false ? null : Object.assign({
 			anchor: 'top',
 			width: device.isTablet ? 'auto' : '100%',
 			height: 'auto',
@@ -63,7 +64,7 @@ const presenters = {
 		if( !opts.anchor && this.prompts && device.isChromeOS && device.isTablet )
 			opts.anchor = device.isLandscape ? 'center-left' : 'top'
 
-		if( device.isMobile && device.isSmallDevice )
+		if( device.isMobile && device.isSmallDevice && mobileOpts )
 			return this._panel(mobileOpts)
 		else
 			return this._panel(opts)
