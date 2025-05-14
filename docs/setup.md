@@ -299,4 +299,4 @@ Since your SPA likely wont have much content, adding the proper meta tags will b
 ### Splashscreens
 iOS (and Android?) can show a splash screen when opening your installed PWA
 
-Use this link to create the sizes and get the html code: https://appsco.pe/developer/splash-screens
+Use this link to create the sizes and get the html code: https://progressier.com/pwa-icons-and-ios-splash-screen-generator
