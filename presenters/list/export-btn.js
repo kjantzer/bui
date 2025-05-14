@@ -9,7 +9,8 @@ customElements.define('b-list-export-btn', class extends Btn{
 
     static get properties() { return {...super.properties,
         omitTitle: {type: Boolean, reflect: true},
-        omitDescription: {type: Boolean, reflect: true}
+        omitDescription: {type: Boolean, reflect: true},
+        maxExport: {type: Number}
     }}
 
     constructor(){
@@ -20,6 +21,7 @@ customElements.define('b-list-export-btn', class extends Btn{
         this.slot = this.slot || 'toolbar:after'
         this.tooltip = this.title || "Export data to CSV file"
         this.title = ''
+        this.maxExport = 1000
         this.addEventListener('click', this.export)
 
         this.omitTitle = false;
@@ -39,9 +41,29 @@ customElements.define('b-list-export-btn', class extends Btn{
         let data = list.dataSource.data
         let description = list.filters.toString() || 'No filters'
 
+        let presets = typeof this.presets == 'function' ? this.presets() : (this.presets || [])
         let preset = undefined
-        if( this.presets ){
-            let presets = typeof this.presets == 'function' ? this.presets() : this.presets
+
+        // TODO: if we knew all of list already loaded, should skip this
+        if( !list.selection.isOn && this.list.listOptions?.fetch=='more' ){
+
+            presets.unshift(
+                {text: this.tooltip, bgd: false},
+                {label: `Current Results (${data.length})`, val: 'current'},
+                {label: 'All Results', val: 'all', description: `Fetch all results (max ${this.maxExport.toLocaleString()}) from server first`}
+            )
+
+            if( this.list.listOptions.selection ){
+                presets.push('-',{
+                    label: 'Choose rows',
+                    icon: 'library_add_check',
+                    val: 'choose',
+                })
+            }
+        }
+
+        if( presets.length > 0 ){
+            
             preset = await new Menu(presets.filter(o=>o)).popOver(this, {align: 'bottom-end'})
             if( preset === false ) return
 
@@ -49,6 +71,17 @@ customElements.define('b-list-export-btn', class extends Btn{
 
             preset = preset.val
             description += ' | Export Preset: '+preset
+        }
+
+        if( preset == 'choose' ){
+            list.selection.begin()
+            return
+        }
+
+        if( preset == 'all' ){
+            let n = Notif.alert('Fetching all results...', {autoClose: false, closeOnClick: false})
+            await list.list.getContent({perPage: this.maxExport})
+            n.close()
         }
 
         if( list.selection.isOn ){
