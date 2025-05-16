@@ -6,7 +6,7 @@
     The default `pointerup` event will fire when the pointer is released, even if it was released outside the element.
     This will create new `pointerrelease` and `pointercancel` events to handle this use case.
 
-    ```html-preview
+    ```html
     <b-text 
         @pointerdown=${(e) => console.log('pointerdown')}
         @pointerrelease=${(e) => console.log('released within element')}

@@ -4,7 +4,7 @@
 	Preload sounds effects and play them immediately with the ability to play multiple at once and at different volumes
 
 	```js
-	import SoundFX from './sound-fx'
+	import SoundFX from 'bui/app/sound-fx'
 
 	// global for b-btn
 	window.soundFX = new SoundFX({
