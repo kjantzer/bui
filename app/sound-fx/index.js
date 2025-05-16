@@ -1,7 +1,5 @@
 // https://gist.github.com/beefchimi/a1cc7fdfa722ae1366ca8d982f20ed8d#file-single-js
 import fetchAudioBuffer from './fetch-audio-buffer';
-import methodPatch from './method-patch';
-import MobileAudioFix from './mobile-audio-fix';
 import device from '../../util/device'
 import vibrate from '../../util/vibrate'
 
@@ -38,17 +36,18 @@ export default class Single {
       fetchAudioBuffer(assetPaths[key], this.context).then((response) => {
         this.sounds[key] = response;
         return this.sounds[key];
-      }).catch(() => {
+      }).catch((error) => {
+        console.error(`Failed to load sound: ${key}`, error);
         this.sounds[key] = null;
       });
     });
-
-    this.mobileAudio = new MobileAudioFix(this.context);
-    this.mobileAudio.init();
   }
 
+  get isMobile(){ return this._isMobile ?? device.isMobile }
+  set isMobile(value){ this._isMobile = value }
+
   playIfMobile(...args){
-    if( device.isMobile ){
+    if( this.isMobile ){
       this.play(...args)
       vibrate(70) // NOTE: do I want this to always happen?
     }
@@ -80,7 +79,6 @@ export default class Single {
     this.source.connect(this.gainNode);
     this.gainNode.connect(this.context.destination);
 
-    this.source.start = methodPatch.start(this.source);
     this.source.start();
   }
 }
