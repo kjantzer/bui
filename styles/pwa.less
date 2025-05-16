@@ -135,6 +135,18 @@ b-panel[height="100%"][anchor="left"]::part(main),
 :root.installed.mobile b-panel[height="100%"]::part(main) {
     box-shadow: none;
 }   
+
+:root.mobile b-panel::part(close-btn) {
+    top: .25rem;
+    right: .25rem;
+    transform: none;
+}
+
+:root.installed.mobile b-panel::part(close-btn) {
+    top: var(--safe-top);
+    right: .5em;
+    transform: translate(0, -.5em);
+}
 }
 
 :root:not(.mobile) b-panel[type="search-popup"] {
