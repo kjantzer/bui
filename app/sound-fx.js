@@ -21,8 +21,8 @@
 	soundFX.play('success', {gain: .7})
 	```
 */
-import device from '../../util/device'
-import vibrate from '../../util/vibrate'
+import device from '../util/device'
+import Vibrate from '../util/vibrate'
 
 export default class SoundFX {
 
@@ -84,7 +84,7 @@ export default class SoundFX {
 		audioNode.start()
 
 		if( vibrate )
-			vibrate(vibrate)
+			Vibrate(vibrate)
 	}
 
 }
