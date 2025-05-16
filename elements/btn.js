@@ -14,7 +14,7 @@
     - `outline`
     - `pill`
     - `text` - no button outline until hover
-    - `clear`
+    - `clear` or `ghost`
     - `fab` - floating action button
     - `stacked`
     - `thin` - reduces top/bottom padding
@@ -348,7 +348,7 @@ export default class BtnElement extends LitElement {
         } */
 
         :host([text]),
-        :host([clear]) {
+        :host([clear]), :host([ghost]) {
             --bgdColor: transparent;
             --textColor: var(--color);
             --borderColor: transparent;
@@ -384,12 +384,12 @@ export default class BtnElement extends LitElement {
 
         @media (hover){
         :host([text]:hover),
-        :host([clear]:hover) {
+        :host([clear]:hover), :host([ghost]:hover) {
             --bgdColor: rgba(0,0,0,.05);
         }}
 
         :host([text].popover-open),
-        :host([clear].popover-open) {
+        :host([clear].popover-open), :host([ghost].popover-open) {
             --bgdColor: rgba(0,0,0,.05);
             box-shadow: 0 0 0 1px var(--theme) inset; /* border outline */
         }
@@ -510,12 +510,12 @@ export default class BtnElement extends LitElement {
         super.firstUpdated()
         this.addEventListener('click', e=>{
             
-            if( window.soundFX && soundFX.playIfMobile )
-                soundFX.playIfMobile('tinyTap', 0.1)
+            window.soundFX?.play('tinyTap', {gain: 0.1, ifMobile: true})
 
             this.onClick(e)
         }, true)
     }
+    
 
     // for subclassing
     onClick(e){

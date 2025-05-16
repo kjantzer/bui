@@ -1,84 +1,98 @@
-// https://gist.github.com/beefchimi/a1cc7fdfa722ae1366ca8d982f20ed8d#file-single-js
-import fetchAudioBuffer from './fetch-audio-buffer';
+/*
+	SoundFX
+
+	Preload sounds effects and play them immediately with the ability to play multiple at once and at different volumes
+
+	```js
+	import SoundFX from './sound-fx'
+
+	// global for b-btn
+	window.soundFX = new SoundFX({
+		tap: './tap.mp3',
+		success: './success.mp3',
+		error: {path: './error.mp3', gain: 0.3}
+	}, {
+		defaultGain: 0.6,
+		shouldPlay: () => true // override if should check user settings
+	})
+
+	soundFX.play('tap')
+	soundFX.play('tap', {vibrate: 100})
+	soundFX.play('success', {gain: .7})
+	```
+*/
 import device from '../../util/device'
 import vibrate from '../../util/vibrate'
 
-// All of my MP3s were built to be a consistent volume on export,
-// so I can safely set the same gain on all of them.
-const singleGain = 0.6;
+export default class SoundFX {
 
-let assetPaths = {};
+	get isMobile(){ return this._isMobile ?? device.isMobile }
+	set isMobile(value){ this._isMobile = value }
 
-export default class Single {
+	// override if should check user settings
+	shouldPlay(){ return this.opts?.shouldPlay ? this.opts.shouldPlay() : true }
 
-  static get singleKeys(){
-      return Object.keys(assetPaths);
-  }
+	// key:value where value is string `path` or object {path, gain}
+	constructor(sounds={}, {defaultGain=0.6, shouldPlay}={}) {
+		
+		if( !('AudioContext' in window) )
+			return
 
-  constructor(soundAssets={}) {
-    
-    assetPaths = soundAssets
+		this.opts = arguments[1] || {}
+		this.context = new AudioContext()
+		this.sounds = {}
 
-    if( !('AudioContext' in window) )
-      return
+		// fetch all sounds now and store - so they can play immediately when invoked
+		for(let key in sounds){
 
-    this.context = new AudioContext();
-    // Think of this as the "volume knob"   
-    this.gainNode = this.context.createGain();
-    // `source` will be the active "sound"
-    this.source = null;
-    // Used to store all of my decoded sounds
-    this.sounds = {};
+			let data = sounds[key]
 
-    // Loop through all of my paths, fetch them,
-    // and store their decoded AudioBuffer in the `sounds` object
-    Single.singleKeys.forEach((key) => {
-      fetchAudioBuffer(assetPaths[key], this.context).then((response) => {
-        this.sounds[key] = response;
-        return this.sounds[key];
-      }).catch((error) => {
-        console.error(`Failed to load sound: ${key}`, error);
-        this.sounds[key] = null;
-      });
-    });
-  }
+			if( typeof data == 'string' )
+				data = {path: data}
 
-  get isMobile(){ return this._isMobile ?? device.isMobile }
-  set isMobile(value){ this._isMobile = value }
+			if( !data.path)
+				throw Error(`No path provided for sound: ${key}`)
 
-  playIfMobile(...args){
-    if( this.isMobile ){
-      this.play(...args)
-      vibrate(70) // NOTE: do I want this to always happen?
-    }
-  }
+			fetchAudioBuffer(data.path, this.context).then(buffer=> {
+				this.sounds[key] = {...data, buffer}
+			}).catch((error) => {
+				console.error(`Failed to load sound: ${key}`, error);
+			})
 
-  play(key, volume) {
-    
-    if( !this.context ) return
+		}
+	}
 
-    if (!Single.singleKeys.includes(key)) {
-      return Error(`The requested sound is not available: ${key}`);
-    }
+	play(key, {gain, vibrate, ifMobile}={}) {
+		
+		if( !this.context ) return
 
-    return this._startSource(this.sounds[key], volume||singleGain);
-  }
+		let sound = this.sounds[key]
 
-  _startSource(sound, volume) {
-    // We need to create a `AudioBufferSourceNode` in order to attach
-    // our individual decoded sound
-    this.source = this.context.createBufferSource();
-    this.source.buffer = sound;
+		if( !sound )
+			return Error(`The requested sound is not available: ${key}`);
 
-    // Turn the volume knob up to a specific value at the current time
-    this.gainNode.gain.setValueAtTime(
-      volume,
-      this.context.currentTime
-    );
+		if( !this.shouldPlay() )
+			return
 
-    this.source.connect(this.gainNode);
-    this.gainNode.connect(this.context.destination);
+		if( ifMobile !== undefined && ifMobile !== this.isMobile )
+			return
 
-    this.source.start();
-  }
+		let audioNode = new AudioBufferSourceNode(this.context, {buffer: sound.buffer})
+		let gainNode = new GainNode(this.context, {gain: gain||sound.gain||this.opts.defaultGain||0.6})
+		
+		audioNode.connect(gainNode).connect(this.context.destination)
+		audioNode.start()
+
+		if( vibrate )
+			vibrate(vibrate)
+	}
+
+}
+
+
+async function fetchAudioBuffer(path, context){
+
+	let resp = await fetch(new Request(path))
+	let buffer = await resp.arrayBuffer()
+	return await context.decodeAudioData(buffer)
 }
