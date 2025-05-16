@@ -1,5 +1,5 @@
 /*
-	SoundFX
+	# SoundFX
 
 	Preload sounds effects and play them immediately with the ability to play multiple at once and at different volumes
 

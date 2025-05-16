@@ -1,5 +1,5 @@
 /*
-    Pointer Events
+    # Pointer Events
 
     Improve click/tap events to know when the pointer is released while still over the element
 
