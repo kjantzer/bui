@@ -36,6 +36,7 @@ customElements.define('b-table', class extends LitElement{
             position:relative;
             border: solid 1px var(--theme-bgd-accent);
             overflow: auto;
+            border-radius: var(--b-table-radius, 0px);
         }
 
         :host([hidden]) {
@@ -43,7 +44,7 @@ customElements.define('b-table', class extends LitElement{
         }
 
         :host([rounded]) {
-            border-radius: 4px;
+            border-radius: var(--b-table-rounded-radius, 4px);
         }
 
         header {
