@@ -63,7 +63,7 @@ export default class BtnElement extends LitElement {
             --brown: #795548;
             --pink: #E91E63; */
 
-            --radius: 3px;
+            --radius: var(--b-btn-radius, 3px);
             --color: var(--b-btn-bgd, var(--theme-text, #000)) ;
             --bgdColor: var(--color);
             --hoverBgdColor: rgba(255,255,255,.1);
@@ -92,6 +92,8 @@ export default class BtnElement extends LitElement {
             font-weight: 600;
             font-family: var(--b-btn-font);
             outline: none;
+            /* disables scrolling while pointer down*/
+            touch-action: none;
 
             -webkit-touch-callout: none; /* iOS Safari */
             -webkit-user-select: none; /* Safari */
@@ -103,6 +105,12 @@ export default class BtnElement extends LitElement {
 
         :host(:focus:not(:active):not(:hover)) {
             box-shadow: 0 0 0 2px var(--theme);
+        }
+
+        /* better hover/tap state on mobile */
+        :host(:active) .hover {
+            visibility: visible;
+            opacity: 1;
         }
 
         /* hide by default */
@@ -122,7 +130,7 @@ export default class BtnElement extends LitElement {
         }
 
         main {
-            border-radius: inherit;// var(--radius);
+            border-radius: inherit;
             position: relative;
             display: inline-flex;
             justify-content: center;
@@ -172,7 +180,7 @@ export default class BtnElement extends LitElement {
             visibility: hidden;
             opacity: 0;
             /* mix-blend-mode: saturation; */
-            border-radius: inherit;// var(--radius);
+            border-radius: inherit;
             /* transition: 120ms; */
         }
 
@@ -394,6 +402,10 @@ export default class BtnElement extends LitElement {
         
         :host([lg="size"]) .label { font-size: 1rem; }
         :host([xl="size"]) .label { font-size: 1rem; }
+
+        .label {
+            font-size: var(--b-btn-label-font-size, var(--b-btn-font-size, 1rem));
+        }
         
 
         :host([color="theme-gradient"]) {
@@ -499,7 +511,7 @@ export default class BtnElement extends LitElement {
         this.addEventListener('click', e=>{
             
             if( window.soundFX && soundFX.playIfMobile )
-                soundFX.playIfMobile('tinyTap', 0.3)
+                soundFX.playIfMobile('tinyTap', 0.1)
 
             this.onClick(e)
         }, true)
