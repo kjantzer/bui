@@ -63,11 +63,12 @@ customElements.define('b-table-row', class extends LitElement{
         main ::slotted(b-btn),
         main > b-btn {
             padding: 0;
+            --radius: 0;
         }
 
         main ::slotted(*:not(:last-child)),
         main > *:not(slot):not(:last-child) {
-            border-right: solid 1px var(--theme-bgd-accent);
+            border-right: solid 1px var(--table-border-color, var(--theme-bgd-accent));
         }
 
         [name="before"]::slotted(*) {
