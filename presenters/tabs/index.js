@@ -90,7 +90,18 @@ customElements.define('b-tabs', class extends LitElement {
             /* --contentBgd: none; */
             --contentShadow: none;
             --contentRadius: 0;
+
+            container-type: inline-size;
+            container-name: tabs;
+            --layout: top;
         }
+
+        main {
+            display: grid;
+            flex: 1;
+            min-height: 0;
+        }
+
 
         .tab-bar {
             font-size: var(--menuFontSize);
@@ -114,42 +125,53 @@ customElements.define('b-tabs', class extends LitElement {
             z-index: 1000;
         }
 
-        :host([layout="top"]) { grid-template-rows: auto 1fr; }
-        :host([layout="bottom"]) { grid-template-rows: 1fr auto; }
-        :host([layout="left"]) { grid-template-columns: auto 1fr; }
-        :host([layout="right"]) { grid-template-columns: 1fr auto; }
-
-        :host([layout="top"]),
-        :host([layout="left"]) {
-            --tab-bar-order: 1;
-        }
-
-        :host([layout="bottom"]),
-        :host([layout="right"]) {
-            --tab-bar-order: 3;
-        }
-
-        :host([layout="bottom"]) .tab-bar {
-            height: max-content;
-        }
-
-        @media (max-width: 899px) and (orientation:portrait) {
-
-            :host([layoutmobile="top"]) { grid-template-rows: auto 1fr; grid-template-columns: 1fr; }
-            :host([layoutmobile="bottom"]) { grid-template-rows: 1fr auto; grid-template-columns: 1fr; }
-            :host([layoutmobile="left"]) { grid-template-rows: 1fr; grid-template-columns: auto 1fr; }
-            :host([layoutmobile="right"]) { grid-template-rows: 1fr; grid-template-columns: 1fr auto; }
-
-            :host([layoutmobile="top"]),
-            :host([layoutmobile="left"]) {
+        @container tabs style(--layout:top) {
+            :host main { 
+                grid-template-rows: auto 1fr;
+                /*grid-template-columns: 1fr;*/
                 --tab-bar-order: 1;
             }
+        }
 
-            :host([layoutmobile="bottom"]),
-            :host([layoutmobile="right"]) {
+        @container tabs style(--layout:bottom) {
+            :host main {
+                grid-template-rows: 1fr auto;
+                /*grid-template-columns: 1fr;*/
                 --tab-bar-order: 3;
             }
 
+            .tab-bar {
+                height: max-content;
+            }
+        }
+        
+        @container tabs style(--layout:left) {
+            :host main {
+                grid-template-columns: auto 1fr;
+                /*grid-template-rows: 1fr;*/
+                --tab-bar-order: 1;
+            }
+        }
+
+        @container tabs style(--layout:right) {
+            :host main {
+                grid-template-columns: 1fr auto;
+                /*grid-template-rows: 1fr;*/
+                --tab-bar-order: 3;
+            }
+        }
+
+        :host([layout="top"]) { --layout: top; }
+        :host([layout="bottom"]) { --layout: bottom; }
+        :host([layout="left"]) { --layout: left; }
+        :host([layout="right"]) { --layout: right; }
+
+        @media (max-width: 899px) and (orientation:portrait) {
+
+            :host([layoutmobile="top"]) { --layout: top; }
+            :host([layoutmobile="bottom"]) { --layout: bottom; }
+            :host([layoutmobile="left"]) { --layout: left; }
+            :host([layoutmobile="right"]) { --layout: right; }
         }
 
         /*
@@ -316,12 +338,14 @@ customElements.define('b-tabs', class extends LitElement {
     }
 
     render(){return html`
-        <slot name="before"></slot>
-        <slot name="tabbar" @menu-click=${this._onMenuClick}>${this.renderTabBar()}</slot>
-        <slot class="content" part="content"></slot>
-        <slot name="empty">
-            <b-empty-state ?hidden=${this.views.size>0}>No views</b-empty-state>
-        </slot>
+        <main part="main">
+            <slot name="before"></slot>
+            <slot name="tabbar" @menu-click=${this._onMenuClick}>${this.renderTabBar()}</slot>
+            <slot class="content" part="content"></slot>
+            <slot name="empty">
+                <b-empty-state ?hidden=${this.views.size>0}>No views</b-empty-state>
+            </slot>
+        </main>
     `}
 
     _onMenuClick(e){

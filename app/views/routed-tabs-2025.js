@@ -164,8 +164,11 @@ customElements.define('b-tabs-router-2025', class extends TabsRouter{
     static styles = [super.styles, css`
         :host {
             background-color: var(--theme-bgd-accent2);
-            grid-template-rows: auto 1fr;
             --b-app-tab-bar-sticky-bgd: transparent;
+        }
+
+        :host > main {
+            grid-template-rows: auto 1fr;
         }
 
         [part="tab-bar"] {
