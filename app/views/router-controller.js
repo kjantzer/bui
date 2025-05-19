@@ -22,14 +22,13 @@ customElements.define('b-router-controller', class extends LitElement{
 		}
 	`
 
-	constructor(host, {rootPath=''}={}){
+	constructor(host){
 		
 		super()
 		this.slot = 'hidden'
 		this.onMenuClick = this.onMenuClick.bind(this)
 
 		if( host ){
-			this.rootPath = rootPath
 			this.isController = true // https://lit.dev/docs/composition/controllers/
 			this.host = host
 			host.addController(this)
@@ -47,6 +46,8 @@ customElements.define('b-router-controller', class extends LitElement{
 			this.host = this.parentElement
 
 			if( oldHost == this.host ) return
+		}else{
+			this.rootPath = this.host.getAttribute('path') || ''
 		}
 		
 		 // NOTE: will this cause issues?
