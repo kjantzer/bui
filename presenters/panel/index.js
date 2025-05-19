@@ -738,6 +738,9 @@ export class Panel extends LitElement {
             display: grid;
             grid-template-rows: 1fr;
             max-height: 100%;
+
+            container-type: size;
+            container-name: panel;
             
             transition: ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
         }
