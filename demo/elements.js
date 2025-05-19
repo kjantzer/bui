@@ -66,7 +66,7 @@ customElements.define('demo-elements', class extends LitElement{
             margin-bottom: 1em;
         }
 
-        b-tabs-router > section {
+        b-tabs > section {
             position: relative;
             height: 100%;
             overflow: auto;
@@ -100,7 +100,8 @@ customElements.define('demo-elements', class extends LitElement{
     
 
     render(){return html`
-        <b-tabs-router path="elements/" key="elements" layout="left">
+        <b-tabs key="elements" layout="left">
+            <b-router-controller rootpath="elements/"></b-router-controller>
 
              <section title="Icons">
 
@@ -450,7 +451,7 @@ customElements.define('demo-elements', class extends LitElement{
             </section>
             
 
-        </b-tabs-router>
+        </b-tabs>
     `}
 
 })

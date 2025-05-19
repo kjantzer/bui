@@ -24,7 +24,9 @@ customElements.define('demo-tools', class extends LitElement{
     `}
 
     render(){return html`
-        <b-tabs-router path="tools/" key="tools" layout="left" >
+        <b-tabs key="tools" layout="left" >
+            <b-router-controller rootpath="tools/"></b-router-controller>
+
             demo-utils
             demo-lit-helpers
             demo-backbone-helpers
@@ -32,7 +34,7 @@ customElements.define('demo-tools', class extends LitElement{
             demo-util
             demo-helpers
             demo-components-pipico
-        </b-tabs-router>
+        </b-tabs>
     `}
 
 })

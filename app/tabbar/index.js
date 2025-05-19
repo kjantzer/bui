@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit'
 import router from 'bui/app/router'
 import '../views/routed-tabs'
+import '../views/router-controller'
 import {mediaQuery, MediaQueries} from './media-queries'
 import './tab-bar'
 
@@ -22,7 +23,7 @@ customElements.define('b-app', class extends LitElement {
         // since this may be subclassed multiple times, provide a way to know what it is (for styling)        
         this.classList.add('b-app')
 
-        this.tabs = this.shadowRoot.querySelector('b-tabs-router')
+        this.tabs = this.shadowRoot.querySelector('b-tabs')
 
         this.setAttribute('viewing', this.tabs.active)
         
@@ -93,19 +94,19 @@ customElements.define('b-app', class extends LitElement {
             --b-sub-color: var(--theme-text-accent);
         }
 
-        b-tabs-router > * {
+        b-tabs > * {
             flex-grow: 1;
         }
 
-        b-tabs-router > b-panels {
+        b-tabs > b-panels {
             order: 999;
         }
 
-        b-tabs-router > b-panels[inset] {
+        b-tabs > b-panels[inset] {
             max-width: 0;
         }
 
-        b-tabs-router > b-panels[inset][num] {
+        b-tabs > b-panels[inset][num] {
             max-width: var(--inset-width);
         }
 
@@ -118,7 +119,7 @@ customElements.define('b-app', class extends LitElement {
             /* app-region: drag; */
         }
         
-        b-tabs-router > b-hr{
+        b-tabs > b-hr{
             display: none;
         }
     `}
@@ -157,7 +158,7 @@ customElements.define('b-app', class extends LitElement {
     }
 
     render(){return html`
-        <b-tabs-router 
+        <b-tabs 
             layout="left"
             layoutmobile="bottom"
             key="${this.key}"
@@ -165,16 +166,17 @@ customElements.define('b-app', class extends LitElement {
             .model=${this.model}
             ?minimizable=${this.minimizable}
             ?no-search=${!this.shouldShowSearch}
-            path="${this.tabsPath}"
+            
             @active-changed=${this.onActiveTabChanged}
         >
+            <b-router-controller rootpath="${this.tabsPath}"></b-router-controller>
 
             ${this.panel?html`
             <b-app-tab-bar-btn part="close-btn" icon="chevron_right" slot="menu:before" @click=${this.close}></b-app-tab-bar-btn>
             `:''}
 
             ${this.views}
-        </b-tabs-router>  
+        </b-tabs>  
     `}
 
     onActiveTabChanged(e){

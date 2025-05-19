@@ -23,14 +23,16 @@ customElements.define('demo-server', class extends LitElement{
     `}
 
     render(){return html`
-        <b-tabs-router path="server/" key="server" layout="left" >
+        <b-tabs key="server" layout="left" >
+            <b-router-controller rootpath="server/"></b-router-controller>
+
             demo-server-api
             demo-server-db
             demo-server-model
             demo-server-search
             demo-server-filemanager
             demo-server-realtime
-        </b-tabs-router>
+        </b-tabs>
     `}
 
 })

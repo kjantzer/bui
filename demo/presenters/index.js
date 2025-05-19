@@ -40,7 +40,8 @@ customElements.define('demo-presenters', class extends LitElement{
     `}
 
     render(){return html`
-        <b-tabs-router path="presenters/" key="presenters" layout="left" >
+        <b-tabs key="presenters" layout="left" >
+            <b-router-controller rootpath="presenters/"></b-router-controller>
 
             demo-presenter-form
             demo-presenter-dialog
@@ -58,7 +59,7 @@ customElements.define('demo-presenters', class extends LitElement{
             demo-presenter-selection
             demo-presenter-mentions
 
-        </b-tabs-router>
+        </b-tabs>
     `}
 
 })
