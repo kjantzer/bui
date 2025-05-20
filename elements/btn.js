@@ -403,7 +403,8 @@ export default class BtnElement extends LitElement {
         :host([lg="size"]) .label { font-size: 1rem; }
         :host([xl="size"]) .label { font-size: 1rem; }
 
-        .label {
+        :host([lg]) .label,
+        :host([xl]) .label {
             font-size: var(--b-btn-label-font-size, var(--b-btn-font-size, 1rem));
         }
         
