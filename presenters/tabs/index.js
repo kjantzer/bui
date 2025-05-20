@@ -15,8 +15,8 @@ customElements.define('b-tabs', class extends LitElement {
     constructor(){
         super()
         this.key = ''
-        this.layout = 'top'
-        this.layoutMobile = 'top'
+        // this.layout = 'top'
+        // this.layoutMobile = 'top'
     }
 
     setupMutationObserver(){

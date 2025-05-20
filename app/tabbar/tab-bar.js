@@ -17,7 +17,8 @@ customElements.define('b-app-tab-bar', class extends BaseTabBar{
             position: relative;
         }
 
-        @media (max-width: 899px) and (orientation:portrait) {
+        /*@media (max-width: 899px) and (orientation:portrait) {*/
+        @container style(--layout: bottom) {
             :host {
                 --b-app-tab-bar-active-color: rgba(var(--dark-bgd-rgb), .3);
                 --b-app-tab-bar-active-color-text: var(--dark-text);

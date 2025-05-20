@@ -75,7 +75,10 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
         :host(.search-btn) {
             position: sticky;
             right: 0;
+            left: 0;
             top: 0;
+            z-index: 5;
+            display: block;
         }
 
         :host([part="close-btn"]) b-btn,
@@ -107,7 +110,7 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             right: 0;
         }
 
-        @media (max-width: 899px) and (orientation:portrait) {
+        @container style(--layout: bottom) {
 
             :host([part="close-btn"]) b-btn,
             :host(.search-btn) b-btn  {
@@ -131,7 +134,7 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             rotate: var(--b-panel-toolbar-close-btn-rotation, 0deg);
         }
 
-        ${mediaQuery('b-app-landscape', css`
+        @container style(--layout: left) or style(--layout: right) {
 
             b-btn {
                 padding-top: .5em;
@@ -148,7 +151,7 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
                 margin-top: .5em;
                 max-width: min-content;
             }
-        `)}
+        }
     `
 
     set tabView(val){

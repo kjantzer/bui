@@ -11,42 +11,44 @@ export default class BaseTabBar extends LitElement{
             gap: .5em;
         }
 
-        :host([layout="top"]),
-        :host([layout="bottom"]) {
-            flex-direction: row;
-            overflow-x: auto;
-        }
-
-        :host([layout="left"]),
-        :host([layout="right"]) {
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        :host([layout="top"]) { border-bottom: solid 1px var(--border-color, var(--theme-bgd-accent)); }
-        :host([layout="bottom"]) { border-top: solid 1px var(--border-color, var(--theme-bgd-accent)); }
-        :host([layout="left"]) { border-right: solid 1px var(--border-color, var(--theme-bgd-accent)); }
-        :host([layout="right"]) { border-left: solid 1px var(--border-color, var(--theme-bgd-accent)); }
-
-        @media (max-width: 899px) and (orientation:portrait) {
-            :host([layoutmobile="left"]),
-            :host([layoutmobile="right"]) {
-                flex-direction: column;
-                overflow-y: auto;
-                overflow-x: hidden;
-            }
-
-            :host([layoutmobile="top"]),
-            :host([layoutmobile="bottom"]) {
+        @container style(--layout: top) or style(--layout: bottom) {
+            :host {
                 flex-direction: row;
                 overflow-x: auto;
-                overflow-y: hidden;
             }
+        }
 
-            :host([layoutmobile="top"]) { border: none; border-bottom: solid 1px var(--border-color, var(--theme-bgd-accent)); }
-            :host([layoutmobile="bottom"]) { border: none; border-top: solid 1px var(--border-color, var(--theme-bgd-accent)); }
-            :host([layoutmobile="left"]) { border: none; border-right: solid 1px var(--border-color, var(--theme-bgd-accent)); }
-            :host([layoutmobile="right"]) { border: none; border-left: solid 1px var(--border-color, var(--theme-bgd-accent)); }
+        @container style(--layout: left) or style(--layout: right) {
+            :host {
+                flex-direction: column;
+                overflow-y: auto;
+            }
+        }
+
+        @container style(--layout: top) {
+            :host { border-bottom: solid 1px var(--border-color, var(--theme-bgd-accent)); }
+        }
+
+        @container style(--layout: bottom) {
+            :host { border-top: solid 1px var(--border-color, var(--theme-bgd-accent)); }
+        }
+
+        @container style(--layout: left) {
+            :host { border-right: solid 1px var(--border-color, var(--theme-bgd-accent)); }
+        }
+
+        @container style(--layout: right) {
+            :host { border-left: solid 1px var(--border-color, var(--theme-bgd-accent)); }
+        }
+
+        @media (max-width: 899px) and (orientation:portrait) {
+
+            :host([layoutmobile="top"]) {  --layout: top; }
+            :host([layoutmobile="bottom"]) {  --layout: bottom; }
+            :host([layoutmobile="left"]) {  --layout: left; }
+            :host([layoutmobile="right"]) {  --layout: right; }
+
+           
         }
 
     `
