@@ -82,6 +82,10 @@ customElements.define('b-app-core-view', class extends Tabs{
             [name="before"]::slotted(header) { padding: 1em; }
         }
 
+        @container style(--layout: left) and style(--minimize) {
+            [name="tabbar"] ::slotted(aside) { display: none; }
+        }
+
         ${mediaQuery('layoutmobile', css`
             :host {
                 --layout: bottom;
@@ -91,6 +95,13 @@ customElements.define('b-app-core-view', class extends Tabs{
         @media (max-height: 599px) and (orientation:landscape) {
             [name="before"]::slotted(header) {
                 display: none;
+            }
+        }
+
+        @container style(--layout: left) and style(--minimize) {
+            [part="tab-bar"] {
+                background: none;
+                width: var(--tab-bar-width, 5em);
             }
         }
     `]

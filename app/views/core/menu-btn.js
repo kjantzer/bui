@@ -33,57 +33,68 @@ customElements.define('b-app-core-menu-btn', class extends TabBarBtn{
         }
 
         .wide .external {
-            display: none;
+            display: inline-block;
+        }
+
+        .wide {
+            margin: 0 1em;
+            padding: 1em;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 1em;
+            border-radius: 4em;
+            user-select: none;
+        }
+
+        :host([active]) .wide {
+            background: var(--theme-gradient);
+            color: white;
+            box-shadow: 1px 1px 4px var(--theme-shadow);
+        }
+
+        b-icon[square] {
+            padding: .25em;
+            margin: -.25em;
+            background: var(--theme-bgd);
+            border-radius: 2em;
+            box-shadow: 1px 1px 4px var(--theme-shadow);
+        }
+
+        :host([active]) b-icon[square] {
+            background: none;
+            box-shadow: var(--theme-shadow-2) inset;
+        }
+
+        :host(:not([active])) .wide:hover {
+            background: var(--theme-bgd-accent);
         }
 
         @container style(--layout: left) {
 
-            :host > .external {
-                display: none;
-            }
-
-            .wide .external {
-                display: inline-block;
-            }
-
-            .wide {
-                margin: 0 1em;
-                padding: 1em;
-                display: grid;
-                grid-template-columns: auto 1fr;
-                align-items: center;
-                gap: 1em;
-                border-radius: 4em;
-                user-select: none;
-            }
-
-            :host([active]) .wide {
-                background: var(--theme-gradient);
-                color: white;
-                box-shadow: 1px 1px 4px var(--theme-shadow);
-            }
-
-            b-icon[square] {
-                padding: .25em;
-                margin: -.25em;
-                background: var(--theme-bgd);
-                border-radius: 2em;
-                box-shadow: 1px 1px 4px var(--theme-shadow);
-            }
-
-            :host([active]) b-icon[square] {
-                background: none;
-                box-shadow: var(--theme-shadow-2) inset;
-            }
-
-            :host(:not([active])) .wide:hover {
-                background: var(--theme-bgd-accent);
-            }
-
+            :host > .external,
             b-btn[stacked] {
                 display: none;
             }
 
+            :host > .wide {
+                display: grid;
+            }
+        }
+
+        @container style(--minimize) {
+
+            :host > .external,
+            b-btn[stacked] {
+                display: inline-block;
+            }
+
+            :host > .wide {
+                display: none;
+            }
+        }
+
+        @container style(--layout: left) and style(--minimize) {
+            
         }
     `]
 
