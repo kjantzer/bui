@@ -164,6 +164,9 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
     get tabView(){ return this.__view || {} }
 
     render(){return html`
+
+        <slot name="before"></slot>
+
         <b-btn text stacked part="btn"
             goto=${this.getAttribute('goto')}
             vid=${this.tabView.id}
@@ -187,6 +190,8 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
            <slot></slot>
 
         </b-btn>
+
+        <slot name="after"></slot>
     `}
 
 })
