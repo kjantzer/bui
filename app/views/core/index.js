@@ -115,7 +115,8 @@ customElements.define('b-app-core-view', class extends Tabs{
 
     defaultTabBarBtnRender(btn, view, onClick){
         return html`
-            <b-app-core-menu-btn .tabView=${view} ?active=${view.active} @click=${onClick} part="tab-bar-btn">
+            <b-app-core-menu-btn .tabView=${view} ?active=${view.active} @click=${onClick} part="tab-bar-btn"
+                ?hidden=${view.view.shouldShowTabBtn?.()===false}>
                 <slot></slot>
                 <slot name="wide"></slot>
             </b-app-core-menu-btn>
