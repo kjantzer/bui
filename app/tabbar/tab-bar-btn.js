@@ -77,7 +77,7 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             right: 0;
             left: 0;
             top: 0;
-            z-index: 5;
+            z-index: 12;
             display: block;
         }
 
