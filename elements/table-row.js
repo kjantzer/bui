@@ -16,6 +16,7 @@ customElements.define('b-table-row', class extends LitElement{
         main {
             display: grid;
             grid-template-columns: var(--table-template-cols);
+            height: 100%;
         }
 
         :host([hover]:hover),
@@ -32,16 +33,18 @@ customElements.define('b-table-row', class extends LitElement{
             display: none !important;
         }
 
-        :host([slot="header"]) {
+        :host([slot="header"]), :host(.header) {
             background: var(--theme-bgd-accent);
             border-color: rgba(var(--theme-text-rgb), .1) !important;
         }
 
-        :host([slot="header"]) main {
+        :host([slot="header"]) main,
+        :host(.header) main {
             align-items: center;
         }
 
-        :host([slot="header"]) main ::slotted(*) {
+        :host([slot="header"]) main ::slotted(*),
+        :host(.header) main ::slotted(*) {
             border-color: rgba(var(--theme-text-rgb), .1);
         }
 
