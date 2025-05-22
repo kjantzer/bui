@@ -79,6 +79,7 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             top: 0;
             z-index: 12;
             display: block;
+            flex-grow: 0 !important;
         }
 
         :host([part="close-btn"]) b-btn,
