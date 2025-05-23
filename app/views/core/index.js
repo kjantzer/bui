@@ -25,7 +25,7 @@ customElements.define('b-app-core-view', class extends Tabs{
 
     static styles = [super.styles, css`
         :host {
-            /*background-color: var(--theme-bgd-accent2);*/
+            background-color: var(--theme-bgd-accent2);
             --b-app-tab-bar-sticky-bgd: transparent;
             --layout: left;
         }
@@ -42,7 +42,7 @@ customElements.define('b-app-core-view', class extends Tabs{
         slot.content {
             background: var(--theme-bgd);
             border-radius: var(--radius) 0 0 0;
-            box-shadow: 0 0 0 1px var(--theme-bgd-accent), var(--theme-shadow-3);
+            box-shadow: 0 0 0 1px var(--theme-bgd-accent), var(--theme-shadow-1);
         }
 
         @container style(--layout: left) or style(--layout: right) {
