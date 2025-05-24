@@ -42,7 +42,7 @@ customElements.define('b-app-core-menu-btn', class extends TabBarBtn{
             grid-template-columns: auto 1fr;
             align-items: center;
             gap: 1em;
-            border-radius: 4em;
+            border-radius: var(--app-core-menu-btn-wide-radius, 4em);
             user-select: none;
         }
 
