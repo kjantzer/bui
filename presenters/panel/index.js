@@ -745,6 +745,11 @@ export class Panel extends LitElement {
             transition: ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* causes auto width issues and likely wont ever need to support @container queries since modals are usually small already */
+        :host([type="modal"]) > main {
+            container-type: normal;
+        }
+
         :host > main ::slotted(*),
         .inlinehtml[filled] > * {
             background: var(--b-panel-bgd, #fff);
