@@ -27,6 +27,10 @@ customElements.define('b-animate', class extends LitElement{
             display: contents !important;
         }
 
+        :host([hidden]) {
+            display: none !important;
+        }
+
         @media (hover){
             ::slotted(*) {
                 transition: var(--speed, 120ms) cubic-bezier(0.6, -0.28, 0.735, 0.045);
