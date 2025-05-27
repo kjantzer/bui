@@ -133,7 +133,7 @@ export class Palette extends CollMap {
     clearVars(el){
         let styles = Array.from(el.style)
         styles.forEach(style=>{
-            if( style.startsWith('--palette-') || style.startsWith('--theme-') )
+            if( style.startsWith('--palette-') || style.startsWith('--theme') )
                 el.style.removeProperty(style)
         })
     }
