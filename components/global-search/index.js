@@ -627,7 +627,10 @@ function goToSelected(selected, metaKey){
     // assume product search means inventory
     if( ['product', 'inventory'].includes(type) )
         url = 'product/'+id
-    
+
+    if( type == 'materials' )
+        url = 'material/'+id
+
     if( ['shipment', 'shipment-by-name'].includes(type) )
         url = 'shipments/'+id
     
