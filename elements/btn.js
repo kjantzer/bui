@@ -50,7 +50,7 @@ export default class BtnElement extends LitElement {
     static get styles(){ return css`
     
         :host{
-            --red: var(--red-700);
+            /*--red: var(--red-700);*/
             /* --black: #333;
             --orange: #F57C00;
             --blue: #2196F3;
