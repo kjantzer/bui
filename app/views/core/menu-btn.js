@@ -46,6 +46,10 @@ customElements.define('b-app-core-menu-btn', class extends TabBarBtn{
             user-select: none;
         }
 
+        b-btn {
+            touch-action: manipulation;
+        }
+
         :host([active]) .wide {
             background: var(--theme-gradient);
             color: white;

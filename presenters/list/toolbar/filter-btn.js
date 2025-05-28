@@ -16,6 +16,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
 
         b-btn {
             --color: var(--toolbarTextColor);
+            touch-action: manipulation;
         }
 
         b-btn[active]  {

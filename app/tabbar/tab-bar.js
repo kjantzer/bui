@@ -26,6 +26,8 @@ customElements.define('b-app-tab-bar', class extends BaseTabBar{
                 --b-app-tab-bar-text-color: var(--dark-text);
                 --b-app-tab-bar-bgd-stacked-icon-opacity: .75;
                 --b-app-tab-bar-sticky-bgd: color-mix(in srgb, var(--theme),black 20%);
+                overflow-x: auto;
+                overflow-y: hidden;
             }
         }
 

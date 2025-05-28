@@ -32,6 +32,7 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             min-width: var(--b-app-tab-bar-btn-min-width, 70px);
             /*flex-grow: 1;*/
             flex-shrink: 0;
+            touch-action: manipulation;
         }
 
         b-btn::part(icon) {
