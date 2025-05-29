@@ -25,7 +25,18 @@ customElements.define('b-app-tab-bar', class extends BaseTabBar{
                 --b-app-tab-bar-bgd: var(--theme-gradient);
                 --b-app-tab-bar-text-color: var(--dark-text);
                 --b-app-tab-bar-bgd-stacked-icon-opacity: .75;
-                --b-app-tab-bar-sticky-bgd: color-mix(in srgb, var(--theme),black 20%);
+                --b-app-tab-bar-sticky-bgd: color-mix(in srgb, var(--theme),black 20%);;
+                padding-left: .25em;
+                padding-right: .25em;
+            }
+            
+            [part="close-btn"] {
+                left: -.25em !important;
+            }
+
+            .search-btn {
+                right: -.25em !important;
+                margin-right: -.25em !important;
             }
         }
 
@@ -34,6 +45,8 @@ customElements.define('b-app-tab-bar', class extends BaseTabBar{
             :host {
                 padding-left: calc(0.6 * env(safe-area-inset-left)) !important;
                 padding-right: calc(0.1 * env(safe-area-inset-left)) !important;
+                padding-top: .5em;
+                padding-bottom: .5em;
             }
         }
 
