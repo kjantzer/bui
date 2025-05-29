@@ -87,6 +87,20 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             flex-grow: 0 !important;
         }
 
+        /*@container style(--layout: left) {
+            :host([part="close-btn"]) {
+                top: -.5em;
+                margin-top: -.5em;
+            }
+        }*/
+
+        @container style(--layout: bottom) {
+            :host([part="close-btn"]) {
+                left: -.5em;
+                margin-left: -.5em;
+            }
+        }
+
         :host([part="close-btn"]) b-btn,
         :host(.search-btn) b-btn  {
             flex-grow: 0;
