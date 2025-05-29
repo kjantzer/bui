@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit'
 import {live} from 'lit/directives/live.js'
 import scrollbars from '../../../helpers/scrollbars'
 import {applyGrouping} from './util'
+import device from '../../../util/device'
 import '../../../elements/sortable'
 import '../../../elements/details'
 
@@ -152,13 +153,20 @@ customElements.defineShared('b-list-group-by', class extends LitElement{
     
     get values(){ return this.__values || [] }
 
+    get sortingEnabled(){
+        return !this.disabled && (!device.isTouch || this._sortingEnabled)
+    }
+
     render(){return html`
         <b-grid cols=1 gap="1">
             
             <b-text xbold part="title">Data Grouping</b-text>
             
             <b-grid cols=1 gap=" " part="options" class="options" @change=${this.onChange}>
-                <b-sortable item=".option" @sort-changed=${this.onSort} ?disabled=${this.disabled}></b-sortable>
+            
+                ${this.sortingEnabled?html`
+                    <b-sortable item=".option" @sort-changed=${this.onSort}></b-sortable>
+                `:''}
 
             ${this.valuesList?.map(d=>html`
                 
@@ -170,6 +178,11 @@ customElements.defineShared('b-list-group-by', class extends LitElement{
             `)}
             </b-grid>
 
+            ${device.isTouch?html`
+                <b-btn clear @click=${this.reorder}>${this._sortingEnabled?'Done':'Reorder Groupings'}</b-btn>
+                <b-text dim italic sm ?hidden=${!this._sortingEnabled}>Drag values to change the order of grouping</b-text>
+            `:''}
+
             <b-details noicon display-contents part="info">
                 <b-text dim link italic sm toggles><b-icon name="info"></b-icon>&nbsp;Tips</b-text>
                 <b-text dim italic sm>Drag values to change the order of grouping</b-text>
@@ -178,6 +191,11 @@ customElements.defineShared('b-list-group-by', class extends LitElement{
 
         </b-grid>
     `}
+
+    reorder(){
+        this._sortingEnabled = !this._sortingEnabled
+        this.requestUpdate()
+    }
 
     _toggle(e){
         if( this.disabled ) return
