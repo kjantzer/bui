@@ -12,7 +12,8 @@ customElements.define('b-dictate', class extends LitElement{
 
     static get properties(){return {
         listening: {type: Boolean, reflect: true},
-        value: {type: String}
+        value: {type: String},
+        final: {type: Boolean, reflect: true}
     }}
 
     static styles = css`
@@ -46,6 +47,10 @@ customElements.define('b-dictate', class extends LitElement{
             white-space: nowrap;
             display: none;
         }
+
+        /*:host([final]) .value {
+            background: var(--theme-gradient);
+        }*/
 
         :host([listening]) .value:not(:empty) {
             display: block;
@@ -151,6 +156,7 @@ customElements.define('b-dictate', class extends LitElement{
 
             let interimTranscript = '';
             let finalTranscript = '';
+            let final = false
 
             for (let i = event.resultIndex; i < event.results.length; i++) {
                 const transcript = event.results[i][0].transcript;
@@ -158,13 +164,16 @@ customElements.define('b-dictate', class extends LitElement{
                 
                 if (event.results[i].isFinal) {
                     finalTranscript += transcript + ' ';
+                    final = true
                 } else {
                     interimTranscript += transcript;
+                    final = false
                 }
             }
 
             // Update textarea with final and interim results
-            this.value = finalTranscript + interimTranscript;
+            this.final = final
+            this.value = (finalTranscript + interimTranscript).trim()
             // this.valueDone()
         }
 
@@ -227,7 +236,8 @@ customElements.define('b-dictate', class extends LitElement{
         let val = this.value
         console.log(val);
 
-        this.emitEvent('dictate', val)
+        if( this.final )
+            this.emitEvent('dictate', val)
         
         this.stop()
     }
