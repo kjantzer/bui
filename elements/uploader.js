@@ -55,6 +55,7 @@
     The `totalFiles` and `fileNum` will be passed along with each uploaded file. You can compare these values to determine when the last file is uploaded
 */
 import { LitElement, html, css } from 'lit';
+import {ifDefined} from 'lit/directives/if-defined.js';
 import AJAX from '../util/ajax.js';
 import '../util/file.ext.js'
 import resizeImg from '../util/resizeImg'
@@ -66,6 +67,7 @@ export class UploaderElement extends LitElement {
         url: {type: String},
         disabled: {type: Boolean},
         accept: {type: String},
+        capture: {type: String},
         plainFilename: {type: Boolean},
         multiple: {type: Boolean},
         placeholder: {type: String},
@@ -151,6 +153,7 @@ export class UploaderElement extends LitElement {
         this.accept = '';
         this.plainFilename = false
         this.multiple = false
+        this.capture = false
         this.resize = false
         this.placeholder = 'Drop to upload';
         this.files = []
@@ -179,7 +182,9 @@ export class UploaderElement extends LitElement {
     get autoUpload(){ return this.hasAttribute('auto-upload') }
 
     render(){ return html`
-        <input class="choose" type="file" @click=${e=>e.stopPropagation()} @change=${this._inputChange} accept=${this.accept} ?multiple=${this.multiple}>
+        <input class="choose" type="file" accept=${this.accept} ?multiple=${this.multiple} capture=${ifDefined(this.capture?this.capture:undefined)}
+            @click=${e=>e.stopPropagation()} 
+            @change=${this._inputChange}>
         <div class="placeholder">${this.placeholder}</div>
         <div class="progress">
             <div class="bar" style="width:${this.progress}%"></div>
