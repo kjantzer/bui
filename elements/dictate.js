@@ -236,7 +236,7 @@ customElements.define('b-dictate', class extends LitElement{
         let val = this.value
         console.log(val);
 
-        if( this.final )
+        // if( this.final )
             this.emitEvent('dictate', val)
         
         this.stop()
