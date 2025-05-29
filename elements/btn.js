@@ -50,7 +50,7 @@ export default class BtnElement extends LitElement {
     static get styles(){ return css`
     
         :host{
-            --red: var(--red-700);
+            /*--red: var(--red-700);*/
             /* --black: #333;
             --orange: #F57C00;
             --blue: #2196F3;
@@ -143,6 +143,7 @@ export default class BtnElement extends LitElement {
             min-width: 0;
             /* word-break: break-all; */
             /* transition: 120ms; */
+            background: var(--bgdColor);
         }
 
         :host([thin]) {
@@ -181,6 +182,8 @@ export default class BtnElement extends LitElement {
             opacity: 0;
             /* mix-blend-mode: saturation; */
             border-radius: inherit;
+            z-index: 10;
+            
             /* transition: 120ms; */
         }
 
@@ -403,8 +406,7 @@ export default class BtnElement extends LitElement {
         :host([lg="size"]) .label { font-size: 1rem; }
         :host([xl="size"]) .label { font-size: 1rem; }
 
-        :host([lg]) .label,
-        :host([xl]) .label {
+        .label {
             font-size: var(--b-btn-label-font-size, var(--b-btn-font-size, 1rem));
         }
         
@@ -413,6 +415,10 @@ export default class BtnElement extends LitElement {
             background: var(--theme-gradient, var(--bgdColor));
             color: var(--dark-text);
             --borderWidth: 0;
+        }
+
+        :host([color="theme-gradient"]) main {
+            background: var(--theme-gradient, var(--bgdColor));
         }
 
         :host([fab][color="theme-gradient"]) main {

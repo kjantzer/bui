@@ -72,6 +72,10 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             --hoverBgdColor: rgba(var(--theme-text-rgb), .1);
         }
 
+        b-btn::part(main) {
+            --bgdColor: none;
+        }
+
         :host([part="close-btn"]),
         :host(.search-btn) {
             position: sticky;

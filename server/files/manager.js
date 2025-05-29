@@ -92,7 +92,7 @@ module.exports = class FileManager extends Model {
         // cannot display encrypted files, so decrypt and return buffer
         // TODO: support permisions?
         if( this.encryptKey ){
-            this.res.set('Content-Type', this.attrs.type)
+            this.res?.set('Content-Type', this.attrs.type)
             return decryptFile(this.filePath, this.encryptKey)
         }
 

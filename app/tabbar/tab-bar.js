@@ -28,6 +28,18 @@ customElements.define('b-app-tab-bar', class extends BaseTabBar{
                 --b-app-tab-bar-sticky-bgd: color-mix(in srgb, var(--theme),black 20%);
                 overflow-x: auto;
                 overflow-y: hidden;
+                --b-app-tab-bar-sticky-bgd: color-mix(in srgb, var(--theme),black 20%);;
+                padding-left: .25em;
+                padding-right: .25em;
+            }
+            
+            [part="close-btn"] {
+                left: -.25em !important;
+            }
+
+            .search-btn {
+                right: -.25em !important;
+                margin-right: -.25em !important;
             }
         }
 
@@ -36,6 +48,8 @@ customElements.define('b-app-tab-bar', class extends BaseTabBar{
             :host {
                 padding-left: calc(0.6 * env(safe-area-inset-left)) !important;
                 padding-right: calc(0.1 * env(safe-area-inset-left)) !important;
+                padding-top: .5em;
+                padding-bottom: .5em;
             }
         }
 
