@@ -437,7 +437,7 @@ export class Panel extends LitElement {
     render(){return html`
         <div part="backdrop" class="backdrop"></div>
         <main part="main" style="${this.width?`width:${this.width};`:''}${this.height?`height:${this.height};`:''}">
-            <b-btn icon="close" squareicon pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closebtn!==true}></b-btn>
+            <b-btn icon="close" part="close-btn" squareicon pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closebtn!==true}></b-btn>
             <slot></slot>
             <div class="inlinehtml" ?filled=${!!this.html}>
                 ${this.html}
@@ -623,7 +623,7 @@ export class Panel extends LitElement {
             if( args[0] && args[0].newState)
                 this.view.onRouteChange(args[0].oldState, args[0].newState, args[0].dir)
             else
-                this.view.onRouteChange(undefined, this.route.state)
+                this.view.onRouteChange(undefined, this.route?.state)
         }
 
         setTimeout(()=>{
@@ -738,6 +738,9 @@ export class Panel extends LitElement {
             display: grid;
             grid-template-rows: 1fr;
             max-height: 100%;
+
+            container-type: inline-size;
+            container-name: panel;
             
             transition: ${Panel.animationTime}ms cubic-bezier(0.4, 0, 0.2, 1);
         }

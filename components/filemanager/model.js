@@ -131,9 +131,11 @@ export class Palette extends CollMap {
     }
 
     clearVars(el){
-        while( el.style[0] ){
-            el.style.removeProperty(el.style[0])
-        }
+        let styles = Array.from(el.style)
+        styles.forEach(style=>{
+            if( style.startsWith('--palette-') || style.startsWith('--theme-') )
+                el.style.removeProperty(style)
+        })
     }
 
     applyVars(el, {overrideTheme=true}={}){

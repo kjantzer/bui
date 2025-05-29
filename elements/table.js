@@ -34,8 +34,9 @@ customElements.define('b-table', class extends LitElement{
         :host {
             display: grid;
             position:relative;
-            border: solid 1px var(--theme-bgd-accent);
+            border: solid 1px var(--table-border-color, var(--theme-bgd-accent));
             overflow: auto;
+            border-radius: var(--b-table-radius, 0px);
         }
 
         :host([hidden]) {
@@ -43,7 +44,7 @@ customElements.define('b-table', class extends LitElement{
         }
 
         :host([rounded]) {
-            border-radius: 4px;
+            border-radius: var(--b-table-rounded-radius, 4px);
         }
 
         header {
@@ -52,7 +53,7 @@ customElements.define('b-table', class extends LitElement{
             z-index: 10;
         }
 
-        ::slotted(*) {
+        ::slotted(*:not([hidden])) {
             display: grid;
             grid-template-columns: var(--table-template-cols);
         }
@@ -62,7 +63,7 @@ customElements.define('b-table', class extends LitElement{
         }
 
         ::slotted(*:not(:last-child)) {
-            border-bottom: solid 1px var(--theme-bgd-accent);
+            border-bottom: solid 1px var(--table-border-color, var(--theme-bgd-accent));
         }
     `
 

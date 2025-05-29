@@ -1,13 +1,14 @@
 import { LitElement, html, css } from 'lit'
 import router from 'bui/app/router'
 import '../views/routed-tabs'
-import '../views/router-controller'
 import {mediaQuery, MediaQueries} from './media-queries'
 import './tab-bar'
+import '../views/core'
+import '../views/router-controller'
 
 
 // TODO: rename
-customElements.define('b-app', class extends LitElement {
+customElements.define('b-app-2025', class extends LitElement {
 
     static properties = {
         minimizable: {type: Boolean}
@@ -23,7 +24,7 @@ customElements.define('b-app', class extends LitElement {
         // since this may be subclassed multiple times, provide a way to know what it is (for styling)        
         this.classList.add('b-app')
 
-        this.tabs = this.shadowRoot.querySelector('b-tabs')
+        this.tabs = this.shadowRoot.querySelector('b-app-core-view')
 
         this.setAttribute('viewing', this.tabs.active)
         
@@ -94,19 +95,35 @@ customElements.define('b-app', class extends LitElement {
             --b-sub-color: var(--theme-text-accent);
         }
 
-        b-tabs > * {
+        b-app-core-view {
+            background: var(--theme-bgd);
+        }
+
+        b-app-core-view header {
+            padding: .5em;
+        }
+
+        :host-context([dark]) b-app-core-view::part(content) {
+            box-shadow: 0 0 0 1px var(--theme-bgd-accent)
+        }
+
+        b-tabs-router {
+            grid-template-rows: 1fr;
+        }
+
+        b-tabs-router > * {
             flex-grow: 1;
         }
 
-        b-tabs > b-panels {
+        b-tabs-router > b-panels {
             order: 999;
         }
 
-        b-tabs > b-panels[inset] {
+        b-tabs-router > b-panels[inset] {
             max-width: 0;
         }
 
-        b-tabs > b-panels[inset][num] {
+        b-tabs-router > b-panels[inset][num] {
             max-width: var(--inset-width);
         }
 
@@ -119,7 +136,7 @@ customElements.define('b-app', class extends LitElement {
             /* app-region: drag; */
         }
         
-        b-tabs > b-hr{
+        b-tabs-router > b-hr{
             display: none;
         }
     `}
@@ -158,25 +175,32 @@ customElements.define('b-app', class extends LitElement {
     }
 
     render(){return html`
-        <b-tabs 
+        <b-app-core-view
             layout="left"
             layoutmobile="bottom"
             key="${this.key}"
-            tab-bar="${this.tabBar}" 
+            _tab-bar="${this.tabBar}" 
             .model=${this.model}
             ?minimizable=${this.minimizable}
             ?no-search=${!this.shouldShowSearch}
-            
             @active-changed=${this.onActiveTabChanged}
         >
-            <b-router-controller rootpath="${this.tabsPath}"></b-router-controller>
+
+            <b-router-controller rootPath="${this.tabsPath}"></b-router-controller>
+
+            <header slot="before"></header>
+
+            <aside slot="menu:before">
+                <img src="/icons/desktop-256.png" style="width: 8em; margin-top: .5em;">
+                <b-text xbold xl>RaceLens</b-text>
+            </aside>
 
             ${this.panel?html`
             <b-app-tab-bar-btn part="close-btn" icon="chevron_right" slot="menu:before" @click=${this.close}></b-app-tab-bar-btn>
             `:''}
 
             ${this.views}
-        </b-tabs>  
+        </b-app-core-view>
     `}
 
     onActiveTabChanged(e){
@@ -196,4 +220,4 @@ customElements.define('b-app', class extends LitElement {
 
 })
 
-export default customElements.get('b-app')
+export default customElements.get('b-app-2025')

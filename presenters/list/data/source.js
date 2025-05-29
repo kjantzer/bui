@@ -68,7 +68,7 @@ export default class DataSource {
     filter(fn){ return this.data.filter(fn) }
     reduce(fn, start=0){ return this.data.reduce(fn, start) }
 
-    async _fetchFromServer(pageAt){
+    async _fetchFromServer(pageAt, {perPage}={}){
 
         // if currently trying to fetch, stop
         this.abortFetch()
@@ -80,7 +80,7 @@ export default class DataSource {
 
             if( this.opts.fetch == 'more' ){
                 data.pageAt = pageAt
-                data.perPage = this.perPage
+                data.perPage = perPage ?? this.perPage
             }
 
             if( this.filters )
@@ -113,7 +113,7 @@ export default class DataSource {
         }
     }
 
-    fetch(pageAt){
+    fetch(pageAt, opts){
         return this._fetching = new Promise(async (resolve, reject)=>{
 
             if( (pageAt == 0 && this._rawData.length == 0) 
@@ -124,7 +124,7 @@ export default class DataSource {
 
                 if( this.opts.fetch ){
                     this.emit('fetching', true)
-                    await this._fetchFromServer(pageAt).catch(err=>{
+                    await this._fetchFromServer(pageAt, opts).catch(err=>{
                         reject(err)
                     })
                     this.emit('fetching', false)

@@ -2,6 +2,8 @@
     Routed Tabs - 2025 UI refresh
 
     NOTE: not in love with these tag names
+
+    DEPRECATED: use b-app-core-view instead
 */
 import { LitElement, html, css } from 'lit'
 import TabsRouter from './routed-tabs'
@@ -164,8 +166,11 @@ customElements.define('b-tabs-router-2025', class extends TabsRouter{
     static styles = [super.styles, css`
         :host {
             background-color: var(--theme-bgd-accent2);
-            grid-template-rows: auto 1fr;
             --b-app-tab-bar-sticky-bgd: transparent;
+        }
+
+        :host > main {
+            grid-template-rows: auto 1fr;
         }
 
         [part="tab-bar"] {

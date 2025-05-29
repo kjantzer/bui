@@ -111,7 +111,7 @@ customElements.define('demo-overview', class extends LitElement{
             min-width: 0;
         }
 
-        b-tabs-router::part(tab-bar) {
+        b-tabs::part(tab-bar) {
             background-color: var(--theme-bgd);
             /* color: white; */
             /* --inactiveColor: rgba(255,255,255,.4); */
@@ -126,7 +126,9 @@ customElements.define('demo-overview', class extends LitElement{
         <div class="bgd"></div>
         
 
-        <b-tabs-router path="overview/" key="demo-overview">
+        <b-tabs key="demo-overview">
+            <b-router-controller rootpath="overview/"></b-router-controller>
+
             <div title="About" view-id="about">
             <main>
 
@@ -155,7 +157,7 @@ customElements.define('demo-overview', class extends LitElement{
             demo-setup
             demo-changelog
 
-        </b-tabs-router>
+        </b-tabs>
     `}
 
 })

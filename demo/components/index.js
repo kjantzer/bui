@@ -27,7 +27,8 @@ customElements.define('demo-components', class extends LitElement{
     `}
 
     render(){return html`
-        <b-tabs-router path="components/" key="components" layout="left" >
+        <b-tabs key="components" layout="left" >
+            <b-router-controller rootpath="components/"></b-router-controller>
             
             <div title="About">
                 <!-- <b-paper> -->
@@ -63,7 +64,7 @@ customElements.define('demo-components', class extends LitElement{
                 <!-- </b-paper> -->
             </div>
 
-        </b-tabs-router>
+        </b-tabs>
     `}
 
 })

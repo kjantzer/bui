@@ -18,7 +18,8 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
     static get properties(){return {
         icon: {type: String},
         pretitle: {type: String, reflect: true, converter: basicConverter},
-        title: {type: String, reflect: true, converter: basicConverter},
+        // note: changed attribute so tooltip title is not shown
+        title: {type: String, reflect: true, attribute: '_title', converter: basicConverter},
         body: {type: String, reflect:true, converter: basicConverter},
 
         closeBtn: {type: Boolean},
@@ -177,7 +178,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             color: var(--accent);
         }
 
-        :host([title='0'][pretitle='0']) aside [name="icon"] > * {
+        :host([_title='0'][pretitle='0']) aside [name="icon"] > * {
             --size: var(--icon-size, 1em);
         }
 

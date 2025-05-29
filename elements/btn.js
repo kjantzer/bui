@@ -14,7 +14,7 @@
     - `outline`
     - `pill`
     - `text` - no button outline until hover
-    - `clear`
+    - `clear` or `ghost`
     - `fab` - floating action button
     - `stacked`
     - `thin` - reduces top/bottom padding
@@ -50,7 +50,7 @@ export default class BtnElement extends LitElement {
     static get styles(){ return css`
     
         :host{
-            --red: var(--red-700);
+            /*--red: var(--red-700);*/
             /* --black: #333;
             --orange: #F57C00;
             --blue: #2196F3;
@@ -63,7 +63,7 @@ export default class BtnElement extends LitElement {
             --brown: #795548;
             --pink: #E91E63; */
 
-            --radius: 3px;
+            --radius: var(--b-btn-radius, 3px);
             --color: var(--b-btn-bgd, var(--theme-text, #000)) ;
             --bgdColor: var(--color);
             --hoverBgdColor: rgba(255,255,255,.1);
@@ -92,6 +92,8 @@ export default class BtnElement extends LitElement {
             font-weight: 600;
             font-family: var(--b-btn-font);
             outline: none;
+            /* disables scrolling while pointer down*/
+            touch-action: none;
 
             -webkit-touch-callout: none; /* iOS Safari */
             -webkit-user-select: none; /* Safari */
@@ -103,6 +105,12 @@ export default class BtnElement extends LitElement {
 
         :host(:focus:not(:active):not(:hover)) {
             box-shadow: 0 0 0 2px var(--theme);
+        }
+
+        /* better hover/tap state on mobile */
+        :host(:active) .hover {
+            visibility: visible;
+            opacity: 1;
         }
 
         /* hide by default */
@@ -122,7 +130,7 @@ export default class BtnElement extends LitElement {
         }
 
         main {
-            border-radius: inherit;// var(--radius);
+            border-radius: inherit;
             position: relative;
             display: inline-flex;
             justify-content: center;
@@ -135,6 +143,7 @@ export default class BtnElement extends LitElement {
             min-width: 0;
             /* word-break: break-all; */
             /* transition: 120ms; */
+            background: var(--bgdColor);
         }
 
         :host([thin]) {
@@ -172,7 +181,9 @@ export default class BtnElement extends LitElement {
             visibility: hidden;
             opacity: 0;
             /* mix-blend-mode: saturation; */
-            border-radius: inherit;// var(--radius);
+            border-radius: inherit;
+            z-index: 10;
+            
             /* transition: 120ms; */
         }
 
@@ -340,7 +351,7 @@ export default class BtnElement extends LitElement {
         } */
 
         :host([text]),
-        :host([clear]) {
+        :host([clear]), :host([ghost]) {
             --bgdColor: transparent;
             --textColor: var(--color);
             --borderColor: transparent;
@@ -376,12 +387,12 @@ export default class BtnElement extends LitElement {
 
         @media (hover){
         :host([text]:hover),
-        :host([clear]:hover) {
+        :host([clear]:hover), :host([ghost]:hover) {
             --bgdColor: rgba(0,0,0,.05);
         }}
 
         :host([text].popover-open),
-        :host([clear].popover-open) {
+        :host([clear].popover-open), :host([ghost].popover-open) {
             --bgdColor: rgba(0,0,0,.05);
             box-shadow: 0 0 0 1px var(--theme) inset; /* border outline */
         }
@@ -391,9 +402,23 @@ export default class BtnElement extends LitElement {
         :host([lg]) { --b-btn-font-size: 1.2rem; }
         :host([xl]) { --b-btn-font-size: 1.4rem; }
 
+        
+        :host([lg="size"]) .label { font-size: 1rem; }
+        :host([xl="size"]) .label { font-size: 1rem; }
+
+        .label {
+            font-size: var(--b-btn-label-font-size, var(--b-btn-font-size, 1rem));
+        }
+        
+
         :host([color="theme-gradient"]) {
             background: var(--theme-gradient, var(--bgdColor));
             color: var(--dark-text);
+            --borderWidth: 0;
+        }
+
+        :host([color="theme-gradient"]) main {
+            background: var(--theme-gradient, var(--bgdColor));
         }
 
         :host([fab][color="theme-gradient"]) main {
@@ -492,12 +517,12 @@ export default class BtnElement extends LitElement {
         super.firstUpdated()
         this.addEventListener('click', e=>{
             
-            if( window.soundFX && soundFX.playIfMobile )
-                soundFX.playIfMobile('tinyTap', 0.3)
+            window.soundFX?.play('tinyTap', {gain: 0.1, ifMobile: true})
 
             this.onClick(e)
         }, true)
     }
+    
 
     // for subclassing
     onClick(e){

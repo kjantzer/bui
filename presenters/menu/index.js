@@ -770,8 +770,8 @@ customElements.define('b-menu', class extends LitElement{
 		if( target ){
 			if(target.hasAttribute('disabled')) return
 
-			if( window.soundFX && soundFX.playIfMobile )
-                soundFX.playIfMobile('tinyTap', 0.3)
+            window.soundFX?.play('tinyTap', {gain: 0.3, ifMobile: true})
+			
 			
 			let data = this.displayMenu[target.getAttribute('index')]
 

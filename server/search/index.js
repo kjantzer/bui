@@ -99,15 +99,27 @@ class SearchAPI {
                 }
             })
 
+            // NOTE: this? or shoud I use `ignoreDiacritics`
+            function simplifyStr(str){
+                return str.replace(/[,'’”]/g, '').toLowerCase()
+            }
+
+            data = data.map(row=>{
+                row.label = simplifyStr(row.label)
+                return row
+            })
+
             // further reduce and sort the results from a string search
             // by matching the `term` agaist the `label` returned from the search types
             let fuse = new Fuse(data, {
                 threshold: threshold,
                 includeScore: true,
+                // ignoreLocation: true,
+                // ignoreDiacritics: true,
                 keys: ["label"]
             })
 
-            result = fuse.search(this.term)
+            result = fuse.search(simplifyStr(this.term))
 
             if( !hydrate )
                 return result

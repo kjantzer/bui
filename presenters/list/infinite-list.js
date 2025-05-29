@@ -68,7 +68,7 @@ customElements.define('b-infinite-list', class extends LitElement {
         return this._endOfListRow
     }
 
-    async getContent({clear=false}={}){
+    async getContent({clear=false, perPage}={}){
         
         if( !this.dataSource ) return
 
@@ -83,7 +83,8 @@ customElements.define('b-infinite-list', class extends LitElement {
             this.endOfListRow.msg = pageAt == 0 ? 'Fetching data...' : 'Fetching more...'
             this.appendChild(this.endOfListRow)
 
-            let models = await this.dataSource.fetch(pageAt)
+            // outside code could choose to fetch more than standard perPage, but addContent will still use standard perPage
+            let models = await this.dataSource.fetch(pageAt, {perPage})
 
             // if no more content was found, flag it so we dont keep attempting to load more data
             if( models.length == 0 ){

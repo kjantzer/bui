@@ -257,7 +257,7 @@ customElements.defineShared('b-screen-record', class extends LitElement{
                 this.onStop()
             });
 
-            this.deviceRecorder = await new MediaRecorder(this.stream, {mimeType: "video/webm"});
+            this.deviceRecorder = await new MediaRecorder(this.stream, {mimeType: "video/mp4"});
 
             this.deviceRecorder.ondataavailable = (e) => {
                 if(e.data.size > 0 && this.recording )
@@ -296,8 +296,8 @@ customElements.defineShared('b-screen-record', class extends LitElement{
         if( !this.recordedData.length ) return console.log('nothing captured');
 
         // download recording
-        let filename = this.title+'-'+(new Date().getTime())+'.webm'
-        downloadContent(this.recordedData, filename, {type: 'video/webm'})
+        let filename = this.title+'-'+(new Date().getTime())+'.mp4'
+        downloadContent(this.recordedData, filename, {type: 'video/mp4'})
         
         // reset
         this.recordedData = []

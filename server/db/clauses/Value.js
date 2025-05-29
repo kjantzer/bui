@@ -3,7 +3,7 @@ const Group = require('./Group')
 const {sqlStr} = require('./util')
 
 const AllowedOperators = [
-    '!=', '>=','>', '<=', '<', '=', 'NOT', 'LIKE', 'NOT LIKE'
+    '!=', '>=','>', '<=', '<', '=', 'NOT', 'LIKE', 'NOT LIKE', 'BETWEEN'
 ]
 
 /*
@@ -46,7 +46,10 @@ module.exports = class Value extends Clause {
             key = `IFNULL(${key}, ${this.ifNull==true?"''":this.ifNull})`
             
         if( Array.isArray(this.value) )
-            return `${key} ${this.oper=='NOT'?this.oper:''} IN(${db.escape(this.value)})`
+            if( this.oper == 'BETWEEN' )
+                return `${key} ${this.oper} ${db.escape(this.value[0])} AND ${db.escape(this.value[1])}`
+            else
+                return `${key} ${this.oper=='NOT'?this.oper:''} IN(${db.escape(this.value)})`
         else{
 
             if( ['NULL', 'NOT NULL', 'null', 'not null', null].includes(this.value) )
@@ -90,6 +93,7 @@ module.exports = class Value extends Clause {
     // NOTE: this is a bit complicated :/
     // expects a string or array of strings like:
     // `key`, `key: value`, `key = value`, `key like value`, `key > value`, etc
+    // or if opts.key is given, string should be like: `value, >value, value-value
     static fromString(str, group, opts={}){
 
         let values = Array.isArray(str) ? str : str.split(',')
@@ -111,7 +115,7 @@ module.exports = class Value extends Clause {
             if( !s.trim() ) return
             
             // look for default structure of `key: value`
-            let [key, val] = s.split(':').map(s=>s.trim())
+            let [key, val] = opts.key ? [opts.key, s.trim()] : s.split(':').map(s=>s.trim())
             let oper = '='
 
             // if no value found, test the key again
@@ -133,9 +137,14 @@ module.exports = class Value extends Clause {
                 val = detectOper.val
                 oper = detectOper.oper
             }
+
+            let rangeValue = val.match(/(\d+)-(\d+)/)
+            if( rangeValue ){
+                val = rangeValue.slice(1)
+                oper = 'BETWEEN'
             
             // format the value for all comparisions but LIKE
-            if( oper != 'like' ){
+            }else if( oper != 'like' ){
                 
                 // looks like a date, keep value
                 if( val && val.match(/[\d\.]+\//) )

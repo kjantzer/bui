@@ -71,11 +71,19 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             --hoverBgdColor: rgba(var(--theme-text-rgb), .1);
         }
 
+        b-btn::part(main) {
+            --bgdColor: none;
+        }
+
         :host([part="close-btn"]),
         :host(.search-btn) {
             position: sticky;
             right: 0;
+            left: 0;
             top: 0;
+            z-index: 12;
+            display: block;
+            flex-grow: 0 !important;
         }
 
         :host([part="close-btn"]) b-btn,
@@ -107,7 +115,7 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             right: 0;
         }
 
-        @media (max-width: 899px) and (orientation:portrait) {
+        @container style(--layout: bottom) {
 
             :host([part="close-btn"]) b-btn,
             :host(.search-btn) b-btn  {
@@ -131,7 +139,7 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             rotate: var(--b-panel-toolbar-close-btn-rotation, 0deg);
         }
 
-        ${mediaQuery('b-app-landscape', css`
+        @container style(--layout: left) or style(--layout: right) {
 
             b-btn {
                 padding-top: .5em;
@@ -148,7 +156,7 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
                 margin-top: .5em;
                 max-width: min-content;
             }
-        `)}
+        }
     `
 
     set tabView(val){
@@ -161,6 +169,9 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
     get tabView(){ return this.__view || {} }
 
     render(){return html`
+
+        <slot name="before"></slot>
+
         <b-btn text stacked part="btn"
             goto=${this.getAttribute('goto')}
             vid=${this.tabView.id}
@@ -184,6 +195,8 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
            <slot></slot>
 
         </b-btn>
+
+        <slot name="after"></slot>
     `}
 
 })
