@@ -2,9 +2,14 @@
     # Dictate
 
     WIP - not setup for generic use yet - a bit "hardcoded"
+
+    ```html
+    <b-dictate @dictate=${this.onDictate}></b-dictate>
+    ```
 */
 import { LitElement, html, css } from 'lit'
 import './pointer-events'
+import device from '../util/device'
 // import Fuse from 'fuse.js'
 
 
@@ -13,7 +18,8 @@ customElements.define('b-dictate', class extends LitElement{
     static get properties(){return {
         listening: {type: Boolean, reflect: true},
         value: {type: String},
-        final: {type: Boolean, reflect: true}
+        final: {type: Boolean, reflect: true},
+        hold: {type: Boolean, reflect: true}
     }}
 
     static styles = css`
@@ -47,10 +53,6 @@ customElements.define('b-dictate', class extends LitElement{
             white-space: nowrap;
             display: none;
         }
-
-        /*:host([final]) .value {
-            background: var(--theme-gradient);
-        }*/
 
         :host([listening]) .value:not(:empty) {
             display: block;
@@ -105,9 +107,10 @@ customElements.define('b-dictate', class extends LitElement{
 
     render(){return html`
         <b-btn icon="mic" lg fab empty
-            @pointerdown=${this.start}
-            @pointerrelease=${this.done}
-            @pointercancel=${this.cancel}
+            @click=${this.onClick}
+            @pointerdown=${this.holdStart}
+            @pointerrelease=${this.holdRelease}
+            @pointercancel=${this.holdCancel}
         ><b-pointer-events></b-pointer-events></b-btn>
 
         <b-text class="value">${this.value}</b-text>
@@ -116,6 +119,15 @@ customElements.define('b-dictate', class extends LitElement{
     constructor(){
         super()
         this.listening = false
+        /*
+            Android is emitting speechend event once it thinks the user is done talking
+            so dont rely on a hold release to emit done event, but wait for the event.
+            Better UX as a user releases to fast or the system auto stops even if user still holding.
+
+            On iOS and other platforms, let the user release to emit done event.
+            Have not tested Windows yet
+        */
+        this.hold = !device.isAndroid
     }
 
     firstUpdated(){
@@ -136,6 +148,7 @@ customElements.define('b-dictate', class extends LitElement{
 
         this.recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
 
+        // wasn't seeing this work at all in my testing...
         // let brands = ['Kurz', 'ifoil', 'ricoh']
         // let grammar = `#JSGF V1.0; grammar brands; public <brand> = ${brands.join(' | ')}`
 
@@ -151,6 +164,17 @@ customElements.define('b-dictate', class extends LitElement{
         this.recognition.continuous = true
         this.recognition.interimResults = true
         this.recognition.lang = 'en-US'
+
+
+        this.recognition.addEventListener('nomatch', (e)=>{
+            if( !this.hold )
+                this.cancel({sound: false})
+        })
+
+        this.recognition.addEventListener('speechend', ()=>{
+            if( !this.hold )
+                this.done()
+        })
         
         this.recognition.onresult = (event) => {
 
@@ -172,9 +196,10 @@ customElements.define('b-dictate', class extends LitElement{
             }
 
             // Update textarea with final and interim results
-            this.final = final
+            this.final = final // not used like I thought, leave for now
             this.value = (finalTranscript + interimTranscript).trim()
-            // this.valueDone()
+
+            // this.emitEvent('interim', this.value)
         }
 
         this.recognition.onerror = (event) => {
@@ -190,43 +215,36 @@ customElements.define('b-dictate', class extends LitElement{
             console.log('onend');
             
             if( this.listening ){
+                console.log('restart');
+                
                 this.recognition.start(); // Restart if still in recognizing mode
+
             } else {
                 // status.textContent = 'Dictation stopped. Click the button to start again.';
                 // startStopBtn.textContent = 'Start Dictation';
             }
-        };
-  
+        }
     }
 
-    /*valueDone(){
-        clearTimeout(this._valueDoneTimeout)
+    holdStart(e){
+        if( !this.hold ) return
+        this.start()
+    }
 
-        if( this._valueDone == this.value )
-            return
+    holdRelease(e){
+        if( !this.hold ) return
+        this.done()
+    }
 
-        this._valueDoneTimeout = setTimeout(()=>{
+    holdCancel(e){
+        if( !this.hold ) return
+        this.cancel()
+    }
 
-            this._valueDone = this.value
-            
-            console.log('DONE', this.value);
-
-            let fuse = new Fuse(window.dictateActions, {
-                // threshold: this.threshold,
-                // includeScore: true,
-                keys: ["id"]
-            })
-
-            let action = fuse.search(this.value)
-
-            console.log(action);
-            
-            if( action[0]?.url )
-                goTo(action[0].url)
-
-            
-        }, 600)
-    }*/
+    onClick(){
+        if( this.hold ) return
+        this.toggle()
+    }
     
     toggle(){
         this.listening ? this.stop() : this.start()
@@ -234,37 +252,30 @@ customElements.define('b-dictate', class extends LitElement{
 
     done(){
         let val = this.value
-        console.log(val);
 
-        // if( this.final )
+        if( val )
             this.emitEvent('dictate', val)
         
         this.stop()
     }
 
-    cancel(){
-        window.soundFX?.play('dictateCancel')
+    cancel({sound=true}={}){
+        if( sound )
+            window.soundFX?.play('dictateCancel')
         this.stop()
     }
     
     start(){
-        
         // window.soundFX?.play('dictateStart')
         this.listening = true;
         this.value = ''
         this._valueDone = ''
         this.recognition.start()
-        
-        // startStopBtn.textContent = 'Stop Dictation';
-        // status.textContent = 'Dictating... Speak clearly into your microphone.';
     }
 
     stop(){
-        
         this.listening = false;
         this.recognition.stop()
-        // startStopBtn.textContent = 'Start Dictation';
-        // status.textContent = 'Dictation stopped. Click the button to start again.';
     }
 })
 
