@@ -64,7 +64,7 @@ const presenters = {
 		if( !opts.anchor && this.prompts && device.isChromeOS && device.isTablet )
 			opts.anchor = device.isLandscape ? 'center-left' : 'top'
 
-		if( device.isMobile && device.isSmallDevice && mobileOpts )
+		if( device.isMobile && mobileOpts )
 			return this._panel(mobileOpts)
 		else
 			return this._panel(opts)
