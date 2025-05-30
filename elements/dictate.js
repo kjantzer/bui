@@ -212,11 +212,8 @@ customElements.define('b-dictate', class extends LitElement{
         }
 
         this.recognition.onend = () => {
-            console.log('onend');
             
             if( this.listening ){
-                console.log('restart');
-                
                 this.recognition.start(); // Restart if still in recognizing mode
 
             } else {
