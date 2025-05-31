@@ -1,7 +1,8 @@
 import { LitElement, html, css } from 'lit'
 import router from 'bui/app/router'
 import '../views/routed-tabs'
-import {mediaQuery, MediaQueries} from './media-queries'
+import device from '../../util/device'
+// import {mediaQuery, MediaQueries} from './media-queries'
 import './tab-bar'
 import '../views/core'
 import '../views/router-controller'
@@ -20,6 +21,8 @@ customElements.define('b-app-2025', class extends LitElement {
 
     firstUpdated(){
         document.body.classList.add('show')
+
+        device.applyClasses(this)
 
         // since this may be subclassed multiple times, provide a way to know what it is (for styling)        
         this.classList.add('b-app')
@@ -103,9 +106,32 @@ customElements.define('b-app-2025', class extends LitElement {
             padding: .5em;
         }
 
+        :host(.installed) b-app-core-view header {
+            padding: 2px;
+        }
+
         :host-context([dark]) b-app-core-view::part(content) {
             box-shadow: 0 0 0 1px var(--theme-bgd-accent)
         }
+
+        @media (max-width: 899px) {
+            @container style(--layout: bottom) {
+
+                b-app-core-view header {
+                    padding: 0;
+                }
+
+                b-app-core-view::part(content) {
+                    box-shadow: none;
+                }
+
+                b-app-core-view::part(tab-bar) {
+                    justify-content: space-around;
+                }
+            }
+        }
+
+        
 
         b-tabs-router {
             grid-template-rows: 1fr;
