@@ -9,6 +9,14 @@ customElements.define('b-app-core-menu-btn', class extends TabBarBtn{
             position:relative;
         }
 
+        @media (max-width: 899px) {
+            @container style(--layout: bottom) {
+                :host {
+                    flex-grow: 1;
+                }
+            }
+        }
+
         :host([hidden]) {
             display: none;
         }
