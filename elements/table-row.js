@@ -97,6 +97,13 @@ customElements.define('b-table-row', class extends LitElement{
             z-index: 20;
         }
 
+        ::slotted([sticky="right"]) {
+            right: 0;
+            left: auto;
+            border-left: solid 1px var(--table-border-color, var(--theme-bgd-accent));
+            margin-left: -1px;
+        }
+
         :host([slot="header"]) ::slotted([sticky]) {
             background: var(--theme-bgd-accent);
         }
