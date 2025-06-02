@@ -76,9 +76,12 @@ html, body {
         font-size: 18px !important;
     }*/
 
-    // NOTE: should this be the default like this?
-    :root.mobile.tablet body {
-        font-size: 18px !important;
+    // increase font size on some tablet resolutions (looks better in my testing)
+    // but looks worse on 2dppx tablets
+    @media (resolution: 1.5dppx) {
+        :root.mobile.tablet body {
+            font-size: 18px !important;
+        }
     }
 
     :root.mobile body {
