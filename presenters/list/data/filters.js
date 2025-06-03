@@ -408,7 +408,7 @@ export default class Filters extends Map {
 
             let exactMatches = []
 
-            if( data[0]._exactSearch ){
+            if( data[0]?._exactSearch ){
                 exactMatches = data.filter(m=>{
                     for( let key in m._exactSearch ){
                         if( m._exactSearch[key] == this.term ){
