@@ -73,6 +73,16 @@ const filters = {
                 title: m.get('title'),
                 tags: m.get('tags') // value can be an array of strings
             }
+
+            // if "exact" match is needed:
+            return {
+                fuzzy: {
+                    title: m.get('title')
+                },
+                exact: {
+                    sku: m.get('sku')
+                }
+            }
         },
         // optional
         placeholder: 'Search',

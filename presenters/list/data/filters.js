@@ -369,7 +369,7 @@ export default class Filters extends Map {
         return new Promise(resolve=>{
             
             let searchOptions = Object.assign({}, this.searchOptions)
-            let keys = searchOptions.keys
+            let keys = searchOptions.keys // the keys to search on
 
             data.forEach(m=>{
                 m.searchMatches = {}
@@ -382,6 +382,12 @@ export default class Filters extends Map {
 
             data.forEach(m=>{
                 m._fuseSearch=searchOptions.data(m)
+
+                // gonna search by fuzzy and exact
+                if( m._fuseSearch.fuzzy ){
+                    m._exactSearch = m._fuseSearch.exact
+                    m._fuseSearch = m._fuseSearch.fuzzy
+                }
 
                 // no search option keys set yet, so set them automatically
                 if( !keys )
@@ -400,6 +406,20 @@ export default class Filters extends Map {
                 return newKey
             })
 
+            let exactMatches = []
+
+            if( data[0]._exactSearch ){
+                exactMatches = data.filter(m=>{
+                    for( let key in m._exactSearch ){
+                        if( m._exactSearch[key] == this.term ){
+                            m._exactMatch = {[key]: m._exactSearch[key]}
+                            return true
+                        }
+                    }
+                    return false
+                })
+            }
+
             let fuse = new Fuse(data, searchOptions)
             data = fuse.search(this.term)
 
@@ -412,6 +432,16 @@ export default class Filters extends Map {
                     })
                     return d.item
                 })
+
+            exactMatches?.forEach(m=>{
+                let i = data.indexOf(m)
+                if( i < 0 ){
+                    data.push(m)
+                    m.searchMatches = m._exactMatch
+                }else{
+                    data[i].searchMatches = {...m.searchMatches, _exactMatch: m._exactMatch}
+                }
+            })
 
             resolve(data)
         })
