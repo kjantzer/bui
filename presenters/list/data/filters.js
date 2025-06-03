@@ -409,9 +409,10 @@ export default class Filters extends Map {
             let exactMatches = []
 
             if( data[0]?._exactSearch ){
+                let term = this.term.toLowerCase()
                 exactMatches = data.filter(m=>{
                     for( let key in m._exactSearch ){
-                        if( m._exactSearch[key] == this.term ){
+                        if( m._exactSearch[key]?.toLowerCase?.() == term ){
                             m._exactMatch = {[key]: m._exactSearch[key]}
                             return true
                         }
