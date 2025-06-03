@@ -87,7 +87,7 @@ export default class BtnElement extends LitElement {
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
-            font-size: var(--b-btn-font-size, .9rem);
+            font-size: var(--b-btn-size, .9rem);
             line-height: var(--b-btn-line-height, 1rem);
             font-weight: 600;
             font-family: var(--b-btn-font);
@@ -397,17 +397,14 @@ export default class BtnElement extends LitElement {
             box-shadow: 0 0 0 1px var(--theme) inset; /* border outline */
         }
 
-        :host([xs]) { --b-btn-font-size: .6rem; }
-        :host([sm]) { --b-btn-font-size: .8rem; }
-        :host([lg]) { --b-btn-font-size: 1.2rem; }
-        :host([xl]) { --b-btn-font-size: 1.4rem; }
+        :host([xs]) { --b-btn-font-size: .6rem; --b-btn-size: .6rem }
+        :host([sm]) { --b-btn-font-size: .8rem; --b-btn-size: .8rem }
+        :host([lg]) { --b-btn-font-size: 1rem; --b-btn-size: 1.2rem }
+        :host([xl]) { --b-btn-font-size: 1rem; --b-btn-size: 1.4rem }
 
-        
-        :host([lg="size"]) .label { font-size: 1rem; }
-        :host([xl="size"]) .label { font-size: 1rem; }
 
         .label {
-            font-size: var(--b-btn-label-font-size, var(--b-btn-font-size, 1rem));
+            font-size: var(--b-btn-label-font-size, var(--b-btn-font-size, .9rem));
         }
         
 
