@@ -94,6 +94,13 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             }
         }*/
 
+       @media (orientation: landscape) {
+            :host([part="close-btn"]) {
+                top: -.5em;
+                margin-top: -.5em;
+            }
+       }
+
         @container style(--layout: bottom) {
             :host([part="close-btn"]) {
                 left: -.5em;
