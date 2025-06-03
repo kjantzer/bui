@@ -363,7 +363,7 @@ export default class BtnElement extends LitElement {
         } */
 
         :host([text]) {
-            font-size: 1em;
+            --b-btn-label-font-size: 1rem;
             font-weight: normal;
         }
 
