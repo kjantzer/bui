@@ -50,7 +50,7 @@ customElements.define('b-table', class extends LitElement{
         header {
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 50;
         }
 
         ::slotted(*:not(b-table-row):not([hidden])) {
@@ -106,7 +106,7 @@ customElements.define('b-table', class extends LitElement{
     }
 
     render(){return html`
-        <header><slot name="header"></slot></header>
+        <header part="header"><slot name="header"></slot></header>
         <slot></slot>
     `}
 
