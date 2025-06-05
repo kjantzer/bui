@@ -10,7 +10,7 @@ customElements.define('b-table-row', class extends LitElement{
 
     static styles = css`
         :host {
-            display: block !important;
+            display: block;
         }
         
         main {

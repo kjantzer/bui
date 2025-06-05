@@ -53,7 +53,7 @@ customElements.define('b-table', class extends LitElement{
             z-index: 10;
         }
 
-        ::slotted(*:not([hidden])) {
+        ::slotted(*:not(b-table-row):not([hidden])) {
             display: grid;
             grid-template-columns: var(--table-template-cols);
         }
