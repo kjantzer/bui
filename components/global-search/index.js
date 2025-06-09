@@ -138,7 +138,7 @@ customElements.define('b-global-search', class extends RoutedView {
         }
     `]
 
-    constructor(opts){
+    constructor(opts={}){
         super()
         this.fetching = false
         this.minTermLength = 3
@@ -176,6 +176,10 @@ customElements.define('b-global-search', class extends RoutedView {
                 }
             })
         })
+
+        this._goToSelected = opts.goToSelected || function(data, metaKey){
+            console.log('goToSelected needs implemented', data, metaKey);
+        }
 
         if( opts.resultRender )
             this.resultRender.set(opts.resultRender)
@@ -447,8 +451,7 @@ customElements.define('b-global-search', class extends RoutedView {
             return
         }
 
-        // FIXME:
-        goToSelected.call(this, model.toJSON(), e?.metaKey||e?.ctrlKey)
+        this._goToSelected.call(this, model.toJSON(), e?.metaKey||e?.ctrlKey)
     }
 
     _search(val){
@@ -587,91 +590,6 @@ function bindShortcut(key='k'){
 
 bindShortcut(['k', 'o', '/'])
 
-
-// FIXME: should not be in BUI
-function goToSelected(selected, metaKey){
-
-    let url, props;
-
-    if( selected.url ) url = selected.url
-    
-    let id = selected.id
-    let type = selected.result_type
-
-    // if( selected.shortcut == 'lookup-filter' ){
-    //     this.list.filters.update({lookup: selected.val})
-    //     this.clear()
-    //     return false
-    // }
-
-    if( type == 'book' )
-        // v5
-        if( window.app ){
-            return app.editBook(selected.id)
-        }
-        else
-            url = 'book/'+selected.book_id
-
-    if( type == 'person' )
-        url = 'person/'+id
-
-    if( type == 'deal' )
-        url = 'deal/'+id
-    
-    if( type == 'contract' )
-        url = 'contract/'+id
-    
-    if( type == 'user' )
-        url = 'account/'+id
-
-    // assume product search means inventory
-    if( ['product', 'inventory'].includes(type) )
-        url = 'product/'+id
-
-    if( type == 'materials' )
-        url = 'material/'+id
-
-    if( ['shipment', 'shipment-by-name'].includes(type) )
-        url = 'shipments/'+id
-    
-    if( type == 'events' ) // DEPRECATED
-        url = 'event/'+id
-
-    if( ['event'].includes(type)){
-        url = `${selected.event_type_record}-record/${id}`
-    }
-    
-    if( type == 'entity' )
-        url = 'entity/'+id
-    
-    if( type == 'contacts' )
-        url = 'contact/'+id
-
-    if( type == 'series' )
-        url = 'series/'+id
-
-    if( type == 'order' ){
-        if( window.app )
-            return app.lookupOrder(selected.order_id)
-        
-        url = 'order/'+selected.order_id
-    }
-
-    if( selected.type == 'shortcut' ){
-        url = selected.url
-        props = selected.props
-    }
-
-    if( metaKey )
-        return window.open('/'+url)
-    else if( url ){
-        goTo(url, props)
-        this.panel?.close()
-        return
-    }
-
-    throw new UIWarningError('Cannot open yet')
-}
 
 let filters = {
     options: {sidebar: false},
