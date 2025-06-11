@@ -16,6 +16,7 @@ customElements.define('b-table-row', class extends LitElement{
         main {
             display: grid;
             grid-template-columns: var(--table-template-cols);
+            grid-column: 1 / -1;
             height: 100%;
         }
 
