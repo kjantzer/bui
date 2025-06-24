@@ -17,9 +17,15 @@
     > - also cannot tell if NFC hardware actually exists
 */
 let instance
+let permission
+
 export default class NFC {
 
 	static get isSupported(){ return !!window.NDEFReader}
+
+	static get permission(){ return permission }
+	static get permissionGranted(){ return permission?.state == 'granted' }
+	static get requiresUserPermission(){ return permission?.state == 'prompt' }
 
 	static get shared(){
 		if( !instance ) instance = new NFC()
@@ -77,4 +83,11 @@ export default class NFC {
 			})
 		})
 	}
+}
+
+// may or may not have the hardware
+if( NFC.isSupported ){
+	navigator.permissions.query({ name: 'nfc' }).then(perm=>{
+		permission = perm
+	})
 }
