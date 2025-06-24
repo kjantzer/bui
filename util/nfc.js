@@ -55,7 +55,11 @@ export default class NFC {
 				this.ctlr = null
 			}
 
-			onScan?.(event)
+			if( this._onScanOnce ){
+				this._onScanOnce(event)
+				delete this._onScanOnce
+			}else
+				onScan?.(event)
 		},{once})
 		
 		return this.ndef.scan({signal: this.ctlr.signal}).catch(err=>{
@@ -71,16 +75,20 @@ export default class NFC {
 
 	// https://w3c.github.io/web-nfc/#read-a-single-tag-once
 	readOne(){
-		if( this.isScanning ) throw new Error('Already scanning')
-
+		
 		return new Promise((resolve, reject) => {
-			this.scan({
-				once: true, 
-				onScan: resolve, 
-				onAbort: reject
-			}).catch(err=>{
-				reject(err)
-			})
+
+			// already scanning, hook into scan for one scan
+			if( this.isScanning )
+				this._onScanOnce = resolve
+			else
+				this.scan({
+					once: true, 
+					onScan: resolve, 
+					onAbort: reject
+				}).catch(err=>{
+					reject(err)
+				})
 		})
 	}
 }
