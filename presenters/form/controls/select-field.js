@@ -4,6 +4,8 @@
 import {css, html, render} from 'lit'
 import Menu from '../../menu'
 import device from '../../../util/device';
+import {willTakeAction} from '../../../helpers/lit/willTakeAction'
+import {emitEvent} from '../../../helpers/lit/emitEvent'
 
 const SHOW_ALL_RESULTS_THRESHOLD = 200
 
@@ -475,6 +477,8 @@ class SelectFieldElement extends HTMLElement {
 			overflowBoundry: this.getAttribute('menu-overflow') ? 'window' : null,
 			adjustForMobile: this.getAttribute('adjust-for-mobile') == 'false' ? false : {type:'actionsheet'}
 		}
+
+		willTakeAction.call(this, 'select-field-menu', {popoverOpts})
 		
 		if( !menu || menu.length == 0 )
 			menu = [{'divider': 'No options available'}]
@@ -533,6 +537,8 @@ class SelectFieldElement extends HTMLElement {
 	}
 	
 }
+
+SelectFieldElement.prototype.emitEvent = emitEvent
 
 customElements.define('select-field', SelectFieldElement)
 
