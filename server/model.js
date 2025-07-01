@@ -414,8 +414,6 @@ module.exports = class Model {
         }
 
         let whereID = this.findWhereID(where)
-        
-        let id = whereID.id || null
         where = whereID.where || {}
 
         // see `bui/server/search`
@@ -477,12 +475,16 @@ module.exports = class Model {
             
         let resp = await this.db.query(sql, clauseValues, {preSql:opts.preSql})
 
+        opts.whereID = whereID // allow modification
+
         // parse each row (for decoding JSON strings, etc)
         await Promise.series(resp, async (row,i)=>{
             this.decodeFields(row)
             if( i == 0 ) await this.findAdditionalData(resp, opts)
             return this.findParseRow(row, i, resp.length, resp, opts)
         })
+
+        let id = whereID.id || null
 
         // filter out null values that `findParseRow` may have cleared
         resp = resp.filter(r=>r)
