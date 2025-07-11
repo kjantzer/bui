@@ -869,7 +869,10 @@ customElements.define('b-menu', class extends LitElement{
 
 		// use same overflow boundry as top level menu
 		if( !popoverOpts.overflowBoundry )
-			popoverOpts.overflowBoundry = this.presenter.popper?.state?.scrollElement || 'window'
+			if( this.presenter.popper.reference.classList.contains('menu-item') )
+				popoverOpts.overflowBoundry = 'window' // TODO: improve this
+			else
+				popoverOpts.overflowBoundry = this.presenter.popper?.state?.scrollElement || 'window'
 
 		if( !popoverOpts.align )
 			popoverOpts.align = 'right-start'
