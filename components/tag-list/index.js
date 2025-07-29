@@ -24,7 +24,8 @@ customElements.define('b-tag-list', class extends LitElement{
         value: {type: Array},
         prefix: {type:String},
         type: {type: String},
-        lengthLimit: {type: Number}
+        lengthLimit: {type: Number},
+        url: {type: String} // fetch tags (either recent or a dedicated set of tags)
     }
 
     static get styles(){return css`
@@ -135,7 +136,7 @@ customElements.define('b-tag-list', class extends LitElement{
     `}
 
 
-    async addTag(e){
+    async addTag(e, {urlResults}={}){
 
         e.stopPropagation?.()
 
@@ -150,6 +151,12 @@ customElements.define('b-tag-list', class extends LitElement{
                 presetMenu.unshift({
                     label: 'write in', icon: 'pencil'
                 }, '-')
+
+            // TODO: this was quickly coded; should show spinner or something for progress (and error handling)
+            if( this.url ){
+                urlResults ||= await fetch(this.url).then(r=>r.json())
+                presetMenu = presetMenu.concat(urlResults)
+            }
 
             let preset
 
@@ -167,7 +174,7 @@ customElements.define('b-tag-list', class extends LitElement{
 
                     // open prompt again
                     if( this.presets.length > 1 )
-                        this.addTag({currentTarget: btn})
+                        this.addTag({currentTarget: btn}, {urlResults})
                 }else
                     return
         }
