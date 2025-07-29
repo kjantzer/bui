@@ -96,6 +96,12 @@ export default class FileModel extends Model {
         return this.get('type').match(/image/)
     }
 
+    // may not be reliable
+    get isPhoto(){
+        // ie "Sony" or "Canon"
+        return this.isImg && !!this.get('traits')?.exif?.image?.Make
+    }
+
     get isDocument(){
         return this.get('type').match(/pdf/)
     }
