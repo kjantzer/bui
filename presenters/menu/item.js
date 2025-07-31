@@ -74,7 +74,9 @@ customElements.define('b-menu-item', class extends LitElement{
 		}
 
 		b-icon.has-menu {
-			/*opacity: 0; */ /* Why did I think this was a good idea? seems weird */
+			/* better alignment */
+			margin-left: .25em;
+    		margin-top: 1px;
 		}
 		
 		@media (hover) {

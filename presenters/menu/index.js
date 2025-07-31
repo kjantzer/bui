@@ -871,8 +871,11 @@ customElements.define('b-menu', class extends LitElement{
 		if( !popoverOpts.overflowBoundry )
 			if( this.presenter.popper.reference.classList.contains('menu-item') )
 				popoverOpts.overflowBoundry = 'window' // TODO: improve this
+			else if( this.presenter.popper?.state?.scrollElement
+			&& this.presenter.popper?.state?.scrollElement.offsetHeight > this.presenter.el.offsetHeight)
+				popoverOpts.overflowBoundry = this.presenter.popper?.state?.scrollElement 
 			else
-				popoverOpts.overflowBoundry = this.presenter.popper?.state?.scrollElement || 'window'
+				popoverOpts.overflowBoundry = 'window'
 
 		if( !popoverOpts.align )
 			popoverOpts.align = 'right-start'
