@@ -187,6 +187,19 @@ customElements.define('b-file-row', class extends LitElement{
                             &nbsp;<b-text dim>px</b-text>
                         </b-label>
 
+                        ${this.model.get('ext')=='gif'?html`
+                        <b-label slot="top-right" filled="black" xs>
+                            GIF${this.model.get('traits')?.pages>1?`/${this.model.get('traits').pages}`:''}
+                        </b-label>
+
+                            ${this.model.get('traits')?.loop!==undefined?html`
+                                <b-label slot="bottom-right" filled="black" xs title="Loops">
+                                    <b-icon name="loop"></b-icon>
+                                    ${this.model.get('traits')?.loop===0?'':this.model.get('traits')?.loop}
+                                </b-label>
+                            `:''}
+                        `:''}
+
                     `:''}
 
                     ${this.model.isNonStandardDocument?html`

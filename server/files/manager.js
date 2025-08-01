@@ -237,6 +237,13 @@ module.exports = class FileManager extends Model {
             info.traits.width = metadata.width
             info.traits.height = metadata.height
             info.traits.dpi = metadata.density
+
+            // some other metadata that might be useful (GIF data)
+            // NOTE: loop=0 means infinite loop
+            ;['delay', 'loop', 'pages'].forEach(k=>{
+                if( metadata[k] !== undefined )
+                    info.traits[k] = metadata[k]
+            })
         }
 
         // if stripping metadata or limiting size AND the src file is possibly "raw" (DNG, etc)
