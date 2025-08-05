@@ -200,6 +200,13 @@ customElements.define('b-file-row', class extends LitElement{
                             `:''}
                         `:''}
 
+                        ${this.model.get('traits')?.exif?.image?.Make?html`
+                            <b-label slot="bottom-left" filled="black" xs title="Photograph">
+                                <b-icon name="photo_camera"></b-icon>
+                                &nbsp;${this.model.get('traits')?.exif?.image?.Make}
+                            </b-label>
+                        `:''}
+
                     `:''}
 
                     ${this.model.isNonStandardDocument?html`
