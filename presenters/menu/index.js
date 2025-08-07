@@ -849,7 +849,7 @@ customElements.define('b-menu', class extends LitElement{
 		if( evt && data )
 			data.evt = evt
 
-		this.opts.onSelect&&this.opts.onSelect(data)
+		this.opts.onSelect&&this.opts.onSelect.call(this, data, {menu: this})
 	}
 
 	clear(){
