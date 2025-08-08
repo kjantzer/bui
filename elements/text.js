@@ -44,7 +44,6 @@ customElements.define('b-text', class extends LitElement{
         :host {
             display: inline-block;
             cursor: default;
-            line-height: 0; /* line height set in slotted content */
             /* color: var(--theme-text); */
             /* line-height: var(--b-text-line-height, 1em); */
         }
@@ -149,6 +148,11 @@ customElements.define('b-text', class extends LitElement{
 
         :host .slot {
             line-height: 1.1em;
+        }
+
+        :host([xs]), :host([size="xs"]),
+        :host([sm]), :host([size="sm"]) {
+            line-height: 0; /* line height set in slotted content */
         }
 
         /* https://spencermortensen.com/articles/typographic-scale/ */
