@@ -49,12 +49,12 @@ customElements.define('b-text', class extends LitElement{
         }
 
         /* body text */
-        :host([body]) {
+        :host([body]) .slot {
             line-height: var(--theme-body-line-height, 1.4em);
         }
 
-        :host([header]), /* DEPRECATED - use heading*/
-        :host([heading]) {
+        :host([header]) .slot, /* DEPRECATED - use heading*/
+        :host([heading]) .slot {
             line-height: var(--theme-heading-line-height, 1.2em);
         }
 
