@@ -49,7 +49,7 @@ module.exports = class Value extends Clause {
             if( this.oper == 'BETWEEN' )
                 return `${key} ${this.oper} ${db.escape(this.value[0])} AND ${db.escape(this.value[1])}`
             else
-                return `${key} ${this.oper=='NOT'?this.oper:''} IN(${db.escape(this.value)})`
+                return `${key} ${['!=', 'NOT'].includes(this.oper)?'NOT':''} IN(${db.escape(this.value)})`
         else{
 
             if( ['NULL', 'NOT NULL', 'null', 'not null', null].includes(this.value) )
