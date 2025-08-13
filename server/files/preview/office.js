@@ -4,7 +4,7 @@ if( require.main !== module){
 	
 	const {spawnJob} = require('./spawn')
 
-	exports.extensions = ['pdf', 'docx', 'doc', 'xlsx', 'xls']
+	exports.extensions = ['pdf', 'docx', 'doc', 'xlsx', 'xls', 'pptx', 'ppt']
 
 	exports.officePreview = function(file, {size=null, quality=null}={}){
 		return spawnJob(__filename, file, arguments[0])
