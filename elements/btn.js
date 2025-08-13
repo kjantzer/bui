@@ -493,10 +493,10 @@ export default class BtnElement extends LitElement {
                 </slot>
             </span>
             <slot class="label" part="label"></slot>
-            ${this.tooltip?html`
-                <b-tooltip label>${this.tooltip}</b-tooltip>
-            `:''}
         </main>
+        ${this.tooltip?html`
+            <b-tooltip label>${this.tooltip}</b-tooltip>
+        `:''}
         <slot name="outer">${this.renderOuter()}</slot>
     `}
 
