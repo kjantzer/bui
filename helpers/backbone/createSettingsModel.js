@@ -11,6 +11,20 @@
 
     settings.get('view')
     settings.save('view', 'grid')
+
+
+    // track settings values as attributes on the element
+    {
+        connectedCallback(){
+            super.connectedCallback()
+            settings.addTarget(this)
+        }
+
+        disconnectedCallback(){
+            super.disconnectedCallback()
+            settings.removeTarget(this)
+        }
+    }
     ```
 */
 import {Model} from 'backbone'
