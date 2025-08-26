@@ -59,6 +59,10 @@ customElements.define('b-numeral', class extends LitElement{
             display: inline-block;
         }
 
+        :host([hidden]) {
+            display: none !important;
+        }
+
         :host([muted]) [part] {
             color: var(--theme-text-accent);
         }
