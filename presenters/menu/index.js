@@ -77,16 +77,18 @@ customElements.define('b-menu', class extends LitElement{
 		if( selected.href )
 			return window.open(selected.href)
 
-		if( selected.fn && typeof selected.fn == 'function'){
+		let selectdFn = selected.menuSelected?.fn || selected.fn
+
+		if( selectdFn && typeof selectdFn == 'function'){
 			setTimeout(()=>{ // move to end of call stack
-				selected.fn.apply(handler, args)
+				selectdFn.apply(handler, args)
 			})
 			return true
 		}
 
-		if( selected.fn && typeof handler[selected.fn] == 'function' ){
+		if( selectdFn && typeof handler[selectdFn] == 'function' ){
 			setTimeout(()=>{ // move to end of call stack
-				handler[selected.fn].apply(handler, args)
+				handler[selectdFn].apply(handler, args)
 			})
 			return true
 		}
