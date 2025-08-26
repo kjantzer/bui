@@ -27,6 +27,9 @@ customElements.define('b-edited-model-btns', class extends LitElement{
     static get listeners(){return {
         model: {
             'edited': 'refresh'
+        },
+        coll: {
+            'edited': 'refresh'
         }
     }}
 
