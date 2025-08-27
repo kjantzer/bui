@@ -340,7 +340,7 @@ customElements.define('b-tabs', class extends LitElement {
     render(){return html`
         <main part="main">
             <slot name="before"></slot>
-            <slot name="tabbar" @menu-click=${this._onMenuClick}>${this.renderTabBar()}</slot>
+            <slot name="tabbar" part="tabbar" @menu-click=${this._onMenuClick}>${this.renderTabBar()}</slot>
             <slot class="content" part="content"></slot>
             <slot name="empty">
                 <b-empty-state ?hidden=${this.views.size>0}>No views</b-empty-state>
