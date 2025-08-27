@@ -271,6 +271,10 @@ customElements.define('b-text', class extends LitElement{
         :host([body]) ::slotted(b-icon) {
             vertical-align: middle;
         }
+
+        [name="empty-html"]:not(:first-child) {
+            display: none;
+        }
     `}
 
     firstUpdated(){
@@ -301,6 +305,7 @@ customElements.define('b-text', class extends LitElement{
 
     render(){return html`
         ${this.html?(isLitHTML(this.html)?this.html:unsafeHTML(this.html)):''}
+        <slot name="empty-html"></slot>
         <slot class="slot"></slot>
         ${this.tooltip?html`
             <b-tooltip>${this.tooltip}</b-tooltip>
