@@ -394,7 +394,7 @@ export default class BtnElement extends LitElement {
         :host([text].popover-open),
         :host([clear].popover-open), :host([ghost].popover-open) {
             --bgdColor: rgba(0,0,0,.05);
-            box-shadow: 0 0 0 1px var(--theme) inset; /* border outline */
+            /*box-shadow: 0 0 0 1px var(--theme) inset;*/ /* border outline */
         }
 
         :host([xs]) { --b-btn-font-size: .6rem; --b-btn-size: .6rem }

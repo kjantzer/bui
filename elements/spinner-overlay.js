@@ -55,6 +55,7 @@ export class SpinnerOverlayElement extends LitElement {
             align-items: center;
             opacity: 1;
             transition: 140ms opacity;
+			grid-template: none;
         }
 
 		:host([dark]) {
