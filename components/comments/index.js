@@ -92,6 +92,17 @@ customElements.define('b-comments', class extends LitElement{
         :host([inline]) ::part(comment) { order: -1;}
 
         :host([inline]) ::part(header) { align-items: center;}
+
+        :host([bubbles]) b-comment-row {
+            margin-bottom: .5em;
+        }
+
+        :host([bubbles]) b-comment-row::part(main),
+        :host([bubbles]) b-comment-row::part(write-comment) {
+            border: solid 1px var(--theme-bgd-accent);
+            border-radius: var(--radius, .5em);
+            padding: 1em;
+        }
     `}
 
     constructor(){

@@ -308,7 +308,7 @@ customElements.define('b-comment-row', class extends LitElement {
 
             ${this.renderAvatar()}
 
-            <b-write-comment .coll=${this.coll} .meta=${this.meta} .uploads=${this.uploads} auto-focus
+            <b-write-comment .coll=${this.coll} .meta=${this.meta} .uploads=${this.uploads} auto-focus part="write-comment"
                 placeholder=${this.placeholder}
                 @saved=${this.doneEditing}
                 @canceled=${this.doneEditing}></b-write-comment>
