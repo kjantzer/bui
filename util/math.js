@@ -103,6 +103,24 @@ prettyDecimal(val='', ratio=null){
     return val
 },
 
+parseNumAbbr(val){
+    
+    val = String(val).replace(/,/g, '').trim();
+
+    // Parse K/M/k/m suffixes
+    if (/^[\d.]+[Kk]$/.test(val)) {
+        val = Math.round(parseFloat(val) * 1000);
+    } else if (/^[\d.]+[Mm]$/.test(val)) {
+        val = Math.round(parseFloat(val) * 1000000);
+    } else {
+        // Just parse as number if possible
+        let num = parseFloat(val);
+        val = isNaN(num) ? val : num;
+    }
+
+    return val
+},
+
 // based on: https://stackoverflow.com/a/20811670/484780
 // may not be best solution
 // TODO: let `replaceWith` be an "average"?
