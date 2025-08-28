@@ -55,7 +55,7 @@ module.exports = {
             return r && r.text ? r.text() : r
         })
         .then(resp=>{
-            if( resp.error )
+            if( resp.error && !resp.id )
                 opts.error(null, resp.err, resp)
             else
                 opts.success(resp)
