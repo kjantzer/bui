@@ -116,7 +116,8 @@ customElements.define('b-animated-bgd', class extends LitElement{
                 if( this.active.active )
                     this.active = this.active.active 
 
-                this.active?.scrollIntoView()
+                // can feel like weird behavior
+                // this.active?.scrollIntoView()
             })
     }
 
