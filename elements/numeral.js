@@ -166,7 +166,7 @@ customElements.define('b-currency-large', class extends Numeral{
     get defaultFormat(){ return '0.[0]a' }
 
     render(){return html`
-        <slot name="currency"><b-text nobold part="prefix">$</b-text></slot>${this.numeral}<slot></slot>
+        <slot name="currency"><b-text part="prefix">$</b-text></slot>${this.numeral}<slot></slot>
     `}
 })
 
