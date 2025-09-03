@@ -59,7 +59,7 @@ customElements.define('b-table', class extends LitElement{
         }
 
         ::slotted([colspan]) {
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr !important;
         }
 
         ::slotted(*:not(:last-child)) {

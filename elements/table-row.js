@@ -79,7 +79,7 @@ customElements.define('b-table-row', class extends LitElement{
         }
 
         ::slotted([colspan]) {
-            grid-column: 1/-1;
+            grid-column: 1/-1 !important;
         }
 
         ::slotted([icon="add_box"][cell="no"]) {
