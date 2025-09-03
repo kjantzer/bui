@@ -348,10 +348,10 @@ customElements.define('range-slider', class extends LitElement{
     render(){return html`
         <rail></rail>
         <track style="left:${this._minLeft}%; width:${this._trackLength}%"></track>
-        <thumb min ?active=${this._active=='min'} style="left:${this._minLeft}%" tabindex="0">
+        <thumb min ?active=${this._active=='min'} style="left:${this._minLeft}%" tabindex="0" part="thumb min">
             <div><span>${this.valMin}</span></div>
         </thumb>
-        <thumb max ?active=${this._active=='max'} style="left:${this._maxLeft}%" tabindex="0">
+        <thumb max ?active=${this._active=='max'} style="left:${this._maxLeft}%" tabindex="0" part="thumb max">
             <div><span>${this.valMax}</span></div>
         </thumb>
         <div class="labels">
