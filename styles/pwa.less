@@ -118,6 +118,10 @@ b-panel {
     --b-menu-input-padding: .5em;
 }
 
+b-panel[anchor="top"] > * {
+    padding-top: var(--safe-top);
+}
+
 :root.installed.mac:not(.ios) b-panel {
     --b-panel-radius: .75rem;
 }

@@ -117,7 +117,7 @@ export const colorScheme = {
         if( theme )
             html.setAttribute(theme, '')
 
-        this.setMetaTheme(localStorage.getItem('meta-theme-color'))
+        this.setMetaTheme()
     },
 
     setAccent(accent, secondary){
