@@ -30,6 +30,7 @@ import './elements/icons'
 import './elements/uploader'
 import './elements/camera'
 import './elements/colors'
+import './elements/mouse-scroll-horz'
 
 import buttons from './elements/buttons'
 import text from './elements/text'
