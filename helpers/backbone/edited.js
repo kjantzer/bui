@@ -1,7 +1,7 @@
 /*
 	# Edited
 
-	Allows for backbone models to be "edited" without being officially saved.
+	Allows for backbone models to be "edited" without being officially saved. Number of changes is tracked. Changes then be saved or reset
 
 	```js
 	model.editAttrs({key: val})
@@ -14,6 +14,27 @@
 	```
 
 	> Note: see `<b-edited-model-btns>` for a view that uses this
+
+	## Child Changes
+	Sometimes a model may have child models that should be "edited" and tracked on the parent model. For this, each model (and subsequent child models) must set `editedChildren` to an array of child model/collection keys that should be cascaded when checking for changes.
+
+	```js
+	class Model extends Backbone.Model {
+		editedChildren = ['events']
+		get collections(){ return {
+			events: EventsColl
+		}}
+	}
+
+	model.on('edited-child', (isEdited, edited, {path})=>{
+		console.log('child edited', isEdited, edited, path)
+	})
+
+	model.get('events').editAttrs({key: val})
+	
+	model.isEdited() // true
+	```
+	
 */
 import {Model} from 'backbone'
 import './promises'
@@ -27,7 +48,28 @@ Model.prototype.editedAttrs = function(){
 }
 
 Model.prototype.numberEditedAttrs = function(){
-	return this._editedAttrs&&Object.keys(this._editedAttrs).length
+	let num = this._editedAttrs&&Object.keys(this._editedAttrs).length || 0
+
+	// cascade down to child models/collections and check for changes
+	if( this.editedChildren ){
+		for( let childKey of this.editedChildren ){
+			let child = this.get(childKey)
+
+			// collection
+			if( child?.each)
+				child.each(m=>{
+					let n = m.numberEditedAttrs()
+					if( n ) num += n
+				})
+			// model
+			else if( child?.numberEditedAttrs ){
+				let n = child.numberEditedAttrs()
+				if( n ) num += n
+			}
+		}
+	}
+
+	return num
 }
 
 Model.prototype.saveEdited = function(opts={}){
@@ -36,6 +78,21 @@ Model.prototype.saveEdited = function(opts={}){
 	return new Promise(async (resolve, reject)=>{
 		
 		try{
+			
+			if( this.editedChildren ){
+				for( let childKey of this.editedChildren ){
+
+					let child = this.get(childKey)
+
+					// collection
+					if( child?.each)
+						child.each(m=>m.saveEdited(opts))
+					// model
+					else if( child?.saveEdited )
+						await child.saveEdited(opts)
+				}
+			}
+
 			let dataToSave = Object.keys(attrs).length > 0
 			
 			if( dataToSave )
@@ -49,6 +106,18 @@ Model.prototype.saveEdited = function(opts={}){
 
 			this.trigger('edited:saved', attrs)
 			this.trigger('edited', false, {})
+
+			// find the top level "model" and trigger "edited-child" event
+			let path = []
+			let parentModel = this.parentModel || this.collection?.parentModel
+			while(parentModel){
+				path.unshift(parentModel)
+				parentModel = parentModel.parentModel || parentModel.collection?.parentModel
+			}
+			
+			if( path[0] )
+				path[0].trigger('edited-child', this.isEdited(), false, {path})
+
 			resolve(dataToSave)
 
 		}catch(err){			
@@ -66,6 +135,21 @@ Model.prototype.saveEdited = function(opts={}){
 }
 
 Model.prototype.resetEdited = function(opts={}){
+
+	if( this.editedChildren ){
+		for( let childKey of this.editedChildren ){
+			
+			let child = this.get(childKey)
+
+			// collection
+			if( child?.each)
+				child.each(m=>m.resetEdited({...opts, _silent: true}))
+			// model
+			else if( child?.resetEdited )
+				child.resetEdited({...opts, _silent: true})
+		}
+	}
+
 	let orig = this._origAttrs
 	this._editedAttrs = {}
 	this._origAttrs = null
@@ -122,5 +206,17 @@ Model.prototype.editAttr = async function(key, val, opts={}){
 	
 	let edited = this.editedAttrs()
 	this.trigger('edited', this.isEdited(), edited)
+
+	// find the top level "model" and trigger "edited-child" event
+	let path = []
+	let parentModel = this.parentModel || this.collection?.parentModel
+	while(parentModel){
+		path.unshift(parentModel)
+		parentModel = parentModel.parentModel || parentModel.collection?.parentModel
+	}
+	
+	if( path[0] )
+		path[0].trigger('edited-child', this.isEdited(), edited, {path})
+
 	return edited
 }
