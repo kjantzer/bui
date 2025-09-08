@@ -31,6 +31,13 @@ Object.defineProperty(LitElement.prototype, 'coll', {
             if( oldVal && this.unbindListeners)
                 this.unbindListeners()
 
+            // TODO: consider linking element to coll?
+            // if( oldVal && oldVal.parentElement == this )
+            //     oldVal.parentElement = null
+
+            // if( val && !val.parentElement )
+            //     val.parentElement = this
+
             this.__coll = val
             
             this.bindListeners&&this.bindListeners()
