@@ -50,6 +50,8 @@ customElements.defineShared('b-popover-view', class extends LitElement{
     
     openIfHoveringContinues(id, target, {delay=700, opts}={}){
 
+        if( !target ) return console.warn('no target', id, target)
+
         const onMouseOut = function(){ 
             this.autoClose()
             clearTimeout(target._openIfHoveredTimeout)
