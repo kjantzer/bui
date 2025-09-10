@@ -212,7 +212,21 @@ module.exports = class API {
                 else if( process.env.ENV == 'development' 
                 || ['Error', 'TypeError'].includes(err.name) 
                 || req.query?.logErr !== undefined ){
-                    console.log(err.stack||err)
+
+                    let errMsg = err
+
+                    // if stack is available, use it, but format it a bit better
+                    if( err.stack) {
+                        let stack = err.stack.split('\n')
+                        .filter(s=>!s.match(/node:internal/g)) // ignore node.js core files, only show our code
+                        .filter(s=>!s.match(/bui\/server\/api/g)) // ignore the "API" class since it's not helpful
+
+                        stack.push(`\t`+req.method+' '+req.path+' (user: '+req.user?.id+')')
+                        
+                        errMsg = stack.join('\n')
+                    }
+
+                    console.log(errMsg)
                 }
                 
                 let code = ['Error', 'DBError'].includes(err.name) ? 400 : (err.code || 500)
