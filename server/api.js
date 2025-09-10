@@ -218,10 +218,10 @@ module.exports = class API {
                     // if stack is available, use it, but format it a bit better
                     if( err.stack) {
                         let stack = err.stack.split('\n')
-                        .filter(s=>!s.match(/node:internal/g)) // ignore node.js core files, only show our code
+                        .filter(s=>!s.match(/\(node:/g)) // ignore node.js core files, only show our code
                         .filter(s=>!s.match(/bui\/server\/api/g)) // ignore the "API" class since it's not helpful
 
-                        stack.push(`\t`+req.method+' '+req.path+' (user: '+req.user?.id+')')
+                        stack.push(`    `+req.method+' '+req.path+' (user: '+req.user?.id+')')
                         
                         errMsg = stack.join('\n')
                     }
