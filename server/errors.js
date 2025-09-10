@@ -36,8 +36,17 @@ class APIAccessError extends APIError {
     }
 }
 
+// NOTE: these wont be logged to console by the API
+class ClientError extends APIError {
+
+    constructor(msg, opts){
+        super(msg, opts)
+    }
+}
+
 global.APIError = APIError
 global.APIAccessError = APIAccessError
+global.ClientError = ClientError
 
 Error.prototype.messageTrace = function({lines=1, replaceSingleQuotes=true}={}){
     let msg = this.stack

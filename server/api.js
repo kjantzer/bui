@@ -215,7 +215,9 @@ module.exports = class API {
 
                     let errMsg = err.stackMsg?.({req}) || err.stack || err
 
-                    console.log(errMsg)
+                    // UI errors are "good" errors that are for the client, no need to see them in the console
+                    if( err.name != 'ClientError' )
+                        console.log(errMsg)
                 }
                 
                 let code = ['Error', 'DBError'].includes(err.name) ? 400 : (err.code || 500)
@@ -229,7 +231,7 @@ module.exports = class API {
                     code: code,
                     type: err.name,
                     data: err.data,
-                    trace: req.query?.trace !== undefined ? (err.stack||'unknown') : null
+                    ...(req.query?.trace !== undefined ? {trace: (err.stack||'unknown')} : {})
                 })
 			}
 		})
