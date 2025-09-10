@@ -40,7 +40,7 @@ module.exports = class Sync extends Map {
 
         Class.prototype[Class.prototype.syncData?'syncDataDefault':'syncData'] = function(data, {toClients=null}={}){
 
-            if( !this.syncPath ) return console.error('Class does have `syncPath` set')
+            if( !this.syncPath ) return console.error('SYNC: class does have `syncPath` set')
 
             let socketIDs = (this.req&&this.req.socketIDs) || []
             let syncPaths = this.syncPath
@@ -115,14 +115,14 @@ module.exports = class Sync extends Map {
             // see if we have a class registered for this path
             let classInstance = this.getClassFor(path, socket)
 
-            if( !classInstance ) return console.warn('no sync class for:', path)
+            if( !classInstance ) return console.warn('SYNC: no sync class for:', path)
 
             // make sure this socket user has access to this class/model
             if( 'canAccess' in classInstance && await classInstance.canAccess === false )
-                return console.warn('unauthorized access')
+                return console.warn('SYNC: unauthorized access')
 
             // syncPath should have been set by the `.add` method above
-            if( !classInstance.syncPath ) return console.error('Class does have `syncPath` set')
+            if( !classInstance.syncPath ) return console.error('SYNC: class does have `syncPath` set')
 
             socket.join(path)
 
@@ -134,7 +134,7 @@ module.exports = class Sync extends Map {
         socket.on('leave', (path)=>{
             let classInstance = this.getClassFor(path, socket)
 
-            if( !classInstance ) return console.warn('cannot leave:', path, '; does not exist')
+            if( !classInstance ) return console.warn('SYNC: cannot leave:', path, '; does not exist')
 
             socket.leave(path)
 
