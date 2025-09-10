@@ -213,23 +213,7 @@ module.exports = class API {
                 || ['Error', 'TypeError'].includes(err.name) 
                 || req.query?.logErr !== undefined ){
 
-                    let errMsg = err
-                    let cwd = process.cwd()
-
-                    // if stack is available, use it, but format it a bit better
-                    if( err.stack) {
-                        let stack = err.stack.split('\n')
-                        .filter(s=>!s.match(/\(node:/g)) // ignore node.js core files, only show our code
-                        .filter(s=>!s.match(/bui\/server\/api/g)) // ignore the "API" class since it's not helpful
-                        .map(s=>{
-                            // better formatting for each stack trace line
-                            return s.replace(/ at /, ' - ').replace(cwd, '')
-                        })
-
-                        stack.push(`    - [${req.method}] ${req.path} (user: ${req.user?.id})`)
-                        
-                        errMsg = stack.join('\n')
-                    }
+                    let errMsg = err.stackMsg?.({req}) || err.stack || err
 
                     console.log(errMsg)
                 }
