@@ -40,6 +40,7 @@ customElements.define('b-snap-scroller', class extends LitElement{
             grid-template-rows: 1fr;
             position: relative;
             box-sizing: border-box;
+            position: relative;
         }
 
         .scroller {
