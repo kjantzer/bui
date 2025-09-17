@@ -93,7 +93,7 @@ customElements.define('b-comments', class extends LitElement{
 
         :host([inline]) ::part(header) { align-items: center;}
 
-        :host([bubbles]) b-comment-row {
+        :host([bubbles]) b-comment-row[type="user"] {
             margin-bottom: .5em;
         }
 
@@ -101,7 +101,11 @@ customElements.define('b-comments', class extends LitElement{
         :host([bubbles]) b-comment-row::part(write-comment) {
             border: solid 1px var(--theme-bgd-accent);
             border-radius: var(--radius, .5em);
-            padding: 1em;
+            padding: var(--comment-bubble-padding, 1em);
+        }
+
+        :host([bubbles]) b-comment-row::part(write-comment) {
+            padding-top: calc(var(--comment-bubble-padding, 1em) / 2);
         }
     `}
 
@@ -245,7 +249,7 @@ customElements.define('b-comments', class extends LitElement{
             <b-empty-state>
                 <slot name="unread-empty">
                     No unread ${this.plural}
-                    <b-btn sm clear color="theme" block @click=${this.viewAllComments} class="view-all">View previous</b-btn>
+                    <b-btn sm clear color="theme" block @click=${this.viewAllComments} class="view-all" part="view-all">View previous</b-btn>
                 </slot>
             </b-empty-state>
         `:''}
@@ -253,7 +257,7 @@ customElements.define('b-comments', class extends LitElement{
         ${this.coll.map((m,i)=>html`
 
             ${this.limit&&i==this.coll.length-this.limit?html`
-                <b-btn sm color="white" block @click=${this.viewAllComments} class="view-all">View all ${this.plural}</b-btn>
+                <b-btn sm color="white" block @click=${this.viewAllComments} class="view-all" part="view-all">View all ${this.plural}</b-btn>
             `:''}
             
             <b-comment-row 
