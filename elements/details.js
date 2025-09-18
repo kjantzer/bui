@@ -108,7 +108,8 @@ customElements.define('b-details', class extends LitElement{
         <slot class="content" part="content"></slot>
     `}
 
-    toggle(){
+    toggle(e){
+        e?.stopPropagation?.()
         if( this.disabled ) return
         this.open = !this.open
     }
