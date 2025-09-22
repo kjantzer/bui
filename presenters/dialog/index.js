@@ -58,14 +58,14 @@ registerPreset('confirmYes', opts=>{ return {
 	// icon: opts.title||opts.msg||opts.body?'trash':'',
 	// accent: opts.title||opts.msg||opts.body?'red':'',
 	noContent: true,
-	btns: ['cancel', 'yes']
+	btns: opts?.btns||['cancel', 'yes']
 }})
 
 registerPreset('confirmDelete', opts=>{ return {
 	icon: opts&&(opts.title||opts.msg||opts.body)?'trash':'',
 	accent: opts&&(opts.title||opts.msg||opts.body)?'red':'',
 	noContent: true,
-	btns: ['cancel', 'delete']
+	btns: opts?.btns||['cancel', 'delete']
 }})
 
 registerPreset('warn', {
