@@ -163,6 +163,7 @@ customElements.define('b-comment-row', class extends LitElement {
 
         .extras b-hr {
             margin: 0 1em;
+            min-width: 0;
         }
 
         :host([disabled]) .extras {
