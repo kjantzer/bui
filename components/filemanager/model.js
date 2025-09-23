@@ -116,6 +116,10 @@ export default class FileModel extends Model {
         return this.isDocument && min && max && (min != 8.5 || max != 11)
     }
 
+    get isArchived(){
+        return this.get('traits')?.archived
+    }
+
     get palette(){
         return this.__palette = this.__palette || new Palette(this.traits.palette)
     }
