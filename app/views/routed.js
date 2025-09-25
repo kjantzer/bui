@@ -6,6 +6,30 @@ export {LitElement, html, css}
 
 export default class RoutedView extends LitElement {
 
+    // note: dupe code
+    static get shortcuts(){
+
+        return this.coreViews?.split(`\n`).flatMap(s=>{
+            s = s.trim()
+            if( !s ) return null
+            let el = customElements.get(s)
+            if( !el ) return null
+            if( !el.id ) return null
+            
+            let shortcuts = [{
+                title: el.shortcutTitle || el.title,
+                icon: el.icon,
+                permission: el.permission || parent.permission,
+                args: {
+                    _: el.path ? el.path.split('(')[0] : el.id
+                }
+            }]
+
+            return shortcuts
+
+        }).filter(s=>s)
+    }
+
     get idAttribute(){ 
         return (this.coll && this.coll.model.prototype.idAttribute) || 'id'
     }
