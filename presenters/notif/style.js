@@ -66,7 +66,7 @@ export default css`
 } */
 
 main {
-    --radius: var(--b-notif-radius, 5px);
+    --radius: var(--b-notif-radius, 8px);
     border-radius: var(--radius);
     margin-top: var(--spacing-top, 0);
     margin-bottom: var(--spacing-bottom, 0);

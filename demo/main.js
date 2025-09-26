@@ -13,6 +13,18 @@ customElements.define('demo-main', class extends App{
     static styles = [App.styles, css`
         :host {
             --b-app-tab-bar-bgd: var(--theme-bgd) !important;
+            background: none !important;
+        }
+
+        b-tabs::part(tab-bar) {
+            border-right: none;
+        }
+
+        b-tabs::part(content) {
+            background: none;
+            box-shadow: var(--theme-shadow-1);
+            margin-top: 1px;
+            border-radius: 12px 0 0 0;
         }
     `]
 

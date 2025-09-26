@@ -45,8 +45,7 @@ customElements.define('demo-header', class extends LitElement{
             z-index: 110;
             height: 48px;
             -webkit-app-region: drag;
-
-            box-shadow: var(--theme-shadow-1);
+            padding: .5em;
         }
 
         bui-logo {
@@ -102,7 +101,7 @@ customElements.define('demo-header', class extends LitElement{
 
         let selected = await new Menu(menu, {
             multiple: false,
-            selected: [colorScheme.theme, colorScheme.accent]
+            selected: [colorScheme.theme, colorScheme.accent],
         }).popOver(e.currentTarget, {adjustForMobile:{type: 'actionsheet'}})
 
         if( !selected ) return
@@ -111,8 +110,6 @@ customElements.define('demo-header', class extends LitElement{
             colorScheme.setTheme(selected.val)
         else
             colorScheme.setAccent(selected.val)
-        
-
     }
 
 })

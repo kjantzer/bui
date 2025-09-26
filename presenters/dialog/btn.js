@@ -95,6 +95,9 @@ customElements.define('b-dialog-btn', class extends Btn{
             size: '',
             order: null
         }, opts)
+
+        if( this.opts.color == 'theme' )
+            this.opts.color = 'theme-gradient'
   
         this.tabIndex = 0
         this.setAttribute('class', this.opts.className)
@@ -104,7 +107,7 @@ customElements.define('b-dialog-btn', class extends Btn{
         if( this.opts.size )
             this.setAttribute(this.opts.size, '')
         
-        if( this.opts.text )
+        if( !this.opts.color )
             this.setAttribute('clear', '')
         
         if( this.opts.block )

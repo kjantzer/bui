@@ -17,7 +17,7 @@ customElements.define('b-menu-item', class extends LitElement{
         :host{
         padding: var(--b-menu-item-padding, .5em .75em);
 		margin: .25em;
-    	border-radius: calc(var(--b-popover-radius, 4px) - .25em);
+    	border-radius: calc(var(--b-popover-radius, 8px) - .25em);
 		transition: 120ms;
 		display: flex;
 		align-items: flex-start;

@@ -141,12 +141,18 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             display: none;
         }
 
+        :host([nocontent][notext][in-popover].__view) {
+            border-radius: 2em !important;
+            min-width: 200px;
+        }
+
         aside {
             position: relative;
             display: flex;
             justify-content: center;
             border-radius: var(--radius) 0 0 var(--radius);
             grid-row: span 2;
+            background: color-mix(in srgb, var(--theme-bgd-accent) 35%, transparent);
             /* color: var(--highlight-color, rgba(var(--theme-text-rgb, 0,0,0), .6)); */
         }
 
@@ -161,12 +167,12 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
 
         aside [name="icon"] > *,
         aside ::slotted(*:not([fill])) {
-            margin: var(--pad) 0 var(--pad) var(--pad);
+            margin: var(--pad);
         }
 
         :host([stack]) aside [name="icon"] > *,
         :host([stack]) aside ::slotted(*:not([fill])) {
-            margin: var(--pad) var(--pad) 0 var(--pad);
+            margin: var(--pad);
         }
 
         :host([stack]) aside ::slotted(*[fill]) {
@@ -174,12 +180,12 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         }
 
         aside [name="icon"] > * {
-            --size: var(--icon-size, 2em);
+            --size: var(--icon-size, 1em);
             color: var(--accent);
         }
 
         :host([_title='0'][pretitle='0']) aside [name="icon"] > * {
-            --size: var(--icon-size, 1em);
+            --size: var(--icon-size, 2em);
         }
 
         :host([toast]) aside {
@@ -264,8 +270,11 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         footer {
             display: flex;
             justify-content: flex-end;
-            padding: calc(var(--pad) - .5em);
+            padding: var(--pad);
+            padding-top: 0;
             margin-top: auto;
+            gap: .5em;
+            column-gap: .5em;
         }
 
         :host([wrapbtns]) footer {
@@ -283,6 +292,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
 
         :host([toast]) footer {
             margin-top: 0;
+            padding-bottom: 0;
         }
 
         footer b-dialog-btn {
@@ -290,11 +300,17 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             line-height: 0;
             align-self: center;
             font-size: var(--b-dialog-btn-size, var(--b-btn-font-size));
+            background: var(--theme-bgd-accent);
+            flex-grow: 1;
+            --radius: 1em;
+            /*font-size: 1.2em;*/
         }
 
-        footer b-dialog-btn[clear] {
-            text-transform: uppercase;
-        }
+        /*footer b-dialog-btn[color=""] {
+            background: none;
+        }*/
+
+        
 
         ${mediaQuery('tablet', css`
         footer b-dialog-btn {
