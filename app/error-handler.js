@@ -62,7 +62,8 @@ const GlobalErrorHandler = (evt)=>{
         msg: msg,
         type: 'error',
         icon: 'bug',
-        width: '400px'
+        width: '400px',
+        trace: true
     }
 
     if( msg.name && msg.name.name == 'API not found')
@@ -90,7 +91,7 @@ const GlobalErrorHandler = (evt)=>{
 
     if( error.name == 'APIError' || error.type == 'APIError' ){
         notif.type = 'failed'
-        notif.edge = true
+        // notif.edge = true
         notif.icon = 'error'
     }
 
@@ -105,13 +106,32 @@ const GlobalErrorHandler = (evt)=>{
 
     if( error.name == 'DBError' || error.type == 'DBError' ){
         notif.pretitle = 'Database Error'
-        notif.edge = true
-        notif.accent = true
-        notif.icon = 'alert'
+        // notif.edge = true
+        // notif.accent = true
+        notif.icon = 'error'
         notif.width = 'auto'
+        notif.trace = false
     }
+
+    // optional feature
+    // provides a readable stack trace
+    if( window.mapStackTrace && error.stack && notif.trace )
+        window.mapStackTrace(error.stack, stack=>{
+
+            stack = stack
+            .filter(s=>!s.match(/node_modules/))
+            .map(s=>{
+                return s
+                .replace(/^\s+ at /, '')
+                .replace(/__WEBPACK_DEFAULT_EXPORT__/, '')
+                .replace(/webpack:\/\/catalog-v6\//, '')
+            })
+            
+            n.msg += `<b-text block sm dim>${stack.join("<br>")}</b-text>`
+
+        })
     
-    new Notif(notif)
+    let n = new Notif(notif)
 }
 
 window.addEventListener('error', GlobalErrorHandler)
