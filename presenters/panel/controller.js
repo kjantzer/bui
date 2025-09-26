@@ -179,8 +179,8 @@ class PanelController extends LitElement {
         <div class="core">
             <slot class="left" name="left"></slot>
             <main>
-                <slot class="base" name="base" @active-changed=${this.baseActiveChanged}></slot>
-                <slot class="panels"></slot>
+                <slot class="base" part="base" name="base" @active-changed=${this.baseActiveChanged}></slot>
+                <slot class="panels" part="panels"></slot>
             </main>
             <slot class="right" name="right"></slot>
         </div>

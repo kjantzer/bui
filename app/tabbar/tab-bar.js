@@ -43,6 +43,12 @@ customElements.define('b-app-tab-bar', class extends BaseTabBar{
             }
         }
 
+        @container style(--layout: left) or style(--layout: right) {
+            :host {
+                width: min-content;
+            }
+        }
+
 
         @media (orientation:landscape) {
             :host {

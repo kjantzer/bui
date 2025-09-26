@@ -176,7 +176,7 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
                 line-height: 1em;
                 font-size: var(--font-size-sm);
                 margin-top: .5em;
-                max-width: min-content;
+                /*max-width: min-content;*/
             }
         }
     `
