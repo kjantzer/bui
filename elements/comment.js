@@ -29,7 +29,7 @@ customElements.define('b-comment', class extends LitElement{
             z-index: 0;
             padding: .5em 1em;
             border-radius: var(--radius) var(--radius) 0 0;
-            background: var(--theme-bgd-accent2);
+            background: var(--theme-bgd-accent);
             border-bottom: solid 1px var(--theme-bgd-accent);
         }
 

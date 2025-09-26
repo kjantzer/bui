@@ -165,7 +165,7 @@ customElements.define('b-list', class extends LitElement {
         }
 
         b-list-toolbar {
-            box-shadow: var(--list-toolbar-shadow, rgba(0,0,0,.2) 0 0 6px);
+            box-shadow: var(--list-toolbar-shadow, var(--theme-shadow-0));
             padding: .25em .5em;
             z-index: 15;
         }

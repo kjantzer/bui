@@ -303,7 +303,7 @@ export default class BtnElement extends LitElement {
         :host([color^="theme"])  { --color: var(--theme); }
         :host([color^="theme-secondary"])  { --color: var(--theme-secondary); }
         :host([color^="black"])  { --color: var(--theme-text-accent, #222); --textColor: var(--theme-bgd, #fff); }
-        :host([color^="white"])  { --color: var(--theme-bgd-accent2, #ddd); --textColor: var(--theme-text, #111); }
+        :host([color^="white"])  { --color: var(--theme-bgd-accent, #ddd); --textColor: var(--theme-text, #111); }
         :host([color^="bgd-accent"])  { --color: var(--theme-bgd-accent); --textColor: var(--theme-text); }
         :host([color^="orange"]) { --color: var(--orange); }
         :host([color^="deep-orange"]) { --color: var(--deep-orange); }

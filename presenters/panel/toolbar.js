@@ -78,7 +78,7 @@ class PanelToolbar extends LitElement {
         }
 
         :host([shadow]) {
-            box-shadow: var(--theme-shadow) 0 0 6px;
+            box-shadow: var(--theme-shadow-0);
         }
 
         :host([look="white"]) {

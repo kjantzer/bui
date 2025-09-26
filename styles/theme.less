@@ -34,21 +34,43 @@
     --dark-text-accent: rgba(var(--dark-text-rgb),.4);
     --dark-text-dim: rgba(var(--dark-text-rgb),.6);
     --dark-text-accent2: rgba(var(--dark-text-rgb),.8);
-    --dark-bgd: var(--dark);
-    --dark-bgd-accent: var(--dark-black);
-    --dark-bgd-accent2: #242729;
+    
+    // --dark-bgd: var(--dark);
+    // --dark-bgd-accent: var(--dark-black);
+    
+    // --dark-bgd: #121212;
+    // --dark-bgd-accent: #1f2224;
+    
+    // high contrast / very dark (slightly cooler)
+    // TODO: make #000 if on OLED display?
+    --dark-bgd: #141516;
+    --dark-bgd-accent: #212324;
+
+    --dark-bgd-accent2: #191b1c;
+    
     --dark-bgd-hc: #141618; // high contrast
+
     --dark-shadow: rgba(0,0,0,.4);
-    --dark-shadow-0: rgba(0,0,0,.35) 0 1px 5px;
-    --dark-shadow-1: rgba(0,0,0,0.4) 0 3px 10px;
-    --dark-shadow-2: rgba(0,0,0,0.5) 0 3px 30px;
+
+    // --dark-shadow-0: rgba(0,0,0,.35) 0 1px 5px;
+    --dark-shadow-0: rgba(var(--dark-text-rgb), .45) 0 0px 1px, rgba(0,0,0,.35) 0 1px 5px;
+
+    // --dark-shadow-1: rgba(0,0,0,0.4) 0 3px 10px;
+    --dark-shadow-1: rgba(var(--dark-text-rgb), .45) 0 0px 1px, rgba(0,0,0,0.4) 0 3px 10px;
+
+    //--dark-shadow-2: rgba(0,0,0,0.5) 0 3px 30px;
+    --dark-shadow-2: rgba(var(--dark-text-rgb), .45) 0 0px 1px, rgba(0,0,0,0.5) 0 3px 30px;
+
     --dark-shadow-3: 
+        rgba(var(--dark-text-rgb), .45) 0 0px 1px,
         0 0.7px 2.2px rgba(0, 0, 0, 0.019),
         0 1.4px 5.3px rgba(0, 0, 0, 0.035),
         0 2.4px 10px rgba(0, 0, 0, 0.048),
         0 3.7px 17.9px rgba(0, 0, 0, 0.058),
         0 6px 33.4px rgba(0, 0, 0, 0.7),
         0 13px 80px rgba(0, 0, 0, 0.35);
+
+    // --dark-shadow-3: rgba(var(--dark-text-rgb), .45) 0 0px 1px;
 }
 
 // default to light
@@ -155,7 +177,7 @@
 // adjust colors of <b-paper> when in dark mode
 :root[dark] {
     --b-paper-postit-color: var(--theme-bgd);
-    --b-paper-postit-bgd: #8c8161; // var(--amber-200);
+    --b-paper-postit-bgd: color-mix(in srgb, var(--amber), var(--theme-bgd) 75%); //#8c8161; // var(--amber-200);
     --b-paper-postit-color: var(--theme-text);
     --b-paper-postit-bgd-accent: var(--orange);
     --b-paper-info-bgd: var(--blue-800);

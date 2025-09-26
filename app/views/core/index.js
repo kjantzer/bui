@@ -42,7 +42,7 @@ customElements.define('b-app-core-view', class extends Tabs{
         slot.content {
             background: var(--theme-bgd);
             border-radius: var(--radius) 0 0 0;
-            box-shadow: 0 0 0 1px var(--theme-bgd-accent), var(--theme-shadow-1);
+            box-shadow: var(--theme-shadow-1);
         }
 
         @container style(--layout: left) or style(--layout: right) {

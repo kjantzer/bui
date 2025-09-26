@@ -78,7 +78,7 @@ customElements.define('b-app-core-menu-btn', class extends TabBarBtn{
         }
 
         :host(:not([active])) .wide:hover {
-            background: var(--theme-bgd-accent);
+            background: var(--theme-bgd);
         }
 
         @container style(--layout: left) {
