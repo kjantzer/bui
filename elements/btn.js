@@ -319,8 +319,12 @@ export default class BtnElement extends LitElement {
         
         :host([muted]), :host([muted]) main {
             color: var(--color);
-            background: color-mix(in srgb, var(--color) 20%, var(--theme-bgd));
-            border-color: color-mix(in srgb, var(--color) 20%, var(--theme-bgd));
+            background: color-mix(in srgb, var(--color) var(--b-btn-mute-percent, 20%), var(--theme-bgd));
+            border-color: color-mix(in srgb, var(--color) var(--b-btn-mute-percent, 20%), var(--theme-bgd));
+        }
+
+        :host([muted][color=""]), :host([muted]:not([color])) {
+            --b-btn-mute-percent: 8%;
         }
 
         @media (hover){
@@ -338,6 +342,10 @@ export default class BtnElement extends LitElement {
         :host([color*="hover-purple"]:hover) { --color: var(--purple); }
         :host([color*="hover-brown"]:hover)  { --color: var(--brown); }
         :host([color*="hover-pink"]:hover)   { --color: var(--pink); }
+
+        :host([muted][color=""]:hover), :host([muted]:not([color]):hover) {
+            --b-btn-mute-percent: 12%;
+        }
         }
 
         :host([pill]) {
