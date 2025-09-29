@@ -73,6 +73,11 @@ customElements.define('b-table-row', class extends LitElement{
             border-right: solid 1px var(--table-border-color, var(--theme-bgd-accent));
         }
 
+        :host([spacer]) {
+            height: 2px;
+            background: var(--table-border-color, var(--theme-bgd-accent));
+        }
+
         [name="before"]::slotted(*) {
             padding-left: var(--table-cell-padding, .75em);
             padding-right: var(--table-cell-padding, .75em);
