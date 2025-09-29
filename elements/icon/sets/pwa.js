@@ -20,5 +20,6 @@ export default StandardIcons.concat([
     ['tune', require('@material-icons/svg/svg/tune/baseline.svg')],
     ['filter', require('@material-icons/svg/svg/filter_alt/baseline.svg')],
     ['warning', require('@material-icons/svg/svg/warning/baseline.svg')],
-    ['error', require('@material-icons/svg/svg/error/baseline.svg')]
+    ['error', require('@material-icons/svg/svg/error/baseline.svg')],
+    ['arrow_right_alt', require('@material-icons/svg/svg/arrow_right_alt/baseline.svg')]
 ])
