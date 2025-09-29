@@ -85,6 +85,11 @@ customElements.define('b-menu-item', class extends LitElement{
 				color: var(--hoverTextColor);
 				cursor: pointer;
             }
+
+			:host([destructive]:hover	)  {
+				color: var(--red);
+				background: color-mix(in srgb, var(--red) 20%, var(--theme-bgd));
+			}
 			
             :host(:hover) b-icon.has-menu {
                 opacity: 1;
@@ -173,6 +178,10 @@ customElements.define('b-menu-item', class extends LitElement{
         // capture menu item index for use in resolve (if so desired)
         if( model && typeof model != 'string' )
             model.index = this.index
+
+		let isDestructive = model?.destructive ?? model?.icon == 'trash'
+
+		this.toggleAttribute('destructive', isDestructive)
 
 		this.disabled = model.disabled ?? false
 

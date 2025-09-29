@@ -195,7 +195,7 @@ customElements.define('b-menu', class extends LitElement{
             padding: 1em 1em .25em 1.1em;
             font-weight: normal;
             font-size: .9em;
-            border-top: solid 1px var(--b-hr-bgd, rgba(0,0,0,.1));
+            border-top: solid 1px var(--b-hr-bgd, var(--theme-bgd-accent));
             color: var(--b-menu-color-accent, rgba(var(--theme-text-rgb), .5));
         }
 
