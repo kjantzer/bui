@@ -17,7 +17,13 @@ customElements.define('b-dialog-prompt', class extends Dialog{
     static get styles(){return [super.styles, css`
         form-handler {
 			display: grid;
-			gap: .5em;
+			gap: 1em;
+		}
+
+		@media (max-width: 599px) {
+			form-handler {
+				gap: .5em;
+			}
 		}
 
 		form-handler > form-control {

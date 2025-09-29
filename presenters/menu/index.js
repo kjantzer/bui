@@ -227,7 +227,7 @@ customElements.define('b-menu', class extends LitElement{
         }
 
         :host-context(b-dialog) {
-            margin: 0 calc(-1 * var(--pad));
+            margin: 0 -1em;
         }
 
         /*

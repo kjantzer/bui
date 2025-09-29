@@ -49,9 +49,15 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             color: var(--theme-text, #222);
             border-radius: var(--radius, 5px);
 
-            --pad: 1em;
+            --pad: 1.5em;
 
             border: solid 1px var(--theme-bgd-accent); /* temp */
+        }
+
+        @media (max-width: 599px) {
+            :host {
+                --pad: 1em;
+            }
         }
 
         :host([fill]) {
@@ -167,7 +173,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
 
         aside [name="icon"] > *,
         aside ::slotted(*:not([fill])) {
-            margin: var(--pad);
+            margin: var(--pad) calc(var(--pad) / 1.5);
         }
 
         :host([stack]) aside [name="icon"] > *,
@@ -180,7 +186,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         }
 
         aside [name="icon"] > * {
-            --size: var(--icon-size, 1em);
+            --size: var(--icon-size, var(--pad));
             color: var(--accent);
         }
 
@@ -240,12 +246,12 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
         }
 
         .pretitle slot {
-            font-size: .8em;
+            font-size: var(--font-size-sm);
             font-weight: bold;
         }
 
         .title slot {
-            font-size: 1.1em;
+            font-size: var(--font-size-md);
             line-height: 1.1em;
             font-weight: bold;
         }
@@ -303,6 +309,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             background: var(--theme-bgd-accent);
             flex-grow: 1;
             --radius: 1em;
+            --padding: .5em 1em;
             /*font-size: 1.2em;*/
         }
 
