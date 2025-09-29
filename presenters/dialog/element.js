@@ -176,6 +176,10 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             margin: var(--pad) calc(var(--pad) / 1.5);
         }
 
+        :host([stack]) aside {
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
         :host([stack]) aside [name="icon"] > *,
         :host([stack]) aside ::slotted(*:not([fill])) {
             margin: var(--pad);

@@ -16,6 +16,10 @@ customElements.define('demo-main', class extends App{
             background: none !important;
         }
 
+        b-tabs::part(main) {
+            background: var(--theme-bgd);
+        }
+
         b-tabs::part(tab-bar) {
             border-right: none;
         }
