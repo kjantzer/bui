@@ -22,8 +22,8 @@ const PRESETS = {
     'upload': {label: 'Upload', color: 'theme'},
     'update': {label: 'Update', color: 'theme'},
     'import': {label: 'Import', color: 'theme'},
-	'delete': {label: 'Delete', color: 'red'},
-    'remove': {label: 'Remove', color: 'red'},
+	'delete': {label: 'Delete', color: 'red', muted: true},
+    'remove': {label: 'Remove', color: 'red', muted: true},
 	'x': {label: '', icon:'close', doesCancel:true},
     '...': {label: '', icon:'dot-3'}
 }
@@ -110,8 +110,14 @@ customElements.define('b-dialog-btn', class extends Btn{
         if( !this.opts.color )
             this.setAttribute('clear', '')
         
+        if( this.opts.muted )
+            this.setAttribute('muted', '')
+
         if( this.opts.block )
             this.setAttribute('block', '')
+
+        if( !this.opts.label)
+            this.setAttribute('no-label', true)
 
         if( this.opts.order )
             this.style.order = this.opts.order

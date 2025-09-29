@@ -314,6 +314,11 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             /*font-size: 1.2em;*/
         }
 
+        footer b-dialog-btn[icon="close"][no-label] {
+            flex-grow: 0;
+            --padding: .5em;
+        }
+
         /*footer b-dialog-btn[color=""] {
             background: none;
         }*/

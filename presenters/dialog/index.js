@@ -65,7 +65,7 @@ registerPreset('confirmDelete', opts=>{ return {
 	icon: opts&&(opts.title||opts.msg||opts.body)?'trash':'',
 	accent: opts&&(opts.title||opts.msg||opts.body)?'red':'',
 	noContent: true,
-	btns: opts?.btns||['cancel', 'delete']
+	btns: opts?.btns||['x', 'delete']
 }})
 
 registerPreset('warn', {

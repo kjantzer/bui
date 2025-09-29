@@ -34,6 +34,14 @@ customElements.define('radio-group', class extends LitElement{
 			margin-right: 1em;
 		}
 
+		slot[name="before"]::slotted(*) {
+			margin-bottom: .25em;
+		}
+
+		slot[name="after"]::slotted(*) {
+			margin-top: .25em;
+		}
+
 		:host([segment]) main {
 			align-self: flex-start;
 			/* justify-self: flex-start; */
