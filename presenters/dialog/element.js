@@ -152,6 +152,14 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             min-width: 200px;
         }
 
+        :host([nocontent][notext][in-notif]) {
+            border-radius: 2em !important;
+
+            footer {
+                padding: .25em;
+            }
+        }
+
         aside {
             position: relative;
             display: flex;

@@ -75,6 +75,10 @@ main {
                 0px 1px 18px 0px rgba(0,0,0,0.12);
 }
 
+main:has(b-dialog[nocontent][notext]) {
+    border-radius: 2em !important;
+}
+
 slot {
     display: block;
 }
