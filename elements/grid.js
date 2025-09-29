@@ -7,11 +7,11 @@
     <b-grid>
         <b-text>col 1 equal</b-text>
         <b-text>col 2 equal</b-text>
-    </b-grid>
 
-    <b-grid cols="auto,1">
-        <b-text>col 1 auto</b-text>
-        <b-text>col 2 fills the rest</b-text>
+        <b-grid cols="auto,1">
+            <b-text>col 1 auto</b-text>
+            <b-text>col 2 fills the rest</b-text>
+        </b-grid>
     </b-grid>
     ```
 

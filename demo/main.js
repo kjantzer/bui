@@ -23,7 +23,7 @@ customElements.define('demo-main', class extends App{
         b-tabs::part(content) {
             background: none;
             box-shadow: var(--theme-shadow-1);
-            margin-top: 1px;
+            margin-top: 2px;
             border-radius: 12px 0 0 0;
         }
     `]

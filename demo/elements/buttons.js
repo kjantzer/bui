@@ -20,7 +20,7 @@ export default html`
 
         <b-hr vert></b-hr>
 
-        <b-btn icon="user">With Icon</b-btn>
+        <b-btn icon="person">With Icon</b-btn>
         <b-btn icon="cog"></b-btn>
 
         <b-hr vert></b-hr>
@@ -66,7 +66,7 @@ export default html`
 
         <b-hr vert></b-hr>
 
-        <b-btn text icon="user">With Icon</b-btn>
+        <b-btn text icon="person">With Icon</b-btn>
         <b-btn text icon="cog"></b-btn>
     </div>
 
@@ -74,7 +74,7 @@ export default html`
     <div>
         <br><br><b-label divider>Stacked style</b-label><br>
         <b-btn text stacked icon="cog"><span>Settings</span></b-btn>
-        <b-btn text stacked icon="user"><span>Account</span></b-btn>
+        <b-btn text stacked icon="person"><span>Account</span></b-btn>
         <b-btn text stacked icon="download"><span>Download</span></b-btn>
         <b-btn text stacked icon="upload-cloud"><span>Upload</span></b-btn>
     </div>
