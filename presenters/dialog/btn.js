@@ -46,6 +46,11 @@ customElements.define('b-dialog-btn', class extends Btn{
         :host([block]) {
             width: 100%;
         }
+
+        :host([empty]), :host(:empty) {
+            flex-grow: 0;
+            --padding: .5em;
+        }
     `]
 
     get isCancelBtn(){
