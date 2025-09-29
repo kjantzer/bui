@@ -112,7 +112,9 @@ const GlobalErrorHandler = (evt)=>{
         notif.width = 'auto'
         notif.trace = false
     }
-
+    
+    let n = new Notif(notif)
+    
     // optional feature
     // provides a readable stack trace
     if( window.mapStackTrace && error.stack && notif.trace )
@@ -130,8 +132,6 @@ const GlobalErrorHandler = (evt)=>{
             n.msg += `<b-text block sm dim>${stack.join("<br>")}</b-text>`
 
         })
-    
-    let n = new Notif(notif)
 }
 
 window.addEventListener('error', GlobalErrorHandler)
