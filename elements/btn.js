@@ -316,6 +316,12 @@ export default class BtnElement extends LitElement {
         :host([color^="purple"]) { --color: var(--purple); }
         :host([color^="brown"])  { --color: var(--brown); }
         :host([color^="pink"])   { --color: var(--pink); }
+        
+        :host([muted]), :host([muted]) main {
+            color: var(--color);
+            background: color-mix(in srgb, var(--color) 20%, var(--theme-bgd));
+            border-color: color-mix(in srgb, var(--color) 20%, var(--theme-bgd));
+        }
 
         @media (hover){
         :host([color*="hover-theme"]:hover)  { --color: var(--theme); }
