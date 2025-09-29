@@ -310,6 +310,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             flex-grow: 1;
             --radius: 1em;
             --padding: .5em 1em;
+            text-transform: capitalize;
             /*font-size: 1.2em;*/
         }
 
