@@ -122,6 +122,7 @@ const GlobalErrorHandler = (evt)=>{
 
             stack = stack
             .filter(s=>!s.match(/node_modules/))
+            .filter(s=>!s.match(/bui/))
             .map(s=>{
                 return s
                 .replace(/^\s+ at /, '')
