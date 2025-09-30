@@ -106,6 +106,9 @@ class PanelController extends LitElement {
     constructor(){
         super()
         this.panels = new CollMap()
+        this.addEventListener('panel-title-updated', (e)=>{
+            this.emitEvent('change', {action: 'title-updated', panel: e.detail.panel}, {bubbles: false})
+        })
     }
 
     connectedCallback(){
@@ -201,12 +204,13 @@ class PanelController extends LitElement {
         }
         
         this.panels.delete(panel)
+        delete panel.index
         this._updatePanels()
 
         if( updateRoute )
             this._updateRoute()
 
-        this.emitEvent('panel-removed', {panel}, {bubbles: false})
+        this.emitEvent('change', {action: 'remove', panel}, {bubbles: false})
 
         if( this.length == 0 )
             this.dispatchEvent(new CustomEvent('panels-closed', {
@@ -219,7 +223,13 @@ class PanelController extends LitElement {
     add(panel){
 
         // let SheetView and Panel work together
+        // TODO: remove long term - done for Blackstone Catalog v5
         document.body.setAttribute('ontop', 'panel')
+
+        // keep track of order in which opened
+        // cause this.panels is in order of layering
+        if( panel.index === undefined )
+            panel.index = this.panels.size > 0 ? this.panels.last.index + 1 : 0
 
         this.panels.delete(panel)
         this.panels.set(panel, panel)
@@ -231,7 +241,7 @@ class PanelController extends LitElement {
 
         this._updatePanels()
 
-        this.emitEvent('panel-added', {panel}, {bubbles: false})
+        this.emitEvent('change', {action: 'add', panel}, {bubbles: false})
     }
 
     get panelOnTop(){
