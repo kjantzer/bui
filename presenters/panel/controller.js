@@ -37,6 +37,10 @@ class PanelController extends LitElement {
         :host, .core, main, .base, .panels {
             display: grid;
         }
+        
+        .top {
+            position: relative;
+        }
 
         /*.base, .top, .bottom, .left, .right {*/
         slot::slotted(*) {
