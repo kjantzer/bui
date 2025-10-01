@@ -94,6 +94,11 @@ customElements.define('b-app', class extends LitElement {
             --b-sub-color: var(--theme-text-accent);
         }
 
+        b-tabs::part(content) {
+            box-shadow: var(--theme-shadow-1);
+            margin-top: 1px; /* space for border */
+        }
+
         b-tabs > * {
             flex-grow: 1;
         }
