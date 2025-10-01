@@ -364,7 +364,9 @@ class PanelController extends LitElement {
             if( panel.onTop && panel.route && (!panel.route.isCurrent || panel.route.state.props.didExit) ){
                 // console.log(panel.route, panel.route.state.path);
                 // if( panel.route.isCurrent || panel.route.state.props.didExit )
-                    router.push(panel.route.makePath(panel.route.params))
+                    router.push(panel.route.makePath(panel.route.params), {
+                        title: panel.title
+                    })
                 // else
                 //     router.push(panel.route)
             }
