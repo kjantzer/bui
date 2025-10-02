@@ -53,6 +53,9 @@ LitElement.prototype.__listenerModelFor = function(key){
     if( m.trigger && m.on ) // Backbone.Events
         return m
 
+    if( m.emit && m.on ) // component-emitter
+        return m
+
     return null
 }
 
@@ -80,6 +83,14 @@ LitElement.prototype.bindListeners = function(){
                 // custom inline function so no args are passed to `requestUpdate`
                 if( fnName == 'requestUpdate' )
                     fn = function(){ this.requestUpdate() }.bind(this)
+
+                // component-emitter doesn't bind context
+                if( m.emit ){
+                    if( !fn._bound)
+                        fn._bound = fn.bind(this)
+                    
+                    fn = fn._bound
+                }
 
                 m.on(event, fn, this)
             }
