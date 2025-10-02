@@ -691,10 +691,10 @@ export class Panel extends LitElement {
             this.remove()
             this.view?.onClosed?.()
         }else
-        setTimeout(()=>{
-            this.remove()
-            this.view?.onClosed?.()
-        }, Panel.animationTime)
+            Promise.allSettled(this.getAnimations().map(a=>a.finished)).then(()=>{
+                this.remove()
+                this.view?.onClosed?.()
+            })
     }
 
     static get styles(){return css`
