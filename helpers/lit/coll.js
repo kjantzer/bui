@@ -46,7 +46,8 @@ Object.defineProperty(LitElement.prototype, 'coll', {
             this.onCollChange&&this.onCollChange(val)
 
             // support lit controllers
-            this.__controllers?.forEach((c) => c.onCollChange?.(val, oldVal));
+            // hmm...not working in production mode
+            // this.__controllers?.forEach((c) => c.onCollChange?.(val, oldVal));
         }
     },
 
