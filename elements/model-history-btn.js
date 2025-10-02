@@ -13,6 +13,11 @@ import Menu from '../presenters/menu'
 
 customElements.define('b-model-history-btn', class extends Btn{
 
+    static properties = {
+        ...Btn.properties,
+        mode: {type: String, reflect: true}
+    }
+
     static listeners = {
         model: {'change': 'requestUpdate'}
     }
@@ -24,6 +29,7 @@ customElements.define('b-model-history-btn', class extends Btn{
     constructor(){
         super(...arguments)
         this.icon = 'arrow_back'
+        this.value = 'Back'
     }
 
     updated(){
@@ -31,7 +37,7 @@ customElements.define('b-model-history-btn', class extends Btn{
     }
 
     renderLabel(){return html`
-        <b-text sm>Back</b-text>
+        <b-text sm>${this.value}</b-text>
     `}
 
     _renderLabel(){return html`
@@ -39,6 +45,10 @@ customElements.define('b-model-history-btn', class extends Btn{
     `}
 
     clickMenu(){
+
+        if( this.mode == 'menu' )
+            return this.contextMenu()
+        
         let prev = this.model.previous()
         if( prev )
             this.model.open(prev)
@@ -71,7 +81,7 @@ customElements.define('b-model-history-btn', class extends Btn{
             }
         }
 
-        let selected = await new Menu(menu, {selected: this.model.host.model?.id}).popOver(this)
+        let selected = await new Menu(menu, {selected: this.model.host.model?.id}).popOver(this, {width: '400px'})
         
         if( selected.val == 'clear' ){
             this.model.clear()

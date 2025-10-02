@@ -46,9 +46,13 @@ export default class ModelHistoryController {
         this.storeLimit = storeLimit
         this.filter = filter
         this.dataToStore = dataToStore
-        this.key = key||this.host.tagName.toLowerCase()
 
-		this.history = getHistory(this.key, {store})
+        Promise.allSettled(host.getAnimations().map(a=>a.finished)).then(()=>{
+
+            this.key = key||host.route?.path||this.host.tagName.toLowerCase()
+
+            this.history = getHistory(this.key, {store})
+        })
 	}
 
     open(modelOrId){
@@ -84,26 +88,17 @@ export default class ModelHistoryController {
 
             delete this._openingModel
 
-            // if( existingIndex > -1 ){
-                this._openingHistory ||= []
-                this._openingHistory.push(model.id)
-            // } 
+            // keep track of history back button/menu
+            this._openingHistory ||= []
+            this._openingHistory.push(model.id)
 
             this.index = this.history.indexOf(model.id)
             this.history.get(model.id).ts = new Date().getTime()
             
         }else{
-
-            // if oldModel exists somewhere NOT at the end, then we are in the middle of the history
-            // trim future history, then reapply it in reverse order
-            // this feels best to user since after they open this model, using the back button
-            // reverses the previous use of "back history"            
-            // if( existingIndex > -1 ){
-            //     let trimmed = this.history.trim(existingIndex).reverse()
-            //     trimmed.forEach(([k,v])=>this.history.set(k, v))
-            // }
-            console.log(this._openingHistory);
             
+            // reapply the history back button/menu 
+            // this feels best to user since after they open this model, using the back button
             this._openingHistory?.map(id=>{
                 let m = this.history.get(id)
                 if( m ){
@@ -114,7 +109,6 @@ export default class ModelHistoryController {
 
             delete this._openingHistory
             
-
             this.history.set(model.id, this._dataToStore(model))
             this.index = this.history.size-1
         }
@@ -126,7 +120,8 @@ export default class ModelHistoryController {
         let current = this.history.get(this.host.model.id)
         this.history.clear()
         this.index = 0
-        this.history.set(current.id, current)
+        if( current )
+            this.history.set(current.id, current)
         this.emit('change', {})
     }
 
