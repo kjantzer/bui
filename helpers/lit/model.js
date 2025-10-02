@@ -35,6 +35,10 @@ Object.defineProperty(LitElement.prototype, 'model', {
             
             // does this "need" to be after request update?
             this.onModelChange && await this.onModelChange(val, oldVal)
+            
+            // support lit controllers
+            this.__controllers?.forEach((c) => c.onModelChange?.(val, oldVal));
+
             this.requestUpdate('model', oldVal)
             // this.onModelChange&&this.onModelChange(val, oldVal)
 
