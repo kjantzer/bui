@@ -77,6 +77,21 @@ export default class RoutedView extends LitElement {
             position: relative;
             padding: var(--gutter, 1em);
         }
+
+        b-app-tab-bar-btn {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            margin-right: .5em;
+        }
+        
+        b-model-history-btn[size="1"] {
+            display: none;
+        }
+
+        b-app-tab-bar-btn:has(b-model-history-btn[size="1"]) {
+            grid-template-columns: 1fr;
+            margin-right: 0;
+        }
     `}
 
     get router(){ return router }
