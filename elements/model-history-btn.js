@@ -49,11 +49,11 @@ customElements.define('b-model-history-btn', class extends Btn{
         if( this.mode == 'menu' )
             return this.contextMenu()
         
-        let prev = this.model.previous()
+        let prev = this.model.previous(null, {loop: true})
         if( prev )
             this.model.open(prev)
-        else
-            this.contextMenu()
+        // else
+        //     this.contextMenu()
     }
 
     async contextMenu(){

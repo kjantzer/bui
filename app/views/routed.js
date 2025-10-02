@@ -80,6 +80,10 @@ export default class RoutedView extends LitElement {
 
         b-app-tab-bar-btn {
             display: grid;
+            grid-template-columns: 1fr;
+        }
+        
+        b-app-tab-bar-btn:has(b-model-history-btn) {
             grid-template-columns: 1fr 1fr;
             margin-right: .5em;
         }

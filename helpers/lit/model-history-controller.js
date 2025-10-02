@@ -23,7 +23,11 @@
 
     > Note: `model-history-btn` is built to work with this controller
 
-    TODO: handle multiple tabs? listen for storage changes?
+    Ideas / TODO
+    - when using back button (and looping) consider limiting to since view/window opened?
+        - other values in history could only be selectable from menu?
+    - add hour/day/date dividers to the menu?
+    - handle multiple tabs? listen for storage changes and sync?
 */
 import Emitter from 'component-emitter'
 import CollMap from '../../util/collmap'
@@ -89,8 +93,9 @@ export default class ModelHistoryController {
             delete this._openingModel
 
             // keep track of history back button/menu
-            this._openingHistory ||= []
-            this._openingHistory.push(model.id)
+            this._openingHistory ||= new Set()
+            this._openingHistory.delete(model.id) // may have looped history
+            this._openingHistory.add(model.id)
 
             this.index = this.history.indexOf(model.id)
             this.history.get(model.id).ts = new Date().getTime()
@@ -99,7 +104,8 @@ export default class ModelHistoryController {
             
             // reapply the history back button/menu 
             // this feels best to user since after they open this model, using the back button
-            this._openingHistory?.map(id=>{
+            if( this._openingHistory )
+            Array.from(this._openingHistory).map(id=>{
                 let m = this.history.get(id)
                 if( m ){
                     this.history.delete(id)
@@ -148,8 +154,9 @@ export default class ModelHistoryController {
     get size(){ return this.history.size }
     get length(){ return this.history.size }
 
-    previous(toIndex){
+    previous(toIndex, {loop=true}={}){
         if( !toIndex ) toIndex = this.history.indexOf(this.host.model.id) - 1
+        if( loop && toIndex < 0 ) toIndex = this.history.size - 1
         return this.history.at(toIndex)
     }
 
