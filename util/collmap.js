@@ -75,6 +75,24 @@ module.exports = class CollMap extends Map {
         return didDelete
     }
 
+    clear(...args){
+        super.clear(...args)
+        this._storeUpdate(...args)
+    }
+
+    trim(fromIndex){
+        if( fromIndex < 0 || fromIndex >= this.size-1 ) return []
+
+        let entries = this.toEntries()
+        let trimmed = []
+        for(let i = fromIndex; i < entries.length; i++){
+            trimmed.push(entries[i])
+            this.delete(entries[i][0])
+        }
+        this._storeUpdate({trim:fromIndex, trimmed})
+        return trimmed
+    }
+
     _storeUpdate(args){
         if( this.store ){
             this.store(this._valueToStore)
@@ -133,6 +151,17 @@ module.exports = class CollMap extends Map {
         let i = 0
         this.forEach((v, key)=>fn(v, key, i++)?resp.push(v):null)
         return resp
+    }
+
+    indexOf(fn){
+        let _i = -1
+        this.find((v, k, i)=>{
+            let found = typeof fn == 'function' ? fn(v, k, i) : (k == fn || v == fn)
+            if( found ) _i = i
+            return found
+        })
+        
+        return _i
     }
 
     find(fn){
