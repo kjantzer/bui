@@ -8,7 +8,7 @@
     class MyView extends LitElement {
 
         modelHistory = new ModelHistoryController(this, {
-            store: true, // the default
+            store: false, // the default (remember in local storage?)
             // optionally change what data is stored
             dataToStore: ['id', 'book_id', 'title', 'author_string']
         })
@@ -42,12 +42,12 @@ export default class ModelHistoryController {
 	host
     history
 	
-    constructor(host, {key, store=true, dataToStore, filter, label, openModel, storeLimit=50}={}){
+    constructor(host, {key, dataToStore, filter, label, openModel, limit=50, store=false}={}){
 		(this.host = host).addController(this)
 
         this.label = label
         this.openModel = openModel
-        this.storeLimit = storeLimit
+        this.limit = limit
         this.filter = filter
         this.dataToStore = dataToStore
 
@@ -177,7 +177,7 @@ export default class ModelHistoryController {
 Emitter(ModelHistoryController.prototype)
 
 
-export function getHistory(key, {store=true, storeLimit}={}){
+export function getHistory(key, {store=true, limit}={}){
     
     // keep cache of history objects so they can be shared between code
     let history = Histories.get(key)
@@ -186,7 +186,7 @@ export function getHistory(key, {store=true, storeLimit}={}){
         history = new CollMap(null, {
             storeInOrder: true, 
             store: store ? Store.create('model-history:'+key): null,
-            storeLimit
+            storeLimit: limit
         })
 
         Histories.set(key, history)

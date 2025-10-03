@@ -76,8 +76,8 @@ customElements.define('b-model-history-btn', class extends Btn{
                 ...(this.model.size > 1 ? [{label: 'Clear', icon: 'backspace', val: 'clear'}, '-'] : []),
                 ...menu
             ]
-            if( this.model.storeLimit ){
-                menu.push({text: `Last ${this.model.storeLimit} records viewed`})
+            if( this.model.limit ){
+                menu.push({text: `Last ${this.model.limit} records viewed`})
             }
         }
 
