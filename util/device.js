@@ -13,7 +13,9 @@
     - isTouch
     
     see source code more complete list
+    
 */
+// NOTE: https://evilmartians.com/chronicles/how-to-detect-safari-and-ios-versions-with-ease
 import {colorScheme, ThemeColors} from './color-scheme'
 
 const UA = navigator.userAgent
