@@ -24,11 +24,23 @@ customElements.define('b-model-history-btn', class extends Btn{
 
     static styles = [Btn.styles, css`
         
+        .val {
+            position: absolute;
+            margin-top: 1.75em;
+        }
+
+        :host([mode="menu"]) .val {
+            display: none;
+        }
+
+        :host(:not(:hover)) .val {
+            opacity: 0;
+        }
     `]
 
     constructor(){
         super(...arguments)
-        this.icon = 'arrow_back'
+        this.icon = 'keyboard_backspace'
         this.value = 'Back'
     }
 
@@ -37,7 +49,10 @@ customElements.define('b-model-history-btn', class extends Btn{
     }
 
     renderLabel(){return html`
-        <b-text sm>${this.value}</b-text>
+        <b-text xs muted ucase block class="val">
+            ${this.value}
+            (${this.model.index+1}/${this.model.size})
+        </b-text>
     `}
 
     _renderLabel(){return html`
