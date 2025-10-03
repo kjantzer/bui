@@ -611,6 +611,8 @@ module.exports = class Model {
 
         if( !related ) return
 
+        let relatedFetches = []
+
         // for each relation, check for a `withRelationKey` option
         for( let relation in related ){
 
@@ -653,8 +655,8 @@ module.exports = class Model {
                             args[1] = {...args[1], ...opts}
                     }
                         
-                    
-                    row.attrs[relation] = await RelatedModel.find(...args)
+                    // row.attrs[relation] = await RelatedModel.find(...args)
+                    relatedFetches.push({relation, RelatedModel, args});
                 }
                 }catch(err){
                     console.log('Related:', err);
@@ -663,6 +665,13 @@ module.exports = class Model {
                 }
             }
                 
+        }
+
+        // initiate all related fetches at once (possible time savings)
+        if( relatedFetches.length > 0 ){
+            await Promise.all(relatedFetches.map(async ({relation, RelatedModel, args})=>{
+                row.attrs[relation] = await RelatedModel.find(...args)
+            }))
         }
     }
 
