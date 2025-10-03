@@ -52,7 +52,7 @@ customElements.define('text-editor', class extends LitElement{
 
         if( this.links )
             useExtensions.push(Link.configure({
-                openOnClick: false // disable default handler, will use custom instead
+                // openOnClick: false // disable default handler, will use custom instead
             }))
 
         this.editor = new Editor({

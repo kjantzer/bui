@@ -9,20 +9,20 @@ import Link from '@tiptap/extension-link'
 // https://github.com/ueberdosis/tiptap/blob/develop/packages/extension-link/src/link.ts
 export default Link.extend({
   
-    addProseMirrorPlugins() {
+    // addProseMirrorPlugins() {
 
-        // continue supporting the existing plugins
-        let plugins = Link.config.addProseMirrorPlugins.call(this)
+    //     // continue supporting the existing plugins
+    //     let plugins = Link.config.addProseMirrorPlugins.call(this)
 
-        // add our own custom "click to open" plugin
-        plugins.push(
-            clickHandler({
-                type: this.type
-            })
-        )
+    //     // add our own custom "click to open" plugin
+    //     plugins.push(
+    //         clickHandler({
+    //             type: this.type
+    //         })
+    //     )
 
-        return plugins
-    }
+    //     return plugins
+    // }
   
 })
 

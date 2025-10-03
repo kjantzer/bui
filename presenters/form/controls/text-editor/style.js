@@ -118,6 +118,7 @@ export default css`
 
 .ProseMirror a {
 	word-break: break-all;
+	cursor: pointer;
 }
 
 .ProseMirror sup {
