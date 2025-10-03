@@ -94,7 +94,8 @@ customElements.define('b-app', class extends LitElement {
             --b-sub-color: var(--theme-text-accent);
         }
 
-        b-tabs::part(content) {
+        /* when the base of b-panels */
+        :host([slot="base"]) b-tabs::part(content) {
             box-shadow: var(--theme-shadow-1);
             margin-top: 1px; /* space for border */
         }
