@@ -96,6 +96,7 @@ const GlobalErrorHandler = (evt)=>{
     }
 
     if( error.name == 'APIAccessError' || error.type == 'APIAccessError' ){
+        notif.trace = false
         notif.edge = true
         notif.type = 'failed'
         // notif.accent = true
@@ -123,6 +124,7 @@ const GlobalErrorHandler = (evt)=>{
             stack = stack
             .filter(s=>!s.match(/node_modules/))
             .filter(s=>!s.match(/bui/))
+            .filter(s=>!s.includes(location.host))
             .map(s=>{
                 return s
                 .replace(/^\s+ at /, '')
