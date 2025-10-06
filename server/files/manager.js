@@ -72,7 +72,7 @@ module.exports = class FileManager extends Model {
     
     // shouldn't need to override these
     get groupPath(){ return this.group.toLowerCase() }
-    get fileName(){ return this.attrs.id ? (this.attrs.filename) : '' }
+    get fileName(){ return this.attrs?.id ? (this.attrs.filename) : '' }
     get dirPath(){ return [this.STORAGE_PATH, this.rootDir, this.groupPath].filter(s=>s).join('/')}
     get path(){ return this.dirPath+'/'+this.fileName }
     get filePath(){ return path.join(this.dirPath, this.fileName||'') }
