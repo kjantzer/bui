@@ -45,6 +45,7 @@ export default class RoutedView extends LitElement {
             position:relative;
             height: 100%;
             --bgd-color: var(--theme-bgd-accent2, #fff);
+            background: var(--theme-bgd);
             /* --border-color: rgba(var(--theme-text-rgb, 0,0,0), .1); */
         }
 
