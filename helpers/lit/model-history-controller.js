@@ -98,7 +98,9 @@ export default class ModelHistoryController {
             this._openingHistory.add(model.id)
 
             this.index = this.history.indexOf(model.id)
-            this.history.get(model.id).ts = new Date().getTime()
+            
+            if( this.history.get(model.id) )
+                this.history.get(model.id).ts = new Date().getTime()
             
         }else{
             
