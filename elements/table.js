@@ -68,11 +68,14 @@ customElements.define('b-table', class extends LitElement{
     `
 
     applyHeader(){
+
         let header = this.$$('[name="header"]', true).assignedElements()?.[0]
+        while( header?.tagName == 'SLOT' )
+            header = header.assignedElements()?.[0]
         
         // NOTE: some of this logic/idea take from list/header
         let prevW = '1fr'
-        let headerCells = Array.from(header?.children)?.map?.(el=>{
+        let headerCells = Array.from(header?.children||[])?.map?.(el=>{
 
             if( !isCell(el) ) return false
 
