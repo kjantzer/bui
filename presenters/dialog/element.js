@@ -160,6 +160,14 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             }
         }
 
+        :host([_title="0"][pretitle="0"]) main header {
+            display: none;
+        }
+
+        :host([_title="0"][pretitle="0"]) main .body-wrap {
+            padding-top: var(--pad);
+        }
+
         aside {
             position: relative;
             display: flex;
