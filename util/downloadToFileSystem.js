@@ -31,11 +31,17 @@ export default async function downloadToFileSystem(files, {dirID='downloads', ca
     let directoryHandle = dirID && cacheHandle ? directoryHandles.get(dirID) : null
 
     if( !directoryHandle ){
-        directoryHandle = await window.showDirectoryPicker({startIn, id: dirID});
+        directoryHandle = await window.showDirectoryPicker({startIn, id: dirID}).catch(err=>{
+            if( err.name == 'AbortError' )
+                throw new UISilentError(err.message)
+            throw err
+        })
         
         if( dirID && cacheHandle )
             directoryHandles.set(dirID, directoryHandle)
     }
+
+    progress?.('directory-picked', {directoryHandle})
 
     if( !Array.isArray(files) )
         files = [files]
@@ -52,7 +58,9 @@ export default async function downloadToFileSystem(files, {dirID='downloads', ca
     // maybe create a new dir to save all files to
     const saveDirHandle = dirName ? await directoryHandle.getDirectoryHandle(dirName, {create: true}) : directoryHandle
     
-    for( let file of files ){
+    for( let i in files ){
+
+        let file = files[i]
 
         // entire download is aborted
         if( signal && signal.aborted )
@@ -70,7 +78,8 @@ export default async function downloadToFileSystem(files, {dirID='downloads', ca
         const resp = await fetch(url, {signal: abortController.signal})
 
         // todo: hook up progress here?
-        if( !resp.ok ) throw new Error(`Failed to fetch ${url}: ${resp.statusText}`)
+        // if( !resp.ok ) throw new Error(`Failed to fetch ${url}: ${resp.statusText}`)
+        if( !resp.ok ) return
 
         let filename = getFilename(resp)
         let fileHandle = await saveDirHandle.getFileHandle(filename, {create: true})
@@ -85,6 +94,7 @@ export default async function downloadToFileSystem(files, {dirID='downloads', ca
 
                 let data = {
                     file,
+                    index: parseInt(i),
                     progress: Math.round((loaded / total) * 100),
                     size: loaded,
                     totalSize: total,
@@ -92,7 +102,7 @@ export default async function downloadToFileSystem(files, {dirID='downloads', ca
                 }
 
                 if( !abortController.signal.aborted )
-                    progress?.(data)
+                    progress?.('progress', data)
                 
                 controller.enqueue(chunk)
             }
@@ -117,6 +127,7 @@ export default async function downloadToFileSystem(files, {dirID='downloads', ca
         })
     }
 
+    progress?.('done')
     return true
 }
 
