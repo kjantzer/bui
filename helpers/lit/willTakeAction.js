@@ -29,6 +29,14 @@
 
         if( action == 'show-menu' )
             action.menu = action.menu.filter(d=>d.val!='delete')
+
+        // allowed can be set to a promise
+        action.allowed = new Promise(resolve=>{
+            resolve(false)
+        })
+
+        // then later in code use:
+        await action.allowedPromise()
     }
     ```
 */
@@ -52,6 +60,15 @@ export const willTakeAction = function(name, detail={}, eventOpts={}){
     
     // add alias
     action.notAllowed = !action.allowed
+
+    action.allowedPromise = function(){
+        return new Promise(resolve=>{
+            if( action.allowed instanceof Promise )
+                action.allowed.then(resolve)
+            else
+                resolve(action.allowed)
+        })
+    }
 
     return action
 }
