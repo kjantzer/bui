@@ -155,19 +155,34 @@ customElements.define('b-file-manager', class extends LitElement{
     selectFile(){ return this.selectFiles() }
 
     render(){return html`
-        <b-uploader ?disabled=${this.disabled} accept="${this.accept}" ?plainFilename=${this.plainFilename} @change=${this.onUpload} ?multiple=${this.limit!=1}></b-uploader>
+        ${this.renderUploader()}
             
         <div class="files" part="files">
         
             ${this.renderBeforeFiles()}
 
-            ${repeat(this.model?this.coll.models:[], (m) => m.id, (m, index) => this.renderFile(m))}
+            ${this.renderFiles()}
             
             ${this.renderAfterFiles()}
 
             ${this.renderEmptyState()}
 
         </div>
+    `}
+
+    renderFiles(){return html`
+        ${repeat(this.model?this.coll.models:[], (m) => m.id, (m, index) => this.renderFile(m))}
+    `}
+
+    renderUploader(){return html`
+        <b-uploader 
+            ?disabled=${this.disabled} 
+            accept="${this.accept}" 
+            ?plainFilename=${this.plainFilename} 
+            @change=${this.onUpload} 
+            ?multiple=${this.limit!=1}
+            placeholder=${this.placeholder}
+        ></b-uploader>
     `}
 
     renderBeforeFiles(){return ''}
@@ -193,7 +208,7 @@ customElements.define('b-file-manager', class extends LitElement{
     }
 
     renderEmptyState(){return html`
-        <b-empty-state if="first" static md part="empty-state">
+        <b-empty-state if="first" md part="empty-state">
             <slot name="placeholder">${this.placeholder}</slot>
         </b-empty-state>
     `}
@@ -212,7 +227,8 @@ customElements.define('b-file-manager', class extends LitElement{
         if( uploader.files.length == 0 )
             return
 
-        if( !this.willTakeAction('upload-file').allowed ) return
+        // .allowed may be true/false or a promise
+        if( !await this.willTakeAction('upload-file').allowedPromise() ) return
 
         let formData = null
 
