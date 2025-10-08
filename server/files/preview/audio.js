@@ -22,9 +22,10 @@ const defaultOpts = {
     size: '800x250',
     colors: '#000000',
     gain: -6,
-    clipAt: 1200, // 20 min // if 20 min
+    clipAt: 300, // 5 min
     clipTo: '00:05:00.0', // then clip to 5 min and create waveform
-    clipGain: 0
+    clipGain: 0,
+    waveform: true
 }
 
 ;(async function(){
@@ -53,46 +54,52 @@ const defaultOpts = {
 
     metadataOutput = audioStream
 
-    let thumbnailSrc = file
-    let thumbnailFromClippedSample = opts.clipAt && metadataOutput.duration > opts.clipAt
+    if( opts.waveform === true ){
 
-    // create clipped version of orig to create waveform from
-    if( thumbnailFromClippedSample ){
+        let thumbnailSrc = file
+        let thumbnailFromClippedSample = opts.clipAt && metadataOutput.duration > opts.clipAt
 
-        let clippedFile = file+'-clipped-for-waveform.mp3'
+        // create clipped version of orig to create waveform from
+        if( thumbnailFromClippedSample ){
 
+            let clippedFile = file+'-clipped-for-waveform.mp3'
+
+            await shellExec('ffmpeg', [
+                '-ss 00:00:00.0',
+                '-hide_banner',
+                '-loglevel error',
+                '-y',
+                `-i "${thumbnailSrc}"`,
+                '-c:a libmp3lame',
+                '-t '+opts.clipTo,
+                `"${clippedFile}"`,
+            ]).then(r=>{
+                if( opts.debug )
+                    console.log(r);
+            }).catch(err=>{
+                clippedFile = null
+            })
+
+            thumbnailSrc = clippedFile
+            opts.gain = opts.clipGain
+        }
+
+        if( thumbnailSrc )
         await shellExec('ffmpeg', [
-            '-ss 00:00:00.0',
+            '-y',
             '-hide_banner',
             '-loglevel error',
-            '-y',
             `-i "${thumbnailSrc}"`,
-            '-c copy',
-            '-t '+opts.clipTo,
-            `"${clippedFile}"`,
-        ]).then(r=>{
-            if( opts.debug )
-                console.log(r);
-        })
+            '-filter_complex "[0:a]aformat=channel_layouts=mono,',
+                `compand=gain=${opts.gain},`,
+                `showwavespic=s=${opts.size}:colors=${opts.colors}"`,
+            '-frames:v 1',
+            `"${file+'.preview.png'}"`
+        ])
 
-        thumbnailSrc = clippedFile
-        opts.gain = opts.clipGain
-    }
-
-    await shellExec('ffmpeg', [
-        '-y',
-        '-hide_banner',
-        '-loglevel error',
-        `-i "${thumbnailSrc}"`,
-        '-filter_complex "[0:a]aformat=channel_layouts=mono,',
-            `compand=gain=${opts.gain},`,
-            `showwavespic=s=${opts.size}:colors=${opts.colors}"`,
-        '-frames:v 1',
-        `"${file+'.preview.png'}"`
-    ])
-
-    if( thumbnailFromClippedSample && fs.existsSync(thumbnailSrc) ){
-        fs.unlinkSync(thumbnailSrc)
+        if( thumbnailFromClippedSample && fs.existsSync(thumbnailSrc) ){
+            fs.unlinkSync(thumbnailSrc)
+        }
     }
     
     console.log(JSON.stringify(metadataOutput))

@@ -28,6 +28,7 @@ module.exports = class FileManager extends Model {
     get rootDir(){ return ''}
     get group(){ return '' }
 
+    storeRootDir = false // store the root_dir in the DB?
     skipDuplicates = false // only applies when same parent_id
     stripMetadata = false // images only
     waitForPreviewGeneration = false // upload response wont return until preview saved
@@ -200,6 +201,9 @@ module.exports = class FileManager extends Model {
             md5: file.md5,
             traits: traits,
         }
+
+        if( this.storeRootDir )
+            info.root_dir = this.rootDir
 
         if( this.skipDuplicates == true ){
             if( await this.checkIsDuplicate(info) )
@@ -451,16 +455,30 @@ module.exports = class FileManager extends Model {
         }
 
         if( fileType.match(/audio/) ){
+            
+            let audioPreviewOpts = this.audioWaveformPreview
 
-            if( this.audioWaveformPreview )
-            await audioPreview(this.filePath, this.audioWaveformPreview).then(traits=>{
+            // we want to still trigger audioPreview to get metadata, but dont create the waveform preview
+            if( !audioPreviewOpts )
+                audioPreviewOpts = {waveform: false}
+
+            await audioPreview(this.filePath, audioPreviewOpts).then(traits=>{
 
                 this.attrs.traits = {...this.attrs.traits, ...traits}
                 updateAttrs.traits = this.attrs.traits
-                updateAttrs.has_preview = 2 // png
+
+                if( audioPreviewOpts.waveform !== false )
+                    updateAttrs.has_preview = 2 // png
 
             }).catch(err=>{
-                console.log('PSD preview failed', err);
+
+                console.log('audio preview failed', err.error||err);
+
+                try{
+                    let traits = JSON.parse(err.resp)
+                    this.attrs.traits = {...this.attrs.traits, ...traits}
+                    updateAttrs.traits = this.attrs.traits
+                }catch(err){}
             })
         }
 
@@ -473,7 +491,14 @@ module.exports = class FileManager extends Model {
                 updateAttrs.has_preview = 1
 
             }).catch(err=>{
-                console.log('PSD preview failed', err);
+
+                console.log('video preview failed', err.error||err);
+
+                try{
+                    let traits = JSON.parse(err.resp)
+                    this.attrs.traits = {...this.attrs.traits, ...traits}
+                    updateAttrs.traits = this.attrs.traits
+                }catch(err){}
             })
         }
 
