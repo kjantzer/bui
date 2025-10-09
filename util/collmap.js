@@ -169,6 +169,10 @@ module.exports = class CollMap extends Map {
         return this.filter(fn)[0]
     }
 
+    sum(fn){
+        return this.valuesArray().sum?.(fn)
+    }
+
     toJSON(){
         return this.map(v=>(v.toJSON&&v.toJSON()||v))
     }
