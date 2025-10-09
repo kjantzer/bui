@@ -56,6 +56,7 @@ customElements.define('b-download-to-file-system', class extends LitElement{
             }else if( file.get ){
                 data.id = file.id
                 data.label = file.origFilenameLabel || file.get('orig_filename') || file.get('filename') || file.get('label')
+                data.totalSize = file.get('size')
             }// TODO: support generic object?
 
             this.files.set(data.id, data)
@@ -111,18 +112,38 @@ customElements.define('b-download-to-file-system', class extends LitElement{
         })
     }
 
+    get totalSize(){
+        return this.files.sum(file=>file.totalSize)
+    }
+
+    get totalDownloaded(){
+        return this.files.sum(file=>file.totalSize * ((file.progress||0) / 100))
+    }
+
+    get totalProgress(){
+        return Math.round(this.totalDownloaded / this.totalSize * 100)
+    }
+
     render(){return html`
-        <b-table>
+        <b-table overflow>
             <b-table-row slot="header">
-                <b-flex w="1fr">
+                <b-flex w="1fr" left>
                     <b-text bold>Downloading Files</b-text>
-                    <b-text>${this.index+1} of ${this.files.size}</b-text>
+                    <b-text dim>${this.index+1} of ${this.files.size}</b-text>
                 </b-flex>
-                <b-text w="80px">%</b-text>
+                <b-text w="120px" dim>
+                    <b-bytes num=${this.totalSize}></b-bytes>
+                </b-text>
+                <b-text w="80px" dim>
+                    ${this.totalProgress}%
+                </b-text>
             </b-table-row>
             ${this.files.map(file=>html`
             <b-table-row>
                     <b-text>${file.label}</b-text>
+                    <b-text>
+                        <b-bytes num=${file.totalSize}></b-bytes>
+                    </b-text>
                     <b-text>${file.progress||0}%</b-text>
                 </b-table-row>
             `)}
