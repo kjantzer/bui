@@ -35,8 +35,12 @@ customElements.define('b-table', class extends LitElement{
             display: grid;
             position:relative;
             border: solid 1px var(--table-border-color, var(--theme-bgd-accent));
-            overflow: auto;
+            /* overflow: auto; */
             border-radius: var(--b-table-radius, 0px);
+        }
+
+        :host([overflow]) {
+            overflow: auto;
         }
 
         :host([hidden]) {
