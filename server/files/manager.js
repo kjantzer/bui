@@ -102,19 +102,19 @@ module.exports = class FileManager extends Model {
 
     get previewPath(){
 
-        if( !this.attrs.has_preview ){
+        if( !this.attrs?.has_preview ){
 
             // fallback to full size image
-            if( ['jpg', 'jpeg', 'png', 'gif', 'tif', 'heic', 'DNG'].includes(this.attrs.ext) ) 
+            if( ['jpg', 'jpeg', 'png', 'gif', 'tif', 'heic', 'DNG'].includes(this.attrs?.ext) ) 
                 return this.filePath
             else 
                 return null
         }
 
-        let ext = [, 'jpg', 'png'][this.attrs.has_preview]||'jpg'
+        let ext = [, 'jpg', 'png'][this.attrs?.has_preview]||'jpg'
         let size = parseInt(this.req.query.size||this.req.query.display) || false
 
-        if( !size || !this.attrs.sizes || !this.attrs.sizes.includes(size)){
+        if( !size || !this.attrs?.sizes || !this.attrs?.sizes.includes(size)){
             size = 'preview'
         }
 
