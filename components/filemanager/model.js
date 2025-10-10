@@ -85,15 +85,15 @@ export default class FileModel extends Model {
     }
 
     get isVideo(){
-        return this.get('type').match(/video/)
+        return !!this.get('type').match(/video/)
     }
 
     get isAudio(){
-        return this.get('type').match(/audio/)
+        return !!this.get('type').match(/audio/)
     }
 
     get isImg(){
-        return this.get('type').match(/image/)
+        return !!this.get('type').match(/image/)
     }
 
     // may not be reliable
@@ -103,7 +103,7 @@ export default class FileModel extends Model {
     }
 
     get isDocument(){
-        return this.get('type').match(/pdf/)
+        return !!this.get('type').match(/pdf/)
     }
 
     get isEpub(){

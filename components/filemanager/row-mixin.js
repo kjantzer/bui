@@ -1,4 +1,5 @@
 import Previewer from '../../presenters/previewer'
+import FloatingAudioPlayer from '../../elements/floating-audio-player'
 import Dialog from '../../presenters/dialog'
 import download from '../../util/download'
 import Palette from './palette'
@@ -6,7 +7,10 @@ import Palette from './palette'
 export const FileRowMixin = (Base)=>class extends Base{
 
     preview(){
-        Previewer.open(this.model)
+        if( this.model.isAudio )
+            FloatingAudioPlayer.shared.open(this.model)
+        else
+            Previewer.open(this.model)
     }
 
     download(){
