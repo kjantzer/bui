@@ -72,7 +72,7 @@ customElements.defineShared('b-floating-audio-player', class extends LitElement{
 
     render(){return html`
         <b-audio autoplay .src=${this.src}>
-            <b-text slot="before" sm dim ?hidden=${!this.model?.origFilenameLabel}>${this.model?.origFilenameLabel}</b-text>
+            <b-text block align="center" slot="before" ?hidden=${!this.model?.origFilenameLabel}>${this.model?.origFilenameLabel}</b-text>
         </b-audio>
     `}
 
