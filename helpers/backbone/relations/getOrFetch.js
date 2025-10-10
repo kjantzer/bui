@@ -38,10 +38,21 @@ module.exports = function(id, opts){
 			}
 		}
 
-		// hmmm...not sure I like this idea; is this really what should happen?
-		// or was this an edge case when I first wrote it?
 		if( model.isNew() )
-			model.save({}, {success: finishedCallback, error: finishedCallback})
+			model.fetch({
+				data:{
+					...model.toJSON(), 
+					...(opts.data||{}), 
+					singular: true // see server/model
+				}, 
+				success: finishedCallback,
+				error: finishedCallback
+			})
+
+			// hmmm...not sure I like this idea; is this really what should happen?
+			// or was this an edge case when I first wrote it?
+			// I think ^ is better logic? was anything relying on following behavior though?
+			// model.save({}, {success: finishedCallback, error: finishedCallback})
 		else
 			model.fetch({data:(opts.data||null), success: finishedCallback, error: finishedCallback});
 

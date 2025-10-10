@@ -217,7 +217,7 @@ module.exports = class Model {
 
     get id(){ return this.__id || this.attrs[this.idAttribute] }
     set id(id){ this.attrs[this.idAttribute] = this.__id = id }
-    get isSingular(){ return this.id && !Array.isArray(this.id) }
+    get isSingular(){ return (this.id && !Array.isArray(this.id)) || this.req?.query?.singular !== undefined }
     
     get idAttribute(){ return this.config.idAttribute || defaultConfig.idAttribute }
     get tableAlias(){ return this.config.tableAlias || this.config.table }

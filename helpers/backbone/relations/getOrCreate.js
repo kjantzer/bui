@@ -22,6 +22,16 @@ module.exports = function(id, opts){
 
 	var model = this.get.call(this, lookupID, opts)
 
+	if( !model && typeof id === 'object' && id[idAttribute] === undefined ){
+		let keys = Object.keys(id)
+
+		// lets add arbitrary limit the number of keys to check to mitigate unexpected performance
+		// if many keys (attributes) given, assume we should not be finding an existing model?
+		if( keys.length <= 4 )
+			model = this.find(m=>{
+				return keys.every((key)=>m.get(key) == id[key])
+			})
+	}
 	
 	if( model ){
 
@@ -43,7 +53,7 @@ module.exports = function(id, opts){
 		else
 			data[idAttribute] = id;
 
-		let needsFetching = Object.keys(data).length == 1 // do this here cause the model may have defaults added
+		let needsFetching = Object.keys(data).length == 1 || !id // do this here cause the model may have defaults added
 		
 		model = new ModelClass(data);
 
