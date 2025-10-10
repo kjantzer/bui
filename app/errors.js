@@ -112,7 +112,12 @@ export class UIAlertError extends UICustomError {
     }
 
     get presenter(){
-        return Dialog.alert(this.message)
+        return Dialog.alert({
+            icon: this.detail?.icon||null,
+            pretitle: this.detail?.pretitle||'',
+            body: this.message,
+            btns: false
+        })
     }
 }
 
