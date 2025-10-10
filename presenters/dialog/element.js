@@ -316,6 +316,14 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             padding: 0;
         }
 
+        :host([nobtns]) main {
+            margin-bottom: 0;
+        }
+
+        :host([nobtns]) main .body-wrap {
+            padding-bottom: var(--pad);
+        }
+
         :host([toast]) footer {
             margin-top: 0;
             padding-bottom: 0;
@@ -355,15 +363,12 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
 
         .close-btn {
             position: absolute;
-            padding: .35em .1em;
             /* top: 0;
             right: 0; */
             top: calc(var(--pad) / 4);
-            right: calc(var(--pad) / 4);
-        }
-
-        .close-btn:not(:hover) {
-            color: rgba(var(--theme-text-rgb, 0,0,0), .3);
+            z-index: 1;
+            top: -.75em;
+            right: -.65em;
         }
     `}
 
@@ -445,7 +450,7 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
     render(){return html`
 
         ${this.closeBtn?html`
-            <b-icon class="close-btn" name="cancel-circled" @click=${this.cancelClose}></b-icon>
+            <b-btn pill icon="close" class="close-btn" sm ?muted=${this.color=='inverse'} @click=${this.cancelClose}></b-btn>
         `:''}
 
         <aside part="aside">
