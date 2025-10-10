@@ -108,16 +108,31 @@ customElements.define('b-file-manager', class extends LitElement{
             let rows = Array.from(this.$$all(this.row))
             rows.forEach(row=>row.removeAttribute('sorting'))
         }
+
+        return this.sortingEnabled
     }
 
     enableSorting(){
+
+        return new Promise(resolve=>{
         
-        if( this.sortingEnabled ) return console.warn('Sorting already enabled')
-        if( this.limit == 1 ) return console.warn('Limited to 1 file, nothing to sort')
+        if( this.sortingEnabled ) return console.warn('Sorting already enabled') && resolve(true)
+        if( this.limit == 1 ) return console.warn('Limited to 1 file, nothing to sort') && resolve(false)
 
         import('sortablejs').then(({Sortable})=>{
+
+            let wrapEl = this.$$('.files', true)
+            let startIndex = 0
+
+            // possible rows have "non rows" before them (empty-state, header, etc) like when used in b-table
+            // so figure out when the first actual "row" starts so we can properly apply `newIndex`
+            // NOTE: would be better if sortablejs could handle this? maybe it does?
+            for( let el of wrapEl.children ){
+                if( el.tagName.toLowerCase() == this.row ) break
+                startIndex++
+            }
         
-            this.sortable = Sortable.create(this.$$('.files'), {
+            this.sortable = Sortable.create(wrapEl, {
                 draggable: this.row,
                 handle: '.drag',
                 swapThreshold: 1,
@@ -127,20 +142,30 @@ customElements.define('b-file-manager', class extends LitElement{
                 onUpdate: this.onSort.bind(this)
             })
 
+            this.sortable.startIndex = startIndex
+
             let rows = Array.from(this.$$all(this.row))
             rows.forEach(row=>row.setAttribute('sorting', ''))
 
             this.sorting = true
 
+            resolve(this.sortingEnabled)
+
+        })
+
         })
     }
 
     toggleSorting(){
-        this.sortingEnabled ? this.disableSorting() : this.enableSorting()
+        return this.sortingEnabled ? this.disableSorting() : this.enableSorting()
     }
 
     async onSort(e){
         let {item, oldIndex, newIndex} = e
+        
+        newIndex -= this.sortable.startIndex
+        oldIndex -= this.sortable.startIndex
+
         let coll = this.coll
         coll.models.splice(newIndex, 0, coll.models.splice(oldIndex, 1)[0] );
 
