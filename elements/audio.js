@@ -80,7 +80,6 @@ customElements.define('b-audio', class extends LitElement {
             cursor: pointer;
             height: 1.5em;
             width: 1.5em;
-            margin: .25em;
             padding: .25em;
             display: inline-flex;
             justify-content: center;
@@ -94,9 +93,9 @@ customElements.define('b-audio', class extends LitElement {
             transition: color .15s ease-in-out, border-color .15s ease-in-out;
         }
 
-        :host([status="error"]) {
+        /*:host([status="error"]) {
             background: var(--red-50) !important;
-        }
+        }*/
 
         :host([status="error"]) .btn-play {
             color: var(--red);
@@ -105,7 +104,7 @@ customElements.define('b-audio', class extends LitElement {
 
 
         .btn-play:hover {
-            color: var(--blue);
+            color: var(--theme);
         }
 
         [part="progress"] {
@@ -141,11 +140,11 @@ customElements.define('b-audio', class extends LitElement {
         }
 
         [part="progress"]::-webkit-slider-thumb:hover {
-            background: var(--blue);
+            background: var(--theme);
         }
 
         [part="progress"]:active::-webkit-slider-thumb {
-            background: var(--blue);
+            background: var(--theme);
         }
 
         [part="progress"]:hover::-webkit-slider-thumb {
@@ -154,6 +153,11 @@ customElements.define('b-audio', class extends LitElement {
 
         .settings {
             transform: rotate(90deg);
+        }
+
+        [name="before"], [name="after"] {
+            display: block;
+            grid-column: 1/-1;
         }
     `}
 
@@ -172,12 +176,14 @@ customElements.define('b-audio', class extends LitElement {
     }
 
     render(){ return html`
-        <main>
+        <main part="main">
+
+            <slot name="before"></slot>
 
             ${this.audio}
 
             <span class="btn-play icon-play" @click=${this.playPause}>
-                <b-icon name=${this.playing?'pause':'play'}></b-icon>
+                <b-icon name=${this.playing?'pause':'play_arrow'}></b-icon>
             </span>
             
             <span part="time-elapsed" class="elapsed time">00:00</span>
@@ -189,6 +195,8 @@ customElements.define('b-audio', class extends LitElement {
 
             <span part="time-remaining" class="remaining time">00:00</span>
             <!-- <b-btn clear icon="dot-3" class="settings" @click=${this.viewSettings}></b-btn> -->
+
+            <slot name="after"></slot>
         </main>
     `}
 
@@ -214,8 +222,18 @@ customElements.define('b-audio', class extends LitElement {
         let oldVal = this.src
         this.__src = val
 
+        if( val == oldVal ) return
+
+        let isPlaying = this.playing
+
+        if( oldVal )
+            this.pause()
+
         setTimeout(()=>{
             this.loadAudio(this.src)
+
+            if( isPlaying )
+                this.play()
         })
     
         this.requestUpdate('src', oldVal)
@@ -407,6 +425,7 @@ customElements.define('b-audio', class extends LitElement {
 
         e.preventDefault()
         e.stopPropagation()
+        let metaKey = e.metaKey || e.ctrlKey
 
         switch(e.which){
             case 32: this.playPause(); break; // space
@@ -418,13 +437,13 @@ customElements.define('b-audio', class extends LitElement {
                 if( e.shiftKey )
                     this.audio.currentTime = 0;
                 else
-                    this.skipBack(_.metaKey()?30:10)
+                    this.skipBack(metaKey?30:10)
                 break;
             case 39: // right
                 if( e.shiftKey )
                     this.audio.currentTime = this.audio.duration
                 else
-                    this.skipForward(_.metaKey()?30:10)
+                    this.skipForward(metaKey?30:10)
                 break;
         }
     }
