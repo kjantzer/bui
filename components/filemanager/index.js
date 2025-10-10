@@ -196,7 +196,7 @@ customElements.define('b-file-manager', class extends LitElement{
     `}
 
     renderFiles(){return html`
-        ${repeat(this.model?this.coll.models:[], (m) => m.id, (m, index) => this.renderFile(m))}
+        ${repeat(this.model?this.coll.models:[], (m) => m.id, (m, index) => this.renderFile(m, index))}
     `}
 
     renderUploader(){return html`
@@ -213,7 +213,7 @@ customElements.define('b-file-manager', class extends LitElement{
     renderBeforeFiles(){return ''}
     renderAfterFiles(){return ''}
 
-    renderFile(m){ 
+    renderFile(m, index){ 
         
         let row = this.cache.get(String(m.id)) 
         
@@ -222,6 +222,7 @@ customElements.define('b-file-manager', class extends LitElement{
 
         row.layout = this.layout
         row.part = 'file'
+        row.index = index
         row.model = m
         row.innerHTML = '<div class="drag" slot="drag"></div>'
         row.draggable = true
