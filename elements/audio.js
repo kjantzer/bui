@@ -4,7 +4,7 @@
     A simple styled audio bar with controls
 */
 import { LitElement, html, css } from 'lit'
-import './icon'
+import './btn'
 import '../presenters/form/controls/range-slider'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
@@ -182,9 +182,7 @@ customElements.define('b-audio', class extends LitElement {
 
             ${this.audio}
 
-            <span class="btn-play icon-play" @click=${this.playPause}>
-                <b-icon name=${this.playing?'pause':'play_arrow'}></b-icon>
-            </span>
+            <b-btn color="theme-gradient" pill icon=${this.playing?'pause':'play_arrow'} @click=${this.playPause}></b-btn>
             
             <span part="time-elapsed" class="elapsed time">00:00</span>
             
