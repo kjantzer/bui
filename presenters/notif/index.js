@@ -98,7 +98,7 @@ customElements.define('b-notif', class extends LitElement{
                 this.classList.add('exit')
             },100)
 
-            setTimeout(()=>{
+            Promise.allSettled(this.getAnimations().map(a=>a.finished)).then(()=>{
                 this.remove()
                 NOTIFS.delete(this.nid)
                 this.opts.onClose(this)
@@ -109,7 +109,7 @@ customElements.define('b-notif', class extends LitElement{
                 }
 
                 resolve(btn)
-            },700)
+            })
 
         })
     }
