@@ -22,6 +22,8 @@
     See: https://web.dev/file-system-access/
 
     NOTE: this is a work in progress. Not really designed to be used yet
+
+    TODO: better support when requested file doesn't exist
 */
 
 let directoryHandles = new Map()

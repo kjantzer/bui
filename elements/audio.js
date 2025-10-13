@@ -61,7 +61,7 @@ customElements.define('b-audio', class extends LitElement {
 
         main {
             display: grid;
-            grid-template-columns: 2em 45px 1fr 45px;
+            grid-template-columns: 2em minmax(45px, auto) 1fr minmax(45px, auto);
             align-items: center;
             justify-content: space-between;
             gap: .25em;
