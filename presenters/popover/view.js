@@ -31,7 +31,10 @@ customElements.defineShared('b-popover-view', class extends LitElement{
 
     load(id){
         if( id && id.url && id.fetch )
-            this.model = id
+            if( id.attributes )
+                this.model = id
+            else
+                this.coll = id
     }
 
     close(){
@@ -40,6 +43,7 @@ customElements.defineShared('b-popover-view', class extends LitElement{
         if( this.popOver ){
             this.popOver.close()
             this.model = null // no reason to clear model if we didn't actually close
+            this.coll = null
         }
     }
 
