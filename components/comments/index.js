@@ -175,6 +175,11 @@ customElements.define('b-comments', class extends LitElement{
         return this.__coll
     }
 
+    // setting from outside code should be rare
+    set coll(coll){
+        this.__coll = coll
+    }
+
     firstUpdated(){
         
         this.intersectionObserver = new IntersectionObserver((entries)=>{
