@@ -73,6 +73,10 @@ export default class Selection {
         this.list.emitEvent?.('selection', {action, data})
     }
 
+    toggle(){
+        return this.isOn ? this.end() : this.begin()
+    }
+
     begin(e){
 
         if( this.isOn ) return
@@ -231,6 +235,12 @@ export default class Selection {
     }
 
     stopPropagation(e){
+
+
+        if( e.type == 'click' ){
+            // allow other items to be clicked
+            if( e.target.tagName != this.itemTagName ) return
+        }
         
         if( e.type == 'contextmenu' )
             this.emit('contextmenu', {evt: e})
