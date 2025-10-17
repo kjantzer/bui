@@ -3,7 +3,7 @@ import { LitElement, html, css } from 'lit'
 customElements.define('b-previewer-image', class extends LitElement{
 
     static useFor(ext){
-        return ['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(ext)
+        return ['jpg', 'jpeg', 'png', 'gif', 'svg', 'tif'].includes(ext)
     }
 
     static get styles(){return css`
@@ -30,7 +30,7 @@ customElements.define('b-previewer-image', class extends LitElement{
 
     render(){return html`
         <b-empty-state overlay lg>Loading...</b-empty-state>
-        <img src="${this.model.displayURL}">
+        <img src="${this.model.get('ext') == 'tif'?this.model.previewURL:this.model.displayURL}">
     `}
 
 })
