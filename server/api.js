@@ -204,6 +204,14 @@ module.exports = class API {
 
 			}catch(err){
 
+                let errResp = {
+                    error: err.message,
+                    code: 400,
+                    type: err.name,
+                    data: err.data,
+                    ...(req.query?.trace !== undefined ? {trace: (err.stack||'unknown')} : {})
+                }
+
                 // database error
                 if( err.lastQuery ){
                     console.error(err.message)
@@ -216,8 +224,12 @@ module.exports = class API {
                     let errMsg = err.stackMsg?.({req}) || err.stack || err
 
                     // UI errors are "good" errors that are for the client, no need to see them in the console
-                    if( err.name != 'ClientError' )
+                    if( err.name != 'ClientError' ){
                         console.log(errMsg)
+
+                        if( err.stackMsg)
+                            errResp.trace = err.stackMsg?.({req, err: false, lines: true, indent: false})
+                    }
                 }
                 
                 let code = ['Error', 'DBError'].includes(err.name) ? 400 : (err.code || 500)
@@ -225,14 +237,10 @@ module.exports = class API {
                 if( typeof code != 'number' )
                     code = 500
 
+                errResp.code = code
+
                 res.statusMessage = err.code == 'ER_PARSE_ERROR' ? err.code : (err.message||'').replace(/\n/g, ' ')
-                res.status(code).json({
-                    error: err.message,
-                    code: code,
-                    type: err.name,
-                    data: err.data,
-                    ...(req.query?.trace !== undefined ? {trace: (err.stack||'unknown')} : {})
-                })
+                res.status(code).json(errResp)
 			}
 		})
 

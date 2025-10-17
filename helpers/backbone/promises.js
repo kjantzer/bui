@@ -218,6 +218,7 @@ const xhrError = function(xhr, resp){
         err.name = opts.errorThrown && opts.errorThrown.error ? opts.errorThrown.error : opts.errorThrown
         err.message = opts.errorThrown && opts.errorThrown.error ? opts.errorThrown.error : opts.errorThrown
         err.type = opts.errorThrown?.type
+        err.trace = opts.errorThrown?.trace
         return err
     }
 

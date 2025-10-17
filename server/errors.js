@@ -64,7 +64,7 @@ Error.prototype.messageTrace = function({lines=1, replaceSingleQuotes=true}={}){
 }
 
 
-Error.prototype.stackMsg = function({req}={}){
+Error.prototype.stackMsg = function({req, type=true, err=true, lines=false, indent=true}={}){
     
     let cwd = process.cwd()
 
@@ -79,8 +79,20 @@ Error.prototype.stackMsg = function({req}={}){
 
     if( req )
         msg.push(`    - [${req.method}] ${req.path} (user: ${req.user?.id})`)
+
+    if( !indent )
+        msg = msg.map(s=>s.replace(/^\s+/, ''))
     
-    msg = msg.join('\n')
+    // remove the error message from the stack
+    if( !err )
+        msg.shift()
+
+    // ie: `TypeError: the error message`
+    if( !type )
+        msg[0] = msg[0].replace(/^[a-z]+: /i, '')
+    
+    if( !lines )
+        msg = msg.join('\n')
 
     return msg
 }
