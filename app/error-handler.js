@@ -119,10 +119,10 @@ const GlobalErrorHandler = (evt)=>{
         notif.icon = 'database'
         notif.trace = false
 
-        console.warn('Server Error:', notif.msg+'\n'+error.trace.join("\n"))
-        
-        if( error.trace )
+        if( error.trace ){
+            console.warn('Server Error:', notif.msg+'\n'+error.trace.join("\n"))
             notif.msg += `<b-text block xs><b-code block style="margin-top: 0.5em; line-height: 1.2em;">${error.trace.join("\n")}</b-code></b-text>`
+        }
     }
     
     let n = new Notif(notif)
