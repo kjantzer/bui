@@ -89,10 +89,11 @@ const GlobalErrorHandler = (evt)=>{
         notif.msg = 'You DO NOT have permission for that'
     }
 
-    if( error.name == 'APIError' || error.type == 'APIError' ){
+    if( error.name == 'APIError' || error.type == 'APIError' || error.type == 'ClientError'){
         notif.type = 'failed'
         // notif.edge = true
         notif.icon = 'error'
+        notif.trace = false
     }
 
     if( error.name == 'APIAccessError' || error.type == 'APIAccessError' ){
@@ -114,7 +115,7 @@ const GlobalErrorHandler = (evt)=>{
         notif.trace = false
     }
 
-    if( error.stack?.match('xhrError') ){
+    if( !['ClientError', 'APIAccessError', 'APIError'].includes(error.type) && error.stack?.match('xhrError') ){
         notif.pretitle = 'Server Error'
         notif.icon = 'database'
         notif.trace = false

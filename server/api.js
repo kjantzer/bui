@@ -224,7 +224,7 @@ module.exports = class API {
                     let errMsg = err.stackMsg?.({req}) || err.stack || err
 
                     // UI errors are "good" errors that are for the client, no need to see them in the console
-                    if( err.name != 'ClientError' ){
+                    if( !['ClientError', 'APIAccessError', 'APIError'].includes(err.name) ){
                         console.log(errMsg)
 
                         if( err.stackMsg)
