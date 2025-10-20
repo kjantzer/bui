@@ -39,7 +39,7 @@ customElements.define('b-download-to-file-system', class extends LitElement{
         return el.download(files)
     }
 
-    download(files, {dirName, startIn='downloads'}={}){
+    download(files, {dirName, prefix, startIn='downloads'}={}){
 
         this.files = new CollMap()
 
@@ -77,6 +77,7 @@ customElements.define('b-download-to-file-system', class extends LitElement{
             startIn, 
             signal: this.abortController.signal,
             dirName,
+            prefix,
             progress: (action, data)=>{
 
                 // wait for user to select a directory before showing UI

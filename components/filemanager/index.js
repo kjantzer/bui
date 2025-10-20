@@ -222,7 +222,7 @@ customElements.define('b-file-manager', class extends LitElement{
 
         row.layout = this.layout
         row.part = 'file'
-        row.index = index
+        row.index = m.index = index
         row.model = m
         row.innerHTML = '<div class="drag" slot="drag"></div>'
         row.draggable = true

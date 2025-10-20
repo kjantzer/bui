@@ -11,6 +11,9 @@
     downloadToFileSystem(files, {
         startIn: 'downloads', // default
         signal: abortController.signal,
+        prefix: (file)=>{ // optional prefix for each file
+            return 'prefix-
+        },
         progress: (data)=>{
             console.log('progress:', data)
         }
@@ -28,7 +31,7 @@
 
 let directoryHandles = new Map()
 
-export default async function downloadToFileSystem(files, {dirID='downloads', cacheHandle=true, dirName, startIn, progress, signal}={}){
+export default async function downloadToFileSystem(files, {dirID='downloads', cacheHandle=true, dirName, startIn, progress, signal, prefix}={}){
 
     let directoryHandle = dirID && cacheHandle ? directoryHandles.get(dirID) : null
 
@@ -83,7 +86,7 @@ export default async function downloadToFileSystem(files, {dirID='downloads', ca
         // if( !resp.ok ) throw new Error(`Failed to fetch ${url}: ${resp.statusText}`)
         if( !resp.ok ) return
 
-        let filename = getFilename(resp)
+        let filename = getFilename(resp, {file, prefix})
         let fileHandle = await saveDirHandle.getFileHandle(filename, {create: true})
         
         let total = parseInt(resp.headers.get('Content-Length'), 10)
@@ -134,7 +137,9 @@ export default async function downloadToFileSystem(files, {dirID='downloads', ca
 }
 
 // TODO: add fallback param?
-function getFilename(resp){
+function getFilename(resp, {file, prefix}){
+
+    let ext = file.get?.('ext') || file.ext
 
     let filename = resp.headers.get('filename') 
     || (resp.url.split('/').pop().split('?')[0] 
@@ -145,6 +150,15 @@ function getFilename(resp){
         const match = contentDisposition.match(/filename="?([^"]+)"?/);
         if (match) filename = match[1];
     }
+
+    if( typeof prefix == 'string' )
+        filename = prefix + filename
+    else if( typeof prefix == 'function'){
+        filename = prefix(file) + filename
+    }
+
+    if( ext && !filename.match(RegExp(`\.${ext}$`)) )
+        filename += '.'+ext
 
     return filename
 }
