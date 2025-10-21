@@ -42,8 +42,18 @@ customElements.defineShared('b-popover-view', class extends LitElement{
         
         if( this.popOver ){
             this.popOver.close()
-            this.model = null // no reason to clear model if we didn't actually close
-            this.coll = null
+
+            try{
+                this.model = null // no reason to clear model if we didn't actually close
+            }catch(e){
+                console.error(e)
+            }
+
+            try{
+                this.coll = null
+            }catch(e){
+                console.error(e)
+            }
         }
     }
 
