@@ -15,7 +15,7 @@ module.exports = async function previewEpub(filePath){
     let coverFile = null
 
     if( content ) {
-        let cover = content.manifest.find(d=>d.id=='cover-image')
+        let cover = content.manifest.find(d=>d.id=='cover-image'||d.properties=='cover-image')
         coverFile = cover ? (zip.files['OPS/'+cover.href] || zip.files['OEBPS/'+cover.href]) : null
     }
 

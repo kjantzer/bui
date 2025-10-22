@@ -68,7 +68,8 @@ export default class FileModel extends Model {
     }
 
     get chapters(){
-        return this.traits.toc?.navMap?.navPoint?.length||0
+        // TODO: support more than single nested navPoint?
+        return this.traits.toc?.navMap?.navPoint?.flatMap(d=>d.navPoint||d)?.length||0
     }
 
     get resolution(){
