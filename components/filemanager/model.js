@@ -107,7 +107,7 @@ export default class FileModel extends Model {
     }
 
     get isEpub(){
-        return this.get('ext') == 'epub'
+        return ['epub', 'mobi'].includes(this.get('ext'))
     }
 
     get isNonStandardDocument(){

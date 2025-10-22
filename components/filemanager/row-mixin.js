@@ -35,7 +35,7 @@ export const FileRowMixin = (Base)=>class extends Base{
     onDragStart(e){
         if( this.willTakeAction('download', {drag: true}).notAllowed ) return
         this.classList.add('dragging')
-        enableDragAndDropDownload(e.dataTransfer, this.model)   
+        enableDragAndDropDownload(e.dataTransfer, this.model, e)   
     }
 
     onDragEnd(e){
@@ -47,7 +47,7 @@ export default FileRowMixin
 
 // https://web.dev/datatransfer/
 // drag and drop outside of the browser!
-export function enableDragAndDropDownload(dataTransfer, model){
+export function enableDragAndDropDownload(dataTransfer, model, e){
     
     let filename = model.get('orig_filename')
     let host = location.protocol+'//'+location.host
@@ -60,7 +60,7 @@ export function enableDragAndDropDownload(dataTransfer, model){
     dataTransfer.setData('text/plain', host+model.displayURL);
 
     // Navigates to the URL when dropping on the URL bar or browser page
-    dataTransfer.setData('text/uri-list', host+model.displayURL);
+    dataTransfer.setData('text/uri-list', host+((e.ctrlKey||e.metaKey) ? model.url() : model.displayURL));
 
     // https://schema.org/ImageObject
     // NOTE: this needs improved, file may not be an image

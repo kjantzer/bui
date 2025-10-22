@@ -232,6 +232,11 @@ customElements.define('b-file-row', class extends FileRowMixin(LitElement){
                     `:''}
 
                     ${this.model.isEpub?html`
+
+                        ${this.model.get('traits')?.content?.$?.version?html`
+                        <b-label slot="top-left" xs filled="black" part="version">${this.get('ext')?.toUpperCase()} ${this.model.get('traits')?.content?.$?.version}</b-label>
+                        `:''}
+
                     <b-label xs filled="black" ?hidden=${!(this.model.chapters>1)} slot="top-right" part="pages">
                         ${this.model.chapters} chapters
                     </b-label>

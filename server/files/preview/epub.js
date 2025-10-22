@@ -1,82 +1,58 @@
-const fs = require('fs')
+const fs = require('fs').promises
 const JSZip = require('jszip')
 const parseString = require('xml2js').parseStringPromise
-const puppeteer = require('puppeteer');
-const {minimal_args} = require('../../puppeteer')
 
 // NOTE: to be called in context of `files/mananger`
-module.exports = async function previewEpub(filename){
+module.exports = async function previewEpub(filePath){
 
-    let dest = `/tmp/${new Date().getTime()}-${filename}-preview`
-    let filepath = this.dirPath+'/'+filename
+    // Read the EPUB file into a buffer and read zip contents
+    // TODO: maybe shouldn't read into memory? write to /tmp instead?
+    const epubBuffer = await fs.readFile(filePath);
+    const zip = await JSZip.loadAsync(epubBuffer);
 
-    // dest = `${ASSETS_PATH}/${new Date().getTime()}-${filename}-preview` // TEMP
-    // previewFilePath = ASSETS_PATH+'/'+filename+'.preview.jpg' // TEMP
+    let content = await contentJSON(zip)
+    let toc = await tocJSON(zip)
+    let coverFile = null
 
-    let file = fs.readFileSync(filepath)
-    let zip = await JSZip.loadAsync(file)
+    if( content ) {
+        let cover = content.manifest.find(d=>d.id=='cover-image')
+        coverFile = cover ? (zip.files['OPS/'+cover.href] || zip.files['OEBPS/'+cover.href]) : null
+    }
+
+    return {content, toc, coverFile}
+}
+
+
+async function contentJSON(zip){
+
+    const file = zip.files['OPS/package.opf'] || zip.files['OEBPS/content.opf']
+
+    if( !file )
+        return null
+
+    const fileContent = await file.async('string')
+
+    let data = await parseString(fileContent, {trim: true, explicitArray:false})
+
+    // simplify the data structure
+    data = data.package
+    data.manifest = data.manifest.item.map(d=>d.$)
+
+    if( data.spine.itemref )
+        data.spine.itemref = data.spine.itemref.map(d=>d.$.idref)
+
+    return data
+}
+
+async function tocJSON(zip){
     
-    // make output dir
-    fs.mkdirSync(dest)
+    let file = zip.files['OEBPS/toc.ncx'] || zip.files['OPS/toc.ncx'] // epub 2 or 3
 
-    for( let k in zip.files ){
+    if( !file ) return null
 
-        let zipEntry = zip.files[k]
+    let fileContent = await file.async('string')
+    let data = await parseString(fileContent, {trim: true, mergeAttrs: true, explicitArray:false})
+    data = data.ncx
 
-        if( zipEntry.name.match('__MACOSX') ) return
-
-        let filePath = zipEntry.name.split('/')
-        let fileName = filePath.pop()
-        filePath = filePath.join('/')
-
-        let path = dest+'/'+zipEntry.name
-        
-        if( zipEntry.dir ){
-            await fs.mkdirSync(path)
-            return
-        }
-
-        if( filePath && !fs.existsSync(dest+'/'+filePath) )
-            await fs.mkdirSync(dest+'/'+filePath)
-        
-        let blob = await zipEntry.async('nodebuffer')
-
-        await fs.writeFileSync(path, blob)
-    };
-
-    // get contents as json
-    let contentsFilePath = dest+'/OEBPS/content.opf'
-    let contentsXML = fs.readFileSync(contentsFilePath)
-    let contents = await parseString(contentsXML, {trim: true, mergeAttrs: true, explicitArray:false})
-    contents = contents.package
-
-    // get TOC as json
-    let tocFilePath = dest+'/OEBPS/toc.ncx'
-    let tocXML = fs.readFileSync(tocFilePath)
-    let toc = await parseString(tocXML, {trim: true, mergeAttrs: true, explicitArray:false})
-    toc = toc.ncx
-    
-    // now create img of cover file for the preview
-    let previewPath = dest+'/OEBPS/cover.xhtml'
-    let previewFilePath = `/tmp/${new Date().getTime()}-${filename}.preview.jpg`
-    
-    const browser = await puppeteer.launch({args: minimal_args.concat([
-        // '--no-sandbox',
-        '--font-render-hinting=none', // https://github.com/puppeteer/puppeteer/issues/2410#issuecomment-560573612
-        '--enable-font-antialiasing'
-    ])});
-
-    const page = await browser.newPage();
-
-    await page.goto(`file://${previewPath}`);
-
-    await page.screenshot({
-        type: 'jpeg',
-        path: previewFilePath,
-        fullPage: true,
-    });
-
-    await browser.close();
-
-    return {contents, toc, previewFilePath}
+    return data
 }

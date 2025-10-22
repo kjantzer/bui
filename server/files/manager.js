@@ -335,20 +335,28 @@ module.exports = class FileManager extends Model {
         // keep track of attrs we want to change at the end of this routine
         let updateAttrs = {}
 
-        if( this.epubPreview && filename.match(/\.epub$/) ){
+        if( this.epubPreview && (filename.match(/\.epub$/) || filename.match(/\.mobi$/)) ){
 
             const epubPreview = require('./preview/epub')
 
             try{
-                let {previewFilePath, contents, toc} = await epubPreview.call(this, filename)
+                // get metadata/content and cover image
+                let epubData = await epubPreview.call(this, this.filePath)
 
-                // grab the just created full-size preview image, it will be used futher below
-                sharpImg = sharp(previewFilePath)
+                if( epubData?.coverFile ){
+                    let coverFile = await epubData.coverFile.async('nodebuffer')
+                    sharpImg = sharp(coverFile)
+                }
 
-                // save contents and TOC to traits
-                this.attrs.traits.contents = contents
-                this.attrs.traits.toc = toc
-                updateAttrs.traits = this.attrs.traits
+                if( epubData?.content ){
+                    this.attrs.traits.content = epubData.content
+                    updateAttrs.traits = this.attrs.traits
+                }
+
+                if( epubData?.toc ){
+                    this.attrs.traits.toc = epubData.toc
+                    updateAttrs.traits = this.attrs.traits
+                }
 
             }catch(err){
                 // graceful fail, no reason to bail if preview fails to create
