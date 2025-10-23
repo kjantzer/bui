@@ -77,6 +77,10 @@ export default class FileModel extends Model {
         return RESOLUTIONS[size] || ''
     }
 
+    get audioRMS(){ return round(this.traits.stats?.['RMS level dB']) || '' }
+    get audioPeak(){ return round(this.traits.stats?.['Peak level dB']) || '' }
+    get audioNoiseFloor(){ return round(this.traits.stats?.['Noise floor dB']) || this.traits.stats?.['Noise floor dB'] || '' }
+
     get origFilenameLabel(){
         return this.get('orig_filename').replace(RegExp(`\.${this.get('ext')}$`), '')
     }

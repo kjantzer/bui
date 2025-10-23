@@ -319,6 +319,9 @@ customElements.define('b-audio', class extends LitElement {
 */
     audioTimeChange(){
 
+        if( this.waveform )
+            this.waveform.ts = this.audio.currentTime
+
         // update the progress slider unless currently seeking
         if( !this.seeking && this.progress )
             this.progress.value = this.audio.currentTime

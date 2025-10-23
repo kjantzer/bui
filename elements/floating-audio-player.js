@@ -35,6 +35,18 @@ customElements.defineShared('b-floating-audio-player', class extends LitElement{
         b-audio {
             background: none;
         }
+        
+        b-waveform { 
+            --waveform-height: 100px;
+            --waveform-color: var(--theme);
+            --waveform-offset: 200px; /* center it */
+            --waveform-playhead-color: var(--theme-text);
+
+            margin: calc(var(--pad) * -1);
+            margin-top: calc(-.75 * var(--pad));
+            margin-bottom: calc(-.75 * var(--pad));
+            margin-bottom: 0;
+        }
     `
 
     open(file){
@@ -70,8 +82,24 @@ customElements.defineShared('b-floating-audio-player', class extends LitElement{
         return this.model.displayURL || this.model.get?.('url') || this.model.url
     }
 
+    connectedCallback(){
+        super.connectedCallback()
+        setTimeout(()=>{
+            this.hookupWaveform()
+        },100)
+    }
+
+    hookupWaveform(){
+        if( this.$$('b-audio', true) )
+            this.$$('b-audio', true).waveform = this.$$('b-waveform')
+    }
+
     render(){return html`
+
         <b-audio autoplay .src=${this.src}>
+            ${this.model?.get?.('has_preview')?html`
+            <b-waveform playhead url=${this.model.previewURL} center slot="before"></b-waveform>
+            `:''}
             <b-text block align="center" slot="before" ?hidden=${!this.model?.origFilenameLabel}>${this.model?.origFilenameLabel}</b-text>
         </b-audio>
     `}
