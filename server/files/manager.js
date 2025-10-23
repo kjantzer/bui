@@ -329,6 +329,15 @@ module.exports = class FileManager extends Model {
         return this
     }
 
+    async regeneratePreview(){
+        await this.find()
+        await this.generatePreview({
+            filename: this.attrs.filename,
+            fileType: this.attrs.type,
+        })
+        return this
+    }
+
     async generatePreview({metadata, sharpImg, filename, fileType, blurPreview}={}){
 
         // keep track of attrs we want to change at the end of this routine
@@ -365,7 +374,7 @@ module.exports = class FileManager extends Model {
 
         }
 
-        let orientation = metadata.orientation ?? metadata.exif?.image?.Orientation
+        let orientation = metadata?.orientation ?? metadata?.exif?.image?.Orientation
         // NOTE: even numbers are also mirrored
         let orientations = [0, 0, 180, 180, 90, 90, 270, 270] // https://sirv.com/help/articles/rotate-photos-to-be-upright/
         // resave the image with proper rotation (iPhone, etc)
