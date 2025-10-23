@@ -5,7 +5,7 @@ const {fs, encryptFile, decryptFile} = require('../../util/fs')
 const sharp = require('sharp')
 const office = require('./preview/office')
 const {psdPreview} = require('./preview/psd')
-const {audioPreview} = require('./preview/audio')
+const audioPreview = require('./preview/audio')
 const {videoPreview} = require('./preview/video')
 const {pdfInfo, pdfText} = require('./pdf')
 
@@ -42,13 +42,12 @@ module.exports = class FileManager extends Model {
     // capturePalette = true // make this an opt-out?
     // sizes = false // add an array of sizes to save, in addition to preview
 
-    audioWaveformPreview = { // return false to disable
-        size: '800x250',
-        colors: '#000000',
-        gain: -6,
-        clipAt: 1200, // 20 min // if 20 min
-        clipTo: '00:05:00.0', // then clip to 5 min and create waveform
-        clipGain: 0
+    audioWaveformPreview = { // return false to disable stats and waveform
+        stats: true, // getting either of these will be slower than just the standard "metadata"
+        waveform: true,
+        // other waveform options (defaults)
+        color: '#000000',
+        gain: 0
     }
 
     // set to false to disable
@@ -353,7 +352,7 @@ module.exports = class FileManager extends Model {
                     updateAttrs.traits = this.attrs.traits
                 }
 
-                if( epubData?.toc ){
+                if( epubData.toc ){
                     this.attrs.traits.toc = epubData.toc
                     updateAttrs.traits = this.attrs.traits
                 }
@@ -466,27 +465,18 @@ module.exports = class FileManager extends Model {
             
             let audioPreviewOpts = this.audioWaveformPreview
 
-            // we want to still trigger audioPreview to get metadata, but dont create the waveform preview
-            if( !audioPreviewOpts )
-                audioPreviewOpts = {waveform: false}
+            await audioPreview.metadata(this.filePath, {stats: audioPreviewOpts?.stats}).then(async metadata=>{
 
-            await audioPreview(this.filePath, audioPreviewOpts).then(traits=>{
-
-                this.attrs.traits = {...this.attrs.traits, ...traits}
+                this.attrs.traits = {...this.attrs.traits, ...metadata}
                 updateAttrs.traits = this.attrs.traits
 
-                if( audioPreviewOpts.waveform !== false )
-                    updateAttrs.has_preview = 2 // png
+                if( audioPreviewOpts?.waveform )
+                    await audioPreview.waveform(this.filePath, {duration: metadata.duration}).then(()=>{
+                        updateAttrs.has_preview = 2 // png
+                    })
 
             }).catch(err=>{
-
-                console.log('audio preview failed', err.error||err);
-
-                try{
-                    let traits = JSON.parse(err.resp)
-                    this.attrs.traits = {...this.attrs.traits, ...traits}
-                    updateAttrs.traits = this.attrs.traits
-                }catch(err){}
+                console.log('audio stats failed', err.error||err);
             })
         }
 

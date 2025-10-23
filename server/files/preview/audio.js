@@ -1,111 +1,95 @@
-
-// imported into code
-if( require.main !== module){
-
-    const {spawnJob} = require('./spawn')
-	
-	exports.audioPreview = function(file, opts){
-        return spawnJob(__filename, file, opts)
-	}
-
-// when spawned directly
-}else{
-
-const argv = require('yargs').argv
-const fs = require('fs')
+/*
+    Use FFMPEG to get metadata and optionally more intensive stats and waveform
+*/
 const ffmpeg = require('fluent-ffmpeg')
 const shellExec = require(`../../../util/shellExec`)
 
-ffmpeg.setFfmpegPath('/usr/bin/ffmpeg');
+async function metadata(filePath, {stats=true,debug=false}={}){
 
-const defaultOpts = {
-    size: '800x250',
-    colors: '#000000',
-    gain: -6,
-    clipAt: 300, // 5 min
-    clipTo: '00:05:00.0', // then clip to 5 min and create waveform
-    clipGain: 0,
-    waveform: true
-}
-
-;(async function(){
-
-    let {file} = argv
-    let opts = {...defaultOpts, ...argv}
-
-    if( !file )
-        return console.error('no file given')
-
-    if( !fs.existsSync(file) )
-        return console.error('file does not exist')
-
-    let metadataOutput = {}
+    if( debug )
+        console.time('audio metadata');
 
     let metadata = await new Promise(resolve=>{
-        ffmpeg.ffprobe(file, function(err, metadata) {
-            resolve(metadata);
+        ffmpeg.ffprobe(filePath, function(err, metadata) {
+
+            let data = metadata.streams.find(s=>s.codec_type=='audio')
+
+            if( data && metadata.format?.tags )
+                data.tags = metadata.format.tags
+
+            if( debug )
+                console.timeEnd('audio metadata');
+
+            resolve(data);
         });
     })
 
-    let audioStream = metadata.streams.find(s=>s.codec_type=='audio')
+    if( !stats )
+        return metadata
 
-    if( !audioStream )
-        throw new Error('no audio stream found')
+    if( debug )
+        console.time('audio stats');
 
-    metadataOutput = audioStream
+    return shellExec('ffmpeg', [
+        '-hide_banner',
+        '-i', `"${filePath}"`,
+        //'-af', 'loudnorm=I=-23:TP=-1:LRA=11:print_format=summary',
+        '-af', 'astats',
+        '-f', 'null',
+        '-'
+    ]).then(r=>{
 
-    if( opts.waveform === true ){
+        let lines = r.split('\n')
 
-        let thumbnailSrc = file
-        let thumbnailFromClippedSample = opts.clipAt && metadataOutput.duration > opts.clipAt
+        let stats = lines.map(line=>{
 
-        // create clipped version of orig to create waveform from
-        if( thumbnailFromClippedSample ){
+            let [, key, value] = line.match(/^\[Parsed_astats.*\] (.*):\s*(.*)/) || []
 
-            let clippedFile = file+'-clipped-for-waveform.mp3'
+            if( value?.match(/^[\d\.-]+$/) ){
+                let v = parseFloat(value)
+                value = isNaN(v) ? value : v
+            }
 
-            await shellExec('ffmpeg', [
-                '-ss 00:00:00.0',
-                '-hide_banner',
-                '-loglevel error',
-                '-y',
-                `-i "${thumbnailSrc}"`,
-                '-c:a libmp3lame',
-                '-t '+opts.clipTo,
-                `"${clippedFile}"`,
-            ]).then(r=>{
-                if( opts.debug )
-                    console.log(r);
-            }).catch(err=>{
-                clippedFile = null
-            })
+            return key ? [key, value] : null
 
-            thumbnailSrc = clippedFile
-            opts.gain = opts.clipGain
-        }
+        }).filter(d=>d)
 
-        if( thumbnailSrc )
-        await shellExec('ffmpeg', [
-            '-y',
-            '-hide_banner',
-            '-loglevel error',
-            `-i "${thumbnailSrc}"`,
-            '-filter_complex "[0:a]aformat=channel_layouts=mono,',
-                `compand=gain=${opts.gain},`,
-                `showwavespic=s=${opts.size}:colors=${opts.colors}"`,
-            '-frames:v 1',
-            `"${file+'.preview.png'}"`
-        ])
+        stats = Object.fromEntries(stats)
+        
+        metadata.stats = stats
 
-        if( thumbnailFromClippedSample && fs.existsSync(thumbnailSrc) ){
-            fs.unlinkSync(thumbnailSrc)
-        }
-    }
+        if( debug )
+            console.timeEnd('audio stats');
+
+        return metadata
+    })
+}
+
+function waveform(filePath, {duration=192, color='#000000', gain=0, height=100, pixelsPerSecond=10, crop=50, maxWidth=false}={}){
     
-    console.log(JSON.stringify(metadataOutput))
+    duration = Math.ceil(duration)
 
-})().catch(err=>{
-    console.log(err);
-})
+    // cropped to remove dead space at top and bottom of waveform
+    crop = crop / 100
+    let cropTop = (1-crop) / 2
+    height = Math.round(height / crop) // maintain actual height given after cropped
+    let width = pixelsPerSecond * duration
 
+    if( maxWidth && width > maxWidth )
+        width = maxWidth
+    
+    return shellExec('ffmpeg', [
+        '-y', // overwrite existing output file
+        '-hide_banner', // suppress annoying ffmpeg banner
+        '-loglevel error',
+        '-i', `"${filePath}"`, // input file
+        '-filter_complex', `"compand=gain=${gain},showwavespic=s=${width}x${height}:colors=${color}:scale=lin,crop=iw:ih*${crop}:0:ih*${cropTop}"`,
+        '-frames:v', '1', // make sure output is a single image of waveform
+        `"${filePath}.preview.png"`
+    ])
+}
+
+module.exports = {
+    waveform,
+    metadata
 }
