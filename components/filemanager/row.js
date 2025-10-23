@@ -40,6 +40,10 @@ customElements.define('b-file-row', class extends FileRowMixin(LitElement){
             pointer-events: none;
         }
 
+        img[audio] {
+            object-fit: none;
+        }
+
         img[hidden] { visibility: hidden; }
 
         [part="preview"] b-file-icon {
@@ -155,7 +159,8 @@ customElements.define('b-file-row', class extends FileRowMixin(LitElement){
                 @contextmenu=${this.showMenu}>
                     <slot name="drag"></slot>
 
-                    <img src="${this.model.previewURL}" draggable="false" onerror="this.hidden=true" onload="this.hidden=false">
+                    <img src="${this.model.previewURL}" draggable="false" onerror="this.hidden=true" onload="this.hidden=false" ?audio=${this.model.isAudio}>
+
                     <b-file-icon ext=${this.model.get('ext')}></b-file-icon>
                     
                     ${this.model.isVideo?html`
