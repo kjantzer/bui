@@ -115,7 +115,7 @@ const GlobalErrorHandler = (evt)=>{
         notif.trace = false
     }
 
-    if( !['ClientError', 'APIAccessError', 'APIError'].includes(error.type) && error.stack?.match('xhrError') ){
+    if( !['ClientError', 'APIAccessError', 'APIError'].includes(error.type) && error.stack?.match(/xhrError|AJAX/i) ){
         notif.pretitle = 'Server Error'
         notif.icon = 'database'
         notif.trace = false

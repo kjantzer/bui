@@ -273,7 +273,10 @@ customElements.define('b-file-manager', class extends LitElement{
         let resp = await uploader.upload({url, formData})
 
         if( !resp || resp.error ){
-            return Dialog.warn({msg: (resp&&resp.error)||'Error', btns: false, pretitle: ''}).notif()
+            if( resp?.error )
+                throw resp.error
+
+            return Dialog.warn({msg: 'Unknown Error', btns: false, pretitle: ''}).notif()
         }else{
             this.uploadComplete(resp)
         }

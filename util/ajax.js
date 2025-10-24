@@ -70,6 +70,11 @@ export default class AJAX {
 
             let err = new Error(this.xhr.statusText||'Unknown error')
             err.errorCode =  this.xhr.status
+
+            if( resp ){
+                err.type = resp?.type
+                err.trace = resp?.trace
+            }
             
             if( resp && resp.error ){
                 err.message = resp.error
