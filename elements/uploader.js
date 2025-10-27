@@ -79,8 +79,8 @@ export class UploaderElement extends LitElement {
 
     static get styles(){ return css`
         :host {
-            --hoverBgd: rgba(255,236,179 ,.7);
-            --uploadingBgd: rgba(238,238,238 ,.8);
+            --hoverBgd: color-mix(in srgb, var(--theme) 15%, transparent);
+            --uploadingBgd: color-mix(in srgb, var(--theme-bgd-accent) 70%, transparent);
             --progressBgd: var(--hoverBgd);
             --hoverColor: currentColor;
             --uploadingColor: currentColor;
@@ -138,6 +138,11 @@ export class UploaderElement extends LitElement {
             height: 100%;
             left: 0;
             background: var(--progressBgd);
+            border-right: solid 2px var(--theme)
+        }
+
+        .progress .bar[style="width:100%"] {
+            border-right: none;
         }
 
         .choose {
@@ -339,6 +344,9 @@ export class UploaderElement extends LitElement {
     }
 
     _dragenter(e){
+        // solves a problem and doesn't seem to have any negative side effects
+        if( e.target.tagName != e.currentTarget.tagName ) return console.log('not same target, bail')
+
         if( this.disabled 
         || this.hidden
         || !e.dataTransfer.types.includes('Files')
