@@ -21,7 +21,8 @@ customElements.define('b-details', class extends LitElement{
 
     static properties = {
         open: {type: Boolean, reflect: true},
-        disabled: {type: Boolean, reflect: true}
+        disabled: {type: Boolean, reflect: true},
+        icon: {type: String, reflect: true}
     }
 
     static styles = css`
@@ -68,7 +69,7 @@ customElements.define('b-details', class extends LitElement{
             transform: scale(1.2);
         }
 
-        :host([open]) .arrow {
+        :host([open][icon="chevron_right"]) .arrow {
             rotate: 90deg;
         }
 
@@ -87,6 +88,11 @@ customElements.define('b-details', class extends LitElement{
         }
     `
 
+    constructor(){
+        super()
+        this.icon = 'chevron_right'
+    }
+
     firstUpdated(){
         let summaryElements = this.shadowRoot.querySelector('slot[name="summary"]').assignedElements()
 
@@ -101,7 +107,7 @@ customElements.define('b-details', class extends LitElement{
     render(){return html`
         <div class="summary" part="summary">
             <slot name="icon" @click=${this.toggle}>
-                <b-icon square name="chevron_right" class="arrow" part="arrow"></b-icon>
+                <b-icon square name=${this.icon} class="arrow" part="arrow"></b-icon>
             </slot>
             <slot name="summary" @click=${this.maybeToggle}></slot>
         </div>
