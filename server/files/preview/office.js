@@ -39,8 +39,15 @@ if( require.main !== module){
 				'--stdout',
 				'--port='+port,
             	'--user-profile='+userProfilePath,
-				input
 			]
+
+			if( ['xls', 'xlsx'].includes(input.split('.').pop()?.toLowerCase()) )
+				args.push(
+					'--printer=PaperOrientation=landscape',
+					'--printer=PaperFormat=A3'
+				)
+
+			args.push(input);
 
 			const worker = childProcess.spawn('unoconv', args);
 
