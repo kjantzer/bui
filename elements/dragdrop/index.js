@@ -51,6 +51,10 @@ customElements.define('b-dragdrop', class extends LitElement{
             color: var(--theme-bgd);
             border-radius: var(--radius);
         }
+
+        .drag-msg b-text {
+            color: var(--theme-bgd);
+        }
     `
 
     constructor(){
@@ -70,6 +74,7 @@ customElements.define('b-dragdrop', class extends LitElement{
         this.onDragEnter = this.onDragEnter.bind(this)
         this.onDragLeave = this.onDragLeave.bind(this)
         this.onDrop = this.onDrop.bind(this)
+        this.onWindowDragLeave = this.onWindowDragLeave.bind(this)
     }
 
     firstUpdated(){
@@ -171,6 +176,8 @@ customElements.define('b-dragdrop', class extends LitElement{
 
     onDragStart(e){
 
+        window.addEventListener('dragleave', this.onWindowDragLeave)
+
         let action = this.disabled ? false : this.willTakeAction('dragged', e)
 
         if( this.disabled || action.notAllowed ){
@@ -258,6 +265,7 @@ customElements.define('b-dragdrop', class extends LitElement{
     }
 
     onDrop(e){
+
         this.onDragLeave()
 
         // drag enter disallowed dropzone
@@ -273,6 +281,9 @@ customElements.define('b-dragdrop', class extends LitElement{
     }
 
     onDragEnd(e){
+
+        window.removeEventListener('dragleave', this.onWindowDragLeave)
+
         this.target.classList.remove('dragging')
         this.classList.remove('dragging')
         
@@ -284,6 +295,10 @@ customElements.define('b-dragdrop', class extends LitElement{
         }
 
         e.stopPropagation()
+    }
+
+    onWindowDragLeave(e){
+        this.onDragEnd(e)
     }
 
 })
