@@ -106,52 +106,25 @@ customElements.define('b-file-row', class extends FileRowMixin(LitElement){
             }
         }
 
-        .drag-msg {
-            background: rgba(var(--theme-text-rgb), .7);
-            z-index: 10000;
-            --theme-text: var(--theme-bgd);
-            color: var(--theme-text);
-            border-radius: var(--radius);
-        }
-
-        :host([sorting]) .drag-msg {
-            color: white;
-            background: rgba(var(--theme-rgb), .6);
-        }
-
-        :host(:not([sorting])) .sort { display: none; }
-        :host([sorting]) .drag { display: none; }
-
-        :host(:not(.dragging)) .drag-msg{
-            display: none;
-        }
+        :host(:not([sorting])) b-dragdrop .sort { display: none; }
+        :host([sorting]) b-dragdrop .drag { display: none; }
     `}
 
     constructor(){
         super()
         this.overshadow = true
         this.palette = false
+    }
 
-        // TODO: swap out for b-dragdrop element
-        if( !this.nodrag ){
-            this.addEventListener('dragstart', this.onDragStart)
-            this.addEventListener('dragend', this.onDragEnd)
-        }
+    onWillTakeDragAction(e){
+        // nothing by default
     }
 
     render(){return html`
-        <b-paper compact ?overshadow=${this.overshadow}>
+        
+        ${this.renderDragdrop()}
 
-            <b-empty-state class="drag-msg" md overlay>
-                <b-text class="drag">
-                    <b-text xl><b-icon name="download"></b-icon></b-text>
-                    <br>
-                    Drag off window to download</b-text>
-                <b-text class="sort">
-                    <b-text xl><b-icon name="move"></b-icon></b-text>
-                    <br>
-                    Drag to reorder</b-text>
-            </b-empty-state>
+        <b-paper compact ?overshadow=${this.overshadow}>
 
             <main>
                 <b-file-preview class="img" part="preview" icon="${this.model.isVideo?'play_arrow':''}"

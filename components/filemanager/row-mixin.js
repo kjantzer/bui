@@ -1,3 +1,4 @@
+import {html} from 'lit'
 import Previewer from '../../presenters/previewer'
 import FloatingAudioPlayer from '../../elements/floating-audio-player'
 import Dialog from '../../presenters/dialog'
@@ -5,6 +6,15 @@ import download from '../../util/download'
 import Palette from './palette'
 
 export const FileRowMixin = (Base)=>class extends Base{
+
+    renderDragdrop(){
+        return html`
+            <b-dragdrop ?disabled=${this.nodrag} @will-take-action=${this.onWillTakeDragAction}>
+                <b-text class="drag">Drag off window to download</b-text>
+                <b-text class="sort">Drag to reorder</b-text>
+            </b-dragdrop>
+        `
+    }
 
     preview(){
         if( this.model.isAudio )
@@ -38,9 +48,19 @@ export const FileRowMixin = (Base)=>class extends Base{
         enableDragAndDropDownload(e.dataTransfer, this.model, e)   
     }
 
-    onDragEnd(e){
-        this.classList.remove('dragging')
+    onWillTakeDragAction(e){
+        let {action} = e.detail
+
+        if( this.willTakeAction('download', {drag: true}).notAllowed )
+            action.allowed = false
+
+        if( action.name == 'dragged' )
+            enableDragAndDropDownload(action.evt.dataTransfer, this.model, action.evt)   
     }
+
+    // onDragEnd(e){
+    //     this.classList.remove('dragging')
+    // }
 }
 
 export default FileRowMixin
