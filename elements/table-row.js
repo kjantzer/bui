@@ -11,6 +11,7 @@ customElements.define('b-table-row', class extends LitElement{
     static styles = css`
         :host {
             display: block;
+            border-bottom: solid 1px var(--table-border-color, var(--theme-bgd-accent));
         }
         
         main {
