@@ -109,11 +109,13 @@ customElements.define('token-text-field', class extends LitElement{
             min-height: var(--line-height);
             opacity: 0;
             visibility: hidden;
+            display: none;
         }
 
         :host([empty]) .placeholder {
             opacity: 1;
             visibility: visible;
+            display: block;
         }
     `}
 
