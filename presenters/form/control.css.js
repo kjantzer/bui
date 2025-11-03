@@ -155,6 +155,10 @@ slot[name="control"]::slotted(*) {
 	z-index: 10;
 }
 
+slot[name="control"]::slotted([nogrow]) {
+	flex-grow: 0;
+}
+
 :host(:not([disabled])) slot[name="control"]::slotted(*) {
 	-webkit-user-select: text;
 }
