@@ -71,6 +71,7 @@ customElements.define('b-grid', class extends LitElement{
         :host([cols="2,1,1"]) { grid-template-columns: 2fr 1fr 1fr; }
         :host([cols="1,1,2"]) { grid-template-columns: 1fr 1fr 2fr; }
 
+        :host([cols="auto,auto"]) { grid-template-columns: auto auto; }
         :host([cols="auto,1"]) { grid-template-columns: auto 1fr; }
         :host([cols="1,auto"]) { grid-template-columns: 1fr auto; }
 
