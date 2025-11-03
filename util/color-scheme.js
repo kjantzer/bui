@@ -114,8 +114,12 @@ export const colorScheme = {
 
         theme = this.isWhatTheme(theme, {store: true, fallback: 'system'})
 
-        if( theme )
+        if( theme ){
             html.setAttribute(theme, '')
+            html.style.colorScheme = theme
+        }else{
+            html.style.removeProperty('color-scheme')
+        }
 
         this.setMetaTheme()
     },
