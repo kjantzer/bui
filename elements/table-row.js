@@ -36,7 +36,7 @@ customElements.define('b-table-row', class extends LitElement{
         }
 
         :host([slot="header"]), :host(.header) {
-            background: var(--theme-bgd-accent);
+            background: var(--b-table-header-bgd, var(--theme-bgd-accent));
             border-color: rgba(var(--theme-text-rgb), .1) !important;
             border-radius: var(--b-table-rounded-radius) var(--b-table-rounded-radius) 0 0;
         }
