@@ -17,14 +17,31 @@
 import {Model, Collection} from 'backbone'
 
 const syncPromise = function(method, model, opts={}){
-        return new Promise((resolve, reject)=>{
-            this.sync(method, model, {
-                ...opts,
-                success: resolve,
-                error: reject
-            })
-        })
+    
+    let resolve, reject;
+    let promise = new Promise((_resolve, _reject)=>{
+        resolve = _resolve
+        reject = _reject
+    })
+
+    opts.error = function(a, b, resp){
+        let err = new Error()
+
+        err.name = resp.type
+        err.message = resp.error
+        err.code = resp.code
+        err.trace = resp.trace
+
+        reject(err)
     }
+
+    this.sync(method, model, {
+        ...opts,
+        success: resolve,  
+    })
+
+    return promise
+}
 
 Collection.prototype.syncPromise = syncPromise
 Model.prototype.syncPromise = syncPromise
