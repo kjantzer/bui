@@ -71,11 +71,12 @@ Error.prototype.stackMsg = function({req, type=true, err=true, lines=false, inde
     let stack = this.originalStack || this.stack
     let msg = stack.split('\n')
         .filter(s=>!s.match(/\(node:/g)) // ignore node.js core files, only show our code
+        .filter(s=>!s.match(/node_modules\/request/)) // ignore request library
         .filter(s=>!s.match(/bui\/server\/api/g)) // ignore the "API" class since it's not helpful
         .map(s=>{
             // better formatting for each stack trace line
             return s.replace(/ at /, ' - ').replace(cwd, '')
-        })
+        }).filter(s=>s)
 
     if( req )
         msg.push(`    - [${req.method}] ${req.path} (user: ${req.user?.id})`)
