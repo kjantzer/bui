@@ -206,7 +206,7 @@ module.exports = class FileManager extends Model {
 
         if( this.skipDuplicates == true ){
             if( await this.checkIsDuplicate(info) )
-                ThrowError('DuplicateFile', 'file already uploaded')
+                ThrowError('DuplicateFile', 'File already uploaded')
         }
 
         // only one file allowed for this group/parent_id
@@ -259,7 +259,7 @@ module.exports = class FileManager extends Model {
         let {syncData} = await this.add(info, {manualSync:true})
 
         if( !this.id )
-            ThrowError('FileRecordFail', 'failed to insert file record')
+            ThrowError('FileRecordFail', 'Failed to insert file record')
 
         // change filename to include the DB record ID so each is uniquely named
         filename = `${this.id}-${filename}`

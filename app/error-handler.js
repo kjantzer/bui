@@ -78,22 +78,15 @@ const GlobalErrorHandler = (evt)=>{
 
     if( msg == `Failed to execute 'claimInterface' on 'USBDevice': Unable to claim interface.` ){
         notif.type = 'alert'
-        notif.icon = 'print' // NOTE: change to usb icon?
+        notif.icon = 'usb'
         notif.autoClose = false
-        notif.msg = `<b>Cannot Use USB Printer</b>
-                    <br>Only one tab can use the USB printer`
+        notif.msg = `<b>Cannot Use USB device</b>
+                    <br>Only one tab can use that USB device`
     }
 
     if( msg == 'forbidden' ){
         notif.icon = 'lock'
         notif.msg = 'You DO NOT have permission for that'
-    }
-
-    if( error.name == 'APIError' || error.type == 'APIError' || error.type == 'ClientError'){
-        notif.type = 'failed'
-        // notif.edge = true
-        notif.icon = 'error'
-        notif.trace = false
     }
 
     if( error.name == 'APIAccessError' || error.type == 'APIAccessError' ){
@@ -105,8 +98,7 @@ const GlobalErrorHandler = (evt)=>{
         notif.width = 'auto'
         notif.animation = 'bounce'
     }
-
-    if( error.name == 'DBError' || error.type == 'DBError' ){
+    else if( error.name == 'DBError' || error.type == 'DBError' ){
         notif.pretitle = 'Database Error'
         // notif.edge = true
         // notif.accent = true
@@ -114,15 +106,28 @@ const GlobalErrorHandler = (evt)=>{
         notif.width = 'auto'
         notif.trace = false
     }
+    // server error (ajax)
+    else if( error.stack?.match(/xhrError|AJAX/i) ){
 
-    if( !['ClientError', 'APIAccessError', 'APIError'].includes(error.type) && error.stack?.match(/xhrError|AJAX/i) ){
-        notif.pretitle = 'Server Error'
-        notif.icon = 'database'
         notif.trace = false
 
-        if( error.trace ){
-            console.warn('Server Error:', notif.msg+'\n'+error.trace.join("\n"))
-            notif.msg += `<b-text block xs><b-code block style="margin-top: 0.5em; line-height: 1.2em;">${error.trace.join("\n")}</b-code></b-text>`
+        // if NOT a default/core error, then treat it as a "good" client error (present less as a "bug" and more of a alert to user)
+        if( !['TypeError', 'EvalError', 'RangeError', 'ReferenceError', 'SyntaxError', 'URIError', 'InternalError', 'Error'].includes(error.type) ){
+
+            // notif.pretitle = error.type
+            notif.type = 'failed'
+            notif.icon = 'error'
+            
+
+        }else{
+            notif.pretitle = 'Server Error'
+            notif.icon = 'database'
+
+            // did server respond with a trace? display it
+            if( error.trace ){
+                console.warn('Server Error:', notif.msg+'\n'+error.trace.join("\n"))
+                notif.msg += `<b-text block xs><b-code block style="margin-top: 0.5em; line-height: 1.2em;">${error.trace.join("\n")}</b-code></b-text>`
+            }
         }
     }
     
