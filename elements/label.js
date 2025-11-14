@@ -29,6 +29,7 @@ export default class Label extends LitElement {
             -moz-user-select: none; /* Firefox */
             -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; 
+            font-feature-settings: 'ss01', 'ss02', 'ss03'}
         }
 
         :host([text]) {
