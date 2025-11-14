@@ -19,7 +19,8 @@ customElements.define('b-metadata', class extends LitElement{
         opts: {type: Object},
         add: {type: String},
         save: {type: Boolean},
-        material: {type: String}
+        material: {type: String},
+        disabled: {type: Boolean}
     }}
 
     constructor(){
@@ -27,6 +28,7 @@ customElements.define('b-metadata', class extends LitElement{
         this.material = 'filled'
         this.attr = 'metadata'
         this.save = true
+        this.disabled = false
         this.opts = {}
     }
 
@@ -86,7 +88,7 @@ customElements.define('b-metadata', class extends LitElement{
     }
 
     renderItem(t){ return html`
-        <form-control key="${t.key}" material=${ifDefined(this.opts.table?undefined:this.material)} part="control" no-handler>
+        <form-control key="${t.key}" material=${ifDefined(this.opts.table?undefined:this.material)} part="control" no-handler ?disabled=${this.disabled}>
                 
             ${t.options?html`
             <select-field .value=${t.val} .options=${t.options} multiple
@@ -129,7 +131,7 @@ customElements.define('b-metadata', class extends LitElement{
             
         `)}
 
-        <b-btn icon="add_box" clear @click=${this.addMeta} title="${this.add?'':'Add Metadata'}">
+        <b-btn icon="add_box" clear @click=${this.addMeta} title="${this.add?'':'Add Metadata'}" ?disabled=${this.disabled}>
             ${this.add}
         </b-btn>
     `}
