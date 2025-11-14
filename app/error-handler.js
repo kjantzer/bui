@@ -107,7 +107,7 @@ const GlobalErrorHandler = (evt)=>{
         notif.trace = false
     }
     // server error (ajax)
-    else if( error.stack?.match(/xhrError|AJAX/i) ){
+    else if( error.stack?.match(/xhrError|AJAX/i) || error.ajax ){
 
         notif.trace = false
 

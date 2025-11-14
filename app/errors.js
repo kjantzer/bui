@@ -17,11 +17,13 @@ import Dialog from '../presenters/dialog'
 import vibrate from '../util/vibrate'
 
 // formats an error from the API response
+// NOTE: currently only used by fetch.js - consider moving?
 Error.fromAPI = function(resp){
     let err = new Error(resp.error)
     err.name = resp.type
     err.data = resp.data
     err.errorCode = resp.code
+    err.ajax = true
     return err
 }
 
