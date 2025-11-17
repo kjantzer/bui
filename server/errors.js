@@ -108,7 +108,7 @@ ignoreNodeModules=true
             .split('\n')
             .map(s=>s.replace(/^[\t ]+/, ``))
             .map((s,i)=>i==0?(`- [SQL] `+s):(`        `+s))
-            .map(s=>indent?`\t`+s:s)
+            .map(s=>indent?`    `+s:s)
             .join(`\n`)
         )
     
