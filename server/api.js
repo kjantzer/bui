@@ -214,22 +214,26 @@ module.exports = class API {
 
                 // database error
                 if( err.lastQuery ){
-                    console.error(err.message)
-                    console.log(err.lastQuery)
+
+                    if( err.stackMsg ){
+                        console.log(err.stackMsg({req, trace: false, query: err.lastQuery}))
+                    }else{
+                        console.error(err.message)
+                        console.log(err.lastQuery)
+                    }
                 }
                 else if( process.env.ENV == 'development' 
                 || ['Error', 'TypeError'].includes(err.name) 
                 || req.query?.logErr !== undefined ){
 
-                    let errMsg = err.stackMsg?.({req}) || err.stack || err
+                    // UI errors are "good" errors that are for the client, simplify log to console
+                    let includeTrace = !['ClientError', 'APIAccessError', 'APIError'].includes(err.name)
+                    let errMsg = err.stackMsg?.({req, trace: includeTrace}) || err.stack || err
 
-                    // UI errors are "good" errors that are for the client, no need to see them in the console
-                    if( !['ClientError', 'APIAccessError', 'APIError'].includes(err.name) ){
-                        console.log(errMsg)
+                    console.log(errMsg)
 
-                        if( err.stackMsg)
-                            errResp.trace = err.stackMsg?.({req, err: false, lines: true, indent: false})
-                    }
+                    if( includeTrace && err.stackMsg )
+                        errResp.trace = err.stackMsg?.({req, err: false, lines: true, indent: false})
                 }
                 
                 let code = ['Error', 'DBError'].includes(err.name) ? 400 : (err.code || 500)

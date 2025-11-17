@@ -64,7 +64,15 @@ Error.prototype.messageTrace = function({lines=1, replaceSingleQuotes=true}={}){
 }
 
 
-Error.prototype.stackMsg = function({req, type=true, err=true, lines=false, indent=true, ignoreNodeModules=true}={}){
+Error.prototype.stackMsg = function({req, 
+type=true,
+err=true,
+trace=true,
+lines=false,
+indent=true,
+query=null,
+ignoreNodeModules=true
+}={}){
     
     let cwd = process.cwd()
 
@@ -77,6 +85,9 @@ Error.prototype.stackMsg = function({req, type=true, err=true, lines=false, inde
             // better formatting for each stack trace line
             return s.replace(/ at /, ' - ').replace(cwd, '')
         }).filter(s=>s)
+
+    if( !trace )
+        msg = msg.slice(0,1) // first line with error message
 
     if( req )
         msg.push(`    - [${req.method}] ${req.path} (user: ${req.user?.id})`)
@@ -91,6 +102,15 @@ Error.prototype.stackMsg = function({req, type=true, err=true, lines=false, inde
     // ie: `TypeError: the error message`
     if( !type )
         msg[0] = msg[0].replace(/^[a-z]+: /i, '')
+
+    if( query )
+        msg.push(query
+            .split('\n')
+            .map(s=>s.replace(/^[\t ]+/, ``))
+            .map((s,i)=>i==0?(`- [SQL] `+s):(`        `+s))
+            .map(s=>indent?`\t`+s:s)
+            .join(`\n`)
+        )
     
     if( !lines )
         msg = msg.join('\n')
