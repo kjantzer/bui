@@ -9,6 +9,7 @@ import Fuse from 'fuse.js'
 import scrollbars from '../../helpers/scrollbars'
 import {titleize} from '../../util/string'
 
+export {Dialog, Menu}
 
 customElements.defineShared('b-excel-import-mapper', class extends LitElement {
 
@@ -161,17 +162,29 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
     isMapped(k){ return !!this._map[k] }
     headerUsed(k){ return !!this._usedHeaders[k] }
 
+    async confirmImport(btn){
+        return await Dialog.confirm({
+            title: 'Import the File',
+            body: `With ${Object.keys(this._map).length} of the ${Object.keys(this.model.preview[0]).length} columns mapped`,
+            btns: ['cancel', {label: 'Import', color: 'theme'}]
+        }).popOver(btn)
+    }
+
+    onImportComplete(resp){
+        this.close()
+    }
+
+    onImportError(err){
+        throw err
+    }
+
     async import(e){
         let btn = e.currentTarget
         let progress
         if( btn.spin ) return
         
-        if( !await Dialog.confirm({
-            title: 'Import the File',
-            body: `With ${Object.keys(this._map).length} of the ${Object.keys(this.model.preview[0]).length} columns mapped`,
-            btns: ['cancel', {label: 'Import', color: 'theme'}]
-        }).popOver(btn) )
-            return
+        let confirm = await this.confirmImport(btn)
+        if( confirm === false ) return
 
         try{
             let url = this.url
@@ -184,21 +197,17 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
 
             let resp = await fetch.json(url, {
                 method: 'POST',
-                body: {tmpFile: this.model.tmpFile, mapping: this._map}
+                body: {tmpFile: this.model.tmpFile, mapping: this._map, opts: confirm}
             })
-
-            if( !resp.id )
-                throw new UIWarningError('ID of import not returned')
             
-            this.close()
-            goTo('importer/'+resp.id)
+            this.onImportComplete(resp)
 
+        }catch(err){
+            this.onImportError(err)
         }finally{
             btn.spin = false
             progress.resolve()
         }
-
-        // TODO: open it
     }
 
     get headerVals(){
