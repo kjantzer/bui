@@ -197,7 +197,7 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
 
             let resp = await fetch.json(url, {
                 method: 'POST',
-                body: {tmpFile: this.model.tmpFile, mapping: this._map, opts: confirm}
+                body: {tmpFile: this.model.tmpFile, tmpSrcFile: this.model.tmpSrcFile, mapping: this._map, opts: confirm}
             })
             
             this.onImportComplete(resp)
