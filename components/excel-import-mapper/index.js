@@ -2,12 +2,12 @@
     Excel Import Mapper
 */
 import { LitElement, html, css } from 'lit'
-import Panel from '../presenters/panel'
-import Dialog from '../presenters/dialog'
-import Menu from '../presenters/menu'
+import Panel from '../../presenters/panel'
+import Dialog from '../../presenters/dialog'
+import Menu from '../../presenters/menu'
 import Fuse from 'fuse.js'
-import scrollbars from '../helpers/scrollbars'
-import {titleize} from '../util/string'
+import scrollbars from '../../helpers/scrollbars'
+import {titleize} from '../../util/string'
 
 
 customElements.defineShared('b-excel-import-mapper', class extends LitElement {
