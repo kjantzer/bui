@@ -120,18 +120,18 @@ const readFile = (filePath, {raw=false, csvOpts={}}={})=>{
 }
 
 /*
-    # `downloadRemoteFile(url, {destFile})`
+    # downloadRemoteFile(url, {destFile})
 
     Download a file from a remote url. Will write to destFile or return resp that you can `resp.pipe` yourself
     Can follow 302 redirects    
 */
 function downloadRemoteFile(url, {destFile}={}){
     
-    const http = url.startsWith('https') ? https : http
+    const protocol = url.startsWith('https') ? https : http
 
     return new Promise((resolve, reject) => {
         
-        http.get(url, resp=>{
+        protocol.get(url, resp=>{
 
             // retry download with the redirect url
             if( resp.statusCode == 302 ){
