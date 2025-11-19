@@ -1,6 +1,10 @@
 # Excel Import Maper
 
-> Docs needed
+> More docs needed
+
+TODO:
+- consider rename? table- or csv-?
+- support serverless mapping if file is csv file?
 
 ```js
 import ExcelImportMapper from 'bui/components/excel-import-mapper'
@@ -17,6 +21,12 @@ customElements.defineShared('custom-excel-importer', class extends ExcelImportMa
         this.allowedHeaders = [
             'isbn',
             'qty',
+        ]
+
+        // optional
+        this.requiredHeaders = [
+            'isbn', // required
+            ['isbn', 'qty'] // at least one is required
         ]
 
         // optional - will help auto-match values to allowed headers

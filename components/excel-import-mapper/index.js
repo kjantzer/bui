@@ -1,5 +1,9 @@
 /*
     Excel Import Mapper
+
+    TODO:
+    - consider rename? table- or csv-?
+    - support serverless mapping if file is csv file?
 */
 import { LitElement, html, css } from 'lit'
 import Panel from '../../presenters/panel'
@@ -8,6 +12,7 @@ import Menu from '../../presenters/menu'
 import Fuse from 'fuse.js'
 import scrollbars from '../../helpers/scrollbars'
 import {titleize} from '../../util/string'
+import numToAlpha from '../../util/numToAlpha'
 
 export {Dialog, Menu}
 
@@ -24,7 +29,7 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
         
         main {
             display: grid;
-            grid-template-columns: 1fr 3fr;
+            grid-template-columns: 300px 1fr;
             overflow: hidden;
         }
 
@@ -34,23 +39,31 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
 
         ${scrollbars.hide('main > div')}
 
-        main > div > b-grid {
-            justify-items: flex-start;
-        }
-
         .unused > b-grid {
             min-height: 100%;
-            padding: 1em;
+            padding: var(--gutter);
+            padding-top: 1em;
             box-sizing: border-box;
+        }
+
+        .file-info {
+            text-align: center;
         }
 
         b-label {
             font-weight: normal;
             font-size: 1em;
+            justify-self: flex-start;
         }
 
         b-table {
             align-self: flex-start;
+            max-height: 100%;
+            overflow: auto !important;
+        }
+
+        b-table.preview > b-table-row > :first-child {
+            background: var(--b-table-header-bgd, var(--theme-bgd-accent));
         }
 
         b-table-row > b-flex > :is(b-btn, b-toggle-btn){
@@ -78,6 +91,7 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
         this.url = ''
         this.pastMappingsUrl = ''
         this.allowedHeaders = []
+        this.requiredHeaders = []
         this.mappingAlternatives = {}
     }
 
@@ -167,7 +181,7 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
             title: 'Import the File',
             body: `With ${Object.keys(this._map).length} of the ${Object.keys(this.model.preview[0]).length} columns mapped`,
             btns: ['cancel', {label: 'Import', color: 'theme'}]
-        }).popOver(btn)
+        }).popOver(btn, {overflowBoundry: 'window'})
     }
 
     onImportComplete(resp){
@@ -212,78 +226,98 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
 
     get headerVals(){
         let vals = [...(this.model?.header||[])]
+
+        // add cell label here in case we sort next
+        vals = vals.map((k,i)=>{return {k, i, label: numToAlpha(i)}})
+
         if( localStorage.getItem(this.tagName+'mapping-sort') )
-            vals = vals.sort()
+            vals = vals.sort((a,b)=>a.k.localeCompare(b.k))
+
         return vals
     }
 
     render(){return html`
         <b-panel-toolbar>
-            <b-btn slot="close-btn" color="theme" clear @click=${this.close}>Cancel</b-btn>
-            <b-btn slot="right" color="theme-gradient" @click=${this.import}>Import</b-btn>
+            <b-btn slot="close-btn" clear @click=${this.close}>Cancel</b-btn>
         </b-panel-toolbar>
         <main @sort-changed=${this.onSortChange}>
 
             <div class="unused">
-            <b-grid cols=1 gap=".5">
+            <b-grid cols=1 gap="2">
 
-                <b-grid cols=1 gap=" ">
+                <b-grid cols=1 gap=" " class="file-info">
                     <b-text semibold md>${this.file?.name}</b-text>
                     <b-text><b-num .num=${this.model?.numRows}></b-num> rows</b-text>
                     <b-text dim>Modified <b-ts .date=${this.file?.lastModifiedDate}></b-ts></b-text>
                 </b-grid>
 
-                <b-hr short thick></b-hr>
+                <b-btn lg block pill color="theme-gradient" @click=${this.import} ?disabled=${!this.canImport}>Import</b-btn>
 
-                <b-text xbold sm ucase>Unused Datapoints</b-text>
-                <b-sortable item=".header-key" group=${this.tagName}></b-sortable>
-                ${this.allowedHeaders.map(k=>this.renderBadge(k))}
+                <b-table rounded>
+                    <b-table-row slot="header">
+                        <b-text bold >Available Datapoints</b-text>
+                    </b-table-row>
+                    <b-table-row>
+                        <b-flex left wrap gap=".5" style="min-height: 1.2em;">
+                        <b-sortable item=".header-key" group=${this.tagName}></b-sortable>
+                            ${this.allowedHeaders.map(k=>this.renderBadge(k))}
+                        </b-flex>
+                    </b-table-row>
+                </b-table>
 
-
-                <b-hr short thick></b-hr>
-
-                <b-text sm italic dim heading>
-                <b-grid cols=1 gap="1">
-                    <b-text>
-                        <b>How to use:</b> drag unused data points to the corresponding table cell to map data. You can double click mapped tokens to remove.
+                <b-text sm dim>
+                <b-details>
+                    <b-text toggles semibold>Instructions</b-text>
+                    <b-grid cols=1 gap="1">
+                    <b-text italic heading>
+                        Drag unused data points to the corresponding table cell to map data. You can double click mapped tokens to remove.
                     </b-text>
-                    <b-text>
+                    <b-text italic heading>
                         Auto mapping is done based on exact field names, hard-coded alternative names (ie description=>copy), and then finally fuzzy matching.
                     </b-text>
                     </b-grid>
+                </b-details>
                 </b-text>
             </b-grid>
             </div>
             
-            <b-table rounded>
+            <b-table rounded class="preview">
                 <b-table-row slot="header" sticky>
+                    <b-text w="3em" semibold sticky label="Cell"></b-text>
+
                     <b-flex w="minmax(160px, 1fr)">
                         <b-text semibold>Mapping</b-text>
                         <b-btn clear icon="settings" @click=${this.mappingOptions} ?hidden=${!this.pastMappingsUrl}></b-btn>
                     </b-flex>
-                    <b-flex w="minmax(160px, 1fr)">
-                        <b-text semibold>Table Cell</b-text>
+                    
+                    <b-flex w="minmax(200px, 1fr)">
+                        <b-text semibold>Header</b-text>
                         <b-toggle-btn clear key=${this.tagName+'mapping-sort'} icon="filter_list" 
                             @change=${this.sortDataChange}
                             tooltip="Sort fields"
                             ></b-toggle-btn>
                     </b-flex>
-                    <b-text semibold w="3fr">Data of First Row</b-text>
+                    <b-text semibold w="minmax(300px, 3fr)">Row 1</b-text>
+                    <b-text semibold w="minmax(300px, 3fr)">Row 2</b-text>
+                    <b-text semibold w="minmax(300px, 3fr)">Row 3</b-text>
                 </b-table-row>
             
 
-                ${this.headerVals.map(k=>html`
-                <b-table-row .key=${k}>
+                ${this.headerVals.map(d=>html`
+                <b-table-row .key=${d.k}>
+
+                    <b-text semibold sticky align="center">${d.label}</b-text>
                     
                     <div class="mapped">
                         <b-sortable item=".header-key" group=${this.tagName}></b-sortable>
-                        ${this.renderBadge(k, true)}
+                        ${this.renderBadge(d.k, true)}
                     </div>
 
-                    <b-text ?semibold=${this.model.preview?.[0]?.[k]} 
-                        ?dim=${!this.model.preview?.[0]?.[k]}>${titleize(k)}</b-text>
+                    <b-text semibold>${titleize(d.k)}</b-text>
 
-                    <b-text>${this.model.preview?.[0]?.[k]}</b-text>
+                    ${this.model.preview?.map(row=>html`
+                        <b-text>${row[d.k]}</b-text>
+                    `).slice(0,3)}
 
                 </b-table-row>
                 `)}
@@ -294,6 +328,21 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
 
     sortDataChange(){
         this.requestUpdate()
+    }
+
+    get canImport() {
+        if( this.requiredHeaders?.length )
+            return this.requiredHeaders.every(k=>{
+                if( Array.isArray(k) )
+                    return k.some(k=>this.headerUsed(k))
+                return this.headerUsed(k)
+            })
+
+        return true
+    }
+
+    isRequired(k){
+        return this.requiredHeaders?.flatMap(k=>k).includes(k)
     }
 
     renderBadge(k, mapped=false){ 
@@ -307,7 +356,7 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
             doRender = !this.headerUsed(k)
 
         return doRender?html`
-            <b-label badge="theme" muted class="header-key" ?mapped=${mapped} @dblclick=${this.onTokenDblClick}>${k}</b-label>
+            <b-label badge="theme" ?muted=${!this.isRequired(k)} class="header-key" ?mapped=${mapped} @dblclick=${this.onTokenDblClick}>${k}</b-label>
         `:''
     }
 
