@@ -60,6 +60,9 @@ export default async function downloadToFileSystem(files, {dirID='downloads', ca
             abortController?.abort() // cancel any ongoing downloads
         })
 
+    if( dirName )
+        dirName = dirName.replace(/\//g, '-')
+    
     // maybe create a new dir to save all files to
     const saveDirHandle = dirName ? await directoryHandle.getDirectoryHandle(dirName, {create: true}) : directoryHandle
     
