@@ -16,6 +16,7 @@
 
     console.log(MyElement.shared == MyElement.shared) // true
     console.log(MyElement.shared == new MyElement() ) // false
+    ```
 */
 customElements.defineShared = function(name, Class){
     

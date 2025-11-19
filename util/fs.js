@@ -120,7 +120,7 @@ const readFile = (filePath, {raw=false, csvOpts={}}={})=>{
 }
 
 /*
-    # downloadRemoteFile(url, {destFile})
+    ## `downloadRemoteFile(url, {destFile})`
 
     Download a file from a remote url. Will write to destFile or return resp that you can `resp.pipe` yourself
     Can follow 302 redirects    

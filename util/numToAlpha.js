@@ -3,8 +3,6 @@
 
     Converts a number to a letter like a spreadsheet column label.
 
-    Example: 0 -> A, 25 -> Z, 26 -> AA, 27 -> AB, ..., 701 -> ZZ, 702 -> AAA, etc.
-
     ```js
     numToAlpha(0) // 'A'
     numToAlpha(25) // 'Z'
