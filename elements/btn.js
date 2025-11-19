@@ -123,6 +123,8 @@ export default class BtnElement extends LitElement {
         :host([disabled]) {
             pointer-events: none !important;
             opacity: .5;
+            --bgdColor: var(--theme-text-accent);
+            --borderColor: var(--theme-text-accent);
         }
 
         :host([hidden]) {
@@ -435,6 +437,10 @@ export default class BtnElement extends LitElement {
         :host([fab][color="theme-gradient"]) main {
             border: none;
         }
+
+        :host([color="theme-gradient"][disabled]),
+        :host([color="theme-gradient"][disabled]) main {
+            background: var(--theme-text-accent);
 
         /* floating action btn */
         :host([fab]) {
