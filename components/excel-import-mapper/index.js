@@ -181,7 +181,7 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
             title: 'Import the File',
             body: `With ${Object.keys(this._map).length} of the ${Object.keys(this.model.preview[0]).length} columns mapped`,
             btns: ['cancel', {label: 'Import', color: 'theme'}]
-        }).popOver(btn, {overflowBoundry: 'window'})
+        }).popOver(btn, {overflowBoundry: 'window'}) ? true : false
     }
 
     onImportComplete(resp){
@@ -199,6 +199,9 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
         
         let confirm = await this.confirmImport(btn)
         if( confirm === false ) return
+
+        // no real "options" to send to server, so just send empty object
+        if( confirm instanceof Element || confirm === true ) confirm = {}
 
         try{
             let url = this.url
