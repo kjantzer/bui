@@ -15,7 +15,7 @@ customElements.define('b-table-row', class extends LitElement{
         }
 
         :host(:last-child) {
-            border-bottom: none;
+            margin-bottom: -1px; /* border bottom */
         }
         
         main {
