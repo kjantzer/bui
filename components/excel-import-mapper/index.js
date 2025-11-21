@@ -57,7 +57,8 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
         }
 
         b-table {
-            align-self: flex-start;
+            align-self: stretch;
+            align-content: flex-start;
             max-height: 100%;
             overflow: auto !important;
         }
