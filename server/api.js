@@ -215,7 +215,9 @@ module.exports = class API {
                 // database error
                 if( err.lastQuery ){
 
-                    if( err.stackMsg ){
+                    if( ['ER_QUERY_INTERRUPTED'].includes(err.code) ){
+                        process.env.ENV == 'development' ? console.log('Query was killed') : null
+                    }else if( err.stackMsg ){
                         console.log(err.stackMsg({req, trace: false, query: err.lastQuery}))
                     }else{
                         console.error(err.message)
