@@ -8,12 +8,12 @@ module.exports = class CommentFiles extends FileManager {
     get STORAGE_PATH(){ return opts?.STORAGE_PATH || '/mnt/data'}
     get rootDir(){ return opts?.rootDir || '' }
 
-    get group(){ return 'comments' } // track all files under the "comments" group
+    get ref(){ return 'comments' } // track all files under the "comments" group
 
     waitForPreviewGeneration = true
     previewSize = 400
 
-    get groupPath(){ 
+    get refPath(){ 
 
         if( this.attrs?.dir_path )
             return this.attrs?.dir_path

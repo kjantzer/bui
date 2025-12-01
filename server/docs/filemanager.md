@@ -21,7 +21,7 @@ module.exports = class Attachements extends FileManager {
     }}
 
     get STORAGE_PATH(){ return '/mnt/data' }
-    get group(){ return 'attachments' }
+    get ref(){ return 'attachments' }
     // waitForPreviewGeneration = false
     // skipDuplicates = false
     // previewSize = 800 // set to false to disable preview generation

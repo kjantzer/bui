@@ -1,8 +1,8 @@
 module.exports = (tableName='files')=>{ return /*sql*/`
 CREATE TABLE ${tableName} (
 id int(11) NOT NULL AUTO_INCREMENT,
-parent_id int(11) DEFAULT NULL COMMENT 'May be used to link another record',
-group_name varchar(128) DEFAULT NULL COMMENT 'A way to group uploads files into sets for specific uses',
+ref_id int(11) DEFAULT NULL COMMENT 'May be used to link another record',
+ref varchar(128) DEFAULT NULL COMMENT 'A way to group uploads files into sets for specific uses',
 filename varchar(128) DEFAULT NULL,
 ext varchar(10) DEFAULT NULL,
 size bigint(40) DEFAULT NULL,
@@ -19,6 +19,6 @@ ts_created timestamp NULL DEFAULT CURRENT_TIMESTAMP,
 ts_updated timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 PRIMARY KEY (id),
 KEY id (id) USING BTREE,
-KEY group_name (group_name) USING BTREE
+KEY ref (ref) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='A central table for tracking uploaded files'
 `}

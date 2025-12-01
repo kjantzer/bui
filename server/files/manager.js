@@ -26,10 +26,10 @@ module.exports = class FileManager extends Model {
 
     get STORAGE_PATH(){ return '/mnt/data' }
     get rootDir(){ return ''}
-    get group(){ return '' }
+    get ref(){ return '' }
 
     storeRootDir = false // store the root_dir in the DB?
-    skipDuplicates = false // only applies when same parent_id
+    skipDuplicates = false // only applies when same ref_id
     stripMetadata = false // images only
     waitForPreviewGeneration = false // upload response wont return until preview saved
     autoRotate = true // ie phone/tablet photos in portrait mode (only applies to the preview)
@@ -62,8 +62,8 @@ module.exports = class FileManager extends Model {
         background: 'auto' // = use color palette
     }
 
-    get parent_id(){ return this.__parent_id }
-    set parent_id(id){ this.__parent_id = id }
+    get ref_id(){ return this.__ref_id }
+    set ref_id(id){ this.__ref_id = id }
 
     // example on how to change default download filename
     // get downloadFilename(){ return this.attrs.orig_filename }
@@ -71,9 +71,9 @@ module.exports = class FileManager extends Model {
     async beforeResize(sharpImg, {width, height, metadata}){ }
     
     // shouldn't need to override these
-    get groupPath(){ return this.group.toLowerCase() }
+    get refPath(){ return this.ref.toLowerCase() }
     get fileName(){ return this.attrs?.id ? (this.attrs.filename) : '' }
-    get dirPath(){ return [this.STORAGE_PATH, this.rootDir, this.groupPath].filter(s=>s).join('/')}
+    get dirPath(){ return [this.STORAGE_PATH, this.rootDir, this.refPath].filter(s=>s).join('/')}
     get path(){ return this.dirPath+'/'+this.fileName }
     get filePath(){ return path.join(this.dirPath, this.fileName||'') }
     get encryptKey(){ return this.encrypt }
@@ -136,18 +136,18 @@ module.exports = class FileManager extends Model {
     }
 
     findWhere(where){
-        // if asking for a set of files, parent_id must be given
+        // if asking for a set of files, ref_id must be given
         if( !this.id )
-            where['parent_id'] = this.parent_id || false
+            where['f.ref_id'] = this.ref_id || false
 
-        where['group_name'] = this.group
+        where['f.ref'] = this.ref
     }
 
     async checkIsDuplicate(info){
         let dupe = await this.db.query(/*sql*/`
             SELECT * FROM files
-            WHERE IFNULL(parent_id,'') = ? AND group_name = ? AND dir_path = ? AND md5 = ?
-        `, [info.parent_id||'', this.group, info.dir_path, info.md5]).then(r=>r.first)
+            WHERE IFNULL(ref_id,'') = ? AND ref = ? AND dir_path = ? AND md5 = ?
+        `, [info.ref_id||'', this.ref, info.dir_path, info.md5]).then(r=>r.first)
 
         return !!dupe
     }
@@ -186,13 +186,13 @@ module.exports = class FileManager extends Model {
         }
 
         let info = {
-            parent_id: this.parent_id || null,
-            group_name: this.group,
+            ref_id: this.ref_id || null,
+            ref: this.ref,
             filename: filename,
             ext: ext,
             size: file.size,
             type: file.mimetype,
-            dir_path: this.groupPath,
+            dir_path: this.refPath,
             orig_filename: file.name,
             user_id: this.req.user?.id,
             description,
@@ -209,7 +209,7 @@ module.exports = class FileManager extends Model {
                 ThrowError('DuplicateFile', 'File already uploaded')
         }
 
-        // only one file allowed for this group/parent_id
+        // only one file allowed for this ref/ref_id
         if( this.isSingular ){
             await this.find()
             if( this.id )

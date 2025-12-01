@@ -42,11 +42,11 @@ module.exports = class Comments extends Model {
 
     static related = {
         files: {
-            relatedID: 'parent_id',
+            relatedID: 'ref_id',
             model: __dirname+'/files', 
             getAttrs(){return {
                 id: this.fileid,
-                parent_id: this.id,
+                ref_id: this.id,
                 parent_group: this.group,
                 gid: this.gid
             }},

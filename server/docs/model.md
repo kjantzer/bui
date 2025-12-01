@@ -246,7 +246,7 @@ class MyClass extends Model {
         // JIT model import
         type: {model: __dirname+'/type'},
 
-        files: {model: __dirname+'/files', relatedID: 'parent_id'}
+        files: {model: __dirname+'/files', relatedID: 'ref_id'}
     }
 }
 
@@ -256,7 +256,7 @@ console.log(myclass.files) // == FilesModel instance
 
 // same as
 new TypeModel({id: 3451}, myclass.req)
-new Files({parent_id: 1}, myclass.req)
+new Files({ref_id: 1}, myclass.req)
 ```
 
 ### Find "with" related data
