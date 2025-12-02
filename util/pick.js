@@ -3,6 +3,8 @@ module.exports = (obj, paths, {omit=false, ifEmpty=undefined, keepUndefined=fals
     let data = {}
     let remap = null
 
+    if( !obj ) return data
+
     // allow for paths to be {incomingKey: outGoingKey}
     if( typeof paths == 'object' && !Array.isArray(paths) ){
         remap = paths
