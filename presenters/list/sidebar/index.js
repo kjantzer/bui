@@ -218,7 +218,7 @@ customElements.define('b-list-sidebar', class extends LitElement{
                 </b-flex>
             </b-flex>
 
-            <b-term-search .coll=${this.filtersMenu} @hide=${this.hide}></b-term-search>
+            <b-term-search icon="search" material="outline" .coll=${this.filtersMenu} @hide=${this.hide}></b-term-search>
 
         </b-grid>
     

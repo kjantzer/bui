@@ -1,11 +1,12 @@
 import { LitElement, html, css } from 'lit'
+import {ifDefined} from 'lit/directives/if-defined.js'
 import Fuse from 'fuse.js'
 import './results'
 
-// TODO: move this
 customElements.define('b-term-search', class extends LitElement{
 
     static properties = {
+        material: {type: String},
         term: {type: String},
         icon: {type: String},
         placeholder: {type: String}
@@ -26,10 +27,15 @@ customElements.define('b-term-search', class extends LitElement{
             color: var(--theme-text-accent);
         }
 
-        [falsy] .clear-btn { display: none;}
+        [falsy] .clear-btn { visibility: hidden; pointer-events: none;}
 
         form-control {
             --padX: .5em;
+        }
+
+        text-field {
+            display: grid;
+            align-items: center;
         }
 
     `
@@ -108,15 +114,22 @@ customElements.define('b-term-search', class extends LitElement{
     get control(){ return this.$$('form-control', true)}
 
     render(){return html`
-        <form-control material="outline" show="prefix">
-            <text-field 
+        <form-control material=${ifDefined(this.material)} show="prefix" part="control">
+            <text-field part="text-field"
                 placeholder=${this.placeholder||'Find filter'} 
                 .value=${this.term||''}
                 @keyup=${this.onKeypress}
                 @esckey=${this.cancel}
             ></text-field>
+            
+            <slot name="prefix" slot="prefix"></slot>
+            
             ${this.icon?html`<b-icon slot="prefix" name=${this.icon}></b-icon>`:''}
-            <b-btn clear icon="cancel" class="clear-btn" @click=${this.clear} slot="suffix"></b-btn>
+
+            <slot name="suffix" slot="suffix"></slot>
+
+            <b-btn clear icon="cancel" class="clear-btn" part="clear-btn" @click=${this.clear} slot="suffix"></b-btn>
+
         </form-control>
     `}
 

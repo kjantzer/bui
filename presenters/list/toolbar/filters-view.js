@@ -7,6 +7,7 @@ import Menu from '../../../presenters/menu'
 import {dataTransfer} from '../../../elements/dragdrop'
 import readFile from '../../../util/readFile'
 import '../../../elements/uploader'
+import '../../../components/term-search'
 
 customElements.define('b-list-filters', class extends LitElement{
 
@@ -17,6 +18,8 @@ customElements.define('b-list-filters', class extends LitElement{
 
     constructor(){
         super()
+        this.show = this.show.bind(this)
+        this.hide = this.hide.bind(this)
         this.onFilterQueuing = this.onFilterQueuing.bind(this)
         this.onFilterChange = this.onFilterChange.bind(this)
     }
@@ -24,19 +27,84 @@ customElements.define('b-list-filters', class extends LitElement{
     static get styles(){return css`
         :host {
             display: var(--b-list-filters-display, flex);
-            gap: .25em;
+            gap: 1px;
             align-items: center;
             overflow: -moz-scrollbars-none;
-            flex-shrink: 1;
+            flex-shrink: 0;
             position: relative;
         }
 
-        [icon='backspace'] { display: none; }
-        b-list-filter-btn[active] ~ [icon="backspace"] {
+        :host(:not([expanded])) b-list-filter-btn:not([active]):not([always]){
+            display: none;
+        }
+
+        :host(:not([expanded])) b-term-search::part(text-field),
+        :host(:not([expanded])) b-term-search::part(clear-btn) {
+            display: none;
+        }
+
+        b-term-search {
+            align-self: stretch;
+            position: sticky;
+            left: 0;
+            z-index: 10;
+        }
+
+        b-term-search::part(text-field) {
+            margin-bottom: -2px; /* baseline align */  
+            width: 50px;
+        }
+
+        b-term-search b-btn::part(main) {
+            padding-left: .35em;
+            padding-right: .35em;
+        } 
+
+        b-term-search b-btn::part(icon) {
+            font-size: 1.2em;
+            margin-right: 0;
+            margin-bottom: -.2em;
+            margin-top: -2px;
+        }
+
+        :host([expanded ]) b-term-search b-btn::part(icon) {
+            margin-top: -2px;
+        }
+
+        :host([expanded]) b-term-search {
+            padding-right: .5em;
+            /*box-shadow: 0 0 0 1px var(--theme-shadow);*/
+            /*background: var(--theme-bgd-accent);
+            border-radius: 4px;*/
+            border-right: dashed 1px var(--theme-shadow);
+            background: var(--theme-bgd);
+        }
+
+        :host([expanded]) b-term-search:focus-within {
+            /*background: color-mix(in srgb, var(--theme) 15%, transparent);*/
+            /*box-shadow: 0 0 0 1px var(--theme) inset;*/
+        }
+
+        :host([expanded]) b-term-search:focus-within b-btn {
+            color: var(--theme);
+        }
+
+        :host([expanded]) b-term-search b-btn {
+            --bgdColor: transparent;
+        }
+
+        b-term-search-results {
+            display: contents;
+        }
+
+        /*[icon='backspace'] { display: none; }*/
+
+        [icon="backspace"] {
             display: inline-block;
             position: sticky;
             right: 0;
             background-color: var(--theme-bgd);
+            flex-shrink: 0;
         }
 
         b-list-filter-btn, [noshrink] {
@@ -91,6 +159,12 @@ customElements.define('b-list-filters', class extends LitElement{
         <b-dragdrop @dragged=${this.onDrag}>Export</b-dragdrop>
         <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
+        <b-term-search .coll=${this.filters} placeholder="Filter by..." @hide=${this.hide}>
+            
+            <b-btn icon="filter" slot="prefix" text @click=${this.toggle}></b-btn>
+
+        </b-term-search>
+
         ${this.showOverflowBtn?html`
 
         
@@ -99,12 +173,37 @@ customElements.define('b-list-filters', class extends LitElement{
                 @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
         `}
 
-        ${this.filters.map(filter=>this.showFilter(filter)?html`
-            <b-list-filter-btn ?active=${filter.isActive} .filter=${filter}></b-list-filter-btn>
-        `:'')}
+        <b-term-search-results .coll=${this.filters} .item=${item=>html`
 
-        <b-btn color="hover-red" title="Clear filters" icon="backspace" text @click=${this.resetFilters}></b-btn>
+            <b-list-filter-btn 
+                ?focus=${item.active}
+                ?active=${item.val.isActive}
+                ?_always=${item.val.attrs.alwaysShow}
+                .filter=${item.val}
+            ></b-list-filter-btn>
+
+        `}></b-term-search-results>
+
+        <b-btn color="hover-red" title="Clear filters" icon="backspace" text @click=${this.resetFilters} ?hidden=${!this.filters.length}>
+            <b-text sup dim xs bold style="margin: 0 -.35em 0 -.125em;">${this.filters.length}</b-text>
+        </b-btn>
     `}
+
+    hide(){
+        this.toggleAttribute('expanded', false)
+        this.$$('b-term-search')?.clear()
+    }
+
+    show(){
+        setTimeout(()=>{
+            this.toggleAttribute('expanded', true)
+            this.$$('b-term-search')?.focus()
+        })
+    }
+
+    toggle(){
+        this.hasAttribute('expanded') ? this.hide() : this.show()
+    }
 
     onDrag(e){
         let {action} = e.detail
@@ -172,6 +271,8 @@ customElements.define('b-list-filters', class extends LitElement{
         super.connectedCallback()
 
         if( this.filters ){
+            this.filters.on('show', this.show)
+            this.filters.on('hide', this.hide)
             this.filters.on('queuing', this.onFilterQueuing)
             this.filters.on('change', this.onFilterChange)
         }
@@ -182,6 +283,8 @@ customElements.define('b-list-filters', class extends LitElement{
         super.disconnectedCallback()
         
         if( this.filters ){
+            this.filters.off('show', this.show)
+            this.filters.off('hide', this.hide)
             this.filters.off('queuing', this.onFilterQueuing)
             this.filters.off('change', this.onFilterChange)
         }

@@ -436,7 +436,7 @@ customElements.define('b-list', class extends LitElement {
     }
 
     showFilterSelection(){
-        this.sidebar?.focus()
+        this.filters.emit('show')
     }
 
     onKeydown(e){

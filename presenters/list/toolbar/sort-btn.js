@@ -54,7 +54,7 @@ customElements.define('b-list-sort-btn', class extends LitElement{
     render(){return html`
         <b-btn text class="sorts" @click=${this.sortMenu}>
             <main>
-                <b-text bold>Sort:</b-text>
+                <!--<b-text bold>Sort:</b-text>-->
 
                 <b-flex gap=" " left>
                     ${this.sorts.active.map(sort=>html`

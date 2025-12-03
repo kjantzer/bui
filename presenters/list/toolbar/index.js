@@ -37,6 +37,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
         b-list-sort-btn {
             flex-shrink: 0;
+            margin-left: auto;
         }
 
         b-btn {
@@ -69,7 +70,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
             align-items: center;
             /* border-right: 2px solid rgba(0, 0, 0, 0.1); */
             /* padding: 0 .75em 0 .25em; */
-            margin: 0 .25em;
+            
         }
 
         .controls {
@@ -95,10 +96,11 @@ customElements.define('b-list-toolbar', class extends LitElement{
             flex-shrink: 0;
             order: var(--count-order, 2);
             background: var(--theme-bgd-accent);
+            color: var(--theme-text-dim);
         }
 
         [name="before"] { order: 1; }
-        .count { order: 2; }
+        .count { order: 4; }
         .scroller { order: 3; }
         .after { order: 4; }
 
@@ -152,12 +154,12 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
         <div class="scroller" ?empty=${!this.sorts&&!this.filters.size}>
 
-            ${!this.sorts?'':html`
-                <b-list-sort-btn .sorts=${this.sorts}></b-list-sort-btn>
-            `}
-            
             ${!this.filters?'':html`
                 <b-list-filters .filters=${this.filters}></b-list-filters>
+            `}
+
+            ${!this.sorts?'':html`
+                <b-list-sort-btn .sorts=${this.sorts}></b-list-sort-btn>
             `}
 
         </div>
