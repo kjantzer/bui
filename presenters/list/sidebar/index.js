@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit'
 import './filter'
 import './filters-history'
-import './term-search'
+import '../../../components/term-search'
 import device from '../../../util/device'
 
 customElements.define('b-list-sidebar', class extends LitElement{

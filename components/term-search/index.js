@@ -1,17 +1,21 @@
 import { LitElement, html, css } from 'lit'
 import Fuse from 'fuse.js'
+import './results'
 
 // TODO: move this
 customElements.define('b-term-search', class extends LitElement{
 
     static properties = {
-        term: {type: String}
+        term: {type: String},
+        icon: {type: String},
+        placeholder: {type: String}
     }
 
     static styles = css`
         :host {
             display: grid;
             position:relative;
+            flex-shrink: 0;
         }
 
         .clear-btn {
@@ -35,9 +39,16 @@ customElements.define('b-term-search', class extends LitElement{
 
         let data = val
 
-        // NOTE: not sure I want to do this
+        // NOTE: not sure I want to do this? shoud code that gives coll do this?
         if( data instanceof Map ){
-            data = Array.from(data).map(([k,v])=>{return {key: k, val: v}})
+            data = Array.from(data).map(([k,v])=>{
+                return {
+                    key: k, 
+                    val: v,
+                    label: v?.label,
+                    description: v?.description
+                }
+            })
         }else if( data.models )
             data = data.models
 
@@ -99,12 +110,12 @@ customElements.define('b-term-search', class extends LitElement{
     render(){return html`
         <form-control material="outline" show="prefix">
             <text-field 
-                placeholder="Find filter" 
+                placeholder=${this.placeholder||'Find filter'} 
                 .value=${this.term||''}
                 @keyup=${this.onKeypress}
                 @esckey=${this.cancel}
             ></text-field>
-            <b-icon slot="prefix" name="search"></b-icon>
+            ${this.icon?html`<b-icon slot="prefix" name=${this.icon}></b-icon>`:''}
             <b-btn clear icon="cancel" class="clear-btn" @click=${this.clear} slot="suffix"></b-btn>
         </form-control>
     `}
@@ -178,84 +189,3 @@ customElements.define('b-term-search', class extends LitElement{
 export default customElements.get('b-term-search')
 
 
-// import { LitElement, html, css } from 'lit'
-
-customElements.define('b-term-search-results', class extends LitElement{
-
-    static styles = css`
-        :host {
-            display: contents;
-        }
-    `
-
-    constructor(){
-        super()
-        this.onChanged = this.onChanged.bind(this)
-        this.onSubmit = this.onSubmit.bind(this)
-        
-        this.addEventListener('mouseleave', e=>{
-            if( this.termSearch )
-                this.termSearch.active = undefined
-        })
-
-        this.addEventListener('mouseover', e=>{
-            let children = Array.from(this.children)
-            let index = children.indexOf(e.target)
-            if( this.termSearch )
-                this.termSearch.active = index
-        })
-
-        this.addEventListener('popover:closed', e=>{
-            let popOverExists = this.$$('.popoover-open')
-            console.log('closed?', this._wasFocused);
-
-            if( this._wasFocused && !popOverExists )
-                setTimeout(()=>{
-                    this.termSearch?.focus({select: 'all'})
-                },100)
-
-            this._wasFocused = false
-        })
-    }
-
-    createRenderRoot(){ return this }
-
-    render(){return html`
-        ${this.termSearch?.value?.map(m=>this.item?.(m))}
-    `}
-
-    connectedCallback(){
-        super.connectedCallback()
-        this.termSearch = this.getRootNode()?.host?.$$('b-term-search')
-        if( this.termSearch ){
-            this.termSearch.addEventListener('term-search:changed', this.onChanged)
-            this.termSearch.addEventListener('term-search:submit', this.onSubmit)
-        }
-    }
-
-    disconnectedCallback(){
-        super.disconnectedCallback()
-        if( this.termSearch ){
-            this.termSearch.removeEventListener('term-search:changed', this.onChanged)
-            this.termSearch.addEventListener('term-search:submit', this.onSubmit)
-        }
-    }
-
-    onSubmit(e){
-        this._wasFocused = this.termSearch.isFocused
-        let {active, evt} = e.detail
-        let children = Array.from(this.children)
-        let el = children[active]
-        if( el ){
-            el.click(evt)
-            this.termSearch?.blur()
-        }
-    }
-
-    onChanged(){
-        this.requestUpdate()
-    }
-
-})
-
-// export default customElements.get('b-term-search-results')
