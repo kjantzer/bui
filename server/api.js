@@ -229,7 +229,9 @@ module.exports = class API {
                 || req.query?.logErr !== undefined ){
 
                     // UI errors are "good" errors that are for the client, simplify log to console
-                    let includeTrace = !['ClientError', 'APIAccessError', 'APIError'].includes(err.name)
+                    // NOTE: `Error` should only be from a deliberate code throw, not a mistake (ie ReferenceError, TypeError, etc)
+                    // so no need to include the trace for these
+                    let includeTrace = !['ClientError', 'APIAccessError', 'APIError', 'Error'].includes(err.name)
                     let errMsg = err.stackMsg?.({req, trace: includeTrace}) || err.stack || err
 
                     console.log(errMsg)
