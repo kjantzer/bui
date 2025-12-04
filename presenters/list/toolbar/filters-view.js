@@ -76,7 +76,7 @@ customElements.define('b-list-filters', class extends LitElement{
 
         :host([expanded]) b-term-search {
             padding-right: .5em;
-            box-shadow: 0 0 0 1px var(--theme-shadow) inset;
+            /* box-shadow: 0 0 0 1px var(--theme-shadow) inset; */
             /*background: var(--theme-bgd-accent);*/
             border-radius: 4px;
             /* border-right: dashed 1px var(--theme-shadow); */
@@ -88,7 +88,7 @@ customElements.define('b-list-filters', class extends LitElement{
             /*box-shadow: none;
             background: var(--theme-bgd-accent);*/
             /*background: color-mix(in srgb, var(--theme) 15%, transparent);*/
-            box-shadow: 0 0 0 1px var(--theme) inset;
+            /* box-shadow: 0 0 0 1px var(--theme) inset; */
         }
 
         :host([expanded]) b-term-search:focus-within b-btn {
