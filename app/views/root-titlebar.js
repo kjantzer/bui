@@ -23,7 +23,11 @@ customElements.define('b-root-titlebar', class extends LitElement{
         :host-context(b-panel-toolbar) {
             padding-left: 0;
             padding-right: 0;
-            margin: -.4em 0 -.4em .3em;
+            margin: -.4em 0 -.4em -.3em
+        }
+
+        :host-context(b-list-toolbar) {
+            margin-left: -.5em;
         }
 
         slot.right::slotted(:last-child) {
@@ -45,7 +49,6 @@ customElements.define('b-root-titlebar', class extends LitElement{
         }
 
         b-btn {
-            margin-left: -.5em;
             align-self: stretch;
         }
 

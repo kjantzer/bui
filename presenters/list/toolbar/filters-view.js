@@ -178,7 +178,7 @@ customElements.define('b-list-filters', class extends LitElement{
         </b-term-search>
 
         <b-btn lg pill muted @click=${this.stopQueue} ?hidden=${this.queuing==undefined}>Apply</b-btn>
-        <b-btn lg pill muted @click=${this.cancelQueuedFilters} ?hidden=${this.queuing==undefined} icon="close"></b-btn>
+        <b-btn lg pill muted @click=${this.hide} ?hidden=${this.queuing==undefined} icon="close"></b-btn>
 
         ${this.showOverflowBtn?html`
 
@@ -361,6 +361,7 @@ customElements.define('b-list-filters', class extends LitElement{
         delete this.__originalFilters
         this.filters.queuing = false
         this.queuing = undefined
+        this.hide()
     }
 
     cancelQueuedFilters(){
