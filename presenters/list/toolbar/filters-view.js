@@ -12,6 +12,7 @@ import '../../../components/term-search'
 customElements.define('b-list-filters', class extends LitElement{
 
     static get properties(){return {
+        expanded: {type: Boolean, reflect: true},
         count: {type: Number},
         queuing: {type: Number}
     }}
@@ -20,7 +21,7 @@ customElements.define('b-list-filters', class extends LitElement{
         super()
         this.show = this.show.bind(this)
         this.hide = this.hide.bind(this)
-        this.onFilterQueuing = this.onFilterQueuing.bind(this)
+        // this.onFilterQueuing = this.onFilterQueuing.bind(this)
         this.onFilterChange = this.onFilterChange.bind(this)
     }
 
@@ -73,21 +74,24 @@ customElements.define('b-list-filters', class extends LitElement{
 
         :host([expanded]) b-term-search {
             padding-right: .5em;
-            /*box-shadow: 0 0 0 1px var(--theme-shadow);*/
-            /*background: var(--theme-bgd-accent);
-            border-radius: 4px;*/
-            border-right: dashed 1px var(--theme-shadow);
-            background: var(--theme-bgd);
+            box-shadow: 0 0 0 1px var(--theme-shadow) inset;
+            /*background: var(--theme-bgd-accent);*/
+            border-radius: 4px;
+            /* border-right: dashed 1px var(--theme-shadow); */
+            /* background: var(--theme-bgd); */
+            margin-right: .25em;
         }
 
         :host([expanded]) b-term-search:focus-within {
+            box-shadow: none;
+            background: var(--theme-bgd-accent);
             /*background: color-mix(in srgb, var(--theme) 15%, transparent);*/
             /*box-shadow: 0 0 0 1px var(--theme) inset;*/
         }
 
-        :host([expanded]) b-term-search:focus-within b-btn {
+        /*:host([expanded]) b-term-search:focus-within b-btn {
             color: var(--theme);
-        }
+        }*/
 
         :host([expanded]) b-term-search b-btn {
             --bgdColor: transparent;
@@ -161,9 +165,12 @@ customElements.define('b-list-filters', class extends LitElement{
 
         <b-term-search .coll=${this.filters} placeholder="Filter by..." @hide=${this.hide}>
             
-            <b-btn icon="filter" slot="prefix" text @click=${this.toggle}></b-btn>
+            <b-btn icon="filter" slot="prefix" text @click=${this.toggle} @contextmenu=${this.options}></b-btn>
 
         </b-term-search>
+
+        <b-btn color="theme-gradient" @click=${this.stopQueue} ?hidden=${this.queuing==undefined}>Apply</b-btn>
+        <b-btn muted @click=${this.cancelQueuedFilters} ?hidden=${this.queuing==undefined}>Cancel</b-btn>
 
         ${this.showOverflowBtn?html`
 
@@ -190,19 +197,42 @@ customElements.define('b-list-filters', class extends LitElement{
     `}
 
     hide(){
-        this.toggleAttribute('expanded', false)
+        this.expanded = false
         this.$$('b-term-search')?.clear()
+        // this.stopQueue()
+        this.cancelQueuedFilters()
     }
 
-    show(){
+    show(e){
+        let queue = e?.metaKey || e?.ctrlKey || e?.shiftKey
+
+        this.expanded = true
+
+        if( queue )
+            this.startQueue()
+
         setTimeout(()=>{
-            this.toggleAttribute('expanded', true)
             this.$$('b-term-search')?.focus()
         })
     }
 
-    toggle(){
-        this.hasAttribute('expanded') ? this.hide() : this.show()
+    toggle(e){
+        this.expanded && !e.metaKey && !e.ctrlKey ? this.hide(e) : this.show(e)
+    }
+
+    options(e){
+
+        if( !this.expanded ) return
+
+        e.stopPropagation()
+        e.preventDefault()
+
+        let menu = [
+            {label: 'Queue', icon: 'layers', fn: 'startQueue'},
+            // {label: 'Cancel', icon: 'cancel', fn: 'stopQueue'},
+        ]
+
+        new Menu(menu, {handler: this, handlerArgs: [e]}).popOver(e.currentTarget)
     }
 
     onDrag(e){
@@ -273,7 +303,7 @@ customElements.define('b-list-filters', class extends LitElement{
         if( this.filters ){
             this.filters.on('show', this.show)
             this.filters.on('hide', this.hide)
-            this.filters.on('queuing', this.onFilterQueuing)
+            // this.filters.on('queuing', this.onFilterQueuing)
             this.filters.on('change', this.onFilterChange)
         }
         
@@ -285,17 +315,47 @@ customElements.define('b-list-filters', class extends LitElement{
         if( this.filters ){
             this.filters.off('show', this.show)
             this.filters.off('hide', this.hide)
-            this.filters.off('queuing', this.onFilterQueuing)
+            // this.filters.off('queuing', this.onFilterQueuing)
             this.filters.off('change', this.onFilterChange)
         }
     }
 
-    onFilterQueuing(length){
-        this.queuing = length
-    }
+    // onFilterQueuing(length){
+    //     this.queuing = length
+    // }
 
     onFilterChange(){
         this.update()
+    }
+
+
+    toggleQueue(e){
+        if( this.queuing === undefined ){
+            this.startQueue()
+        }else{
+            this.stopQueue()
+        }
+    }
+
+    startQueue(){
+        if( this.queuing ) return
+        this.__originalFilters = this.filters.value()
+        this.filters.queuing = true
+        this.queuing = 0
+        // this.requestUpdate()
+    }
+
+    stopQueue(){
+        delete this.__originalFilters
+        this.filters.queuing = false
+        this.queuing = undefined
+    }
+
+    cancelQueuedFilters(){
+        if( this.__originalFilters )
+            this.filters.reset(this.__originalFilters, {stopQueuing:false})
+        if( this.queuing !== undefined )
+            this.toggleQueue()
     }
 
 })

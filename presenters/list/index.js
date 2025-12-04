@@ -435,8 +435,8 @@ customElements.define('b-list', class extends LitElement {
             searchBar.blur()
     }
 
-    showFilterSelection(){
-        this.filters.emit('show')
+    showFilterSelection(e){
+        this.filters.emit('show', e)
     }
 
     onKeydown(e){
@@ -448,10 +448,10 @@ customElements.define('b-list', class extends LitElement {
         && document.activeElement.tagName == 'BODY' // NOT inside an input
         ){
 
-            if( e.key == 'f'
-            && !e.ctrlKey && !e.metaKey && !e.shiftKey // ignore if extra keys pressed
+            if( (e.key == 'f' || e.key == 'F')
+            && !e.ctrlKey && !e.metaKey // ignore if extra keys pressed
             ){
-                this.showFilterSelection()
+                this.showFilterSelection(e)
             }
 
             if( e.key == 's'
