@@ -22,7 +22,7 @@ customElements.define('b-term-search', class extends LitElement{
         :host([hidden]) { display: none; }
 
         .clear-btn {
-            margin: -1em -.5em -1em 0;
+            margin: -1em 0 -1em 0;
         }
 
         .clear-btn:not(:hover) {

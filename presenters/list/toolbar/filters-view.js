@@ -57,7 +57,7 @@ customElements.define('b-list-filters', class extends LitElement{
 
         b-term-search::part(text-field) {
             margin-bottom: -2px; /* baseline align */  
-            width: 50px;
+            width: 44px;
         }
 
         b-term-search b-btn::part(main) {
@@ -77,7 +77,7 @@ customElements.define('b-list-filters', class extends LitElement{
         }*/
 
         :host([expanded]) b-term-search {
-            padding-right: .5em;
+            
             /* box-shadow: 0 0 0 1px var(--theme-shadow) inset; */
             /*background: var(--theme-bgd-accent);*/
             border-radius: 4px;
@@ -202,7 +202,7 @@ customElements.define('b-list-filters', class extends LitElement{
 
         <b-flex gap=0 class="end">
 
-            <b-btn color="theme" tooltip="Clear filters (C)" icon="backspace" lg text empty @click=${this.resetFilters} ?hidden=${!this.filters.length}></b-btn>
+            <b-btn  tooltip="Clear filters (C)" icon="backspace" lg text empty @click=${this.resetFilters} ?hidden=${!this.filters.length}></b-btn>
 
             <b-btn lg text @click=${this.viewHistory} icon="history" tooltip="Filter history" class="when-open"></b-btn>
 
