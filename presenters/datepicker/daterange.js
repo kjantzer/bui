@@ -142,13 +142,15 @@ function validateDate(obj, value){
     return value
 }
 
-export function label(start, end){
+// TODO: move to util?
+export function label(start, end, {monthDay=true}={}){
 
     let m = dayjs().startOf('day')
-    let m1 = dayjs(start)
-    let m2 = dayjs(end)
+    let m1 = dayjs(start).startOf('day')
+    let m2 = dayjs(end).startOf('day')
     let thisYear = m1.year() == m.year() && m2.year() == m2.year()
     let sameYear = m1.year() == m2.year()
+    let sameMonth = sameYear && m1.month() == m2.month()
 
     // single day selected
     if( m1.isSame(m2, 'day') ){
@@ -163,6 +165,9 @@ export function label(start, end){
 
         if( diffDays > 1 && diffDays <= 14 )
             return diffDays+' days ago'
+
+        if( !monthDay && sameMonth )
+            return thisYear ? m1.format('MMM') : m1.format('MMM YYYY')
 
         // leave off the year since it's this year
         if( thisYear )

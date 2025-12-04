@@ -8,6 +8,7 @@ import {dataTransfer} from '../../../elements/dragdrop'
 import readFile from '../../../util/readFile'
 import '../../../elements/uploader'
 import '../../../components/term-search'
+import {label as dateRangeLabel} from '../../datepicker/daterange'
 
 customElements.define('b-list-filters', class extends LitElement{
 
@@ -40,7 +41,8 @@ customElements.define('b-list-filters', class extends LitElement{
         }
 
         :host(:not([expanded])) b-term-search::part(text-field),
-        :host(:not([expanded])) b-term-search::part(clear-btn) {
+        :host(:not([expanded])) b-term-search::part(clear-btn),
+        :host(:not([expanded])) .when-open {
             display: none;
         }
 
@@ -110,8 +112,7 @@ customElements.define('b-list-filters', class extends LitElement{
 
         /*[icon='backspace'] { display: none; }*/
 
-        [icon="backspace"] {
-            display: inline-block;
+        .end {
             position: sticky;
             right: 0;
             background-color: var(--theme-bgd);
@@ -199,9 +200,13 @@ customElements.define('b-list-filters', class extends LitElement{
 
         `}></b-term-search-results>
 
-        <b-btn color="theme" tooltip="Clear filters (C)" icon="backspace" lg text empty @click=${this.resetFilters} ?hidden=${!this.filters.length}>
-            <!--<b-text muted xs bold style="position: absolute; top: 0;">${this.filters.length}</b-text>-->
-        </b-btn>
+        <b-flex gap=0 class="end">
+
+            <b-btn color="theme" tooltip="Clear filters (C)" icon="backspace" lg text empty @click=${this.resetFilters} ?hidden=${!this.filters.length}></b-btn>
+
+            <b-btn lg text @click=${this.viewHistory} icon="history" tooltip="Filter history" class="when-open"></b-btn>
+
+        </b-flex>
     `}
 
     hide(){
@@ -369,6 +374,58 @@ customElements.define('b-list-filters', class extends LitElement{
             this.filters.reset(this.__originalFilters, {stopQueuing:false})
         if( this.queuing !== undefined )
             this.toggleQueue()
+    }
+
+    async viewHistory(e){
+        
+        let history = this.filters?.history.map((d, name)=>{
+
+            let vals = name.split('|').map((s,i)=>{
+                    
+                let vals = s.split(':')
+                let label = vals.shift()
+                let val = vals.join(':').trim()
+
+                return {label, val}
+            })
+
+            return {
+                ...d,
+                label: html`
+                    <b-flex left wrap gap-row=" ">
+                    ${vals.map(({label, val})=>html`
+                        <b-text>
+                            <b-text semibold>${label}</b-text>
+                            <b-text dim><b-text .html=${val}></b-text></b-text>
+                        </b-text>
+                    `)}
+                    </b-flex>
+                `,
+                dataTitle: vals.map(({label, val})=>`${label}: ${val}`).join(' | ')
+            }
+
+        }).reverse() // newest first
+
+        let menu = []
+        let divider = ''
+
+        for( let d of history ){
+            let dateLabel = dateRangeLabel(d.ts, d.ts, {monthDay: false})
+            if( dateLabel != divider ){
+                divider = dateLabel
+                menu.push({divider: dateLabel})
+            }
+            menu.push(d)
+        }
+
+        let selected = await new Menu(menu, {
+            search: {placeholder: 'Filter history...'}
+        }).popOver(e.currentTarget)
+
+        if( !selected ) return
+
+        // this.filters.queuing = true
+        this.filters.reset(selected.filters, {stopQueuing: false})
     }
 
 })
