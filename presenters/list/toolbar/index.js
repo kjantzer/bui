@@ -25,7 +25,6 @@ customElements.define('b-list-toolbar', class extends LitElement{
             align-items: center;
             min-width: 0;
             position: relative;
-            column-gap: .25em;
             background: linear-gradient(to bottom, transparent, var(--theme-bgd));
         }
 
@@ -68,6 +67,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
             align-self: stretch;
             display: flex;
             align-items: center;
+            margin: 0 .25em;
             /* border-right: 2px solid rgba(0, 0, 0, 0.1); */
             /* padding: 0 .75em 0 .25em; */
             
@@ -135,6 +135,8 @@ customElements.define('b-list-toolbar', class extends LitElement{
                 margin-right: -0.5em;
                 margin-top: 0.25em;
                 padding-top: .25em;
+                padding-left: .25em;
+                padding-right: .25em;
                 border-top: solid 1px var(--theme-bgd-accent);
             }
 
@@ -153,6 +155,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
         <div class="count"><span>${this.count}</span></div>
 
         <div class="scroller" ?empty=${!this.sorts&&!this.filters.size}>
+        <b-mouse-scroll-horz></b-mouse-scroll-horz>
 
             ${!this.filters?'':html`
                 <b-list-filters .filters=${this.filters}></b-list-filters>

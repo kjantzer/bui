@@ -129,20 +129,18 @@ class PanelToolbar extends LitElement {
         }
 
         [part="close-btn"][icon="chevron_right"] {
-            width: 1.8rem;
-            height: 1.8rem;
             flex-shrink: 0;
-            transform: rotate(var(--b-panel-toolbar-close-btn-rotation, 0deg));
+            align-self: stretch;
+        }
+
+        [part="close-btn"][icon="chevron_right"]::part(icon) {
+            transform: rotate(var(--b-panel-toolbar-close-btn-rotation, 0deg)) scale(1.4);
         }
 
         [part="close-btn"][icon="chevron_right"]::part(main) {
             padding-top: 0;
             padding-bottom: 0;
 
-        }
-
-        [part="close-btn"][icon="chevron_right"]::part(icon) {
-            --size: 1.6rem;
         }
 
         /* hide on small devices in landscape (allow for more space for the content) */ 
@@ -176,7 +174,7 @@ class PanelToolbar extends LitElement {
             <slot name="close-btn">
                 <b-btn ?outline=${this.closebtn!='arrow'} 
                     part="close-btn"
-                    ?clear=${this.closebtn=='arrow'}
+                    ?text=${this.closebtn=='arrow'} lg
                     icon="${this.closeBtnIcon}" 
                     @click=${this.close}></b-btn>
             </slot>

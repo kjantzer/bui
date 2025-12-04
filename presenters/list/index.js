@@ -448,10 +448,17 @@ customElements.define('b-list', class extends LitElement {
         && document.activeElement.tagName == 'BODY' // NOT inside an input
         ){
 
+            // TODO: only when mouse is over?
             if( (e.key == 'f' || e.key == 'F')
             && !e.ctrlKey && !e.metaKey // ignore if extra keys pressed
             ){
                 this.showFilterSelection(e)
+            }
+
+            if( e.key == 'c'
+            && !e.ctrlKey && !e.metaKey // ignore if extra keys pressed
+            ){
+                this.filters.reset()
             }
 
             if( e.key == 's'

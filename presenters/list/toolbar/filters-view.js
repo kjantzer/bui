@@ -49,6 +49,8 @@ customElements.define('b-list-filters', class extends LitElement{
             position: sticky;
             left: 0;
             z-index: 10;
+            overflow: hidden;
+            background: var(--theme-bgd);
         }
 
         b-term-search::part(text-field) {
@@ -60,7 +62,7 @@ customElements.define('b-list-filters', class extends LitElement{
             padding-left: .35em;
             padding-right: .35em;
         } 
-
+/*
         b-term-search b-btn::part(icon) {
             font-size: 1.2em;
             margin-right: 0;
@@ -70,7 +72,7 @@ customElements.define('b-list-filters', class extends LitElement{
 
         :host([expanded ]) b-term-search b-btn::part(icon) {
             margin-top: -2px;
-        }
+        }*/
 
         :host([expanded]) b-term-search {
             padding-right: .5em;
@@ -83,18 +85,23 @@ customElements.define('b-list-filters', class extends LitElement{
         }
 
         :host([expanded]) b-term-search:focus-within {
-            box-shadow: none;
-            background: var(--theme-bgd-accent);
+            /*box-shadow: none;
+            background: var(--theme-bgd-accent);*/
             /*background: color-mix(in srgb, var(--theme) 15%, transparent);*/
-            /*box-shadow: 0 0 0 1px var(--theme) inset;*/
+            box-shadow: 0 0 0 1px var(--theme) inset;
         }
 
-        /*:host([expanded]) b-term-search:focus-within b-btn {
+        :host([expanded]) b-term-search:focus-within b-btn {
             color: var(--theme);
-        }*/
+        }
 
         :host([expanded]) b-term-search b-btn {
             --bgdColor: transparent;
+        }
+
+        :host([expanded]) b-term-search-results {
+            /*--active-bgd: color-mix(in srgb, var(--theme) 10%, transparent);*/
+            --active-color: var(--theme);
         }
 
         b-term-search-results {
@@ -165,12 +172,13 @@ customElements.define('b-list-filters', class extends LitElement{
 
         <b-term-search .coll=${this.filters} placeholder="Filter by..." @hide=${this.hide}>
             
-            <b-btn icon="filter" slot="prefix" text @click=${this.toggle} @contextmenu=${this.options}></b-btn>
+            <b-btn icon="filter" slot="prefix" text lg @click=${this.toggle} @contextmenu=${this.options}
+            tooltip="Filter by (F)"></b-btn>
 
         </b-term-search>
 
-        <b-btn color="theme-gradient" @click=${this.stopQueue} ?hidden=${this.queuing==undefined}>Apply</b-btn>
-        <b-btn muted @click=${this.cancelQueuedFilters} ?hidden=${this.queuing==undefined}>Cancel</b-btn>
+        <b-btn lg pill muted @click=${this.stopQueue} ?hidden=${this.queuing==undefined}>Apply</b-btn>
+        <b-btn lg pill muted @click=${this.cancelQueuedFilters} ?hidden=${this.queuing==undefined} icon="close"></b-btn>
 
         ${this.showOverflowBtn?html`
 
@@ -191,8 +199,8 @@ customElements.define('b-list-filters', class extends LitElement{
 
         `}></b-term-search-results>
 
-        <b-btn color="hover-red" title="Clear filters" icon="backspace" text @click=${this.resetFilters} ?hidden=${!this.filters.length}>
-            <b-text sup dim xs bold style="margin: 0 -.35em 0 -.125em;">${this.filters.length}</b-text>
+        <b-btn color="theme" tooltip="Clear filters (C)" icon="backspace" lg text empty @click=${this.resetFilters} ?hidden=${!this.filters.length}>
+            <!--<b-text muted xs bold style="position: absolute; top: 0;">${this.filters.length}</b-text>-->
         </b-btn>
     `}
 
@@ -221,6 +229,10 @@ customElements.define('b-list-filters', class extends LitElement{
     }
 
     options(e){
+
+        e.stopPropagation()
+        e.preventDefault()
+        return this.show({metaKey: true})
 
         if( !this.expanded ) return
 

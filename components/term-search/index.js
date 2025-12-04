@@ -136,8 +136,15 @@ customElements.define('b-term-search', class extends LitElement{
     onKeypress(e){
         // console.log(e.key);
 
+        if( ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key) && !e.ctrlKey && !e.metaKey ){
+            e.preventDefault()
+            e.stopPropagation()
+        }
+
         if( e.key == 'ArrowUp' ) return this.active = 'prev'
         if( e.key == 'ArrowDown' ) return this.active = 'next'
+        if( e.key == 'ArrowLeft' ) return this.active = 'prev'
+        if( e.key == 'ArrowRight' ) return this.active = 'next'
         if( e.key == 'Enter' ) return this.submit(e)
 
         this.term = e.currentTarget.currentValue

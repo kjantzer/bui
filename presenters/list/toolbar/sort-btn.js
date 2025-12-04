@@ -42,7 +42,10 @@ customElements.define('b-list-sort-btn', class extends LitElement{
             /* font-size: .8em; */
             /* vertical-align: baseline; */
             color: var(--toolbarTextColor);
-            margin: 0 -.125em;
+        }
+
+        .sort:first-child {
+            margin-left: -.35em;
         }
 
         /* b-icon:hover {
@@ -52,7 +55,7 @@ customElements.define('b-list-sort-btn', class extends LitElement{
     `}
 
     render(){return html`
-        <b-btn text class="sorts" @click=${this.sortMenu}>
+        <b-btn text lg class="sorts" @click=${this.sortMenu}>
             <main>
                 <!--<b-text bold>Sort:</b-text>-->
 

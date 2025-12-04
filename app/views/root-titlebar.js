@@ -13,14 +13,30 @@ customElements.define('b-root-titlebar', class extends LitElement{
             gap: .35em;
             position:relative;
             padding-left: .35em;
+            padding-right: .5em;
             /* padding-right: 1em; */
             /* margin-right: .5em; */
             align-self: stretch;
             /* border-right: solid 2px var(--theme-bgd-accent); */
         }
+
+        :host-context(b-panel-toolbar) {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        slot.right::slotted(:last-child) {
+            margin-right: -.35em;
+        }
         
         b-text {
             position: relative;
+        }
+
+        :host > b-text slot b-text {
+            background: var(--theme-bgd-accent);
+            padding: .25em .75em;
+            border-radius: 1em;
         }
 
         b-text[lg] {
@@ -29,23 +45,21 @@ customElements.define('b-root-titlebar', class extends LitElement{
 
         b-btn {
             margin-left: -.5em;
+            align-self: stretch;
         }
 
         [icon="chevron_right"] {
-            width: 1.95rem;
-            height: 1.85rem;
             flex-shrink: 0;
             order: -10;
-            transform: rotate(var(--b-panel-toolbar-close-btn-rotation, 0deg));
+        }
+
+        [icon="chevron_right"]::part(icon) {
+            transform: rotate(var(--b-panel-toolbar-close-btn-rotation, 0deg)) scale(1.4);
         }
 
         [icon="chevron_right"]::part(main) {
             padding-top: 0;
             padding-bottom: 0;
-        }
-
-        [icon="chevron_right"]::part(icon) {
-            --size: 1.5rem;
         }
 
         /*::slotted(b-btn:last-child) {
@@ -78,7 +92,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
     render(){return html`
 
         ${this.panel?html`
-            <b-btn text icon="chevron_right" part="close-btn" @click=${this.close}></b-btn>
+            <b-btn text lg icon="chevron_right" part="close-btn" @click=${this.close}></b-btn>
         `:''}
 
         <slot name="left"></slot>
@@ -86,12 +100,12 @@ customElements.define('b-root-titlebar', class extends LitElement{
         <b-text bold>
             <slot name="title">
                 <slot name="title:before"></slot>
-                <slot name="title:inner">${this.titleVal}</slot>
+                <slot name="title:inner"><b-text>${this.titleVal}</b-text></slot>
                 <slot name="title:after"></slot>
             </slot>            
         </b-text>
 
-        <slot></slot>
+        <slot class="right"></slot>
     `}
 
 })

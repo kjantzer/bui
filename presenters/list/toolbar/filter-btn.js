@@ -14,6 +14,15 @@ customElements.define('b-list-filter-btn', class extends LitElement{
             display: inline-block;
         }
 
+        b-btn[active] {
+            --bgdColor: var(--active-bgd, transparent);
+            color: var(--active-color, var(--theme-text))
+        }
+
+        b-btn[active] .value b-text {
+            color: var(--active-color, var(--theme-text-dim))
+        }
+
         :host([focus]) b-btn{
             /*--bgdColor: color-mix(in srgb, var(--theme) 10%, transparent); */
             /*box-shadow: 0 0 0 1px var(--theme) inset;*/
@@ -42,7 +51,6 @@ customElements.define('b-list-filter-btn', class extends LitElement{
 
         b-btn:not([active]) {
             color: var(--toolbarTextColor);
-            opacity: .8;
         }
 
         b-btn:not([active]).popover-open {
@@ -50,7 +58,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
         }
 
         b-btn:not([active]):not([focus]):has([empty]):not(:hover):not(.popover-open) {
-            color: var(--theme-text-dim);
+            /*color: var(--theme-text-accent);*/
         }
 
         b-btn[active] .label {
@@ -129,7 +137,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
     `}
 
     render(){return html`
-        <b-btn text 
+        <b-btn text lg
             ?active=${this.filter.isActive}>
 
             <main ?empty=${['', '-', '–'].includes(this.filter.valueLabel)}>
