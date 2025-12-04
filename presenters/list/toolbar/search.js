@@ -103,8 +103,10 @@ customElements.define('b-list-search-bar', class extends LitElement{
 
     render(){return html`
         <form-control>
+            <b-tooltip label>Find in list ( / )</b-tooltip>
             <text-field placeholder="${this.placeholder}" bubble-keypress single-line @keydown=${this.onKeyDown}></text-field>
-            <b-icon @click=${this.focus} name="search" slot="prefix"></b-icon>
+            <b-icon @click=${this.focus} name="search" slot="prefix">
+            </b-icon>
             <b-btn clear pill slot="suffix" icon="backspace" @click=${this.clear}></b-btn>
         </form-control>
     `}

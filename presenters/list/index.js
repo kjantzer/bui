@@ -361,6 +361,7 @@ customElements.define('b-list', class extends LitElement {
         
         <b-list-toolbar 
             key=${this.key}
+            .coll=${this.coll}
             .filters=${this.filters}
             .sorts=${this.sorts}
             .layouts=${this.layouts}
@@ -368,6 +369,7 @@ customElements.define('b-list', class extends LitElement {
             @filter-term-changed=${this.onFilterTermChange} part="toolbar"
         >
             <slot name="toolbar:before" slot="before"></slot>
+            <slot name="toolbar:scroller" slot="scroller"></slot>
             <slot name="toolbar:after" slot="after"></slot>
             <slot name="toolbar:refresh" slot="refresh-btn">
                 <b-btn clear lg icon="refresh" @click=${this.refresh} ?hidden=${this.listOptions?.refreshBtn===false}></b-btn>
@@ -459,6 +461,12 @@ customElements.define('b-list', class extends LitElement {
             && !e.ctrlKey && !e.metaKey // ignore if extra keys pressed
             ){
                 this.filters.reset()
+            }
+
+            if( e.key == 'g'
+            && !e.ctrlKey && !e.metaKey // ignore if extra keys pressed
+            ){
+                this.coll.trigger('toggle-grouping')
             }
 
             if( e.key == 's'

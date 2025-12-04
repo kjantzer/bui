@@ -23,6 +23,18 @@ customElements.defineShared('b-list-group-by', class extends LitElement{
             overflow: auto;
         }
 
+        :host-context(b-list-toolbar) {
+            flex-shrink: 0;
+        }
+
+        :host-context(b-list-toolbar) .options{
+            display: flex;
+            margin: 0 .25em;
+        }
+
+        :host-context(b-list-toolbar) [part="title"] { display: none; }
+        :host-context(b-list-toolbar) [part="info"] { display: none; }
+
         :host([disabled]) {
             color: var(--theme-text-accent);
         }

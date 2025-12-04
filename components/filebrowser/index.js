@@ -55,17 +55,6 @@ customElements.define('b-filebrowser', class extends RoutedView{
         b-filebrowser-breadcrumbs {
             margin: -1em -.65em;
         }
-
-        [icon="layers"] { order: -1; }
-        
-        b-list-group-by { order: -2; }
-
-        b-list-group-by::part(options) {
-            display: flex;
-        }
-
-        b-list-group-by::part(title) { display: none; }
-        b-list-group-by::part(info) { display: none; }
         
     `]}
 
@@ -99,11 +88,7 @@ customElements.define('b-filebrowser', class extends RoutedView{
                 <b-filebrowser-breadcrumbs slot="name" .host=${this} .coll=${this.coll}></b-filebrowser-breadcrumbs>
             </b-list-header>
 
-            <b-toggle-btn icon="layers" lg clear tooltip="Data Grouping" slot="toolbar:after" key=${this.tagName+'-group-by'}></b-toggle-btn>
-
-            <b-list-group-by .values=${GROUP_BY} .defaultValues=${['dateSort']} slot="toolbar:after">
-                <b-toggle-view type="show" key=${this.tagName+'-group-by'}></b-toggle-view>
-            </b-list-group-by>
+            <b-list-group-by .values=${GROUP_BY} .defaultValues=${['dateSort']} slot="toolbar:scroller"></b-list-group-by>
 
             ${this.renderMore?.()}
 

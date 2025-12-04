@@ -171,7 +171,7 @@ customElements.define('b-list-filters', class extends LitElement{
         <b-dragdrop @dragged=${this.onDrag}>Export</b-dragdrop>
         <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
-        <b-term-search .coll=${this.filters} placeholder="Filter by..." @hide=${this.hide}>
+        <b-term-search .coll=${this.filters} placeholder="Filter by..." @hide=${this.hide} ?hidden=${this.filters.size==0}>
             
             <b-btn icon="filter" slot="prefix" text lg @click=${this.toggle} @contextmenu=${this.options}
             tooltip="Filter by (F)"></b-btn>

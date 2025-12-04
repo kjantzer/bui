@@ -13,6 +13,10 @@ customElements.define('b-list-toolbar', class extends LitElement{
         key: {type: String},
         count: {type: Number},
     }}
+    
+    static listeners = {
+        coll: {'toggle-grouping': 'toggleGrouping'}
+    }
 
     constructor(){
         super()
@@ -49,6 +53,14 @@ customElements.define('b-list-toolbar', class extends LitElement{
             align-items: center;
             overflow: -moz-scrollbars-none;
             flex: 1;
+        }
+
+        .scroller > * {
+            flex-shrink: 0;
+        }
+
+        .grouping.show {
+            color: var(--theme);
         }
 
         .scroller::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
@@ -147,7 +159,17 @@ customElements.define('b-list-toolbar', class extends LitElement{
             }
 
         }
+
+        .scroller .grouping:not(.show) ~ slot::slotted(b-list-group-by) {
+            display: none;
+        }
     `}
+
+    toggleGrouping(e){
+        let btn = this.shadowRoot.querySelector('.grouping')
+        if( btn && !btn.hidden )
+            btn.classList.toggle('show')
+    }
 
     render(){return html`
         <slot name="before"></slot>
@@ -161,6 +183,10 @@ customElements.define('b-list-toolbar', class extends LitElement{
                 <b-list-filters .filters=${this.filters}></b-list-filters>
             `}
 
+            <b-btn icon="stack_simple" class="grouping" lg clear tooltip="Group by (G)" @click=${this.toggleGrouping} ?hidden=${!this.coll?.applyGrouping}></b-btn>
+
+            <slot name="scroller"></slot>
+
             ${!this.sorts?'':html`
                 <b-list-sort-btn .sorts=${this.sorts}></b-list-sort-btn>
             `}
@@ -171,7 +197,6 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
             ${!this.filters||!this.filters.showSearch?'':html`
             <b-list-search-bar @keydown=${this.onKeyDown} 
-                title="Press '/' to focus"
                 placeholder=${this.filters.searchOptions.placeholder}></b-list-search-bar>
             `}
 

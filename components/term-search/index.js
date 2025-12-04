@@ -19,6 +19,8 @@ customElements.define('b-term-search', class extends LitElement{
             flex-shrink: 0;
         }
 
+        :host([hidden]) { display: none; }
+
         .clear-btn {
             margin: -1em -.5em -1em 0;
         }
