@@ -34,9 +34,8 @@ customElements.define('b-list-filter-set-item', class extends LitElement{
             </b-grid>
 
             <b-flex gap=" ">
-                <b-label sm muted filled=${this.get('type')=='shared'?'green':'blue'}
-                        title=${this.get('type')} 
-                        ?hidden=${this.get('type')=='private'}>${this.get('type').substr(0,1).toUpperCase()}</b-label>
+
+                <b-icon name="lock" ?hidden=${this.get('type')!='private'} title=${this.get('type')}></b-icon>
                     
                 <b-btn clear pill sm icon="settings" @click=${this.settings}></b-btn>
             </b-flex>
@@ -71,7 +70,7 @@ customElements.define('b-list-filter-set-item', class extends LitElement{
     async destroy(e){
         if( await Dialog.confirmDelete().popOver(this) ){
             await this.model.destroySync()
-            this.parentElement.parentElement.parentElement.remove()
+            this.parentElement.parentElement.getRootNode().host?.remove()
         }
     }
 

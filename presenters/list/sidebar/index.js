@@ -196,55 +196,6 @@ customElements.define('b-list-sidebar', class extends LitElement{
 
         <b-tabs key=${this.filters?.key+':sidebar-panel'} stretch>
 
-        <div title="" tab-id="filters" icon="filter">
-        
-        <b-grid class="header" cols=1 gap=".5">
-
-            <b-flex>
-                <b-text xbold>Filters</b-text>
-
-                <b-flex right gap=0>
-
-                    <b-btn sm clear noshrink color="theme" ?hidden=${this.queuing!=undefined} @click=${this.toggleQueue}>Queue</b-btn>
-                    <b-btn sm clear noshrink color="theme" ?hidden=${this.queuing==undefined} @click=${this.toggleQueue}>Apply (${this.queuing})</b-btn>
-
-                    <b-btn sm block clear icon="cancel" 
-                        @click=${this.cancelQueuedFilters} ?hidden=${!this.queuing} tooltip="Cancel changes"></b-btn>
-
-                    <b-btn sm block clear color="hover-red" tooltip="Clear filters"
-                        ?hidden=${!this.filters.length}
-                        icon="backspace" @click=${this.resetFilters}></b-btn>
-                
-                </b-flex>
-            </b-flex>
-
-            <b-term-search icon="search" material="outline" .coll=${this.filtersMenu} @hide=${this.hide}></b-term-search>
-
-        </b-grid>
-    
-
-        <main>
-
-            ${this.filters.size>0&&this.filters.opts?.presets!==false?html`
-            <b-list-filters-saved .filters=${this.filters} noshrink></b-list-filters-saved>
-            `:''}
-
-            <b-term-search-results .coll=${this.filtersMenu} .item=${item=>html`
-
-                <b-list-sidebar-filter .model=${item.filter} ?active=${item.active}></b-list-sidebar-filter>
-
-            `}></b-term-search-results>
-
-            <!-- end of list -->
-            <b-text align="center" body block>
-                <b-label badge="gray" dot></b-label>
-            </b-text>
-        </main>
-
-        </div>
-
-        <b-list-sidebar-history icon="history" .filters=${this.filters}></b-list-sidebar-history>
-
         <slot></slot>
 
             <div pad icon="help_center" class="help">

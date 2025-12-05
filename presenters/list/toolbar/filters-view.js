@@ -30,6 +30,7 @@ customElements.define('b-list-filters', class extends LitElement{
         :host {
             display: var(--b-list-filters-display, flex);
             gap: 1px;
+            margin-left: -1px;
             align-items: center;
             overflow: -moz-scrollbars-none;
             flex-shrink: 0;
@@ -60,10 +61,20 @@ customElements.define('b-list-filters', class extends LitElement{
             width: 44px;
         }
 
-        b-term-search b-btn::part(main) {
+        b-term-search > b-btn:first-child::part(main) {
             padding-left: .35em;
             padding-right: .35em;
-        } 
+        }
+
+        b-term-search .queue-btns {
+            order: 10;
+            margin-right: .5em;
+        }
+
+        b-term-search[notextfield]::part(text-field),
+        b-term-search[notextfield]::part(clear-btn) {
+            display: none;
+        }
 /*
         b-term-search b-btn::part(icon) {
             font-size: 1.2em;
@@ -93,7 +104,7 @@ customElements.define('b-list-filters', class extends LitElement{
             /* box-shadow: 0 0 0 1px var(--theme) inset; */
         }
 
-        :host([expanded]) b-term-search:focus-within b-btn {
+        :host([expanded]) b-term-search:focus-within > b-btn:first-child {
             color: var(--theme);
         }
 
@@ -171,15 +182,23 @@ customElements.define('b-list-filters', class extends LitElement{
         <b-dragdrop @dragged=${this.onDrag}>Export</b-dragdrop>
         <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
-        <b-term-search .coll=${this.filters} placeholder="Filter by..." @hide=${this.hide} ?hidden=${this.filters.size==0}>
+        <b-term-search .coll=${this.filters} placeholder="Filter by..." @hide=${this.hide} ?hidden=${this.filters.size==0}
+        ?notextfield=${this.filters.opts?.filterByTextField===false}>
             
             <b-btn icon="filter" slot="prefix" text lg @click=${this.toggle} @contextmenu=${this.options}
             tooltip="Filter by (F)"></b-btn>
 
+            <b-flex gap=0 right class="queue-btns" slot="prefix" ?hidden=${this.queuing==undefined}>
+                <b-btn sm color="theme-gradient" pill @click=${this.stopQueue} >Apply</b-btn>
+                <b-btn sm pill muted @click=${this.hide} icon="close"></b-btn>
+            </b-flex>
+
         </b-term-search>
 
-        <b-btn lg pill muted @click=${this.stopQueue} ?hidden=${this.queuing==undefined}>Apply</b-btn>
-        <b-btn lg pill muted @click=${this.hide} ?hidden=${this.queuing==undefined} icon="close"></b-btn>
+
+        ${this.filters.size>0&&this.filters.opts?.presets!==false?html`
+        <b-list-filters-saved .filters=${this.filters}></b-list-filters-saved>
+        `:''}
 
         ${this.showOverflowBtn?html`
 
@@ -204,7 +223,9 @@ customElements.define('b-list-filters', class extends LitElement{
 
             <b-btn  tooltip="Clear filters (C)" icon="backspace" lg text empty @click=${this.resetFilters} ?hidden=${!this.filters.length}></b-btn>
 
+            ${this.filters.opts?.presets!==false?html`
             <b-btn lg text @click=${this.viewHistory} icon="history" tooltip="Filter history" class="when-open"></b-btn>
+            `:''}
 
         </b-flex>
     `}
@@ -420,7 +441,7 @@ customElements.define('b-list-filters', class extends LitElement{
 
         let selected = await new Menu(menu, {
             search: {placeholder: 'Filter history...'}
-        }).popOver(e.currentTarget)
+        }).popOver(e.currentTarget, {width: '800px', overflowBoundry: 'window'})
 
         if( !selected ) return
 

@@ -183,7 +183,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
                 <b-list-filters .filters=${this.filters}></b-list-filters>
             `}
 
-            <b-btn icon="stack_simple" class="grouping" lg clear tooltip="Group by (G)" @click=${this.toggleGrouping} ?hidden=${!this.coll?.applyGrouping}></b-btn>
+            <b-btn icon="group_by" class="grouping" lg clear tooltip="Group by (G)" @click=${this.toggleGrouping} ?hidden=${!this.coll?.applyGrouping}></b-btn>
 
             <slot name="scroller"></slot>
 
@@ -207,7 +207,6 @@ customElements.define('b-list-toolbar', class extends LitElement{
             ${this.filters?.size && this.filters?.opts?.sidebar!==false?html`
             <b-text class="toggle-sidebar">
                 <b-toggle-btn clear lg icon="tune" key=${this.filters.key+':sidebar-panel'}></b-toggle-btn>
-                <b-label xs badge="theme" ?hidden=${!this.filters.length}>${this.filters.length}</b-label>
             </b-text>
             `:''}
 

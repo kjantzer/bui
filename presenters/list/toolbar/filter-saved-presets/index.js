@@ -29,25 +29,19 @@ customElements.define('b-list-filters-saved', class extends LitElement{
             position:relative;
         }
 
-        main {
-            display: inline-grid;
-            line-height: 1.2em;
-            margin-bottom: -.25em;
-        }
-
         b-label {
-            color: var(--toolbarTextColor);
-            margin: -0.5em 0px;
-            position: relative;
-            top: -0.65em;
-        }
-
-        [active] b-label {
-            color: var(--theme);
+            position: absolute;
+            top: 0;
+            right: 0;
         }
 
         b-icon {
             vertical-align: top;
+        }
+
+        b-btn[active] {
+            color: var(--theme);
+            font-weight: bold;
         }
     `
 
@@ -135,26 +129,29 @@ customElements.define('b-list-filters-saved', class extends LitElement{
          //JSON.stringify(this.model.get('filters')) != JSON.stringify(this.filters.value())
     }
 
+    updated(){
+        if( this.coll.length )
+            this.classList.remove('when-open')
+        else
+            this.classList.add('when-open')
+    }
+
     render(){return html`
 
-        <b-grid gap=".25" cols=1 ?active=${this.model}>
+        <b-btn text lg ?active=${this.model} icon="stack_simple" ?empty=${!this.model} tooltip="Filter Presets">
 
-            <b-text>
-                <b-text bold sm ?gradient=${this.model}>
-                    Presets
-                </b-text>
-            </b-text>
-
-            <b-text heading ?dim=${!this.model}>
+            <b-text ?dim=${!this.model}>
                 ${this.model?this.model.get('name'):html`
-                    ${this.coll.length==0?'None':this.coll.length+' Avail.'}
+
+                    <!--<b-label badge="black" xs muted ?hidden=${this.coll.length==0}>${this.coll.length}</b-label>-->
+                    
                 `}
                 ${this.changed?html`
-                    <b-icon name="pencil"></b-icon>
+                    <b-label badge="red" dot></b-label>
                 `:''}
             </b-text>
 
-        </b-grid>
+        </b-btn>
     `}
 
     clickMenu(){ this.showMenu() }
@@ -173,23 +170,32 @@ customElements.define('b-list-filters-saved', class extends LitElement{
 
 
         if( menu.length > 0 ){
-            menu.unshift('-', {heading: this.model ? 'Other Presets': 'Presets'})
+            menu.unshift('-', {divider: 'Filter Presets'})
+            
             menu.push({text: html`<b>Tip:</b> click to replace all filters with this preset.
                 <br>Shift+click to merge with the currently applied filters.`})
+        }
+
+        if( (!this.model || this.changed) && this.filters.length > 0 ){
+
+            if( this.willTakeAction('list:preset:create').allowed )
+            menu.unshift({
+                label: `Save ${this.filters.length} filters as Preset`,
+                icon: 'add_record',
+                fn: 'saveFilters'
+            })
         }
 
         if( this.model ){
 
             if( this.changed && this.willTakeAction('list:preset:edit').allowed )
             menu.unshift({
-                label: 'Update with current filters',
-                icon: 'sync_alt',
+                label: `Save changes to: ${this.model.get('name')}`,
+                icon: 'file_upload',
                 fn: 'updateModel'
             })
 
             menu.unshift({
-                heading: 'Active Preset'
-            },{
                 label: html`
                     <b-list-filter-set-item .model=${this.model}></b-list-filter-set-item>
                 `,
@@ -199,20 +205,14 @@ customElements.define('b-list-filters-saved', class extends LitElement{
 
         }
 
-        if( (!this.model || this.changed) && this.filters.length > 0 ){
-
-            if( this.willTakeAction('list:preset:create').allowed )
-            menu.unshift({
-                label: 'Create new preset',
-                icon: 'add_box',
-                fn: 'saveFilters'
-            }, '-')
-        }
-
         if( menu.length == 0 )
-            menu.push({text: html`No presets avilable.<br>Apply some filters to create a new preset.`, bgd: false})
+            menu.push({text: html`<b-text body>No filter presets avilable.<br>Apply some filters to create a new preset.</b-text>`, bgd: false})
 
-        let selected = await new Menu(menu, {search: 10, width: '400px', handler: this}).popOver(this, {align: 'right'})
+        let selected = await new Menu(menu, {
+            search: this.coll.length>5?{placeholder: 'Find preset...'}:false,
+            width: '400px', 
+            handler: this
+        }).popOver(this)
 
         if( !selected ) return
 
