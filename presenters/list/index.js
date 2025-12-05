@@ -6,7 +6,6 @@ import Layouts from './data/layouts'
 import './toolbar'
 import './toolbar/selection-bar'
 import './infinite-list'
-import './sidebar'
 import '../../elements/spinner-overlay'
 import '../../helpers/lit/selectors'
 import Selection from '../selection'
@@ -487,8 +486,6 @@ customElements.define('b-list', class extends LitElement {
             ){
                 if( this.coll?.isFetching ){
                     this.dataSource?.abortFetch()
-                }else{
-                    this.sidebar?.hide()
                 }
             }
 
@@ -665,14 +662,6 @@ customElements.define('b-list', class extends LitElement {
         setTimeout(async ()=>{
             this.refresh()
         }, 200)
-
-        // look for a user inserted sidebar, else add the default one now
-        // a user might add it themselves so they can nest/slot additional views
-        this.sidebar = this.querySelector('b-list-sidebar')
-        if( this.filters?.opts?.sidebar !== false && this.filters?.size && !this.sidebar ){
-            this.sidebar = new (customElements.get('b-list-sidebar'))()
-            this.append(this.sidebar)
-        }
 
         this.header = this.$$('[name="header"]').assignedNodes()[0]
         this.footer = this.$$('[name="footer"]').assignedNodes()[0]

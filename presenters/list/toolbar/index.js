@@ -204,12 +204,6 @@ customElements.define('b-list-toolbar', class extends LitElement{
                 <b-list-layout-btn .layouts=${this.layouts} pill text></b-list-layout-btn>
             `}
 
-            ${this.filters?.size && this.filters?.opts?.sidebar!==false?html`
-            <b-text class="toggle-sidebar">
-                <b-toggle-btn clear lg icon="tune" key=${this.filters.key+':sidebar-panel'}></b-toggle-btn>
-            </b-text>
-            `:''}
-
             <slot name="refresh-btn"></slot>
 
             <slot name="after"></slot>
