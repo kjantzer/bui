@@ -93,13 +93,15 @@ customElements.define('b-table-row', class extends LitElement{
             grid-column: 1/-1 !important;
         }
 
-        ::slotted([icon="add_box"][cell="no"]) {
+        ::slotted([icon="add_box"][cell="no"]),
+        ::slotted([icon="add_record"][cell="no"]) {
             position: absolute;
             right: 0;
             bottom: -1em;
         }
 
-        :host-context(b-table:not(:hover)) ::slotted([icon="add_box"][cell="no"]:not(.popover-open)) {
+        :host-context(b-table:not(:hover)) ::slotted([icon="add_box"][cell="no"]:not(.popover-open)),
+        :host-context(b-table:not(:hover)) ::slotted([icon="add_record"][cell="no"]:not(.popover-open)) {
             display: none;
         }
 
