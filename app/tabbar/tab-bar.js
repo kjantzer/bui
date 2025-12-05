@@ -28,7 +28,6 @@ customElements.define('b-app-tab-bar', class extends BaseTabBar{
                 --b-app-tab-bar-sticky-bgd: color-mix(in srgb, var(--theme),black 20%);
                 overflow-x: auto;
                 overflow-y: hidden;
-                --b-app-tab-bar-sticky-bgd: color-mix(in srgb, var(--theme),black 20%);;
                 padding-left: .25em;
                 padding-right: .25em;
             }

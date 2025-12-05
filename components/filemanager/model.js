@@ -145,10 +145,10 @@ export class Palette extends CollMap {
         this.opts = opts
     }
 
-    clearVars(el){
+    clearVars(el, {overrideTheme=true}={}){
         let styles = Array.from(el.style)
         styles.forEach(style=>{
-            if( style.startsWith('--palette-') || style.startsWith('--theme') )
+            if( style.startsWith('--palette-') || (overrideTheme && style.startsWith('--theme')) )
                 el.style.removeProperty(style)
         })
     }
@@ -158,15 +158,13 @@ export class Palette extends CollMap {
         // https://web.dev/avoid-large-complex-layouts-and-layout-thrashing/?utm_source=devtools#avoid-forced-synchronous-layouts
         requestAnimationFrame(()=>{
 
-            this.clearVars(el)
+            this.clearVars(el, {overrideTheme})
 
             if( this.size == 0 ) return
 
             this.forEach((color, name)=>{
                 el.style.setProperty(`--palette-${name}`, color.rgb.join(' '))
-            })
-
-            el.style.setProperty('--theme-rgb', this.get('vibrant').rgb.join(', '))
+            }) 
 
             el.style.setProperty('--palette-gradient', 
                 `linear-gradient(var(--palette-gradient-direction, to right), 
@@ -187,6 +185,7 @@ export class Palette extends CollMap {
             el.style.setProperty(`--palette-text-accent`, this.textAccent.hex)
 
             if( overrideTheme ){
+                el.style.setProperty('--theme-rgb', this.get('vibrant').rgb.join(', '))
                 el.style.setProperty('--theme', 'var(--palette-text-accent)')
                 el.style.setProperty('--theme-gradient', 'var(--palette-gradient)')
             }
