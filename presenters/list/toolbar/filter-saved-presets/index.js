@@ -138,7 +138,7 @@ customElements.define('b-list-filters-saved', class extends LitElement{
 
     render(){return html`
 
-        <b-btn text lg ?active=${this.model} icon="stack_simple" ?empty=${!this.model} tooltip="Filter Presets">
+        <b-btn text lg ?active=${this.model} icon="filter_presets" ?empty=${!this.model} tooltip="Filter Presets">
 
             <b-text ?dim=${!this.model}>
                 ${this.model?this.model.get('name'):html`
