@@ -92,6 +92,12 @@ customElements.define('b-table-row', class extends LitElement{
         ::slotted([colspan]) {
             grid-column: 1/-1 !important;
         }
+        
+        ::slotted([colspan="2"]) { grid-column: span 2 !important; }
+        ::slotted([colspan="3"]) { grid-column: span 3 !important; }
+        ::slotted([colspan="4"]) { grid-column: span 4 !important; }
+        ::slotted([colspan="5"]) { grid-column: span 5 !important; }
+        ::slotted([colspan="6"]) { grid-column: span 6 !important; }
 
         ::slotted([icon="add_box"][cell="no"]),
         ::slotted([icon="add_record"][cell="no"]) {
