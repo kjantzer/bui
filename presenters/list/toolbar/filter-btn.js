@@ -20,7 +20,7 @@ customElements.define('b-list-filter-btn', class extends LitElement{
         }
 
         b-btn[active] .value b-text {
-            color: var(--active-color, var(--theme-text-dim))
+            color: var(--active-color, var(--theme-text))
         }
 
         :host([focus]) b-btn{
