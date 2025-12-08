@@ -195,11 +195,6 @@ customElements.define('b-list-filters', class extends LitElement{
 
         </b-term-search>
 
-
-        ${this.filters.size>0&&this.filters.opts?.presets!==false?html`
-        <b-list-filters-saved .filters=${this.filters}></b-list-filters-saved>
-        `:''}
-
         ${this.showOverflowBtn?html`
 
         
@@ -218,10 +213,15 @@ customElements.define('b-list-filters', class extends LitElement{
             ></b-list-filter-btn>
 
         `}></b-term-search-results>
+        
 
         <b-flex gap=0 class="end">
 
             <b-btn  tooltip="Clear filters (C)" icon="backspace" lg text empty @click=${this.resetFilters} ?hidden=${!this.filters.length}></b-btn>
+
+            ${this.filters.size>0&&this.filters.opts?.presets!==false?html`
+            <b-list-filters-saved .filters=${this.filters}></b-list-filters-saved>
+            `:''}
 
             ${this.filters.opts?.presets!==false?html`
             <b-btn lg text @click=${this.viewHistory} icon="history" tooltip="Filter history" class="when-open"></b-btn>
