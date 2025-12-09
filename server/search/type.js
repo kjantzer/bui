@@ -20,8 +20,22 @@ module.exports = class SearchType {
     get type(){ return this.constructor.name || 'unknown' }
 
     termForBoolean(term){
+
+        // let og = term
         // remove characters that boolean mode doesn't like
-        return term.trim().replace(/[\(\)\*\-+]$/g, ' ').replace(/\s{2,}/g, ' ')
+        term = term.trim().replace(/[\(\)\*\-+]$/g, ' ').replace(/\s{2,}/g, ' ')
+
+        let words = term.split(' ')
+        let lastWord = words.pop()
+
+        if( words.length > 0 )
+            term = `"${words.join(' ')}" ${lastWord}`
+        else
+            term = lastWord
+
+        // console.log(og,' | ',term);
+        
+        return term
     }
 
     get filters(){
