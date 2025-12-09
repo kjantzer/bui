@@ -23,7 +23,7 @@ module.exports = class SearchType {
 
         // let og = term
         // remove characters that boolean mode doesn't like
-        term = term.trim().replace(/[\(\)\*\-+]$/g, ' ').replace(/\s{2,}/g, ' ')
+        term = term.trim().replace(/[\(\)\*\-+]/g, '').replace(/\s{2,}/g, ' ').trim()
 
         let words = term.split(' ')
         let lastWord = words.pop()
