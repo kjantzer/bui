@@ -77,7 +77,8 @@ customElements.define('b-app-core-menu-btn', class extends TabBarBtn{
             box-shadow: var(--theme-shadow-2) inset;
         }
 
-        :host(:not([active])) .wide:hover {
+        :host(:not([active])) .wide:hover,
+        :host(.popover-open) .wide  {
             background: var(--theme-bgd);
         }
 
