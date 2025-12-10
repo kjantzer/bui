@@ -10,6 +10,7 @@ import '../../elements/spinner-overlay'
 import '../../helpers/lit/selectors'
 import Selection from '../selection'
 import Scrollbars from '../../helpers/scrollbars'
+import '../../helpers/lit/willTakeAction'
 
 customElements.define('b-list', class extends LitElement {
 
@@ -443,6 +444,11 @@ customElements.define('b-list', class extends LitElement {
     onKeydown(e){
 
         if( e.cancelBubble )
+            return
+
+        // allow parent view to stop these actions if they are not on top
+        // see panel for initial use case
+        if( this.willTakeAction('view-on-top', e).notAllowed )
             return
 
         if( this.offsetParent // is this list visible?

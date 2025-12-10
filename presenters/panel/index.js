@@ -331,6 +331,12 @@ export class Panel extends LitElement {
         }else if( view instanceof HTMLElement ){
             this.view = view
         }
+
+        // allow child views to determine if they are on top
+        this.addEventListener('view-on-top', e=>{
+            e.detail.action.allowed = this.onTop
+            e.stopPropagation()
+        })
     }
 
     onKeydown(e){
