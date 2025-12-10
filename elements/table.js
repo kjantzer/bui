@@ -37,6 +37,7 @@ customElements.define('b-table', class extends LitElement{
             border: solid 1px var(--table-border-color, var(--theme-bgd-accent));
             /* overflow: auto; */
             border-radius: var(--b-table-radius, 0px);
+            scrollbar-width: none;
         }
 
         :host([overflow]) {

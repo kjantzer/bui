@@ -13,10 +13,6 @@ customElements.define('b-table-row', class extends LitElement{
             display: block;
             border-bottom: solid 1px var(--table-border-color, var(--theme-bgd-accent));
         }
-
-        :host(:last-child) {
-            margin-bottom: -1px; /* border bottom */
-        }
         
         main {
             display: grid;
