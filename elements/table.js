@@ -52,7 +52,8 @@ customElements.define('b-table', class extends LitElement{
             border-radius: var(--b-table-rounded-radius, 4px);
         }
 
-        header {
+        header,
+        ::slotted([sticky]) {
             position: sticky;
             top: var(--table-sticky-top, 0);
             z-index: 50;
