@@ -37,6 +37,7 @@ customElements.define('b-text', class extends LitElement{
 
     static get properties() { return {
         tooltip: {type: String},
+        label: {type: String},
         html: {type: String}
     }}
 
@@ -310,6 +311,9 @@ customElements.define('b-text', class extends LitElement{
         <slot class="slot"></slot>
         ${this.tooltip?html`
             <b-tooltip>${this.tooltip}</b-tooltip>
+        `:''}
+        ${this.label?html`
+            <b-tooltip label>${this.label}</b-tooltip>
         `:''}
     `}
 
