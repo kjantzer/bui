@@ -86,7 +86,7 @@ customElements.define('b-menu-item', class extends LitElement{
 				cursor: pointer;
             }
 
-			:host([destructive]:hover	)  {
+			:host([destructive]:not([disabled]):hover){
 				color: var(--red);
 				background: color-mix(in srgb, var(--red) 20%, var(--theme-bgd));
 			}
