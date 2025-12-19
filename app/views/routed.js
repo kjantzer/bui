@@ -165,7 +165,8 @@ export default class RoutedView extends LitElement {
     }
 
     willLoad(id, attrs, state){
-        // nothing by default
+        if( this.disableWhileLoading )
+            this.disabled = true
     }
 
     async load(id, attrs={}, state){
@@ -252,6 +253,9 @@ export default class RoutedView extends LitElement {
     }
 
     finishLoading(model, id, attrs, state){
+
+        if( this.disableWhileLoading )
+            this.disabled = false
 
         if( this.model && this.model.get('isViewing') )
             this.model.set('isViewing', false)
