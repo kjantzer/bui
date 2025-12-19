@@ -6,6 +6,10 @@ export {LitElement, html, css}
 
 export default class RoutedView extends LitElement {
 
+    static properties = {
+        disabled: {type: Boolean, reflect: true}
+    }
+
     // note: dupe code
     static get shortcuts(){
 
@@ -47,6 +51,15 @@ export default class RoutedView extends LitElement {
             --bgd-color: var(--theme-bgd-accent2, #fff);
             background: var(--theme-bgd);
             /* --border-color: rgba(var(--theme-text-rgb, 0,0,0), .1); */
+        }
+
+        /* 
+            disable when switching models in case network is slow
+            we dont want a user to start clicking around thinking they are working on the model they opened
+        */
+        :host([disabled]) b-app-core-view {
+            opacity: .5;
+            pointer-events: none !important;
         }
 
         b-panel-toolbar {
@@ -151,7 +164,13 @@ export default class RoutedView extends LitElement {
         return this.model && this.model.id == id 
     }
 
+    willLoad(id, attrs, state){
+        // nothing by default
+    }
+
     async load(id, attrs={}, state){
+
+        await this.willLoad(id, attrs, state)
 
         // this model already loaded
         // NOTE: will this cause problems with existing code?
