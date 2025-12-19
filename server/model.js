@@ -108,7 +108,7 @@ module.exports = class Model {
 
     findJoins(opts){ return '' }
 
-    findSql(where, {select="*", join='', limit=null}={}){
+    findSql(where, {select="*", join='', limit=null, orderBy=null}={}){
 
         if( !this.config.table ) throw Error('missing config.table')
 
@@ -117,7 +117,7 @@ module.exports = class Model {
                         ${join||''}
                         ${where}
                         ${this.findGroupBy()}
-                        ${this.findOrderBy()}
+                        ${this.findOrderBy(orderBy)}
                         ${this._findLimit(limit)}`
     }
 
@@ -670,6 +670,7 @@ module.exports = class Model {
         // initiate all related fetches at once (possible time savings)
         if( relatedFetches.length > 0 ){
             await Promise.all(relatedFetches.map(async ({relation, RelatedModel, args})=>{
+                await this.willFetchRelated?.({relation, RelatedModel, args})
                 row.attrs[relation] = await RelatedModel.find(...args)
             }))
         }
