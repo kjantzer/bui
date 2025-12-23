@@ -59,7 +59,7 @@ main {
 	border: none;
 	background: transparent;
 	color: inherit;
-	-webkit-text-fill-color: var(--theme-text); /* auto fill */
+	-webkit-text-fill-color: inherit; /* auto fill */
 	/* background: yellow; */
 }
 
