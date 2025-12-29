@@ -210,9 +210,9 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             color: var(--accent);
         }
 
-        :host([_title='0'][pretitle='0']) aside [name="icon"] > * {
+        /*:host([_title='0'][pretitle='0']) aside [name="icon"] > * {
             --size: var(--icon-size, 2em);
-        }
+        }*/
 
         :host([toast]) aside {
             grid-row: span 1;
