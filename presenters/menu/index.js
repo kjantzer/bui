@@ -109,7 +109,7 @@ customElements.define('b-menu', class extends LitElement{
         :host {
             --hoverBgd: var(--b-menu-hover-bgd, var(--theme-bgd-accent, rgba(0,0,0,.1)));
             --hoverTextColor: inherit;
-            --checkboxColor: var(--b-menu-checkbox-color, #e10050);
+            --checkboxColor: var(--b-menu-checkbox-color, var(--theme, #e10050));
             --checkboxColorHover: var(--checkboxColor);
             display: flex;
             flex-direction: column;
