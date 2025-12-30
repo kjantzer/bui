@@ -140,6 +140,13 @@ export const colorScheme = {
         }
 
         if( accent ){
+
+            if( this.getCssVar('theme-secondary-'+accent) )
+                secondary = 'theme-secondary-'+accent
+
+            if( this.getCssVar('theme-primary-'+accent) )
+                accent = 'theme-primary-'+accent
+
             html.style.setProperty('--theme', `var(--${accent}, #${accent})`);
             html.style.setProperty('--theme-chosen', `var(--${accent}, #${accent})`);
 
