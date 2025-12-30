@@ -460,6 +460,12 @@ export default class BtnElement extends LitElement {
             overflow: hidden;
         }
 
+        :host([fab][sm]) {
+            width: 1.5em;
+            height: 1.5em;
+            --padding: .25em;
+        }
+
         :host([fab][pill]) {
             width: auto;
         }
