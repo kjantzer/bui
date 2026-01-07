@@ -172,9 +172,10 @@ class PanelToolbar extends LitElement {
     render(){return html`
         <div class="left" part="left">
             <slot name="close-btn">
-                <b-btn ?outline=${this.closebtn!='arrow'} 
+                <b-btn
                     part="close-btn"
-                    ?text=${this.closebtn=='arrow'} lg
+                    ?text=${this.closebtn=='arrow'} 
+                    lg clear
                     icon="${this.closeBtnIcon}" 
                     @click=${this.close}></b-btn>
             </slot>
