@@ -168,6 +168,8 @@ class SelectFieldElement extends HTMLElement {
 		this.addEventListener('click', this.focus.bind(this))
 		this.addEventListener('keypress', this.onKeypress.bind(this))
     }
+
+	get key(){ return this.getAttribute('key') }
 	
 	onKeypress(e){
 		if( e.code == 'Space' ){
