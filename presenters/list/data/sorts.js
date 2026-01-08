@@ -194,9 +194,10 @@ export default class Sorts extends CollMap {
 	sort(data){
         // return
 		let sorts = this.active
+        let hasGrouping = this.list?.coll?.applyGrouping || this.list.filters?.opts?.applyGrouping
 
         // if collection is grouping, then let always include a "grouping" sort first
-        if( this.list?.coll?.applyGrouping ){
+        if( hasGrouping ){
 
             // user defined, else create our own
             let groupingSort = this.get('grouping') || this._groupingSort

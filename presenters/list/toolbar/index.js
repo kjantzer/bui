@@ -171,6 +171,10 @@ customElements.define('b-list-toolbar', class extends LitElement{
             btn.classList.toggle('show')
     }
 
+    get hasGrouping(){
+        return this.coll?.applyGrouping || this.filters?.opts?.applyGrouping
+    }
+
     render(){return html`
         <slot name="before"></slot>
 
@@ -183,7 +187,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
                 <b-list-filters .filters=${this.filters}></b-list-filters>
             `}
 
-            <b-btn icon="group_by" class="grouping" lg clear tooltip="Group by (G)" @click=${this.toggleGrouping} ?hidden=${!this.coll?.applyGrouping}></b-btn>
+            <b-btn icon="group_by" class="grouping" lg clear tooltip="Group by (G)" @click=${this.toggleGrouping} ?hidden=${!this.hasGrouping}></b-btn>
 
             <slot name="scroller"></slot>
 

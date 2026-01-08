@@ -154,10 +154,19 @@ export default class DataSource {
 
                 this.data = await this.filters.filter(this._rawData)
 
-                if( this.coll?.applyGrouping )
+                let didApplyGrouping = false
+
+                if( this.coll?.applyGrouping ){
                     this.data = this.coll.applyGrouping(this.data)
-                
-                if( this.sorts && (!this.sorts.sortOnDB || this.coll?.applyGrouping) )
+                    didApplyGrouping = true
+                }
+
+                if( this.filters?.opts?.applyGrouping ){
+                    this.data = this.filters.opts.applyGrouping.call(this, this.data)
+                    didApplyGrouping = true
+                }
+
+                if( this.sorts && (!this.sorts.sortOnDB || didApplyGrouping) )
                     await this.sort()
 
                 this._filteredData = this.data

@@ -151,6 +151,7 @@ customElements.defineShared('b-list-group-by', class extends LitElement{
         super.connectedCallback()
 
         let list = this.list
+        if( list ) list.dataSource.groupByView = this
         if( list?.coll ) list.coll.groupByView = this
     }
 
