@@ -20,7 +20,7 @@ customElements.define('b-term-search-results', class extends LitElement{
         })
 
         this.addEventListener('mouseover', e=>{
-            let children = Array.from(this.children)
+            let children = this.childrenResults()
             let index = children.indexOf(e.target)
             if( this.termSearch )
                 this.termSearch.active = index
@@ -37,6 +37,10 @@ customElements.define('b-term-search-results', class extends LitElement{
 
             this._wasFocused = false
         })
+    }
+
+    childrenResults(){
+        return Array.from(this.children).filter(child=>!child.hasAttribute('ignore'))
     }
 
     createRenderRoot(){ return this }
@@ -68,7 +72,7 @@ customElements.define('b-term-search-results', class extends LitElement{
     onSubmit(e){
         this._wasFocused = this.termSearch.isFocused
         let {active, evt} = e.detail
-        let children = Array.from(this.children)
+        let children = this.childrenResults()
         let el = children[active]
         if( el ){
             el.click(evt)

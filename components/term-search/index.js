@@ -58,7 +58,15 @@ customElements.define('b-term-search', class extends LitElement{
                 }
             })
         }else if( data.models )
-            data = data.models
+            data = data.models.map(m=>{
+                return {
+                    key: m.id, 
+                    val: m,
+                    model: m,
+                    label: m?.label || m?.get('label'),
+                    description: m?.description || m?.get('description')
+                }
+            })
 
         this.data = data
 
