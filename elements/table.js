@@ -38,6 +38,7 @@ customElements.define('b-table', class extends LitElement{
             /* overflow: auto; */
             border-radius: var(--b-table-radius, 0px);
             scrollbar-width: none;
+            align-content: flex-start;
         }
 
         :host([overflow]) {
