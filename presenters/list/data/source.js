@@ -91,7 +91,8 @@ export default class DataSource {
 
             if( this.opts.fetchData ){
                 let fetchData = this.opts.fetchData
-                if( typeof fetchData == 'string' ) fetchData = {[fetchData]:true}
+                if( typeof fetchData == 'function' ) fetchData = fetchData()
+                else if( typeof fetchData == 'string' ) fetchData = {[fetchData]:true}
                 data = Object.assign(fetchData, data)
             }
 
