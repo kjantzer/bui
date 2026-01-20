@@ -235,7 +235,7 @@ export class UploaderElement extends LitElement {
         this.removeEventListener('dragover', this.dragover)
         this.removeEventListener('drop', this.drop)
 
-        if( this.parent.uploader = this)
+        if( this.parent.uploader === this)
             this.parent.uploader = null
 
         this.parent = null;

@@ -70,7 +70,7 @@ module.exports = class DB {
 
                 if( preSql ){
 
-                    if( typeof preSql == 'String')
+                    if( typeof preSql == 'string')
                         preSql = [preSql]
 
                     preSql = preSql.filter(sql=>typeof sql == 'string')
@@ -225,7 +225,7 @@ module.exports = class DB {
             let r = await this.query(sql, [vals])
 
             if( chunk )
-                this.format.affectedRows += this.affectedRows
+                resp.affectedRows += r.affectedRows
             else
                 resp = r
 
@@ -262,7 +262,7 @@ module.exports = class DB {
     // DEPRECATED
     parseWhere(where={}){
 
-        console.warning('!DEPRECATED - please stop using `db.parseWhere` and use clauses');
+        console.warn('!DEPRECATED - please stop using `db.parseWhere` and use clauses');
 
         let fields = []
         let values = []

@@ -62,7 +62,7 @@ export default class Broadcast {
             // no clients, so open one now
             if( clients.length == 0 ){
                 await new Promise(resolve=>{
-                    window.open(location.hostname)
+                    window.open(location.origin)
                     setTimeout(resolve,100)
                 })
                 // attempt to get again
@@ -123,7 +123,7 @@ export default class Broadcast {
         let {url, opts} = data
 
         if( globalThis.goTo )
-            goTo(url, opts)
+            globalThis.goTo(url, opts)
         else
             console.log('`globalThis.goTo` not implemented');
     }
