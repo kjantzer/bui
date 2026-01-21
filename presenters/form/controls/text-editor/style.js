@@ -85,6 +85,17 @@ export default css`
 	
 }
 
+.ProseMirror ul,
+.ProseMirror ol {
+	padding-left: var(--text-editor-list-indent, 2em);
+}
+
+.ProseMirror ul li > p,
+.ProseMirror ol li > p {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
 .ProseMirror hr {
     border-top: solid 1px rgba(var(--theme-text-rgb, 0, 0, 0), .2);
 }
