@@ -31,6 +31,7 @@ function csvToArray(strData, {
     hasHeader=true,
     mergeHeader=true,
     normalizeHeader=false,
+    dedupeHeader=true, // will suffix with _1, _2, etc. if duplicate header names are found
     formatHeader=null,
     // TODO: support 'auto' mode; lower threshold when rowLength is small, higher threshold when large row length
     rowLengthThreshold=0.3, // rows must be greater (ratio of non-empty cells to determined "row cell length")
@@ -200,6 +201,21 @@ function csvToArray(strData, {
 
         if( normalizeHeader )
             dataHeader = dataHeader.map(str=>_normalizeHeader(str?.trim()))
+
+        if( dedupeHeader ){
+            let headerSet = new Set()
+            dataHeader = dataHeader.forEach(str=>{
+                if( headerSet.has(str) ){
+                    let i = 1
+                    while( headerSet.has(str + '_'+i) ){
+                        i++
+                    }
+                    str = str + '_'+i
+                }
+                headerSet.add(str)
+            })
+            dataHeader = Array.from(headerSet)
+        }
 
         if( formatHeader )
             dataHeader = formatHeader(dataHeader)
