@@ -14,6 +14,10 @@ customElements.define('b-list-filter-btn', class extends LitElement{
             display: inline-block;
         }
 
+        :host([hidden]) {
+            display: none !important;
+        }
+
         b-btn[active] {
             --bgdColor: var(--active-bgd, transparent);
             color: var(--active-color, var(--theme-text))

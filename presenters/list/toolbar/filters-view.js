@@ -209,6 +209,7 @@ customElements.define('b-list-filters', class extends LitElement{
                 ?focus=${item.active}
                 ?active=${item.val.isActive}
                 ?_always=${item.val.attrs.alwaysShow}
+                ?hidden=${item.val.attrs?.show===false}
                 .filter=${item.val}
             ></b-list-filter-btn>
 
