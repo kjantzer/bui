@@ -84,19 +84,33 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
         .mapped b-label {
             margin: -.5em 0;
         }
+
+    
+        b-table-row > :first-child { position: sticky; left: 0; z-index: 10; }
+        b-table-row > :nth-child(2) { position: sticky; left: var(--table-col-1-width); z-index: 10; }
+        b-table-row > :nth-child(3) { position: sticky; left: calc(var(--table-col-1-width) + var(--table-col-2-width)); z-index: 10; }
+
+        b-table-row:not(:first-child) > :nth-child(2),
+        b-table-row:not(:first-child) > :nth-child(3) {
+            background: var(--theme-bgd);
+        }
     `
 
     constructor(){
         super(...arguments)
 
         this.url = ''
+        this.preview = 3
+        this.headerWidth = '160px'
+        this.previewWidth = '300px'
         this.pastMappingsUrl = ''
         this.allowedHeaders = []
         this.requiredHeaders = []
         this.mappingAlternatives = {}
+        this.importBtnLabel = 'Import'
     }
 
-    async open(file, uploader){
+    async open(file, uploader, {controller}={}){
 
         let data = await uploader.upload({url: this.url})
 
@@ -106,7 +120,7 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
         if( !this.panel )
             new Panel(this, {
                 title: this.constructor.title,
-                //controller: 'sales-import', 
+                controller, 
                 type: 'modal',
                 disableBackdropClick: true,
                 width: 'calc(100% - 2em)', height: 'calc(100% - 2em)',
@@ -255,7 +269,7 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
                     <b-text dim>Modified <b-ts .date=${this.file?.lastModifiedDate}></b-ts></b-text>
                 </b-grid>
 
-                <b-btn lg block pill color="theme-gradient" @click=${this.import} ?disabled=${!this.canImport}>Import</b-btn>
+                <b-btn lg block pill color="theme-gradient" @click=${this.import} ?disabled=${!this.canImport}>${this.importBtnLabel}</b-btn>
 
                 <b-table rounded>
                     <b-table-row slot="header">
@@ -289,7 +303,7 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
                 <b-table-row slot="header" sticky>
                     <b-text w="3em" semibold sticky label="Cell"></b-text>
 
-                    <b-flex w="minmax(160px, 1fr)">
+                    <b-flex w="${this.headerWidth}">
                         <b-text semibold>Mapping</b-text>
                         <b-btn clear icon="settings" @click=${this.mappingOptions} ?hidden=${!this.pastMappingsUrl}></b-btn>
                     </b-flex>
@@ -301,9 +315,10 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
                             tooltip="Sort fields"
                             ></b-toggle-btn>
                     </b-flex>
-                    <b-text semibold w="minmax(300px, 3fr)">Row 1</b-text>
-                    <b-text semibold w="minmax(300px, 3fr)">Row 2</b-text>
-                    <b-text semibold w="minmax(300px, 3fr)">Row 3</b-text>
+
+                    ${Array.from({length: this.preview}, (_, i) => html`
+                        <b-text semibold w="minmax(${this.previewWidth}, 3fr)">Row ${i+1}</b-text>
+                    `)}
                 </b-table-row>
             
 
@@ -321,7 +336,7 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
 
                     ${this.model.preview?.map(row=>html`
                         <b-text>${row[d.k]}</b-text>
-                    `).slice(0,3)}
+                    `).slice(0,this.preview)}
 
                 </b-table-row>
                 `)}
