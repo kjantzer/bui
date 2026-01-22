@@ -66,6 +66,10 @@ customElements.define('b-numeral', class extends LitElement{
         :host([muted]) [part] {
             color: var(--theme-text-accent);
         }
+
+        :host([hide-empty][num=""]) {
+            display: none !important;
+        }
     `}
 
     get defaultFormat(){ return '0.[0]a' } 
