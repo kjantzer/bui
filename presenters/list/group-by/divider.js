@@ -83,7 +83,7 @@ customElements.define('b-group-by-divider', class extends LitElement{
     }
 
     render(){return html`
-        <slot></slot>
+        <b-text bold capitalize>${this.model?.name?.replace(/^(\d+)?_/, '')}</b-text>
     `}
 
 })
