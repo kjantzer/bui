@@ -16,7 +16,7 @@
     - mergeHeader=true
     - normalizeHeader=false
     - formatHeader=null
-    - rowLengthThreshold=0.3 // rows must be greater (ratio of non-empty cells to determined "row cell length")
+    - rowLengthThreshold=0.5 // rows must be greater (ratio of non-empty cells to determined "row cell length")
     - headerLengthThreshold=true // true means use rowLengthThreshold
     -ignoreComments=true,
     - ignoreEmptyLines=true
@@ -34,7 +34,7 @@ function csvToArray(strData, {
     dedupeHeader=true, // will suffix with _1, _2, etc. if duplicate header names are found
     formatHeader=null,
     // TODO: support 'auto' mode; lower threshold when rowLength is small, higher threshold when large row length
-    rowLengthThreshold=0.3, // rows must be greater (ratio of non-empty cells to determined "row cell length")
+    rowLengthThreshold=0.5, // rows must be greater (ratio of non-empty cells to determined "row cell length")
     headerLengthThreshold=true, // true means use rowLengthThreshold
     ignoreComments=true,
     ignoreEmptyLines=true
@@ -202,9 +202,15 @@ function csvToArray(strData, {
         if( normalizeHeader )
             dataHeader = dataHeader.map(str=>_normalizeHeader(str?.trim()))
 
+        dataHeader = dataHeader.map(str=>{
+            if( !str ) return '_empty'
+            return str
+        })
+
         if( dedupeHeader ){
             let headerSet = new Set()
             dataHeader = dataHeader.forEach(str=>{
+
                 if( headerSet.has(str) ){
                     let i = 1
                     while( headerSet.has(str + '_'+i) ){
