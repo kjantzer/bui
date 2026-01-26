@@ -58,6 +58,10 @@ export const downloadCSV = (content, filename, opts={})=>{
         console.warn('Invalid csv content; Use `toCSV` to format a csv string');
     filename = filename || (new Date().getTime()+'.csv')
     opts.type = 'text/csv'
+
+    if( Array.isArray(content) )
+        content = content.join('\n')
+
     downloadContent(content, filename, opts)
 }
 
