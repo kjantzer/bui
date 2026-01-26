@@ -14,8 +14,8 @@ export default class FileModel extends Model {
 
     name = 'file'
 
-    get displayURL(){ return this.collection ? this.url()+'?display' : ''}
-    get previewURL(){ return this.collection ? this.url()+'?display=preview' : ''}
+    get displayURL(){ return this.collection || this.urlRoot ? this.url()+'?display' : ''}
+    get previewURL(){ return this.collection || this.urlRoot ? this.url()+'?display=preview' : ''}
     get downloadURL(){ return this.url()+'?download' }
 
     get attrTypes(){return {
