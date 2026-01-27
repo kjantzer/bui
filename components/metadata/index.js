@@ -76,7 +76,7 @@ customElements.define('b-metadata', class extends LitElement{
             data.push(val)
         }
 
-        if( this.opts.blacklist ){
+        if( this.opts?.blacklist ){
             data = data.filter(m=>!this.opts.blacklist.includes(m.key))
         }
 
