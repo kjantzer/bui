@@ -11,6 +11,10 @@ import {ifDefined} from 'lit/directives/if-defined.js';
 
 
 customElements.define('b-metadata', class extends LitElement{
+    
+    static listeners = {
+        model: {'edited': 'requestUpdate'}
+    }
 
     static get properties(){return {
         attr: {type: String},
@@ -70,6 +74,14 @@ customElements.define('b-metadata', class extends LitElement{
                 val.options = [{label: 'Remove', icon:'trash', val: null, clearsAll: true}, '-'].concat(spec.options)
 
             data.push(val)
+        }
+
+        if( this.opts.blacklist ){
+            data = data.filter(m=>!this.opts.blacklist.includes(m.key))
+        }
+
+        if( this.opts?.filter ){
+            data = data.filter(m=>this.opts.filter(m))
         }
 
         return data
@@ -147,6 +159,26 @@ customElements.define('b-metadata', class extends LitElement{
 
             if( this.values?.fetchSync ){
                 await this.values.fetchSync({once: true})
+            }
+
+            if( this.opts?.valuesFilter ){
+                let filter = this.opts.valuesFilter
+                if( typeof filter == 'function')
+                    filter = values.filter(filter)
+                else
+                    values = values.filter(m=>{
+                        let keys = Object.keys(filter)
+
+                        return keys.every(k=>{
+
+                            let matchVal = filter[k]
+
+                            if( typeof matchVal == 'function')                            
+                                return matchVal(m)
+
+                            return m.get(k) == matchVal
+                        })
+                    })
             }
 
             // if( values.map )
