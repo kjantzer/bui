@@ -1,3 +1,4 @@
+import {html} from 'lit'
 import Btn from '../../elements/btn'
 import Notif from '../notif'
 import Menu from '../menu'
@@ -40,6 +41,7 @@ customElements.define('b-list-export-btn', class extends Btn{
         let list = this.list
         let data = list.dataSource.data
         let description = list.filters.toString() || 'No filters'
+        let maxRows = this.maxExport
 
         let presets = typeof this.presets == 'function' ? this.presets() : (this.presets || [])
         let preset = undefined
@@ -50,7 +52,17 @@ customElements.define('b-list-export-btn', class extends Btn{
             presets.unshift(
                 {text: this.tooltip, bgd: false},
                 {label: `Current Results (${data.length})`, val: 'current'},
-                {label: 'All Results', val: 'all', description: `Fetch all results (max ${this.maxExport.toLocaleString()}) from server first`}
+                {label: 'All Results', val: 'all', 
+                    description: `Fetch all results from server first`,
+                    menu: [
+                        {divider: 'Up to...'},
+                        {label: '500 results', val: 500},
+                        {label: '1,000 results', val: 1000},
+                        {label: '5,000 results', val: 5000},
+                        {label: '10,000 results', val: 10000},
+                        {text: html`Large exports may take a while<br>to download or fail to complete`}
+                    ]
+                }
             )
 
             if( this.list.listOptions.selection ){
@@ -69,6 +81,7 @@ customElements.define('b-list-export-btn', class extends Btn{
 
             if( preset.db ) return this.exportDB(preset, {description})
 
+            maxRows = preset.menuSelected?.val || this.maxExport
             preset = preset.val
             description += ' | Export Preset: '+preset
         }
@@ -79,8 +92,9 @@ customElements.define('b-list-export-btn', class extends Btn{
         }
 
         if( preset == 'all' ){
-            let n = Notif.alert('Fetching all results...', {autoClose: false, closeOnClick: false})
-            await list.list.getContent({perPage: this.maxExport})
+            let n = Notif.alert('Fetching up to '+maxRows+' results...', {autoClose: false, closeOnClick: false})
+            await list.list.getContent({perPage: maxRows})
+            data = list.dataSource.coll || data
             n.close()
         }
 
