@@ -128,6 +128,7 @@ customElements.define('b-list-filters', class extends LitElement{
             right: 0;
             background-color: var(--theme-bgd);
             flex-shrink: 0;
+            z-index: 100;
         }
 
         b-list-filter-btn, [noshrink] {
