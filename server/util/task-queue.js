@@ -6,8 +6,9 @@
     ```js
     let queue = new TaskQueue({
         autoStart: false // default true
-        autoReload: true (use all defaults, or set to false)
-        autoReload: {
+        retry: true (use all defaults, or set to false)
+        retry: {
+            paginated: true, // assumes tasks are paginated
             delay: 60 * 1000, // 1 minute
             whenEmpty: true // only reload if queue is empty
         },
@@ -30,9 +31,17 @@
     queue.load() // force a reload of the queue (if you know new tasks are available)
     ```
 
-    If you dont want to call `.load()` you can choose to set the `autoReload` option which will contiue to call `load()` after a delay
+    If you dont want to call `.load()` you can choose to set the `retry` option which will contiue to call `load()` after a delay
 */
 module.exports = class TaskQueue {
+
+    static init(target, opts){
+        let key = opts.key || 'queue'
+        if( !target.constructor[key] ){
+            target.constructor[key] = new TaskQueue(opts)
+        }
+        return target.constructor[key]
+    }
 
     constructor(opts){
         this.opts = opts
@@ -42,13 +51,14 @@ module.exports = class TaskQueue {
         this.run = this.run.bind(this)
 
         // default to auto reload
-        if( opts?.autoReload !== false )
-            this.opts.autoReload = {
+        if( opts?.retry !== false )
+            this.opts.retry = {
+                paginated: true,
                 delay: 60 * 1000, // 1 minute
                 whenEmpty: true,
 
                 // could have set `true` (use all defaults) or provided custom opts
-                ...(typeof this.opts.autoReload === 'object' ? this.opts.autoReload : {})
+                ...(typeof this.opts.retry === 'object' ? this.opts.retry : {})
             }
         
         if( opts?.autoStart !== false )
@@ -99,19 +109,19 @@ module.exports = class TaskQueue {
             if( task ) 
                 await this.process(task)
             // attempt to load next batch of paginated tasks
-            else 
+            else if( this.opts.retry?.paginated )
                 await this.load()
         }
 
-        autoreload: if( this.opts.autoReload ){
+        retry: if( this.opts.retry ){
 
             // dont reload until queue is empty
-            if( this.opts.autoReload.whenEmpty && this._queue?.length ) 
-                break autoreload
+            if( this.opts.retry.whenEmpty && this._queue?.length ) 
+                break retry
 
             let tsElapsed = new Date().getTime() - this._queueLoadedAt
 
-            if( tsElapsed > this.opts.autoReload.delay )
+            if( tsElapsed > this.opts.retry.delay )
                 await this.load()
         }
 
