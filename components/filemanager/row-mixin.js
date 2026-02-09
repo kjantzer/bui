@@ -17,6 +17,8 @@ export const FileRowMixin = (Base)=>class extends Base{
     }
 
     preview(){
+        if( this.willTakeAction('preview').notAllowed ) return
+        
         if( this.model.isAudio )
             FloatingAudioPlayer.shared.open(this.model)
         else
