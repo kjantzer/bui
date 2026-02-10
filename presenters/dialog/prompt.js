@@ -286,7 +286,7 @@ function makePrompt(opts, i=0, globalOpts){
 	return html`
 	<form-control material="${globalOpts.material}"
 		key="${opts.key}"
-		show=${opts.label?'':'suffix prefix'}
+		show=${opts.show?opts.show:(opts.label?'':'suffix prefix')}
 		?disabled=${opts.disabled}
 		.hideIf=${opts.hideIf}
 		.showIf=${opts.showIf}
