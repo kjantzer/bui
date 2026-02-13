@@ -581,12 +581,10 @@ module.exports = class Model {
             //     this.req.query.with = _with
         }
 
-        if( !_with ) return
-
         let childWith = {}
 
         // opt-in feature for now - since this can be breaking change
-        if( this.constructor.relatedDotNotation ){
+        if( this.constructor.relatedDotNotation && _with ){
 
             delete this.req?.query.with
             opts.with = _with
