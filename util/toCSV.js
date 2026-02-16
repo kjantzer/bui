@@ -37,7 +37,8 @@ module.exports = (rawData, opts)=>{
 		description: '',
 		header: true,
 		titleize: false,
-		preset: undefined
+		preset: undefined,
+		headerSample: 10 // sample first 10 rows to determine header
 	}, opts)
 
 
@@ -55,8 +56,16 @@ module.exports = (rawData, opts)=>{
 		return d
 	})
 	
-	var header = Object.keys(rawData[0])
-	var rows = rawData.map(d=>Object.values(d))
+	// var header = Object.keys(rawData[0])
+	var header = Array.from(new Set(
+		// longer (more complete) set of headers first
+		rawData.slice(0,opts.headerSample).map(d=>Object.keys(d)).sort((a,b)=>a.length>b.length?-1:1).flatMap(d=>d)
+	))
+
+	// make sure all rows have same columns in same order
+	var rows = rawData.map(d=>{
+		return header.map(h=>d[h])
+	})
 
 	if( opts.titleize )
 		header = header.map(s=>titleize(s))
