@@ -283,6 +283,7 @@ customElements.define('b-file-manager', class extends LitElement{
     }
 
     uploadComplete(model){
+        this.willTakeAction('upload-file-complete', {file: model})
         return this.coll.add(model)
     }
 
