@@ -6,6 +6,7 @@
     sum([{n:1}, {n:2}], o=>o.n) // 3
 
     [1,2,3].sum() // 6
+    [1,2,'bad'].sum() // 3
     ```
 
     > NOTE: this also extnds native Arrays with `.sum`
@@ -18,7 +19,7 @@ const sum = function(array, fn){
     }
     
     return array.reduce((n, val)=>{
-        return parseFloat(typeof fn == 'function' ? fn(val) : val) +n
+        return (parseFloat(typeof fn == 'function' ? fn(val) : val)||0) + n
     }, 0)
 }
 
