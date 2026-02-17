@@ -4,8 +4,14 @@
 	Convert an array of data to a CSV string (or tab delimited)
 
 	```js
-	let data = [{title: 'title 1', info: 'info'}, {title: 'title 2', info: 'info'}]
-	let csvData = toCSV(data, {title: 'My Data'})
+	let data = [
+		{title: 'title 1', info: 'info', price: 10.00}, 
+		{title: 'title 2', info: 'info', price: 20.00}
+	]
+	let csvData = toCSV(data, {
+		title: 'My Data', 
+		footer: {title: 'Total', price: 'sum'}
+	})
 	```
 
 	> NOTE: The array of data can also contain backbone models or custom objects that implement `toCSV` or `toJSON`
@@ -16,6 +22,12 @@
 	- `title: ''` - title at the top of the csv data
 	- `description: ''` - similar to title ^ 
 	- `header: true` - show header row?
+	- `footer: false` - give an object of keys that match (or partially match) the data
+		- set value to `sum` to sum the values of the key
+		- set value to `count` to count the number of rows
+
+	##### Footer
+
 
 	##### Downloading
 	You can use `util/download` to download your csv data to a file
@@ -27,6 +39,8 @@
 	```
 */
 const {titleize} = require('./string')
+const {round} = require('./math')
+require('./sum')
 
 module.exports = (rawData, opts)=>{
 
@@ -38,7 +52,8 @@ module.exports = (rawData, opts)=>{
 		header: true,
 		titleize: false,
 		preset: undefined,
-		headerSample: 10 // sample first 10 rows to determine header
+		headerSample: 10, // sample first 10 rows to determine header
+		footer: false
 	}, opts)
 
 
@@ -66,6 +81,24 @@ module.exports = (rawData, opts)=>{
 	var rows = rawData.map(d=>{
 		return header.map(h=>d[h])
 	})
+
+	// add a footer with sum
+	if( opts.footer ){
+
+		let footer = header.map(h=>{
+
+			let v = opts.footer[h] || ''
+
+			if( v == 'sum' )
+				v = round(rawData.sum(d=>d[h]), 2)
+			if( v == 'count' || v == 'num' )
+				v = rawData.length+ ' rows'
+
+			return v
+		})
+
+		rows.push(footer)
+	}
 
 	if( opts.titleize )
 		header = header.map(s=>titleize(s))
@@ -102,8 +135,8 @@ module.exports = (rawData, opts)=>{
 		})
 	})
 
-	if( opts.footer )
-		data.push([opts.footer]);
+	// if( opts.footer )
+	// 	data.push([opts.footer]);
 	
 	let csvContent = "\ufeff"; // utf-8 bom
 	data.forEach(function(infoArray, index){
