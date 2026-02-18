@@ -6,7 +6,18 @@
 
     ```js
     let abortController = new AbortController()
-    let files = [] // list of urls or objects with `downloadURL` or `url` property
+    let files = [
+        'https://example.com/file.txt',
+        {
+            url: 'https://example.com/file.txt',
+        },
+        {
+            filename: 'file.txt',
+            contents: 'Hello, world!'
+        }
+    ]
+
+
 
     downloadToFileSystem(files, {
         startIn: 'downloads', // default
@@ -73,6 +84,28 @@ export default async function downloadToFileSystem(files, {dirID='downloads', ca
         // entire download is aborted
         if( signal && signal.aborted )
             return console.log('aborting', file);
+
+        if( file.contents ){
+
+            let filename = file.filename || file.name
+            let fileHandle = await saveDirHandle.getFileHandle(filename, {create: true})
+            let writable = await fileHandle.createWritable();
+
+            await writable.write(file.contents)
+            
+            progress?.('progress', {
+                file,
+                index: parseInt(i),
+                progress: 100,
+                size: file.contents.length,
+                totalSize: file.contents.length,
+                abortController
+            })
+
+            await writable.close()
+
+            continue;
+        }
 
         // list of files could be urls or objects
         let url = file.downloadURL || file.url || file

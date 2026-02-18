@@ -57,7 +57,10 @@ customElements.define('b-download-to-file-system', class extends LitElement{
                 data.id = file.id
                 data.label = file.origFilenameLabel || file.get('orig_filename') || file.get('filename') || file.get('label')
                 data.totalSize = file.get('size')
-            }// TODO: support generic object?
+            }else{ // generic object
+                data.id = file.filename || file.name
+                data.label = file.filename || file.name
+            }
 
             this.files.set(data.id, data)
         })
@@ -94,7 +97,7 @@ customElements.define('b-download-to-file-system', class extends LitElement{
                 if( action == 'progress'){
                     this.index = data.index
 
-                    let file = this.files.get(data.file.id)
+                    let file = this.files.get(data.file.id || data.file.filename || data.file.name)
                     
                     if( file ){
                         file.progress = data.progress
