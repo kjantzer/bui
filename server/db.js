@@ -18,6 +18,7 @@ module.exports = class DB {
 
     constructor(config){
         this.pool = mysql.createPool(config);
+        this.longRunningQueries = config.longRunningQueries
     }
 
     get clauses(){ return clauses }
@@ -47,7 +48,7 @@ module.exports = class DB {
         })
     }
 
-    query(sql, data, {timeout=30000, debug=false, logFailure=false, preSql=null, conn}={}){
+    query(sql, data, {timeout=30000, debug=false, logFailure=false, preSql=null, conn, req, logLongRunning=true}={}){
 
         return new PromiseArray(async (resolve, reject)=>{
 
@@ -86,8 +87,41 @@ module.exports = class DB {
                     }
                 }
 
+                let ts = new Date().getTime()
+                let longRunningOpts = this.longRunningQueries
+
                 // now run the main query on the same connection (in case preSql created some temp tables)
-                await conn.query({sql, timeout}, (err, results, fields)=>{
+                await conn.query({sql, timeout}, async (err, results, fields)=>{
+
+                    let queryTS = (new Date().getTime() - ts)/1000
+
+                    if( logLongRunning && longRunningOpts && queryTS >= longRunningOpts?.threshold ){
+
+                        let query = null
+                        try{
+                            if( req?.query )
+                                query = JSON.stringify(req?.query)
+                        }catch(err){}
+
+                        // TODO: make sure infinite loop is not possible
+                        if( longRunningOpts?.table ){
+                            await this.query(/*sql*/`INSERT INTO ${this.escapeId(longRunningOpts?.table)} SET ?`, {
+                                sql,
+                                time: queryTS,
+                                sql,
+                                uid: req?.user?.id,
+                                path: req?.path,
+                                method: req?.method,
+                                query,
+                            }, [], {timeout: 1000, logLongRunning: false}).catch(err=>{
+                                console.error('ERROR TRACKING LONG RUNNING QUERY: ', err.message);
+                            })
+                        }else{
+                            console.warn(`LONG RUNNING QUERY: ${queryTS} seconds - ${sql}`);
+                        }
+                        
+                    }
+
                     if( err ){
                         if( logFailure )
                             console.info('QUERY FAILED: '+sql);

@@ -50,6 +50,7 @@ function proxyDB(){
     
     // keep track of open/running connections so we can kill if needed
     let connections = this._dbConnections = new Set()
+    let req = this.req
 
     return new Proxy(this.db, {
 
@@ -63,6 +64,7 @@ function proxyDB(){
                         
                         // create connection and keep ref to it
                         opts.conn = await target.getConnection()
+                        opts.req = req
 
                         // to be safe, lets only track and kill "SELECT" type queries
                         // thinking if user initiates an add/update and it take a few seconds, but the user
@@ -184,6 +186,10 @@ module.exports = class Model {
     constructor(attrs, req, opts={}){
 
         related.setup(this)
+        
+        this.req = req || {query:{}}
+        this.attrs = attrs || {}
+        this.opts = opts
 
         if( !this.db )
             console.warn('Model.db has not been set yet')
@@ -191,10 +197,6 @@ module.exports = class Model {
         else
             this.db = proxyDB.call(this)
         
-        this.req = req || {query:{}}
-        this.attrs = attrs || {}
-        this.opts = opts
-
         for(let key in attrs){
             
             if( key == 'req')
@@ -702,7 +704,7 @@ module.exports = class Model {
             onDuplicate = this.db.updateOnDuplicate(attrs, updateDupeOpts)
         }
 
-        let result = await this.db.q(/*sql*/`INSERT ${ignoreDuplicates?'IGNORE':''} INTO ${this.config.table} 
+        let result = await this.db.query(/*sql*/`INSERT ${ignoreDuplicates?'IGNORE':''} INTO ${this.config.table} 
                                         SET ? ${onDuplicate}`, attrs)
         
         if( !result.insertId && !result.affectedRows ){
@@ -766,7 +768,7 @@ module.exports = class Model {
         if( !this.id || !attrs || Object.keys(attrs).length == 0 )
             return false;
 
-        let result = await this.db.q(/*sql*/`UPDATE ${this.config.table} SET ? WHERE ?`, [
+        let result = await this.db.query(/*sql*/`UPDATE ${this.config.table} SET ? WHERE ?`, [
             attrs, 
             where
         ])
@@ -827,7 +829,7 @@ module.exports = class Model {
 
         let [clause, clauseValues] = new this.db.clauses.Group(where).toSqlString(this.db)
         
-        let result = await this.db.q(/*sql*/`DELETE FROM ${this.config.table} WHERE ${clause}`, clauseValues)
+        let result = await this.db.query(/*sql*/`DELETE FROM ${this.config.table} WHERE ${clause}`, clauseValues)
 
         await this.afterDestroy(result, ...args.concat(beforeDestroy))
 
