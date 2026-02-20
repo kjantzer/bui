@@ -186,7 +186,7 @@ customElements.define('b-datepicker', class extends LitElement{
 
         <header part="header">
 
-            <input part="custom-date" type="text" placeholder="Custom date (ex: 90 day)" @change=${this.onCustomDateChange}>
+            <input part="custom-date" type="text" placeholder="Type a date (ex: 90 day or 1 yr)" @change=${this.onCustomDateChange}>
 
             <input part="input" type="text" placeholder="Start date" .key=${'start'}
                 .value=${live(this.selectedRange.start.format('MMM D, YYYY'))}
@@ -363,25 +363,31 @@ function stringToDateRange(value, {start, end}={}){
         _end = _start.endOf('year')
     }
 
-    let customMonth = _start ? null : value.match(/^([a-z]{3})\s?(\d{2,4})?$/i)
+    let customMonth = _start ? null : value.match(/^(-\d?)?([a-z]{3})\s?(\d{2,4})?$/i)
 
     if( customMonth ){
-        let [,month, year] = customMonth
+        let [,shift, month, year] = customMonth
         year ||= new Date().getFullYear()
 
         let date = dayjs(`${month} 1, ${year}`)
+
+        if( shift )
+            date = date.add(parseInt(shift)||-1, 'year')
+
         _start = date
         _end = date.endOf('month')
 
     }
     
-    let custom = _start ? null : value.match(/^([-+])?(\d+)\s?(years?|yr|months?|mo|weeks?|days?)?(?: (ago))?$/i)
+    let custom = _start ? null : value.match(/^([-+])?(\d+)\s?(years?|yr|months?|mo|weeks?|wk|days|d?)?(?: (ago))?$/i)
 
     customDate: if( custom ){
 
         let [,shift, unit, period, range] = custom
         if( period == 'yr') period = 'year'
         if( period == 'mo') period = 'month'
+        if( period == 'wk') period = 'week'
+        if( period == 'd') period = 'day'
 
         unit = parseInt(unit)
 
@@ -392,13 +398,16 @@ function stringToDateRange(value, {start, end}={}){
             break customDate
         }
 
+        if( !period && unit <= 365 )
+            period = 'day'
+
         // assume shorthand year "24" for 2024
-        if( !period && unit > 12 && unit < 99 ){
-            unit += 2000
-            _start = dayjs().set('year', unit).startOf('year')
-            _end = _start.endOf('year')
-            break customDate
-        }
+        // if( !period && unit > 12 && unit < 99 ){
+        //     unit += 2000
+        //     _start = dayjs().set('year', unit).startOf('year')
+        //     _end = _start.endOf('year')
+        //     break customDate
+        // }
 
         if( !period && unit > 1900 && unit < 2099 ){
             _start = dayjs().set('year', unit).startOf('year')

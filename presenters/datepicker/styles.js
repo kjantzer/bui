@@ -34,7 +34,8 @@ export default css`
         box-sizing: border-box;
         box-shadow: none !important;
         padding: .25em .5em;
-        border-radius: var(--radius);
+        border-radius: 3em;
+        background: var(--theme-bgd-accent);
     }
 
     b-datepicker-presets {
