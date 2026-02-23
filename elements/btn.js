@@ -103,6 +103,10 @@ export default class BtnElement extends LitElement {
             user-select: none; 
         }
 
+        :host([retract]) {
+            margin: -.4em -.6em;
+        }
+
         :host(:focus:not(:active):not(:hover)) {
             box-shadow: 0 0 0 2px var(--theme);
         }
@@ -287,6 +291,11 @@ export default class BtnElement extends LitElement {
         :host(:empty),
         :host([empty]) {
             --padding: .4em .4em;
+        }
+
+        :host([retract]:empty),
+        :host([retract][empty]) {
+            margin: -.4em;
         }
 
         :host(:empty) main b-icon ,
