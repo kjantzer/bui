@@ -69,6 +69,16 @@ module.exports = class DB {
 
             try{
 
+                // set USER ID var so it can be used in triggers - ex: COALESCE(@USER_ID, null)
+                if( req?.user?.id ){
+                    await new Promise((resolve, reject)=>{
+                        conn.query(`SET @USER_ID = ?`, [req?.user?.id], (err, results)=>{
+                            if( err ) return reject(err)
+                            resolve(results)
+                        })
+                    })
+                }
+
                 if( preSql ){
 
                     if( typeof preSql == 'string')
