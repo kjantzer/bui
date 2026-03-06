@@ -104,13 +104,22 @@ customElements.define('b-root-titlebar', class extends LitElement{
         <b-text bold>
             <slot name="title">
                 <slot name="title:before"></slot>
-                <slot name="title:inner"><b-text>${this.titleVal}</b-text></slot>
+                <slot name="title:inner"><b-text ?link=${this.about} @click=${this.viewAbout}>
+                    ${this.titleVal}
+                    ${this.about?html`
+                        <b-tooltip label>About this view</b-tooltip>
+                    `:''}
+                </b-text></slot>
                 <slot name="title:after"></slot>
             </slot>            
         </b-text>
 
         <slot class="right"></slot>
     `}
+
+    viewAbout(e){
+        this.about(e)
+    }
 
 })
 
