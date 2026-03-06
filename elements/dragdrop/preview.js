@@ -41,6 +41,8 @@ customElements.define('b-dragdrop-preview', class extends LitElement{
     
     get data(){ return this.__data}
 
+    // onEnter(action){} // nothing by default
+
     onLeave(){
         this.value = ''
     }
