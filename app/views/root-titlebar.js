@@ -118,7 +118,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
     `}
 
     viewAbout(e){
-        this.about(e)
+        this.about?.(e)
     }
 
 })
