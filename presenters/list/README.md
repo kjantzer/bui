@@ -69,6 +69,7 @@ const filters = {
     search: {
         data(m){
             // return a hash of attributes to be searched
+            // default is fuzzy matching
             return {
                 title: m.get('title'),
                 tags: m.get('tags') // value can be an array of strings
@@ -76,11 +77,17 @@ const filters = {
 
             // if "exact" match is needed:
             return {
+                // matches mispelling and partially typed words
                 fuzzy: {
                     title: m.get('title')
                 },
+                // one-for-one match (no partials)
                 exact: {
                     sku: m.get('sku')
+                },
+                // typed term exists somwhere in the string
+                contains: {
+                    description: m.get('description')
                 }
             }
         },
@@ -88,7 +95,7 @@ const filters = {
         placeholder: 'Search',
         delay: 500 // how long of delay in user typing to begin searching?
         minMatchCharLength: 3,
-        //...specify other fuse.js options
+        //...specify other fuse.js options (only applies to fuzzy)
     },
 
     type: {
