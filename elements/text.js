@@ -305,17 +305,18 @@ customElements.define('b-text', class extends LitElement{
             goTo(goto)
     }
 
-    render(){return html`
-        ${this.html?(isLitHTML(this.html)?this.html:unsafeHTML(this.html)):''}
-        <slot name="empty-html"></slot>
-        <slot class="slot"></slot>
-        ${this.tooltip?html`
-            <b-tooltip>${this.tooltip}</b-tooltip>
-        `:''}
-        ${this.label?html`
-            <b-tooltip label>${this.label}</b-tooltip>
-        `:''}
-    `}
+    render(){
+        // NOTE: this is done as array of html so that we dont have spaces or new lines between elements
+        // this allows use to wrap part of a word in a b-text element without breaking the layout
+        // ie: "highlight" -> <b-text inline>high</b-text>light -> still renders as "highlight" and not "high light"
+        return [
+            html`${this.html?(isLitHTML(this.html)?this.html:unsafeHTML(this.html)):''}`,
+            html`<slot name="empty-html"></slot>`,
+            html`<slot class="slot"></slot>`,
+            this.tooltip?html`<b-tooltip>${this.tooltip}</b-tooltip>`:'',
+            this.label?html`<b-tooltip label>${this.label}</b-tooltip>`:''
+        ]
+    }
 
 })
 
