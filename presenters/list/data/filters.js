@@ -386,6 +386,7 @@ export default class Filters extends Map {
                 // gonna search by fuzzy and exact
                 if( m._fuseSearch.fuzzy ){
                     m._exactSearch = m._fuseSearch.exact
+                    m._containsSearch = m._fuseSearch.contains
                     m._fuseSearch = m._fuseSearch.fuzzy
                 }
 
@@ -421,6 +422,20 @@ export default class Filters extends Map {
                 })
             }
 
+            let containsMatches = []
+            if( data[0]?._containsSearch ){
+                let term = this.term.toLowerCase()
+                containsMatches = data.filter(m=>{
+                    for( let key in m._containsSearch ){
+                        if( m._containsSearch[key]?.toLowerCase?.().match(term) ){
+                            m._containsMatch = {[key]: m._containsSearch[key]}
+                            return true
+                        }
+                    }
+                    return false
+                })
+            }
+
             let fuse = new Fuse(data, searchOptions)
             data = fuse.search(this.term)
 
@@ -441,6 +456,16 @@ export default class Filters extends Map {
                     m.searchMatches = m._exactMatch
                 }else{
                     data[i].searchMatches = {...m.searchMatches, _exactMatch: m._exactMatch}
+                }
+            })
+
+            containsMatches?.forEach(m=>{
+                let i = data.indexOf(m)
+                if( i < 0 ){
+                    data.push(m)
+                    m.searchMatches = m._containsMatch
+                }else{
+                    data[i].searchMatches = {...m.searchMatches, _containsMatch: m._containsMatch}
                 }
             })
 
