@@ -200,7 +200,12 @@ module.exports = class DB {
             }))
 
             /* if we got here, no queries failed */
-            conn.commit()
+            await new Promise((resolve, reject)=>{
+                conn.commit((err)=>{
+                    if( err ) return reject(err)
+                    resolve()
+                })
+            })
 
             // https://github.com/mysqljs/mysql/issues/1656
             conn.release()
