@@ -11,6 +11,13 @@ export const fetchJSON = function(url, opts={}){
 
     return fetch(url, opts)
     .then(async r=>{
+
+        if( r === false ){
+            let error = new Error('Request failed')
+            error.url = url
+            throw error
+        }
+
         let str = await r.text()
         try{
             return JSON.parse(str)
