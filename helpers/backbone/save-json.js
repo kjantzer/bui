@@ -23,7 +23,9 @@ export async function saveJSON(jsonKey, key, val, {
 
     save=true, 
     silent=false, 
-    deleteNull=true
+    deleteNull=true,
+    patch=true,
+    wait=true
 }={}){
 
     models = [].concat(models||[]) // uniq array
@@ -53,7 +55,7 @@ export async function saveJSON(jsonKey, key, val, {
         }
 
         if( save )
-            await model.saveSync(jsonKey, traits, {patch:true, wait: true})
+            await model.saveSync(jsonKey, traits, {patch, wait})
         else if( model.editAttr )
             model.editAttr(jsonKey, traits)
         else 
