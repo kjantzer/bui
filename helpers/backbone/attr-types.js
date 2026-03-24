@@ -10,6 +10,8 @@
 	a specific type (integer, date, etc). It's designed to be used in code and refrains
 	from overwriting the real value in `attributes`.
 
+	Also supports dot notation for accessing nested json data
+
 	@author Kevin Jantzer, Blackstone Audio
 	@since 2017-09-19
 
@@ -36,10 +38,24 @@ Backbone.registerModelAttrType = (key, fn)=>{
     ModelAttrTypes[key] = fn
 }
 
+function traversePath(path, val){
+
+    let keys = path.split('.')
+    let key = keys.shift()
+    
+	val = val ? val[key] : BackboneModelGet.call(this, key)
+
+    if( keys.length > 0 && val )
+        return traversePath.call(this, keys.join('.'), val)
+
+    return val
+}
+
 Backbone.Model.prototype.get = function(attr){
 
 	var [attr, type] = attr.split('|') // check to see if user is casting: `attrName|castType`
-	var val = BackboneModelGet.call(this, attr) // raw value
+	var val = traversePath.call(this, attr) // "raw" value
+
 	var type = type || (this.attrTypes && this.attrTypes[attr]) || (this.collection && this.collection.attrTypes && this.collection.attrTypes[attr]) // the type the value should be
 
 	// no types given, or no type for this attribute (or no value for attr), so return the value as is
