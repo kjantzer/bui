@@ -153,6 +153,16 @@ Model.prototype.resetEdited = function(opts={}){
 	let orig = this._origAttrs
 	this._editedAttrs = {}
 	this._origAttrs = null
+
+	// never reset these as the values in .attributes was only used on initial fetch
+	// they are not maintained as the child model/coll fetch and change data
+	if( orig ){
+		let ignoreKeys = [...Object.keys(this.models||{}), ...Object.keys(this.collections||{})]
+		for( let ignoreKey of ignoreKeys ){
+			delete orig[ignoreKey]
+		}
+	}
+
 	this.set(orig)
 
 	if( opts.silent !== true ){
