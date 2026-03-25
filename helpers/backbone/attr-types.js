@@ -45,8 +45,17 @@ function traversePath(path, val){
     
 	val = val ? val[key] : BackboneModelGet.call(this, key)
 
-    if( keys.length > 0 && val )
-        return traversePath.call(this, keys.join('.'), val)
+	if( val && keys.length > 0 ){
+		
+		if( keys[0] == 'first' )
+			val = val.first()
+		else if( keys[0] == 'last' )
+			val = val.last()
+		else if( keys[0].match(/^(?:index|at)(\d+)$/) )
+			val = val.at(keys[0].match(/^(?:index|at)(\d+)$/)[1])
+		else if( keys[0] )
+			return traversePath.call(this, keys.join('.'), val)
+	}
 
     return val
 }
