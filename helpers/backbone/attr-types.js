@@ -45,13 +45,13 @@ function traversePath(path, val){
 
 	if( val ){
 
-		if( key == 'first' )
+		if( key == 'first' && typeof val.first == 'function')
 			val = val.first()
-		else if( key == 'last' )
+		else if( key == 'last' && typeof val.last == 'function')
 			val = val.last()
-		else if( key.match(/^(?:index|at)(\d+)$/) )
+		else if( key.match(/^(?:index|at)(\d+)$/) && typeof val.at == 'function')
 			val = val.at(key.match(/^(?:index|at)(\d+)$/)[1])
-		else if( val.get )
+		else if( typeof val.get == 'function')
 			val = val.get(key)
 		else
 			val = val[key]
