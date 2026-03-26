@@ -203,52 +203,7 @@ module.exports = class API {
                 this.finishResponse(req, res, resp)                
 
 			}catch(err){
-
-                let errResp = {
-                    error: err.message,
-                    code: 400,
-                    type: err.name,
-                    data: err.data,
-                    ...(req.query?.trace !== undefined ? {trace: (err.stack||'unknown')} : {})
-                }
-
-                // database error
-                if( err.lastQuery ){
-
-                    if( ['ER_QUERY_INTERRUPTED'].includes(err.code) ){
-                        process.env.ENV == 'development' ? console.log('Query was killed') : null
-                    }else if( err.stackMsg ){
-                        console.log(err.stackMsg({req, trace: false, query: err.lastQuery}))
-                    }else{
-                        console.error(err.message)
-                        console.log(err.lastQuery)
-                    }
-                }
-                else if( process.env.ENV == 'development' 
-                || ['Error', 'TypeError'].includes(err.name) 
-                || req.query?.logErr !== undefined ){
-
-                    // UI errors are "good" errors that are for the client, simplify log to console
-                    // NOTE: `Error` should only be from a deliberate code throw, not a mistake (ie ReferenceError, TypeError, etc)
-                    // so no need to include the trace for these
-                    let includeTrace = !['ClientError', 'APIAccessError', 'APIError', 'Error'].includes(err.name)
-                    let errMsg = err.stackMsg?.({req, trace: includeTrace}) || err.stack || err
-
-                    console.log(errMsg)
-
-                    if( includeTrace && err.stackMsg )
-                        errResp.trace = err.stackMsg?.({req, err: false, lines: true, indent: false})
-                }
-                
-                let code = ['Error', 'DBError'].includes(err.name) ? 400 : (err.code || 500)
-
-                if( typeof code != 'number' )
-                    code = 500
-
-                errResp.code = code
-
-                res.statusMessage = err.code == 'ER_PARSE_ERROR' ? err.code : (err.message||'').replace(/\n/g, ' ')
-                res.status(code).json(errResp)
+                handleError.call(this, req, res, err)
 			}
 		})
 
@@ -349,4 +304,89 @@ module.exports = class API {
         })
     }
 
+}
+
+const SeenErrors = new Map()
+
+function handleError(req, res, err){
+
+    let db = this.opts.db
+    let logErrors = this.opts.logErrors
+
+    function log(msg, err){
+
+        let seen = SeenErrors.get(err.message)
+        let ts = new Date().getTime()
+        
+        // TODO: make opt-in?
+        if( seen && ts-seen < 500 ) // 500ms cooldown to prevent spamming the DB
+            return
+
+        SeenErrors.set(err.message, ts)
+
+        console.log(msg)
+
+        let dbLog = {
+            name: err.name,
+            msg: err.message,
+            body: msg,
+            sql: err.lastQuery,
+            uid: req.user?.id,
+            method: req.method,
+            path: req.path,
+            code: err.code
+        }
+
+        if( db && logErrors )
+            db.insert(logErrors.table || 'log_errors', dbLog).catch(err=>{
+                console.error('ERROR LOGGING ERROR: ', err.message)
+            })
+    }
+
+    let errResp = {
+        error: err.message,
+        code: 400,
+        type: err.name,
+        data: err.data,
+        ...(req.query?.trace !== undefined ? {trace: (err.stack||'unknown')} : {})
+    }
+
+    // database error
+    if( err.lastQuery ){
+
+        if( ['ER_QUERY_INTERRUPTED'].includes(err.code) ){
+            process.env.ENV == 'development' ? console.log('Query was killed') : null
+        }else if( err.stackMsg ){
+            log(err.stackMsg({req, trace: false, query: err.lastQuery}), err)
+        }else{
+            log(err.message, err)
+            console.log(err.lastQuery)
+        }
+    }
+    else if( process.env.ENV == 'development' 
+    || ['Error', 'TypeError'].includes(err.name) 
+    || req.query?.logErr !== undefined ){
+
+        // UI errors are "good" errors that are for the client, simplify log to console
+        // NOTE: `Error` should only be from a deliberate code throw, not a mistake (ie ReferenceError, TypeError, etc)
+        // so no need to include the trace for these
+        let includeTrace = !['ClientError', 'APIAccessError', 'APIError', 'Error'].includes(err.name)
+        let errMsg = err.stackMsg?.({req, trace: includeTrace}) || err.stack || err
+
+        log(errMsg, err)
+
+        if( includeTrace && err.stackMsg )
+            errResp.trace = err.stackMsg?.({req, err: false, lines: true, indent: false})
+    }
+    
+    let code = ['Error', 'DBError'].includes(err.name) ? 400 : (err.code || 500)
+
+    if( typeof code != 'number' )
+        code = 500
+
+    errResp.code = code
+
+    res.statusMessage = err.code == 'ER_PARSE_ERROR' ? err.code : (err.message||'').replace(/\n/g, ' ')
+    res.status(code).json(errResp)
+    
 }
