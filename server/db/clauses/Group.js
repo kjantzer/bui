@@ -2,6 +2,7 @@ const Clause = require('./Clause')
 
 module.exports = class Group extends Map {
 
+    static AND(clauses){ return new this(clauses, 'AND')}
     static OR(clauses){ return new this(clauses, 'OR')}
 
     constructor(clauses, operator='AND'){
