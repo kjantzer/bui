@@ -29,6 +29,10 @@ customElements.define('b-code', class extends LitElement{
             line-height: 1em;
         }
 
+        :host([hidden]) {
+            display: none;
+        }
+
         code {
             color: inherit;
         }
