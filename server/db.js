@@ -236,7 +236,7 @@ module.exports = class DB {
 		return mysql.escapeId.apply(mysql, args)
 	}
 
-    updateOnDuplicate(attrs, {add=[]}={}){
+    updateOnDuplicate(attrs, {add=[], jsonMerge=[]}={}){
         let updates = []
         for( let key in attrs ){
 
@@ -247,6 +247,9 @@ module.exports = class DB {
             // update should add to existing value
             if( add.includes(key) )
                 val += ` + ${_key}`
+
+            if( jsonMerge.includes(key) )
+                val = `${_key} = JSON_MERGE_PATCH( IFNULL(${_key}, '{}'), VALUES(${_key}) )`
             
             updates.push(val)
         }
