@@ -224,6 +224,10 @@ module.exports = class DB {
         return this.query(...arguments)
     }
 
+    call(procedure, ...args){
+        return this.query(/*sql*/`CALL ${procedure}(${args.map(arg=>'?').join(',')})`, args)
+    }
+
     format(...args){
 		return mysql.format.apply(mysql, args)
 	}
