@@ -495,10 +495,16 @@ module.exports = class Model {
         let convertToObject = true//this.config.resultsAsObject == true
         let ClassObj = Object.getPrototypeOf(this).constructor
 
-        if( (this.isSingular || opts.singular ) && resp && resp[0] && (!id && !this.id) ){
-            id = this.id = resp[0][this.idAttribute]
+        if( this.isSingular || opts.singular  ){
+
+            if( resp && resp[0] && (!id && !this.id) )
+                id = this.id = resp[0][this.idAttribute]
+
             if( resp.length > 1 )
                 console.warn('MODEL.isSingular returning more than one result')
+
+            if( !resp?.length )
+                return null
         }
         
         if( id && id == this.id ){
