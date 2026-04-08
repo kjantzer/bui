@@ -9,8 +9,10 @@ async function metadata(filePath, {stats=true,debug=false}={}){
     if( debug )
         console.time('audio metadata');
 
-    let metadata = await new Promise(resolve=>{
+    let metadata = await new Promise((resolve)=>{
         ffmpeg.ffprobe(filePath, function(err, metadata) {
+
+            if( err ) resolve(null)
 
             let data = metadata.streams.find(s=>s.codec_type=='audio')
 
