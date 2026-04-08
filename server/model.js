@@ -500,8 +500,8 @@ module.exports = class Model {
             if( resp && resp[0] && (!id && !this.id) )
                 id = this.id = resp[0][this.idAttribute]
 
-            if( resp.length > 1 )
-                console.warn('MODEL.isSingular returning more than one result')
+            if( resp?.length > 1 )
+                console.warn('MODEL.isSingular returning more than one result', resp)
 
             if( !resp?.length )
                 return null
