@@ -7,6 +7,8 @@ import './month'
 import './presets'
 import daterange, {label} from './daterange'
 
+export {label}
+
 customElements.define('b-datepicker', class extends LitElement{
 
     static get styles(){return styles}
