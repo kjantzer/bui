@@ -238,7 +238,7 @@ module.exports = class API {
             else
                 res.sendFile(resp.sendFile, err=>{
                     if( err )
-                        res.status(err.status).json({
+                        res.status(err.status||500).json({
                             error: err.message,
                             code: err.code
                         })
