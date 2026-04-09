@@ -18,6 +18,11 @@ export default class Palette extends CollMap {
 
         super(data, opts)
         this.opts = opts
+
+        this.forEach(color=>{
+            let bgd = this.opts.bgdColor || colorScheme.getCssVar('theme-bgd') || '#ffffff'
+            color.readability = tinycolor.readability(bgd, color.hex)
+        })
     }
 
     clearVars(el, {overrideTheme=true}={}){
@@ -41,10 +46,36 @@ export default class Palette extends CollMap {
                 el.style.setProperty(`--palette-${name}`, color.rgb.join(' '))
             }) 
 
+            let priority = ['vibrant', 'muted']
+
+            let popHighToLow = this.toJSON()
+            .filter(d=>d.readability>=2.25)
+            .sort((a, b)=>{
+                let priorityA = priority.indexOf(a.key)
+                let priorityB = priority.indexOf(b.key)
+                let aPop = a.pop
+                let bPop = b.pop
+
+                if( aPop > 0 && priorityA > -1 )
+                    aPop += (priorityA+1)*500
+
+                if( bPop > 0 && priorityB > -1 )
+                    bPop += (priorityB+1)*500
+
+                if( a.readability > 15 )
+                    aPop -= 500
+
+                if( b.readability > 15 )
+                    bPop -= 500
+                    
+                return bPop - aPop
+            })
+            .map(d => d.key)
+
             el.style.setProperty('--palette-gradient', 
                 `linear-gradient(var(--palette-gradient-direction, to right), 
-                    rgb(var(--palette-vibrant)),
-                    rgb(var(--palette-muted))
+                    rgb(var(--palette-${popHighToLow[0]})),
+                    rgb(var(--palette-${popHighToLow[1]}))
                 )`
             )
 
