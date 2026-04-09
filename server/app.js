@@ -78,6 +78,29 @@ const DEFAULT_OPTS = {
     handleUnhandledRejection: true,
 }
 
+function healthCheck(){
+	const mem = process.memoryUsage()
+    let uptime = process.uptime()
+    const hours = Math.floor(uptime / 3600)
+    const minutes = Math.floor((uptime % 3600) / 60)
+    const seconds = Math.floor(uptime % 60)
+
+    if( !hours && !minutes )
+        uptime = `Up for ${seconds}s`
+    else if( !hours )
+        uptime = `Up for ${minutes}m ${seconds}s`
+    else
+        uptime = `Up for ${hours}h ${minutes}m ${seconds}s`
+
+	return {
+        uptime,
+		heapUsed: Math.round(mem.heapUsed / 1024 / 1024) + 'MB',
+		heapTotal: Math.round(mem.heapTotal / 1024 / 1024) + 'MB',
+		rss: Math.round(mem.rss / 1024 / 1024) + 'MB',
+		external: Math.round(mem.external / 1024 / 1024) + 'MB'
+	}
+}
+
 module.exports = class ExpressApp {
 
     constructor(opts={}){
@@ -129,6 +152,11 @@ module.exports = class ExpressApp {
 
         if( opts.unhandledRejection )
             handleUnhandledRejection(opts.handleUnhandledRejection)
+        
+        // todo: opt in? or modify?
+        this.get('/health', (req, res)=>{
+            res.json(healthCheck())
+        })
     }
 
     // pass-through to express
