@@ -378,6 +378,9 @@ class FormHandler extends HTMLElement {
 							if( allowedVal == 'falsey' )
 								valid.push(!val)
 
+							else if( allowedVal == null && (val === null || (Array.isArray(val) && val.length == 0) ) )
+								valid.push(true)
+							
 							else if( allowedVal != val )
 								valid.push(false)
 						}
