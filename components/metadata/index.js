@@ -70,8 +70,14 @@ customElements.define('b-metadata', class extends LitElement{
                 val: metadata[key]||'',
             }
 
-            if( spec && spec.options )
-                val.options = [{label: 'Remove', icon:'trash', val: null, clearsAll: true}, '-'].concat(spec.options)
+            if( spec ){
+
+                if( spec.options )
+                    val.options = [{label: 'Remove', icon:'trash', val: null, clearsAll: true}, '-'].concat(spec.options)
+
+                if( spec.singular )
+                    val.singular = true
+            }
 
             data.push(val)
         }
@@ -103,7 +109,7 @@ customElements.define('b-metadata', class extends LitElement{
         <form-control key="${t.key}" material=${ifDefined(this.opts.table?undefined:this.material)} part="control" no-handler ?disabled=${this.disabled}>
                 
             ${t.options?html`
-            <select-field .value=${t.val} .options=${t.options} multiple
+            <select-field .value=${t.val} .options=${t.options} ?multiple=${!t.singular}
                 placeholder=${this.opts.placeholder||'select'}
                 @change=${this.clearMeta}
             ></select-field>
