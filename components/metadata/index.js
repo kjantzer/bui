@@ -156,6 +156,8 @@ customElements.define('b-metadata', class extends LitElement{
 
     async addMeta(e){
 
+        e.stopPropagation()
+
         let key = null
         let {clickTarget} = e
 
