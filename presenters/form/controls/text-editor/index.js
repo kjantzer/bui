@@ -117,7 +117,20 @@ customElements.define('text-editor', class extends LitElement{
                 <slot name="menubar:right" slot="right"></slot>
             </b-text-editor-menubar>
         `:''}
+        ${this.renderExtensions()}
     `}
+
+    renderExtensions(){
+        return this.extensions.map(extension=>{
+            let ce = customElements.get(extension.options.tag)
+            if( ce && ce.renderToEditor )
+                return ce.renderToEditor(this)
+        })
+    }
+
+    insertText(text){
+        this.editor.chain().focus().insertContent(text).run()
+    }
 
     focus(){
         this.editor.commands.focus()
