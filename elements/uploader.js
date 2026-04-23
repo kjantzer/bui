@@ -70,6 +70,7 @@ export class UploaderElement extends LitElement {
         capture: {type: String},
         plainFilename: {type: Boolean},
         multiple: {type: Boolean},
+        append: {type: Boolean, reflect: true },
         placeholder: {type: String},
         files: {type: Array},
         resize: {type: Object},
@@ -158,6 +159,7 @@ export class UploaderElement extends LitElement {
         this.accept = '';
         this.plainFilename = false
         this.multiple = false
+        this.append = false
         this.capture = false
         this.resize = false
         this.placeholder = 'Drop to upload';
@@ -270,7 +272,7 @@ export class UploaderElement extends LitElement {
         this.dragging = false
         // let files = new Files(e.dataTransfer)
         this._selectFiles(e.dataTransfer.files, {
-            append: (e.metaKey||e.ctrlKey),
+            append: this.append || (e.metaKey||e.ctrlKey),
             items: e.dataTransfer.items
         })
     }
@@ -279,11 +281,13 @@ export class UploaderElement extends LitElement {
         this._selectFiles(e.target.files)
     }
 
-    _selectFiles(files, {append=false, items=[]}={}){
+    _selectFiles(files, {append, items=[]}={}){
 
         if( this.uploading ) return
 
         files = Array.from(files)
+
+        append ??= this.append
         
         // NOTE: should we bail out with error?
         if( !this.multiple )
@@ -293,9 +297,11 @@ export class UploaderElement extends LitElement {
         let validItems = []
         let invalid = []
 
-        files.forEach((file, i)=>{
-            if( !this._acceptFile(file) )
-                return invalid.push(file)
+        files = files.filter((file, i)=>{
+            if( !this._acceptFile(file) ){
+                invalid.push(file)
+                return false
+            }
 
             if( append ){
                 // attempt to skip duplicates
@@ -312,6 +318,8 @@ export class UploaderElement extends LitElement {
                 valid.push(file)
                 validItems.push(items[i])
             }
+
+            return true
         })
 
         if( append )
@@ -319,7 +327,7 @@ export class UploaderElement extends LitElement {
         else
             this.files = valid
 
-        this.emitEvent('change', {files: this.files, invalid: invalid.length > 0 ? invalid : false, items: validItems})
+        this.emitEvent('change', {files: files,  invalid: invalid.length > 0 ? invalid : false, items: validItems})
 
         if( this.autoUpload && this.url ){
             this.upload()
@@ -379,6 +387,7 @@ export class UploaderElement extends LitElement {
         this._fileProgress = 0
         this.uploading = true
 
+        let files = this.files
         let resp = []
         
         // upload all files together
@@ -388,8 +397,8 @@ export class UploaderElement extends LitElement {
             let _formData = new FormData();
 
             // append all files to form data for upload
-            for( let i in this.files ){
-                _formData.append(fileKey, this.files[i])
+            for( let i in files ){
+                _formData.append(fileKey, files[i])
             }
 
             try{
@@ -404,21 +413,21 @@ export class UploaderElement extends LitElement {
                 resp = await req.send(_formData)
 
             }catch(e){
-                resp.push({error: e, files: this.files})
+                resp.push({error: e, files: files})
             }
 
         }else{
 
-        for( let i in this.files ){
+        for( let i in files ){
 
-            let file = this.files[i]
+            let file = files[i]
             let _formData = new FormData();
                         
             if( this.resize )
                 file = await resizeImg(file, this.resize)
 
             _formData.append(fileKey, file)
-            _formData.append('totalFiles', this.files.length)
+            _formData.append('totalFiles', files.length)
             _formData.append('fileNum', parseInt(i)+1)
 
             for( let key in formData ){
@@ -465,7 +474,7 @@ export class UploaderElement extends LitElement {
         this.emitEvent('upload-done', resp)
 
         // NOTE: is this really better than determining with `this.multiple`?
-        return this.files.length > 1 ? resp : resp[0]
+        return files.length > 1 ? resp : resp[0]
     }
 
 }
