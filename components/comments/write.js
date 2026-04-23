@@ -89,7 +89,7 @@ customElements.define('b-write-comment', class extends LitElement{
 
             ${this.model||!this.uploads?'':html`
             <b-uploader-preview>
-                <b-uploader multiple placeholder="Drop to attach"></b-uploader>
+                <b-uploader multiple append placeholder="Drop to attach" @change=${this.onFileAdd}></b-uploader>
             </b-uploader-preview>
             `}
 
