@@ -28,9 +28,11 @@ customElements.define('b-previewer-image', class extends LitElement{
         }
     `}
 
+    get ext(){ return this.model.get?.('ext') || this.model.ext }
+
     render(){return html`
         <b-empty-state overlay lg>Loading...</b-empty-state>
-        <img src="${this.model.get('ext') == 'tif'?this.model.previewURL:this.model.displayURL}">
+        <img src="${this.ext == 'tif'?this.model.previewURL:this.model.displayURL}">
     `}
 
 })
