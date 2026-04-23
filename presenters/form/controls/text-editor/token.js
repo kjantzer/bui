@@ -45,7 +45,7 @@ export default function tokenPlugin({
     const name = key===true?tag:key
     const TokensPluginKey = new PluginKey(name)
 
-    if( tokenElement.char ) char = tokenElement.char
+    if( tokenElement.char !== undefined ) char = tokenElement.char
 
     let attrs = Object.keys(tokenElement.properties)
     let addAttributes = {}
@@ -110,6 +110,8 @@ export default function tokenPlugin({
                     return {
                         onStart: props => {
 
+                            let editor = props.editor
+
                             // create a menu to show token items
                             menu = new Menu(props.items, {
                                 search:false,
@@ -120,7 +122,7 @@ export default function tokenPlugin({
                                     let args = pick(item, attrs)
 
                                     if( tokenElement.formatArgsForCommand ){
-                                        args = tokenElement.formatArgsForCommand.call(this, args, item, menu)
+                                        args = tokenElement.formatArgsForCommand.call(this, args, item, {menu, editor})
                                         if( args === false ) return
                                     }
 
