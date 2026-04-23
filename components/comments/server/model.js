@@ -187,6 +187,8 @@ module.exports = class Comments extends Model {
             }
         }
 
+        // TODO: check metadata.files and delete them
+
         // delete all comments for a group/gid
         // TODO: need to delete files that may exist
         if( !this.id && this.group && this.gid ){
