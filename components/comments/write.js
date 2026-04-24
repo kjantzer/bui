@@ -159,6 +159,8 @@ customElements.define('b-write-comment', class extends LitElement{
             meta = Object.assign(meta, (typeof this.meta == 'function' ? this.meta() : this.meta))
         }
 
+        if( this.willTakeAction('save-comment', {meta}).notAllowed ) return
+
         if( this.model ){
             this.model.saveSync({comment, comment_plain, meta}, {patch: true})
         }else{
