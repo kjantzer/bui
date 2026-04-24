@@ -94,6 +94,8 @@ customElements.define('b-comment-row', class extends LitElement {
             display: grid;
             grid-template-columns: auto 1fr;
             gap: .5em;
+            font-size: var(--font-size-sm);
+            color: var(--theme-text-accent);
         }
 
         .comment {
@@ -240,11 +242,11 @@ customElements.define('b-comment-row', class extends LitElement {
                 <header part="header">
 
                     <div>
-                        <b-text bold sm muted class="name">
+                        <b-text bold class="name">
                             ${this.renderName()}
                         </b-text>
 
-                        <b-text sm muted><b-ts .date=${this.model.get('ts_created')}></b-ts></b-text>
+                        <b-text><b-ts .date=${this.model.get('ts_created')}></b-ts></b-text>
                     
                         ${this.model.wasUnread?html`
                             <b-new-badge xs>NEW</b-new-badge>

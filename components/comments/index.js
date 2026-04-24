@@ -107,6 +107,19 @@ customElements.define('b-comments', class extends LitElement{
         :host([bubbles]) b-comment-row::part(write-comment) {
             padding-top: calc(var(--comment-bubble-padding, 1em) / 2);
         }
+
+        :host([github]) b-comment-row::part(header) {
+            background: var(--theme-bgd-accent);
+            margin: -1rem -1rem 1rem -1rem;
+            padding: .5rem 1rem;
+            color: var(--theme-text);
+            font-size: var(--font-size-rg);
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        :host([github]) b-comment-row[mine]::part(header) {
+            background: color-mix(in srgb, var(--theme), var(--theme-bgd-accent) 90%);
+        }
     `}
 
     constructor(){
@@ -267,7 +280,8 @@ customElements.define('b-comments', class extends LitElement{
             
             <b-comment-row 
                 ?disabled=${this.disabled}
-                part="comment" 
+                part="comment ${m.isByMe?'mine':'other'}" 
+                ?mine=${m.isByMe}
                 .renderMeta=${this.renderMeta}
                 .model=${m} 
                 .meta=${this.meta} 
