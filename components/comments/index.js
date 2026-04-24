@@ -102,6 +102,7 @@ customElements.define('b-comments', class extends LitElement{
             border: solid 1px var(--theme-bgd-accent);
             border-radius: var(--radius, .5em);
             padding: var(--comment-bubble-padding, 1em);
+            background: var(--theme-bgd);
         }
 
         :host([bubbles]) b-comment-row::part(write-comment) {
@@ -119,6 +120,27 @@ customElements.define('b-comments', class extends LitElement{
 
         :host([github]) b-comment-row[mine]::part(header) {
             background: color-mix(in srgb, var(--theme), var(--theme-bgd-accent) 90%);
+            --b-hr-bgd: color-mix(in srgb, var(--theme), var(--theme-bgd-accent) 90%);
+        }
+
+        :host([github]) b-comment-row[part^="comment"]::before {
+            content: "";
+            position: absolute;
+            left: 1em;
+            top: 1em;
+            width: 1px;
+            height: calc(100% + 1rem);
+            background: var(--theme-bgd-accent);
+            z-index: -1;
+        }
+
+        :host([github]) b-comment-row[part^="write-comment"] {
+            --btn-bgd-color: var(--theme-bgd-accent);
+            --btn-bgd-color-hover: color-mix(in srgb, var(--theme-bgd-accent) 96%, black);
+        }
+
+        :host([github][newest]) b-comment-row:last-of-type[part^="comment"]::before {
+            content: none;
         }
     `}
 
