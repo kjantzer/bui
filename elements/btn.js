@@ -30,6 +30,8 @@ import './spinner'
 import './icon'
 import {mediaQuery} from '../util/mediaQueries'
 
+export {css, html}
+
 // note: not imported here cause it would require Popover and a lot more deps
 // parent code can import tooltip element if its going to be used
 // import './tooltip'

@@ -7,7 +7,7 @@
     <b-toggle-btn key="demo">Toggle the view</b-toggle-btn>
     ```
 */
-import Btn from './btn'
+import Btn, {html, css} from './btn'
 import LocalStoreController from '../helpers/lit/local-store-controller'
 
 customElements.define('b-toggle-btn', class extends Btn{
@@ -17,6 +17,15 @@ customElements.define('b-toggle-btn', class extends Btn{
         key: {type: String},
         active: {type: Boolean, reflect: true}
     }
+
+    static styles = [Btn.styles, css`
+        :host(:not([active])) slot[name="active"] {
+            display: none;
+        }
+        :host([active]) slot[name="inactive"] {
+            display: none;
+        }
+    `]
 
     localStore = new LocalStoreController(this, {emit: true})
 
@@ -33,6 +42,12 @@ customElements.define('b-toggle-btn', class extends Btn{
         let val = this.localStore.value
         this.localStore.value = val?null:true
     }
+
+    renderLabel(){ return html`
+        ${super.renderLabel()}
+        <slot name="active"></slot>
+        <slot name="inactive"></slot>
+    `}
 
 })
 
