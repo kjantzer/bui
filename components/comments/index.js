@@ -123,6 +123,13 @@ customElements.define('b-comments', class extends LitElement{
             --b-hr-bgd: color-mix(in srgb, var(--theme), var(--theme-bgd-accent) 90%);
         }
 
+        :host([github]) b-comment-row[resolved]::part(header) {
+            color: var(--theme-text-dim);
+            background: var(--theme-bgd);
+            --b-hr-bgd: var(--theme-bgd);
+            border-bottom: solid 1px var(--theme-bgd-accent);
+        }
+
         :host([github]) b-comment-row[part^="comment"]::before {
             content: "";
             position: absolute;
