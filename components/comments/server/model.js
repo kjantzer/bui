@@ -143,7 +143,7 @@ module.exports = class Comments extends Model {
     beforeAdd(attrs){
         attrs.group ||= this.group
         attrs.gid ||= this.gid
-        attrs.uid = this.req.user.id
+        attrs.uid ||= this.req.user.id
     }
 
     async add(...args){
