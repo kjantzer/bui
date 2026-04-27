@@ -134,6 +134,7 @@ customElements.define('b-text', class extends LitElement{
         :host([italic]) .slot { font-style: italic; }
 
         :host([strike]) { text-decoration: line-through; }
+        :host([underline]) { text-decoration: underline; }
 
         :host([capitalize]) .slot { text-transform: capitalize; }
         :host([caps]) .slot { text-transform: capitalize; }
