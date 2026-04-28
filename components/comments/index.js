@@ -141,7 +141,8 @@ customElements.define('b-comments', class extends LitElement{
             z-index: -1;
         }
 
-        :host([github]) b-comment-row[part^="write-comment"] {
+        :host([github]) b-comment-row[part^="write-comment"],
+        :host([github]) .view-all {
             --btn-bgd-color: var(--theme-bgd-accent);
             --btn-bgd-color-hover: color-mix(in srgb, var(--theme-bgd-accent) 96%, black);
         }
