@@ -32,6 +32,10 @@ customElements.define('b-ts', class extends LitElement{
             white-space: nowrap;
         }
 
+        :host([wrap]) {
+            white-space: normal;
+        }
+
         :host([hidden]) { display: none; }
     `}
 
