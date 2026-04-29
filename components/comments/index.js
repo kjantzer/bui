@@ -102,11 +102,15 @@ customElements.define('b-comments', class extends LitElement{
             border: solid 1px var(--theme-bgd-accent);
             border-radius: var(--radius, .5em);
             padding: var(--comment-bubble-padding, 1em);
-            background: var(--theme-bgd);
         }
 
         :host([bubbles]) b-comment-row::part(write-comment) {
             padding-top: calc(var(--comment-bubble-padding, 1em) / 2);
+        }
+
+        :host([github]) b-comment-row::part(main),
+        :host([github]) b-comment-row::part(write-comment) {
+            background: var(--theme-bgd);
         }
 
         :host([github]) b-comment-row::part(header) {
