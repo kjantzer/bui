@@ -81,13 +81,16 @@ customElements.define('b-comment-row', class extends LitElement {
             margin-top: .2em;
         }
 
-        :host([type="system"]) .avatar {
-            --size: 1em;
+        :host([type="system"]) [part="avatar-wrapper"] {
             margin-top: 0;
             margin-left: 1em;
             position: relative;
             left: -.45em;
             align-self: center;
+        }
+
+        :host([type="system"]) .avatar {
+            --size: 1em;
         }
 
         header {
@@ -209,11 +212,15 @@ customElements.define('b-comment-row', class extends LitElement {
             return ''
         }
 
+        let div = document.createElement('div')
+        div.part = 'avatar-wrapper'
         let avatar = document.createElement(avatarTag)
         avatar.classList.add('avatar')
         avatar.uid = this.model ? this.model.get('uid') : 'me'
         avatar.part = 'avatar'
-        return avatar
+
+        div.appendChild(avatar)
+        return div
     }
 
     renderName(){
@@ -314,7 +321,9 @@ customElements.define('b-comment-row', class extends LitElement {
             <b-write-comment .coll=${this.coll} .meta=${this.meta} .uploads=${this.uploads} auto-focus part="write-comment"
                 placeholder=${this.placeholder}
                 @saved=${this.doneEditing}
-                @canceled=${this.doneEditing}></b-write-comment>
+                @canceled=${this.doneEditing}>
+                <slot name="write-comment:after" slot="after"></slot>
+            </b-write-comment>
 
             `:this.coll?.isThread?html`
                 <b-btn xs clear @click=${this.beginEditing} class="reply">Reply</b-btn>

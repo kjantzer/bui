@@ -137,7 +137,7 @@ customElements.define('b-comments', class extends LitElement{
         :host([github]) b-comment-row[part^="comment"]::before {
             content: "";
             position: absolute;
-            left: 1em;
+            left: 4em;
             top: 1em;
             width: 1px;
             height: calc(100% + 1rem);
@@ -145,10 +145,23 @@ customElements.define('b-comments', class extends LitElement{
             z-index: -1;
         }
 
+        :host([github]) b-comment-row[part^="comment"][type="system"] {
+            left: 3em;
+        }
+
+        :host([github]) b-comment-row[part^="comment"][type="system"]::before {
+            left: 1em;
+        }
+
         :host([github]) b-comment-row[part^="write-comment"],
         :host([github]) .view-all {
             --btn-bgd-color: var(--theme-bgd-accent);
             --btn-bgd-color-hover: color-mix(in srgb, var(--theme-bgd-accent) 96%, black);
+        }
+
+        :host([github]) b-comment-row::part(avatar) {
+            position: sticky;
+            top: 0;
         }
 
         :host([github][newest]) b-comment-row:last-of-type[part^="comment"]::before {
@@ -295,7 +308,9 @@ customElements.define('b-comments', class extends LitElement{
             .uploads=${this.uploads}
             placeholderBtn=${this.placeholderBtn}
             placeholder=${this.placeholder}
-        ></b-comment-row>
+        >
+            <slot name="write-comment:after" slot="write-comment:after"></slot>
+        </b-comment-row>
 
         ${this.coll.length==0&&this.unread?html`
             <b-empty-state>

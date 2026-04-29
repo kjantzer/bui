@@ -74,7 +74,7 @@ customElements.define('b-write-comment', class extends LitElement{
     `}
 
     render(){return html`
-        <form-handler .model=${this.model} store="${(this.model||this.coll).url()}">
+        <form-handler .model=${this.model} store="${(this.model||this.coll).url()}" @save-comment=${this.saveCommentRequested}>
 
             <form-control material="" key="comment">
                 
@@ -84,8 +84,11 @@ customElements.define('b-write-comment', class extends LitElement{
                     @esckey=${this.onEscape}
                     @blur=${this.onBlur}></text-editor>
 
-                <b-btn sm color="theme-gradient" @click=${this.save} icon="${this.coll?'send':'pencil'}" slot="suffix"></b-btn>
+                <b-btn sm color="theme-gradient" @click=${this.save} icon="${this.model?'pencil':'send'}" slot="suffix" class="save-btn"></b-btn>
+
             </form-control>
+
+            <slot name="after"></slot>
 
             ${this.model||!this.uploads?'':html`
             <b-uploader-preview>
@@ -134,7 +137,13 @@ customElements.define('b-write-comment', class extends LitElement{
         this.emitEvent('canceled', {model: this.model})
     }
 
-    async save(){
+    saveCommentRequested(e){
+        e.stopPropagation()
+        e.preventDefault()
+        this.save(e.detail)
+    }
+
+    async save(opts){
         let {comment} = this.formHandler.values
         
         if( !comment ) return
@@ -159,12 +168,14 @@ customElements.define('b-write-comment', class extends LitElement{
             meta = Object.assign(meta, (typeof this.meta == 'function' ? this.meta() : this.meta))
         }
 
-        if( this.willTakeAction('save-comment', {meta}).notAllowed ) return
+        let attrs = {comment, comment_plain, meta}
+
+        if( !await this.willTakeAction('save-comment', {attrs, opts}).allowedPromise() ) return
 
         if( this.model ){
-            this.model.saveSync({comment, comment_plain, meta}, {patch: true})
+            this.model.saveSync(attrs, {patch: true})
         }else{
-            let [model] = await this.coll.createSync({comment, comment_plain, meta}, {wait: true})
+            let [model] = await this.coll.createSync(attrs, {wait: true})
             let uploader = this.$$('b-uploader')
 
             // upload any files attached; realtime sync will push the file data to all clients (including this one)
