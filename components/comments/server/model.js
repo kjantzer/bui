@@ -3,13 +3,13 @@ const {summarize} = require('../util')
 const Files = require('./files')
 
 let PushMsg
+let EmailNotification
 
 module.exports = class Comments extends Model {
 
     static set PushMsg(val){ PushMsg = val }
-    static set FileOpts(val){
-        Files.opts = val
-    }
+    static set EmailNotification(val){ EmailNotification = val }
+    static set FileOpts(val){ Files.opts = val }
 
     static forModel(model, group=null){
         return new Comments({
@@ -148,34 +148,45 @@ module.exports = class Comments extends Model {
 
     async add(...args){
         let resp = await super.add(...args)
-        this.sendPushMsg(resp)
+        this.notifyMentions(resp)
         return resp
     }
 
-    sendPushMsg(){
-        if( PushMsg && this.attrs?.meta && this.attrs.meta.mentions ){
-            let meta = this.attrs.meta
-            let msg = {
-                tag: this.group+':'+this.gid,
-                title: this.req.user.name,
-                body: this.attrs.comment_plain,
-                // since user was directly mentioned, keep notif open
-                requireInteraction: true,
-                data: {
-                    path: this.attrs.meta.path,
-                    attrs: this.attrs
-                }
+    async notifyMentions(){
+        let mentions = this.attrs?.meta?.mentions || []
+
+        if( mentions.length == 0 || (!PushMsg && !EmailNotification))
+            return
+        
+        let meta = this.attrs.meta
+        let msg = {
+            tag: this.group+':'+this.gid,
+            title: this.req.user.name,
+            body: this.attrs.comment_plain,
+            // since user was directly mentioned, keep notif open
+            requireInteraction: true,
+            data: {
+                path: this.attrs.meta.path,
+                attrs: this.attrs
             }
-
-            if( meta.title ){
-                msg.title += ' - '+meta.title
-            }
-
-            if( meta.icon )
-                msg.icon = meta.icon
-
-            new PushMsg(msg).sendTo(this.attrs.meta.mentions)
         }
+
+        if( meta.title ){
+            msg.title += ' - '+meta.title
+        }
+
+        if( meta.icon )
+            msg.icon = meta.icon
+
+        if( PushMsg ){
+            let recipients = await new PushMsg(msg).sendTo(mentions)
+            mentions = mentions.filter(id=>!recipients.includes(id))
+        }
+
+        if( EmailNotification && mentions.length > 0 ){
+            EmailNotification.sendToMentions(this.req, mentions, msg)
+        }
+
     }
 
     async destroy(...args){

@@ -71,6 +71,9 @@ module.exports = class PushMsg extends Model {
 
     async sendTo(users){
 
+        if( users?.length == 0 )
+            return
+
         let msg = this.msg
 
         if( !msg.title )
@@ -114,11 +117,13 @@ module.exports = class PushMsg extends Model {
         // track which recipients got message
         if( receipients.length ){
             
-            receipients = Array.from(new Set(receipients)).map(uid=>{
+            let receipientsData = Array.from(new Set(receipients)).map(uid=>{
                 return {msg_id: this.id, uid}
             })
 
-            await this.db.bulkInsert('push_msg_recipients', receipients).catch(err=>{})
+            await this.db.bulkInsert('push_msg_recipients', receipientsData).catch(err=>{})
         }
+
+        return receipients
     }
 }
