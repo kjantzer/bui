@@ -499,6 +499,12 @@ class SelectFieldElement extends HTMLElement {
 			target = this.assignedSlot.parentElement
 			popoverOpts.width = target.clientWidth+4+'px'
 			popoverOpts.className += ' no-arrow'
+		}else if( !popoverOpts.width && menu.length > 20){
+			let maxChar = Math.max(...menu.map(d=>d.label?.length).filter(d=>d))
+			maxChar = Math.min(maxChar, 45)
+
+			if( maxChar >= 45)
+				popoverOpts.width = maxChar+'ch'
 		}
 
 		let val = await this.openMenu.popOver(target, popoverOpts)
