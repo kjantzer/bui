@@ -27,12 +27,14 @@ export function toMenu({
             // icon: 'erase',
 			val: '',
             clearsAll: true,
+            alwaysShow: true,
             extras:[html`<b-icon name="erase"></b-icon>`]
         }
     else if( unset && typeof unset == 'string' )
         unset = {
             label: unset,
-            val: ''
+            val: '',
+            alwaysShow: true,
         }
     
     let menu = this.map(m=>{
