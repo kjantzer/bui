@@ -206,7 +206,7 @@ module.exports = class FileManager extends Model {
 
         if( this.skipDuplicates == true ){
             if( await this.checkIsDuplicate(info) )
-                ThrowError('DuplicateFile', 'File already uploaded')
+                throw new ClientError('Same exact file is already uploaded')
         }
 
         // only one file allowed for this ref/ref_id
