@@ -783,8 +783,6 @@ module.exports = class Model {
             
             this.decodeFields(attrs)
 
-            await this.afterUpdate(attrs, beforeUpdate, args[1])
-
             if( this.id ){
 
                 this.attrs = this.attrs||{}
@@ -797,6 +795,8 @@ module.exports = class Model {
                         this.attrs[k] = attrs[k]
                 }
             }
+
+            await this.afterUpdate(attrs, beforeUpdate, args[1])
 
             let syncData
             if( this.config.sync && this.req && this.syncData )
