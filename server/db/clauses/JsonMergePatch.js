@@ -10,6 +10,7 @@ module.exports = class JsonMergePatch extends Clause {
     }
 
     toString(){ return JSON.stringify(this.value) }
+    toJSON(){ return this.value }
 
     toSqlString(db, key){
 
