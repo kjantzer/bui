@@ -785,12 +785,12 @@ module.exports = class Model {
 
             if( this.id ){
 
-                this.attrs = this.attrs||{}
+                this.attrs = {...this.attrs||{}}
 
                 for( let k in attrs ){
                     // merge JSON values (instead of replacing) (so long as not an array)
                     if( this.config.jsonFields?.includes(k) && !Array.isArray(this.attrs[k]) && !Array.isArray(attrs[k]))
-                        this.attrs[k] = Object.assign(this.attrs[k]||{}, attrs[k])
+                        this.attrs[k] = Object.assign({}, this.attrs[k]||{}, attrs[k])
                     else
                         this.attrs[k] = attrs[k]
                 }
