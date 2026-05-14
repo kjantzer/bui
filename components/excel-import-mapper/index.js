@@ -110,9 +110,25 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
         this.importBtnLabel = 'Import'
     }
 
-    async open(file, uploader, {controller}={}){
+    async open(file, uploader, {data, controller}={}){
 
-        let data = await uploader.upload({url: this.url})
+        if( !data && uploader )
+            data = await uploader.upload({url: this.url})
+
+        if( typeof data == 'string' ){ // assume string is a URL to fetch data from
+            data = await fetch.json(data)
+
+            if( Array.isArray(data) )
+                data = {
+                    numRows: data.length,
+                    header: Object.keys(data[0]),
+                    preview: data.slice(0,this.preview),
+                    data
+                }
+        }
+
+        if( !data )
+            throw new UIWarningError('No data provided')
 
         if( data.error )
             throw new UIWarningError(data.error.message)
@@ -211,8 +227,10 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
         let btn = e.currentTarget
         let progress
         if( btn.spin ) return
+
+        let data = {tmpFile: this.model.tmpFile, tmpSrcFile: this.model.tmpSrcFile, mapping: this._map}
         
-        let confirm = await this.confirmImport(btn)
+        let confirm = await this.confirmImport(btn, data)
         if( confirm === false ) return
 
         // no real "options" to send to server, so just send empty object
@@ -229,7 +247,7 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
 
             let resp = await fetch.json(url, {
                 method: 'POST',
-                body: {tmpFile: this.model.tmpFile, tmpSrcFile: this.model.tmpSrcFile, mapping: this._map, opts: confirm}
+                body: {...data, opts: confirm}
             })
             
             this.onImportComplete(resp)
