@@ -272,6 +272,9 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
         return vals
     }
 
+    get fileName(){ return this.file?.get?.('orig_filename') || this.file?.name }
+    get fileModifiedDate(){ return this.file?.get?.('timestamp_created') || this.file?.lastModifiedDate }
+
     render(){return html`
         <b-panel-toolbar>
             <b-btn slot="close-btn" clear @click=${this.close}>Cancel</b-btn>
@@ -282,9 +285,9 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
             <b-grid cols=1 gap="2">
 
                 <b-grid cols=1 gap=" " class="file-info">
-                    <b-text semibold md>${this.file?.name}</b-text>
+                    <b-text semibold md>${this.fileName}</b-text>
                     <b-text><b-num .num=${this.model?.numRows}></b-num> rows</b-text>
-                    <b-text dim>Modified <b-ts .date=${this.file?.lastModifiedDate}></b-ts></b-text>
+                    <b-text dim>Modified <b-ts .date=${this.fileModifiedDate}></b-ts></b-text>
                 </b-grid>
 
                 <b-btn lg block pill color="theme-gradient" @click=${this.import} ?disabled=${!this.canImport}>${this.importBtnLabel}</b-btn>
