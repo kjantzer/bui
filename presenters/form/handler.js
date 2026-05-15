@@ -53,6 +53,10 @@ class FormHandler extends HTMLElement {
 		this.resetValues(vals, {reset: false})
 	}
 
+	get valuesAsMap(){
+		return new Map(Object.entries(this.values))
+	}
+
 	resetValues(vals, {reset=true}={}){
 
 		if( !this.controls )
