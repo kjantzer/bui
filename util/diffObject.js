@@ -23,7 +23,9 @@ module.exports = function diffObject(before={}, after={}, {
     // new/updated traits
     if( includeChanged )
     for( let k in after ){
-        if( before?.[k] != after[k] ){
+
+        // NOTE: ignore array changes for now since they will always compare as different
+        if( before?.[k] != after[k] && !Array.isArray(after[k]) ){
             changes[k] = after[k]
             
             if( before?.[k])
