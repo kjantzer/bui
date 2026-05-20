@@ -153,6 +153,22 @@ export class UIPermissionError extends UICustomError {
     }
 }
 
+export class UIInfoError extends UICustomError {
+    
+    constructor(msg='Sorry', ...args){
+        super(msg, ...args)
+        this.name = 'UIInfoError'
+    }
+
+    get presenter(){
+        return Dialog.info({
+            pretitle: this.detail?.pretitle||'',
+            body: this.detail?.body||this.message,
+            btns: false
+        })
+    }
+}
+
 export class UIWarningError extends UICustomError {
     
     constructor(msg='Sorry', ...args){
