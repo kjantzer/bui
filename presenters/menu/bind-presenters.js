@@ -73,7 +73,7 @@ const presenters = {
 	},
 	
 	modal(opts={}, mobileOpts){
-		if( mobileOpts && device.isMobile && device.isSmallDevice )
+		if( mobileOpts && device.isMobile && device.isMedium )
 			return this.panel(mobileOpts)
 		else
 			return this.panel(opts)
