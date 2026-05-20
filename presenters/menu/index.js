@@ -892,10 +892,11 @@ customElements.define('b-menu', class extends LitElement{
 	// NOTE: event listener stems from a presenter
 	onKeydown(e){
 
-		if( (e.which >= 65 && e.which <= 90) // a-z
-		|| (e.which >= 48 && e.which <= 57) // 0-9
-		|| (e.which >= 96 && e.which <= 105) // numpad 0-9
-		|| [8].includes(e.which) ){ // delete
+		/*
+			NOTE: e.key == 1 should be single characters (not arrow keys, etc)
+			On Android, these character keys show up as "Unidentified"
+		*/
+		if( e.key.length == 1 || e.key == 'Unidentified' || e.key === 'Backspace' ){
 			if( e.metaKey || e.ctrlKey )
 				setTimeout(()=>{ // allow paste action to finish
 					this.onLetterPress(e)
