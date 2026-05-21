@@ -568,7 +568,7 @@ customElements.define('b-menu', class extends LitElement{
 
 			let label = allowCreate.label
 						? (typeof allowCreate.label == 'function' ? allowCreate.label(term) : allowCreate.label)
-						: html`<b-text dim>Create:</b-text> <b-text xbold color="theme">${term}</b-text>`
+						: html`<b-text dim>Create:</b-text> <b-text bold color="theme">${term}</b-text>`
 				
 			let extras = [
 				'divider',
@@ -713,10 +713,10 @@ customElements.define('b-menu', class extends LitElement{
 			return html`<b-text heading block sm dim ?bgd=${m.bgd??true} class="menu-text">${m.text}</b-text>`
 		
 		if( m.title )
-			return html`<b-text heading block xbold ?bgd=${m.bgd??false} class="menu-title">${m.title}</b-text>`
+			return html`<b-text heading block bold ?bgd=${m.bgd??false} class="menu-title">${m.title}</b-text>`
 		
 		if( m.heading )
-			return html`<b-text heading block xbold ?bgd=${m.bgd??false} class="menu-heading">${m.heading}</b-text>`
+			return html`<b-text heading block bold ?bgd=${m.bgd??false} class="menu-heading">${m.heading}</b-text>`
 
 		return html`<b-menu-item 
 			class="menu-item"
