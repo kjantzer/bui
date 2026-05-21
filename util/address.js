@@ -19,6 +19,7 @@ export function addressToString(data, {oneline=false, linebreak=`\n`, htmllines=
     return lines.join(oneline?', ':linebreak)
 }
 
+// initially created by claude
 export function parseAddress(raw, {
     streetName='street',
     street2Name='street2'
@@ -31,9 +32,15 @@ export function parseAddress(raw, {
 
 	let name = null, attn = null, street = null, street2 = null, city = null, state = null, zip = null
 
-	let remaining = [...lines]
+	// TODO: add more patterns? or allow opts to improve?
+	let ignorePatterns = [
+		/^[\+\d][\d\s\.\-\(\)]{7,}$/, // phone number
+		/^[^\s@]+@[^\s@]+\.[^\s@]+$/ // email address
+	]
 
-	// City/state/zip is always last
+	let remaining = lines.filter(s=>!ignorePatterns.some(patt=>s.match(patt)))
+
+	// City/state/zip should always be last
 	const csz = remaining.pop()?.match(cityStateZip)
 	if( csz ){
 		city = csz[1]
