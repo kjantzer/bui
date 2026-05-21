@@ -122,6 +122,10 @@ main {
 	/* position: absolute; */
 }
 
+:host([multiline]) .editor {
+	min-height: var(--text-editor-multiline-min-height, 4em);
+}
+
 :host([multiline]) .editor:before {
 	position: absolute;
 	left: 0;
@@ -499,8 +503,8 @@ class TextFieldElement extends HTMLElement {
 			if( this.isHTML )
 				val = stringToHTML(val)
 			else{
-				val = val.split(`\n\n`).join(`<br><br>\n`)
-				val = val.split(`\n`).join(`<br>\n`)
+				val = val.split(`\n\n`).join(`<br><br>`)
+				val = val.split(`\n`).join(`<br>`)
 			}
 		}
 
