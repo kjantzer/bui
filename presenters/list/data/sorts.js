@@ -254,7 +254,7 @@ class Sort {
     }
 
     get sortBy(){
-        return this.attrs.sortBy || (m=>m.get(this.key))
+        return this.attrs.sortBy || (m=>m.get?.(this.key) || m[this.key])
     }
 
     get label(){
