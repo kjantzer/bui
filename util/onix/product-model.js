@@ -7,6 +7,7 @@ const {decodeHtmlEntity, separatePrefix} = require('../string')
 const {uniformAndDedupeCSV} = require('./util')
 
 const TO_JSON_BLACKLIST = ['release', 'is2', 'is3', 'series']
+const PREFERRED_CURRENCIES = ['USD', 'GBP', 'CAD', 'AUD']
 
 module.exports = class OnixProductModel {
 
@@ -570,8 +571,7 @@ module.exports = class OnixProductModel {
     }
 
     _preferredPrice(){
-        const preferred = ['USD', 'GBP', 'CAD', 'AUD']
-        for( const currency of preferred ){
+        for( const currency of PREFERRED_CURRENCIES ){
             const match = this.prices?.find(d=>d.currency == currency)
             if( match ) return match
         }
