@@ -183,7 +183,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
         <div class="scroller" ?empty=${!this.sorts&&!this.filters.size}>
         <b-mouse-scroll-horz></b-mouse-scroll-horz>
 
-            ${!this.filters?'':html`
+            ${!this.filters||this.filters.opts.show===false?'':html`
                 <b-list-filters .filters=${this.filters}></b-list-filters>
             `}
 
