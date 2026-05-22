@@ -562,7 +562,20 @@ module.exports = class OnixProductModel {
     }
 
     get price(){
-        return this.prices?.find(d=>d.currency == 'USD')?.price
+        return this._preferredPrice()?.price
+    }
+
+    get price_currency(){
+        return this._preferredPrice()?.currency
+    }
+
+    _preferredPrice(){
+        const preferred = ['USD', 'GBP', 'CAD', 'AUD']
+        for( const currency of preferred ){
+            const match = this.prices?.find(d=>d.currency == currency)
+            if( match ) return match
+        }
+        return null
     }
 
     set price(price){
@@ -605,6 +618,7 @@ module.exports = class OnixProductModel {
             let attrs = {
                 price: m.getValue('PriceAmount'),
                 currency: m.get('CurrencyCode.value'),
+                priceType: m.getValue('PriceType'),
                 territory
             }
 
