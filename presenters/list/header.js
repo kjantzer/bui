@@ -342,7 +342,7 @@ customElements.define('b-list-header', class extends LitElement{
 
         let sorts = []
         let sortsByLabel = {}
-        this.list.sorts.map(sort=>{
+        this.list.sorts?.map(sort=>{
             sortsByLabel[sort.attrs?.label||sort.key] = sort
         })
 
