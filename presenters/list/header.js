@@ -223,6 +223,8 @@ customElements.define('b-list-header', class extends LitElement{
         super()
         this.slot = "header"
         this.disableHideShowMenu = false
+        this.changeSort = this.changeSort.bind(this)
+        this.applySort = this.applySort.bind(this)
     }
 
     static properties = {
@@ -292,7 +294,24 @@ customElements.define('b-list-header', class extends LitElement{
         [part="selection-slot"] {
             background-color: var(--divider-bgd, var(--theme-bgd-accent));
         }
+
+        [sort] {
+            cursor: pointer;
+            display: flex;
+            gap: .5em;
+            justify-content: space-between
+        }
+
+        [sort]:not([sorted]):not(:hover) b-list-header-sort {
+            display: none;
+        }
+
+        [sort][sorted="asc"] b-list-header-sort {
+            --b-btn-icon-rotate: -90deg;
+        }
     `]}
+
+    get list(){ return this.parentElement }
 
     firstUpdated(){
 
@@ -317,21 +336,46 @@ customElements.define('b-list-header', class extends LitElement{
             if(!el.part.contains('cell') )
                 el.part.add('cell')
             
-            return {width: w, header:el}
+            return {width: w, el}
 
         }).filter(d=>d&&d.width!==false)
+
+        let sorts = []
+        let sortsByLabel = {}
+        this.list.sorts.map(sort=>{
+            sortsByLabel[sort.attrs?.label||sort.key] = sort
+        })
 
         // now apply formatting to all the headers (and gather additional data)
         cols.forEach((col, i)=>{
 
-            let {width, header} = col
+            let {width, el} = col
 
-            col.label = header.getAttribute('label') 
-                || header.textContent.trim().replace(/\n/g, ' - ').replace(/\s{2,}/g, ' ')
+            col.label = el.getAttribute('label') 
+                || el.textContent.trim().replace(/\n/g, ' - ').replace(/\s{2,}/g, ' ')
                 || `Column ${i+1}`
-            col.id = header.getAttribute('cid') || col.label
+            col.id = el.getAttribute('cid') || col.label
             col.num = i+1
-            col.hide = header.getAttribute('hide') == 'never' ? false : (header.hasAttribute('hide')?true:undefined)
+            col.hide = el.getAttribute('hide') == 'never' ? false : (el.hasAttribute('hide')?true:undefined)
+
+            // does this header label match a sort label?
+            if( sortsByLabel[col.label] ){
+                el.setAttribute('sort', sortsByLabel[col.label].key)
+            }
+
+            // is this header col linked to a sort?
+            if( el.hasAttribute('sort') ){
+                
+                col.sort = el.getAttribute('sort')
+                sorts.push(col.sort)
+                el.addEventListener('click', this.changeSort)
+
+                // add sort icon if not present (maybe view wanted to render differently)
+                // TODO: make custom element changeable via prop?
+                if( !el.querySelector('b-list-header-sort') ){
+                    el.appendChild(document.createElement('b-list-header-sort'))
+                }
+            }
 
             let colWidth = `--grid-col-${i+1}-width`
             
@@ -339,7 +383,7 @@ customElements.define('b-list-header', class extends LitElement{
 
             gridTemplate.push(`var(${colWidth})`)
 
-            header.style.setProperty('visibility', this.disableHideShowMenu ? 'visible' : `var(--grid-col-${i+1}-visibility, visible)`)
+            el.style.setProperty('visibility', this.disableHideShowMenu ? 'visible' : `var(--grid-col-${i+1}-visibility, visible)`)
         })
 
         this.cols = cols
@@ -365,6 +409,13 @@ customElements.define('b-list-header', class extends LitElement{
         }
 
         this.applyProps()
+        
+        // we have sorts matched to one or more columns, so listen for changes and apply them
+        if( sorts.length ){
+            this.list.sorts.on('change', this.applySort)
+            this.applySort()
+        }
+        
     }
 
     get colsHiddenByDefault(){
@@ -387,6 +438,35 @@ customElements.define('b-list-header', class extends LitElement{
             <slot part="selection-slot" name="selection"></slot>
             <style>${styles}</style>
         `
+    }
+
+    changeSort(e){
+        let key = e.currentTarget.getAttribute('sort')
+        let sort = this.list.sorts.get(key)
+
+        let values = this.list.sorts.value
+        let val = values[key]
+
+        // if( e.metaKey || e.ctrlKey ) // TODO: maybe later - ui needs updated to show more than one sort arrow
+        //     values[key] = {desc: true}
+        // else
+            values = {[key]: {desc: val ? !val.desc : sort.attrs?.desc}}
+        
+        this.list.sorts.value = values
+    }
+
+    applySort(){
+
+        let sort = this.list?.sorts.find(sort=>sort.selected)
+
+        this.cols.map(col=>{
+
+            if( col.sort == sort.key ){
+                col.el.setAttribute('sorted', sort.isDesc ? 'desc' : 'asc')
+            }else
+                col.el.removeAttribute('sorted')
+        })
+
     }
 
     contextMenu(e){
@@ -483,3 +563,33 @@ export function applyGrid(el, {start=1, end}={}){
         el.style.setProperty('height', `var(--grid-col-${num}-height, auto)`)
     })
 }
+
+
+// import { LitElement, html, css } from 'lit'
+
+customElements.define('b-list-header-sort', class extends LitElement{
+
+    static properties = {
+        icon: {type: String}
+    }
+
+    static styles = css`
+        :host {
+            display: block;
+            line-height: 0;
+            --b-btn-icon-rotate: 90deg;
+        }
+    `
+
+    constructor(){
+        super()
+        this.icon = 'arrow_right_alt' // TODO: global customize?
+    }
+
+    render(){return html`
+        <b-icon name=${this.icon}></b-icon>
+    `}
+
+})
+
+// export default customElements.get('b-list-header-sort')
