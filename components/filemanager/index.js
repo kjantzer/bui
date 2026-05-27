@@ -18,6 +18,7 @@ customElements.define('b-file-manager', class extends LitElement{
         plainFilename: {type: Boolean},
         placeholder: {type: String},
         limit: {type: Number},
+        maxFileSize: {type: Number},
         disabled: {type: Boolean}
     }}
 
@@ -59,6 +60,7 @@ customElements.define('b-file-manager', class extends LitElement{
         // this.sorting = true // turn of by default; should use `enableSorting
         this.placeholder = 'No files'
         this.limit = 0
+        this.maxFileSize = 0
 
         this.cache = new Map()
     }
@@ -250,6 +252,14 @@ customElements.define('b-file-manager', class extends LitElement{
         if( invalid )
             Dialog.warn(`${invalid.length} invalid files – allowed types: ${this.accept}${this.plainFilename ? ' Filename must also contain no special characters' :''}`).notif()
 
+        if( this.maxFileSize ){
+            let oversized = uploader.files.filter(f => f.size > this.maxFileSize * 1024 * 1024)
+            if( oversized.length ){
+                Dialog.warn({msg: `File${oversized.length>1?'s':''} exceed the ${this.maxFileSize}MB limit: ${oversized.map(f=>f.name).join(', ')}`}).notif()
+                return
+            }
+        }
+
         if( uploader.files.length == 0 )
             return
 
@@ -274,9 +284,10 @@ customElements.define('b-file-manager', class extends LitElement{
 
         if( !resp || resp.error ){
             if( resp?.error )
-                throw resp.error
-
-            return Dialog.warn({msg: 'Unknown Error', btns: false, pretitle: ''}).notif()
+                Dialog.warn({msg: resp.error}).notif()
+            else
+                Dialog.warn({msg: 'Unknown Error', btns: false, pretitle: ''}).notif()
+            return
         }else{
             this.uploadComplete(resp)
         }
