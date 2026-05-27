@@ -72,7 +72,9 @@ export function parseAddress(raw, {
 	const attnPattern = /^(Attn:?|Attention:?|c\/o)\s*/i
 	const attnIdx = remaining.findIndex(l => l.match(attnPattern))
 	if( attnIdx !== -1 ){
-		attn = remaining.splice(attnIdx, 1)[0].replace(attnPattern, '').trim()
+		attn = remaining.splice(attnIdx, 1)[0].trim()
+	}else if( remaining.length == 2 ){
+		attn = remaining.pop()
 	}
 
 	name = remaining.length ? remaining.join(' ') : null
