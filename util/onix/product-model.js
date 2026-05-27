@@ -618,7 +618,7 @@ module.exports = class OnixProductModel {
             let attrs = {
                 price: m.getValue('PriceAmount'),
                 currency: m.get('CurrencyCode.value'),
-                priceType: m.getValue('PriceType'),
+                priceType: m.getValue('PriceType') || m.getValue('PriceTypeCode'),
                 territory
             }
 
