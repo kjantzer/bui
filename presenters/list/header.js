@@ -441,6 +441,9 @@ customElements.define('b-list-header', class extends LitElement{
     }
 
     changeSort(e){
+
+        if( e.target.slot == 'control' ) return
+        
         let key = e.currentTarget.getAttribute('sort')
         let sort = this.list.sorts.get(key)
 
