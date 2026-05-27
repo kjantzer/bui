@@ -31,21 +31,21 @@ customElements.define('b-btn-group', class extends LitElement{
             display: none;
         }
 
-        ::slotted(b-btn:first-of-type:not(:last-of-type)){
+        ::slotted(*:first-child:not(:last-child)){
             border-radius: var(--radius) 0 0 var(--radius);
         }
 
-        ::slotted(b-btn:not(:first-of-type):not(:last-of-type)){
+        ::slotted(*:not(:first-child):not(:last-child)){
             border-radius: 0;
-            border-left: solid 1px rgba(0,0,0,.2);
+            border-left: solid 1px var(--theme-bgd);
         }
 
-        ::slotted(b-btn:last-of-type:not(:first-of-type)){
+        ::slotted(*:last-child:not(:first-child)){
             border-radius: 0 var(--radius) var(--radius) 0;
-            border-left: solid 1px rgba(0,0,0,.2);
+            border-left: solid 1px var(--theme-bgd);
         }
 
-        ::slotted(b-btn:not(:first-of-type)[clear]) {
+        ::slotted(*:not(:first-child)[clear]) {
             border-left: none;
         }
 
@@ -54,19 +54,19 @@ customElements.define('b-btn-group', class extends LitElement{
             flex-direction: column;
         }
 
-        :host([vert]) ::slotted(b-btn:first-of-type:not(:last-of-type)){
+        :host([vert]) ::slotted(*:first-child:not(:last-child)){
             border-radius: var(--radius) var(--radius) 0 0;
         }
 
-        :host([vert]) ::slotted(b-btn:not(:first-of-type):not(:last-of-type)){
+        :host([vert]) ::slotted(*:not(:first-child):not(:last-child)){
             border-radius: 0;
-            border-top: solid 1px rgba(0,0,0,.2);
+            border-top: solid 1px var(--theme-bgd);
             border-left: none;
         }
 
-        :host([vert]) ::slotted(b-btn:last-of-type:not(:first-of-type)){
+        :host([vert]) ::slotted(*:last-child:not(:first-child)){
             border-radius: 0 0 var(--radius) var(--radius);
-            border-top: solid 1px rgba(0,0,0,.2);
+            border-top: solid 1px var(--theme-bgd);
             border-left: none;
         }
     `}
