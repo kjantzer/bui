@@ -587,7 +587,32 @@ module.exports = class OnixProductModel {
     }
 
     get prices() {
-        let prices = this.is2 ? this.onix.get('SupplyDetail.Price') : this.onix.get('ProductSupply.SupplyDetail.Price')
+        let prices
+        if( this.is2 ){
+            // SupplyDetail is repeatable in 2.1 — collect from all blocks
+            let supplyDetails = this.onix.get('SupplyDetail')
+            if( supplyDetails ){
+                let detailsArr = Array.isArray(supplyDetails) ? [...supplyDetails] : [supplyDetails]
+                let allPrices = detailsArr.flatMap(sd => {
+                    let p = sd.get('Price')
+                    if( !p ) return []
+                    return Array.isArray(p) ? [...p] : [p]
+                })
+                if( allPrices.length ) prices = allPrices
+            }
+        } else {
+            // Collect prices from ALL ProductSupply blocks — dot-path traversal stops at the first one
+            let productSupplies = this.onix.get('ProductSupply')
+            if( productSupplies ){
+                let suppliesArr = Array.isArray(productSupplies) ? [...productSupplies] : [productSupplies]
+                let allPrices = suppliesArr.flatMap(ps => {
+                    let p = ps.get('SupplyDetail.Price')
+                    if( !p ) return []
+                    return Array.isArray(p) ? [...p] : [p]
+                })
+                if( allPrices.length ) prices = allPrices
+            }
+        }
 
         // NOTE: what bout "Corporate price"?
         let PriceTypes = ['Consumer price', 'Unqualified price']
