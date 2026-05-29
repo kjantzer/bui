@@ -618,6 +618,8 @@ module.exports = class OnixProductModel {
         let PriceTypes = ['Consumer price', 'Unqualified price']
 
         return prices?.filter(m => {
+            // Discard prices without a currency (like UnpricedItemType)
+            if( !m.getValue('CurrencyCode') ) return false
             return !m.getValue('PriceQualifier') || PriceTypes.includes(m.getValue('PriceQualifier'))
         }).map(m => {
 
