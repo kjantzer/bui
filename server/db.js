@@ -50,6 +50,9 @@ module.exports = class DB {
 
     query(sql, data, {timeout=30000, debug=false, logFailure=false, preSql=null, conn, req, logLongRunning=true}={}){
 
+        if( timeout > 0 && timeout < 200 ) // seconds
+            timeout = timeout * 1000
+
         return new PromiseArray(async (resolve, reject)=>{
 
             if( Array.isArray(data) )
