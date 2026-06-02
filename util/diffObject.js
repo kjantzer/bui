@@ -25,7 +25,7 @@ module.exports = function diffObject(before={}, after={}, {
     for( let k in after ){
 
         // NOTE: ignore array changes for now since they will always compare as different
-        if( before?.[k] != after[k] && !Array.isArray(after[k]) && !Array.isArray(before[k]) ){
+        if( before?.[k] != after?.[k] && !Array.isArray(after?.[k]) && !Array.isArray(before?.[k]) ){
             changes[k] = after[k]
             
             if( before?.[k] )
