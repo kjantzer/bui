@@ -65,7 +65,7 @@
 */
 module.exports = class SPA {
 
-	constructor(app, {path='/*', requireAuthentication=true, loginPath='/login', api}={}){
+	constructor(app, {path='/*', requireAuthentication=true, loginPath='/login', api, indexHooks=false}={}){
         let opts = arguments[1]
 
         app.get(path, async (req, res) => {
@@ -77,8 +77,9 @@ module.exports = class SPA {
                 return req.next()
 
             // check API classes for any "index hooks" (hook into the creation of the SPA index page)
+            // NOTE: feature disabled by default
             let spaIndexHookData
-            let spaIndexHookClass = api && api._classes.find(Class=>{
+            let spaIndexHookClass = indexHooks && api && api._classes.find(Class=>{
 
                 // found class with a hook...see if we should use it
                 if( Class.spaIndexHook && !spaIndexHookData ){
