@@ -25,7 +25,6 @@ customElements.define('b-list-footer', class extends Header{
 
         this.list?.removeEventListener('selection', this.onSelectionChange)
 
-        this.list = this.parentElement?.tagName == 'B-LIST' ? this.parentElement : null
         this.list?.addEventListener('selection', this.onSelectionChange)
         this.list?.addEventListener('content-changed', this.onSelectionChange)
         this.coll = this.list?.coll
