@@ -154,7 +154,7 @@ Model.prototype.saveSync = function(key, val, opts){
         // save each set of child changes (or merge with existing data to save on this object)
         for( let childKey in childChanges ){
 
-            let child = this.get(childKey)
+            let child = this.get(childKey) || {}
             let childAttrs = childChanges[childKey]
 
             // backbone model
