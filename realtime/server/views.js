@@ -48,12 +48,19 @@ class Views extends Map {
 		});
 
 		socket.on('view:close', viewName=>{
-			this.get(viewName).remove(socket)
+			let view = this.get(viewName)
+			view.remove(socket)
+
+			if( view.clients.size == 0 )
+				this.delete(viewName)
 		});
 
 		socket.on('disconnect',()=>{
 			this.forEach(view=>{
 				view.remove(socket)
+
+				if( view.clients.size == 0 )
+					this.delete(viewName)
 			})
 		});
 
