@@ -593,6 +593,18 @@ module.exports = class FileManager extends Model {
                 updateAttrs.sizes = sizes
         }
 
+        // re-check size if this was an image — stripMetadata, aspectRatio, or fullSize
+        // may have overwritten the file on disk, making the originally-stored value stale
+        if( sharpImg ){
+            try{
+                const newSize = fs.statSync(this.dirPath+'/'+filename).size
+                if( newSize !== this.attrs.size )
+                    updateAttrs.size = newSize
+            }catch(err){
+                console.log('could not recheck file size', err)
+            }
+        }
+
         if( Object.keys(updateAttrs).length > 0 )
             this.update(updateAttrs)
     }
