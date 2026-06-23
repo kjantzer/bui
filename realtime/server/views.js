@@ -60,7 +60,7 @@ class Views extends Map {
 				view.remove(socket)
 
 				if( view.clients.size == 0 )
-					this.delete(viewName)
+					this.delete(view.name)
 			})
 		});
 
