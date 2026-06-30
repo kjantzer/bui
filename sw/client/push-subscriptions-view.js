@@ -10,7 +10,7 @@ import 'bui/elements/ts'
 customElements.define('s-user-subscriptions', class extends LitElement{
 
     static listeners = {
-        coll: {'add remove change:thisDevice': 'requestUpdate'}
+        coll: {'update change:thisDevice': 'requestUpdate'}
     }
 
     static styles = css`

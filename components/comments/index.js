@@ -15,7 +15,7 @@ customElements.define('b-comments', class extends LitElement{
     static set renderMeta(val){ Comment.renderMeta = val }
 
     static get listeners(){return {
-        coll: {'add remove sync': 'updateView'}
+        coll: {'update sync': 'updateView'}
     }}
 
     static get properties(){return {
