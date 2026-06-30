@@ -74,8 +74,8 @@ customElements.defineShared('my-popover-view', class extends PopoverView {
 })
 
 // ...later - get singleton and open
-customElements.get('my-popover-view').shared.open(target, modelOrID, opts)
-customElements.get('my-popover-view').shared.openIfHoveringContinues(target, modelOrID, opts)
+customElements.get('my-popover-view').shared.open(modelOrID, target, opts)
+customElements.get('my-popover-view').shared.openIfHoveringContinues(modelOrID, target, opts)
 ```
 
 ### Options
