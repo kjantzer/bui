@@ -237,6 +237,10 @@ customElements.define('radio-group', class extends LitElement{
 		this.setAttribute('value', this.value||'')
 		e.stopPropagation&&e.stopPropagation()
 		
+		this._didChange()
+	}
+
+	_didChange(){
 		var event = new CustomEvent('change', {
 			bubbles: true,
 			composed: true,

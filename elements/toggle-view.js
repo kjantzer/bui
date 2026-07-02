@@ -65,7 +65,10 @@ customElements.define('b-toggle-view', class extends LitElement{
         // default logic is to show/hide
         // else, apply the type as an attribute
         if( this.type && !['show', 'hide'].includes(this.type) ){
-            this.parent.toggleAttribute(this.type, !!val)
+            if( val && typeof val == 'string' )
+                this.parent.setAttribute(this.type, val)
+            else
+                this.parent.toggleAttribute(this.type, !!val)
             return
         }
 
