@@ -197,7 +197,8 @@ Model.prototype.editAttr = async function(key, val, opts={}){
 		// NOTE: do this for objects too?
 		|| (Array.isArray(orig) && Array.isArray(edited) && JSON.stringify(orig) == JSON.stringify(edited))
 		)
-			delete this._editedAttrs[key]
+			// unify "falsey" values as null
+			this._editedAttrs[key] = null
 
 		if( opts.save === true )
 			this._origAttrs[key] = attrs[key]
