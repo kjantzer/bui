@@ -38,7 +38,8 @@ customElements.define('b-root-titlebar', class extends LitElement{
             position: relative;
         }
 
-        :host > b-text slot b-text {
+        :host > b-text slot[name="title:inner"] {
+            display: inline-block;
             background: var(--theme-bgd-accent);
             padding: .25em .75em;
             border-radius: 1em;
