@@ -48,15 +48,23 @@ export async function saveJSON(jsonKey, key, val, {
         for( let k in changes ){
             let v = changes[k]
 
-            if( v == null && deleteNull )
+            if( v == null && deleteNull ){
                 delete traits[k]
-            else
+                delete changes[k]
+            }else
                 traits[k] = v
         }
 
-        if( save )
-            await model.saveSync(jsonKey, traits, {patch, wait})
-        else if( model.editAttr )
+        if( save ){
+            await model.saveSync(jsonKey, changes, {patch, wait})
+
+            // server may have responded with additional traits, so merge them in
+            traits = {...(model.get(traitsKey)||{}), ...traits}
+
+            // and update current model state
+            model.set(traitsKey, traits)
+
+        }else if( model.editAttr )
             model.editAttr(jsonKey, traits)
         else 
             model.set(jsonKey, traits)
