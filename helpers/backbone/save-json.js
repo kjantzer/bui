@@ -59,10 +59,10 @@ export async function saveJSON(jsonKey, key, val, {
             await model.saveSync(jsonKey, changes, {patch, wait})
 
             // server may have responded with additional traits, so merge them in
-            traits = {...(model.get(traitsKey)||{}), ...traits}
+            traits = {...(model.get(jsonKey)||{}), ...traits}
 
             // and update current model state
-            model.set(traitsKey, traits)
+            model.set(jsonKey, traits)
 
         }else if( model.editAttr )
             model.editAttr(jsonKey, traits)
