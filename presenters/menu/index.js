@@ -704,7 +704,7 @@ customElements.define('b-menu', class extends LitElement{
 			return html`<b-hr></b-hr>`
 
 		if( m.divider !== undefined )
-			return html`<div class="menu-divider">${m.divider}</div>`
+			return html`<div class="menu-divider">${m.icon?html`<b-icon name="${m.icon}"></b-icon> `:''}${m.divider}</div>`
 		
 		if( m.html !== undefined )
 			return html`<b-text heading block ?bgd=${m.bgd??false} class="menu-html" .html=${m.html}></b-text>`
