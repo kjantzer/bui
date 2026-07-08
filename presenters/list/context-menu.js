@@ -1,67 +1,101 @@
 import Menu from '../menu'
+import {html} from 'lit'
 
-export default async function contextMenu({target, models, before, after}={}){
+export default async function contextMenu({
+    target,
+    models,
+    before,
+    after,
+    actions,
+    beforePresent,
+    selectionControls=true,
+    endSelectionAfterAction=true
+}={}){
 
     target ||= this
     let list = this.list
+    let menu = []
 
     if( !models && list && list.selection.isOn )
         models = list.currentModels
     else if( !models && this.model )
         models = [this.model]
-    
-    let menu = []
-    
-    // if( list && list.selection.isOn )
-    //     menu.push({
-    //         label: 'Selection Off',
-    //         icon: 'library_add_check',
-    //         fn: ()=>{
-    //             list.selection.end()
-    //         }
-    //     })
-    if( list && list.selection.isOn && models.length )
-        menu.push({
-            label: 'Clear selection',
-            icon: 'backspace',
-            fn: ()=>{
-                list.selection.clear()
-            }
-        })
 
-    if( list && !list.selection.isOn )
-        menu.push({
-            label: 'Select',
-            icon: 'library_add_check',
-            fn: ()=>{
-                list.selection.begin({select: this})
-            }
-        })
+
+    if( !models.length && !menu.length ){
+        if( this.list?.selection.isOn ){
+            list.selection.select(this)
+            models = list.currentModels
+        }else
+            throw new UIWarningError('No rows selected', {target})
+    }
 
     if( before )
-        menu.unshift(...before)
+        menu.push(...before)
+
+    if( models.length && actions ){
+
+        if(typeof actions === 'function')
+            actions = actions(models)
+
+        if( actions?.length )
+            menu.push({divider: `Actions`}, ...actions)
+    }
 
     if( after )
         menu.push(...after)
 
-    let selected = await new Menu(menu).popOver(target)
+    let _menu
+
+    if( selectionControls && list?.selection ){
+
+        let el = this
+        function selectionOn(){
+            list.selection.begin({select: el})
+            _menu.close()
+        }
+
+        function selectionOff(){
+            list.selection.end()
+            _menu.close()
+        }
+
+        function selectionClear(){
+            list.selection.clear()
+            _menu.close()
+        }
+
+        menu.push({text:html`
+            <b-flex wrap gap-row=" " left>
+                <b-text link @click=${selectionOn} ?hidden=${list.selection.isOn}>Selection: On</b-text>
+                <b-text link @click=${selectionOff} ?hidden=${!list.selection.isOn}>Selection: Off</b-text>
+                <b-text link @click=${selectionClear} ?hidden=${!list.selection.isOn}>Deselect (${models.length})</b-text>
+            </b-flex>
+        `})
+    }
+
+    if( beforePresent )
+        await beforePresent(menu)
+
+    _menu = new Menu(menu)
+    let selected = await _menu.popOver(target)
     if( !selected ) return
     
-    let actionFn = selected.menuSelected?.fn || selected.fn
+    let action = selected.menuSelected?.fn || selected.fn
     let resp = null
 
-    // newer Action subclass; NOTE: this is a Catalog Events thing
-    if( actionFn && actionFn.prototype?.do){
-        resp = await new actionFn(this, target, models)
+    // newer Action subclass
+    if( action && action.prototype?.do){
+        resp = await new action(this, target, models, {selected})
     }
-    else if( typeof actionFn == 'function' ){
-        resp = await actionFn.call(this, target, models)
-    }else if( typeof actionFn == 'string' ){
-        
-        if( typeof this[actionFn] == 'function' )
-            resp = await this[actionFn].call(this, target, models)
+    else if( action ){
+
+        if( typeof action == 'string' )
+            resp = this[action]?.call(this, target, models, {selected})
+        else
+            resp = await action.call(this, target, models, {selected})
     }
 
-    if( resp )
+    if( resp && endSelectionAfterAction)
         list?.selection.end()
 }
