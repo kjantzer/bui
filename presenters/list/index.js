@@ -715,6 +715,9 @@ customElements.define('b-list', class extends LitElement {
         })
 
         this.selection.on('contextmenu', ({evt}={})=>{
+            if( this.host?.listSelectionContextMenu )
+                this.host.listSelectionContextMenu(evt)
+            
             this.selectionContextMenu?.(evt)
         })
         
