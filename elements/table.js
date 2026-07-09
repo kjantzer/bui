@@ -50,7 +50,7 @@ customElements.define('b-table', class extends LitElement{
         }
 
         :host([rounded]) {
-            border-radius: var(--b-table-rounded-radius, 4px);
+            border-radius: var(--table-rounded-radius, 4px);
         }
 
         header,

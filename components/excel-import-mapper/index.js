@@ -64,7 +64,7 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
         }
 
         b-table.preview > b-table-row > :first-child {
-            background: var(--b-table-header-bgd, var(--theme-bgd-accent));
+            background: var(--table-header-bgd, var(--theme-bgd-accent));
         }
 
         b-table-row > b-flex > :is(b-btn, b-toggle-btn){
