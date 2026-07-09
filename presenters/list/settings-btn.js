@@ -18,8 +18,12 @@ customElements.define('b-list-settings-btn', class extends LitElement{
 
     constructor(){
         super()
-        this.slot = 'toolbar:after'
         this.icon = 'tune'
+    }
+
+    firstUpdated(){
+        if( !this.slot && this.parentElement.tagName == 'B-LIST' )
+            this.slot = 'toolbar:after'
     }
 
     render(){return html`
