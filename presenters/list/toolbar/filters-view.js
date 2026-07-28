@@ -234,6 +234,7 @@ customElements.define('b-list-filters', class extends LitElement{
 
     hide(){
         this.expanded = false
+        this.filters.list.removeAttribute('filters-open')
         this.$$('b-term-search')?.clear()
         // this.stopQueue()
         this.cancelQueuedFilters()
@@ -243,6 +244,7 @@ customElements.define('b-list-filters', class extends LitElement{
         let queue = e?.metaKey || e?.ctrlKey || e?.shiftKey
 
         this.expanded = true
+        this.filters.list.setAttribute('filters-open', '')
 
         if( queue )
             this.startQueue()
