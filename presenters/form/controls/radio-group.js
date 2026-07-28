@@ -4,7 +4,8 @@ customElements.define('radio-group', class extends LitElement{
 
 	static get properties(){return {
 		key: {type: String, reflect: true},
-		deselectable: {type: Boolean}
+		deselectable: {type: Boolean},
+		multiple: {type: Boolean}
 	}}
 
 	static get styles(){return css`
@@ -89,23 +90,28 @@ customElements.define('radio-group', class extends LitElement{
     		/* margin-top: calc(-1 * var(--padX) / 4); */
 		}
 
+		:host([segment]) main {
+			gap: 2px;
+		}
+
 		:host([segment][slot="control"]) main {
 			padding: 0;
 		}
+
+		:host([segment][cols]) main {
+			display: grid;
+		}
+		
+		:host([segment][cols="2"]) main { grid-template-columns: repeat(2, 1fr); }
+		:host([segment][cols="3"]) main { grid-template-columns: repeat(3, 1fr); }
+		:host([segment][cols="4"]) main { grid-template-columns: repeat(4, 1fr); }
+		:host([segment][cols="5"]) main { grid-template-columns: repeat(5, 1fr); }
+		:host([segment][cols="6"]) main { grid-template-columns: repeat(6, 1fr); }
 
 		:host([segment][stacked]) ::slotted(radio-btn){
 			padding: calc(var(--radio-segment-btn-padding, var(--radio-segment-padding, .25em))*1.5);
 			justify-content: left;
 			line-height: 1.1em;
-		}
-
-		:host([segment]) ::slotted(radio-btn:not(:first-child)) {
-			margin-left: 2px;
-		}
-
-		:host([segment][stacked]) ::slotted(radio-btn:not(:first-child)) {
-			margin-left: 0;
-			margin-top: 2px;
 		}
 
 		:host([segment]) ::slotted(radio-btn[active]) {
@@ -158,8 +164,9 @@ customElements.define('radio-group', class extends LitElement{
 	constructor() {
 		super()
 		
-		this.deselectable = true
-
+		this.deselectable = false
+		this.multiple = false
+		
 		this.addEventListener('change', this._onChange, true)
 		
 		this.addEventListener('keydown', e=>{
@@ -213,6 +220,9 @@ customElements.define('radio-group', class extends LitElement{
 	}
 	
 	nav(dir=1){
+
+		if( this.multiple ) return
+
 		let i = this.radios.indexOf(this.active)
 		
 		if( i == undefined ) i = dir < 0 ? this.radios.length-1 : 0
@@ -228,6 +238,9 @@ customElements.define('radio-group', class extends LitElement{
 	_onChange(e){
 		
 		if( e.target == this ) return
+
+		if( this.multiple )
+			return this.value = this.active.map(el=>el.value)
 		
 		if( this.deselectable )
 			this.value = e.target.active ? e.target.value : null
@@ -253,17 +266,25 @@ customElements.define('radio-group', class extends LitElement{
 	}
 	
 	get active(){
+		if( this.multiple ) return this.radios?.filter(el=>el.active)
 		return this.radios?.find(el=>el.active)
 	}
 	
 	get value(){
 		let radio = this.active
+
+		if( this.multiple ) return radio.length ? radio.map(el=>el.value) : this.getAttribute('value')?.split(',').filter(Boolean)
+
 		return radio ? radio.value : this.getAttribute('value')
 	}
 	
 	set value(val){
+
 		(this.radios||[]).forEach(el=>{
-			if( el.value == val || (!el.value && !val && el.value !== false && val !== false) )
+
+			if( this.multiple )
+				el.active = val.includes(el.value)
+			else if( el.value == val || (!el.value && !val && el.value !== false && val !== false) )
 				el.active=true
 			else
 				el.active=false
