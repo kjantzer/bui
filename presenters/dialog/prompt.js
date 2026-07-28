@@ -11,6 +11,7 @@ import '../form/controls/radio-btn'
 import '../form/control'
 import '../form/handler'
 import isLitHTML from '../../helpers/lit/isLitHTML'
+import {ifDefined} from 'lit/directives/if-defined.js'
 
 customElements.define('b-dialog-prompt', class extends Dialog{
 
@@ -235,7 +236,9 @@ function makePrompt(opts, i=0, globalOpts){
 	if( opts.options && (opts.segment || opts.type == 'segment') ){
 		return html`
 			<radio-group segment="theme" ?stacked=${opts.segment?.stacked!==false}
+			cols=${ifDefined(opts.segment?.cols)}
 			?disabled=${opts.disabled}
+			?multiple=${opts.multiple||opts.segment?.multiple}
 			key="${opts.key}"
 			style="${opts.w?`width:${opts.w}px;`:''} ${gridArea}"
 			.value=${opts.val}
