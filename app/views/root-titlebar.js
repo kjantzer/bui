@@ -102,7 +102,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
 
         <slot name="left"></slot>
 
-        <b-text bold>
+        <b-text bold part="title">
             <slot name="title">
                 <slot name="title:before"></slot>
                 <slot name="title:inner"><b-text ?link=${this.about} @click=${this.viewAbout}>
