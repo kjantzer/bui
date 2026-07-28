@@ -212,6 +212,8 @@ export class PaperElement extends LitElement {
             color: var(--b-paper-info-color, inherit);
             --bgd: var(--b-paper-info-bgd, var(--blue-50));
             --bgdAccent: var(--b-paper-info-bgd-accent, var(--blue));
+            --theme-text-rgb: 0,0,0;
+            box-shadow: none;
         }
     `}
 
