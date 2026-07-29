@@ -280,6 +280,10 @@ customElements.define('radio-group', class extends LitElement{
 	
 	set value(val){
 
+		if( !this.multiple && Array.isArray(val) ){
+			val = val[0]
+		}
+
 		(this.radios||[]).forEach(el=>{
 
 			if( this.multiple )
