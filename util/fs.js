@@ -24,6 +24,7 @@ const csvToArray = require('./csvToArray')
     - `recursive` (true)
 */
 const readDir = (dirPath, {
+    ignore=false, // regex
     whitelist=false,
     blacklist=['.DS_Store'],
     recursive=true,
@@ -42,6 +43,10 @@ const readDir = (dirPath, {
     }
 
     let files = fs.readdirSync(dirPath).filter(file=>{
+
+        if( ignore && file.match(ignore) )
+            return false
+        
         if( whitelist ) 
             return whitelist.includes(file)
         else
@@ -54,7 +59,7 @@ const readDir = (dirPath, {
         let fileInfo = getFileInfo(dirPath, file)
 
         if( recursive && fileInfo.type == 'd' )
-            fileInfo.files = readDir(path.join(dirPath, file), {blacklist, recursive})
+            fileInfo.files = readDir(path.join(dirPath, file), {ignore, whitelist, blacklist, recursive, forceArray})
 
         info.push(fileInfo)
     }
