@@ -748,7 +748,14 @@ module.exports = class Model {
                 where[this.idAttribute] = id
 
             model = await this.find(where) // could return null if no record found?
+
+            if( !model )
+                console.log(uniqueKeys, where, attrs);
+                
         }
+
+        if( !model )
+            return
 
         model.afterAdd&&await model.afterAdd(attrs, beforeAdd)
 
