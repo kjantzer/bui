@@ -501,7 +501,7 @@ module.exports = class Model {
                 id = this.id = resp[0][this.idAttribute]
 
             if( resp?.length > 1 )
-                console.warn(`${ClassObj.name}.isSingular returning more than one result`)
+                console.warn(`${ClassObj.name}.isSingular returning more than one result - id:${this.id}`)
 
             if( !resp?.length )
                 return null
