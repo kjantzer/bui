@@ -737,11 +737,12 @@ module.exports = class Model {
             model = this
         }else{
             let where = {}
+            let uniqueKeys = []
 
             if( id ){
                 where[this.idAttribute] = id
             }else{
-                let uniqueKeys = await this.findUniqueKeys() // TODO: cache this?
+                uniqueKeys = await this.findUniqueKeys() // TODO: cache this?
                 for( let key of uniqueKeys ){
                     if( newAttrs[key] !== undefined && newAttrs[key] !== null )
                         where[key] = newAttrs[key]
