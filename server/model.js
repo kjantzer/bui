@@ -40,6 +40,7 @@ const related = require('./related')
 const PromiseArray = require('../util/promise-array')
 require('../util/promise.series')
 const findFK = require('./db/findForeignKeyConstraints')
+const findUniqueKeys = require('./db/findUniqueKeys')
 
 const defaultConfig = {
     idAttribute: 'id'
@@ -735,10 +736,18 @@ module.exports = class Model {
             await this.find()
             model = this
         }else{
-            model = await this.find({
-                ...newAttrs,
-                [this.idAttribute]: id
-            })
+            let uniqueKeys = await this.findUniqueKeys() // TODO: cache this?
+            let where = {}
+
+            for( let key of uniqueKeys ){
+                if( newAttrs[key] !== undefined && newAttrs[key] !== null )
+                    where[key] = newAttrs[key]
+            }
+
+            if( id )
+                where[this.idAttribute] = id
+
+            model = await this.find(where) // could return null if no record found?
         }
 
         model.afterAdd&&await model.afterAdd(attrs, beforeAdd)
@@ -886,6 +895,10 @@ module.exports = class Model {
             resp = resp.filter(d=>d.num_rows>0)
 
         return resp
+    }
+
+    async findUniqueKeys(){
+        return findUniqueKeys.call(this, {table: this.config.table})
     }
 
     async mergeReview() {
