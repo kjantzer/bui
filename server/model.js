@@ -735,7 +735,7 @@ module.exports = class Model {
             await this.find()
             model = this
         }else{
-            model = this.find({
+            model = await this.find({
                 ...newAttrs,
                 [this.idAttribute]: id
             })
