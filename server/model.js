@@ -733,15 +733,13 @@ module.exports = class Model {
         if( merge ){
             this.attrs = newAttrs // in case findWhere wants to use them
             await this.find()
+            model = this
         }else{
-            this.find({
+            model = this.find({
                 ...newAttrs,
                 [this.idAttribute]: id
             })
         }
-
-        if( merge )
-            model = this
 
         model.afterAdd&&await model.afterAdd(attrs, beforeAdd)
 
