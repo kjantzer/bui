@@ -725,19 +725,19 @@ module.exports = class Model {
         if( merge && id )
             this.id = id
 
-        // since we dont set `this.id`, find should return a new class instance (unless merge:true)
-        // we need to do this to allow for  `add` to be called multiple times
         let model = null
+        let newAttrs = attrs
         
-        // should have and ID after insert
-        if( id )
-            model = await (merge ? this.find() : this.find({[this.idAttribute]:id}))
-        // but may not if already exists and we updated instead
-        else if( !id && result.affectedRows == 1 ){
-            if( merge )
-                this.attrs = {...this.attrs||{}, ...attrs}
-            else
-                model = new this.constructor(attrs, this.req)
+        // since we dont set `this.id`, find should return a new class instance (unless merge:true)
+        // we need to do this to allow for `add` to be called multiple times
+        if( merge ){
+            this.attrs = newAttrs // in case findWhere wants to use them
+            await this.find()
+        }else{
+            this.find({
+                ...newAttrs,
+                [this.idAttribute]: id
+            })
         }
 
         if( merge )
