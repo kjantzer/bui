@@ -736,16 +736,17 @@ module.exports = class Model {
             await this.find()
             model = this
         }else{
-            let uniqueKeys = await this.findUniqueKeys() // TODO: cache this?
             let where = {}
 
-            for( let key of uniqueKeys ){
-                if( newAttrs[key] !== undefined && newAttrs[key] !== null )
-                    where[key] = newAttrs[key]
-            }
-
-            if( id )
+            if( id ){
                 where[this.idAttribute] = id
+            }else{
+                let uniqueKeys = await this.findUniqueKeys() // TODO: cache this?
+                for( let key of uniqueKeys ){
+                    if( newAttrs[key] !== undefined && newAttrs[key] !== null )
+                        where[key] = newAttrs[key]
+                }
+            }
 
             model = await this.find(where) // could return null if no record found?
 
