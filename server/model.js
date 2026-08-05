@@ -722,12 +722,23 @@ module.exports = class Model {
 
         // NOTE: I think merge should default to true, but to minimize legacy issues, 
         // keep original logic in place
-        if( merge )
+        if( merge && id )
             this.id = id
 
         // since we dont set `this.id`, find should return a new class instance (unless merge:true)
         // we need to do this to allow for  `add` to be called multiple times
-        let model = await (merge ? this.find() : this.find({[this.idAttribute]:id}))
+        let model = null
+        
+        // should have and ID after insert
+        if( id )
+            model = await (merge ? this.find() : this.find({[this.idAttribute]:id}))
+        // but may not if already exists and we updated instead
+        else if( !id && result.affectedRows == 1 ){
+            if( merge )
+                this.attrs = {...this.attrs||{}, ...attrs}
+            else
+                model = new this.constructor(attrs, this.req)
+        }
 
         if( merge )
             model = this
