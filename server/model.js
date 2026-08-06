@@ -733,7 +733,7 @@ module.exports = class Model {
         // we need to do this to allow for `add` to be called multiple times
         if( merge ){
             this.attrs = newAttrs // in case findWhere wants to use them
-            await this.find()
+            await this.find(null, {singular: true})
             model = this
         }else{
             let where = {}
@@ -749,7 +749,7 @@ module.exports = class Model {
                 }
             }
 
-            model = await this.find(where) // could return null if no record found?
+            model = await this.find(where, {singular: true}) // could return null if no record found?
 
             if( !model )
                 console.log(uniqueKeys, where, attrs);
