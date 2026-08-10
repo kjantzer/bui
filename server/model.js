@@ -115,13 +115,15 @@ module.exports = class Model {
 
         if( !this.config.table ) throw Error('missing config.table')
 
+        let opts = arguments[1] || {}
+
         return /*sql*/`SELECT ${select} 
                         FROM ${this.config.table} ${this.config.tableAlias||''}
                         ${join||''}
                         ${where}
-                        ${this.findGroupBy()}
-                        ${this.findOrderBy(orderBy)}
-                        ${this._findLimit(limit)}`
+                        ${this.findGroupBy(opts)}
+                        ${this.findOrderBy(orderBy, opts)}
+                        ${this._findLimit(limit, opts)}`
     }
 
     // DEPRECATED - delete and rename _findLimit to findLimit
