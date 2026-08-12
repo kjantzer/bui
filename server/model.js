@@ -754,7 +754,7 @@ module.exports = class Model {
             model = await this.find(where, {singular: true}) // could return null if no record found?
 
             if( !model )
-                console.log(uniqueKeys, where, attrs);
+                console.log('Model.add - no model found:', uniqueKeys, where, attrs);
                 
         }
 
