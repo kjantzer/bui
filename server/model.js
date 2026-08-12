@@ -46,6 +46,24 @@ const defaultConfig = {
     idAttribute: 'id'
 }
 
+// walk the prototype chain to see if `key` can be assigned to
+// (avoids throwing on getter-only accessors, ie related.js props)
+function isAssignable(obj, key){
+
+    let proto = obj
+
+    while( proto ){
+        let desc = Object.getOwnPropertyDescriptor(proto, key)
+
+        if( desc )
+            return desc.set ? true : !desc.get
+
+        proto = Object.getPrototypeOf(proto)
+    }
+
+    return true
+}
+
 // called in context of the model
 function proxyDB(){
     
@@ -205,13 +223,11 @@ module.exports = class Model {
             if( key == 'req')
                 console.error('ALERT: models should not have `req` for an attribute')
 
-            try{
-                this[key] = attrs[key]
-            }catch(err){}
-        }
+            if( !isAssignable(this, key) )
+                continue
 
-        if( attrs )
-            this.decodeFields(attrs)
+            this[key] = attrs[key]
+        }
     }
 
     get(attr){
@@ -501,7 +517,10 @@ module.exports = class Model {
         if( this.isSingular || opts.singular  ){
 
             if( resp && resp[0] && (!id && !this.id) )
-                id = this.id = resp[0][this.idAttribute]
+                id = resp[0][this.idAttribute]
+
+            if( id && !this.id && opts.merge !== false )
+                this.id = id
 
             if( resp?.length > 1 )
                 console.warn(`${ClassObj.name}.isSingular returning more than one result - id:${this.id}`)
@@ -750,8 +769,8 @@ module.exports = class Model {
                         where[key] = newAttrs[key]
                 }
             }
-
-            model = await this.find(where, {singular: true}) // could return null if no record found?
+            
+            model = await this.find(where, {singular: true, merge: false}) // could return null if no record found?
 
             if( !model )
                 console.log('Model.add - no model found:', uniqueKeys, where, attrs);
