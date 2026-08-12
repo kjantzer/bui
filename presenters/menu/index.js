@@ -1022,6 +1022,8 @@ customElements.define('b-menu', class extends LitElement{
 
 	onLetterPress(e){
 
+		let minChar = this.opts.search?.minChar || 2
+
 		// if( e.target.tagName == 'INPUT' ){
         if( this.shadowRoot.activeElement?.tagName == 'INPUT'){
 
@@ -1029,8 +1031,8 @@ customElements.define('b-menu', class extends LitElement{
 
 				let val = this.shadowRoot.activeElement.value
 
-				// interpret only 1 character as "empty"
-				if( !val || val.length < 2 )
+				// default is tointerpret only 1 character as "empty"
+				if( !val || val.length < minChar )
 					val = ''
 
 				if( val === this.__lastFilterVal ) return
