@@ -14,6 +14,11 @@ customElements.define('b-toggle-radio-group', class extends RadioGroup{
         this.value = this.localStore.value
     }
 
+    changeValue(value){
+        this.value = value
+        this._didChange()
+    }
+
     _didChange(){
         super._didChange()
         this.localStore.value = this.value
