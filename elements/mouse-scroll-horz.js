@@ -16,25 +16,37 @@ import { LitElement} from 'lit'
 
 customElements.define('b-mouse-scroll-horz', class extends LitElement{
 
+    static properties = {
+        disabled: {type: Boolean, reflect: true},
+    }
+
     constructor(){
         super()
         this.scrollHorz = this.scrollHorz.bind(this)
+        this.onHandle = this.onHandle.bind(this)
     }
 
     connectedCallback(){
         super.connectedCallback()
         this.container = this.parentElement || this.getRootNode()?.host
+        this.container?.addEventListener('mouse-scroll-horz-handle', this.onHandle)
         this.container?.addEventListener('wheel', this.scrollHorz)
     }
 
     disconnectedCallback(){
         super.disconnectedCallback()
+        this.container?.removeEventListener('mouse-scroll-horz-handle', this.onHandle)
         this.container?.removeEventListener('wheel', this.scrollHorz)
     }
 
     scrollHorz(e){
+        if( this.disabled ) return
         e.preventDefault();
         this.container.scrollLeft += e.deltaX == -0 ? e.deltaY : e.deltaX
+    }
+
+    onHandle(e){
+        this.disabled = e.detail.disable
     }
 
 })
