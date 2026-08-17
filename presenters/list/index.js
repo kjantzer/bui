@@ -442,6 +442,14 @@ customElements.define('b-list', class extends LitElement {
     }
 
     onKeydown(e){
+        // add a timeout to mitigate triggering shortcut from a barcode scan
+        clearTimeout(this.__onKeydown)
+        this.__onKeydown = setTimeout(()=>{
+            this.#onKeydown(e)
+        },10)
+    }
+
+    #onKeydown(e){
 
         if( e.cancelBubble )
             return
