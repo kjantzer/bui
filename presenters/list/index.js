@@ -446,7 +446,7 @@ customElements.define('b-list', class extends LitElement {
         clearTimeout(this.__onKeydown)
         this.__onKeydown = setTimeout(()=>{
             this.#onKeydown(e)
-        },10)
+        },100)
     }
 
     #onKeydown(e){
