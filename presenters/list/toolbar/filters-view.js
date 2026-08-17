@@ -185,9 +185,23 @@ customElements.define('b-list-filters', class extends LitElement{
 
         <b-term-search .coll=${this.filters} placeholder="Filter by..." @hide=${this.hide} ?hidden=${this.filters.size==0}
         ?notextfield=${this.filters.opts?.filterByTextField===false}>
-            
+
             <b-btn icon="filter" slot="prefix" text lg @click=${this.toggle} @contextmenu=${this.options}
-            tooltip="Filter by (F)"></b-btn>
+            tooltip="Filter by ('f' or 'shift+f' to queue)"></b-btn>
+
+            <b-flex gap=0 class="_end" slot="prefix">
+
+                ${this.filters.size>0&&this.filters.opts?.presets!==false?html`
+                <b-list-filters-saved .filters=${this.filters}></b-list-filters-saved>
+                `:''}
+
+                ${this.filters.opts?.presets!==false?html`
+                <b-btn lg text @click=${this.viewHistory} icon="history" tooltip="Filter history" class="when-open"></b-btn>
+                `:''}
+
+                <b-btn tooltip="Clear filters ('c' or 'shift+c' to clear and queue)" icon="backspace" lg text empty @click=${this.resetFilters} ?hidden=${!this.filters.length}></b-btn>
+
+            </b-flex>
 
             <b-flex gap=0 right class="queue-btns" slot="prefix" ?hidden=${this.queuing==undefined}>
                 <b-btn sm color="theme-gradient" pill @click=${this.stopQueue} >Apply</b-btn>
@@ -195,6 +209,8 @@ customElements.define('b-list-filters', class extends LitElement{
             </b-flex>
 
         </b-term-search>
+
+        
 
         ${this.showOverflowBtn?html`
 
@@ -216,20 +232,6 @@ customElements.define('b-list-filters', class extends LitElement{
 
         `}></b-term-search-results>
         
-
-        <b-flex gap=0 class="end">
-
-            <b-btn  tooltip="Clear filters (C)" icon="backspace" lg text empty @click=${this.resetFilters} ?hidden=${!this.filters.length}></b-btn>
-
-            ${this.filters.size>0&&this.filters.opts?.presets!==false?html`
-            <b-list-filters-saved .filters=${this.filters}></b-list-filters-saved>
-            `:''}
-
-            ${this.filters.opts?.presets!==false?html`
-            <b-btn lg text @click=${this.viewHistory} icon="history" tooltip="Filter history" class="when-open"></b-btn>
-            `:''}
-
-        </b-flex>
     `}
 
     hide(){
@@ -240,9 +242,8 @@ customElements.define('b-list-filters', class extends LitElement{
         this.cancelQueuedFilters()
     }
 
-    show(e){
-        let queue = e?.metaKey || e?.ctrlKey || e?.shiftKey
-
+    show({queue=false}={}){
+        
         this.expanded = true
         this.filters.list.setAttribute('filters-open', '')
 

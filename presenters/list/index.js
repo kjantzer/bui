@@ -437,8 +437,8 @@ customElements.define('b-list', class extends LitElement {
             searchBar.blur()
     }
 
-    showFilterSelection(e){
-        this.filters.emit('show', e)
+    showFilterSelection(opts){
+        this.filters.emit('show', opts)
     }
 
     onKeydown(e){
@@ -459,13 +459,18 @@ customElements.define('b-list', class extends LitElement {
             if( (e.key == 'f' || e.key == 'F')
             && !e.ctrlKey && !e.metaKey // ignore if extra keys pressed
             ){
-                this.showFilterSelection(e)
+                let queue = e?.metaKey || e?.ctrlKey || e?.shiftKey
+                this.showFilterSelection({queue})
             }
 
-            if( e.key == 'c'
+            if( (e.key == 'c' || e.key == 'C')
             && !e.ctrlKey && !e.metaKey // ignore if extra keys pressed
             ){
-                this.filters.reset()
+
+                if( e.key == 'C')
+                    this.showFilterSelection({queue:true})
+
+                this.filters.reset({}, {stopQueuing: e.key!='C'})
             }
 
             if( e.key == 'g'
