@@ -61,6 +61,8 @@ customElements.defineShared('custom-excel-importer', class extends ExcelImportMa
 onUpload(e){
     let uploader = e.currentTarget
     let file = uploader.files[0]
-    customElements.get('custom-excel-importer').open(file, uploader)
+    customElements.get('custom-excel-importer').open(file, uploader).then(({resp, opts})=>{
+        // do something with server resp if you wish
+    })
 }
 ```

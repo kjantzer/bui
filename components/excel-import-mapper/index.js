@@ -149,9 +149,11 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
         this.applyMapping()
 
         this.panel.open()
+
+        return this.promise = new Promise((resolve, reject)=>{this.resolve = resolve; this.reject = reject})
     }
 
-    close(){ this.panel?.close()}
+    close(){ this.panel?.close(); this.resolve?.()}
 
     applyMapping(){
 
@@ -215,11 +217,13 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
         }).popOver(btn, {overflowBoundry: 'window'}) ? true : false
     }
 
-    onImportComplete(resp){
+    onImportComplete(resp, {opts}={}){
+        this.resolve({resp, opts})
         this.close()
     }
 
-    onImportError(err){
+    onImportError(err, {opts}={}){
+        // this.reject(err) // do this if you want. but by default the importer does not close so no sense in calling this
         throw err
     }
 
@@ -250,10 +254,10 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
                 body: {...data, opts: confirm}
             })
             
-            this.onImportComplete(resp)
+            this.onImportComplete(resp, {opts: confirm})
 
         }catch(err){
-            this.onImportError(err)
+            this.onImportError(err, {opts: confirm})
         }finally{
             btn.spin = false
             progress.resolve()
