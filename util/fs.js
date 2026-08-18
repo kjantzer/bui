@@ -1,6 +1,8 @@
 /*
     # fs (node)
 
+    NOTE: should probably be using fsp instead
+
     Some basic methods for working with files using native require('fs')
 
     ```js
