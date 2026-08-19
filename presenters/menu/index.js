@@ -196,7 +196,7 @@ customElements.define('b-menu', class extends LitElement{
             font-weight: normal;
             font-size: .9em;
             border-top: solid 1px var(--b-hr-bgd, var(--theme-bgd-accent));
-            color: var(--b-menu-color-accent, rgba(var(--theme-text-rgb), .5));
+			display: block;
         }
 
         .menu-divider:first-child {
@@ -217,10 +217,14 @@ customElements.define('b-menu', class extends LitElement{
         }
 
         .menu-text[bgd],
-        .menu-headingp[bgd],
+        .menu-heading[bgd],
         .menu-title[bgd] {
             background: var(--theme-bgd-accent2, #eee);
         }
+
+		.menu-title[bgd] {
+			padding: .75em 1em .5em
+		}
 
         :host ~ .d-btns:empty {
             display: none;
@@ -704,7 +708,7 @@ customElements.define('b-menu', class extends LitElement{
 			return html`<b-hr></b-hr>`
 
 		if( m.divider !== undefined )
-			return html`<div class="menu-divider">${m.icon?html`<b-icon name="${m.icon}"></b-icon> `:''}${m.divider}</div>`
+			return html`<b-text class="menu-divider" ?dim=${m.dim??true}>${m.icon?html`<b-icon name="${m.icon}"></b-icon> `:''}${m.divider}</b-text>`
 		
 		if( m.html !== undefined )
 			return html`<b-text heading block ?bgd=${m.bgd??false} class="menu-html" .html=${m.html}></b-text>`
@@ -713,10 +717,10 @@ customElements.define('b-menu', class extends LitElement{
 			return html`<b-text heading block sm dim ?bgd=${m.bgd??true} class="menu-text">${m.text}</b-text>`
 		
 		if( m.title )
-			return html`<b-text heading block bold ?bgd=${m.bgd??false} class="menu-title">${m.title}</b-text>`
+			return html`<b-text heading block semibold ?bgd=${m.bgd??false} class="menu-title">${m.title}</b-text>`
 		
 		if( m.heading )
-			return html`<b-text heading block bold ?bgd=${m.bgd??false} class="menu-heading">${m.heading}</b-text>`
+			return html`<b-text heading block semibold ?bgd=${m.bgd??false} class="menu-heading">${m.heading}</b-text>`
 
 		return html`<b-menu-item 
 			class="menu-item"
