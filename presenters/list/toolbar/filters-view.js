@@ -199,7 +199,8 @@ customElements.define('b-list-filters', class extends LitElement{
                 <b-btn lg text @click=${this.viewHistory} icon="history" tooltip="Filter history" class="when-open"></b-btn>
                 `:''}
 
-                <b-btn tooltip="Clear filters ('c' or 'shift+c' to clear and queue)" icon="backspace" lg text empty @click=${this.resetFilters} ?hidden=${!this.filters.length}></b-btn>
+                <b-btn tooltip="Clear filters ('c' or 'shift+c' to clear and queue)" icon="backspace" lg text empty 
+                @click=${this.resetFilters} @contextmenu=${this.resetFilters} ?hidden=${!this.filters.length}></b-btn>
 
             </b-flex>
 
@@ -263,7 +264,7 @@ customElements.define('b-list-filters', class extends LitElement{
 
         e.stopPropagation()
         e.preventDefault()
-        return this.show({metaKey: true})
+        return this.show({queue: true})
 
         if( !this.expanded ) return
 
@@ -336,7 +337,14 @@ customElements.define('b-list-filters', class extends LitElement{
         this.filters.queuing = false
     }
 
-    resetFilters(){
+    resetFilters(e){
+
+        if( e?.button == 2 ){
+            e.preventDefault()
+            e.stopPropagation()
+            this.show({queue:true})
+        }
+        
         this.filters.reset({}, {stopQueuing: false})
     }
 
