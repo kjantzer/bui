@@ -170,6 +170,7 @@ module.exports = class ExpressApp {
     put(...args){ return this.app.put(...args) }
     patch(...args){ return this.app.patch(...args) }
     delete(...args){ return this.app.delete(...args) }
+    close(...args){ return this.app.close(...args) }
 
     start({port=8080, publicPort=true, name="App", io}={}){
         this.server = http.Server(this.app)
