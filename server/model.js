@@ -523,8 +523,8 @@ module.exports = class Model {
                 this.id = id
 
             // TODO: make opt-in?
-            // if( resp?.length > 1 )
-            //     console.warn(`${ClassObj.name}.isSingular returning more than one result - id:${this.id}`)
+            if( resp?.length > 1 && process.env.ENV == 'development')
+                console.warn(`${ClassObj.name}.isSingular returning more than one result - id:${this.id}`)
 
             if( !resp?.length )
                 return null
