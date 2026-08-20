@@ -14,7 +14,7 @@ module.exports = class ForkWorker {
 
         let filename = workerFile.split('/').pop()
         this.worker = fork(workerFile, {
-            execArgv: [ '--inspect=9232' ]  // NOTE: not working? if working, opt-in?
+            // execArgv: [ '--inspect=9232' ]  // NOTE: not working? if working, opt-in?
         })
 
         this.response = new Promise((resolve, reject)=>{
