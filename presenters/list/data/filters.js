@@ -512,8 +512,12 @@ export class Filter {
             if( typeof v == 'string' && !['divider', '-'].includes(v) )
                 v = {label: v, val: v}
 
+            if( v.menu ){
+                v.clearsAll = true
+                v.val = '[submenu]'
+
             // make "unset" values uniform
-            if( typeof v == 'object' && unsetValues.includes(v.val) ){
+            }else if( typeof v == 'object' && unsetValues.includes(v.val) ){
                 v.val = null
                 v.clearsAll = true
             }
@@ -708,13 +712,12 @@ export class Filter {
         
         values.forEach(value=>{
 
-            if( this.isMulti )
-                delete value.menu // delete any submenus, not supported in multiselect mode
-            else if( value && value.menu )
+            if( value && value.menu ){
                 value.menuOpts = {
                     ...(value.menuOpts||{}), 
                     popover: {overflowBoundry: 'window'}
                 }
+            }
         })
         
 
@@ -743,6 +746,8 @@ export class Filter {
 
         if( selected === false || selected.length == 0  ) return
             // this.value = null
+        else if( selected.menuSelected )
+            this.value = selected.menuSelected.val
         else if( Array.isArray(selected))
             this.value = selected.map(s=>{
                 return s.selection ? {val: s.val, selection: s.selection} : s.val
