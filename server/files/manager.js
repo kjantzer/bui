@@ -298,7 +298,7 @@ module.exports = class FileManager extends Model {
                     await this.update({traits}, {manualSync:true})
                     
                 }catch(err){
-                    console.log('hmm...problem getting PDF info', err);
+                    console.log('FileManager: problem getting PDF info -', this.path, err);
                 }
             }
             
