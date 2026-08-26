@@ -245,7 +245,8 @@ module.exports = class API {
                 })
 
         }else if( resp && req.query.csv !== undefined ){
-            res.set('Content-disposition', `attachment; filename=${req.query.csv||resp.filename||'api'}.csv`);
+            let filename = req.query.csv||resp.filename||(req.path.split('/').pop()+'-'+new Date().getTime())
+            res.set('Content-disposition', `attachment; filename=${filename}.csv`);
             if( !Array.isArray(resp) ) resp = [resp]
             resp = toCSV(resp)
             res.send(resp)
