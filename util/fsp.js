@@ -27,8 +27,9 @@ const csvToArray = require('./csvToArray')
 const readDir = async (dirPath, {
     ignore=false, // regex
     whitelist=false,
-    blacklist=['.DS_Store'],
-    recursive=true,
+    blacklist=['.DS_Store', 'desktop.ini', 'Thumbs.db'],
+    type=null, // 'd' or 'f' or null for all
+    recursive=true, // TODO: allow recursive to be number of levels deep
     forceArray=false
 }={})=>{
 
@@ -51,6 +52,9 @@ const readDir = async (dirPath, {
         if( ignore && file.match(ignore) )
             return false
 
+        if( type && file.type != type )
+            return false
+
         if( whitelist )
             return whitelist.includes(file)
         else
@@ -63,7 +67,7 @@ const readDir = async (dirPath, {
         let fileInfo = await getFileInfo(dirPath, file)
 
         if( recursive && fileInfo.type == 'd' )
-            fileInfo.files = await readDir(path.join(dirPath, file), {ignore, whitelist, blacklist, recursive, forceArray})
+            fileInfo.files = await readDir(path.join(dirPath, file), {ignore, whitelist, blacklist, type, recursive, forceArray})
 
         info.push(fileInfo)
     }
