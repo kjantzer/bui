@@ -26,7 +26,7 @@ customElements.define('b-tab-bar-badges', class extends LitElement{
 
     render(){return html`
 
-        <slot name="menu:before"></slot>
+        <slot name="before"></slot>
 
         ${this.views.map(v=>html`
             ${v.canDisplay?html`
@@ -42,7 +42,7 @@ customElements.define('b-tab-bar-badges', class extends LitElement{
             `:''}
         `)}
 
-        <slot name="menu:after"></slot>
+        <slot name="after"></slot>
     `}
 
     onClick(e){
