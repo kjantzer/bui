@@ -43,7 +43,7 @@ module.exports = class Value extends Clause {
         }
 
         if( this.ifNull )
-            key = `IFNULL(${key}, ${this.ifNull==true?"''":this.ifNull})`
+            key = `IFNULL(${key}, ${db.escape(this.ifNull==true?'':this.ifNull)})`
             
         if( Array.isArray(this.value) )
             if( this.oper == 'BETWEEN' )
