@@ -33,13 +33,20 @@ import { LitElement, html, css } from 'lit'
 import {unsafeHTML} from 'lit/directives/unsafe-html.js'
 import isLitHTML from '../helpers/lit/isLitHTML'
 
+let marked // do not import marked.js - code must opt-in
+
 customElements.define('b-text', class extends LitElement{
 
     static get properties() { return {
         tooltip: {type: String},
         label: {type: String},
-        html: {type: String}
+        html: {type: String},
+        markdown: {type: String}
     }}
+
+    static set marked(value){
+        marked = value
+    }
 
     static get styles(){return css`
         :host {
@@ -312,6 +319,7 @@ customElements.define('b-text', class extends LitElement{
         // ie: "highlight" -> <b-text inline>high</b-text>light -> still renders as "highlight" and not "high light"
         return [
             html`${this.html?(isLitHTML(this.html)?this.html:unsafeHTML(this.html)):''}`,
+            html`${this.markdown&&marked?(unsafeHTML(marked(this.markdown))):this.markdown}`,
             html`<slot name="empty-html"></slot>`,
             html`<slot class="slot"></slot>`,
             this.tooltip?html`<b-tooltip>${this.tooltip}</b-tooltip>`:'',
