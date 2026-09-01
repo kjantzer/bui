@@ -37,8 +37,12 @@ customElements.define('b-list-filters', class extends LitElement{
             position: relative;
         }
 
-        :host(:not([expanded])) b-list-filter-btn:not([active]):not([always]){
+        :host(:not([expanded])) b-list-filter-btn:not([active]):not([visible]){
             display: none;
+        }
+
+        :host(:not([expanded])) b-list-filter-btn:not([active])[visible]{
+            color: var(--theme-text-accent);
         }
 
         :host(:not([expanded])) b-term-search::part(text-field),
@@ -226,7 +230,7 @@ customElements.define('b-list-filters', class extends LitElement{
             <b-list-filter-btn 
                 ?focus=${item.active}
                 ?active=${item.val.isActive}
-                ?_always=${item.val.attrs.alwaysShow}
+                ?visible=${item.val.attrs.show===true}
                 ?hidden=${item.val.attrs?.show===false}
                 .filter=${item.val}
             ></b-list-filter-btn>
