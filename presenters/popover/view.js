@@ -18,6 +18,13 @@ customElements.defineShared('b-popover-view', class extends LitElement{
         this.addEventListener('mouseover', this.stopAutoClose)
     }
 
+    static open(id, target, opts){
+        if( !this.shared )
+            return console.warn('no shared instance; use defineShared() to create one')
+        
+        return this.shared.open(id, target, opts)
+    }
+
     async open(id, target, opts){
         this.opts = opts
         this.close()
