@@ -172,15 +172,13 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
 
             let perfectMatch = header[allowedKey]
             if( perfectMatch ){
-                this._map[allowedKey] = allowedKey
-                this._usedHeaders[allowedKey] = allowedKey
+                this.#mapTheValue(allowedKey, allowedKey)
                 return
             }
 
             let altKey = this.mappingAlternatives[allowedKey]?.find(k=>header.includes(k))
             if( altKey ){
-                this._map[altKey] = allowedKey
-                this._usedHeaders[allowedKey] = altKey
+                this.#mapTheValue(allowedKey, altKey)
                 return
             }
 
@@ -197,13 +195,30 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
             let fuseMatch = fuse.search(allowedKey)
 
             if( fuseMatch.length && fuseMatch[0].score <= .5){
-                
-                let headerKey = fuseMatch[0].item.k
-                this._map[headerKey] = allowedKey
-                this._usedHeaders[allowedKey] = headerKey
+                this.#mapTheValue(allowedKey, fuseMatch[0].item.k, fuseMatch[0].score)
             }
 
         })
+    }
+
+    // lower score better
+    #mapTheValue(allowedKey, headerKey, score=0){
+
+        if( allowedKey === headerKey ) score = -1 // best match
+
+        let alreadyMapped = this._usedHeaders[this._map[headerKey]]
+
+        if( alreadyMapped ){
+
+            // not as good as a map, skip this one
+            if( alreadyMapped.score < score ) return
+
+            delete this._usedHeaders[this._map[headerKey]]
+            delete this._map[alreadyMapped.key]
+        }
+
+        this._map[headerKey] = allowedKey
+        this._usedHeaders[allowedKey] = {key: headerKey, score}
     }
 
     isMapped(k){ return !!this._map[k] }
@@ -426,7 +441,7 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
         
         if( toKey ){
             this._map[toKey] = headerKey
-            this._usedHeaders[headerKey] = toKey
+            this._usedHeaders[headerKey] = {key: toKey, score: -1}
         }
         
         if( fromKey ){
@@ -478,7 +493,7 @@ customElements.defineShared('b-excel-import-mapper', class extends LitElement {
         this._usedHeaders = {}
 
         for( let k in mapping ){
-            this._usedHeaders[mapping[k]] = k
+            this._usedHeaders[mapping[k]] = {key: k, score: -1}
         }
 
         this.requestUpdate()
