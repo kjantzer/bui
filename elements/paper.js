@@ -181,13 +181,13 @@ export class PaperElement extends LitElement {
         :host([color="orange"]) {
             --bgd: #FF9800;
             --bgdAccent: #EF6C00;
-            color: #fff;
+            color: #000;
         }
 
         :host([color="yellow"]) {
             --bgd: #FFC107;
             --bgdAccent: #F9A825;
-            color: #fff;
+            color: #000;
         }
 
         :host([color="purple"]) {
