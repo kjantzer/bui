@@ -142,9 +142,10 @@ Model.prototype.saveSync = function(key, val, opts){
         */
         for( let k in attrs ){
             
-            let [childKey, key] = k.split('.')
+            let [childKey, ...key] = k.split('.')
 
-            if( key ){
+            if( key?.length ){
+                key = key.join('.')
                 childChanges[childKey] = childChanges[childKey] || {}
                 childChanges[childKey][key] = attrs[k]
                 delete attrs[k]
