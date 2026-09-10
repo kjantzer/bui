@@ -164,7 +164,7 @@ Model.prototype.saveSync = function(key, val, opts){
             // standard object, merge with existing attrs (so we dont replace whats already there)
             // if replacement is desired, dot notation saving should not be used
             else
-                attrs[childKey] = Object.assign(child, childAttrs)
+                attrs[childKey] = Object.assign({}, child, childAttrs) // assign to new object to backbone change event fires
         }
 
         if( attrs && Object.keys(attrs).length == 0 )
