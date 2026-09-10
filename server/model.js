@@ -181,7 +181,8 @@ module.exports = class Model {
     }
 
     validateUpdate(attrs){
-        this.encodeFields(attrs)
+        // this.encodeFields(attrs) // NOTE: not longer does this here
+        // this method left for legacy support, but beforeUpdate can mostly be used instead
         return attrs
     }
 
@@ -721,7 +722,8 @@ module.exports = class Model {
         if( this.config.userID && this.req?.user )
             attrs[this.config.userID] = this.req.user.id
 
-        let beforeAdd = await this.beforeAdd(attrs, arguments[1])
+        let opts = arguments[1]
+        let beforeAdd = await this.beforeAdd(attrs, opts)
         this.encodeFields(attrs) // NOTE: this moved to after ^, could cause problems with existing code
 
         if( !attrs || Object.keys(attrs).length == 0 )
@@ -781,7 +783,7 @@ module.exports = class Model {
         if( !model )
             return
 
-        model.afterAdd&&await model.afterAdd(attrs, beforeAdd)
+        model.afterAdd&&await model.afterAdd(attrs, beforeAdd, opts)
 
         let syncData
         if( this.config.sync && this.req && model.syncData ){
@@ -817,6 +819,8 @@ module.exports = class Model {
         let where = {[this.idAttribute]:this.id}
         
         let beforeUpdate = await this.beforeUpdate(attrs, where, args[1])
+
+        this.encodeFields(attrs)
 
         if( !this.config.table ) throw Error('missing config.table')
 
