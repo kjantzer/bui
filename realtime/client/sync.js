@@ -131,8 +131,7 @@ export function enableSync(Class, {
 // NOTE: do we really need different sync methods for coll/vs model?
 // maybe can refactor to one?
 export function syncBackboneCollection(data, {
-    addUpdates=true, // TODO: rename to `addMissingUpdates`
-    addToRoot=true, // true in MOST cases
+    addUpdates=true, // TODO: rename to `addMissingUpdates`?
     triggerDestroy=false
 }={}){
 
@@ -157,7 +156,7 @@ export function syncBackboneCollection(data, {
             // if no trailing ID was removed, we must be adding to this collection directly
             if( oldPath != path )
                 model = this.get(path)
-            else if( addToRoot !== false )
+            else if( addUpdates !== false )
                 model = this
 
         }else{
