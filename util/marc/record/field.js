@@ -3,9 +3,10 @@ const MarcRecordPosition = require('./position')
 
 class MarcRecordField {
 
-    constructor(schema, tag, data){
+    constructor(marc, tag, data){
 
-        this._schema = schema
+        this.marc = marc
+        this.schema = marc.schema.get(tag)
         this.tag = tag
 
         this.data = {}
@@ -17,10 +18,12 @@ class MarcRecordField {
 
         // per docs, first charcater denotes subtype
         if( this.tag == '007' ){
-            tag += this.data.val[0]
+            tag += this.data[0]
         }
 
-        this.schema = schema.get(tag)
+        // try to get again
+        if( !this.schema )
+            this.schema = marc.schema.get(tag)
 
         if( this.tag == '007' ){
             console.log(this.schema)
@@ -41,8 +44,13 @@ class MarcRecordField {
             this.data.sf = this.data.sf.map(sf => new MarcRecordSubfield( this.schema, sf[0], sf[1] ))
         }
         
-        if( this.schema?.has('positions') ){
-            this.data.val = new MarcRecordPosition( this.schema, this.data.val )
+        if( !this.data.sf ){
+
+            this.data = {val: this.data}
+
+            if( this.schema?.has('positions') ){
+                this.data.val = new MarcRecordPosition( this.schema, this.data.val )
+            }
         }
 
         // TODO: handle position (control fields)
@@ -73,10 +81,14 @@ class MarcRecordField {
 
     #decode(raw){
 
-        if( this.tag < '010' || this.tag == 'leader') // control fields have no indicators or subfields, just raw data
-            return {val: MarcRecordField.#decoder.decode(raw)}
+        if( this.tag == 'leader' ){
+            raw = raw.subarray( 0, this.schema.charLength )
+        }
 
-        const SF = this._schema.SF
+        if( this.tag < '010' || this.tag == 'leader') // control fields have no indicators or subfields, just raw data
+            return MarcRecordField.#decoder.decode(raw)
+
+        const SF = this.marc.schema.SF
         let data = {
             i1: String.fromCharCode( raw[0] ),
             i2: String.fromCharCode( raw[1] ),
