@@ -73,6 +73,15 @@ class MarcRecordField {
         return this.data.val
     }
 
+    get(code, {all=false}={}){
+        let schema = this.schema.get('subfields').get(code)
+        if( !schema ) throw new Error('Not a valid MARC subfield')
+
+        let subfields = this.data.sf.filter(sf=>sf.code == code || sf.schema.label == code)
+
+        return schema.isRepeatable && all ? subfields : subfields[0]
+    }
+
     isValid(){
         return this.schema
     }

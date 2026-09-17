@@ -30,6 +30,15 @@ class MarcRecord {
         return this.fields
     }
 
+    get(tag, {all=false}={}){
+        let schema = this.schema.get(tag)
+        if( !schema ) throw new Error('Not a valid MARC tag')
+
+        let fields = this.fields.filter(f=>f.tag == tag)
+
+        return schema.isRepeatable && all ? fields : fields[0]
+    }
+
     get typeOfRecord(){
         return this.leader?.value.get(6)
     }
