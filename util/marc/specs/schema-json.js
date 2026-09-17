@@ -17813,6 +17813,8 @@ module.exports = {
     },
     "008b":{
       "label":"Books",
+      "scope":["a","t"],
+      "level":["a","c","d","m"],
       "positions":{
         "18-21":{
           "label":"Illustrations (006\/01-04)",
@@ -18003,6 +18005,7 @@ module.exports = {
     },
     "008c":{
       "label":"Computer Files",
+      "scope":["m"],
       "positions":{
         "18-21":{
           "label":"Undefined (006\/01-04)",
@@ -18113,6 +18116,7 @@ module.exports = {
     },
     "008p":{
       "label":"Maps",
+      "scope":["e","f"],
       "positions":{
         "18-21":{
           "label":"Relief (006\/01-04)",
@@ -18309,6 +18313,7 @@ module.exports = {
     },
     "008m":{
       "label":"Music",
+      "scope":["c","d","i","j"],
       "positions":{
         "18-19":{
           "label":"Form of composition (006\/01-02)",
@@ -18547,6 +18552,8 @@ module.exports = {
     },
     "008s":{
       "label":"Continuing Resources",
+      "scope":["a"],
+      "level":["b","i","s"],
       "positions":{
         "18-18":{
           "label":"Frequency (006\/01)",
@@ -18798,6 +18805,7 @@ module.exports = {
     },
     "008v":{
       "label":"Visual Materials",
+      "scope":["g","k","o","r"],
       "positions":{
         "18-20":{
           "label":"Running time for motion pictures and videorecordings (006\/01-03)",
@@ -18936,6 +18944,7 @@ module.exports = {
     },
     "008x":{
       "label":"Mixed Materials",
+      "scope":["p"],
       "positions":{
         "18-22":{
           "label":"Undefined (006\/01-05)",
