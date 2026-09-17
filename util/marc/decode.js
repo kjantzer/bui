@@ -1,9 +1,9 @@
 /*
     Decode WIP
 
-    NOTE: only works for node.js, needs to improve for browser compatibility
+    NOTE: bytes reading uses TextDecoder/subarray so it works with a bytes (node) or Uint8Array (browser)
 */
-const fs = require('fs')
+// const fs = require('fs')
 let MarcSchema = require('./specs/schema')
 let MarcRecordField = require('./record/field')
 
@@ -11,31 +11,35 @@ const FT = MarcSchema.FT
 const RT = MarcSchema.RT
 const SF = MarcSchema.SF
 
-module.exports = function decodeMarcFile( buffer ){
+const decoder = new TextDecoder('latin1')
 
-    if( typeof buffer == 'string' )
-        buffer = fs.readFileSync(buffer)
+module.exports = function decodeMarcFile( bytes ){
 
     // strip UTF-8 BOM if present
-	if( buffer[0] === 0xef && buffer[1] === 0xbb && buffer[2] === 0xbf ){
-		buffer = buffer.slice( 3 )
+	if( bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf ){
+		bytes = bytes.subarray( 3 )
 	}
 
-    let schema = new MarcSchema()
+    let schema = MarcSchema
 
 	let records = []
-	let Leader = schema.get('leader')
-    let leader = buffer.toString( 'latin1', 0, Leader.charLength )
+	
+    let _leader = new MarcRecordField(schema, 'leader', bytes.subarray( 0, schema.get('leader').charLength ))
+    records.push(_leader)
+
+    // FIXME:
+    let Leader = _leader.schema
+    let leader = _leader.value
 
     	
     const recordLength = parseInt( leader.slice( 0, 5 ), 10 )
     const baseAddress = parseInt( leader.slice( 12, 17 ), 10 )
 
     // shouldn't need this unless the file has extra bytes before the leader or after the directory?
-    const recordBuf = buffer//buffer.slice( 0, Leader.charLength + recordLength )
+    const recordBuf = bytes//bytes.subarray( 0, Leader.charLength + recordLength )
 
     // directory runs from byte 24 to baseAddress-1 (ends with FT)
-    const directoryStr = recordBuf.toString( 'latin1', Leader.charLength, baseAddress - 1 )
+    const directoryStr = decoder.decode( recordBuf.subarray( Leader.charLength, baseAddress - 1 ) )
     const entries = []
     for( let i = 0; i < directoryStr.length; i += 12 ){
 
@@ -49,11 +53,6 @@ module.exports = function decodeMarcFile( buffer ){
 
     const fields = entries.map( entry => decodeField( entry, recordBuf, baseAddress, schema ) )
 
-    records.push({
-        tag: 'leader',
-        val: leader
-    })
-
     records.push(...fields)
 
 	return records
@@ -61,14 +60,14 @@ module.exports = function decodeMarcFile( buffer ){
 
 // claude was doing this, dont think I need it
 function findStartOfLeader(){
-    // while( leaderEnd < buffer.length && !leader ){
+    // while( leaderEnd < bytes.length && !leader ){
 
-	// 	if( buffer[leaderEnd] === RT || buffer[leaderEnd] === 0x0a || buffer[leaderEnd] === 0x0d ){
+	// 	if( bytes[leaderEnd] === RT || bytes[leaderEnd] === 0x0a || bytes[leaderEnd] === 0x0d ){
 	// 		leaderEnd++
 	// 		continue
 	// 	}
 
-    //     leader = buffer.toString( 'latin1', leaderEnd, leaderEnd + 24 )
+    //     leader = bytes.toString( 'latin1', leaderEnd, leaderEnd + 24 )
     // }
 }
 
@@ -76,18 +75,19 @@ function findStartOfLeader(){
 function decodeField( entry, recordBuf, baseAddress, schema ){
 
 	const fieldStart = baseAddress + entry.start
-	const fieldBuf = recordBuf.slice( fieldStart, fieldStart + entry.length )
+	const fieldBuf = recordBuf.subarray( fieldStart, fieldStart + entry.length )
     let tag = entry.tag
 
 	// strip trailing FT
 	const raw = fieldBuf[fieldBuf.length - 1] === FT
-		? fieldBuf.slice( 0, -1 )
+		? fieldBuf.subarray( 0, -1 )
 		: fieldBuf
 
     return new MarcRecordField(schema, tag, raw)
+    // return {}
 
     // let field = schema.get(tag)
-    // return field ? field.decode(raw) : {tag, val: raw.toString( 'latin1' )}
+    // return field ? field.decode(raw) : {tag, val: decoder.decode(raw)}
 	
 }
 

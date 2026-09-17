@@ -4,7 +4,7 @@ const MarcRecordField = require('./field')
 class MarcRecord {
 
     constructor(data){
-        this.schema = new MarcSchema()
+        this.schema = MarcSchema
         this.fields = []
     }
 

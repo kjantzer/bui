@@ -13,4 +13,4 @@ class MarcSchema extends MarcPart {
     
 }
 
-module.exports = MarcSchema
+module.exports = new MarcSchema() // singleton
