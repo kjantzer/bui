@@ -1,15 +1,28 @@
 const CollMap = require(`../../../collmap`)
 
+const FT = 0x1e // field terminator
+const RT = 0x1d // record terminator
+const SF = 0x1f // subfield delimiter
+
 class MarcPartArray extends Array {
     // nothing custom yet
 }
 
 class MarcPart extends CollMap {
 
+    static FT = FT
+    static RT = RT
+    static SF = SF
+
+    FT = FT
+    RT = RT
+    SF = SF
+
     get type(){
         return this.constructor.name.toLowerCase().replace('marc', '')
     }
 
+    get id(){ return this.key }
     get label(){ return this.get('label') == 'Undefined' ? '' : this.get('label') }
     get name(){ return this.label }
     get code(){ return this.key ? this.key : '#' } // easier to see character and is valid
@@ -59,7 +72,7 @@ class MarcPart extends CollMap {
 
     get(key){
         // support dotnotation
-        let keys = key.toLowerCase().split('.')
+        let keys = String(key).toLowerCase().split('.')
         key = keys.shift()
 
         let resp = super.get(key)// || this[key]
