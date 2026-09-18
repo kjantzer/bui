@@ -22,8 +22,11 @@ module.exports = class SearchType {
     termForBoolean(term){
 
         // let og = term
-        // remove characters that boolean mode doesn't like
-        term = term.trim().replace(/[\(\)\*\-+]/g, '').replace(/\s{2,}/g, ' ').trim()
+        // hyphens are word boundaries to MySQL's fulltext tokenizer (eg "Twenty-Ninth" indexes
+        // as "Twenty" "Ninth"), so replace with a space rather than deleting - deleting merges
+        // the surrounding text into one word that will never match the separately indexed tokens
+        // remove other characters that boolean mode doesn't like
+        term = term.trim().replace(/-/g, ' ').replace(/[\(\)\*+]/g, '').replace(/\s{2,}/g, ' ').trim()
 
         let words = term.split(' ')
         let lastWord = words.pop()
