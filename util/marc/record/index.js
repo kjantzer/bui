@@ -103,6 +103,29 @@ class MarcRecord {
         val = String( val ).padStart( 5, '0' )
         this.leader?.value.set(12, val)
     }
+
+    set controlNumber(val){
+        let field = this.get('001')
+        // TODO: support updating?
+        if( field ) throw new Error('001 field already exists')
+        this.add('001', val)
+    }
+
+    set controlNumberIdentifier(val){
+        let field = this.get('003')
+        // TODO: support updating?
+        if( field ) throw new Error('003 field already exists')
+        this.add('003', val)
+    }
+
+    set dateLastModified(val){
+        let field = this.get('005')
+        // TODO: support updating?
+        if( field ) throw new Error('005 field already exists')
+
+        // TODO: support formatting?
+        this.add('005', val)
+    }
     
     static #decoder = new TextDecoder('latin1')
 
