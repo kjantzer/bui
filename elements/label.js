@@ -69,13 +69,12 @@ export default class Label extends LitElement {
 
         :host([outline]) {
             background: none;
-            border: solid 1px;
-            border-color: var(--bgd);
+            box-shadow: inset 0 0 0 1px var(--bgd);
             --color: var(--bgd);
         }
 
         :host([outline="theme-gradient"]) {
-            border-color: var(--theme);
+            box-shadow: inset 0 0 0 1px var(--theme);
             background: var(--theme-gradient);
             color: var(--theme-text, #000);
             -webkit-background-clip: text;
