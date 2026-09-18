@@ -1,4 +1,4 @@
-const MarcSchema = require('../specs/schema')
+const MarcSchema = require('../schema')
 const MarcRecordField = require('./field')
 
 const FT = MarcSchema.FT
