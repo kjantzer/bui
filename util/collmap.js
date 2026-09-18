@@ -116,7 +116,9 @@ module.exports = class CollMap extends Map {
     }
     
     get first(){ return this.at(0) }
+    get firstKey(){ return this.keyAt(0) }
     get last(){ return this.at(this.size-1) }
+    get lastKey(){ return this.keyAt(this.size-1) }
     get length(){ return this.size }
 
     valuesArray(){ return Array.from(this.values()) }
@@ -124,6 +126,10 @@ module.exports = class CollMap extends Map {
 
     at(i){
         return this.valuesArray()[i]
+    }
+
+    keyAt(i){
+        return this.keysArray()[i]
     }
 
     map(fn){
