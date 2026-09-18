@@ -1,4 +1,5 @@
-const MarcRecord = require('./record')
 const MarcSchema = require('./specs/schema')
+const MarcRecord = require('./record')
+const MarcRecordBook = require('./record/subset/book')
 
-module.exports = {MarcRecord, MarcSchema}
+module.exports = {MarcSchema,MarcRecord, MarcRecordBook}
