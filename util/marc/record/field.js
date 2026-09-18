@@ -38,6 +38,13 @@ class MarcRecordField {
             this.data.i1 ??= ''
             this.data.i2 ??= ''
             this.data.sf ??= []
+
+            if( !this.data.i1 && this.schema.get('indicator1.codes').size == 1  )
+                this.data.i1 = this.schema.get('indicator1.codes').firstKey
+
+            if( !this.data.i2 && this.schema.get('indicator2.codes').size == 1  )
+                this.data.i2 = this.schema.get('indicator2.codes').firstKey
+
         }
 
         if( this.data.sf ){
@@ -86,6 +93,13 @@ class MarcRecordField {
         return this.schema
     }
 
+    toString(){
+        if( this.data.sf )
+            return `${this.data.i1}${this.data.i2}${this.data.sf.map(sf => sf.toString()).join()}`
+        else
+            return this.data.val.toString()
+    }
+
     static #decoder = new TextDecoder('latin1')
 
     #decode(raw){
@@ -130,6 +144,26 @@ class MarcRecordField {
             tag: this.tag,
             ...this.data
         }
+    }
+
+    get marcTag(){
+        if( this.tag == 'leader' ) return this.tag
+        return String(this.tag).slice(0, 3) // make sure we leave out any subsets like 007a
+    }
+
+    toMarcData(){
+        let data = {
+            tag: this.marcTag,
+            ...this.data
+        }
+
+        if( data.sf )
+            data.sf = data.sf.map(sf => sf.toMarcData())
+
+        if( data.val?.toMarcData )
+            data.val = data.val.toMarcData()
+
+        return data
     }
 
 }

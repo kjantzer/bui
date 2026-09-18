@@ -12,7 +12,9 @@ class MarcRecordSubfield {
     get label(){ return this.schema?.get('label') || this.code }
     get value(){ return this.data }
 
-    toString(){ return this.label+': '+this.value }
+    toHumanString(){ return this.label+': '+this.value }
+
+    toString(){ return `$${this.code}${this.value}` }
 
     isValid(){
         return this.schema
@@ -21,8 +23,12 @@ class MarcRecordSubfield {
     toJSON(){
         return {
             code: this.code,
-            data: this.data
+            val: this.data
         }
+    }
+
+    toMarcData(){
+        return [this.code, this.data]
     }
 
 }

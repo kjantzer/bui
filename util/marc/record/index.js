@@ -1,6 +1,10 @@
 const MarcSchema = require('../specs/schema')
 const MarcRecordField = require('./field')
 
+const FT = MarcSchema.FT
+const RT = MarcSchema.RT
+const SF = MarcSchema.SF
+
 class MarcRecord {
 
     constructor(data){
@@ -14,7 +18,18 @@ class MarcRecord {
             this.add('leader', data) // TODO: 
     }
 
-    add(tag, data){
+    add(tag, indicators, data){
+
+        if( !data )
+            data = indicators
+        else if( indicators ){
+            data = {
+                i1: indicators[0],
+                i2: indicators[1],
+                sf: data
+            }
+        }
+
         // if( tag !== 'leader' && !this.leader )
         //     throw new Error('Leader must be first field')
 
@@ -28,6 +43,14 @@ class MarcRecord {
 
     toJSON(){
         return this.fields
+    }
+
+    toMarcData(){
+        // TODO: make sure in order by tag number?
+        return this.fields
+        .filter(f=>f.tag != 'leader') // this has dynamic data so not part of this
+        .map(f=>f.toMarcData())
+        .sort((a,b)=>a.tag.localeCompare(b.tag))
     }
 
     get(tag, {all=false}={}){
@@ -55,8 +78,18 @@ class MarcRecord {
         return this.leader ? parseInt( this.leader?.value.get(0)?.val, 10 ) : null
     }
 
+    set recordLength(val){
+        val = String( val ).padStart( 5, '0' )
+        this.leader?.value.set(0, val)
+    }
+
     get baseAddress(){
         return this.leader ? parseInt( this.leader?.value.get(12)?.val, 10 ) : null
+    }
+
+    set baseAddress(val){
+        val = String( val ).padStart( 5, '0' )
+        this.leader?.value.set(12, val)
     }
     
     static #decoder = new TextDecoder('latin1')
@@ -107,11 +140,62 @@ class MarcRecord {
         })
     }
 
+    encode(){
+            
+        const FT = '\x1e'
+		const SF = '\x1f'
+		const RT = '\x1d'
+
+		let dataChunks = []
+        let fields = this.toMarcData()
+
+        fields.shift() // remove leader FIXME: what if not the first?
+
+		for( const f of fields ){
+			if( f.val !== undefined ){
+				dataChunks.push( f.val + FT )
+			} else {
+				const subs = f.sf.map( ([code, val]) => SF + code + val ).join( '' )
+				dataChunks.push( String(f.i1) + String(f.i2) + subs + FT )
+			}
+		}
+
+		let directory = ''
+		let offset = 0
+		fields.forEach( ( f, i ) => {
+			const len = dataChunks[i].length // latin1: 1 char = 1 byte, no Buffer/TextEncoder needed
+			directory += f.tag + String( len ).padStart( 4, '0' ) + String( offset ).padStart( 5, '0' )
+			offset += len
+		})
+		directory += FT
+
+		const baseAddress = 24 + directory.length
+		const data = dataChunks.join( '' )
+		const totalLength = baseAddress + data.length + 1
+
+        this.baseAddress = baseAddress
+        this.recordLength = totalLength
+
+        const leader = this.leader.toString()
+
+		let str = leader + directory + data + RT // plain JS string, latin1-safe
+
+        // node.js
+        if( globalThis.Buffer )
+            return Buffer.from( str, 'latin1' )
+        // browser
+        else{
+            const bytes = new Uint8Array( str.length )
+            for( let i = 0; i < str.length; i++ ){
+                bytes[i] = str.charCodeAt( i ) // latin1: charCode 0-255 maps 1:1 to byte
+            }
+            // return new Blob( [bytes], { type: 'application/octet-stream' } ) // or this?
+            return bytes
+        }
+    }
+
 }
 
 module.exports = MarcRecord
 
 
-const FT = MarcSchema.FT
-const RT = MarcSchema.RT
-const SF = MarcSchema.SF

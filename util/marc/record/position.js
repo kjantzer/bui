@@ -54,8 +54,22 @@ class MarcRecordPosition {
         })
     }
 
-    toString(){ return this.value }
+    set(key, val){
+        let d = this.get(key)
+        if( d ) d.val = val
+    }
+
+    toString(){ return this.toMarcData() }
+
     toJSON(){ return this.value }
+
+    toMarcData(){
+        return this.data.map(d=>{
+            let length = d.position.end - d.position.start + 1
+
+            return String(d.val??'').padEnd(length, ' ')
+        }).join('')
+    }
 
 }
 
