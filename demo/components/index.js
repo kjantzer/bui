@@ -9,6 +9,8 @@ import '../tools/pi-pico'
 import docs from '../../components/README.md'
 import printViewDocs from '../../components/print-view/README.md'
 import metadataDocs from '../../components/metadata/README.md'
+import onixDocs from '../../util/onix/README.md'
+import marcDocs from '../../util/marc/README.md'
 
 customElements.define('demo-components', class extends LitElement{
 
@@ -58,10 +60,18 @@ customElements.define('demo-components', class extends LitElement{
             </div>
 
             <div title="Metadata" path="metadata" id="metadata">
-                <!-- <b-paper> -->
-                    <b-h1>Metadata</b-h1>
-                    <demo-markdown-docs .docs=${metadataDocs}></demo-markdown-docs>
-                <!-- </b-paper> -->
+                <b-h1>Metadata</b-h1>
+                <demo-markdown-docs .docs=${metadataDocs}></demo-markdown-docs>
+            </div>
+
+            <div title="ONIX" path="onix" id="onix">
+                <b-h1>ONIX</b-h1>
+                <demo-markdown-docs .docs=${onixDocs}></demo-markdown-docs>
+            </div>
+
+            <div title="MARC" path="marc" id="marc">
+                <b-h1>MARC</b-h1>
+                <demo-markdown-docs .docs=${marcDocs}></demo-markdown-docs>
             </div>
 
         </b-tabs>

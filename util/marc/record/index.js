@@ -12,6 +12,9 @@ class MarcRecord {
         this.schema = MarcSchema
         this.fields = []
 
+        if( data instanceof ArrayBuffer )
+            data = new Uint8Array(data)
+
         if( data instanceof Uint8Array )
             this.#decode(data)
         else if( data )
@@ -20,9 +23,18 @@ class MarcRecord {
 
     add(tag, indicators, data){
 
-        if( !data )
+        if( !data ){
             data = indicators
-        else if( indicators ){
+            indicators = null
+
+            // control/position values are objects, not arrays
+            // so data is an array and must have indicators (even if empty)
+            if( Array.isArray(data) ){
+                indicators = []
+            }
+        }
+
+        if( indicators ){
             data = {
                 i1: indicators[0],
                 i2: indicators[1],
@@ -148,8 +160,6 @@ class MarcRecord {
 
 		let dataChunks = []
         let fields = this.toMarcData()
-
-        fields.shift() // remove leader FIXME: what if not the first?
 
 		for( const f of fields ){
 			if( f.val !== undefined ){

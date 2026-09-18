@@ -80,13 +80,24 @@ class MarcRecordField {
         return this.data.val
     }
 
+    get val(){ return this.value }
+
     get(code, {all=false}={}){
-        let schema = this.schema.get('subfields').get(code)
-        if( !schema ) throw new Error('Not a valid MARC subfield')
 
-        let subfields = this.data.sf.filter(sf=>sf.code == code || sf.schema.label == code)
+        if( this.schema.has('subfields') ){
+            let schema = this.schema.get('subfields').get(code)
+            if( !schema ) throw new Error('Not a valid MARC subfield')
 
-        return schema.isRepeatable && all ? subfields : subfields[0]
+            let subfields = this.data.sf.filter(sf=>sf.code == code || sf.schema.label == code)
+
+            return schema.isRepeatable && all ? subfields : subfields[0]
+        }
+
+        if( this.schema.get('positions') ){
+            // let schema = this.schema.get('positions').get(code)
+            // if( !schema ) throw new Error('Not a valid MARC subfield')
+            return this.value.get(code)
+        }
     }
 
     isValid(){
@@ -157,9 +168,13 @@ class MarcRecordField {
             ...this.data
         }
 
-        if( data.sf )
+        if( data.sf ){
             data.sf = data.sf.map(sf => sf.toMarcData())
 
+            // each indicator MUST take a character, so we need to ensure they are not empty
+            if( data.i1 === '' ) data.i1 = ' '
+            if( data.i2 === '' ) data.i2 = ' '
+        }
         if( data.val?.toMarcData )
             data.val = data.val.toMarcData()
 

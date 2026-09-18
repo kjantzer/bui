@@ -11,6 +11,7 @@ class MarcRecordSubfield {
 
     get label(){ return this.schema?.get('label') || this.code }
     get value(){ return this.data }
+    get val(){ return this.value }
 
     toHumanString(){ return this.label+': '+this.value }
 
