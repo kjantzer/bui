@@ -14,6 +14,12 @@ class Book extends MarcRecord {
         ])
     }
 
+    subtitle(subtitle){
+        this.add('246', [3, 0], [
+            ['a', subtitle]
+        ])
+    }
+
     series(series, volume){
         if( volume && !series.endsWith(';'))
             series += ' ;'

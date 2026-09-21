@@ -1,5 +1,6 @@
 const MarcSchema = require('../schema')
 const MarcRecordField = require('./field')
+const CollMap = require('../../../util/collmap')
 
 const FT = MarcSchema.FT
 const RT = MarcSchema.RT
@@ -7,7 +8,7 @@ const SF = MarcSchema.SF
 
 class MarcRecord {
 
-    constructor(data){
+    constructor(data, {records}={}){
 
         this.schema = MarcSchema
         this.fields = []
@@ -16,7 +17,7 @@ class MarcRecord {
             data = new Uint8Array(data)
 
         if( data instanceof Uint8Array )
-            this.#decode(data)
+            this.#decode(data, {records})
         else if( data )
             this.add('leader', data) // TODO: 
     }
@@ -74,6 +75,8 @@ class MarcRecord {
         return schema?.isRepeatable && all ? fields : fields[0]
     }
 
+    get id(){ return `${this.controlNumberIdentifier}-${this.controlNumber}` }
+
     get typeOfRecord(){
         return this.leader?.value.get(6)
     }
@@ -104,11 +107,19 @@ class MarcRecord {
         this.leader?.value.set(12, val)
     }
 
+    get controlNumber(){
+        return this.get('001')?.val
+    }
+
     set controlNumber(val){
         let field = this.get('001')
         // TODO: support updating?
         if( field ) throw new Error('001 field already exists')
         this.add('001', val)
+    }
+
+    get controlNumberIdentifier(){
+        return this.get('003')?.val
     }
 
     set controlNumberIdentifier(val){
@@ -129,12 +140,15 @@ class MarcRecord {
     
     static #decoder = new TextDecoder('latin1')
 
-    #decode( bytes ){
+    #decode( bytes, {records}={} ){
 
         // strip UTF-8 BOM if present
         if( bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf ){
             bytes = bytes.subarray( 3 )
         }
+
+        let recordBytes = records ? [bytes] : splitToRecords(bytes)
+        bytes = recordBytes.shift()
     
         let schema = this.schema
         let decoder = MarcRecord.#decoder
@@ -173,10 +187,21 @@ class MarcRecord {
 
             this.add(tag, raw)
         })
+
+        if( !records )
+            records = this.records = new CollMap()
+
+        if( records )
+            records.set(this.id, this)
+
+        if( recordBytes.length > 1 ){
+            for( const record of recordBytes ){
+                new MarcRecord(record, {records: records})
+            }
+        }
     }
 
-    encode(){
-            
+    toMarcString(){
         const FT = '\x1e'
 		const SF = '\x1f'
 		const RT = '\x1d'
@@ -211,7 +236,12 @@ class MarcRecord {
 
         const leader = this.leader.toString()
 
-		let str = leader + directory + data + RT // plain JS string, latin1-safe
+		return leader + directory + data + RT // plain JS string, latin1-safe
+    }
+
+    encode({all=true}={}){
+
+        let str = all && this.records ? this.records.map(r=>r.toMarcString({all: false})).join('') : this.toMarcString()
 
         // node.js
         if( globalThis.Buffer )
@@ -232,3 +262,19 @@ class MarcRecord {
 module.exports = MarcRecord
 
 
+function splitToRecords(bytes){
+  const chunks = []
+  let start = 0
+
+  for( let i = 0; i < bytes.length; i++ ){
+    if( bytes[i] === RT ){
+      chunks.push(bytes.subarray(start, i))
+      start = i + 1
+    }
+  }
+
+  if( start < bytes.length )
+    chunks.push(bytes.subarray(start))
+
+  return chunks
+}
