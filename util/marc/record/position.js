@@ -21,8 +21,14 @@ class MarcRecordPosition {
             }
         }
 
+        let positions = schema.get('positions')
+        
+        if( schema.shortKey == 6 ){
+            positions = positions.get('008'+data[0])
+        }
+
         // positioned values must have all the positions defined, even if an empty space
-        this.data = this.schema.get('positions').map(positionData)
+        this.data = positions?.map(positionData)
 
         // include the shared "all" positions
         if( schema.shortKey == 8 ){
@@ -48,7 +54,8 @@ class MarcRecordPosition {
     positionValues(){
         return this.data.map(d=>{
             
-            let valLabel = d.position.get('codes')?.get(d.val) || d.val
+            // FIXME: 006 has nested array of positions
+            let valLabel = d.position.get?.('codes')?.get(d.val) || d.val
 
             return {
                 ...d,
