@@ -239,6 +239,12 @@ customElements.define('b-text', class extends LitElement{
                 --b-text-hover-color: var(--b-text-link-color, var(--theme, var(--blue, blue)));
             }
 
+            :host([link="underline"]:hover),
+            :host([link="underline"]:hover) ::slotted(b-text){
+                color: inherit;
+                text-decoration: underline;
+            }
+
             :host([href]:not([href=""]):hover) {
                 text-decoration: underline;
             }
