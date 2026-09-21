@@ -69,6 +69,33 @@ marc.add('655', [,7], [
 
 ```
 
+### Subsets
+
+Opinionated subset of the MARC record that provides simpiler add methods. Any field can still be added with `.add()`
+
+```js
+const {MarcRecordBook} = require(bui`util/marc`)
+
+let marc = new MarcRecord({
+    // ... leader values
+})
+
+marc.title('Book Title')
+
+marc.edition('Unabridged')
+
+marc.biasac('YOUNG ADULT FICTION / Fantasy / General')
+marc.biasac('YOUNG ADULT FICTION / Girls & Women')
+
+marc.keyword('Audiobooks', 'lcgft')
+marc.keyword('Fantasy fiction', 'lcgft')
+
+marc.mainPerson('Doe, Mark', 'Author')
+marc.additionalPerson('Doe, Jane', 'Narrator')
+
+marc.summary('A summary of the book, lots of text here....')
+```
+
 ## Decoding
 
 ```js
