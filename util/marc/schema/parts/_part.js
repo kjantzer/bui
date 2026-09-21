@@ -42,7 +42,7 @@ class MarcPart extends CollMap {
             if( typeof d != 'object' ){
                 
             }else if( Array.isArray(d) )
-                d = new MarcPartArray(d)
+                d = new MarcPartArray(...d)
             else{
 
                 let PartClass = MarcPart
@@ -93,6 +93,16 @@ class MarcPart extends CollMap {
             return resp.get(keys)
         else
             return resp
+    }
+
+    get top(){ return this.root }
+
+    get root(){
+        let root = this.parent || this
+        while(root?.parent){
+            root = root.parent
+        }
+        return root
     }
 
 }

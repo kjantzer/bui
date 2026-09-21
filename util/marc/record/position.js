@@ -4,9 +4,7 @@ class MarcRecordPosition {
 
         this.schema = schema
 
-        // positioned values must have all the positions defined, even if an empty space
-        this.data = this.schema.get('positions').map(p=>{
-
+        function positionData(p){
             // data given may be a complete string or an object with the position as the key
             let val = typeof data == 'string' ? data.slice(p.start, p.end+1) : data[p.start]
 
@@ -21,7 +19,21 @@ class MarcRecordPosition {
                 position: p,
                 val
             }
-        })
+        }
+
+        // positioned values must have all the positions defined, even if an empty space
+        this.data = this.schema.get('positions').map(positionData)
+
+        // include the shared "all" positions
+        if( schema.shortKey == 8 ){
+
+            let others = schema.top.get('008a.positions').map(positionData)
+            others = others.filter(d=>d.position.start!=18) // "Material specific coded elements"
+            this.data.push(...others)
+
+            // make sure in order since we merged two sets
+            this.data.sort((a,b)=>a.position.start - b.position.start)
+        }
         
     }
 

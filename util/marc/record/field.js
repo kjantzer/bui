@@ -16,22 +16,23 @@ class MarcRecordField {
         else
             this.data = data
 
-        // per docs, first charcater denotes subtype
+        // per docs, first charcater denotes subtype of 007
         if( this.tag == '007' ){
             tag += this.data[0]
-        }
 
-        // try to get again
-        if( !this.schema )
             this.schema = marc.schema.get(tag)
-
-        if( this.tag == '007' ){
-            console.log(this.schema)
         }
 
+        // subtype of 008 is based on the record type and level from leader
         if( this.tag == '008' ){
-            console.log('alter tag');
-            
+            let recordType = marc.typeOfRecord?.val
+            let recordLevel = marc.bibliographicLevel?.val
+
+            this.schema = marc.schema.find(m=>{
+                if( !m.get('scope')?.includes(recordType) ) return false
+                if( !m.get('level') || m.get('level').includes(recordLevel) ) return true
+                return false
+            })
         }
 
         if( this.schema?.has('indicator1') ){
