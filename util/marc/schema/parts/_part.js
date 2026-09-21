@@ -18,10 +18,6 @@ class MarcPart extends CollMap {
     RT = RT
     SF = SF
 
-    get type(){
-        return this.constructor.name.toLowerCase().replace('marc', '')
-    }
-
     get id(){ return this.key }
     get label(){ return this.get('label') == 'Undefined' ? '' : this.get('label') }
     get name(){ return this.label }

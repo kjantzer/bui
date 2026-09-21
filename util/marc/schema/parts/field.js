@@ -3,6 +3,7 @@ const MarcPart = require('./_part.js')
 class MarcField extends MarcPart {
 
     get tag(){ return this.key }
+    type = 'field'
 
     get docsURL(){
         return `https://www.loc.gov/marc/bibliographic/bd${this.key}.html`

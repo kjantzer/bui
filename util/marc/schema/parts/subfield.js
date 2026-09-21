@@ -2,6 +2,8 @@ const MarcPart = require('./_part.js')
 
 class MarcSubfield extends MarcPart {
 
+    type = 'subfield'
+
     get role(){
         // 0-9 are control characters, a-z are data characters
         return this.code.charCodeAt(0) <= 56 ? 'control' : 'data'
