@@ -38,17 +38,19 @@ class Book extends MarcRecord {
         ])
     }
 
-    mainPerson(name, role='Author'){
+    mainPerson(name, role='Author', ...sf){
         this.add('100', [1], [
             ['a', name],
-            ['e', role]
+            ['e', role],
+            ...sf
         ])
     }
 
-    additionalPerson(name, role){
+    additionalPerson(name, role, ...sf){
         this.add('700', [1], [
             ['a', name],
-            ['e', role]
+            ['e', role],
+            ...sf
         ])
     }
 
@@ -72,6 +74,37 @@ class Book extends MarcRecord {
         ])
     }
 
+    content(term, code, source='rdacontent'){
+        this.add('336', [['a', term], ['b', code], ['2', source]])
+    }
+
+    media(term, code, source='rdamedia'){
+        this.add('337', [['a', term], ['b', code], ['2', source]])
+    }
+
+    carrier(term, code, source='rdacarrier'){
+        this.add('338', [['a', term], ['b', code], ['2', source]])
+    }
+
+    typeOfRecording(type, source='rdatr'){
+        this.add('344', [['a', type], ['2', source]])
+    }
+
+    recordingMedium(medium, source='rdarm'){
+        this.add('344', [['b', medium], ['2', source]])
+    }
+
+    fileType(type, source='rdaft'){
+        this.add('347', [['a', type], ['2', source]])
+    }
+    
+    encodingFormat(format){
+        this.add('347', [['b', format]])
+    }
+
+    generalNote(note){
+        this.add('500', [['a', note]])
+    }
 }
 
 module.exports = Book
