@@ -3,6 +3,8 @@ MARC
 
 Create and decode MARC records. Works in both node.js and browser
 
+> NOTE: this is only setup for bibliographic MARC records
+
 ## Creating
 
 Tags can be added out of order; the tags will be put in proper order when `.toMarcData()` or `.encode()` is used
