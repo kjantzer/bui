@@ -3,7 +3,8 @@ class MarcRecordSubfield {
     constructor(schema, code, data){
 
         this._schema = schema
-        this.schema = schema.get('subfields').get(code)
+        // should have schema, but may not if custom internal tag is used (like 999 in OCLC)
+        this.schema = schema?.get('subfields')?.get(code)
 
         this.code = code
         this.data = data
