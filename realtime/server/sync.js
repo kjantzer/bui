@@ -25,6 +25,10 @@ module.exports = class Sync extends Map {
         let io = this.io
         let syncRoot = Class.api.sync == 'root'
 
+        // I think this is fine?
+        // lets other classes access the io object without needing to import
+        Class.prototype.io = io
+
         // create a syncPath getter that will use the sync path pattern
         // and create a string using the class attributres
         // path: `/book/:id` will become `/book/1` (if `class.id == 1`)
@@ -38,12 +42,12 @@ module.exports = class Sync extends Map {
             }
         });
 
-        Class.prototype[Class.prototype.syncData?'syncDataDefault':'syncData'] = function(data, {toClients=null}={}){
+        Class.prototype[Class.prototype.syncData?'syncDataDefault':'syncData'] = function(data, {toClients=null, socketIDs=[], syncPaths=null}={}){
 
             if( !this.syncPath ) return console.error('SYNC: class does have `syncPath` set')
 
-            let socketIDs = (this.req&&this.req.socketIDs) || []
-            let syncPaths = this.syncPath
+            socketIDs = (this.req&&this.req.socketIDs) || socketIDs
+            syncPaths ??= this.syncPath
 
             if( !Array.isArray(syncPaths) )
                 syncPaths = [syncPaths]
