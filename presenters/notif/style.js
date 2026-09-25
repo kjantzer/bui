@@ -66,6 +66,7 @@ export default css`
 } */
 
 main {
+    background: var(--theme-bgd, #fff);
     --radius: var(--b-notif-radius, 8px);
     border-radius: var(--radius);
     margin-top: var(--spacing-top, 0);
@@ -86,6 +87,7 @@ slot {
 slot > *,
 slot::slotted(*) {
     width: 100%;
+    box-sizing: border-box;
 }
 
 
