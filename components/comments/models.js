@@ -33,7 +33,7 @@ export default class Comments extends Collection {
     }
 
     onSync(data){
-        if( this.gid == 'unread' ){
+        if( this.gid == 'unread' && data?.ids ){
             this.remove(data.ids) // should be array of IDs
         }else{
             syncBackboneCollection.call(this, data)
@@ -45,7 +45,8 @@ export default class Comments extends Collection {
 
     get isThread(){ return this.group == 'thread' }
 
-    get numUnread(){ return this.filter(m=>m.isUnread).length }
+    get numUnread(){ return this.unread().length }
+    unread(){ return this.filter(m=>m.isUnread) }
 
     fetch(...args){
         if( !Backbone.$ ) return

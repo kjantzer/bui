@@ -152,12 +152,48 @@ module.exports = class Comments extends Model {
         return resp
     }
 
+    syncData(data){
+
+        if( data.attrs )
+            data.attrs.ts_read = null // dont forward this to other clients
+
+        let mentions = data.attrs?.meta?.mentions
+
+        // if mentions, then forward to all clients of the mentions to the "unread" comment sync path
+        if( mentions?.length ){
+            let sockets = []
+
+            // get list of sockets (clients) for mentioned users
+            for( let socketID in this.io?.sockets ){
+
+                let socket = this.io.sockets[socketID]
+                
+                if( mentions.includes(socket.request.user.id) )
+                    sockets.push(socketID)
+            }
+
+            if( sockets.length ){
+                
+                let syncPath = this.apiPathPattern.stringify({group: '_', gid: 'unread'})
+                let url = this.apiPathPattern.stringify({group: '_', gid: 'unread', id: data.attrs?.id})
+
+                this.syncDataDefault({...data, url: url}, {
+                    socketIDs: sockets,
+                    syncPaths: [syncPath]
+                })
+            }
+                
+        }
+        
+        return this.syncDataDefault(...arguments)
+    }
+
     async notifyMentions(){
         let mentions = this.attrs?.meta?.mentions || []
 
         if( mentions.length == 0 || (!PushMsg && !EmailNotification))
             return
-        
+
         let meta = this.attrs.meta
         let msg = {
             tag: this.group+':'+this.gid,
