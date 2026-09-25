@@ -71,7 +71,8 @@ trace=true,
 lines=false,
 indent=true,
 query=null,
-ignoreNodeModules=true
+ignoreNodeModules=true,
+log=false // console.log the error message
 }={}){
     
     let cwd = process.cwd()
@@ -115,5 +116,8 @@ ignoreNodeModules=true
     if( !lines )
         msg = msg.join('\n')
 
+    if( log )
+        console.log(msg)
+    
     return msg
 }
