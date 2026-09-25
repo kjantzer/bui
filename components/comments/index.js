@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit'
+import {repeat} from 'lit/directives/repeat.js'
 import Coll, { markCommentRead } from './models'
 import Comment from './comment'
 import WriteComment from './write'
@@ -292,6 +293,7 @@ customElements.define('b-comments', class extends LitElement{
     disconnectedCallback(){
         super.disconnectedCallback()
         this.coll.realtimeSync.close()
+        this.coll.hasFetched = false // since we wont get new updates synced in realtime, we need to refresh next connect
         this.intersectionObserver.disconnect()
     }
 
@@ -321,7 +323,7 @@ customElements.define('b-comments', class extends LitElement{
             </b-empty-state>
         `:''}
 
-        ${this.coll.map((m,i)=>html`
+        ${repeat(this.coll.models.toReversed(), m=>m.id, (m,i)=>html`
 
             ${this.limit&&i==this.coll.length-this.limit?html`
                 <b-btn sm color="white" block @click=${this.viewAllComments} class="view-all" part="view-all">View all ${this.plural}</b-btn>
@@ -339,7 +341,7 @@ customElements.define('b-comments', class extends LitElement{
                 @mark-read=${this.markRead}
             ></b-comment-row>
 
-        `).reverse()}
+        `)}
 
         <slot name="after"></slot>
     `}
