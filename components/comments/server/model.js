@@ -119,6 +119,14 @@ module.exports = class Comments extends Model {
             where['c.meta'] = new JsonContains(userID, {path:'$.mentions'})
             where['c.type'] = 'user'
 
+            // optionally limit to unread
+            if( this.filters.read == 'unread' ){
+                where['c.uid'] = new Value('!=', userID)
+                where['cr.id'] = 'IS NULL'
+                // unread are sparse, so without a date range this scans the whole table (same range as "unread" report)
+                where.semiRecent = new UnsafeSQL('c.ts_created >= CURDATE() - INTERVAL 90 DAY')
+            }
+
         }else {
             where.gid = this.gid
         }
@@ -251,14 +259,34 @@ module.exports = class Comments extends Model {
         return super.destroy(...args)
     }
 
-    markRead(){
-        let {ids} = this.req.body
+    async markRead(){
+        let {ids, all} = this.req.body
+
+        // mark all unread comments that mention this user as read
+        if( all )
+            ids = await this.findUnreadMentionIDs()
+
+        if( !ids?.length ) return
+
         let rows = ids.map(id=>{
             return {cid: id, uid: this.req.user.id}
         })
         this.db.bulkInsert('comment_reads', rows)
 
         new Comments({group: '_', gid: 'unread'}).syncData({ids})
+    }
+
+    async findUnreadMentionIDs(){
+        let {JsonContains} = this.db.clauses
+        let uid = this.req.user.id
+        let mentioned = new JsonContains(uid, {path:'$.mentions'}).toSqlString(this.db, 'c.meta')
+
+        let rows = await this.db.query(/*sql*/`SELECT c.id FROM comments c
+                        LEFT JOIN comment_reads cr ON cr.cid = c.id AND cr.uid = ?
+                        WHERE cr.id IS NULL AND c.uid != ? AND c.type = 'user' AND ${mentioned}
+                        AND c.ts_created >= CURDATE() - INTERVAL 90 DAY`, [uid, uid])
+
+        return rows.map(r=>r.id)
     }
 
     findFiles(){
