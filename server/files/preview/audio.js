@@ -2,7 +2,8 @@
     Use FFMPEG to get metadata and optionally more intensive stats and waveform
 */
 const ffmpeg = require('fluent-ffmpeg')
-const shellExec = require(`../../../util/shellExec`)
+// ffmpeg writes its real output to stderr even on success, so it needs the stderr-aware exec
+const shellExec = require(`../../../util/shellExecStderr`)
 
 async function metadata(filePath, {stats=true,debug=false}={}){
 
