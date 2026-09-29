@@ -169,28 +169,15 @@ module.exports = class Comments extends Model {
 
         // if mentions, then forward to all clients of the mentions to the "unread" comment sync path
         if( mentions?.length ){
-            let sockets = []
 
-            // get list of sockets (clients) for mentioned users
-            for( let socketID in this.io?.sockets ){
+            let syncPath = this.apiPathPattern.stringify({group: '_', gid: 'unread'})
+            let url = this.apiPathPattern.stringify({group: '_', gid: 'unread', id: data.attrs?.id})
 
-                let socket = this.io.sockets[socketID]
-                
-                if( mentions.includes(socket.request.user.id) )
-                    sockets.push(socketID)
-            }
-
-            if( sockets.length ){
-                
-                let syncPath = this.apiPathPattern.stringify({group: '_', gid: 'unread'})
-                let url = this.apiPathPattern.stringify({group: '_', gid: 'unread', id: data.attrs?.id})
-
-                this.syncDataDefault({...data, url: url}, {
-                    socketIDs: sockets,
-                    syncPaths: [syncPath]
-                })
-            }
-                
+            // NOTE: `socketIDs` is a list of sockets to EXCLUDE, so use `toClients` to limit to mentioned users
+            this.syncDataDefault({...data, url: url}, {
+                syncPaths: [syncPath],
+                toClients: socket=>mentions.includes(socket.request.user?.id)
+            })
         }
         
         return this.syncDataDefault(...arguments)
@@ -273,7 +260,11 @@ module.exports = class Comments extends Model {
         })
         this.db.bulkInsert('comment_reads', rows)
 
-        new Comments({group: '_', gid: 'unread'}).syncData({ids})
+        // only sync to this user's clients (other mentioned users may not have read these yet)
+        let uid = this.req.user.id
+        new Comments({group: '_', gid: 'unread'}).syncData({ids}, {
+            toClients: socket=>socket.request.user?.id == uid
+        })
     }
 
     async findUnreadMentionIDs(){
