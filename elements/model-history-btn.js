@@ -9,6 +9,7 @@
 */
 import { LitElement, html, css } from 'lit'
 import Btn from './btn'
+import './tooltip'
 import Menu from '../presenters/menu'
 
 customElements.define('b-model-history-btn', class extends Btn{
@@ -22,21 +23,7 @@ customElements.define('b-model-history-btn', class extends Btn{
         model: {'change': 'requestUpdate'}
     }
 
-    static styles = [Btn.styles, css`
-        
-        .val {
-            position: absolute;
-            margin-top: 1.75em;
-        }
-
-        :host([mode="menu"]) .val {
-            display: none;
-        }
-
-        :host(:not(:hover)) .val {
-            opacity: 0;
-        }
-    `]
+    static styles = [Btn.styles]
 
     constructor(){
         super(...arguments)
@@ -48,12 +35,26 @@ customElements.define('b-model-history-btn', class extends Btn{
         this.setAttribute('size', this.model.size)
     }
 
-    renderLabel(){return html`
-        <b-text xs muted ucase block class="val">
-            ${this.value}
-            (${this.model.index+1}/${this.model.size})
-        </b-text>
-    `}
+    willUpdate(){
+        super.willUpdate?.(...arguments)
+        this.tooltip = this.mode == 'menu' ? '' : this.tooltipLabel()
+    }
+
+    // name of the model that "back" will open
+    tooltipLabel(){
+        if( !this.model.history ) return this.value
+
+        let prev = this.model.host.model ? this.model.previous() : null
+        let counter = `(${this.model.index+1}/${this.model.size})`
+
+        if( !prev || prev.id == this.model.host.model.id )
+            return `${this.value} ${counter}`
+
+        let name = prev.name || prev.title || prev.label || prev.id
+        return `${name} ${counter}`
+    }
+
+    renderLabel(){ return '' }
 
     _renderLabel(){return html`
         (${this.model.index+1}/${this.model.size})
