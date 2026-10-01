@@ -78,22 +78,47 @@ Opinionated subset of the MARC record that provides simpiler add methods. Any fi
 ```js
 const {MarcRecordBook} = require(bui`util/marc`)
 
-let marc = new MarcRecord({
+let marc = new MarcRecordBook({
     // ... leader values
 })
 
-marc.title('Book Title')
+// punctuation, indicators, and subfield order are handled for you
+marc.lastModified() // 005
+
+marc.fixedLengthData({ // 008
+    entered: new Date(),
+    date1: 2026,
+    date2: 2022, // copyright (type of date is set to `t` when different)
+    place: 'oru',
+    language: MarcRecordBook.languageCode('English'),
+    22: 'e' // material specific positions by start
+})
+
+marc.isbn('9798228915534', '(sound recording ;', 'Blackstone Library CD)')
+marc.oclcNumber('1616700754')
+marc.catalogingSource('BLACP')
+
+marc.lcClassification('PS3566.A822')
+marc.deweyClassification('813/.54$223')
+
+marc.mainPerson('Patterson, James,$d1947-', ['author'])
+marc.additionalPerson('King, Lorelei', 'narrator')
+
+// 245 (and 246 for the subtitle)
+marc.title('The Book Title', {subtitle: 'a subtitle', statement: 'James Patterson'})
 
 marc.edition('Unabridged')
+marc.publication('[Ashland, Oregon]', 'Blackstone Publishing', '[2026]')
+marc.copyright(2022, {phonogram: true})
+marc.physicalDescription(`11 audio discs (${MarcRecordBook.runtime(13.5)})`, 'CD audio, digital', '4 3/4 in.')
+
+marc.performerNote('Read by Lorelei King')
 
 marc.biasac('YOUNG ADULT FICTION / Fantasy / General')
 marc.biasac('YOUNG ADULT FICTION / Girls & Women')
 
 marc.keyword('Audiobooks', 'lcgft')
 marc.keyword('Fantasy fiction', 'lcgft')
-
-marc.mainPerson('Doe, Mark', 'Author')
-marc.additionalPerson('Doe, Jane', 'Narrator')
 
 marc.summary('A summary of the book, lots of text here....')
 ```
