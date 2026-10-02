@@ -275,13 +275,18 @@ module.exports = class FileManager extends Model {
                     // "most cases, 100% quality increases original file size. 95% should be enough."
                     if( file.name.match(/jpe?g/i) )
                         await sharpImg.jpeg({quality: 95, mozjpeg: true})
+
+                    // keep the density metadata
+                    if( metadata.density ){
+                        await sharpImg.withMetadata({density: metadata.density})
+                    }
             
                     // by default sharp.js does not keep metadata
                     await sharpImg.toFile(this.dirPath+'/'+filename)
                         
                     resolve(true)
                 }catch(err){
-                    reject(err)
+                    resolve(err)
                 }
             else
                 file.mv(this.dirPath+'/'+filename, err=>{
