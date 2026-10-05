@@ -2,6 +2,17 @@ const MarcSchema = require('../schema')
 const MarcRecordField = require('./field')
 const CollMap = require('../../../util/collmap')
 
+const utf8Encoder = new TextEncoder()
+
+// UTF-8 bytes as a "byte string" (1 char per byte)
+function toUTF8ByteString(str){
+    let bytes = utf8Encoder.encode(str)
+    let out = ''
+    for( let i = 0; i < bytes.length; i++ )
+        out += String.fromCharCode(bytes[i])
+    return out
+}
+
 const FT = MarcSchema.FT
 const RT = MarcSchema.RT
 const SF = MarcSchema.SF
@@ -83,6 +94,11 @@ class MarcRecord {
 
     get bibliographicLevel(){
         return this.leader?.value.get(7)
+    }
+
+    // leader/09 = 'a' => UCS/Unicode (UTF-8)
+    get isUnicode(){
+        return this.leader?.value.get(9)?.val == 'a'
     }
 
     get encodingLevel(){
@@ -209,19 +225,22 @@ class MarcRecord {
 		let dataChunks = []
         let fields = this.toMarcData()
 
+		// unicode records are UTF-8; convert each chunk to a byte string so lengths/offsets are byte counts
+		const toBytes = this.isUnicode ? toUTF8ByteString : (str=>str)
+
 		for( const f of fields ){
 			if( f.val !== undefined ){
-				dataChunks.push( f.val + FT )
+				dataChunks.push( toBytes(f.val + FT) )
 			} else {
 				const subs = f.sf.map( ([code, val]) => SF + code + val ).join( '' )
-				dataChunks.push( String(f.i1) + String(f.i2) + subs + FT )
+				dataChunks.push( toBytes(String(f.i1) + String(f.i2) + subs + FT) )
 			}
 		}
 
 		let directory = ''
 		let offset = 0
 		fields.forEach( ( f, i ) => {
-			const len = dataChunks[i].length // latin1: 1 char = 1 byte, no Buffer/TextEncoder needed
+			const len = dataChunks[i].length // byte string: 1 char = 1 byte
 			directory += f.tag + String( len ).padStart( 4, '0' ) + String( offset ).padStart( 5, '0' )
 			offset += len
 		})
@@ -236,7 +255,7 @@ class MarcRecord {
 
         const leader = this.leader.toString()
 
-		return leader + directory + data + RT // plain JS string, latin1-safe
+		return leader + directory + data + RT // byte string (1 char = 1 byte); see `encode()`
     }
 
     encode({all=true}={}){

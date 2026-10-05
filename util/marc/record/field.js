@@ -112,7 +112,13 @@ class MarcRecordField {
             return this.data.val.toString()
     }
 
-    static #decoder = new TextDecoder('latin1')
+    static #latin1Decoder = new TextDecoder('latin1')
+    static #utf8Decoder = new TextDecoder('utf-8')
+
+    // leader/09 = 'a' means UCS/Unicode (UTF-8); otherwise (MARC-8) fall back to latin1
+    get #decoder(){
+        return this.marc.isUnicode ? MarcRecordField.#utf8Decoder : MarcRecordField.#latin1Decoder
+    }
 
     #decode(raw){
 
@@ -121,7 +127,7 @@ class MarcRecordField {
         }
 
         if( this.tag < '010' || this.tag == 'leader') // control fields have no indicators or subfields, just raw data
-            return MarcRecordField.#decoder.decode(raw)
+            return this.#decoder.decode(raw)
 
         const SF = this.marc.schema.SF
         let data = {
@@ -143,7 +149,7 @@ class MarcRecordField {
             while( end < raw.length && raw[end] !== SF )
                 end++
 
-            let val = MarcRecordField.#decoder.decode( raw.subarray( i + 2, end ) )
+            let val = this.#decoder.decode( raw.subarray( i + 2, end ) )
             data.sf.push([code, val])
             i = end
         }
