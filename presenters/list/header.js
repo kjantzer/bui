@@ -18,7 +18,7 @@ export function sharedStyles(host=':host'){return css`
     }
 
     ${unsafeCSS(host)} > [sticky] {
-        border-bottom: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .2));
+        border-bottom: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .1));
     }
 
     
