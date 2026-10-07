@@ -154,6 +154,8 @@ class MarcRecord {
         this.add('005', val)
     }
     
+    cutter(name){ return cutter(name) }
+    
     static #decoder = new TextDecoder('latin1')
 
     #decode( bytes, {records}={} ){
@@ -296,4 +298,31 @@ function splitToRecords(bytes){
     chunks.push(bytes.subarray(start))
 
   return chunks
+}
+
+// https://www.loc.gov/aba/pcc/053/table.html
+const cutterTable = {
+  vowel: {b:2,d:3,l:4,n:5,p:6,r:7,s:8,u:9},
+  S:     {a:2,c:3,e:4,h:5,m:6,t:7,u:8,w:9},
+  other: {a:3,e:4,i:5,o:6,r:7,u:8,y:9},
+}
+
+const cutterLookup = (t, c) => {
+  // use nearest listed letter at or before c
+  for (let code = c.charCodeAt(0); code >= 97; code--) {
+    const k = String.fromCharCode(code);
+    if (t[k] !== undefined) return t[k];
+  }
+  return Object.values(t)[0];
+}
+
+const cutterThird = c => 'abcd'.includes(c)?3:'efgh'.includes(c)?4:'ijkl'.includes(c)?5:
+  'mno'.includes(c)?6:'pqrs'.includes(c)?7:'tuv'.includes(c)?8:9;
+
+function cutter(name){
+  const s = name.toLowerCase().replace(/[^a-z]/g,'');
+  const t = 'aeiou'.includes(s[0]) ? cutterTable.vowel : s[0]==='s' ? cutterTable.S : cutterTable.other;
+  let out = s[0].toUpperCase() + cutterLookup(t, s[1]);
+  if (s[2]) out += cutterThird(s[2]);
+  return out;
 }
