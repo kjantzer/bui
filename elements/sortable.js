@@ -20,6 +20,12 @@
     })
     ```
 
+    Use `handle` to only allow dragging from part of the item (ex: when items contain text inputs)
+
+    ```html
+    <b-sortable item=".row" handle=".drag-handle"></b-sortable>
+    ```
+
     > NOTE: this is a very basic implementation; subject to change
 
     TODO
@@ -31,7 +37,8 @@ customElements.define('b-sortable', class extends LitElement{
     
     static properties = {
         item: {type: String},
-        group: {type: String}
+        group: {type: String},
+        handle: {type: String}
     }
 
     static styles = css`
@@ -44,6 +51,7 @@ customElements.define('b-sortable', class extends LitElement{
         super()
         this.item = undefined
         this.group = undefined
+        this.handle = undefined
     }
 
     render(){return html``}
@@ -89,6 +97,7 @@ customElements.define('b-sortable', class extends LitElement{
             this.sortable = Sortable.create(target, {
                 draggable: this.item,
                 group: this.group,
+                handle: this.handle,
                 onEnd: this.onSort.bind(this),
                 onChoose: this.onSortChoose.bind(this)
             })
