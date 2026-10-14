@@ -18,8 +18,8 @@ module.exports = class JsonMergePatch extends Clause {
         key = this.key || key
 
         key = db.escapeId(key)
-        val = JSON.stringify(val)
+        val = db.escape(JSON.stringify(val))
 
-        return `JSON_MERGE_PATCH( IFNULL(${key}, '${this.ifNull}'), '${val}' )`
+        return `JSON_MERGE_PATCH( IFNULL(${key}, '${this.ifNull}'), ${val} )`
     }
 }
