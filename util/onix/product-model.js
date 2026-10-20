@@ -532,9 +532,12 @@ module.exports = class OnixProductModel {
     }
 
     get availabilityCode(){
-        return this.is2 
-        ? String(this.onix.get('SupplyDetail.0.ProductAvailability.value'))
-        : String(this.onix.get('ProductSupply.SupplyDetail.0.ProductAvailability.value'))
+        let code = this.is2
+        ? this.onix.get('SupplyDetail.0.ProductAvailability.value')
+        : this.onix.get('ProductSupply.SupplyDetail.0.ProductAvailability.value')
+
+        // supply detail is optional; no code is `undefined` (not the string "undefined")
+        return code == null ? undefined : String(code)
     }
 
     get embargo(){
