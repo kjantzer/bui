@@ -4,6 +4,7 @@ import device from '../../util/device'
 import style from './style'
 import TYPES from './types'
 import '../dialog/element'
+import Button from '../dialog/btn'
 import isLitHTML from '../../helpers/lit/isLitHTML'
 
 // list of open notifs
@@ -27,6 +28,7 @@ customElements.define('b-notif', class extends LitElement{
         edge: {type: Boolean},
         width: {type: String},
         animation: {type: String, reflect: true},
+        compact: {type: Boolean, reflect: true},
     }}
 
     constructor(opts={}){
@@ -44,6 +46,7 @@ customElements.define('b-notif', class extends LitElement{
             btns: [],
             color: 'inverse',
             edge: false,
+            compact: false, // one line pill (icon, message, buttons) instead of a toast dialog
 
             animation: device.isSmallDevice ? 'grow' : 'slide',
             animationForReplace: 'grow',
@@ -209,7 +212,7 @@ customElements.define('b-notif', class extends LitElement{
     render(){return html`
         <main>
         <slot>
-            ${this.opts.view?this.opts.view:html`
+            ${this.opts.view?this.opts.view:this.compact?this.renderCompact():html`
             <b-dialog
                 in-notif
                 toast
@@ -229,6 +232,23 @@ customElements.define('b-notif', class extends LitElement{
         </slot>
         </main>
     `}
+
+    // one line: icon, message (clipped), buttons; same button options as the dialog (ex: `'undo'`, `{label, color}`)
+    renderCompact(){return html`
+        <div class="compact" @click=${this.onCompactClick}>
+            ${this.icon?html`<b-icon name=${this.icon}></b-icon>`:''}
+            <b-text class="msg" .html=${this.msg} title=${typeof this.msg == 'string' ? this.msg.replace(/<[^>]+>/g, '') : ''}></b-text>
+            ${this.btns?.map(b=>b?new Button(typeof b == 'string' ? b : {size: 'sm', ...b}):'')}
+        </div>
+    `}
+
+    onCompactClick(e){
+        let btn = e.composedPath().find(el=>el.tagName == 'B-DIALOG-BTN')
+        if( !btn ) return // clicking the notif itself (handled by onClick)
+
+        e.stopPropagation()
+        this.onClick(btn.isCancelBtn ? false : btn)
+    }
 
     onDialogBtnChoose(e){
         e.stopPropagation()
