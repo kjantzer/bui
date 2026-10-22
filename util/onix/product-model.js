@@ -9,10 +9,31 @@ const {uniformAndDedupeCSV} = require('./util')
 const TO_JSON_BLACKLIST = ['release', 'is2', 'is3', 'series']
 const PREFERRED_CURRENCIES = ['USD', 'GBP', 'CAD', 'AUD']
 
+// a repeatable element (array, single or none) as an array
+const toList = val=>val ? (Array.isArray(val) ? [...val] : [val]) : []
+
 module.exports = class OnixProductModel {
 
     constructor(onix){
         this.onix = onix
+    }
+
+    // prices (see `prices`) ordered for the US: a territory including US first (fewest countries first), then WORLD/ROW or
+    // no territory (worldwide), then the rest (eg: CA only, or excluding US); same rank keeps the feed order
+    static usPriceFirst(prices){
+        const codes = val=>String(val ?? '').split(/\s+/).filter(Boolean)
+
+        const rank = ({territory: t})=>{
+            let countries = codes(t?.CountriesIncluded), regions = codes(t?.RegionsIncluded)
+            if( codes(t?.CountriesExcluded).includes('US') ) return [3, 0]
+            if( countries.includes('US') ) return [1, countries.length]
+            if( (!countries.length && !regions.length) || regions.some(r=>['WORLD', 'ROW'].includes(r)) ) return [2, 0]
+            return [3, 0]
+        }
+
+        return toList(prices).map((d, i)=>({d, i, rank: rank(d)}))
+            .sort((a, b)=>a.rank[0] - b.rank[0] || a.rank[1] - b.rank[1] || a.i - b.i)
+            .map(({d})=>d)
     }
 
     get(key){
@@ -520,10 +541,74 @@ module.exports = class OnixProductModel {
         this.onix.set(this.is2?'Contributor':'DescriptiveDetail.Contributor', onix)
     }
 
-    get availability(){
+    // Returns every supply detail (in order) with the territory it's for
+    // `supplyTerritory`: the block's own territory in ONIX shape (3.0 Market, 2.1 SupplyToCountry/Territory/Region), or null
+    // `territory`: normalized for picking a block; falls back to the territory of its prices when the block has none
+    _supplyDetails(){
+        const codes = vals=>vals.flatMap(d=>String(d ?? '').split(/\s+/)).filter(Boolean)
+
+        const territoryOf = (territories)=>({
+            countries: codes(territories.map(t=>t?.CountriesIncluded)),
+            regions: codes(territories.map(t=>t?.RegionsIncluded)),
+            countriesExcluded: codes(territories.map(t=>t?.CountriesExcluded)),
+        })
+
+        // several territories (eg: Markets) as one ONIX territory; null when none
+        const onixTerritory = (territories)=>{
+            let t = territoryOf(territories), resp = {}
+            if( t.countries.length ) resp.CountriesIncluded = t.countries.join(' ')
+            if( t.regions.length ) resp.RegionsIncluded = t.regions.join(' ')
+            if( t.countriesExcluded.length ) resp.CountriesExcluded = t.countriesExcluded.join(' ')
+            return resp.CountriesIncluded || resp.RegionsIncluded ? resp : null
+        }
+
+        const priceTerritory = detail=>territoryOf(toList(detail.get('Price')).map(price=>this._ownPriceTerritory(price)))
+
+        const withTerritory = (detail, supplyTerritory)=>({
+            detail,
+            supplyTerritory,
+            territory: supplyTerritory ? territoryOf([supplyTerritory]) : priceTerritory(detail)
+        })
+
+        if( this.is2 )
+            return toList(this.onix.get('SupplyDetail')).map(detail=>withTerritory(detail, onixTerritory([{
+                CountriesIncluded: toList(detail.get('SupplyToCountry')).map(d=>d.value()).join(' '),
+                RegionsIncluded: [detail.getValue('SupplyToTerritory'), ...toList(detail.get('SupplyToRegion')).map(d=>d.value())].join(' ')
+            }])))
+
+        return toList(this.onix.get('ProductSupply')).flatMap(supply=>{
+            let market = onixTerritory(toList(supply.get('Market')).map(m=>m.get('Territory')?.toJSON()))
+            return toList(supply.get('SupplyDetail')).map(detail=>withTerritory(detail, market))
+        })
+    }
+
+    // the territory given on the price itself (3.0 Territory, 2.1 CountryCode)
+    _ownPriceTerritory(price){
         return this.is2
-        ? this.onix.getValue('SupplyDetail.0.ProductAvailability')
-        : this.onix.getValue('ProductSupply.SupplyDetail.0.ProductAvailability')
+            ? {CountriesIncluded: toList(price.get('CountryCode')).map(d=>d.value()).join(' ') || undefined}
+            : price.get('Territory')?.toJSON()
+    }
+
+    // the supply detail that decides availability: the one for the US (most specific first), then a worldwide one
+    // (WORLD/ROW, or no territory), else the first (eg: CA first with 40, US second with 20: the US one decides)
+    _supplyDetail(){
+        let details = this._supplyDetails()
+
+        const rank = ({territory: t})=>{
+            if( t.countriesExcluded.includes('US') ) return 3
+            if( t.countries.includes('US') ) return 1
+            if( (!t.countries.length && !t.regions.length) || t.regions.some(r=>['WORLD', 'ROW'].includes(r)) ) return 2
+            return 3
+        }
+
+        let best = details.map((d, i)=>({...d, i, rank: rank(d)}))
+            .sort((a, b)=>a.rank - b.rank || (a.rank == 1 ? a.territory.countries.length - b.territory.countries.length : 0) || a.i - b.i)[0]
+
+        return best?.detail
+    }
+
+    get availability(){
+        return this._supplyDetail()?.getValue('ProductAvailability')
     }
 
     set availability(avail){
@@ -532,21 +617,19 @@ module.exports = class OnixProductModel {
     }
 
     get availabilityCode(){
-        let code = this.is2
-        ? this.onix.get('SupplyDetail.0.ProductAvailability.value')
-        : this.onix.get('ProductSupply.SupplyDetail.0.ProductAvailability.value')
+        let code = this._supplyDetail()?.get('ProductAvailability.value')
 
         // supply detail is optional; no code is `undefined` (not the string "undefined")
         return code == null ? undefined : String(code)
     }
 
     get embargo(){
+        let detail = this._supplyDetail()
 
         if( this.is2 )
-            return this.onix.formatDate(this.onix.getValue('SupplyDetail.0.OnSaleDate'))
+            return this.onix.formatDate(detail?.getValue('OnSaleDate'))
 
-        return this.onix.get('ProductSupply.SupplyDetail.0.SupplyDate')
-            ?.getValue('Date', {SupplyDateRole: 'Sales embargo date'})
+        return detail?.get('SupplyDate')?.getValue('Date', {SupplyDateRole: 'Sales embargo date'})
     }
 
     set embargo(date){
@@ -557,12 +640,12 @@ module.exports = class OnixProductModel {
     }
 
     get availabilityDate(){
-        
-        if( this.is2 )
-            return this.onix.formatDate(this.onix.getValue('SupplyDetail.0.ExpectedShipDate'))
+        let detail = this._supplyDetail()
 
-        return this.onix.get('ProductSupply.SupplyDetail.0.SupplyDate')
-            ?.getValue('Date', {SupplyDateRole: 'Expected availability date'})
+        if( this.is2 )
+            return this.onix.formatDate(detail?.getValue('ExpectedShipDate'))
+
+        return detail?.get('SupplyDate')?.getValue('Date', {SupplyDateRole: 'Expected availability date'})
     }
 
     get price(){
@@ -573,9 +656,12 @@ module.exports = class OnixProductModel {
         return this._preferredPrice()?.currency
     }
 
+    // the price for the US in the first preferred currency the product has (eg: a CA market's USD price is not used
+    // when the US market has one)
     _preferredPrice(){
+        let prices = this.prices
         for( const currency of PREFERRED_CURRENCIES ){
-            const match = this.prices?.find(d=>d.currency == currency)
+            const match = this.constructor.usPriceFirst(prices?.filter(d=>d.currency == currency))[0]
             if( match ) return match
         }
         return null
@@ -590,43 +676,29 @@ module.exports = class OnixProductModel {
     }
 
     get prices() {
-        let prices
-        if( this.is2 ){
-            // SupplyDetail is repeatable in 2.1 — collect from all blocks
-            let supplyDetails = this.onix.get('SupplyDetail')
-            if( supplyDetails ){
-                let detailsArr = Array.isArray(supplyDetails) ? [...supplyDetails] : [supplyDetails]
-                let allPrices = detailsArr.flatMap(sd => {
-                    let p = sd.get('Price')
-                    if( !p ) return []
-                    return Array.isArray(p) ? [...p] : [p]
-                })
-                if( allPrices.length ) prices = allPrices
-            }
-        } else {
-            // Collect prices from ALL ProductSupply blocks — dot-path traversal stops at the first one
-            let productSupplies = this.onix.get('ProductSupply')
-            if( productSupplies ){
-                let suppliesArr = Array.isArray(productSupplies) ? [...productSupplies] : [productSupplies]
-                let allPrices = suppliesArr.flatMap(ps => {
-                    let p = ps.get('SupplyDetail.Price')
-                    if( !p ) return []
-                    return Array.isArray(p) ? [...p] : [p]
-                })
-                if( allPrices.length ) prices = allPrices
-            }
-        }
+        // prices of every supply detail (all ProductSupply blocks and all their SupplyDetails; dot-path traversal stops at
+        // the first one), each with the supply block's territory when the price has none of its own (eg: a CA market's
+        // USD price and a US market's USD price, both without a price territory)
+        let prices = this._supplyDetails().flatMap(({detail, supplyTerritory})=>
+            toList(detail.get('Price')).map(price=>({price, supplyTerritory}))
+        )
+
+        // no prices at all is `undefined` (not an empty list)
+        if( !prices.length ) return undefined
 
         // NOTE: what bout "Corporate price"?
         let PriceTypes = ['Consumer price', 'Unqualified price']
 
-        return prices?.filter(m => {
+        return prices.filter(({price: m}) => {
             // Discard prices without a currency (like UnpricedItemType)
             if( !m.getValue('CurrencyCode') ) return false
             return !m.getValue('PriceQualifier') || PriceTypes.includes(m.getValue('PriceQualifier'))
-        }).map(m => {
+        }).map(({price: m, supplyTerritory}) => {
 
-            let territory = m.get('Territory')?.toJSON()
+            let territory = this._ownPriceTerritory(m)
+            if( !territory?.CountriesIncluded && !territory?.RegionsIncluded && supplyTerritory )
+                territory = supplyTerritory
+
             let date = m.get('PriceDate')
 
             // some have a date range (ex: on sale for a month)
@@ -639,11 +711,6 @@ module.exports = class OnixProductModel {
                 if( date.length != 2 )
                     date = null
             }
-
-            if( this.is2 )
-                territory = {
-                    CountriesIncluded: m.get('CountryCode')?.map(d=>d.value()).join(' ')
-                }
 
             let attrs = {
                 price: m.getValue('PriceAmount'),
@@ -673,8 +740,7 @@ module.exports = class OnixProductModel {
     }
 
     get cartonQty(){
-        if( this.is2 ) this.onix.getValue('SupplyDetail.0.PackQuantity')
-        return this.onix.getValue('ProductSupply.SupplyDetail.0.PackQuantity')
+        return this._supplyDetail()?.getValue('PackQuantity')
     }
 
     set cartonQty(qty){
