@@ -196,33 +196,32 @@ customElements.define('b-list', class extends LitElement {
             bottom: unset;
         }
 
+        /* checkbox in the selection column (left of each row) */
         b-infinite-list[selection-on] > [part="row"]:after {
-            display: block;
             content: '';
-            width: calc(2rem - 2px);
-            height: calc(100% - 2px);
-            margin: 1px;
-            left: -2rem;
-            top: 0px;
-            background-color: var(--b-list-selected-row-bgd, rgba(var(--theme-rgb), .1));
-            box-shadow: 0 0 0 1px rgba(var(--theme-rgb), .2) inset;
-            color: var(--theme);
-            border-radius: 3px;
-            
             position: absolute;
-            content: "✔";
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            left: calc(-2rem + (2rem - 1.1rem) / 2);
+            top: calc(50% - .55rem);
+            width: 1.1rem;
+            height: 1.1rem;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: solid 1.5px rgba(var(--theme-text-rgb), .3);
+            background: var(--theme-bgd) no-repeat center / 80%;
+            transition: background-color 120ms, border-color 120ms;
         }
 
-        :host([grid]) b-infinite-list[selection-on] > [part="row"]:after {
-            border-radius: var(--grid-cell-radius, 3px) 0 0 var(--grid-cell-radius, 3px);
+        @media (hover) {
+            b-infinite-list[selection-on] > [part="row"]:hover:after {
+                border-color: var(--theme);
+            }
         }
 
         b-infinite-list[selection-on] > [part="row"][isselected]:after {
-            color: white;
-            background: var(--theme-gradient);
+            border-color: var(--theme);
+            background-color: var(--theme);
+            /* white check */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
         }
 
         b-infinite-list > [isselected] {
