@@ -51,6 +51,10 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
             --item-color: var(--b-app-sidebar-item-icon-color, var(--b-app-sidebar-item-active-color, var(--theme)));
         }
 
+        :host([hidden]) {
+            display: none;
+        }
+
         .item {
             position: relative;
             display: flex;
