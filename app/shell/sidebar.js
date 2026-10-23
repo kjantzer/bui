@@ -90,13 +90,17 @@ customElements.define('b-app-sidebar', class extends LitElement{
             padding: .5rem .5rem .75rem;
             /* installed app with the titlebar hidden: start below the window controls (and drag the window there) */
             padding-top: calc(.5rem + env(titlebar-area-height, 0px));
+            -webkit-app-region: drag;
             app-region: drag;
             overflow: hidden;
             background: var(--b-app-sidebar-bgd, transparent);
             transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .panel > * {
+        /* only the background at the top (around the brand) drags the window */
+        .panel > *:not(.top),
+        .top ::slotted(*) {
+            -webkit-app-region: no-drag;
             app-region: no-drag;
         }
 

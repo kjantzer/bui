@@ -32,11 +32,15 @@ customElements.define('b-app-topbar', class extends LitElement{
             /* installed app with the titlebar hidden: clear window controls on the right (ex: Windows) */
             padding-right: calc(.75rem + 100vw - env(titlebar-area-x, 0px) - env(titlebar-area-width, 100vw));
             position: relative;
+            /* installed app with the titlebar hidden: the bar's background drags the window (controls don't) */
+            -webkit-app-region: drag;
             app-region: drag;
         }
 
-        :host * {
-            app-region: none;
+        .menu-btn,
+        ::slotted(*) {
+            -webkit-app-region: no-drag;
+            app-region: no-drag;
         }
 
         .menu-btn {
