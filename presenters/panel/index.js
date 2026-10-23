@@ -829,7 +829,7 @@ export class Panel extends LitElement {
             border-radius: var(--radius) 0 0 var(--radius);
         }
 
-        :host([anchor="right"]) :host > main ::slotted(*) {
+        :host([anchor="right"]) > main ::slotted(*) {
             border-radius: var(--radius) 0 0 var(--radius);
         }
 
