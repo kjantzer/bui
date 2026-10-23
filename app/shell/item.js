@@ -154,6 +154,12 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
         this.panelController?.removeEventListener('change', this.updateOpen)
     }
 
+    // reused elements (ex: in a list) can get a different path
+    willUpdate(changed){
+        if( changed.has('path') || changed.has('base') )
+            this.updateActive()
+    }
+
     // NOTE: router events fire before the new state is set as current, so read the path from the event
     updateActive(e){
         let current = e?.detail ? e.detail.path : router.states?.current?.path

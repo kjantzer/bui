@@ -13,6 +13,7 @@
     Subclass and override `renderIcon(panel)` for custom icons (ex: thumbnails)
 */
 import { LitElement, html, css } from 'lit'
+import {repeat} from 'lit/directives/repeat.js'
 import router from '../router'
 import PanelController from '../../presenters/panel/controller'
 import '../../elements/btn'
@@ -150,7 +151,7 @@ export default class AppSidebarOpenPanels extends LitElement {
 
         return html`
             <div class="label" part="label">${this.label}</div>
-            ${panels.map(panel=>html`
+            ${repeat(panels, panel=>panel, panel=>html`
                 <b-app-sidebar-item label=${panel.title||'Untitled'} path=${panel.route.currentPath} ?rail=${this.rail}>
                     ${this.renderIcon(panel)}
                     <b-btn slot="end" clear pill sm icon="close" class="close" title="Close"
