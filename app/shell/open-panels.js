@@ -117,11 +117,12 @@ export default class AppSidebarOpenPanels extends LitElement {
         window.removeEventListener('router:popstate', this.refresh)
     }
 
-    // every open panel (including ones that are also sidebar links)
+    // every open panel (including ones that are also sidebar links), in the order they were opened
+    // (the controller keeps them in stacking order, which changes as they're brought to the top)
     get panels(){
         return (this.panelController?.map(panel=>panel) || []).filter(panel=>{
             return panel.route && !IGNORE_TYPES.includes(panel.type)
-        })
+        }).sort((a, b)=>(a.index ?? 0) - (b.index ?? 0))
     }
 
     renderIcon(panel){
