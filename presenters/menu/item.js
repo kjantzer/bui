@@ -15,24 +15,29 @@ customElements.define('b-menu-item', class extends LitElement{
     static styles = css`
 
         :host{
-        padding: var(--b-menu-item-padding, .5em .75em);
-		margin: .25em;
-    	border-radius: calc(var(--b-popover-radius, 8px) - .25em);
+        padding: var(--b-menu-item-padding, .45em .65em);
+		margin: 1px .35em;
+    	border-radius: calc(var(--b-popover-radius, 8px) - .35em);
 		transition: 120ms;
 		display: flex;
 		align-items: flex-start;
+		gap: .65em;
 		position: relative;
         }
 
+		/* icon column: fixed width so labels line up; centered on the first line of the label */
 		:host > b-icon:first-child,
 		:host > check-box + b-icon,
 		:host > select-field + b-icon,
 		:host > .icon {
-			margin: .1em .5em 0 -.15em;
-		}
-
-		:host > .icon {
-			display: inline-block;
+			flex-shrink: 0;
+			width: 1.25em;
+			height: 1.25em;
+			margin: 0;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			color: var(--b-menu-icon-color, inherit);
 		}
 
 		:host > .icon * {
@@ -40,6 +45,7 @@ customElements.define('b-menu-item', class extends LitElement{
 		}
 
 		:host([icon-only]) > b-icon:first-child {
+			width: auto;
 			margin: 0 -.25em;
 		}
 
@@ -49,7 +55,7 @@ customElements.define('b-menu-item', class extends LitElement{
 		}
 
 		.mi-label {
-			line-height: 1.2em;
+			line-height: 1.25em;
 		}
 
 		.mi-label p:first-child { margin-top: 0; }
@@ -63,8 +69,9 @@ customElements.define('b-menu-item', class extends LitElement{
 		}
 
 		.mi-description {
+			margin-top: .15em;
 			font-size: .8em;
-			line-height: 1.2em;
+			line-height: 1.3em;
 			color: var(--b-menu-description-color, rgba(var(--theme-text-rgb), .6));
 		}
 		
@@ -160,7 +167,7 @@ customElements.define('b-menu-item', class extends LitElement{
 		}
 
 		.mi-content ~ * {
-			margin-left: 1em;
+			margin-left: .35em;
 		}
 
 		check-box:not([checked]) ~ .menu-item-extra.when-active {

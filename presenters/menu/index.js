@@ -129,6 +129,7 @@ customElements.define('b-menu', class extends LitElement{
         .results {
             overflow-x: hidden;
             overflow-y: auto;
+            padding: .35em 0;
         }
         
         [heading] {
@@ -187,14 +188,17 @@ customElements.define('b-menu', class extends LitElement{
             padding-right: 2.4em;
         }
         
+        /* inset separator lines */
         .results > b-hr {
-            margin: 0;
+            margin: .35em 1em;
         }
         
         .menu-divider {
-            padding: 1em 1em .25em 1.1em;
-            font-weight: normal;
-            font-size: .9em;
+            margin: .35em .35em 0;
+            padding: .75em .65em .3em;
+            font-weight: 600;
+            font-size: .78em;
+            letter-spacing: .01em;
             border-top: solid 1px var(--b-hr-bgd, var(--theme-bgd-accent));
 			display: block;
         }
