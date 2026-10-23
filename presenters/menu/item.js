@@ -143,23 +143,37 @@ customElements.define('b-menu-item', class extends LitElement{
 			order: 2;
 		}
 
+		/* Is / Not (etc) picker: matches check-box (empty box when unset; filled badge when set) */
 		select-field {
 			order: 2;
-			margin-left: .5em;
-			margin-right: -.5em;
-			color: var(--checkboxColor);
-			// box-shadow: 0 0 0 1px var(--theme) inset;
-			border-radius: 3px;
-			// padding: 0 .1em;
+			align-self: center;
+			margin: -.25em -.25em -.25em .5em;
+			box-sizing: border-box;
+			min-width: 1.15rem;
+			height: 1.15rem;
+			border-radius: 5px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0 .4rem;
+			font-size: .75rem;
+			font-weight: 600;
+			line-height: 1;
 			text-align: center;
-			font-size: .8em;
-			padding: 0.2rem 0.25rem;
-			font-weight: bold;
+			transition: background-color 120ms, border-color 120ms;
 		}
 
 		select-field[value=""] {
-			box-shadow: 0 0 0 2px var(--theme-text) inset;
-			color: var(--b-menu-description-color, var(--theme-text));
+			padding: 0;
+			width: 1.15rem;
+			border: solid 1.5px rgba(var(--theme-text-rgb), .3);
+			color: transparent; /* no "–" */
+		}
+
+		@media (hover) {
+			:host(:hover) select-field[value=""] {
+				border-color: var(--checkboxColor, var(--theme));
+			}
 		}
 
 		select-field:not([value=""]) {

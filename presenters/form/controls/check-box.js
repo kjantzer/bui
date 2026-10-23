@@ -86,6 +86,45 @@ customElements.define('check-box', class extends LitElement{
 			display: none;
 		}
 
+		/* default look: a drawn box (outlined; filled with a white check when checked) */
+		.box {
+			width: var(--size);
+			height: var(--size);
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			flex-shrink: 0;
+		}
+
+		.box:before {
+			content: '';
+			width: calc(var(--size) * .7);
+			height: calc(var(--size) * .7);
+			box-sizing: border-box;
+			border-radius: calc(var(--size) * .2);
+			border: solid 1.5px rgba(var(--theme-text-rgb, 0,0,0), .3);
+			background: no-repeat center / 80%;
+			transition: background-color 120ms, border-color 120ms;
+		}
+
+		@media (hover) {
+			:host(:not([disabled]):hover) .box:before {
+				border-color: var(--color);
+			}
+		}
+
+		:host([checked]) .box:before {
+			border-color: var(--color);
+			background-color: var(--color);
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+		}
+
+		:host([disabled]) .box:before {
+			opacity: .4;
+		}
+
+		:host([type="switch"]) .box { display: none; }
+
 		.icon {
 			transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 			user-select: none;
@@ -185,10 +224,19 @@ customElements.define('check-box', class extends LitElement{
 		this.icon = IconSelected
 	}
 
+	// custom icons (ex: star) use b-icon; otherwise a drawn box
+	get usesIcons(){
+		return (this.icon && this.icon != IconSelected) || (this.iconEmpty && this.iconEmpty != IconEmpty)
+	}
+
 	render(){return html`
 		<main>
-			<b-icon name="${this.iconEmpty||IconEmpty}" square class="icon uncheck" focusable="false"></b-icon>
-			<b-icon name="${this.icon||IconSelected}" square class="icon check" focusable="false"></b-icon>
+			${this.usesIcons?html`
+				<b-icon name="${this.iconEmpty||IconEmpty}" square class="icon uncheck" focusable="false"></b-icon>
+				<b-icon name="${this.icon||IconSelected}" square class="icon check" focusable="false"></b-icon>
+			`:html`
+				<span class="box icon"></span>
+			`}
 			
 			<div class="switch"></div>
 			
