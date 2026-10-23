@@ -71,8 +71,8 @@ class PanelController extends LitElement {
             min-height: 0;
         }
 
-        /* main view brought to the top (see showBase); panels stay open underneath */
-        :host([base-on-top]) .panels {
+        /* main view brought to the top (see showBase): the panels open then stay open, hidden underneath */
+        .panels::slotted([under-base]) {
             content-visibility: hidden; /* skips rendering but keeps state (scroll positions, etc) */
             pointer-events: none;
         }
@@ -256,6 +256,7 @@ class PanelController extends LitElement {
         
         this.panels.delete(panel)
         delete panel.index
+        panel.removeAttribute('under-base')
         this._updatePanels()
 
         if( updateRoute )
@@ -273,8 +274,9 @@ class PanelController extends LitElement {
 
     add(panel){
 
-        // opening (or re-opening) a panel puts the panels back on top
-        this.removeAttribute('base-on-top')
+        // re-opening a panel hidden by showBase brings them back; other panels (ex: search) open over the base
+        if( panel.hasAttribute('under-base') )
+            this.restoreHidden()
 
         // let SheetView and Panel work together
         // TODO: remove long term - done for Blackstone Catalog v5
@@ -298,10 +300,13 @@ class PanelController extends LitElement {
         this.emitEvent('change', {action: 'add', panel}, {bubbles: false})
     }
 
-    get baseOnTop(){ return this.hasAttribute('base-on-top') || this.length == 0 }
+    // panels not hidden by showBase
+    get visiblePanels(){ return this.map(panel=>panel).filter(panel=>!panel.hasAttribute('under-base')) }
+
+    get baseOnTop(){ return this.visiblePanels.length == 0 }
 
     // show the main ("base") view above the open panels without closing them;
-    // they come back when one is opened again (ex: its route is visited)
+    // they come back when one is opened again (ex: its route is visited); panels opened meanwhile show normally
     showBase(){
         if( this.baseOnTop ) return
 
@@ -311,9 +316,15 @@ class PanelController extends LitElement {
             setTimeout(()=>panel.view?.didBecomeInactive?.())
         }
 
+        this.panels.forEach(panel=>panel.setAttribute('under-base', ''))
         this.setAttribute('base-on-top', '')
         router.push('')
         this.emitEvent('change', {action: 'base-on-top'}, {bubbles: false})
+    }
+
+    restoreHidden(){
+        this.panels.forEach(panel=>panel.removeAttribute('under-base'))
+        this.removeAttribute('base-on-top')
     }
 
     get panelOnTop(){
@@ -328,7 +339,7 @@ class PanelController extends LitElement {
     get panelOnTopWithRoute(){
         let onTop = null
         this.panels.forEach(panel=>{
-            if( panel.route )
+            if( panel.route && !panel.hasAttribute('under-base') )
                 onTop = panel
         })
         return onTop
@@ -357,9 +368,9 @@ class PanelController extends LitElement {
     _updatePanels(){
         let i = 0
 
-        // if( this.length == 0 && updateRoutes )
-        //     router.push('')
-        // else
+        // the top panel that isn't hidden by showBase
+        let top = this.visiblePanels[0] // most recent first
+
         this.panels.forEach((panel)=>{
             
             if( panel.type != 'modal' && panel.type != 'actionsheet' )
@@ -367,7 +378,7 @@ class PanelController extends LitElement {
             
             let wasOnTop = panel.onTop
 
-            if( i == this.length && !this.hasAttribute('base-on-top') ){
+            if( panel == top ){
                 panel.setAttribute('ontop', '')
 
                 if( !wasOnTop && panel.view )
@@ -390,10 +401,12 @@ class PanelController extends LitElement {
 
         if( this.length > 0 )
             this.setAttribute('num', this.length)
-        else{
+        else
             this.removeAttribute('num')
+
+        // no hidden panels left
+        if( !this.map(panel=>panel).some(panel=>panel.hasAttribute('under-base')) )
             this.removeAttribute('base-on-top')
-        }
 
         let hostEl = this.getRootNode()
         hostEl = hostEl.host || hostEl.body || hostEl
@@ -412,7 +425,8 @@ class PanelController extends LitElement {
     _updateRoute(){
         let i = 0
 
-        if( this.length == 0 ){
+        // no panels showing (all closed or hidden by showBase)
+        if( this.baseOnTop ){
             
             // TEMP - legacy support for Blackstone Catalog v5
             if( window.app && window.app.sv && app.sv('sheets').sheets.length > 0 )
