@@ -1,8 +1,8 @@
 /*
     # App Sidebar Open Panels
 
-    Lists the open panels (in the root `<b-panels>`) that aren't already a link in the sidebar,
-    ex: records opened from a list or search. Click to bring one to the top; hover to close it
+    Lists the open panels (in the root `<b-panels>`), ex: apps and records opened from a list or search.
+    Click to bring one to the top; hover to close it
 
     ```html
     <b-app-sidebar>
@@ -19,7 +19,6 @@ import PanelController from '../../presenters/panel/controller'
 import '../../elements/btn'
 import './item'
 
-const trimPath = path=>String(path||'').replace(/^\/+|\/+$/g, '')
 const IGNORE_TYPES = ['modal', 'actionsheet', 'search-popup']
 
 export default class AppSidebarOpenPanels extends LitElement {
@@ -118,26 +117,10 @@ export default class AppSidebarOpenPanels extends LitElement {
         window.removeEventListener('router:popstate', this.refresh)
     }
 
-    // paths of the sidebar's links (those panels already show there)
-    get linkedPaths(){
-        let sidebar = this.closest('b-app-sidebar')
-        return [...(sidebar?.querySelectorAll('b-app-sidebar-item[path]') || [])]
-            .map(el=>trimPath(el.path))
-            .filter(Boolean)
-    }
-
-    isLinked(panel, linked=this.linkedPaths){
-        let root = trimPath(panel.route.rootPath)
-        let current = trimPath(panel.route.currentPath)
-        return linked.some(path=>root == path || current == path || current.startsWith(path+'/'))
-    }
-
+    // every open panel (including ones that are also sidebar links)
     get panels(){
-        let linked = this.linkedPaths
-
         return (this.panelController?.map(panel=>panel) || []).filter(panel=>{
-            if( !panel.route || IGNORE_TYPES.includes(panel.type) ) return false
-            return !this.isLinked(panel, linked)
+            return panel.route && !IGNORE_TYPES.includes(panel.type)
         })
     }
 

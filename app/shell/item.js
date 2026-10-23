@@ -16,8 +16,8 @@
       selecting an item with a `url` opens it, otherwise listen for `menu-select` ({detail: {selected}})
     - no `path` or `menu`: handle `@click` yourself
     - slots: `icon`, default (after the label), `end` (ex: badge)
-    - `--b-app-sidebar-item-icon-color` - the item's color (ex: an app's color): its icon, and when open/active
-      the left bar and (active) background tint; defaults to the theme color when open/active
+    - `--b-app-sidebar-item-icon-color` - the item's color (ex: an app's color): its icon, and (active) the
+      background tint; defaults to the theme color when open/active
 */
 import { LitElement, html, css } from 'lit'
 import router from '../router'
@@ -85,24 +85,6 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
             font-weight: 600;
         }
 
-        /* open (on top or underneath): thin bar just inside the left edge, in the item's color */
-        .item::after {
-            content: '';
-            position: absolute;
-            left: 4px;
-            top: 22%;
-            bottom: 22%;
-            width: 3px;
-            border-radius: 3px;
-            background: var(--item-color);
-            opacity: 0;
-            transition: opacity 150ms;
-        }
-
-        :host([active]) .item::after,
-        :host([open]) .item::after {
-            opacity: 1;
-        }
 
         .icon {
             display: inline-flex;
