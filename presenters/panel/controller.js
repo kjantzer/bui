@@ -61,11 +61,46 @@ class PanelController extends LitElement {
 
         main {
             position: relative;
+            grid-template-rows: auto minmax(0, 1fr);
+        }
+
+        /* content area of main (below the optional "main-top" slot, ex: b-app-topbar); panels open here */
+        .stage {
+            position: relative;
+            display: grid;
+            min-height: 0;
+        }
+
+        /* main view brought to the top (see showBase); panels stay open underneath */
+        :host([base-on-top]) .panels {
+            content-visibility: hidden; /* skips rendering but keeps state (scroll positions, etc) */
+            pointer-events: none;
+        }
+
+        /* phones: panels are full screen, so they cover "main-top"; the base view starts below it */
+        @media (max-width: 699px) {
+            main {
+                grid-template-rows: minmax(0, 1fr);
+            }
+
+            .main-top, .stage {
+                grid-row: 1;
+                grid-column: 1;
+            }
+
+            .main-top {
+                align-self: start;
+            }
+
+            :host([has-main-top]) .base {
+                top: var(--b-panels-main-top-height, 0px);
+            }
         }
 
         .base {
             position: absolute;
             inset: 0;
+            isolation: isolate; /* keep the base view's z-indexes (ex: sticky headers) below panels */
         }
 
         :host([inset]) {
@@ -186,13 +221,20 @@ class PanelController extends LitElement {
         <div class="core">
             <slot class="left" name="left"></slot>
             <main>
-                <slot class="base" part="base" name="base" @active-changed=${this.baseActiveChanged}></slot>
-                <slot class="panels" part="panels"></slot>
+                <slot class="main-top" name="main-top" @slotchange=${this.mainTopChanged}></slot>
+                <div class="stage">
+                    <slot class="base" part="base" name="base" @active-changed=${this.baseActiveChanged}></slot>
+                    <slot class="panels" part="panels"></slot>
+                </div>
             </main>
             <slot class="right" name="right"></slot>
         </div>
         <slot class="bottom" name="bottom"></slot>
     `}
+
+    mainTopChanged(e){
+        this.toggleAttribute('has-main-top', e.currentTarget.assignedElements().length > 0)
+    }
 
     baseActiveChanged(e){
         console.log('changed?', e);
@@ -226,6 +268,9 @@ class PanelController extends LitElement {
 
     add(panel){
 
+        // opening (or re-opening) a panel puts the panels back on top
+        this.removeAttribute('base-on-top')
+
         // let SheetView and Panel work together
         // TODO: remove long term - done for Blackstone Catalog v5
         document.body.setAttribute('ontop', 'panel')
@@ -246,6 +291,24 @@ class PanelController extends LitElement {
         this._updatePanels()
 
         this.emitEvent('change', {action: 'add', panel}, {bubbles: false})
+    }
+
+    get baseOnTop(){ return this.hasAttribute('base-on-top') || this.length == 0 }
+
+    // show the main ("base") view above the open panels without closing them;
+    // they come back when one is opened again (ex: its route is visited)
+    showBase(){
+        if( this.baseOnTop ) return
+
+        let panel = this.panelOnTop
+        if( panel ){
+            panel.removeAttribute('ontop')
+            setTimeout(()=>panel.view?.didBecomeInactive?.())
+        }
+
+        this.setAttribute('base-on-top', '')
+        router.push('')
+        this.emitEvent('change', {action: 'base-on-top'}, {bubbles: false})
     }
 
     get panelOnTop(){
@@ -299,7 +362,7 @@ class PanelController extends LitElement {
             
             let wasOnTop = panel.onTop
 
-            if( i == this.length ){
+            if( i == this.length && !this.hasAttribute('base-on-top') ){
                 panel.setAttribute('ontop', '')
 
                 if( !wasOnTop && panel.view )
@@ -322,8 +385,10 @@ class PanelController extends LitElement {
 
         if( this.length > 0 )
             this.setAttribute('num', this.length)
-        else
+        else{
             this.removeAttribute('num')
+            this.removeAttribute('base-on-top')
+        }
 
         let hostEl = this.getRootNode()
         hostEl = hostEl.host || hostEl.body || hostEl

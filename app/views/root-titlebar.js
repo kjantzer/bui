@@ -43,7 +43,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
             display: inline-block;
             font-family: var(--font-display, inherit);
             font-weight: 400;
-            font-size: var(--font-size-lg, 1.4142em);
+            font-size: var(--font-size-md, 1.1892em);
             line-height: 1;
         }
 
