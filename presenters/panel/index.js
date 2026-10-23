@@ -826,11 +826,12 @@ export class Panel extends LitElement {
         :host([anchor="right"]) > main {
             transform: translateX(var(--panel-animation-shift));
             height: 100%;
-            border-radius: var(--radius) 0 0 var(--radius);
+            /* against the right edge: square only at the bottom right (the top right meets the topbar) */
+            border-radius: var(--radius) var(--radius) 0 var(--radius);
         }
 
         :host([anchor="right"]) > main ::slotted(*) {
-            border-radius: var(--radius) 0 0 var(--radius);
+            border-radius: var(--radius) var(--radius) 0 var(--radius);
         }
 
         :host([anchor="left"]) > main {
