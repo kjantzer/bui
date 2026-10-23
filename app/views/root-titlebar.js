@@ -59,7 +59,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
             flex-shrink: 0;
             order: -10;
             align-self: center;
-            margin-left: -.1em; /* closer to the edge */
+            margin-left: .1em; /* clear of the panel edge (its hover bgd) */
         }
 
         /* bigger icon in the same size btn */
