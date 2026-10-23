@@ -17,7 +17,7 @@
     - no `path` or `menu`: handle `@click` yourself
     - slots: `icon`, default (after the label), `end` (ex: badge)
     - `--b-app-sidebar-item-icon-color` - the item's color (ex: an app's color): its icon, and when open/active
-      the right bar and (active) background tint; defaults to the theme color when open/active
+      the left bar and (active) background tint; defaults to the theme color when open/active
 */
 import { LitElement, html, css } from 'lit'
 import router from '../router'
@@ -85,11 +85,11 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
             font-weight: 600;
         }
 
-        /* open (on top or underneath): thin bar on the right in the item's color */
+        /* open (on top or underneath): thin bar on the left in the item's color */
         .item::after {
             content: '';
             position: absolute;
-            right: 0;
+            left: 0;
             top: 22%;
             bottom: 22%;
             width: 3px;
