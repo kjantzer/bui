@@ -15,13 +15,13 @@ customElements.define('b-menu-item', class extends LitElement{
     static styles = css`
 
         :host{
-        padding: var(--b-menu-item-padding, .45em .65em);
-		margin: 1px .35em;
-    	border-radius: calc(var(--b-popover-radius, 8px) - .35em);
+        padding: var(--b-menu-item-padding, .6em .75em);
+		margin: 2px .4em;
+    	border-radius: calc(var(--b-popover-radius, 8px) - .4em);
 		transition: 120ms;
 		display: flex;
 		align-items: flex-start;
-		gap: .65em;
+		gap: .75em;
 		position: relative;
         }
 
@@ -31,8 +31,9 @@ customElements.define('b-menu-item', class extends LitElement{
 		:host > select-field + b-icon,
 		:host > .icon {
 			flex-shrink: 0;
-			width: 1.25em;
-			height: 1.25em;
+			font-size: var(--b-menu-icon-size, .9em);
+			width: 1.4em; /* ~1.25em of the label; keeps labels lined up */
+			height: 1.4em;
 			margin: 0;
 			display: inline-flex;
 			align-items: center;

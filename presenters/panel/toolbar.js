@@ -130,6 +130,16 @@ class PanelToolbar extends LitElement {
 
         [part="close-btn"] {
             flex-shrink: 0;
+            margin-left: -.3em; /* closer to the edge */
+        }
+
+        /* bigger icon in the same size btn */
+        [part="close-btn"]::part(main) {
+            padding: .25em;
+        }
+
+        [part="close-btn"]::part(icon) {
+            --size: 1.3em;
         }
 
         /* point toward where the panel closes */

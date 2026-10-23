@@ -38,11 +38,13 @@ customElements.define('b-root-titlebar', class extends LitElement{
             position: relative;
         }
 
+        /* title in the app's display font (falls back to the normal font) */
         :host > b-text slot[name="title:inner"] {
             display: inline-block;
-            background: var(--theme-bgd-accent);
-            padding: .25em .75em;
-            border-radius: 1em;
+            font-family: var(--font-display, inherit);
+            font-weight: 400;
+            font-size: var(--font-size-lg, 1.4142em);
+            line-height: 1;
         }
 
         b-text[lg] {
@@ -57,6 +59,16 @@ customElements.define('b-root-titlebar', class extends LitElement{
             flex-shrink: 0;
             order: -10;
             align-self: center;
+            margin-left: -.1em; /* closer to the edge */
+        }
+
+        /* bigger icon in the same size btn */
+        [part="close-btn"]::part(main) {
+            padding: .25em;
+        }
+
+        [part="close-btn"]::part(icon) {
+            --size: 1.3em;
         }
 
         /* point toward where the panel closes */

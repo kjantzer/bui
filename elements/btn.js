@@ -418,9 +418,10 @@ export default class BtnElement extends LitElement {
             --bgdColor: rgba(0,0,0,.05);
         }}
 
+        /* menu/popover open: muted theme tint (painted on host and main, so it stacks; keep it light) */
         :host([text].popover-open),
         :host([clear].popover-open), :host([ghost].popover-open) {
-            --bgdColor: rgba(0,0,0,.05);
+            --bgdColor: var(--b-btn-popover-open-bgd, color-mix(in srgb, var(--theme) 12%, transparent));
             /*box-shadow: 0 0 0 1px var(--theme) inset;*/ /* border outline */
         }
 
