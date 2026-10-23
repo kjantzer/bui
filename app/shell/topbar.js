@@ -12,7 +12,8 @@
     </b-app-topbar>
     ```
 
-    On phones a ☰ btn is shown first to open the `<b-app-sidebar>` drawer
+    On phones a ☰ btn is shown first to open the `<b-app-sidebar>` drawer;
+    put something in `slot="menu"` to use it instead (ex: the app's logo)
 
     Styling vars: --b-app-topbar-height
 */
@@ -46,13 +47,15 @@ customElements.define('b-app-topbar', class extends LitElement{
         .menu-btn {
             display: none;
             flex-shrink: 0;
+            align-items: center;
+            cursor: pointer;
         }
 
-        .menu-btn::part(main) {
+        .menu-btn b-btn::part(main) {
             padding: .3em;
         }
 
-        .menu-btn::part(icon) {
+        .menu-btn b-btn::part(icon) {
             --size: 1.4em;
         }
 
@@ -126,7 +129,9 @@ customElements.define('b-app-topbar', class extends LitElement{
     }
 
     render(){return html`
-        <b-btn clear pill icon="menu" class="menu-btn" title="Menu" @click=${this.openSidebar}></b-btn>
+        <div class="menu-btn" title="Menu" @click=${this.openSidebar}>
+            <slot name="menu"><b-btn clear pill icon="menu"></b-btn></slot>
+        </div>
         <slot name="start"></slot>
         <div class="center"><slot></slot></div>
         <slot name="end"></slot>
