@@ -130,10 +130,9 @@ b-panel[anchor="top"] > * {
     --b-panel-radius: .75rem;
 }
 
+/* right anchored panels are full height against the right edge (rounded on the left; see presenters/panel) */
 @media (min-width: 600px){
-b-panel[height="100%"][anchor="right"]::part(main),
 b-panel[height="100%"][anchor="left"]::part(main),
-:root.insetpanels b-panel[height="100%"][anchor="right"]::part(main),
 :root.insetpanels b-panel[height="100%"][anchor="left"]::part(main) {
     height: calc(100% - (calc(2 * var(--inset-margin, .5em)))) !important;
     right: var(--inset-margin, .5em);
