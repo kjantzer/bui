@@ -30,6 +30,7 @@
     the layout is the same in both modes (labels are clipped by the width) so collapsing animates smoothly
 
     Toggle by clicking the brand (logo), `cmd/ctrl + \`, or `window.dispatchEvent(new Event('b-app-sidebar:toggle'))`
+    As a drawer, swipe in from the left edge of the screen to open it and swipe it to the left to close it
 
     `size="large"` - bigger items (ex: a user preference)
 
@@ -41,6 +42,7 @@ import {localStore} from '../../util/store'
 
 const NARROW = 700
 const WIDE = 1200
+const EDGE = 24 // px from the left edge of the screen where a swipe opens the drawer
 const collapsedPref = localStore.create('b-app-sidebar:collapsed')
 
 customElements.define('b-app-sidebar', class extends LitElement{
@@ -75,7 +77,8 @@ customElements.define('b-app-sidebar', class extends LitElement{
         :host([mode="drawer"]) { width: 0; }
 
         /* above panels while overlaying them */
-        :host([open]) { z-index: 3000; }
+        :host([open]),
+        :host([dragging]) { z-index: 3000; }
 
         .panel {
             position: absolute;
@@ -138,7 +141,20 @@ customElements.define('b-app-sidebar', class extends LitElement{
         }
 
         :host([open]) .scrim { display: block; }
-        :host([mode="drawer"][open]) .scrim { background: rgba(0,0,0,.4); }
+        :host([mode="drawer"]) .scrim {
+            background: rgba(0,0,0,.4);
+            opacity: 0;
+            transition: opacity 250ms;
+        }
+        :host([mode="drawer"][open]) .scrim { opacity: 1; }
+
+        /* following a swipe (see onTouchMove) */
+        :host([dragging]) .scrim { display: block; }
+        :host([dragging]) .panel,
+        :host([dragging]) .scrim {
+            transition: none !important;
+            visibility: visible;
+        }
 
         .top {
             display: flex;
@@ -180,6 +196,9 @@ customElements.define('b-app-sidebar', class extends LitElement{
         this.close = this.close.bind(this)
         this.updateMode = this.updateMode.bind(this)
         this.onKeydown = this.onKeydown.bind(this)
+        this.onTouchStart = this.onTouchStart.bind(this)
+        this.onTouchMove = this.onTouchMove.bind(this)
+        this.onTouchEnd = this.onTouchEnd.bind(this)
 
         this.narrowQuery = window.matchMedia(`(max-width: ${NARROW-1}px)`)
         this.wideQuery = window.matchMedia(`(min-width: ${WIDE}px)`)
@@ -192,6 +211,10 @@ customElements.define('b-app-sidebar', class extends LitElement{
         this.wideQuery.addEventListener('change', this.updateMode)
         window.addEventListener('b-app-sidebar:toggle', this.toggle)
         window.addEventListener('keydown', this.onKeydown)
+        window.addEventListener('touchstart', this.onTouchStart, {passive: true})
+        window.addEventListener('touchmove', this.onTouchMove, {passive: false})
+        window.addEventListener('touchend', this.onTouchEnd)
+        window.addEventListener('touchcancel', this.onTouchEnd)
 
         // opening a view closes the drawer/overlay
         window.addEventListener('router:push', this.close)
@@ -204,6 +227,10 @@ customElements.define('b-app-sidebar', class extends LitElement{
         this.wideQuery.removeEventListener('change', this.updateMode)
         window.removeEventListener('b-app-sidebar:toggle', this.toggle)
         window.removeEventListener('keydown', this.onKeydown)
+        window.removeEventListener('touchstart', this.onTouchStart)
+        window.removeEventListener('touchmove', this.onTouchMove)
+        window.removeEventListener('touchend', this.onTouchEnd)
+        window.removeEventListener('touchcancel', this.onTouchEnd)
         window.removeEventListener('router:push', this.close)
         window.removeEventListener('router:popstate', this.close)
     }
@@ -242,6 +269,71 @@ customElements.define('b-app-sidebar', class extends LitElement{
             e.preventDefault()
             this.toggle()
         }
+    }
+
+    // swipe in from the left edge to open the drawer; swipe it left to close
+    onTouchStart(e){
+        if( this.mode != 'drawer' || e.touches.length > 1 ) return
+
+        let t = e.touches[0]
+
+        // closed: only from the edge of the screen; open: anywhere (the drawer or the scrim)
+        if( !this.open && t.clientX > EDGE ) return
+
+        this._swipe = {
+            x: t.clientX, y: t.clientY, time: Date.now(),
+            width: this.shadowRoot.querySelector('.panel').offsetWidth,
+            dragging: false
+        }
+    }
+
+    onTouchMove(e){
+        let s = this._swipe
+        if( !s ) return
+
+        let t = e.touches[0]
+        let dx = t.clientX - s.x
+        let dy = t.clientY - s.y
+
+        if( !s.dragging ){
+            // wait to see which way it's going; vertical means scrolling (ex: the drawer's list)
+            if( Math.abs(dx) < 10 && Math.abs(dy) < 10 ) return
+            if( Math.abs(dy) > Math.abs(dx) || (this.open ? dx > 0 : dx < 0) ){
+                this._swipe = null
+                return
+            }
+            s.dragging = true
+            this.setAttribute('dragging', '')
+        }
+
+        e.preventDefault() // don't scroll while following the swipe
+
+        // how far open (0-1)
+        let progress = this.open ? 1 + dx / s.width : dx / s.width
+        progress = Math.min(1, Math.max(0, progress))
+        s.progress = progress
+        s.lastX = t.clientX
+        s.lastTime = Date.now()
+
+        let panel = this.shadowRoot.querySelector('.panel')
+        let scrim = this.shadowRoot.querySelector('.scrim')
+        panel.style.transform = `translateX(${(progress - 1) * 105}%)` // closed is -105% (hides the shadow)
+        scrim.style.opacity = progress
+    }
+
+    onTouchEnd(){
+        let s = this._swipe
+        this._swipe = null
+        if( !s?.dragging ) return
+
+        // a quick flick decides it; otherwise whichever side of halfway it's on
+        let velocity = (s.lastX - s.x) / Math.max(1, s.lastTime - s.time) // px per ms
+        let open = Math.abs(velocity) > .5 ? velocity > 0 : s.progress > .5
+
+        this.removeAttribute('dragging')
+        this.shadowRoot.querySelector('.panel').style.transform = ''
+        this.shadowRoot.querySelector('.scrim').style.opacity = ''
+        this.open = open
     }
 
     updated(changed){
