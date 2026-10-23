@@ -31,6 +31,8 @@
 
     Toggle by clicking the brand (logo), `cmd/ctrl + \`, or `window.dispatchEvent(new Event('b-app-sidebar:toggle'))`
 
+    `size="large"` - bigger items (ex: a user preference)
+
     Styling vars: --b-app-sidebar-width, --b-app-sidebar-rail-width, --b-app-sidebar-bgd,
     --b-app-sidebar-overlay-bgd (drawer and overlay)
 */
@@ -45,7 +47,8 @@ customElements.define('b-app-sidebar', class extends LitElement{
 
     static properties = {
         mode: {type: String, reflect: true},
-        open: {type: Boolean, reflect: true}
+        open: {type: Boolean, reflect: true},
+        size: {type: String, reflect: true} // '' or 'large' (bigger items; everything scales together)
     }
 
     static styles = css`
@@ -59,6 +62,13 @@ customElements.define('b-app-sidebar', class extends LitElement{
             width: var(--width);
             flex-shrink: 0;
             transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* larger items: text, icons, spacing, and widths all scale (em based) */
+        :host([size="large"]) {
+            font-size: 1.15em;
+            --width: var(--b-app-sidebar-width, 276px);
+            --b-app-sidebar-item-padding-y: .7rem;
         }
 
         :host([mode="rail"]) { width: var(--rail-width); }

@@ -56,7 +56,7 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
             display: flex;
             align-items: center;
             gap: .65rem;
-            padding: .45rem .65rem;
+            padding: var(--b-app-sidebar-item-padding-y, .45rem) .65rem;
             border-radius: var(--b-app-sidebar-item-radius, 10px);
             cursor: pointer;
             user-select: none;
@@ -85,11 +85,11 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
             font-weight: 600;
         }
 
-        /* open (on top or underneath): thin bar on the left in the item's color */
+        /* open (on top or underneath): thin bar just inside the left edge, in the item's color */
         .item::after {
             content: '';
             position: absolute;
-            left: 0;
+            left: 4px;
             top: 22%;
             bottom: 22%;
             width: 3px;
@@ -166,7 +166,8 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
         if( sidebar ) this.rail = sidebar.hasAttribute('rail')
         window.addEventListener('router:push', this.updateActive)
         window.addEventListener('router:popstate', this.updateActive)
-        this.panelController?.addEventListener('change', this.updateOpen)
+        window.addEventListener('app-shell:ready', this.updateActive) // router started (ex: page loaded with a deep link)
+        this.panelController?.addEventListener('change', this.updateActive)
         this.updateActive()
     }
 
@@ -174,7 +175,8 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
         super.disconnectedCallback()
         window.removeEventListener('router:push', this.updateActive)
         window.removeEventListener('router:popstate', this.updateActive)
-        this.panelController?.removeEventListener('change', this.updateOpen)
+        window.removeEventListener('app-shell:ready', this.updateActive)
+        this.panelController?.removeEventListener('change', this.updateActive)
     }
 
     // reused elements (ex: in a list) can get a different path
@@ -185,7 +187,16 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
 
     // NOTE: router events fire before the new state is set as current, so read the path from the event
     updateActive(e){
-        let current = e?.detail ? e.detail.path : router.states?.current?.path
+        // router events have the new path; otherwise (ex: panel changes, app ready) use the current state
+        let fromRoute = e?.detail && 'path' in e.detail
+
+        // router not started yet: nothing is current
+        if( !fromRoute && !router.states ){
+            this.active = false
+            return this.updateOpen()
+        }
+
+        let current = fromRoute ? e.detail.path : router.states.current?.path
         current = trimPath(current)
 
         let root = trimPath(router.pathRoot)
