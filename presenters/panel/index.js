@@ -8,6 +8,7 @@ import './toolbar'
 import '../../elements/btn'
 import CollMap from '../../util/collmap'
 import isLitHTML from '../../helpers/lit/isLitHTML'
+import bindSwipeClose, {canSwipeClose} from './swipe-close'
 
 export const PanelDefaults = {
     type: '',
@@ -505,6 +506,7 @@ export class Panel extends LitElement {
 
     firstUpdated(){
         this._linkToolbar()
+        bindSwipeClose(this)
         
         this.shadowRoot.querySelector('.backdrop').addEventListener('click', e=>{
             
@@ -631,6 +633,9 @@ export class Panel extends LitElement {
             else
                 this.view.onRouteChange(undefined, this.route?.state)
         }
+
+        // bottom sheets on small screens can be dragged down to close (see ./swipe-close.js)
+        this.toggleAttribute('swipe-close', canSwipeClose(this))
 
         setTimeout(()=>{
             this.setAttribute('open', '')
@@ -921,6 +926,21 @@ export class Panel extends LitElement {
 
         :host([anchor="right"]) {
             --b-panel-toolbar-close-btn-rotation: 0deg;
+        }
+
+        /* grabber for swipe to close (see ./swipe-close.js) */
+        :host([swipe-close]) > main::before {
+            content: '';
+            position: absolute;
+            z-index: 10;
+            top: 6px;
+            left: 50%;
+            width: 36px;
+            height: 5px;
+            border-radius: 3px;
+            transform: translateX(-50%);
+            background: rgba(var(--theme-text-rgb, 0,0,0), .25);
+            pointer-events: none;
         }
 
         .backdrop {
