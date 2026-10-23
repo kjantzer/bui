@@ -211,7 +211,7 @@ customElements.define('b-app-sidebar', class extends LitElement{
         this.wideQuery.addEventListener('change', this.updateMode)
         window.addEventListener('b-app-sidebar:toggle', this.toggle)
         window.addEventListener('keydown', this.onKeydown)
-        window.addEventListener('touchstart', this.onTouchStart, {passive: true})
+        window.addEventListener('touchstart', this.onTouchStart, {passive: false}) // can cancel the browser's back swipe
         window.addEventListener('touchmove', this.onTouchMove, {passive: false})
         window.addEventListener('touchend', this.onTouchEnd)
         window.addEventListener('touchcancel', this.onTouchEnd)
@@ -285,6 +285,13 @@ customElements.define('b-app-sidebar', class extends LitElement{
             width: this.shadowRoot.querySelector('.panel').offsetWidth,
             dragging: false
         }
+
+        // the edge swipe is ours, not the browser's "back" (iOS Safari only skips it if the touch is canceled);
+        // that also cancels taps there, so onTouchEnd clicks for them
+        if( !this.open ){
+            e.preventDefault()
+            this._swipe.target = e.composedPath()[0]
+        }
     }
 
     onTouchMove(e){
@@ -321,10 +328,18 @@ customElements.define('b-app-sidebar', class extends LitElement{
         scrim.style.opacity = progress
     }
 
-    onTouchEnd(){
+    onTouchEnd(e){
         let s = this._swipe
         this._swipe = null
-        if( !s?.dragging ) return
+        if( !s ) return
+
+        // a tap at the edge (its touchstart was canceled, so the browser won't click)
+        if( !s.dragging ){
+            let t = e.changedTouches?.[0]
+            if( s.target && e.type == 'touchend' && t && Math.abs(t.clientX - s.x) < 10 && Math.abs(t.clientY - s.y) < 10 )
+                s.target.click?.()
+            return
+        }
 
         // a quick flick decides it; otherwise whichever side of halfway it's on
         let velocity = (s.lastX - s.x) / Math.max(1, s.lastTime - s.time) // px per ms
@@ -337,6 +352,12 @@ customElements.define('b-app-sidebar', class extends LitElement{
     }
 
     updated(changed){
+        // no browser "back" swipe from the edge while it opens the drawer (Chrome/Android; iOS: see onTouchStart)
+        if( changed.has('mode') ){
+            document.documentElement.style.overscrollBehaviorX = this.mode == 'drawer' ? 'none' : ''
+            document.body.style.overscrollBehaviorX = this.mode == 'drawer' ? 'none' : ''
+        }
+
         if( changed.has('mode') || changed.has('open') ){
             this.applyRail()
             this.dispatchEvent(new CustomEvent('change', {detail: {mode: this.mode, open: this.open}}))
