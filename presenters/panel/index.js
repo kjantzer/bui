@@ -463,7 +463,13 @@ export class Panel extends LitElement {
 
     bounce(){ this.animate('bounce') }
     shake(){ this.animate('shake') }
-    pulseBack(){ this.animate('pulseback', {timeout: 220}) }
+    // "you're already here" (ex: opening the record that's showing); only when it was already visible,
+    // not when it's being brought back (from under other panels or the base view)
+    pulseBack(){
+        let justShown = !this.wasVisible && Date.now() - (this.onTopSince||0) < 400
+        if( !this.onTop || this.hasAttribute('under-base') || justShown ) return
+        this.animate('pulseback', {timeout: 220})
+    }
 
     set html(fn){ this.__html = fn}
     get html(){ return this.__html && typeof this.__html == 'function' ? this.__html.call(this) : (this.__html||'')}
@@ -561,6 +567,9 @@ export class Panel extends LitElement {
     }
 
     async open(...args){
+
+        // was it already showing before this open (see pulseBack)
+        this.wasVisible = this.isOpen && this.onTop && !this.hasAttribute('under-base')
 
         if( this.view && this.view.willOpen ){
             if( await this.view.willOpen(this.route.state) === false ){

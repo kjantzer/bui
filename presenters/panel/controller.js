@@ -381,6 +381,9 @@ class PanelController extends LitElement {
             if( panel == top ){
                 panel.setAttribute('ontop', '')
 
+                if( !wasOnTop )
+                    panel.onTopSince = Date.now() // (see Panel.pulseBack)
+
                 if( !wasOnTop && panel.view )
                     panel.view.didBecomeActive&&panel.view.didBecomeActive()
 
