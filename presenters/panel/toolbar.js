@@ -128,19 +128,13 @@ class PanelToolbar extends LitElement {
             justify-content: flex-end;
         }
 
-        [part="close-btn"][icon="chevron_right"] {
+        [part="close-btn"] {
             flex-shrink: 0;
-            align-self: stretch;
         }
 
+        /* point toward where the panel closes */
         [part="close-btn"][icon="chevron_right"]::part(icon) {
-            transform: rotate(var(--b-panel-toolbar-close-btn-rotation, 0deg)) scale(1.4);
-        }
-
-        [part="close-btn"][icon="chevron_right"]::part(main) {
-            padding-top: 0;
-            padding-bottom: 0;
-
+            transform: rotate(var(--b-panel-toolbar-close-btn-rotation, 0deg));
         }
 
         /* hide on small devices in landscape (allow for more space for the content) */ 
@@ -174,8 +168,7 @@ class PanelToolbar extends LitElement {
             <slot name="close-btn">
                 <b-btn
                     part="close-btn"
-                    ?text=${this.closebtn=='arrow'} 
-                    lg clear
+                    clear lg pill
                     icon="${this.closeBtnIcon}" 
                     @click=${this.close}></b-btn>
             </slot>

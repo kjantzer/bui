@@ -53,18 +53,15 @@ customElements.define('b-root-titlebar', class extends LitElement{
             align-self: stretch;
         }
 
-        [icon="chevron_right"] {
+        [part="close-btn"] {
             flex-shrink: 0;
             order: -10;
+            align-self: center;
         }
 
-        [icon="chevron_right"]::part(icon) {
-            transform: rotate(var(--b-panel-toolbar-close-btn-rotation, 0deg)) scale(1.4);
-        }
-
-        [icon="chevron_right"]::part(main) {
-            padding-top: 0;
-            padding-bottom: 0;
+        /* point toward where the panel closes */
+        [part="close-btn"]::part(icon) {
+            transform: rotate(var(--b-panel-toolbar-close-btn-rotation, 0deg));
         }
 
         /*::slotted(b-btn:last-child) {
@@ -97,7 +94,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
     render(){return html`
 
         ${this.panel?html`
-            <b-btn text lg icon="chevron_right" part="close-btn" @click=${this.close}></b-btn>
+            <b-btn clear lg pill icon="chevron_right" part="close-btn" @click=${this.close}></b-btn>
         `:''}
 
         <slot name="left"></slot>
