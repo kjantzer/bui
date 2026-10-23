@@ -75,9 +75,10 @@ export function sharedStyles(host=':host'){return css`
         padding-right: calc(var(--list-cell-padding-x, .5rem) * var(--list-cell-padding-x-cap, 2));
     }
 
+    /* --list-sticky-left: room for the selection column (when selecting) */
     ${unsafeCSS(host)} > [sticky] {
         position: sticky;
-        left: 0;
+        left: var(--list-sticky-left, 0px);
         background: var(--list-cell-bgd, var(--theme-bgd));
         z-index: 5;
     }
@@ -106,17 +107,17 @@ export function sharedStyles(host=':host'){return css`
 
     ${unsafeCSS(host)} > [sticky]:first-child + [sticky],
     ${unsafeCSS(host)} > [sticky="2"] {
-        left: var(--grid-col-1-width);
+        left: calc(var(--list-sticky-left, 0px) + var(--grid-col-1-width));
     }
 
     ${unsafeCSS(host)} > [sticky]:first-child + [sticky] + [sticky],
     ${unsafeCSS(host)} > [sticky="3"] {
-        left: calc(var(--grid-col-1-width) + var(--grid-col-2-width));
+        left: calc(var(--list-sticky-left, 0px) + var(--grid-col-1-width) + var(--grid-col-2-width));
     }
 
     ${unsafeCSS(host)} > [sticky]:first-child + [sticky] + [sticky] + [sticky],
     ${unsafeCSS(host)} > [sticky="4"] {
-        left: calc(var(--grid-col-1-width) + var(--grid-col-2-width) + var(--grid-col-3-width));
+        left: calc(var(--list-sticky-left, 0px) + var(--grid-col-1-width) + var(--grid-col-2-width) + var(--grid-col-3-width));
     }
 
     ${unsafeCSS(host)} > [sticky="right"] {
@@ -269,6 +270,23 @@ customElements.define('b-list-header', class extends LitElement{
             align-items: center;
             padding: 0;
             z-index: 5;
+        }
+
+        /* selecting: select all is its own sticky column (lines up with the rows' checkboxes) */
+        :host-context([selection-on]) {
+            padding-left: 0;
+            --list-sticky-left: 2rem;
+        }
+
+        :host-context([selection-on]) [name="selection"] {
+            position: sticky;
+            left: 0;
+            grid-row: 1;
+            grid-column: span 1 / 1;
+            width: 2rem;
+            height: auto;
+            align-self: stretch;
+            justify-content: center;
         }
 
         [name="selection"]::slotted(b-list-selection-btn) {

@@ -257,6 +257,53 @@ customElements.define('b-list', class extends LitElement {
             border-radius: var(--grid-cell-radius, 0px);
         }
 
+        /* table lists: the selection column is sticky (an extra grid column before the row's cells)
+            so the checkboxes stay visible when scrolling sideways; sticky cells move over for it */
+        :host(:not([grid])) b-infinite-list[selection-on] > [part="row"] {
+            margin-left: 0;
+            --list-sticky-left: 2rem;
+        }
+
+        :host(:not([grid])) b-infinite-list[selection-on] > [part="row"]:before,
+        :host(:not([grid])) b-infinite-list[selection-on] > [part="row"]:after {
+            content: '';
+            grid-row: 1;
+            grid-column: span 1 / 1;
+            position: sticky;
+        }
+
+        /* the column's background (cells scroll under it) */
+        :host(:not([grid])) b-infinite-list[selection-on] > [part="row"]:before {
+            left: 0;
+            top: auto;
+            width: 2rem;
+            height: auto;
+            align-self: stretch;
+            box-sizing: border-box;
+            background: var(--list-cell-bgd, var(--theme-bgd));
+            border-bottom: solid 1px var(--border-color, rgba(var(--theme-text-rgb), .1));
+            z-index: 6;
+        }
+
+        :host(:not([grid])) b-infinite-list[selection-on] > [part="row"][isselected]:before {
+            background: linear-gradient(var(--b-list-selected-row-bgd, rgba(var(--theme-rgb), .1)), var(--b-list-selected-row-bgd, rgba(var(--theme-rgb), .1))),
+                var(--list-cell-bgd, var(--theme-bgd));
+        }
+
+        :host(:not([grid])) b-infinite-list[selection-on] > [part="row"]:after {
+            /* centered in the column at rest and when stuck */
+            margin-left: calc((2rem - 1.1rem) / 2);
+            left: calc((2rem - 1.1rem) / 2);
+            top: auto;
+            align-self: center;
+            z-index: 7;
+        }
+
+        /* selected: tint the row (sticky cells tint themselves; see header.js) */
+        :host(:not([grid])) b-infinite-list[selection-on] > [isselected] {
+            background-color: var(--b-list-selected-row-bgd, rgba(var(--theme-rgb), .1));
+        }
+
         b-infinite-list > * {
             /* keeps any sticky columns working properly  */
             min-width: fit-content;
