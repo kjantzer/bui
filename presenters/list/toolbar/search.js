@@ -22,7 +22,7 @@ customElements.define('b-list-search-bar', class extends LitElement{
             padding: .5em .65em;
             background: var(--searchBgd, #f5f5f5); /* backwards comp */
             background: var(--list-search-bgd, var(--searchBgd));
-            border-radius: 4px;
+            border-radius: 2em; /* pill */
             /* max-width: 140px; */
         }
 

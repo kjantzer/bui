@@ -18,6 +18,7 @@ customElements.define('b-list-export-btn', class extends Btn{
         super()
         this.setAttribute('clear', '')
         this.setAttribute('lg', '')
+        this.setAttribute('pill', '')
         this.icon = this.icon || 'download'
         this.slot = this.slot || 'toolbar:after'
         this.tooltip = this.title || "Export data to CSV file"
