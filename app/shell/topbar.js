@@ -86,6 +86,12 @@ customElements.define('b-app-topbar', class extends LitElement{
             .menu-btn {
                 display: inline-flex;
             }
+
+            /* installed app with the titlebar hidden (narrow desktop window): below the window controls */
+            :host {
+                height: calc(var(--b-app-topbar-height, 48px) + 4px + env(titlebar-area-height, 0px));
+                padding-top: env(titlebar-area-height, 0px);
+            }
         }
     `
 
@@ -93,8 +99,11 @@ customElements.define('b-app-topbar', class extends LitElement{
         super.connectedCallback()
 
         // phones: panels cover the topbar, so the base view needs to start below it
+        // (the panels area already starts below a hidden titlebar, so that part isn't counted)
         this.resizeObserver ||= new ResizeObserver(()=>{
-            this.panelController?.style.setProperty('--b-panels-main-top-height', this.offsetHeight+'px')
+            let overlay = navigator.windowControlsOverlay
+            let titlebar = overlay?.visible ? overlay.getTitlebarAreaRect().height : 0
+            this.panelController?.style.setProperty('--b-panels-main-top-height', (this.offsetHeight - titlebar)+'px')
         })
         this.resizeObserver.observe(this)
     }

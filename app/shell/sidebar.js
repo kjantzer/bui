@@ -114,7 +114,7 @@ customElements.define('b-app-sidebar', class extends LitElement{
         :host([mode="drawer"]) .panel {
             position: fixed;
             width: min(calc(var(--width) + 40px), 85vw);
-            padding-top: calc(.75rem + env(safe-area-inset-top, 0px));
+            padding-top: calc(.75rem + max(env(safe-area-inset-top, 0px), env(titlebar-area-height, 0px)));
             padding-bottom: calc(.75rem + env(safe-area-inset-bottom, 0px));
             padding-left: calc(.5rem + env(safe-area-inset-left, 0px));
             background: var(--b-app-sidebar-overlay-bgd, var(--theme-bgd));

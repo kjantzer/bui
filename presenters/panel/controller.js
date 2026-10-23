@@ -88,6 +88,11 @@ class PanelController extends LitElement {
                 grid-column: 1;
             }
 
+            /* installed app with the titlebar hidden (ex: narrow desktop window): panels start below the window controls */
+            .stage {
+                margin-top: env(titlebar-area-height, 0px);
+            }
+
             .main-top {
                 align-self: start;
             }
