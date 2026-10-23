@@ -10,6 +10,16 @@
     </div>
     ```
 
+    `target` - selector of the element (inside the parent) to scroll, so a larger area (the parent) can scroll it
+
+    ```html
+    <section>
+        <b-mouse-scroll-horz target=".row"></b-mouse-scroll-horz>
+        <h3>Hover anywhere in the section</h3>
+        <div class="row" style="overflow-x: auto;">...</div>
+    </section>
+    ```
+
     TODO: add feature to require a key down to scroll?
 */
 import { LitElement} from 'lit'
@@ -18,6 +28,7 @@ customElements.define('b-mouse-scroll-horz', class extends LitElement{
 
     static properties = {
         disabled: {type: Boolean, reflect: true},
+        target: {type: String}
     }
 
     constructor(){
@@ -39,10 +50,21 @@ customElements.define('b-mouse-scroll-horz', class extends LitElement{
         this.container?.removeEventListener('wheel', this.scrollHorz)
     }
 
+    get scrollEl(){
+        if( !this.target ) return this.container
+        return this.container.querySelector?.(this.target) || this.container.shadowRoot?.querySelector(this.target)
+    }
+
     scrollHorz(e){
         if( this.disabled ) return
+
+        let el = this.scrollEl
+
+        // nothing to scroll: let the page scroll
+        if( !el || (this.target && el.scrollWidth <= el.clientWidth) ) return
+
         e.preventDefault();
-        this.container.scrollLeft += e.deltaX == -0 ? e.deltaY : e.deltaX
+        el.scrollLeft += e.deltaX == -0 ? e.deltaY : e.deltaX
     }
 
     onHandle(e){
