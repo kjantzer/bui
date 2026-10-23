@@ -27,8 +27,8 @@ export default class Route {
 
     makePath(params){
         
-        // make sure we have any required params set
-        let emptyParams = this.patt.ast.filter(d=>d.tag=='named').map(d=>[d.value, ''])
+        // make sure we have any required params set (ex: a closed panel's params are gone)
+        let emptyParams = Object.fromEntries(this.patt.ast.filter(d=>d.tag=='named').map(d=>[d.value, '']))
 
         delete emptyParams._ // wildcard
         
