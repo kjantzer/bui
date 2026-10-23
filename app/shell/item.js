@@ -16,7 +16,8 @@
       selecting an item with a `url` opens it, otherwise listen for `menu-select` ({detail: {selected}})
     - no `path` or `menu`: handle `@click` yourself
     - slots: `icon`, default (after the label), `end` (ex: badge)
-    - `--b-app-sidebar-item-icon-color` - icon color at rest (active/open use the theme color)
+    - `--b-app-sidebar-item-icon-color` - the item's color (ex: an app's color): its icon, and when open/active
+      the right bar and (active) background tint; defaults to the theme color when open/active
 */
 import { LitElement, html, css } from 'lit'
 import router from '../router'
@@ -46,9 +47,12 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
             display: block;
             flex-shrink: 0;
             color: var(--theme-text);
+            /* the item's color: its own (ex: app color) or the theme; used when open/active */
+            --item-color: var(--b-app-sidebar-item-icon-color, var(--b-app-sidebar-item-active-color, var(--theme)));
         }
 
         .item {
+            position: relative;
             display: flex;
             align-items: center;
             gap: .65rem;
@@ -76,9 +80,28 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
         }
 
         :host([active]) .item {
-            background: var(--b-app-sidebar-item-active-bgd, color-mix(in srgb, var(--theme) 14%, transparent));
+            background: var(--b-app-sidebar-item-active-bgd, color-mix(in srgb, var(--item-color) 16%, transparent));
             color: var(--theme-text);
             font-weight: 600;
+        }
+
+        /* open (on top or underneath): thin bar on the right in the item's color */
+        .item::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 22%;
+            bottom: 22%;
+            width: 3px;
+            border-radius: 3px;
+            background: var(--item-color);
+            opacity: 0;
+            transition: opacity 150ms;
+        }
+
+        :host([active]) .item::after,
+        :host([open]) .item::after {
+            opacity: 1;
         }
 
         .icon {
@@ -92,7 +115,7 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
 
         :host([active]) .icon,
         :host([open]) .icon {
-            color: var(--b-app-sidebar-item-active-color, var(--theme));
+            color: var(--item-color);
         }
 
         .icon b-icon {
