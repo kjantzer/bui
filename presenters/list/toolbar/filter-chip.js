@@ -4,7 +4,7 @@
     Click to change it (emits `open-filter`; see ./filters-view.js), ✕ to clear it
 */
 import { LitElement, html, css } from 'lit'
-import '../../../elements/text'
+import {unsafeHTML} from 'lit/directives/unsafe-html.js'
 
 customElements.define('b-list-filter-chip', class extends LitElement{
 
@@ -76,7 +76,7 @@ customElements.define('b-list-filter-chip', class extends LitElement{
 
     render(){return html`
         <span class="text" title=${this.filter.label+': '+stripTags(this.filter.valueLabel)} @click=${this.open}>
-            ${this.filter.label}: <b-text class="value" .html=${this.filter.valueLabel}></b-text>
+            ${this.filter.label}: <span class="value">${unsafeHTML(String(this.filter.valueLabel ?? ''))}</span>
         </span>
         <span class="clear" title="Clear" @click=${this.clear}><b-icon name="close"></b-icon></span>
     `}
