@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit'
+import {repeat} from 'lit/directives/repeat.js'
 import device from '../../../util/device'
 import './filter-btn'
 import './filter-saved-presets' // TODO: make this opt-in?
@@ -85,11 +86,11 @@ customElements.define('b-list-filters', class extends LitElement{
             @click=${()=>this.show()} tooltip="Filters (f)"
         >${this.filters.length?html`<span class="count">${this.filters.length}</span>`:''}</b-btn>
 
-        ${this.activeFilters.map(filter=>html`
+        ${repeat(this.activeFilters, filter=>filter.key, filter=>html`
             <b-list-filter-chip .filter=${filter} @open-filter=${()=>this.show({filter: filter.key})}></b-list-filter-chip>
         `)}
 
-        ${this.pinnedFilters.map(filter=>html`
+        ${repeat(this.pinnedFilters, filter=>filter.key, filter=>html`
             <b-list-filter-btn visible .filter=${filter}></b-list-filter-btn>
         `)}
     `}

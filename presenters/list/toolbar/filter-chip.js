@@ -8,6 +8,10 @@ import {unsafeHTML} from 'lit/directives/unsafe-html.js'
 
 customElements.define('b-list-filter-chip', class extends LitElement{
 
+    static properties = {
+        filter: {attribute: false}
+    }
+
     static styles = css`
         :host {
             display: inline-flex;
@@ -66,12 +70,25 @@ customElements.define('b-list-filter-chip', class extends LitElement{
     connectedCallback(){
         super.connectedCallback()
         this.refresh ||= ()=>this.requestUpdate()
-        this.filter?.on('change', this.refresh)
+        this.listenTo(this.filter)
     }
 
     disconnectedCallback(){
         super.disconnectedCallback()
-        this.filter?.off('change', this.refresh)
+        this.listenTo(null)
+    }
+
+    // (re-listen when given a different filter)
+    willUpdate(changed){
+        if( changed.has('filter') && this.isConnected )
+            this.listenTo(this.filter)
+    }
+
+    listenTo(filter){
+        if( this.__listening == filter ) return
+        this.__listening?.off('change', this.refresh)
+        this.__listening = filter
+        filter?.on('change', this.refresh)
     }
 
     render(){return html`
