@@ -734,7 +734,51 @@ customElements.define('b-menu', class extends LitElement{
 			?active=${this._active==i}
 			@selection-changed=${this.selectOptionsChanged.bind(this)}
             @click=${this.onClick}
+            @contextmenu=${this.onContextMenu}
+            @touchstart=${this.onTouchStart}
+            @touchmove=${this.cancelLongPress}
+            @touchend=${this.cancelLongPress}
 		></b-menu-item>`
+	}
+
+	// long-press (touch) does the same as right-click (iOS doesn't send `contextmenu`)
+	onTouchStart(e){
+		let target = e.currentTarget
+		this.cancelLongPress()
+		this._longPress = setTimeout(()=>{
+			this._longPress = null
+			if( this.onContextMenu({currentTarget: target, preventDefault(){}, stopPropagation(){}}) )
+				this._suppressClick = Date.now() // the tap that follows shouldn't also select it
+		}, 500)
+	}
+
+	cancelLongPress(){
+		clearTimeout(this._longPress)
+		this._longPress = null
+	}
+
+	// right-click an option with two selections (ex: Is / Not) to pick the second (like ctrl/cmd click)
+	onContextMenu(e){
+		let target = e.currentTarget
+		let index = target.getAttribute('index') ?? target.index
+		let data = this.displayMenu[index]
+
+		if( data?.selections?.length != 2 || data.disabled ) return
+
+		e.preventDefault()
+		e.stopPropagation()
+
+		let second = data.selections[1]
+		let val = second?.val ?? second
+
+		this.selectOptionsChanged({detail: {val, index}})
+
+		if( this.opts.multiple ){
+			target.classList.add('selected')
+			target.setValue?.(val)
+		}
+
+		return true
 	}
 
 	selectOptionsChanged(e){
@@ -758,6 +802,14 @@ customElements.define('b-menu', class extends LitElement{
 	}
 	
 	onClick(e){
+
+		// just picked with a long-press
+		if( this._suppressClick && Date.now() - this._suppressClick < 800 ){
+			this._suppressClick = null
+			e.stopPropagation()
+			e.preventDefault()
+			return
+		}
 		
 		let target = e.target
 		let shiftKey = e.detail?.shiftKey || e.shiftKey

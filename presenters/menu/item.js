@@ -251,7 +251,7 @@ customElements.define('b-menu-item', class extends LitElement{
 						val: selections[1]
 					}
 				
-				selections[1].description = 'ctrl/cmd click'
+				selections[1].description = 'right-click or ctrl/cmd click'
 			}
 				
 			
