@@ -167,8 +167,18 @@ export default class FiltersPopover extends LitElement {
             font-size: .9rem;
         }
 
-        header b-btn[icon]::part(main) {
-            padding: .45em;
+        /* icon btns: circles as tall as the search */
+        header .tools b-btn {
+            width: 2.1rem;
+            height: 2.1rem;
+        }
+
+        header .tools b-btn::part(main) {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            justify-content: center;
+            box-sizing: border-box;
         }
 
         header b-btn[active] {
@@ -179,7 +189,9 @@ export default class FiltersPopover extends LitElement {
         }
 
         .actions b-btn::part(main) {
-            padding: .45em 1em;
+            height: 2.1rem;
+            padding: 0 1em;
+            box-sizing: border-box;
         }
 
         /* (room for the sheet's grab handle) */
