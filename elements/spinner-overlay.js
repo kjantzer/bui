@@ -1,7 +1,19 @@
 import { LitElement, html, css } from 'lit';
 import './spinner'
 
+/*
+    # Spinner Overlay
+
+    Covers its parent while loading (ex: lists). An app can show its own spinner in place of `<b-spinner>`:
+
+    ```js
+    customElements.get('b-spinner-overlay').spinner = show=>html`<my-spinner ?spin=${show}></my-spinner>`
+    ```
+*/
 export class SpinnerOverlayElement extends LitElement {
+
+    // what spins (given if it's showing); see above to override
+    static spinner = show=>html`<b-spinner ?spin=${show}></b-spinner>`
 
     static get properties() { return {
         show: {type: Boolean, reflect: true},
@@ -97,14 +109,14 @@ export class SpinnerOverlayElement extends LitElement {
             opacity: 0;
         }
 
-		b-spinner {
+		main > :first-child {
 			font-size: var(--spinnerSize);
 		}
     `}
 
     render(){ return html`
 		<main>
-			<b-spinner ?spin=${this.show}></b-spinner>
+			${this.constructor.spinner(this.show)}
 			<label>${this.label}</label>
 		</main>
     `}
