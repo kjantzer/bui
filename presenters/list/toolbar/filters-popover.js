@@ -1,15 +1,17 @@
 /*
     List filters popover (a sheet on phones)
 
-    Every filter in one place: search (filter names and their values), saved filters and history,
-    filters grouped (`group` on the filter; others under "Filters") showing their current value.
-    Picking a filter shows its options beside the list (wide) or in place of it (narrow, with a back btn).
+    Every filter in one place. Left: saved filters and history, then the filters (grouped by their `group`,
+    others under "Filters") with their current value; the search finds filter names and their values.
+    Right: what's picked (or in place of the list when narrow, with a back btn).
 
-    Options are the filter's menu (multi select filters toggle; right-click for "Not" when it has two selections)
-    or its custom view (date, input, slider, search). Changes apply as they're made, unless queuing.
+    Options are the filter's menu (multi select filters toggle; right-click / long-press for "Not")
+    or its custom view (date, input, slider, search).
+
+    Changes are queued while it's open: the list updates on Apply (or closing it); Cancel puts them back
 
     ```js
-    FiltersPopover.open(filters, btn, {filter: 'type', queue: false})
+    FiltersPopover.open(filters, btn, {filter: 'type'})
     ```
 */
 import { LitElement, html, css } from 'lit'
@@ -17,9 +19,12 @@ import Menu from '../../menu'
 import Popover from '../../popover'
 import Panel from '../../panel'
 import device from '../../../util/device'
+import {label as dateRangeLabel} from '../../datepicker/daterange'
 import './filter-saved-presets'
 
 const NARROW = 520
+const PRESETS = '__presets'
+const HISTORY = '__history'
 
 export default class FiltersPopover extends LitElement {
 
@@ -28,34 +33,32 @@ export default class FiltersPopover extends LitElement {
         selectedKey: {type: String},
         narrow: {type: Boolean, reflect: true},
         sheet: {type: Boolean, reflect: true}, // shown as a bottom sheet (phones)
-        queue: {type: Boolean, reflect: true},
         loading: {type: Boolean}
     }
 
     // opens (or re-focuses) the filters for a list; `filter`: key of a filter to show first
-    static open(filters, target, {filter, queue=false}={}){
+    static open(filters, target, {filter}={}){
 
         let el = filters.__popover || new FiltersPopover()
         filters.__popover = el
         el.filters = filters
-        el.queue = queue
         el.query = ''
 
-        // show a filter's options right away: the one asked for, else (desktop) the first active one or the first one
+        // show something right away: the filter asked for, else (desktop) the first active one or the first one
         let key = filter || el.selectedKey
         if( !key && !device.isSmall ){
             let visible = el.visibleFilters
             key = (visible.find(f=>f.isActive) || visible[0])?.key
         }
         el.selectedKey = null
-        if( key && filters.get(key) ) el.select(filters.get(key))
+        if( key ) el.select(key)
 
         if( el.isOpen ){
             el.requestUpdate()
             return el
         }
 
-        if( queue ) el.startQueue()
+        el.startQueue()
 
         if( device.isSmall ){
             el.sheet = true
@@ -70,8 +73,8 @@ export default class FiltersPopover extends LitElement {
         }else{
             el.sheet = false
             new Popover(target, el, {
-                width: 'min(700px, 94vw)',
-                maxHeight: '75vh',
+                width: 'min(720px, 94vw)',
+                maxHeight: '78vh',
                 align: 'bottom-start',
                 overflowBoundry: 'window',
                 onClose: ()=>el.didClose()
@@ -93,7 +96,7 @@ export default class FiltersPopover extends LitElement {
         :host {
             display: grid;
             grid-template-rows: auto minmax(0, 1fr) auto;
-            height: min(560px, 75vh);
+            height: min(600px, 78vh);
             background: var(--theme-bgd);
             color: var(--theme-text);
         }
@@ -102,17 +105,17 @@ export default class FiltersPopover extends LitElement {
             height: 100%;
         }
 
-        /* (room for the sheet's grab handle) */
-        :host([sheet]) header {
-            padding-top: 1.1rem;
-        }
-
         header {
             display: flex;
             align-items: center;
             gap: .25rem;
-            padding: .5rem .5rem .5rem .75rem;
+            padding: .5rem .75rem;
             border-bottom: solid 1px var(--theme-bgd-accent);
+        }
+
+        /* (room for the sheet's grab handle) */
+        :host([sheet]) header {
+            padding-top: 1.1rem;
         }
 
         .search {
@@ -139,7 +142,7 @@ export default class FiltersPopover extends LitElement {
 
         .body {
             display: grid;
-            grid-template-columns: minmax(190px, 32%) minmax(0, 1fr);
+            grid-template-columns: minmax(230px, 42%) minmax(0, 1fr);
             min-height: 0;
         }
 
@@ -154,11 +157,11 @@ export default class FiltersPopover extends LitElement {
 
         .list {
             border-right: solid 1px var(--theme-bgd-accent);
-            padding-bottom: .5rem;
+            padding: .35rem 0 .5rem;
         }
 
         :host([narrow]) .list { border-right: none; }
-        :host([narrow]) .list[hidden], :host([narrow]) .detail[hidden] { display: none; }
+        .list[hidden] { display: none; }
 
         .group {
             padding: .75rem .9rem .3rem;
@@ -169,19 +172,26 @@ export default class FiltersPopover extends LitElement {
             color: var(--theme-text-accent);
         }
 
+        .sep {
+            height: 1px;
+            margin: .4rem .9rem;
+            background: var(--theme-bgd-accent);
+        }
+
+        /* a filter: its label, with the value under it when set */
         .item {
             display: flex;
             align-items: center;
-            gap: .5rem;
+            gap: .55rem;
             margin: 0 .35rem;
-            padding: .5rem .55rem;
+            padding: .45rem .55rem;
             border-radius: 8px;
             cursor: pointer;
             min-width: 0;
         }
 
         :host([sheet]) .item {
-            padding: .75rem .65rem;
+            padding: .7rem .65rem;
         }
 
         @media (hover) {
@@ -194,40 +204,52 @@ export default class FiltersPopover extends LitElement {
             background: color-mix(in srgb, var(--theme) 12%, transparent);
         }
 
-        .item .label {
-            flex: 1 1 auto;
-            min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        /* (the value gives up room first) */
-        .item .value {
-            flex: 0 1 auto;
-            max-width: 60%;
-            min-width: 0;
-            text-align: right;
-            font-size: .85em;
+        .item .icon {
+            flex-shrink: 0;
             color: var(--theme-text-accent);
+            font-size: .9em;
+        }
+
+        .item .text {
+            flex: 1;
+            min-width: 0;
+            display: grid;
+        }
+
+        .item .label,
+        .item .value {
+            min-width: 0;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        .item[active] .value {
+        .item .value {
+            font-size: .8em;
+            line-height: 1.3;
             color: var(--theme);
             font-weight: 600;
         }
 
+        .item .value.muted {
+            color: var(--theme-text-accent);
+            font-weight: 400;
+        }
+
         .item .chev {
+            flex-shrink: 0;
             color: var(--theme-text-accent);
             opacity: .6;
         }
 
-        .item b-icon.filter-icon {
-            color: var(--theme-text-accent);
-            font-size: .9em;
+        .item .dot {
+            display: inline-block;
+            width: .45em;
+            height: .45em;
+            margin-left: .3em;
+            border-radius: 50%;
+            background: var(--red, #e53935);
+            vertical-align: middle;
         }
 
         mark {
@@ -243,7 +265,7 @@ export default class FiltersPopover extends LitElement {
             color: var(--theme-text-accent);
         }
 
-        /* the picked filter's options */
+        /* what's picked */
         .detail {
             display: grid;
             grid-template-rows: auto minmax(0, 1fr);
@@ -253,8 +275,10 @@ export default class FiltersPopover extends LitElement {
             display: flex;
             align-items: center;
             gap: .35rem;
-            padding: .5rem .5rem .5rem .9rem;
+            min-height: 2.75rem;
+            padding: .25rem .5rem .25rem .9rem;
             border-bottom: solid 1px var(--theme-bgd-accent);
+            box-sizing: border-box;
         }
 
         :host([narrow]) .detail-head {
@@ -278,14 +302,16 @@ export default class FiltersPopover extends LitElement {
         }
 
         .detail-body b-menu {
-            --b-menu-max-height: none;
             max-height: none;
             overflow: visible;
         }
 
+        /* custom views fill the column (some set their own width for a popover) */
         .detail-body > :not(b-menu) {
             display: block;
-            padding: .5rem;
+            width: 100% !important;
+            max-width: none !important;
+            box-sizing: border-box;
         }
 
         footer {
@@ -298,15 +324,15 @@ export default class FiltersPopover extends LitElement {
 
         footer .grow { flex: 1; }
 
+        b-list-filters-saved { display: none; }
+
         :host([sheet]) footer {
             padding-bottom: calc(.6rem + env(safe-area-inset-bottom, 0px));
         }
 
-        :host([sheet]) footer .show {
+        :host([sheet]) footer .apply {
             flex: 1;
         }
-
-        footer[hidden] { display: none; }
     `
 
     connectedCallback(){
@@ -319,6 +345,15 @@ export default class FiltersPopover extends LitElement {
             this.narrow = this.sheet || this.offsetWidth < NARROW
         })
         this.resizeObserver.observe(this)
+    }
+
+    // re-render as the saved filters load / change (the hidden <b-list-filters-saved> tracks them)
+    updated(){
+        let el = this.presetsEl
+        if( el && el != this.__presetsEl ){
+            this.__presetsEl = el
+            el.coll.on('update reset sync change', this.onChange)
+        }
     }
 
     disconnectedCallback(){
@@ -334,9 +369,10 @@ export default class FiltersPopover extends LitElement {
         else this.popOver?._close()
     }
 
+    // closing (Apply, or clicking outside) applies the changes; Cancel puts them back first
     didClose(){
         this.applyCustomView()
-        if( this.queue ) this.applyQueue()
+        this.applyQueue()
         this.isOpen = false
     }
 
@@ -355,17 +391,20 @@ export default class FiltersPopover extends LitElement {
         return groups
     }
 
-    get selected(){
+    get selectedFilter(){
         return this.selectedKey && this.filters.get(this.selectedKey)
     }
 
-    get resultCount(){
-        return this.filters.list?.toolbar?.count
+    get hasPresets(){ return this.filters.opts?.presets !== false }
+
+    // (rendered hidden: tracks the saved presets and which one is applied)
+    get presetsEl(){
+        return this.renderRoot?.querySelector('b-list-filters-saved')
     }
 
     render(){
-        let selected = this.selected
-        let showList = !this.narrow || !selected
+        let picked = this.selectedKey
+        let showList = !this.narrow || !picked
 
         return html`
             <header>
@@ -374,36 +413,37 @@ export default class FiltersPopover extends LitElement {
                     <input type="text" placeholder="Find a filter or value" .value=${this.query}
                         @input=${e=>this.query=e.target.value} @keydown=${this.onSearchKey}>
                 </label>
-
-                ${this.filters.opts?.presets!==false?html`
-                    <b-list-filters-saved .filters=${this.filters}></b-list-filters-saved>
-                    <b-btn text icon="history" title="Filter history" @click=${this.viewHistory}></b-btn>
-                `:''}
-
                 <b-btn text sm @click=${this.clearAll} ?disabled=${!this.filters.length}>Clear all</b-btn>
             </header>
 
             <div class="body">
                 <div class="list" ?hidden=${!showList}>
-                    ${this.query ? this.renderSearch() : this.renderGroups()}
+                    ${this.query ? this.renderSearch() : html`
+                        ${this.hasPresets?html`
+                            ${this.renderPresetsItem()}
+                            ${this.renderHistoryItem()}
+                            <div class="sep"></div>
+                        `:''}
+                        ${this.renderGroups()}
+                    `}
                 </div>
 
-                ${selected ? this.renderDetail(selected) : this.narrow ? '' : html`
+                ${picked == PRESETS ? this.renderPresets()
+                : picked == HISTORY ? this.renderHistory()
+                : this.selectedFilter ? this.renderDetail(this.selectedFilter)
+                : this.narrow ? '' : html`
                     <div class="detail"><div class="empty">Pick a filter to see its options</div></div>
                 `}
             </div>
 
-            <footer ?hidden=${!this.queue && !this.sheet}>
-                ${this.queue?html`
-                    <b-text sm muted class="grow">Changes apply when you’re done</b-text>
-                    <b-btn text @click=${this.cancelQueue}>Cancel</b-btn>
-                    <b-btn color="theme" @click=${this.close}>Apply</b-btn>
-                `:html`
-                    <b-btn color="theme" class="show" @click=${this.close}>
-                        ${this.resultCount != null ? `Show ${Number(this.resultCount).toLocaleString()} results` : 'Done'}
-                    </b-btn>
-                `}
+            <footer>
+                ${this.sheet?'':html`<b-text sm muted class="grow">The list updates when you apply</b-text>`}
+                <b-btn text @click=${this.cancel}>Cancel</b-btn>
+                <b-btn color="theme" class="apply" @click=${this.close}>Apply</b-btn>
             </footer>
+
+            ${this.hasPresets?html`<b-list-filters-saved hidden .filters=${this.filters}
+                @click=${e=>e.stopPropagation()}></b-list-filters-saved>`:''}
         `
     }
 
@@ -419,11 +459,42 @@ export default class FiltersPopover extends LitElement {
     renderItem(filter, {label}={}){
         let active = filter.isActive
         return html`
-            <div class="item" ?selected=${filter.key==this.selectedKey} ?active=${active}
-                @click=${()=>this.select(filter)}>
-                ${filter.icon?html`<b-icon class="filter-icon" name=${filter.icon}></b-icon>`:''}
-                <span class="label">${label || filter.label}</span>
-                <span class="value">${active?html`<b-text .html=${filter.valueLabel}></b-text>`:'Any'}</span>
+            <div class="item" ?selected=${filter.key==this.selectedKey} @click=${()=>this.select(filter.key)}>
+                ${filter.icon?html`<b-icon class="icon" name=${filter.icon}></b-icon>`:''}
+                <span class="text">
+                    <span class="label">${label || filter.label}</span>
+                    ${active?html`<span class="value"><b-text .html=${filter.valueLabel}></b-text></span>`:''}
+                </span>
+                <b-icon name="chevron_right" class="chev"></b-icon>
+            </div>
+        `
+    }
+
+    renderPresetsItem(){
+        let el = this.presetsEl
+        let active = el?.model?.get('name')
+        return html`
+            <div class="item" ?selected=${this.selectedKey==PRESETS} @click=${()=>this.select(PRESETS)}>
+                <b-icon class="icon" name="filter_presets"></b-icon>
+                <span class="text">
+                    <span class="label">Saved Filters${el?.changed?html`<span class="dot" title="Changed since applied"></span>`:''}</span>
+                    ${active?html`<span class="value">${active}</span>`
+                        :el?.coll?.length?html`<span class="value muted">${el.coll.length} saved</span>`:''}
+                </span>
+                <b-icon name="chevron_right" class="chev"></b-icon>
+            </div>
+        `
+    }
+
+    renderHistoryItem(){
+        let count = this.filters.history?.size || 0
+        return html`
+            <div class="item" ?selected=${this.selectedKey==HISTORY} @click=${()=>this.select(HISTORY)}>
+                <b-icon class="icon" name="history"></b-icon>
+                <span class="text">
+                    <span class="label">History</span>
+                    ${count?html`<span class="value muted">${count} recent</span>`:''}
+                </span>
                 <b-icon name="chevron_right" class="chev"></b-icon>
             </div>
         `
@@ -447,10 +518,8 @@ export default class FiltersPopover extends LitElement {
                 <div class="group">Values</div>
                 ${byValue.map(({filter, value})=>html`
                     <div class="item" @click=${()=>this.pickValue(filter, value)}>
-                        <span class="label" style="max-width: none; flex: 1">
-                            <b-text muted>${filter.label} →</b-text> ${highlight(value.label, q)}
-                        </span>
-                        ${isSelectedValue(filter, value)?html`<b-icon name="check" style="color: var(--theme)"></b-icon>`:''}
+                        <span class="text"><span class="label"><b-text muted>${filter.label} →</b-text> ${highlight(value.label, q)}</span></span>
+                        ${isSelectedValue(filter, value)?html`<b-icon name="check" class="chev" style="color: var(--theme); opacity: 1"></b-icon>`:''}
                     </div>
                 `)}
             `:''}
@@ -474,15 +543,22 @@ export default class FiltersPopover extends LitElement {
         return matches
     }
 
+    renderDetailHead(title, {hint, clear}={}){return html`
+        <div class="detail-head">
+            ${this.narrow?html`<b-btn text icon="chevron_left" @click=${this.back}></b-btn>`:''}
+            <span class="title">${title}</span>
+            ${hint?html`<span class="hint">${hint}</span>`:''}
+            ${clear||''}
+        </div>
+    `}
+
     renderDetail(filter){
         return html`
             <div class="detail">
-                <div class="detail-head">
-                    ${this.narrow?html`<b-btn text icon="chevron_left" @click=${this.back}></b-btn>`:''}
-                    <span class="title">${filter.label}</span>
-                    ${this.hasNot(filter)?html`<span class="hint">${device.isTouch?'Hold':'Right-click'} for “Not”</span>`:''}
-                    <b-btn text sm ?disabled=${!filter.isActive} @click=${()=>this.clearFilter(filter)}>Clear</b-btn>
-                </div>
+                ${this.renderDetailHead(filter.label, {
+                    hint: this.hasNot(filter) ? `${device.isTouch?'Hold':'Right-click'} for “Not”` : '',
+                    clear: html`<b-btn text sm ?disabled=${!filter.isActive} @click=${()=>this.clearFilter(filter)}>Clear</b-btn>`
+                })}
                 <div class="detail-body">
                     ${this.loading ? html`<div class="empty"><b-spinner></b-spinner></div>`
                         : filter.isCustomView ? this.customViewFor(filter)
@@ -498,23 +574,58 @@ export default class FiltersPopover extends LitElement {
         try{ return filter.values.some(v=>v?.selections?.length == 2) }catch(err){ return false }
     }
 
-    async select(filter){
-        if( filter.key == this.selectedKey && !this.narrow ) return
+    async select(key){
+        if( key == this.selectedKey && !this.narrow ) return
 
         this.applyCustomView()
-        this.selectedKey = filter.key
+        this.selectedKey = key
 
-        if( filter.attrs.onFirstLoad ){
+        let filter = this.filters.get(key)
+        if( filter?.attrs.onFirstLoad ){
             this.loading = true
             try{ await filter.attrs.onFirstLoad.call(this.filters.list, filter) }
             finally{ this.loading = false }
-            delete this.menus[filter.key] // its values may have changed
+            delete this.menus[key] // its values may have changed
         }
     }
 
     back(){
         this.applyCustomView()
         this.selectedKey = null
+    }
+
+    /*
+        Saved filters (presets) and history
+    */
+    renderPresets(){
+        let el = this.presetsEl
+        let menu = el ? new Menu(el.buildMenu(), {
+            search: el.coll.length > 8 ? {placeholder: 'Find a saved filter'} : false,
+            handler: el, // save / update actions
+            onSelect: selected=>{ if( !selected.fn ) el.applyPreset(selected) }
+        }) : ''
+
+        return html`
+            <div class="detail">
+                ${this.renderDetailHead('Saved Filters', {hint: 'Shift+click to merge'})}
+                <div class="detail-body">${menu}</div>
+            </div>
+        `
+    }
+
+    renderHistory(){
+        let menu = historyMenu(this.filters)
+        return html`
+            <div class="detail">
+                ${this.renderDetailHead('History', {hint: 'Filters you’ve used'})}
+                <div class="detail-body">
+                    ${menu.length ? new Menu(menu, {
+                        search: menu.length > 10 ? {placeholder: 'Search history'} : false,
+                        onSelect: selected=>this.filters.reset(selected.filters, {stopQueuing: false})
+                    }) : html`<div class="empty">No filters used yet</div>`}
+                </div>
+            </div>
+        `
     }
 
     /*
@@ -576,7 +687,7 @@ export default class FiltersPopover extends LitElement {
             filter.value = entry
 
         this.query = ''
-        this.select(filter)
+        this.select(filter.key)
     }
 
     /*
@@ -591,7 +702,7 @@ export default class FiltersPopover extends LitElement {
         return view
     }
 
-    applyCustomView(filter=this.selected){
+    applyCustomView(filter=this.selectedFilter){
         if( !filter?.isCustomView || !filter.customView ) return
         let view = filter.customView
         if( JSON.stringify(view.value ?? null) != JSON.stringify(filter.value ?? null) )
@@ -617,7 +728,7 @@ export default class FiltersPopover extends LitElement {
     }
 
     /*
-        Queue: changes apply together when done
+        Queue: the list updates when done
     */
     startQueue(){
         this.__originalFilters = this.filters.value()
@@ -627,20 +738,60 @@ export default class FiltersPopover extends LitElement {
     applyQueue(){
         delete this.__originalFilters
         this.filters.queuing = false
-        this.queue = false
     }
 
-    cancelQueue(){
+    cancel(){
+        this.applyCustomView = ()=>{} // (don't apply a custom view's edits on the way out)
         if( this.__originalFilters )
             this.filters.reset(this.__originalFilters, {stopQueuing: false})
+        this.filters.queuedChanges = null // nothing to apply
         this.menus = {}
-        this.applyQueue()
         this.close()
+        delete this.applyCustomView
+    }
+}
+
+// the filters' history as menu items (newest first, by day)
+export function historyMenu(filters){
+    let history = filters?.history.map((d, name)=>{
+
+        let vals = name.split('|').map(s=>{
+            let vals = s.split(':')
+            let label = vals.shift()
+            let val = vals.join(':').trim()
+            return {label, val}
+        })
+
+        return {
+            ...d,
+            label: html`
+                <b-flex left wrap gap-row=" ">
+                ${vals.map(({label, val})=>html`
+                    <b-text>
+                        <b-text semibold>${label}</b-text>
+                        <b-text dim><b-text .html=${val}></b-text></b-text>
+                    </b-text>
+                `)}
+                </b-flex>
+            `,
+            dataTitle: vals.map(({label, val})=>`${label}: ${val}`).join(' | ')
+        }
+
+    }).reverse() || []
+
+    let menu = []
+    let divider = ''
+
+    for( let d of history ){
+        let dateLabel = dateRangeLabel(d.ts, d.ts, {monthDay: false})
+        if( dateLabel != divider ){
+            divider = dateLabel
+            menu.push({divider: dateLabel})
+        }
+        menu.push(d)
     }
 
-    viewHistory(e){
-        this.filters.list?.toolbar?.shadowRoot?.querySelector('b-list-filters')?.viewHistory(e)
-    }
+    return menu
 }
 
 function highlight(label, q){

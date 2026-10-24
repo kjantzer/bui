@@ -158,6 +158,20 @@ customElements.define('b-list-filters-saved', class extends LitElement{
 
     async showMenu(){
 
+        let selected = await new Menu(this.buildMenu(), {
+            search: this.coll.length>5?{placeholder: 'Find preset...'}:false,
+            width: '400px', 
+            handler: this
+        }).popOver(this)
+
+        if( !selected ) return
+
+        this.applyPreset(selected)
+    }
+
+    // menu items: the active preset, save/update actions, then the other presets (also shown in the filters popover)
+    buildMenu(){
+
         let menu = this.coll.map(m=>{
             return {
                 toolbarLabel: m.get('name'),
@@ -206,20 +220,19 @@ customElements.define('b-list-filters-saved', class extends LitElement{
         }
 
         if( menu.length == 0 )
-            menu.push({text: html`<b-text body>No filter presets avilable.<br>Apply some filters to create a new preset.</b-text>`, bgd: false})
+            menu.push({text: html`<b-text body>No saved filters yet.<br>Set some filters, then save them here.</b-text>`, bgd: false})
 
-        let selected = await new Menu(menu, {
-            search: this.coll.length>5?{placeholder: 'Find preset...'}:false,
-            width: '400px', 
-            handler: this
-        }).popOver(this)
+        return menu
+    }
 
-        if( !selected ) return
+    // replaces the filters with the preset (shift: merges it in)
+    applyPreset(selected){
+        if( !selected?.model ) return
 
-        if( !selected.evt.shiftKey )
+        if( !selected.evt?.shiftKey )
             this.model = selected.model
 
-        this.filters[selected.evt.shiftKey?'update':'reset'](selected.model.get('filters'), {stopQueuing: false})
+        this.filters[selected.evt?.shiftKey?'update':'reset'](selected.model.get('filters'), {stopQueuing: false})
 
         // track how many times used
         selected.model.saveSync({use_count: selected.model.get('use_count')+1}, {patch: true})

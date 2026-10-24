@@ -7,9 +7,8 @@ import Menu from '../../../presenters/menu'
 import {dataTransfer} from '../../../elements/dragdrop'
 import readFile from '../../../util/readFile'
 import '../../../elements/uploader'
-import FiltersPopover from './filters-popover'
+import FiltersPopover, {historyMenu} from './filters-popover'
 import './filter-chip'
-import {label as dateRangeLabel} from '../../datepicker/daterange'
 
 /*
     List filters in the toolbar
@@ -18,7 +17,7 @@ import {label as dateRangeLabel} from '../../datepicker/daterange'
     - a chip for each active filter (click to change it, ✕ to clear it)
     - pinned filters as quick dropdowns: only for lists that opt in (`options: {pins: true}`), their filters with `show: true`
 
-    Keyboard: `f` opens the filters, `shift+f` opens them queued (changes apply when done), `c` clears
+    Keyboard: `f` opens the filters (changes apply when it's closed), `c` clears
 */
 customElements.define('b-list-filters', class extends LitElement{
 
@@ -32,7 +31,6 @@ customElements.define('b-list-filters', class extends LitElement{
         this.show = this.show.bind(this)
         this.hide = this.hide.bind(this)
         this.onFilterChange = this.onFilterChange.bind(this)
-        this.onQueuing = n=>{ this.queuing = n || undefined }
     }
 
     static get styles(){return css`
@@ -84,8 +82,7 @@ customElements.define('b-list-filters', class extends LitElement{
         <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
         <b-btn icon="filter" text lg class="filters-btn" ?hidden=${this.filters.size==0}
-            @click=${()=>this.show()} @contextmenu=${this.options}
-            tooltip="Filters ('f'; 'shift+f' or right-click to queue changes)"
+            @click=${()=>this.show()} tooltip="Filters (f)"
         >${this.filters.length?html`<span class="count">${this.filters.length}</span>`:''}</b-btn>
 
         ${this.activeFilters.map(filter=>html`
@@ -95,30 +92,21 @@ customElements.define('b-list-filters', class extends LitElement{
         ${this.pinnedFilters.map(filter=>html`
             <b-list-filter-btn visible .filter=${filter}></b-list-filter-btn>
         `)}
-
-        <b-btn icon="layers" ?hidden=${!this.queuing} title="Apply queued filters" clear lg noshrink
-            @click=${this.applyQueuedFilters}>${this.queuing}</b-btn>
     `}
 
     get popover(){ return this.filters.__popover }
 
-    show({queue=false, filter}={}){
-        FiltersPopover.open(this.filters, this.$$('.filters-btn') || this, {queue, filter})
+    // (changes are queued while it's open; see ./filters-popover.js)
+    show({filter}={}){
+        FiltersPopover.open(this.filters, this.$$('.filters-btn') || this, {filter})
     }
 
     hide(){
         if( this.popover?.isOpen ) this.popover.close()
     }
 
-    toggle(e){
-        this.popover?.isOpen ? this.hide() : this.show({queue: e?.metaKey || e?.ctrlKey})
-    }
-
-    // right-click: open with changes queued
-    options(e){
-        e.stopPropagation()
-        e.preventDefault()
-        this.show({queue: true})
+    toggle(){
+        this.popover?.isOpen ? this.hide() : this.show()
     }
 
     onDrag(e){
@@ -184,7 +172,6 @@ customElements.define('b-list-filters', class extends LitElement{
         if( this.filters ){
             this.filters.on('show', this.show)
             this.filters.on('hide', this.hide)
-            this.filters.on('queuing', this.onQueuing)
             this.filters.on('change', this.onFilterChange)
             this.filters.on('reset', this.onFilterChange)
         }
@@ -197,7 +184,6 @@ customElements.define('b-list-filters', class extends LitElement{
         if( this.filters ){
             this.filters.off('show', this.show)
             this.filters.off('hide', this.hide)
-            this.filters.off('queuing', this.onQueuing)
             this.filters.off('change', this.onFilterChange)
             this.filters.off('reset', this.onFilterChange)
         }
@@ -217,55 +203,12 @@ customElements.define('b-list-filters', class extends LitElement{
 
 
     async viewHistory(e){
-        
-        let history = this.filters?.history.map((d, name)=>{
-
-            let vals = name.split('|').map((s,i)=>{
-                    
-                let vals = s.split(':')
-                let label = vals.shift()
-                let val = vals.join(':').trim()
-
-                return {label, val}
-            })
-
-            return {
-                ...d,
-                label: html`
-                    <b-flex left wrap gap-row=" ">
-                    ${vals.map(({label, val})=>html`
-                        <b-text>
-                            <b-text semibold>${label}</b-text>
-                            <b-text dim><b-text .html=${val}></b-text></b-text>
-                        </b-text>
-                    `)}
-                    </b-flex>
-                `,
-                dataTitle: vals.map(({label, val})=>`${label}: ${val}`).join(' | ')
-            }
-
-        }).reverse() // newest first
-
-        let menu = []
-        let divider = ''
-
-        for( let d of history ){
-            let dateLabel = dateRangeLabel(d.ts, d.ts, {monthDay: false})
-            if( dateLabel != divider ){
-                divider = dateLabel
-                menu.push({divider: dateLabel})
-            }
-            menu.push(d)
-        }
-
-        let selected = await new Menu(menu, {
+        let selected = await new Menu(historyMenu(this.filters), {
             search: {placeholder: 'Filter history...'}
         }).popOver(e.currentTarget, {width: '800px', overflowBoundry: 'window'})
 
-        if( !selected ) return
-
-        // this.filters.queuing = true
-        this.filters.reset(selected.filters, {stopQueuing: false})
+        if( selected )
+            this.filters.reset(selected.filters, {stopQueuing: false})
     }
 
 })
