@@ -143,11 +143,43 @@ export default class FiltersPopover extends LitElement {
             pointer-events: none;
         }
 
-        .actions {
+        /* one family: pills the same height as the search */
+        header {
+            --b-btn-height: 2.1rem;
+        }
+
+        .tools, .actions {
             display: flex;
             align-items: center;
+            gap: .15rem;
+            flex-shrink: 0;
+        }
+
+        /* a thin line between the tools and Cancel / Apply */
+        .actions {
             gap: .35rem;
-            margin-left: .5rem;
+            margin-left: .35rem;
+            padding-left: .6rem;
+            border-left: solid 1px var(--theme-bgd-accent);
+        }
+
+        header b-btn {
+            font-size: .9rem;
+        }
+
+        header b-btn[icon]::part(main) {
+            padding: .45em;
+        }
+
+        header b-btn[active] {
+            color: var(--theme);
+            --hoverBgdColor: color-mix(in srgb, var(--theme) 14%, transparent);
+            background: color-mix(in srgb, var(--theme) 14%, transparent);
+            border-radius: 2em;
+        }
+
+        .actions b-btn::part(main) {
+            padding: .45em 1em;
         }
 
         /* (room for the sheet's grab handle) */
@@ -158,11 +190,13 @@ export default class FiltersPopover extends LitElement {
         .search {
             flex: 1;
             min-width: 0;
+            height: 2.1rem;
+            box-sizing: border-box;
             display: flex;
             align-items: center;
             gap: .4rem;
-            padding: .35rem .65rem;
-            border-radius: 8px;
+            padding: 0 .85rem;
+            border-radius: 2em;
             background: var(--theme-bgd-accent);
             color: var(--theme-text-accent);
         }
@@ -445,16 +479,18 @@ export default class FiltersPopover extends LitElement {
                     <input type="text" placeholder="Find a filter or value" .value=${this.query}
                         @input=${this.onSearchInput} @keydown=${this.onSearchKey}>
                 </label>
-                ${this.hasPresets?html`
-                    ${this.renderPresetsBtn()}
-                    <b-btn clear icon="history" title="History" color=${picked==HISTORY?'theme':''}
-                        @click=${()=>this.select(HISTORY)}></b-btn>
-                `:''}
-                <b-btn clear icon="backspace" title="Clear all filters" @click=${this.clearAll}
-                    ?disabled=${!this.filters.length}></b-btn>
+                <span class="tools">
+                    ${this.hasPresets?html`
+                        ${this.renderPresetsBtn()}
+                        <b-btn clear pill icon="history" title="History" ?active=${picked==HISTORY}
+                            @click=${()=>this.select(HISTORY)}></b-btn>
+                    `:''}
+                    <b-btn clear pill icon="backspace" title="Clear all filters" @click=${this.clearAll}
+                        ?disabled=${!this.filters.length}></b-btn>
+                </span>
                 <span class="actions">
-                    <b-btn text @click=${this.cancel}>Cancel</b-btn>
-                    <b-btn color="theme" class="apply" title="The list updates when you apply" @click=${this.close}>Apply</b-btn>
+                    <b-btn clear pill @click=${this.cancel}>Cancel</b-btn>
+                    <b-btn pill color="theme" class="apply" title="The list updates when you apply" @click=${this.close}>Apply</b-btn>
                 </span>
             </header>
 
@@ -507,7 +543,7 @@ export default class FiltersPopover extends LitElement {
         let title = active ? `Saved Filters: ${active}` : el?.coll?.length ? `Saved Filters (${el.coll.length})` : 'Saved Filters'
         return html`
             <span class="tool">
-                <b-btn clear icon="filter_presets" title=${title} color=${this.selectedKey==PRESETS?'theme':''}
+                <b-btn clear pill icon="filter_presets" title=${title} ?active=${this.selectedKey==PRESETS}
                     @click=${()=>this.select(PRESETS)}></b-btn>
                 ${el?.changed?html`<span class="dot" title="Changed since applied"></span>`:''}
             </span>
@@ -590,7 +626,7 @@ export default class FiltersPopover extends LitElement {
             <div class="detail">
                 ${this.renderDetailHead(filter.label, {
                     hint: this.hasNot(filter) ? `${device.isTouch?'Hold':'Right-click'} for “Not”` : '',
-                    clear: html`<b-btn clear icon="backspace" title="Clear ${filter.label}" ?disabled=${!filter.isActive}
+                    clear: html`<b-btn clear pill icon="backspace" title="Clear ${filter.label}" ?disabled=${!filter.isActive}
                         @click=${()=>this.clearFilter(filter)}></b-btn>`
                 })}
                 <div class="detail-body">
