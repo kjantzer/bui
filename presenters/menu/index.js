@@ -140,10 +140,14 @@ customElements.define('b-menu', class extends LitElement{
 			padding-bottom: .5em;
 		}
 
+        /* sticky: stays in view when the menu is inline in something that scrolls (ex: list filters popover) */
         .menu-search-bar {
             flex-shrink: 0;
             display: flex;
-            position: relative;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: var(--b-menu-bgd, var(--theme-bgd));
             font-size: var(--b-menu-input-font-size, 1.1rem);
             border-bottom: solid 1px var(--theme-bgd-accent);
         }
@@ -317,6 +321,11 @@ customElements.define('b-menu', class extends LitElement{
 		
 		if( this.opts.maxW )
 			this.style.maxWidth = this.opts.maxW
+
+		// inline (not shown by a popover/dialog, which forward their keys): handle keys here (ex: search)
+		this.addEventListener('keydown', e=>{
+			if( !this.presenter ) this.onKeydown(e)
+		})
 		
 		if( this.opts.width )
 			this.style.width = this.opts.width
