@@ -81,7 +81,7 @@ customElements.define('b-list-filters', class extends LitElement{
         <b-dragdrop @dragged=${this.onDrag}>Export</b-dragdrop>
         <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
-        <b-btn icon="filter" text lg class="filters-btn" ?hidden=${this.filters.size==0}
+        <b-btn icon="filter" text lg pill class="filters-btn" ?hidden=${this.filters.size==0}
             @click=${()=>this.show()} tooltip="Filters (f)"
         >${this.filters.length?html`<span class="count">${this.filters.length}</span>`:''}</b-btn>
 
