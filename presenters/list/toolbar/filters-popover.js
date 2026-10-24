@@ -1,9 +1,12 @@
 /*
     List filters popover (a sheet on phones)
 
-    Every filter in one place. Left: saved filters and history, then the filters (grouped by their `group`,
-    others under "Filters") with their current value; the search finds filter names and their values.
-    Right: what's picked (or in place of the list when narrow, with a back btn).
+    Every filter in one place. Header: search, saved filters and history (shown in the right column),
+    clear all, Cancel / Apply. Left: the filters (grouped by their `group`, others under "Filters") with their
+    current value; the search finds filter names and their values. Right: what's picked (or in place of the
+    list when narrow, with a back btn).
+
+    The search is focused when it opens; up/down move through the left column and enter picks.
 
     Options are the filter's menu (multi select filters toggle; right-click / long-press for "Not")
     or its custom view (date, input, slider, search).
@@ -31,6 +34,8 @@ export default class FiltersPopover extends LitElement {
     static properties = {
         query: {type: String},
         selectedKey: {type: String},
+        highlight: {type: Number}, // index of the left column item the arrow keys are on
+        keyNav: {type: Boolean}, // the arrow keys / search are being used (shows the highlight)
         narrow: {type: Boolean, reflect: true},
         sheet: {type: Boolean, reflect: true}, // shown as a bottom sheet (phones)
         loading: {type: Boolean}
@@ -51,10 +56,13 @@ export default class FiltersPopover extends LitElement {
             key = (visible.find(f=>f.isActive) || visible[0])?.key
         }
         el.selectedKey = null
+        el.keyNav = false
         if( key ) el.select(key)
+        el.highlight = Math.max(0, el.navItems.findIndex(item=>item.key == key))
 
         if( el.isOpen ){
             el.requestUpdate()
+            el.focusSearch()
             return el
         }
 
@@ -82,7 +90,15 @@ export default class FiltersPopover extends LitElement {
         }
 
         el.isOpen = true
+        el.focusSearch()
         return el
+    }
+
+    // (not on phones: the keyboard would cover the sheet)
+    async focusSearch(){
+        if( this.sheet ) return
+        await this.updateComplete
+        requestAnimationFrame(()=>this.renderRoot.querySelector('header input')?.focus({preventScroll: true}))
     }
 
     constructor(){
@@ -95,7 +111,7 @@ export default class FiltersPopover extends LitElement {
     static styles = css`
         :host {
             display: grid;
-            grid-template-rows: auto minmax(0, 1fr) auto;
+            grid-template-rows: auto minmax(0, 1fr);
             height: min(600px, 78vh);
             background: var(--theme-bgd);
             color: var(--theme-text);
@@ -111,6 +127,27 @@ export default class FiltersPopover extends LitElement {
             gap: .25rem;
             padding: .5rem .75rem;
             border-bottom: solid 1px var(--theme-bgd-accent);
+        }
+
+        /* saved filters / history: selected while the right column shows them */
+        .tool {
+            position: relative;
+            display: inline-flex;
+        }
+
+        .tool .dot {
+            position: absolute;
+            top: .3em;
+            right: .3em;
+            margin: 0;
+            pointer-events: none;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            margin-left: .5rem;
         }
 
         /* (room for the sheet's grab handle) */
@@ -204,6 +241,11 @@ export default class FiltersPopover extends LitElement {
             background: color-mix(in srgb, var(--theme) 12%, transparent);
         }
 
+        /* where the arrow keys are (enter picks it) */
+        .item[highlight] {
+            box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--theme) 45%, transparent);
+        }
+
         .item .icon {
             flex-shrink: 0;
             color: var(--theme-text-accent);
@@ -242,7 +284,7 @@ export default class FiltersPopover extends LitElement {
             opacity: .6;
         }
 
-        .item .dot {
+        .dot {
             display: inline-block;
             width: .45em;
             height: .45em;
@@ -314,24 +356,11 @@ export default class FiltersPopover extends LitElement {
             box-sizing: border-box;
         }
 
-        footer {
-            display: flex;
-            align-items: center;
-            gap: .5rem;
-            padding: .6rem .75rem;
-            border-top: solid 1px var(--theme-bgd-accent);
-        }
-
-        footer .grow { flex: 1; }
-
         b-list-filters-saved { display: none; }
 
-        :host([sheet]) footer {
-            padding-bottom: calc(.6rem + env(safe-area-inset-bottom, 0px));
-        }
-
-        :host([sheet]) footer .apply {
-            flex: 1;
+        :host([sheet]) .list,
+        :host([sheet]) .detail-body {
+            padding-bottom: env(safe-area-inset-bottom, 0px);
         }
     `
 
@@ -348,12 +377,15 @@ export default class FiltersPopover extends LitElement {
     }
 
     // re-render as the saved filters load / change (the hidden <b-list-filters-saved> tracks them)
-    updated(){
+    updated(changed){
         let el = this.presetsEl
         if( el && el != this.__presetsEl ){
             this.__presetsEl = el
             el.coll.on('update reset sync change', this.onChange)
         }
+
+        if( this.keyNav && changed.has('highlight') )
+            this.renderRoot.querySelector('.item[highlight]')?.scrollIntoView({block: 'nearest'})
     }
 
     disconnectedCallback(){
@@ -411,21 +443,24 @@ export default class FiltersPopover extends LitElement {
                 <label class="search">
                     <b-icon name="search"></b-icon>
                     <input type="text" placeholder="Find a filter or value" .value=${this.query}
-                        @input=${e=>this.query=e.target.value} @keydown=${this.onSearchKey}>
+                        @input=${this.onSearchInput} @keydown=${this.onSearchKey}>
                 </label>
-                <b-btn text sm @click=${this.clearAll} ?disabled=${!this.filters.length}>Clear all</b-btn>
+                ${this.hasPresets?html`
+                    ${this.renderPresetsBtn()}
+                    <b-btn clear icon="history" title="History" color=${picked==HISTORY?'theme':''}
+                        @click=${()=>this.select(HISTORY)}></b-btn>
+                `:''}
+                <b-btn clear icon="backspace" title="Clear all filters" @click=${this.clearAll}
+                    ?disabled=${!this.filters.length}></b-btn>
+                <span class="actions">
+                    <b-btn text @click=${this.cancel}>Cancel</b-btn>
+                    <b-btn color="theme" class="apply" title="The list updates when you apply" @click=${this.close}>Apply</b-btn>
+                </span>
             </header>
 
             <div class="body">
                 <div class="list" ?hidden=${!showList}>
-                    ${this.query ? this.renderSearch() : html`
-                        ${this.hasPresets?html`
-                            ${this.renderPresetsItem()}
-                            ${this.renderHistoryItem()}
-                            <div class="sep"></div>
-                        `:''}
-                        ${this.renderGroups()}
-                    `}
+                    ${this.query ? this.renderSearch() : this.renderGroups()}
                 </div>
 
                 ${picked == PRESETS ? this.renderPresets()
@@ -436,12 +471,6 @@ export default class FiltersPopover extends LitElement {
                 `}
             </div>
 
-            <footer>
-                ${this.sheet?'':html`<b-text sm muted class="grow">The list updates when you apply</b-text>`}
-                <b-btn text @click=${this.cancel}>Cancel</b-btn>
-                <b-btn color="theme" class="apply" @click=${this.close}>Apply</b-btn>
-            </footer>
-
             ${this.hasPresets?html`<b-list-filters-saved hidden .filters=${this.filters}
                 @click=${e=>e.stopPropagation()}></b-list-filters-saved>`:''}
         `
@@ -450,16 +479,18 @@ export default class FiltersPopover extends LitElement {
     renderGroups(){
         let groups = [...this.groups]
         let single = groups.length == 1
+        let i = 0
         return groups.map(([name, filters])=>html`
             ${single?'':html`<div class="group">${name}</div>`}
-            ${filters.map(f=>this.renderItem(f))}
+            ${filters.map(f=>this.renderItem(f, {index: i++}))}
         `)
     }
 
-    renderItem(filter, {label}={}){
+    renderItem(filter, {label, index}={}){
         let active = filter.isActive
         return html`
-            <div class="item" ?selected=${filter.key==this.selectedKey} @click=${()=>this.select(filter.key)}>
+            <div class="item" ?selected=${filter.key==this.selectedKey} ?highlight=${this.isHighlight(index)}
+                @click=${()=>this.clickSelect(filter.key)}>
                 ${filter.icon?html`<b-icon class="icon" name=${filter.icon}></b-icon>`:''}
                 <span class="text">
                     <span class="label">${label || filter.label}</span>
@@ -470,41 +501,27 @@ export default class FiltersPopover extends LitElement {
         `
     }
 
-    renderPresetsItem(){
+    renderPresetsBtn(){
         let el = this.presetsEl
         let active = el?.model?.get('name')
+        let title = active ? `Saved Filters: ${active}` : el?.coll?.length ? `Saved Filters (${el.coll.length})` : 'Saved Filters'
         return html`
-            <div class="item" ?selected=${this.selectedKey==PRESETS} @click=${()=>this.select(PRESETS)}>
-                <b-icon class="icon" name="filter_presets"></b-icon>
-                <span class="text">
-                    <span class="label">Saved Filters${el?.changed?html`<span class="dot" title="Changed since applied"></span>`:''}</span>
-                    ${active?html`<span class="value">${active}</span>`
-                        :el?.coll?.length?html`<span class="value muted">${el.coll.length} saved</span>`:''}
-                </span>
-                <b-icon name="chevron_right" class="chev"></b-icon>
-            </div>
-        `
-    }
-
-    renderHistoryItem(){
-        let count = this.filters.history?.size || 0
-        return html`
-            <div class="item" ?selected=${this.selectedKey==HISTORY} @click=${()=>this.select(HISTORY)}>
-                <b-icon class="icon" name="history"></b-icon>
-                <span class="text">
-                    <span class="label">History</span>
-                    ${count?html`<span class="value muted">${count} recent</span>`:''}
-                </span>
-                <b-icon name="chevron_right" class="chev"></b-icon>
-            </div>
+            <span class="tool">
+                <b-btn clear icon="filter_presets" title=${title} color=${this.selectedKey==PRESETS?'theme':''}
+                    @click=${()=>this.select(PRESETS)}></b-btn>
+                ${el?.changed?html`<span class="dot" title="Changed since applied"></span>`:''}
+            </span>
         `
     }
 
     // filters by name, and their values (ex: "ware" finds Type → Warehouse)
-    renderSearch(){
+    searchResults(){
         let q = this.query.trim().toLowerCase()
-        let byName = this.visibleFilters.filter(f=>f.label.toLowerCase().includes(q))
-        let byValue = this.valueMatches(q)
+        return {q, byName: this.visibleFilters.filter(f=>f.label.toLowerCase().includes(q)), byValue: this.valueMatches(q)}
+    }
+
+    renderSearch(){
+        let {q, byName, byValue} = this.searchResults()
 
         if( !byName.length && !byValue.length )
             return html`<div class="empty">No filters or values match “${this.query}”</div>`
@@ -512,18 +529,34 @@ export default class FiltersPopover extends LitElement {
         return html`
             ${byName.length?html`
                 <div class="group">Filters</div>
-                ${byName.map(f=>this.renderItem(f, {label: highlight(f.label, q)}))}
+                ${byName.map((f, i)=>this.renderItem(f, {label: highlight(f.label, q), index: i}))}
             `:''}
             ${byValue.length?html`
                 <div class="group">Values</div>
-                ${byValue.map(({filter, value})=>html`
-                    <div class="item" @click=${()=>this.pickValue(filter, value)}>
+                ${byValue.map(({filter, value}, i)=>html`
+                    <div class="item" ?highlight=${this.isHighlight(byName.length+i)} @click=${()=>this.pickValue(filter, value)}>
                         <span class="text"><span class="label"><b-text muted>${filter.label} →</b-text> ${highlight(value.label, q)}</span></span>
                         ${isSelectedValue(filter, value)?html`<b-icon name="check" class="chev" style="color: var(--theme); opacity: 1"></b-icon>`:''}
                     </div>
                 `)}
             `:''}
         `
+    }
+
+    // the left column in order (what up/down move through)
+    get navItems(){
+        if( !this.query )
+            return [...this.groups.values()].flat().map(filter=>({key: filter.key, filter}))
+
+        let {byName, byValue} = this.searchResults()
+        return [
+            ...byName.map(filter=>({key: filter.key, filter})),
+            ...byValue.map(({filter, value})=>({filter, value}))
+        ]
+    }
+
+    isHighlight(index){
+        return this.keyNav && index != null && index == this.highlight
     }
 
     valueMatches(q){
@@ -557,7 +590,8 @@ export default class FiltersPopover extends LitElement {
             <div class="detail">
                 ${this.renderDetailHead(filter.label, {
                     hint: this.hasNot(filter) ? `${device.isTouch?'Hold':'Right-click'} for “Not”` : '',
-                    clear: html`<b-btn text sm ?disabled=${!filter.isActive} @click=${()=>this.clearFilter(filter)}>Clear</b-btn>`
+                    clear: html`<b-btn clear icon="backspace" title="Clear ${filter.label}" ?disabled=${!filter.isActive}
+                        @click=${()=>this.clearFilter(filter)}></b-btn>`
                 })}
                 <div class="detail-body">
                     ${this.loading ? html`<div class="empty"><b-spinner></b-spinner></div>`
@@ -587,6 +621,13 @@ export default class FiltersPopover extends LitElement {
             finally{ this.loading = false }
             delete this.menus[key] // its values may have changed
         }
+    }
+
+    // (mouse) the arrows continue from here
+    clickSelect(key){
+        this.keyNav = false
+        this.highlight = Math.max(0, this.navItems.findIndex(item=>item.key == key))
+        this.select(key)
     }
 
     back(){
@@ -687,6 +728,7 @@ export default class FiltersPopover extends LitElement {
             filter.value = entry
 
         this.query = ''
+        this.highlight = Math.max(0, this.navItems.findIndex(item=>item.key == filter.key))
         this.select(filter.key)
     }
 
@@ -720,10 +762,40 @@ export default class FiltersPopover extends LitElement {
         this.menus = {}
     }
 
+    onSearchInput(e){
+        this.query = e.target.value
+        this.keyNav = true
+        this.highlight = 0
+    }
+
+    // up/down move through the left column; enter picks (a filter shows its options, a value is set)
     onSearchKey(e){
         if( e.key == 'Escape' && this.query ){
             e.stopPropagation()
             this.query = ''
+            this.highlight = Math.max(0, this.navItems.findIndex(item=>item.key == this.selectedKey))
+            return
+        }
+
+        if( e.isComposing ) return
+        let items = this.navItems
+
+        if( e.key == 'ArrowDown' || e.key == 'ArrowUp' ){
+            e.preventDefault()
+            if( !items.length ) return
+            let i = this.keyNav ? this.highlight : Math.max(0, items.findIndex(item=>item.key == this.selectedKey))
+            if( this.keyNav ) i += e.key == 'ArrowDown' ? 1 : -1
+            this.highlight = Math.min(items.length-1, Math.max(0, i))
+            this.keyNav = true
+        }
+
+        if( e.key == 'Enter' ){
+            let item = items[this.highlight]
+            if( !item ) return
+            e.preventDefault()
+            this.keyNav = true
+            if( item.value ) this.pickValue(item.filter, item.value)
+            else this.select(item.key)
         }
     }
 
