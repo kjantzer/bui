@@ -25,6 +25,7 @@
     - `clip="2"` - (2-7) clip to N lines
     - `sup`, `sub` - super/sub vertical align
     - `monospace`
+    - `display` - the app's display font (`--font-display`); inherits the font when not set
 
 
     > See source code for complete options
@@ -131,6 +132,10 @@ customElements.define('b-text', class extends LitElement{
 
         :host([monospace]) .slot {
             font-family: var(--b-text-monospace, 'Source Code Pro', 'Courier New', Courier, monospace)
+        }
+
+        :host([display]) .slot {
+            font-family: var(--font-display, inherit);
         }
 
         :host([lighter]) .slot { font-weight: 300; }
