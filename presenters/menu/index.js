@@ -218,6 +218,16 @@ customElements.define('b-menu', class extends LitElement{
 		.menu-divider + b-hr {
 			display: none;
 		}
+
+		/* a line right before a labeled divider (it has its own line), or two lines in a row: show one */
+		.results > b-hr + .menu-divider {
+			border-top: none;
+			margin-top: 0;
+		}
+
+		.results > b-hr + b-hr {
+			display: none;
+		}
         
         .menu-text {
             padding: .5em 1em;
