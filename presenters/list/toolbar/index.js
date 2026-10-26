@@ -99,16 +99,22 @@ customElements.define('b-list-toolbar', class extends LitElement{
             color: #333;
         }
 
+        /* plain muted number (not a chip); shown after the view title instead when there is one */
         .count > span {
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 1em;
-            padding: 0.2em 0.4em;
+            padding: 0 .35em;
             flex-shrink: 0;
             order: var(--count-order, 2);
-            background: var(--theme-bgd-accent);
-            color: var(--theme-text-dim);
+            font-size: .9em;
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+            color: var(--theme-text-accent);
+        }
+
+        :host([count-in-title]) .count {
+            display: none;
         }
 
         [name="before"] { order: 1; }
@@ -171,14 +177,40 @@ customElements.define('b-list-toolbar', class extends LitElement{
             btn.classList.toggle('show')
     }
 
+    // a view title (<b-root-titlebar>) before the list shows the count after its title
+    // (also subclasses, ex: an app's own titlebar element)
+    get titlebar(){
+        let Titlebar = customElements.get('b-root-titlebar')
+        if( !Titlebar ) return null
+
+        let slot = this.shadowRoot?.querySelector('slot[name="before"]')
+        for( let el of slot?.assignedElements({flatten: true}) || [] ){
+            if( el instanceof Titlebar ) return el
+            let inside = [...(el.querySelectorAll?.('*') || [])].find(child=>child instanceof Titlebar)
+            if( inside ) return inside
+        }
+        return null
+    }
+
+    syncTitleCount(){
+        let titlebar = this.titlebar
+        this.toggleAttribute('count-in-title', !!titlebar)
+        if( titlebar ) titlebar.count = this.count
+    }
+
+    updated(changed){
+        super.updated?.(changed)
+        if( changed.has('count') ) this.syncTitleCount()
+    }
+
     get hasGrouping(){
         return this.coll?.applyGrouping || this.filters?.opts?.applyGrouping
     }
 
     render(){return html`
-        <slot name="before"></slot>
+        <slot name="before" @slotchange=${this.syncTitleCount}></slot>
 
-        <div class="count"><span>${this.count}</span></div>
+        <div class="count"><span>${Number(this.count||0).toLocaleString()}</span></div>
 
         <div class="scroller" ?empty=${!this.sorts&&!this.filters.size}>
         <b-mouse-scroll-horz></b-mouse-scroll-horz>
