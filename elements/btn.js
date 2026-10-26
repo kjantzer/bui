@@ -361,8 +361,9 @@ export default class BtnElement extends LitElement {
         }
         }
 
+        /* fully round however tall the btn is (ex: lg, extra padding) */
         :host([pill]) {
-            --radius: 1em;
+            --radius: var(--b-btn-pill-radius, 999px);
         }
 
         /* @media (hover) { */
