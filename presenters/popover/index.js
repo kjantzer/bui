@@ -174,10 +174,13 @@ export default class Popover {
 		this.target = target
 		this.target.popOver = this
 
-		if( this.target._popoverTarget )
-			this.target._popoverTarget.classList.add('popover-open')
-		else
-			this.target.classList.add('popover-open')
+		// marks what it opened from (ex: a btn shows it's open); not for tooltips (`markTarget: false`)
+		if( this.opts.markTarget !== false ){
+			if( this.target._popoverTarget )
+				this.target._popoverTarget.classList.add('popover-open')
+			else
+				this.target.classList.add('popover-open')
+		}
 
 		if( !this.popper ){
 

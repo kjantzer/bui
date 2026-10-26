@@ -77,6 +77,7 @@ function showTooltip(){
 
     shownTooltip = new Popover(target, activeTooltip.innerHTML, {
         className: 'inverse no-arrow tooltip',
+        markTarget: false, // (hovering a btn with a tooltip shouldn't make it look open)
         align: activeTooltip.align,
         maxWidth: '50vw' // TODO: support `maxW` ?
     })
