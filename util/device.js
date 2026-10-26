@@ -130,6 +130,7 @@ const device = {
     get isInstalled(){
         return navigator.standalone 
         || window.matchMedia('(display-mode: standalone)').matches
+        || window.matchMedia('(display-mode: fullscreen)').matches // (manifest `display: fullscreen`, ex: Android hides its bars)
         || window.matchMedia('(display-mode: window-controls-overlay)').matches
     },
 
