@@ -26,6 +26,7 @@ import {label as dateRangeLabel} from '../../datepicker/daterange'
 import './filter-saved-presets'
 
 const NARROW = 520
+const EDGE = 24 // px from the sheet's left edge where a swipe goes back
 const PRESETS = '__presets'
 const HISTORY = '__history'
 
@@ -253,8 +254,42 @@ export default class FiltersPopover extends LitElement {
             min-height: 0;
         }
 
+        /* narrow: the list and a filter's values are stacked; the values slide in from the right
+           (and back out, or follow a swipe from the left edge) */
         :host([narrow]) .body {
             grid-template-columns: minmax(0, 1fr);
+            grid-template-areas: "stack";
+            overflow: hidden;
+        }
+
+        :host([narrow]) .list,
+        :host([narrow]) .detail {
+            grid-area: stack;
+            background: var(--theme-bgd);
+            transition: transform 280ms cubic-bezier(.2, .8, .2, 1);
+        }
+
+        :host([narrow]) .detail {
+            z-index: 1;
+            transform: translateX(100%);
+            box-shadow: -10px 0 24px -16px rgba(0,0,0,.35);
+        }
+
+        :host([narrow]) .body[drilled] .detail {
+            transform: none;
+            animation: detail-in 280ms cubic-bezier(.2, .8, .2, 1); /* (also when it's first added) */
+        }
+
+        :host([narrow]) .body[drilled][dragging] .detail { animation: none; }
+
+        @keyframes detail-in {
+            from { transform: translateX(100%); }
+        }
+        :host([narrow]) .body[drilled] .list { transform: translateX(-25%); }
+
+        .body[dragging] .list,
+        .body[dragging] .detail {
+            transition: none;
         }
 
         .list, .detail {
@@ -268,7 +303,6 @@ export default class FiltersPopover extends LitElement {
         }
 
         :host([narrow]) .list { border-right: none; }
-        .list[hidden] { display: none; }
 
         /* group labels and rows match the options menu beside them (bui/presenters/menu) */
         .group {
@@ -460,6 +494,94 @@ export default class FiltersPopover extends LitElement {
             this.narrow = this.sheet || this.offsetWidth < NARROW
         })
         this.resizeObserver.observe(this)
+
+        if( !this.__touchBound ){
+            this.__touchBound = true
+            this.addEventListener('touchstart', this.onTouchStart.bind(this), {passive: false})
+            this.addEventListener('touchmove', this.onTouchMove.bind(this), {passive: false})
+            this.addEventListener('touchend', this.onTouchEnd.bind(this))
+            this.addEventListener('touchcancel', this.onTouchEnd.bind(this))
+        }
+    }
+
+    /*
+        Sheet (phones): swipe from the left edge to go back from a filter's values.
+        Edge touches stay here: not the app sidebar's edge swipe, and not the browser's back swipe
+        (taps there are clicked for, since their touch is canceled)
+    */
+    onTouchStart(e){
+        if( !this.sheet || e.touches.length > 1 ) return
+
+        let t = e.touches[0]
+        if( t.clientX - this.getBoundingClientRect().left > EDGE ) return
+
+        e.stopPropagation()
+        e.preventDefault()
+
+        this._swipe = {
+            x: t.clientX, y: t.clientY, time: Date.now(),
+            target: e.composedPath()[0],
+            width: this.offsetWidth,
+            canGoBack: this.narrow && !!this.selectedKey,
+            dragging: false
+        }
+    }
+
+    onTouchMove(e){
+        let s = this._swipe
+        if( !s ) return
+        e.stopPropagation()
+
+        let t = e.touches[0]
+        let dx = t.clientX - s.x
+        let dy = t.clientY - s.y
+
+        if( !s.dragging ){
+            if( Math.abs(dx) < 10 && Math.abs(dy) < 10 ) return
+            if( !s.canGoBack || Math.abs(dy) > Math.abs(dx) || dx < 0 ){
+                s.ignore = true
+                return
+            }
+            s.dragging = true
+            this.renderRoot.querySelector('.body')?.setAttribute('dragging', '')
+        }
+
+        e.preventDefault()
+
+        let progress = Math.min(1, Math.max(0, dx / s.width))
+        s.progress = progress
+        s.lastX = t.clientX
+        s.lastTime = Date.now()
+
+        let detail = this.renderRoot.querySelector('.detail')
+        let list = this.renderRoot.querySelector('.list')
+        if( detail ) detail.style.transform = `translateX(${progress * 100}%)`
+        if( list ) list.style.transform = `translateX(${-25 * (1 - progress)}%)`
+    }
+
+    onTouchEnd(e){
+        let s = this._swipe
+        this._swipe = null
+        if( !s ) return
+        e.stopPropagation()
+
+        if( !s.dragging ){
+            // a tap at the edge (its touch was canceled, so the browser won't click)
+            let t = e.changedTouches?.[0]
+            if( !s.ignore && e.type == 'touchend' && t && Math.abs(t.clientX - s.x) < 10 && Math.abs(t.clientY - s.y) < 10 )
+                s.target?.click?.()
+            return
+        }
+
+        let body = this.renderRoot.querySelector('.body')
+        body?.removeAttribute('dragging')
+        this.renderRoot.querySelector('.detail')?.style.removeProperty('transform')
+        this.renderRoot.querySelector('.list')?.style.removeProperty('transform')
+
+        // a quick flick decides it; otherwise past a third of the way
+        let velocity = (s.lastX - s.x) / Math.max(1, s.lastTime - s.time)
+        if( velocity > .5 || s.progress > 1/3 )
+            this.back()
     }
 
     // re-render as the saved filters load / change (the hidden <b-list-filters-saved> tracks them)
@@ -522,7 +644,11 @@ export default class FiltersPopover extends LitElement {
 
     render(){
         let picked = this.selectedKey
-        let showList = !this.narrow || !picked
+
+        // narrow: keep showing the last one while it slides back out
+        if( picked ) this.lastPicked = picked
+        let shown = picked || (this.narrow ? this.lastPicked : null)
+        let shownFilter = shown && this.filters.get(shown)
 
         return html`
             <header>
@@ -546,14 +672,14 @@ export default class FiltersPopover extends LitElement {
                 </span>
             </header>
 
-            <div class="body">
-                <div class="list" ?hidden=${!showList}>
+            <div class="body" ?drilled=${this.narrow && !!picked}>
+                <div class="list">
                     ${this.query ? this.renderSearch() : this.renderGroups()}
                 </div>
 
-                ${picked == PRESETS ? this.renderPresets()
-                : picked == HISTORY ? this.renderHistory()
-                : this.selectedFilter ? this.renderDetail(this.selectedFilter)
+                ${shown == PRESETS ? this.renderPresets()
+                : shown == HISTORY ? this.renderHistory()
+                : shownFilter ? this.renderDetail(shownFilter)
                 : this.narrow ? '' : html`
                     <div class="detail"><div class="empty">Pick a filter to see its options</div></div>
                 `}
