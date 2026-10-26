@@ -6,7 +6,8 @@
 
     Starts the router and restores the title when all panels are closed
 
-    Emits `app-shell:ready` on window once started (panels and their shortcuts are registered by then)
+    Emits `app-shell:rendered` on window when it first renders (the app's panels and shortcuts are registered:
+    ex: a sidebar can show its links) and `app-shell:ready` once the router has started
 
     ```js
     import AppShellView from 'bui/app/shell/view'
@@ -43,6 +44,8 @@ export default class AppShellView extends LitElement {
 
     firstUpdated(){
         document.body.classList.add('show')
+        AppShellView.rendered = true
+        window.dispatchEvent(new Event('app-shell:rendered'))
 
         // let elements render (and routes be added) before starting
         setTimeout(()=>{
