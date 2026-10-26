@@ -96,6 +96,11 @@ export default class RoutedView extends LitElement {
             display: grid;
             grid-template-columns: 1fr;
         }
+
+        /* swipe to close sheets don't need a close btn (see bui/presenters/panel) */
+        b-app-tab-bar-btn[part="close-btn"] {
+            display: var(--b-panel-close-btn-display, grid);
+        }
         
         b-app-tab-bar-btn:has(b-model-history-btn) {
             grid-template-columns: 1fr 1fr;

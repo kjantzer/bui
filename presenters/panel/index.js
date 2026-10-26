@@ -939,6 +939,18 @@ export class Panel extends LitElement {
             --b-panel-toolbar-close-btn-rotation: 0deg;
         }
 
+        /* swipe to close sheets are closed by dragging (or the grabber), so views hide their close btns
+           (--b-panel-close-btn-display) and leave room at the top for the grabber */
+        :host([swipe-close]) {
+            --b-panel-close-btn-display: none;
+            --root-titlebar-padding-left: 1em; /* (title was beside the close btn) */
+        }
+
+        :host([swipe-close]) > main ::slotted(*) {
+            box-sizing: border-box;
+            padding-top: var(--b-panel-grabber-space, 10px);
+        }
+
         /* grabber for swipe to close (see ./swipe-close.js) */
         :host([swipe-close]) > main::before {
             content: '';

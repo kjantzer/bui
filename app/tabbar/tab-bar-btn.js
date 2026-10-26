@@ -87,6 +87,11 @@ customElements.define('b-app-tab-bar-btn', class extends LitElement{
             flex-grow: 0 !important;
         }
 
+        /* swipe to close sheets don't need it (see bui/presenters/panel) */
+        :host([part="close-btn"]) {
+            display: var(--b-panel-close-btn-display, block);
+        }
+
         /*@container style(--layout: left) {
             :host([part="close-btn"]) {
                 top: -.5em;

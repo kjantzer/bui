@@ -130,6 +130,7 @@ class PanelToolbar extends LitElement {
 
         [part="close-btn"] {
             flex-shrink: 0;
+            display: var(--b-panel-close-btn-display, inline-grid); /* (none on swipe to close sheets) */
         }
 
         /* bigger icon in the same size btn */

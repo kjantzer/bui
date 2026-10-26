@@ -56,6 +56,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
         }
 
         [part="close-btn"] {
+            display: var(--b-panel-close-btn-display, inline-grid); /* (none on swipe to close sheets) */
             flex-shrink: 0;
             order: -10;
             align-self: center;

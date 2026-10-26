@@ -43,10 +43,23 @@ function startsInScrolledContent(path, main){
     return false
 }
 
+// open panels follow the window size (ex: a desktop window made narrow and wide again shows/hides the
+// grabber and views' close btns); weak refs so closed, removed panels aren't kept
+const panels = new Set()
+window.matchMedia?.(SMALL_SCREEN).addEventListener?.('change', ()=>{
+    for( let ref of panels ){
+        let panel = ref.deref()
+        if( !panel ) panels.delete(ref)
+        else if( panel.isOpen ) panel.toggleAttribute('swipe-close', canSwipeClose(panel))
+    }
+})
+
 export default function bindSwipeClose(panel){
 
     let main = panel.shadowRoot.querySelector('main')
     if( !main ) return
+
+    panels.add(new WeakRef(panel))
 
     let drag = null
 
