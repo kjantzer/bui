@@ -1,6 +1,9 @@
 import Notif from '../../presenters/notif'
 import device from '../../util/device'
 
+// quiet: no "update downloading/available" notifs (ex: an app's reload is already updating and shows its own)
+export const updateNotifs = {quiet: false}
+
 // when a new service worker takes over, reload the app to begin using it
 let refreshing;
 
@@ -40,7 +43,7 @@ if( navigator.serviceWorker ){
 
 
 function newUpdateNotif(worker, oldWorker){
-    if( !navigator.serviceWorker.controller ) return
+    if( !navigator.serviceWorker.controller || updateNotifs.quiet ) return
 
     new Notif({
         nid: 'bui-sw-app-updated',
