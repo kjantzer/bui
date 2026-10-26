@@ -8,7 +8,7 @@ import './toolbar'
 import '../../elements/btn'
 import CollMap from '../../util/collmap'
 import isLitHTML from '../../helpers/lit/isLitHTML'
-import bindSwipeClose, {canSwipeClose} from './swipe-close'
+import bindSwipeClose, {updateSwipeClose} from './swipe-close'
 
 export const PanelDefaults = {
     type: '',
@@ -644,8 +644,9 @@ export class Panel extends LitElement {
                 this.view.onRouteChange(undefined, this.route?.state)
         }
 
-        // bottom sheets on small screens can be dragged down to close (see ./swipe-close.js)
-        this.toggleAttribute('swipe-close', canSwipeClose(this))
+        // bottom sheets on small screens / touch-only devices can be dragged down to close; on touch-only
+        // devices right panels can be dragged right (see ./swipe-close.js)
+        updateSwipeClose(this)
 
         setTimeout(()=>{
             this.setAttribute('open', '')

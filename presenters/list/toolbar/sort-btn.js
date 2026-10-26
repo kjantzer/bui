@@ -54,7 +54,7 @@ customElements.define('b-list-sort-btn', class extends LitElement{
     render(){
         // phones: just the icon (the sorts are in the popover)
         if( device.isSmall ) return html`
-            <b-btn text lg pill icon="sort" class="sorts" title="Sort: ${this.sorts.label}" @click=${this.sortMenu}></b-btn>
+            <b-btn text lg pill icon="list_sort" class="sorts" title="Sort: ${this.sorts.label}" @click=${this.sortMenu}></b-btn>
         `
 
         return html`

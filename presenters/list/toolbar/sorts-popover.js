@@ -1,5 +1,5 @@
 /*
-    List sorts popover (a sheet on phones, dragged down to close)
+    List sorts popover (a sheet on phones and touch-only tablets, dragged down to close)
 
     - Reset (back to the list's `defaults`) in the header; sorts with a `preset` as rows at the top
     - the sorts in one list: the active ones first, in the order they apply (drag to reorder: anywhere on the
@@ -34,13 +34,14 @@ export default class SortsPopover extends LitElement {
 
         if( el.isOpen ) return el.requestUpdate()
 
-        if( device.isSmall ){
+        // a sheet on phones and touch-only tablets (dragged down to close)
+        if( device.isSmall || device.isTouchOnly ){
             el.sheet = true
             new Panel(el, {
                 title: 'Sort',
                 anchor: 'bottom',
                 animation: 'rise',
-                width: '100%',
+                width: device.isSmall ? '100%' : 'min(480px, 100%)',
                 height: 'auto',
                 onClose: ()=>el.didClose()
             }).open()

@@ -1,5 +1,5 @@
 /*
-    List filters popover (a sheet on phones)
+    List filters popover (a sheet on phones and touch-only tablets)
 
     Every filter in one place. Header: search, saved filters and history (shown in the right column),
     clear all, Cancel / Apply. Left: the filters (grouped by their `group`, others under "Filters") with their
@@ -30,9 +30,6 @@ const NARROW = 520
 const EDGE = 24 // px from the sheet's left edge where a swipe goes back
 const PRESETS = '__presets'
 const HISTORY = '__history'
-
-// no mouse / trackpad (ex: a phone or tablet; a tablet with a trackpad still auto focuses)
-const touchOnly = ()=>!window.matchMedia?.('(any-pointer: fine)').matches
 
 export default class FiltersPopover extends LitElement {
 
@@ -73,13 +70,14 @@ export default class FiltersPopover extends LitElement {
 
         el.startQueue()
 
-        if( device.isSmall ){
+        // a sheet on phones and touch-only tablets (dragged down to close)
+        if( device.isSmall || device.isTouchOnly ){
             el.sheet = true
             new Panel(el, {
                 title: 'Filters',
                 anchor: 'bottom',
                 animation: 'rise',
-                width: '100%',
+                width: device.isSmall ? '100%' : 'min(720px, 100%)',
                 height: '88%',
                 onClose: ()=>el.didClose()
             }).open()
@@ -101,7 +99,7 @@ export default class FiltersPopover extends LitElement {
 
     // (not on phones or other touch-only devices, ex: a tablet: the keyboard would pop up and cover it)
     async focusSearch(){
-        if( this.sheet || touchOnly() ) return
+        if( this.sheet || device.isTouchOnly ) return
         await this.updateComplete
         requestAnimationFrame(()=>this.renderRoot.querySelector('header input')?.focus({preventScroll: true}))
     }
@@ -506,7 +504,7 @@ export default class FiltersPopover extends LitElement {
         this.filters?.on('reset', this.onChange)
 
         this.resizeObserver ||= new ResizeObserver(()=>{
-            this.narrow = this.sheet || this.offsetWidth < NARROW
+            this.narrow = (this.sheet && device.isSmall) || this.offsetWidth < NARROW
         })
         this.resizeObserver.observe(this)
 
@@ -525,7 +523,7 @@ export default class FiltersPopover extends LitElement {
         (taps there are clicked for, since their touch is canceled)
     */
     onTouchStart(e){
-        if( !this.sheet || e.touches.length > 1 ) return
+        if( !this.sheet || !this.narrow || e.touches.length > 1 ) return
 
         let t = e.touches[0]
         if( t.clientX - this.getBoundingClientRect().left > EDGE ) return
@@ -861,7 +859,7 @@ export default class FiltersPopover extends LitElement {
     }
 
     async focusOptions(){
-        if( this.sheet || touchOnly() ) return // (the keyboard would pop up and cover it)
+        if( this.sheet || device.isTouchOnly ) return // (the keyboard would pop up and cover it)
         await this.updateComplete
 
         requestAnimationFrame(()=>{
