@@ -14,6 +14,10 @@ import '../../helpers/lit/willTakeAction'
 
 customElements.define('b-list', class extends LitElement {
 
+    static properties = {
+        resultCount: {attribute: false} // shown in a badge over the list (set by the toolbar)
+    }
+
     constructor(){
         super()
 
@@ -101,6 +105,34 @@ customElements.define('b-list', class extends LitElement {
     }
 
     static get styles(){return css`
+        /* how many results: a subtle badge floating over the content, bottom right */
+        .count-badge {
+            position: absolute;
+            right: 1rem;
+            bottom: calc(.85rem + var(--nav-view-bottom-space, 0px));
+            z-index: 20;
+            padding: .3em .75em;
+            border-radius: 999px;
+            font-size: .78rem;
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+            color: var(--theme-text-accent);
+            background: color-mix(in srgb, var(--theme-bgd) 80%, transparent);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 0 1px rgba(var(--theme-text-rgb), .08), 0 2px 8px rgba(0,0,0,.08);
+            pointer-events: none;
+        }
+
+        .count-badge[hidden] { display: none; }
+
+        /* bulk selecting: how many are selected, in the theme color */
+        .count-badge[selecting] {
+            color: var(--theme-bgd);
+            background: var(--theme);
+            box-shadow: 0 2px 8px rgba(0,0,0,.15);
+        }
+
         :host {
             container-type: inline-size;
             display: grid;
@@ -430,6 +462,17 @@ customElements.define('b-list', class extends LitElement {
         <slot part="sidebar left" name="sidebar:left"></slot>
 
         <slot name="header" part="header"></slot>
+
+        ${this.selection?.isOn?html`
+            <div class="count-badge" part="count-badge" selecting>
+                ${(this.selection.result?.size || 0).toLocaleString()} selected
+            </div>
+        `:html`
+            <div class="count-badge" part="count-badge" ?hidden=${this.resultCount == null}>
+                ${countLabel(this.resultCount)}
+            </div>
+        `}
+
         <b-infinite-list
             part="list"
             .empty="${this.createEmptyElement}"
@@ -767,11 +810,15 @@ customElements.define('b-list', class extends LitElement {
 
         this.selection.on('begin', ()=>{
             this.setAttribute('selection-on', '')
+            this.requestUpdate() // (count badge)
         })
 
         this.selection.on('end', ()=>{
             this.removeAttribute('selection-on')
+            this.requestUpdate()
         })
+
+        this.selection.on('change', ()=>this.requestUpdate())
 
         this.selection.on('contextmenu', ({evt}={})=>{
             if( this.host?.listSelectionContextMenu )
@@ -891,3 +938,9 @@ customElements.define('b-list', class extends LitElement {
 })
 
 export default customElements.get('b-list')
+
+// "1 result", "1,240 results"
+export function countLabel(n){
+    n = Number(n || 0)
+    return `${n.toLocaleString()} ${n == 1 ? 'result' : 'results'}`
+}

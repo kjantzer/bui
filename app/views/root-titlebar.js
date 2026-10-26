@@ -4,7 +4,6 @@ customElements.define('b-root-titlebar', class extends LitElement{
 
     static get properties(){return {
         title: {type: String},
-        count: {type: Number}, // shown after the title (ex: a list's result count; see list/toolbar)
     }}
 
     static get styles(){return css`
@@ -37,17 +36,6 @@ customElements.define('b-root-titlebar', class extends LitElement{
         
         b-text {
             position: relative;
-        }
-
-        /* count after the title: quiet, in the body font (not the display font) */
-        .count {
-            margin-left: .45em;
-            font-family: var(--font-body, inherit);
-            font-size: .85rem;
-            font-weight: 500;
-            font-variant-numeric: tabular-nums;
-            color: var(--theme-text-accent);
-            vertical-align: baseline;
         }
 
         /* title in the app's display font (falls back to the normal font) */
@@ -134,7 +122,6 @@ customElements.define('b-root-titlebar', class extends LitElement{
                 </b-text></slot>
                 <slot name="title:after"></slot>
             </slot>
-            ${this.count != null ? html`<span class="count" part="count">${Number(this.count).toLocaleString()}</span>` : ''}
         </b-text>
 
         <slot class="right"></slot>

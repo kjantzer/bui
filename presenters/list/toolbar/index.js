@@ -113,8 +113,9 @@ customElements.define('b-list-toolbar', class extends LitElement{
             color: var(--theme-text-accent);
         }
 
-        :host([count-in-title]) .count {
-            display: none;
+        /* (shown in a badge over the list instead) */
+        .count {
+            display: none !important;
         }
 
         [name="before"] { order: 1; }
@@ -177,30 +178,11 @@ customElements.define('b-list-toolbar', class extends LitElement{
             btn.classList.toggle('show')
     }
 
-    // a view title (<b-root-titlebar>) before the list shows the count after its title
-    // (also subclasses, ex: an app's own titlebar element)
-    get titlebar(){
-        let Titlebar = customElements.get('b-root-titlebar')
-        if( !Titlebar ) return null
-
-        let slot = this.shadowRoot?.querySelector('slot[name="before"]')
-        for( let el of slot?.assignedElements({flatten: true}) || [] ){
-            if( el instanceof Titlebar ) return el
-            let inside = [...(el.querySelectorAll?.('*') || [])].find(child=>child instanceof Titlebar)
-            if( inside ) return inside
-        }
-        return null
-    }
-
-    syncTitleCount(){
-        let titlebar = this.titlebar
-        this.toggleAttribute('count-in-title', !!titlebar)
-        if( titlebar ) titlebar.count = this.count
-    }
-
+    // the count shows in a badge over the list (see ../index.js)
     updated(changed){
         super.updated?.(changed)
-        if( changed.has('count') ) this.syncTitleCount()
+        let list = this.getRootNode()?.host
+        if( changed.has('count') && list ) list.resultCount = this.count
     }
 
     get hasGrouping(){
@@ -208,7 +190,7 @@ customElements.define('b-list-toolbar', class extends LitElement{
     }
 
     render(){return html`
-        <slot name="before" @slotchange=${this.syncTitleCount}></slot>
+        <slot name="before"></slot>
 
         <div class="count"><span>${Number(this.count||0).toLocaleString()}</span></div>
 

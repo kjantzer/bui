@@ -87,12 +87,7 @@ customElements.define('b-list-selection-bar', class extends LitElement{
         ${this.selection?html`
 
             <div>
-                
-
-                <span class="count">
-                    <span>${this.selection.result.size}&nbsp;<span>selected</span></span>
-                </span>
-
+                <!-- (how many are selected shows in the list's count badge) -->
                 <slot name="left"></slot>
             </div>
 
