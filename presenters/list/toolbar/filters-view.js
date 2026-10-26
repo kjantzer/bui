@@ -43,19 +43,33 @@ customElements.define('b-list-filters', class extends LitElement{
             position: relative;
         }
 
-        .filters-btn .count {
+        /* active count: a badge floating on the corner (the btn stays the same size) */
+        .filters {
+            position: relative;
+            display: inline-flex;
+            flex-shrink: 0;
+        }
+
+        .filters[hidden] { display: none; }
+
+        .filters .count {
+            position: absolute;
+            top: .1em;
+            right: .05em;
             display: inline-grid;
             place-items: center;
-            min-width: 1.3em;
-            height: 1.3em;
+            min-width: 1.45em;
+            height: 1.45em;
             padding: 0 .3em;
-            margin-left: .15em;
             border-radius: 1em;
             background: var(--theme);
             color: var(--theme-bgd);
-            font-size: .75em;
+            box-shadow: 0 0 0 2px var(--theme-bgd);
+            font-size: .62em;
             font-weight: 700;
+            line-height: 1;
             box-sizing: border-box;
+            pointer-events: none;
         }
 
         b-list-filter-btn, b-list-filter-chip, [noshrink] {
@@ -82,9 +96,10 @@ customElements.define('b-list-filters', class extends LitElement{
         <b-dragdrop @dragged=${this.onDrag}>Export</b-dragdrop>
         <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
-        <b-btn icon="filter" text lg pill class="filters-btn" ?hidden=${this.filters.size==0}
-            @click=${()=>this.show()} tooltip="Filters (f)"
-        >${this.filters.length?html`<span class="count">${this.filters.length}</span>`:''}</b-btn>
+        <span class="filters" ?hidden=${this.filters.size==0}>
+            <b-btn icon="filter" text lg pill class="filters-btn" @click=${()=>this.show()} tooltip="Filters (f)"></b-btn>
+            ${this.filters.length?html`<span class="count">${this.filters.length}</span>`:''}
+        </span>
 
         ${repeat(this.activeFilters, filter=>filter.key, filter=>html`
             <b-list-filter-chip .filter=${filter} @open-filter=${()=>this.show({filter: filter.key})}></b-list-filter-chip>
