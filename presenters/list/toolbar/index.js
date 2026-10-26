@@ -136,27 +136,37 @@ customElements.define('b-list-toolbar', class extends LitElement{
         }
 
 
+        /* small: one line (filter chips are hidden; the filters sheet shows them) */
         @container (max-width: 599px) {
-            
-            :host {
-                display: grid;
-                grid-template-columns: auto auto 1fr;
-            }
 
             slot {
                 display: flex;
             }
 
+            /* the toolbar scrolls if even the title, filters, and sort don't fit (ex: a long title) */
+            :host {
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+
+            :host::-webkit-scrollbar { display: none; }
+
+            /* filters and sort stay; the btns on the right give way first (and scroll) */
             .scroller {
-                grid-row-start: 2;
-                grid-column: 1/-1;
-                margin-left: -0.5em;
-                margin-right: -0.5em;
-                margin-top: 0.25em;
-                padding-top: .25em;
-                padding-left: .25em;
-                padding-right: .25em;
-                border-top: solid 1px var(--theme-bgd-accent);
+                flex: 0 0 auto;
+            }
+
+            .after {
+                flex-shrink: 1000;
+                min-width: 2.75em; /* (at least one btn shows) */
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+
+            .after::-webkit-scrollbar { display: none; }
+
+            .after > * {
+                flex-shrink: 0;
             }
 
             b-list-sort-btn {

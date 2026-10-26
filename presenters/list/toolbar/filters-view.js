@@ -79,6 +79,14 @@ customElements.define('b-list-filters', class extends LitElement{
         b-dragdrop {
             --radius: 4px;
         }
+
+        /* small: just the filters btn (and its count); the sheet shows the active filters and quick ones */
+        @container (max-width: 599px) {
+            b-list-filter-chip,
+            b-list-filter-btn {
+                display: none;
+            }
+        }
     `}
 
     get activeFilters(){
