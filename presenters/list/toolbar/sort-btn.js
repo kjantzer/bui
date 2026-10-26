@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit'
+import device from '../../../util/device'
 
 customElements.define('b-list-sort-btn', class extends LitElement{
 
@@ -50,7 +51,13 @@ customElements.define('b-list-sort-btn', class extends LitElement{
         } */
     `}
 
-    render(){return html`
+    render(){
+        // phones: just the icon (the sorts are in the popover)
+        if( device.isSmall ) return html`
+            <b-btn text lg pill icon="sort" class="sorts" title="Sort: ${this.sorts.label}" @click=${this.sortMenu}></b-btn>
+        `
+
+        return html`
         <b-btn text lg pill class="sorts" @click=${this.sortMenu}>
             <main>
                 <!--<b-text bold>Sort:</b-text>-->

@@ -6,7 +6,8 @@
     current value; the search finds filter names and their values. Right: what's picked (or in place of the
     list when narrow, with a back btn).
 
-    The search is focused when it opens; up/down move through the left column and enter picks.
+    The search is focused when it opens (not on touch-only devices: the keyboard would cover it); up/down move
+    through the left column and enter picks.
 
     Options are the filter's menu (multi select filters toggle; right-click / long-press for "Not")
     or its custom view (date, input, slider, search).
@@ -29,6 +30,9 @@ const NARROW = 520
 const EDGE = 24 // px from the sheet's left edge where a swipe goes back
 const PRESETS = '__presets'
 const HISTORY = '__history'
+
+// no mouse / trackpad (ex: a phone or tablet; a tablet with a trackpad still auto focuses)
+const touchOnly = ()=>!window.matchMedia?.('(any-pointer: fine)').matches
 
 export default class FiltersPopover extends LitElement {
 
@@ -95,9 +99,9 @@ export default class FiltersPopover extends LitElement {
         return el
     }
 
-    // (not on phones: the keyboard would cover the sheet)
+    // (not on phones or other touch-only devices, ex: a tablet: the keyboard would pop up and cover it)
     async focusSearch(){
-        if( this.sheet ) return
+        if( this.sheet || touchOnly() ) return
         await this.updateComplete
         requestAnimationFrame(()=>this.renderRoot.querySelector('header input')?.focus({preventScroll: true}))
     }
@@ -857,7 +861,7 @@ export default class FiltersPopover extends LitElement {
     }
 
     async focusOptions(){
-        if( this.sheet ) return // (the keyboard would cover the sheet)
+        if( this.sheet || touchOnly() ) return // (the keyboard would pop up and cover it)
         await this.updateComplete
 
         requestAnimationFrame(()=>{
