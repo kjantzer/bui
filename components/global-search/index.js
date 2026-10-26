@@ -588,7 +588,7 @@ function bindShortcut(key='k'){
 
 }
 
-bindShortcut(['k', 'o', '/'])
+bindShortcut(['k', 'o']) // (cmd+/ is left to the app; ex: Catalog focuses its apps filter)
 
 
 let filters = {
