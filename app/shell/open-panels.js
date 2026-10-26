@@ -4,6 +4,9 @@
     Lists the open panels (in the root `<b-panels>`), ex: apps and records opened from a list or search.
     Click to bring one to the top; hover to close it
 
+    Panels that already have a link in the sidebar (ex: a pinned app) aren't listed again;
+    call `refresh()` when the sidebar's links change
+
     ```html
     <b-app-sidebar>
         <b-app-sidebar-open-panels label="Open"></b-app-sidebar-open-panels>
@@ -117,12 +120,32 @@ export default class AppSidebarOpenPanels extends LitElement {
         window.removeEventListener('router:popstate', this.refresh)
     }
 
-    // every open panel (including ones that are also sidebar links), in the order they were opened
+    // open panels without a link in the sidebar, in the order they were opened
     // (the controller keeps them in stacking order, which changes as they're brought to the top)
     get panels(){
+        let linked = this.sidebarPaths
         return (this.panelController?.map(panel=>panel) || []).filter(panel=>{
-            return panel.route && !IGNORE_TYPES.includes(panel.type)
+            return panel.route && !IGNORE_TYPES.includes(panel.type) && !this.isLinked(panel, linked)
         }).sort((a, b)=>(a.index ?? 0) - (b.index ?? 0))
+    }
+
+    // paths of the other links in the sidebar (pins, sections, footer)
+    get sidebarPaths(){
+        let sidebar = this.closest('b-app-sidebar') || this.parentElement
+        return [...(sidebar?.querySelectorAll('b-app-sidebar-item[path]') || [])]
+            .filter(item=>!item.hidden)
+            .map(item=>'/'+item.getAttribute('path').replace(/^\/+|\/+$/g, ''))
+    }
+
+    // a link opens this panel's view (ex: a pinned `/settings` is the panel at `settings/70/sidebar`);
+    // same test the item uses to show its panel is open (see ./item.js)
+    isLinked(panel, paths){
+        let route = panel.route
+        return paths.some(path=>{
+            try{
+                return route.rootPath?.replace(/^\/+|\/+$/g, '') == path.slice(1).split('/')[0] || !!route.patt?.match(path)
+            }catch(err){ return false }
+        })
     }
 
     renderIcon(panel){
