@@ -97,7 +97,7 @@ customElements.define('b-list-filters', class extends LitElement{
         <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
         <span class="filters" ?hidden=${this.filters.size==0}>
-            <b-btn icon="filter" text lg pill class="filters-btn" @click=${()=>this.show()} tooltip="Filters (f)"></b-btn>
+            <b-btn icon="filter" clear lg pill class="filters-btn" @click=${()=>this.show()} tooltip="Filters (f)"></b-btn>
             ${this.filters.length?html`<span class="count">${this.filters.length}</span>`:''}
         </span>
 
