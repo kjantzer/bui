@@ -11,6 +11,7 @@
     - isLinux
     - isInstalled (PWA installed)
     - isTouch
+    - isTouchOnly (no mouse or trackpad)
     
     see source code more complete list
     
@@ -82,6 +83,11 @@ const device = {
 
     get isTouch(){
         return 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    },
+
+    // no mouse or trackpad (ex: a phone or tablet; a tablet with a trackpad is not)
+    get isTouchOnly(){
+        return !window.matchMedia?.('(any-pointer: fine)').matches
     },
     
     get isMobile(){

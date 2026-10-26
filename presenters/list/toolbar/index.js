@@ -6,6 +6,7 @@ import './layout-btn'
 import './search'
 import '../../../elements/toggle-btn'
 import '../../../elements/toggle-view'
+import GroupByPopover from '../group-by/popover'
 
 customElements.define('b-list-toolbar', class extends LitElement{
 
@@ -57,10 +58,6 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
         .scroller > * {
             flex-shrink: 0;
-        }
-
-        .grouping.show {
-            color: var(--theme);
         }
 
         .scroller::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
@@ -177,15 +174,25 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
         }
 
-        .scroller .grouping:not(.show) ~ slot::slotted(b-list-group-by) {
+        /* (holds the groupings; they're chosen in the group by popover) */
+        slot::slotted(b-list-group-by) {
             display: none;
         }
     `}
 
+    // the groupings (b-list-group-by in the scroller slot)
+    get groupByView(){
+        let slot = this.shadowRoot?.querySelector('slot[name="scroller"]')
+        return slot?.assignedElements({flatten: true}).find(el=>el.tagName == 'B-LIST-GROUP-BY')
+            || this.coll?.groupByView
+    }
+
+    // (btn click or the G shortcut)
     toggleGrouping(e){
         let btn = this.shadowRoot.querySelector('.grouping')
-        if( btn && !btn.hidden )
-            btn.classList.toggle('show')
+        let view = this.groupByView
+        if( !btn || btn.hidden || !view ) return
+        GroupByPopover.open(view, btn)
     }
 
     // the count shows in a badge over the list (see ../index.js)
@@ -199,7 +206,15 @@ customElements.define('b-list-toolbar', class extends LitElement{
         return this.coll?.applyGrouping || this.filters?.opts?.applyGrouping
     }
 
-    render(){return html`
+    // labels of the groupings that are on
+    get groupedBy(){
+        return (this.groupByView?.valuesList || []).filter(d=>d.on).map(d=>d.label)
+    }
+
+    render(){
+        let groupedBy = this.groupedBy
+
+        return html`
         <slot name="before"></slot>
 
         <div class="count"><span>${Number(this.count||0).toLocaleString()}</span></div>
@@ -211,9 +226,11 @@ customElements.define('b-list-toolbar', class extends LitElement{
                 <b-list-filters .filters=${this.filters}></b-list-filters>
             `}
 
-            <b-btn icon="group_by" class="grouping" lg clear tooltip="Group by (G)" @click=${this.toggleGrouping} ?hidden=${!this.hasGrouping}></b-btn>
+            <b-btn icon="group_by" class="grouping" lg clear pill
+                tooltip=${groupedBy.length ? `Grouped by ${groupedBy.join(', ')} (G)` : 'Group by (G)'}
+                @click=${this.toggleGrouping} ?hidden=${!this.hasGrouping}></b-btn>
 
-            <slot name="scroller"></slot>
+            <slot name="scroller" @slotchange=${()=>this.requestUpdate()}></slot>
 
             ${!this.sorts?'':html`
                 <b-list-sort-btn .sorts=${this.sorts}></b-list-sort-btn>
@@ -238,7 +255,8 @@ customElements.define('b-list-toolbar', class extends LitElement{
 
             <slot></slot>
         </div>
-    `}
+    `
+    }
 
     set term(term){
         let termInput = this.shadowRoot.querySelector('b-list-search-bar')

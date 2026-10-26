@@ -32,8 +32,6 @@
     Toggle by clicking the brand (logo), `cmd/ctrl + \`, or `window.dispatchEvent(new Event('b-app-sidebar:toggle'))`
     As a drawer, swipe in from the left edge of the screen to open it and swipe it to the left to close it
 
-    `size="large"` - bigger items (ex: a user preference)
-
     Styling vars: --b-app-sidebar-width, --b-app-sidebar-rail-width, --b-app-sidebar-bgd,
     --b-app-sidebar-overlay-bgd (drawer and overlay)
 */
@@ -49,8 +47,7 @@ customElements.define('b-app-sidebar', class extends LitElement{
 
     static properties = {
         mode: {type: String, reflect: true},
-        open: {type: Boolean, reflect: true},
-        size: {type: String, reflect: true} // '' or 'large' (bigger items; everything scales together)
+        open: {type: Boolean, reflect: true}
     }
 
     static styles = css`
@@ -64,13 +61,6 @@ customElements.define('b-app-sidebar', class extends LitElement{
             width: var(--width);
             flex-shrink: 0;
             transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* larger items: text, icons, spacing, and widths all scale (em based) */
-        :host([size="large"]) {
-            font-size: 1.15em;
-            --width: var(--b-app-sidebar-width, 276px);
-            --b-app-sidebar-item-padding-y: .7rem;
         }
 
         :host([mode="rail"]) { width: var(--rail-width); }
@@ -186,6 +176,15 @@ customElements.define('b-app-sidebar', class extends LitElement{
             flex-direction: column;
             gap: 1px;
             padding-top: .5rem;
+        }
+
+        /* a line between the menu and the footer items */
+        .footer::before {
+            content: '';
+            display: block;
+            height: 1px;
+            margin: 0 .65rem .5rem;
+            background: rgba(var(--theme-text-rgb), .12);
         }
     `
 
