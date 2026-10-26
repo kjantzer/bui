@@ -711,11 +711,28 @@ export default class FiltersPopover extends LitElement {
         }
     }
 
-    // (mouse) the arrows continue from here
-    clickSelect(key){
+    // (mouse) the arrows continue from here; desktop: its options' search (or input) is focused, ready to type
+    async clickSelect(key){
         this.keyNav = false
         this.highlight = Math.max(0, this.navItems.findIndex(item=>item.key == key))
-        this.select(key)
+        await this.select(key)
+        this.focusOptions()
+    }
+
+    async focusOptions(){
+        if( this.sheet ) return // (the keyboard would cover the sheet)
+        await this.updateComplete
+
+        requestAnimationFrame(()=>{
+            let el = this.renderRoot.querySelector('.detail-body > *')
+
+            let input = !el ? null : el.tagName == 'B-MENU'
+                ? el.shadowRoot?.querySelector('.menu-search-bar input')
+                : firstInput(el)
+
+            // nothing to type in: back to the filter search (keys keep working)
+            ;(input || this.renderRoot.querySelector('header input'))?.focus({preventScroll: true})
+        })
     }
 
     back(){
@@ -952,6 +969,22 @@ export function historyMenu(filters){
     }
 
     return menu
+}
+
+// first text input in a custom view (looks inside shadow roots)
+function firstInput(el){
+    let roots = [el.shadowRoot, el].filter(Boolean)
+    for( let root of roots ){
+        let input = root.querySelector('input:not([type=checkbox]):not([type=radio]):not([type=hidden]), textarea, [contenteditable=true]')
+        if( input ) return input
+        for( let child of root.querySelectorAll('*') ){
+            if( child.shadowRoot ){
+                let found = firstInput(child)
+                if( found ) return found
+            }
+        }
+    }
+    return null
 }
 
 function highlight(label, q){
