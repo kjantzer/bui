@@ -445,6 +445,7 @@ export class Panel extends LitElement {
         <div part="backdrop" class="backdrop"></div>
         <main part="main" style="${this.width?`width:${this.width};`:''}${this.height?`height:${this.height};`:''}">
             <b-btn icon="close" part="close-btn" squareicon pill class="modal-close-btn" @click=${this.close} ?hidden=${this.closebtn!==true}></b-btn>
+            <div class="grabber" title="Close" @click=${this.close}></div>
             <slot></slot>
             <div class="inlinehtml" ?filled=${!!this.html}>
                 ${this.html}
@@ -951,6 +952,31 @@ export class Panel extends LitElement {
             transform: translateX(-50%);
             background: rgba(var(--theme-text-rgb, 0,0,0), .25);
             pointer-events: none;
+        }
+
+        /* the grabber can be clicked to close with a mouse (ex: testing the phone layout on a desktop);
+           not on touch, where it's dragged (and this would get in the way) */
+        .grabber {
+            display: none;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            :host([swipe-close]) .grabber {
+                display: block;
+                position: absolute;
+                z-index: 1000; /* (above the panel's content) */
+                pointer-events: all; /* (main has none; only its content does) */
+                top: 0;
+                left: 50%;
+                width: 64px;
+                height: 18px;
+                transform: translateX(-50%);
+                cursor: pointer;
+            }
+
+            :host([swipe-close]) > main:has(.grabber:hover)::before {
+                background: rgba(var(--theme-text-rgb, 0,0,0), .45);
+            }
         }
 
         .backdrop {
