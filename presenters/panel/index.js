@@ -943,7 +943,7 @@ export class Panel extends LitElement {
            (--b-panel-close-btn-display) and leave room at the top for the grabber */
         :host([swipe-close]) {
             --b-panel-close-btn-display: none;
-            --root-titlebar-padding-left: 1em; /* (title was beside the close btn) */
+            --root-titlebar-padding-left: .5em; /* (title was beside the close btn) */
         }
 
         :host([swipe-close]) > main ::slotted(*) {
