@@ -111,6 +111,7 @@ export default class FiltersPopover extends LitElement {
     static styles = css`
         :host {
             display: grid;
+            grid-template-columns: minmax(0, 1fr); /* (never wider than it's given) */
             grid-template-rows: auto minmax(0, 1fr);
             height: min(600px, 78vh);
             background: var(--theme-bgd);
@@ -179,24 +180,47 @@ export default class FiltersPopover extends LitElement {
             padding: 0;
             justify-content: center;
             box-sizing: border-box;
+            border-radius: 50%;
+        }
+
+        header .tools b-btn::part(icon) {
+            --size: 1.2rem;
+            margin: 0;
         }
 
         header b-btn[active] {
             color: var(--theme);
             --hoverBgdColor: color-mix(in srgb, var(--theme) 14%, transparent);
             background: color-mix(in srgb, var(--theme) 14%, transparent);
-            border-radius: 2em;
+            border-radius: 50%;
         }
 
         .actions b-btn::part(main) {
             height: 2.1rem;
             padding: 0 1em;
             box-sizing: border-box;
+            border-radius: 2em;
         }
 
         /* (room for the sheet's grab handle) */
         :host([sheet]) header {
             padding-top: 1.1rem;
+        }
+
+        /* phones: the search on its own row; tools, then Cancel / Apply below it */
+        :host([sheet]) header {
+            flex-wrap: wrap;
+            row-gap: .5rem;
+        }
+
+        :host([sheet]) .search {
+            flex-basis: 100%;
+        }
+
+        :host([sheet]) .actions {
+            margin-left: auto;
+            border-left: none;
+            padding-left: 0;
         }
 
         .search {
@@ -240,18 +264,18 @@ export default class FiltersPopover extends LitElement {
 
         .list {
             border-right: solid 1px var(--theme-bgd-accent);
-            padding: .35rem 0 .5rem;
+            padding: .25rem 0 .5rem;
         }
 
         :host([narrow]) .list { border-right: none; }
         .list[hidden] { display: none; }
 
+        /* group labels and rows match the options menu beside them (bui/presenters/menu) */
         .group {
-            padding: .75rem .9rem .3rem;
-            font-size: .7rem;
+            margin: .35rem .4rem 0;
+            padding: .6rem .75rem .25rem;
+            font-size: .78em;
             font-weight: 600;
-            letter-spacing: .08em;
-            text-transform: uppercase;
             color: var(--theme-text-accent);
         }
 
@@ -266,15 +290,13 @@ export default class FiltersPopover extends LitElement {
             display: flex;
             align-items: center;
             gap: .55rem;
-            margin: 0 .35rem;
-            padding: .45rem .55rem;
-            border-radius: 8px;
+            margin: 2px .4rem;
+            padding: .6rem .75rem;
+            min-height: 2.45rem;
+            box-sizing: border-box;
+            border-radius: .6rem;
             cursor: pointer;
             min-width: 0;
-        }
-
-        :host([sheet]) .item {
-            padding: .7rem .65rem;
         }
 
         @media (hover) {
@@ -364,13 +386,31 @@ export default class FiltersPopover extends LitElement {
             align-items: center;
             gap: .35rem;
             min-height: 2.75rem;
-            padding: .25rem .5rem .25rem .9rem;
+            padding: .25rem .5rem .25rem 1.15rem; /* (title lines up with the options) */
             border-bottom: solid 1px var(--theme-bgd-accent);
             box-sizing: border-box;
         }
 
         :host([narrow]) .detail-head {
             padding-left: .35rem;
+        }
+
+        .detail-head b-btn {
+            width: 2.1rem;
+            height: 2.1rem;
+        }
+
+        .detail-head b-btn::part(main) {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .detail-head b-btn::part(icon) {
+            --size: 1.2rem;
+            margin: 0;
         }
 
         .detail-head .title {
