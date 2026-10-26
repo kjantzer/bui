@@ -107,6 +107,17 @@ export default class FiltersPopover extends LitElement {
         this.query = ''
         this.menus = {}
         this.onChange = ()=>this.requestUpdate()
+
+        // escape steps back: from a filter's values (its search, a custom view's input) to "Find a filter",
+        // then (see onSearchKey) clears the find text, then closes; captured so inline menus don't take it first
+        this.addEventListener('keydown', e=>{
+            if( e.key != 'Escape' || e.isComposing ) return
+            let find = this.renderRoot.querySelector('header input')
+            if( !find || e.composedPath()[0] == find ) return
+            e.preventDefault()
+            e.stopPropagation()
+            find.focus({preventScroll: true})
+        }, true)
     }
 
     static styles = css`
@@ -1001,8 +1012,10 @@ export default class FiltersPopover extends LitElement {
 
     // up/down move through the left column; enter picks (a filter shows its options, a value is set)
     onSearchKey(e){
-        if( e.key == 'Escape' && this.query ){
+        if( e.key == 'Escape' ){
             e.stopPropagation()
+            e.preventDefault()
+            if( !this.query ) return this.close() // (applies, like clicking outside)
             this.query = ''
             this.highlight = Math.max(0, this.navItems.findIndex(item=>item.key == this.selectedKey))
             return
