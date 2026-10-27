@@ -165,55 +165,65 @@ customElements.define('check-box', class extends LitElement{
 			display: none;
 		}
 
+		/* switch: matches the drawn box (theme color when on, same hover and disabled looks); a white thumb
+		   that slides over (and stretches while pressed); sized from --size */
 		.switch {
+			--track-h: calc(var(--size) * .78);
+			--track-w: calc(var(--size) * 1.3);
+			--inset: 2px;
+			--thumb: calc(var(--track-h) - 2 * var(--inset));
 			position: relative;
-			align-items: center;
-			/* margin: .5em; */
-		}
-
-		.switch:before, .switch:after {
-			content: "";
-			margin: 0;
-			outline: 0;
-			transition: all 0.3s ease;
-		}
-
-		.switch:before {
-			display: block;
-			width: calc(2.2em + 2px);
-			height: calc(1.2em + 2px);
-			background-color: rgba(var(--theme-text-rgb, 0,0,0,), .3);
-			border-radius: 1.2em;
-			/* box-shadow: 0 0 0 1px var(--theme-text-accent); */
+			flex-shrink: 0;
+			width: var(--track-w);
+			height: var(--track-h);
+			margin: calc((var(--size) - var(--track-h)) / 2) 0;
+			border-radius: var(--track-h);
+			background-color: rgba(var(--theme-text-rgb, 0,0,0), .18);
+			transition: background-color 160ms;
 		}
 
 		.switch:after {
+			content: '';
 			position: absolute;
-			left: 3px;
-			top: 50%;
-			transform: translate(0, -50%);
-			width: 1em;
-			height: 1em;
-			background-color:var(--theme-bgd);
-			border-radius: 50%;
-			/* box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.14), 0 2px 2px 0 rgba(0, 0, 0, 0.098), 0 1px 5px 0 rgba(0, 0, 0, 0.084); */
+			top: var(--inset);
+			left: var(--inset);
+			width: var(--thumb);
+			height: var(--thumb);
+			border-radius: var(--thumb);
+			background: #fff;
+			box-shadow: 0 1px 2px rgba(0,0,0,.2), 0 1px 1px rgba(0,0,0,.06);
+			transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1), width 120ms ease;
 		}
 
+		@media (hover) {
+			:host([type="switch"]:not([disabled]):not([checked]):hover) .switch {
+				background-color: rgba(var(--theme-text-rgb, 0,0,0), .26);
+			}
+		}
 
-		:host([checked]) .switch:before {
+		:host([checked]) .switch {
 			background-color: var(--color);
-			/* opacity: .5; */
-			/* box-shadow: none; */
-			/* box-shadow: 0 0 0 1px var(--color); */
 		}
 
 		:host([checked]) .switch:after {
-			background-color: var(--theme-bgd);
-			transform: translate(100%, -50%);
+			transform: translateX(calc(var(--track-w) - var(--thumb) - 2 * var(--inset)));
+		}
+
+		/* pressed: the thumb stretches toward where it's going */
+		:host([type="switch"]:not([disabled])) main:active .switch:after {
+			width: calc(var(--thumb) * 1.25);
+		}
+
+		:host([type="switch"][checked]:not([disabled])) main:active .switch:after {
+			transform: translateX(calc(var(--track-w) - var(--thumb) * 1.25 - 2 * var(--inset)));
+		}
+
+		:host([type="switch"]) touch-ripple {
+			display: none;
 		}
 
 		:host([disabled]) .switch {
-			opacity: .5;
+			opacity: .4;
 		}
 	`}
 
