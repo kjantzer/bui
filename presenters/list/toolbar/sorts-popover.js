@@ -5,7 +5,8 @@
     - the sorts in one list: the active ones first, in the order they apply (drag to reorder: anywhere on the
       row with a mouse, by the handle on touch screens; the row follows the pointer, the others make room,
       the order applies on drop); then the others
-    - tap a sort to turn it on (its default direction) or off; when on, its direction is a btn on the right
+    - tap a sort to sort by just it (its default direction, or its current one if on); tap its box to add it to
+      (or remove it from) the current sort; when on, its direction is a btn on the right
 
     Changes show here as they're made; the list re-sorts (or refetches) once, when it closes
 
@@ -219,6 +220,30 @@ export default class SortsPopover extends LitElement {
             opacity: .6;
         }
 
+        /* (its own click: add to / remove from the sort; a bigger target than it looks) */
+        .sort:not(.preset) .box {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .sort:not(.preset) .box:before {
+            content: '';
+            position: absolute;
+            inset: -.5em;
+            border-radius: .6em;
+        }
+
+        @media (hover) {
+            .sort:not(.preset) .box:hover {
+                opacity: 1;
+                border-color: var(--theme);
+            }
+
+            .sort:not(.preset) .box:hover:before {
+                background: color-mix(in srgb, var(--theme) 12%, transparent);
+            }
+        }
+
         .sort[active] .box {
             opacity: 1;
             border: none;
@@ -326,12 +351,13 @@ export default class SortsPopover extends LitElement {
         return html`
             <div class="sort" ?active=${active} ?dragging=${this.dragKey == sort.key} data-key=${sort.key}
                 @pointerdown=${e=>active && this.rowDown(e, sort)}
-                @click=${()=>this.toggle(sort)}>
+                @click=${()=>this.only(sort)}>
                 <span class="handle" no-swipe-close ?hidden=${!active} title="Drag to change the order"
                     @pointerdown=${e=>this.dragStart(e, sort)} @click=${e=>e.stopPropagation()}>
                     <b-icon name="drag_indicator"></b-icon>
                 </span>
-                <span class="box">${active ? html`<b-icon name="check"></b-icon>` : ''}</span>
+                <span class="box" title=${active ? 'Remove from the sort' : 'Add to the sort'}
+                    @click=${e=>{ e.stopPropagation(); this.toggle(sort) }}>${active ? html`<b-icon name="check"></b-icon>` : ''}</span>
                 <span class="label">
                     ${sort.label}
                     ${sort.description ? html`<small>${sort.description}</small>` : ''}
@@ -349,7 +375,14 @@ export default class SortsPopover extends LitElement {
         `
     }
 
-    // on (the sort's default direction) or off
+    // sort by just this one (keeps its direction if it's already on)
+    only(sort){
+        if( this.dragged ) return // (the click at the end of a row drag)
+        let current = this.sorts.value[sort.key]
+        this.setValue({[sort.key]: current || {desc: !!sort.attrs.desc}})
+    }
+
+    // add to the sort (its default direction) or take it out
     toggle(sort){
         if( this.dragged ) return // (the click at the end of a row drag)
         let value = {...this.sorts.value}
