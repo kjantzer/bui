@@ -105,22 +105,22 @@ customElements.define('b-list', class extends LitElement {
     }
 
     static get styles(){return css`
-        /* how many results: a subtle badge floating over the content, bottom right */
+        /* how many results: a badge floating over the content, bottom right */
         .count-badge {
             position: absolute;
             right: 1rem;
             bottom: calc(.85rem + var(--nav-view-bottom-space, 0px));
             z-index: 20;
-            padding: .3em .75em;
+            padding: .4em .9em;
             border-radius: 999px;
-            font-size: .78rem;
-            font-weight: 500;
+            font-size: .85rem;
+            font-weight: 600;
             font-variant-numeric: tabular-nums;
-            color: var(--theme-text-accent);
-            background: color-mix(in srgb, var(--theme-bgd) 80%, transparent);
+            color: var(--theme-text);
+            background: color-mix(in srgb, var(--theme-bgd-accent) 90%, transparent);
             -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
-            box-shadow: 0 0 0 1px rgba(var(--theme-text-rgb), .08), 0 2px 8px rgba(0,0,0,.08);
+            box-shadow: 0 0 0 1px rgba(var(--theme-text-rgb), .12), 0 2px 10px rgba(0,0,0,.15);
             pointer-events: none;
         }
 
