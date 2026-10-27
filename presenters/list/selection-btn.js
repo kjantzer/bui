@@ -20,7 +20,7 @@ customElements.define('b-list-selection-btn', class extends Btn{
         super()
         this.setAttribute('clear', '')
         this.setAttribute('lg', '')
-        this.icon = 'library_add_check'
+        this.icon = 'list_select'
 
         if( this.parentElement.tagName == 'B-LIST')
             this.slot = 'toolbar:after'

@@ -94,7 +94,7 @@ customElements.define('b-list-selection-bar', class extends LitElement{
             <div>
                 <slot name="right"></slot>
 
-                <b-btn class="cancel-btn" icon="library_add_check" color="theme" @click=${this.end} clear lg></b-btn>
+                <b-btn class="cancel-btn" icon="list_select" color="theme" @click=${this.end} clear lg></b-btn>
             </div>
         `:''}
     `}
