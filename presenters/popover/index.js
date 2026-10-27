@@ -45,8 +45,10 @@ const WatchClicks = function(e){
 	}
 	
 	// close all popovers not part (nested) within the clicked target
+	// (`opts.keepOpenFor(path)`: clicks it returns true for count as inside, ex: btns that change what's shown)
+	let path = e.composedPath ? e.composedPath() : []
 	OpenPopovers.slice(0).reverse().forEach(dd=>{
-		if( !found && ( !dd.contains(target)) ){
+		if( !found && !dd.contains(target) && !dd.opts.keepOpenFor?.(path, e) ){
 			close.push(dd)
 			
 		// as soon as one of the popovers is nested, all others that follow will be nested, no reason to continue testing
@@ -205,7 +207,8 @@ export default class Popover {
 						enabled: opts.preventDefault !== undefined ? opts.preventDefault : true, // FIXME: confusing naming and not sure it works
 						boundariesElement: opts.overflowBoundry || 'scrollParent',
 						// priority: []
-						priority: ['top', 'bottom'].includes(opts.align) ? ['left', 'right'] : ['top', 'bottom']
+						// (by side: `bottom-start`/`bottom-end` shift sideways too, so they stay on screen)
+						priority: ['top', 'bottom'].includes(opts.align.split('-')[0]) ? ['left', 'right'] : ['top', 'bottom']
 					}
 				}
 			});
