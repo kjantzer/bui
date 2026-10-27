@@ -2,6 +2,12 @@
     # Auth
 
     A standard login with Passport; to be used with along with `server/app`
+
+    - `cookieName` - the session cookie (default `connect.sid`); give each app its own, since cookies are
+      shared by every port on a host (ex: two apps on localhost would log each other out)
+    - `maxAge` - ms the login lasts since the last visit (the cookie and the stored session; each request
+      extends it). Without it (or `expires`) the cookie ends when the browser does and the stored
+      session after a day without use
 */
 const passport = require('passport')
 
@@ -14,6 +20,8 @@ module.exports = class PassportAuth {
         redisClient,
         loginPage,
         sessionSecret,
+        cookieName = 'connect.sid',
+        maxAge,
         expires
     }={}){
 
@@ -29,14 +37,18 @@ module.exports = class PassportAuth {
         if( expires == 'never' || expires === false )
             expires = new Date(253402300000000) // effectively never
 
-        if( expires )
+        if( maxAge )
+            cookie.maxAge = maxAge
+        else if( expires )
             cookie.expires = expires
 
         app.use(session({
+            name: cookieName,
             store: this.sessionStore,
             secret: sessionSecret || process.env.SESSION_SECRET,
             resave: false,
             saveUninitialized: false,
+            rolling: !!maxAge, // (each request extends it)
             cookie
         }))
 
@@ -53,7 +65,7 @@ module.exports = class PassportAuth {
         if( io ){
             // make sure user is authenticated when using Socket.io
             io.use(require('passport.socketio').authorize({
-                key: 'connect.sid',
+                key: cookieName,
                 secret: sessionSecret || process.env.SESSION_SECRET,
                 store: this.sessionStore,
                 passport: passport,
