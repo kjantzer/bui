@@ -324,6 +324,45 @@ export default class Filters extends Map {
         return resp
     }
 
+    /*
+        Pinned filters: always shown in the toolbar (in this order), even when not applied
+        Saved in this browser; lists that opt in (`options: {pins: true}`) start with their `show: true` filters
+    */
+    get _pinsKey(){ return this._storeKey+':pins' }
+
+    get pinned(){
+        if( !this.__pinned ){
+            let keys
+            try{ keys = this.key && JSON.parse(localStorage.getItem(this._pinsKey)) }catch(err){}
+
+            if( !Array.isArray(keys) )
+                keys = this.opts?.pins ? this.map(f=>f).filter(f=>f.attrs.show === true).map(f=>f.key) : []
+
+            this.__pinned = keys
+        }
+
+        return this.__pinned.filter(key=>this.get(key)) // (filters can be removed from a list)
+    }
+
+    set pinned(keys){
+        this.__pinned = keys
+        try{ if( this.key ) localStorage.setItem(this._pinsKey, JSON.stringify(keys)) }catch(err){}
+        this.emit('pinned', keys)
+    }
+
+    isPinned(key){ return this.pinned.includes(key) }
+
+    togglePin(key){
+        let keys = this.pinned
+        this.pinned = keys.includes(key) ? keys.filter(k=>k!=key) : [...keys, key]
+    }
+
+    movePin(from, to){
+        let keys = [...this.pinned]
+        keys.splice(to, 0, ...keys.splice(from, 1))
+        this.pinned = keys
+    }
+
     get presets(){
         this.__presets = this.__presets || new Presets()
         this.__presets.filters = this

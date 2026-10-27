@@ -2,6 +2,7 @@
     An active list filter in the toolbar: "Label: value"
 
     Click to change it (emits `open-filter`; see ./filters-view.js), ✕ to clear it
+    A pinned filter that isn't applied shows just its label (outlined)
 */
 import { LitElement, html, css } from 'lit'
 import {unsafeHTML} from 'lit/directives/unsafe-html.js'
@@ -65,6 +66,24 @@ customElements.define('b-list-filter-chip', class extends LitElement{
         .clear b-icon {
             font-size: .8em;
         }
+
+        /* pinned, not applied */
+        :host([inactive]) {
+            background: none;
+            box-shadow: inset 0 0 0 1px var(--theme-bgd-accent2);
+            color: var(--theme-text-accent);
+        }
+
+        @media (hover) {
+            :host([inactive]:hover) {
+                background: var(--theme-bgd-accent);
+                color: var(--theme-text);
+            }
+        }
+
+        :host([inactive]) .text {
+            padding-right: .75em;
+        }
     `
 
     connectedCallback(){
@@ -91,7 +110,16 @@ customElements.define('b-list-filter-chip', class extends LitElement{
         filter?.on('change', this.refresh)
     }
 
-    render(){return html`
+    updated(){
+        this.toggleAttribute('inactive', !this.filter.isActive)
+    }
+
+    render(){
+        if( !this.filter.isActive ) return html`
+            <span class="text" @click=${this.open}>${this.filter.label}</span>
+        `
+
+        return html`
         <span class="text" title=${this.filter.label+': '+stripTags(this.filter.valueLabel)} @click=${this.open}>
             ${this.filter.label}: <span class="value">${unsafeHTML(String(this.filter.valueLabel ?? ''))}</span>
         </span>

@@ -3,20 +3,18 @@ import {repeat} from 'lit/directives/repeat.js'
 import device from '../../../util/device'
 import './filter-btn'
 import './filter-saved-presets' // TODO: make this opt-in?
-import Dialog from '../../../presenters/dialog'
 import Menu from '../../../presenters/menu'
-import {dataTransfer} from '../../../elements/dragdrop'
-import readFile from '../../../util/readFile'
-import '../../../elements/uploader'
 import FiltersPopover, {historyMenu} from './filters-popover'
 import './filter-chip'
+import '../../../elements/sortable'
 
 /*
     List filters in the toolbar
 
     - Filters btn (with how many are on): opens every filter in a popover (a sheet on phones; see ./filters-popover.js)
-    - a chip for each active filter (click to change it, ✕ to clear it)
-    - pinned filters as quick dropdowns: only for lists that opt in (`options: {pins: true}`), their filters with `show: true`
+    - pinned filters first, always shown (even when not applied); drag to reorder, right-click to unpin
+      (pinned per browser, see Filters.pinned; pin from the filters popover or by right-clicking a chip)
+    - a chip for each other active filter (click to change it, ✕ to clear it)
 
     Keyboard: `f` opens the filters (changes apply when it's closed), `c` clears
 */
@@ -76,8 +74,20 @@ customElements.define('b-list-filters', class extends LitElement{
             flex-shrink: 0;
         }
 
-        b-dragdrop {
-            --radius: 4px;
+
+        .pins {
+            display: flex;
+            align-items: center;
+            gap: .25rem;
+            flex-shrink: 0;
+        }
+
+        .pins:empty {
+            display: none;
+        }
+
+        .pins > .sortable-ghost {
+            opacity: .4;
         }
 
         /* small: just the filters btn (and its count); the sheet shows the active filters and quick ones */
@@ -89,34 +99,58 @@ customElements.define('b-list-filters', class extends LitElement{
         }
     `}
 
-    get activeFilters(){
-        return this.filters.map(f=>f).filter(f=>f.isActive && f.attrs.show !== false)
+    get pinnedFilters(){
+        return this.filters.pinned.map(key=>this.filters.get(key)).filter(f=>f.attrs.show !== false)
     }
 
-    // quick dropdowns: lists opt in (`options.pins`); their `show: true` filters (active ones are chips)
-    get pinnedFilters(){
-        if( !this.filters.opts?.pins ) return []
-        return this.filters.map(f=>f).filter(f=>f.attrs.show === true && !f.isActive)
+    // active filters that aren't pinned
+    get activeFilters(){
+        let pinned = this.filters.pinned
+        return this.filters.map(f=>f).filter(f=>f.isActive && f.attrs.show !== false && !pinned.includes(f.key))
     }
 
     render(){return html`
 
-        <b-dragdrop @dragged=${this.onDrag}>Export</b-dragdrop>
-        <b-uploader accept=".bui" @change=${this.onUpload} placeholder="Import"></b-uploader>
 
         <span class="filters" ?hidden=${this.filters.size==0}>
             <b-btn icon="filter" clear lg pill class="filters-btn" @click=${()=>this.show()} tooltip="Filters (f)"></b-btn>
             ${this.filters.length?html`<span class="count">${this.filters.length}</span>`:''}
         </span>
 
-        ${repeat(this.activeFilters, filter=>filter.key, filter=>html`
-            <b-list-filter-chip .filter=${filter} @open-filter=${()=>this.show({filter: filter.key})}></b-list-filter-chip>
-        `)}
+        <span class="pins">
+            ${repeat(this.pinnedFilters, filter=>filter.key, filter=>this.renderChip(filter, {pinned: true}))}
+            ${this.pinnedFilters.length > 1 ? html`<b-sortable item="[pin]" @sort-changed=${this.onSortPins}></b-sortable>` : ''}
+        </span>
 
-        ${repeat(this.pinnedFilters, filter=>filter.key, filter=>html`
-            <b-list-filter-btn visible .filter=${filter}></b-list-filter-btn>
-        `)}
+        ${repeat(this.activeFilters, filter=>filter.key, filter=>this.renderChip(filter))}
     `}
+
+    renderChip(filter, {pinned}={}){return html`
+        <b-list-filter-chip .filter=${filter} ?pin=${pinned} @open-filter=${()=>this.show({filter: filter.key})}
+            @contextmenu=${e=>this.chipMenu(e, filter)}></b-list-filter-chip>
+    `}
+
+    // (sortable reports indexes among the pinned chips)
+    onSortPins(e){
+        let {oldIndex, newIndex} = e.detail
+        let keys = this.pinnedFilters.map(f=>f.key)
+        let from = this.filters.pinned.indexOf(keys[oldIndex])
+        let to = this.filters.pinned.indexOf(keys[newIndex])
+        this.filters.movePin(from, to)
+    }
+
+    async chipMenu(e, filter){
+        e.preventDefault()
+        let pinned = this.filters.isPinned(filter.key)
+
+        let selected = await new Menu([
+            {label: pinned ? 'Unpin' : 'Pin to Toolbar', icon: 'push_pin', val: 'pin'},
+            filter.isActive ? {label: 'Clear', icon: 'backspace', val: 'clear'} : null
+        ].filter(d=>d)).popOver(e.currentTarget, {align: 'bottom-start'})
+
+        if( selected?.val == 'pin' ) this.filters.togglePin(filter.key)
+        if( selected?.val == 'clear' ) filter.value = null
+    }
 
     get popover(){ return this.filters.__popover }
 
@@ -132,48 +166,6 @@ customElements.define('b-list-filters', class extends LitElement{
     toggle(){
         this.popover?.isOpen ? this.hide() : this.show()
     }
-
-    onDrag(e){
-        let {action} = e.detail
-
-        if( this.filters.length == 0 )
-            return action.allowed = false
-        
-        let filters = this.filters.value()
-        let filename = `filters-${this.filters.length}-${this.filters.key}.bui`
-        
-        dataTransfer.downloadContent(action.evt, filename, {
-            key: this.filters.key,
-            filters
-        })
-    }
-
-    async onUpload(e){
-        let uploader = e.currentTarget
-        let [file] = uploader.files
-        if( !file ) return
-        let data = await readFile(file)
-        data = JSON.parse(data)
-
-        if( !data.filters ) throw new UIWarningError('No filters found')
-        if( this.filters.key != data.key ) throw new UIWarningError('Wrong filters for this list')
-
-        if( this.filters.length == 0 )
-            return this.filters.reset(data.filters)
-
-        let how = await new Dialog({
-            noContent: true,
-            btns: [{label: 'Merge', color: 'blue'}, {label: 'Replace', color: 'red'}]
-        }).popOver(uploader.parent)
-
-        if( !how ) return
-
-        if( how.val == 'Merge' )
-            this.filters.update(data.filters)
-        else
-            this.filters.reset(data.filters)
-    }
-
 
     applyQueuedFilters(){
         this.filters.queuing = false
@@ -198,6 +190,7 @@ customElements.define('b-list-filters', class extends LitElement{
             this.filters.on('hide', this.hide)
             this.filters.on('change', this.onFilterChange)
             this.filters.on('reset', this.onFilterChange)
+            this.filters.on('pinned', this.onFilterChange)
         }
         
     }
@@ -210,6 +203,7 @@ customElements.define('b-list-filters', class extends LitElement{
             this.filters.off('hide', this.hide)
             this.filters.off('change', this.onFilterChange)
             this.filters.off('reset', this.onFilterChange)
+            this.filters.off('pinned', this.onFilterChange)
         }
     }
 

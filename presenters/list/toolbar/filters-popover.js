@@ -22,6 +22,7 @@ import { LitElement, html, css } from 'lit'
 import Menu from '../../menu'
 import Popover from '../../popover'
 import Panel from '../../panel'
+import Dialog from '../../dialog'
 import device from '../../../util/device'
 import {label as dateRangeLabel} from '../../datepicker/daterange'
 import './filter-saved-presets'
@@ -68,6 +69,8 @@ export default class FiltersPopover extends LitElement {
             return el
         }
 
+        // values can come from the list's data, which may have changed since it was last open (ex: a different coll)
+        el.menus = {}
         el.startQueue()
 
         // a sheet on phones and touch-only tablets (dragged down to close)
@@ -88,6 +91,8 @@ export default class FiltersPopover extends LitElement {
                 maxHeight: '78vh',
                 align: 'bottom-start',
                 overflowBoundry: 'window',
+                // (clicking one of the list's filter chips shows that filter, see ./filters-view.js)
+                keepOpenFor: path=>path.some(node=>node.localName == 'b-list-filter-chip' && node.filter?.parent == filters),
                 onClose: ()=>el.didClose()
             })
         }
@@ -399,6 +404,14 @@ export default class FiltersPopover extends LitElement {
             opacity: .6;
         }
 
+        /* pinned to the toolbar */
+        .item .pinned {
+            flex-shrink: 0;
+            --size: .9em;
+            color: var(--theme-text-accent);
+            opacity: .6;
+        }
+
         .dot {
             display: inline-block;
             width: .45em;
@@ -458,6 +471,14 @@ export default class FiltersPopover extends LitElement {
         .detail-head b-btn::part(icon) {
             --size: 1.2rem;
             margin: 0;
+        }
+
+        .detail-head .pin:not([active]) {
+            opacity: .5;
+        }
+
+        .detail-head .pin[active] {
+            color: var(--theme);
         }
 
         .detail-head .title {
@@ -678,6 +699,8 @@ export default class FiltersPopover extends LitElement {
                     `:''}
                     <b-btn clear pill icon="backspace" title="Clear all filters" @click=${this.clearAll}
                         ?disabled=${!this.filters.length}></b-btn>
+                    <b-btn clear pill icon="more_horiz" title="More" class="more" @click=${this.moreMenu}></b-btn>
+                    <input type="file" accept=".bui" hidden @change=${this.importFilters}>
                 </span>
                 <span class="actions">
                     <b-btn clear pill @click=${this.cancel}>Cancel</b-btn>
@@ -723,6 +746,7 @@ export default class FiltersPopover extends LitElement {
                     <span class="label">${label || filter.label}</span>
                     ${active?html`<span class="value"><b-text .html=${filter.valueLabel}></b-text></span>`:''}
                 </span>
+                ${this.filters.isPinned(filter.key)?html`<b-icon name="push_pin" class="pinned" title="Pinned to toolbar"></b-icon>`:''}
                 <b-icon name="chevron_right" class="chev"></b-icon>
             </div>
         `
@@ -817,8 +841,13 @@ export default class FiltersPopover extends LitElement {
             <div class="detail">
                 ${this.renderDetailHead(filter.label, {
                     hint: this.hasNot(filter) ? `${device.isTouch?'Hold':'Right-click'} for “Not”` : '',
-                    clear: html`<b-btn clear pill icon="backspace" title="Clear ${filter.label}" ?disabled=${!filter.isActive}
-                        @click=${()=>this.clearFilter(filter)}></b-btn>`
+                    clear: html`
+                        <b-btn clear pill icon="push_pin" class="pin" ?active=${this.filters.isPinned(filter.key)}
+                            title=${this.filters.isPinned(filter.key) ? 'Unpin from toolbar' : 'Pin to toolbar (always shown)'}
+                            @click=${()=>this.togglePin(filter)}></b-btn>
+                        <b-btn clear pill icon="backspace" title="Clear ${filter.label}" ?disabled=${!filter.isActive}
+                            @click=${()=>this.clearFilter(filter)}></b-btn>
+                    `
                 })}
                 <div class="detail-body">
                     ${this.loading ? html`<div class="empty"><b-spinner></b-spinner></div>`
@@ -996,9 +1025,72 @@ export default class FiltersPopover extends LitElement {
         view.didClose?.()
     }
 
+    // pinned filters always show in the toolbar (see ../data/filters.js pinned)
+    togglePin(filter){
+        this.filters.togglePin(filter.key)
+        this.requestUpdate()
+    }
+
     clearFilter(filter){
         filter.value = null
         delete this.menus[filter.key]
+    }
+
+    async moreMenu(e){
+        let selected = await new Menu([
+            {label: 'Import Filters', icon: 'upload', description: 'From an exported file', val: 'import'},
+            {label: 'Export Filters', icon: 'download', description: 'A file to share or import later', val: 'export',
+                disabled: !this.filters.length}
+        ]).popOver(e.currentTarget, {align: 'bottom-end'})
+
+        if( selected?.val == 'import' ) this.renderRoot.querySelector('input[type="file"]').click()
+        if( selected?.val == 'export' ) this.exportFilters()
+    }
+
+    // a .bui file (from exportFilters); merged with or replacing the current filters
+    async importFilters(e){
+        let input = e.currentTarget
+        let [file] = input.files
+        input.value = '' // (the same file can be picked again)
+        if( !file ) return
+
+        let data
+        try{ data = JSON.parse(await file.text()) }catch(err){}
+
+        let btn = this.renderRoot.querySelector('.more')
+        if( !data?.filters ) throw new UIWarningError('No filters found', {target: btn})
+        if( this.filters.key != data.key ) throw new UIWarningError('Wrong filters for this list', {target: btn})
+
+        let how = 'Replace'
+        if( this.filters.length ){
+            let selected = await new Dialog({
+                noContent: true,
+                btns: [{label: 'Merge', color: 'blue'}, {label: 'Replace', color: 'red'}]
+            }).popOver(btn)
+            if( !selected ) return
+            how = selected.val
+        }
+
+        if( how == 'Merge' )
+            this.filters.update(data.filters)
+        else
+            this.filters.reset(data.filters, {stopQueuing: false})
+
+        this.menus = {}
+        this.requestUpdate()
+    }
+
+    // a .bui file to share, or import later (see importFilters)
+    exportFilters(){
+        let filters = this.filters
+        let content = JSON.stringify({key: filters.key, filters: filters.value()})
+        let url = URL.createObjectURL(new Blob([content], {type: 'application/json'}))
+
+        let a = document.createElement('a')
+        a.href = url
+        a.download = `filters-${filters.length}-${filters.key}.bui`
+        a.click()
+        setTimeout(()=>URL.revokeObjectURL(url), 1000)
     }
 
     clearAll(){
