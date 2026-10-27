@@ -39,7 +39,7 @@ export default class GroupByPopover extends LitElement {
                 animation: 'rise',
                 width: device.isSmall ? '100%' : 'min(480px, 100%)',
                 height: 'auto',
-                onClose: ()=>el.isOpen = false
+                onClose: ()=>{ el.isOpen = false } // (no return value: returning false keeps a panel open)
             }).open()
         }else{
             el.sheet = false
@@ -48,7 +48,7 @@ export default class GroupByPopover extends LitElement {
                 maxHeight: '75vh',
                 align: 'bottom-start',
                 overflowBoundry: 'window',
-                onClose: ()=>el.isOpen = false
+                onClose: ()=>{ el.isOpen = false }
             })
         }
 
