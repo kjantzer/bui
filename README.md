@@ -1,7 +1,10 @@
 
 <p align="center">
   <a href="https://github.com/kjantzer/bui" rel="noopener" target="_blank">
-    <img width="200" src="https://raw.githubusercontent.com/kjantzer/bui/master/logo.png"/>
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/kjantzer/bui/master/logo-dark.png">
+      <img width="200" src="https://raw.githubusercontent.com/kjantzer/bui/master/logo.png"/>
+    </picture>
   </a>
 </p>
 

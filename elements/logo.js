@@ -13,31 +13,26 @@ customElements.define('bui-logo', class extends LitElement{
         }
 
         svg {
-            height: .62em;
-            margin: -0.25em 0em -0.17em;
+            height: .7em;
+            overflow: visible;
         }
 
-        svg * {
-            fill: currentColor;
+        .top {
+            fill: var(--logo-color, currentColor);
+            stroke: var(--logo-color, currentColor);
         }
 
-        span {
-            /* color: currentColor; */
-            color: var(--theme);
-            /* opacity: .4; */
-            font-size: .9em;
-            line-height: 0;
-            margin-top: -.07em;
+        .bot {
+            fill: var(--logo-accent, var(--theme, #3a76d0));
+            stroke: var(--logo-accent, var(--theme, #3a76d0));
         }
     `}
 
     render(){return html`
-
-        <span>❮</span>
-
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 126.62 188.42"><g style="fill:var(--logo-color, #1d1d1b);" id="Layer_2" data-name="Layer 2"><g id="Layer_4" data-name="Layer 4"><path d="M10.74,7.1c13.2-11.54,67.06-9.34,91.22,9,26.1,19.84,23,55.15-10.4,70C58.68,100.82,15.41,110.5,5.79,73.75-5,32.53.83,15.78,10.74,7.1Z"/><path d="M126.62,139.29c-.19,42.87-26.55,46.48-58.42,48.35-39.92,2.35-56.14,1-59.76-26.42-3.35-25.31,8.51-37,50.23-51.35C113.14,91.08,126.76,107.25,126.62,139.29Z"/></g></g></svg>
-
-        <span>❯</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="12 8 41.5 48">
+            <path class="top" stroke-width="2" stroke-linejoin="round" d="M20 10H36a9.5 9.5 0 0 1 0 19H13.61z"/>
+            <path class="bot" stroke-width="2" stroke-linejoin="round" d="M13.61 35H42a9.5 9.5 0 0 1 0 19H20z"/>
+        </svg>
     `}
 
 })
