@@ -85,9 +85,10 @@ const device = {
         return 'ontouchstart' in window || navigator.maxTouchPoints > 0
     },
 
-    // no mouse or trackpad (ex: a phone or tablet; a tablet with a trackpad is not)
+    // the main pointer is a finger (ex: a phone or tablet, even with a stylus like an S Pen;
+    // a laptop with a touchscreen is not: its main pointer is the trackpad)
     get isTouchOnly(){
-        return !window.matchMedia?.('(any-pointer: fine)').matches
+        return !!window.matchMedia?.('(pointer: coarse)').matches
     },
     
     get isMobile(){

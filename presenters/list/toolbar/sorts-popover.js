@@ -200,7 +200,7 @@ export default class SortsPopover extends LitElement {
         }
 
         /* with a mouse the whole row drags (see rowDown); the handle is for touch screens (and the phone sheet) */
-        @media (any-pointer: fine) {
+        @media (pointer: fine) {
             :host(:not([sheet])) .handle {
                 display: none;
             }

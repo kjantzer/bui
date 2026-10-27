@@ -1,7 +1,7 @@
 /*
     # Panel Swipe to Close
 
-    On small screens and touch-only devices (ex: a tablet), panels shown as a bottom sheet
+    On small screens and touch screens (ex: a tablet), panels shown as a bottom sheet
     (`anchor: 'bottom'`) can be dragged down to close (like iOS sheets). A grabber is shown at
     the top of the sheet (`swipe-close` attr).
 
@@ -18,23 +18,26 @@
 */
 
 const SMALL_SCREEN = '(max-width: 599px)'
-const TOUCH_ONLY = '(any-pointer: fine)' // (not matching = touch only)
+// the main pointer is a finger (ex: tablets and phones; a stylus, like an S Pen, doesn't count against it)
+const TOUCH_ONLY = '(pointer: coarse)'
 const LOCK_DISTANCE = 8 // px moved before deciding the drag direction
 const CLOSE_DISTANCE = 140 // px (or 25% of the sheet height, whichever is smaller)
 const CLOSE_VELOCITY = .6 // px/ms
 const SNAP_MS = 200
 const SCREEN_EDGE = 24 // px; right panel drags starting this close to the screen's left edge are left alone
 
-const touchOnly = ()=>!window.matchMedia?.(TOUCH_ONLY).matches
+const touchOnly = ()=>!!window.matchMedia?.(TOUCH_ONLY).matches
+const hasTouch = ()=>navigator.maxTouchPoints > 0 || 'ontouchstart' in window
 
 // the direction the panel can be dragged to close: 'down', 'right', or null
 export function swipeCloseDir(panel){
     if( panel.opts?.swipeClose === false || panel.type == 'modal' ) return null
 
-    if( panel.anchor == 'bottom' && (window.matchMedia?.(SMALL_SCREEN).matches || touchOnly()) )
+    // (any touch screen: a bottom sheet there is meant to be swiped, ex: a tablet whose pointer reports as fine)
+    if( panel.anchor == 'bottom' && (window.matchMedia?.(SMALL_SCREEN).matches || touchOnly() || hasTouch()) )
         return 'down'
 
-    if( panel.anchor == 'right' && touchOnly() )
+    if( panel.anchor == 'right' && (touchOnly() || hasTouch()) )
         return 'right'
 
     return null
