@@ -12,6 +12,7 @@
     - `path` - opens the path (ie a panel) on click and is highlighted while that path is the current route;
       icon is the theme color while its panel is open underneath other panels
     - `base` - the app's main view; highlighted when it's on top, click brings it above any open panels
+      - with a `path` too (the base view has its own routes, ex: tabs): also highlighted on that path, click goes to it
     - `.menu` - `bui/presenters/menu` items (or a fn that returns them, called on click) shown as a flyout;
       selecting an item with a `url` opens it, otherwise listen for `menu-select` ({detail: {selected}})
     - no `path` or `menu`: handle `@click` yourself
@@ -21,6 +22,7 @@
 */
 import { LitElement, html, css } from 'lit'
 import router from '../router'
+import {cleansePath} from '../router/config'
 import Menu from '../../presenters/menu'
 import PanelController from '../../presenters/panel/controller'
 import '../../elements/icon'
@@ -183,18 +185,15 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
         }
 
         let current = fromRoute ? e.detail.path : router.states.current?.path
-        current = trimPath(current)
+        current = trimPath(cleansePath(String(current||''))) // (without the router's root and prefix, ex: `/#/`)
 
-        let root = trimPath(router.pathRoot)
-        if( root && current.startsWith(root) )
-            current = trimPath(current.slice(root.length))
+        let onPath = path=>current == path || current.startsWith(path+'/')
 
         if( this.base )
-            this.active = !current
-        else if( this.path ){
-            let path = trimPath(this.path)
-            this.active = current == path || current.startsWith(path+'/')
-        }else
+            this.active = !current || (!!this.path && onPath(trimPath(this.path)))
+        else if( this.path )
+            this.active = onPath(trimPath(this.path))
+        else
             this.active = false
 
         this.updateOpen()
@@ -234,8 +233,11 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
             return
         }
 
-        if( this.base )
-            return this.panelController?.showBase()
+        if( this.base ){
+            this.panelController?.showBase()
+            if( this.path ) (window.goTo || router.goTo.bind(router))(this.path)
+            return
+        }
 
         if( this.path )
             (window.goTo || router.goTo.bind(router))(this.path)
