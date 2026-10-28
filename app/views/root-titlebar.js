@@ -99,6 +99,12 @@ customElements.define('b-root-titlebar', class extends LitElement{
         return this.getRootNode().host.panel
     }
 
+    // the panel's `closeBtn` icon (ex: 'close' for an X); 'arrow' or true is a chevron
+    get closeBtnIcon(){
+        let icon = this.panel?.closebtn
+        return typeof icon == 'string' && icon != 'arrow' ? icon : 'chevron_right'
+    }
+
     get titleVal(){
         return this.title || (this.panel&&this.panel.title) 
         || (this.parentElement && this.parentElement.host && this.parentElement.host.constructor.title)
@@ -107,7 +113,7 @@ customElements.define('b-root-titlebar', class extends LitElement{
     render(){return html`
 
         ${this.panel?html`
-            <b-btn clear lg pill icon="chevron_right" part="close-btn" @click=${this.close}></b-btn>
+            <b-btn clear lg pill icon=${this.closeBtnIcon} part="close-btn" @click=${this.close}></b-btn>
         `:''}
 
         <slot name="left"></slot>

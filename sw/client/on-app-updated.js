@@ -1,8 +1,25 @@
 import Notif from '../../presenters/notif'
 import device from '../../util/device'
 
-// quiet: no "update downloading/available" notifs (ex: an app's reload is already updating and shows its own)
+// quiet: no "update downloading/available" notifs (ex: an app's reload is already updating, or it shows its own prompt)
 export const updateNotifs = {quiet: false}
+
+/*
+    The update waiting to be used (`worker` is set once one is ready)
+    an app can show its own prompt instead of the notif: set `updateNotifs.quiet`, check `appUpdate.ready`,
+    and listen for the `sw:update-ready` window event; `appUpdate.apply()` switches to it (which reloads)
+*/
+export const appUpdate = {
+    worker: null,
+    oldWorker: null,
+    get ready(){ return !!this.worker },
+    apply(){
+        if( !this.worker ) return location.reload()
+        // https://allanchain.github.io/blog/post/pwa-skipwaiting/
+        this.oldWorker?.postMessage({action: 'abortConnections'})
+        this.worker.postMessage({action:'skipWaiting'})
+    }
+}
 
 // when a new service worker takes over, reload the app to begin using it
 let refreshing;
@@ -43,7 +60,13 @@ if( navigator.serviceWorker ){
 
 
 function newUpdateNotif(worker, oldWorker){
-    if( !navigator.serviceWorker.controller || updateNotifs.quiet ) return
+    if( !navigator.serviceWorker.controller ) return
+
+    appUpdate.worker = worker
+    appUpdate.oldWorker = oldWorker
+    window.dispatchEvent(new CustomEvent('sw:update-ready', {detail: appUpdate}))
+
+    if( updateNotifs.quiet ) return
 
     new Notif({
         nid: 'bui-sw-app-updated',
@@ -54,11 +77,8 @@ function newUpdateNotif(worker, oldWorker){
         width: 'auto',
         anchor: 'top-right',
         onClick(notif, btn){
-            if( btn ){
-                // https://allanchain.github.io/blog/post/pwa-skipwaiting/
-                oldWorker?.postMessage({action: 'abortConnections'})
-                worker.postMessage({action:'skipWaiting'})
-            }
+            if( btn )
+                appUpdate.apply()
         }
     })
 }
