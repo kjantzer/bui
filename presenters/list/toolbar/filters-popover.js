@@ -53,6 +53,7 @@ export default class FiltersPopover extends LitElement {
         filters.__popover = el
         el.filters = filters
         el.query = ''
+        el.historyQuery = ''
 
         // show something right away: the filter asked for, else (desktop) the first active one or the first one
         let key = filter || el.selectedKey
@@ -476,6 +477,9 @@ export default class FiltersPopover extends LitElement {
             margin: 0;
         }
 
+        .detail-head b-btn.text { width: auto; }
+        .detail-head b-btn.text::part(main) { padding: 0 .9em; border-radius: 2em; }
+
         .detail-head .pin:not([active]) {
             opacity: .5;
         }
@@ -671,6 +675,80 @@ export default class FiltersPopover extends LitElement {
             font-size: .75rem;
             color: var(--theme-text-accent);
             text-align: center;
+        }
+
+        /* history: one line per use; the values stand out, the filter names are quiet */
+        .history-entry .pairs {
+            display: block;
+            line-height: 1.35;
+        }
+
+        .history-entry .pair-label {
+            font-size: .8em;
+            color: var(--theme-text-accent);
+        }
+
+        /* a thin line between uses in the same day (not next to the current one) */
+        .history-entry { position: relative; }
+
+        .history-entry + .history-entry::before {
+            content: '';
+            position: absolute;
+            top: -4.5px; /* (centered in the gap) */
+            left: .75rem;
+            right: .75rem;
+            height: 1px;
+            background: var(--theme-bgd-accent);
+        }
+
+        .history-entry[active] + .history-entry::before,
+        .history-entry + .history-entry[active]::before {
+            display: none;
+        }
+
+        /* (long values wrap; a filter's name stays with the start of its value) */
+        .history-entry .pair {
+            margin-right: .8em;
+        }
+
+        .history-entry .pair-label {
+            white-space: nowrap;
+        }
+
+        .history-entry .pair b-text {
+            display: inline;
+        }
+
+        .history-entry[active] .label { font-weight: inherit; }
+
+        .history-entry .saved-as {
+            display: inline-flex;
+            align-items: center;
+            gap: .3em;
+            font-size: .8em;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: .1rem;
+        }
+
+        .history-entry .saved-as b-icon { --size: 1em; }
+
+        .history-entry .time {
+            flex-shrink: 0;
+            font-size: .75rem;
+            color: var(--theme-text-accent);
+        }
+
+        .history .preset {
+            margin: 4px .4rem;
+            padding: .65rem .35rem .65rem .75rem;
+        }
+        .history .group:first-child, .history-search + .group { margin-top: 0; }
+        .history .group { color: var(--theme-text); }
+
+        .history-search {
+            flex: none;
+            margin: 0 .4rem .5rem;
         }
 
         b-list-filters-saved { display: none; }
@@ -1300,19 +1378,100 @@ export default class FiltersPopover extends LitElement {
         this.presetsEl.coll.saveSort(sorted)
     }
 
+    // filters used before (latest first), by day; see ../data/filters.js `history` (kept per browser)
     renderHistory(){
-        let menu = historyMenu(this.filters)
+        let entries = historyEntries(this.filters)
+        let q = (this.historyQuery||'').trim().toLowerCase()
+        let shown = q ? entries.filter(d=>d.search.includes(q)) : entries
+        let current = this.filters.length ? this.filters.toString() : null
+        let coll = this.hasPresets && this.presetsEl?.coll
+
+        let days = []
+        shown.forEach(d=>{
+            if( days.at(-1)?.label != d.day ) days.push({label: d.day, entries: []})
+            days.at(-1).entries.push(d)
+        })
+
         return html`
             <div class="detail">
-                ${this.renderDetailHead('History', {hint: 'Filters you’ve used'})}
-                <div class="detail-body">
-                    ${menu.length ? new Menu(menu, {
-                        search: menu.length > 10 ? {placeholder: 'Search history'} : false,
-                        onSelect: selected=>this.filters.reset(selected.filters, {stopQueuing: false})
-                    }) : html`<div class="empty">No filters used yet</div>`}
+                ${this.renderDetailHead('History', {clear: entries.length ? html`
+                    <b-btn clear pill sm class="text" @click=${this.clearHistory}>Clear</b-btn>
+                ` : ''})}
+                <div class="detail-body presets history">
+                    ${entries.length > 10 ? html`
+                        <label class="search history-search">
+                            <b-icon name="search"></b-icon>
+                            <input type="text" placeholder="Search history" .value=${this.historyQuery||''}
+                                @input=${e=>{ this.historyQuery = e.target.value; this.requestUpdate() }}>
+                        </label>
+                    ` : ''}
+
+                    ${!entries.length ? html`<div class="empty">Filters you apply will show here</div>`
+                    : !shown.length ? html`<div class="empty">Nothing in history matches “${this.historyQuery}”</div>`
+                    : days.map(day=>html`
+                        <div class="group">${day.label}</div>
+                        ${day.entries.map(d=>this.renderHistoryEntry(d, {
+                            active: d.name == current,
+                            preset: coll?.length ? coll.findMatchesFilters(d.filters) : null
+                        }))}
+                    `)}
+
+                    ${shown.length ? html`
+                        <div class="presets-tip">${this.sheet ? 'Tap to apply · ••• for more'
+                            : 'Click to apply · Shift+click to add to the current filters'}</div>
+                    ` : ''}
                 </div>
             </div>
         `
+    }
+
+    renderHistoryEntry(d, {active, preset}){return html`
+        <div class="preset history-entry" ?active=${active} @click=${e=>this.pickHistory(d, e)}
+            @contextmenu=${e=>this.historyMenu(e, d)}>
+            <span class="text">
+                ${preset?html`<span class="saved-as"><b-icon name="filter_presets"></b-icon>${preset.get('name')}</span>`:''}
+                <span class="pairs" title=${d.search ? d.name.replace(/<[^>]+>/g, '').replace(/ \| /g, '\n') : ''}>
+                    ${d.pairs.map(({label, val})=>html`<span class="pair"><span class="pair-label">${label}&nbsp;</span><b-text .html=${val}></b-text></span> `)}
+                </span>
+            </span>
+            ${active?html`<b-icon name="check" class="check" title="Current filters"></b-icon>`
+                :html`<span class="time">${d.time}</span>`}
+            <b-btn clear pill icon="more_horiz" class="more" title="Options"
+                @click=${e=>this.historyMenu(e, d)}></b-btn>
+        </div>
+    `}
+
+    // replaces the filters (shift: adds to them)
+    pickHistory(d, evt){
+        this.filters[evt?.shiftKey?'update':'reset'](d.filters, {stopQueuing: false})
+        this.menus = {}
+    }
+
+    async historyMenu(e, d){
+        e.preventDefault()
+        e.stopPropagation()
+
+        let selected = await new Menu([
+            {label: 'Apply', icon: 'check', val: 'apply'},
+            {label: 'Add to current filters', icon: 'add', val: 'merge'},
+            this.hasPresets ? {label: 'Save as Preset...', icon: 'filter_presets', val: 'save'} : null,
+            '-',
+            {label: 'Remove from History', icon: 'backspace', val: 'remove'}
+        ].filter(d=>d)).popOver(e.currentTarget.closest?.('.preset')?.querySelector('.more') || e.currentTarget, {align: 'bottom-end'})
+
+        if( selected?.val == 'apply' ) this.pickHistory(d)
+        if( selected?.val == 'merge' ) this.pickHistory(d, {shiftKey: true})
+        if( selected?.val == 'remove' ){ this.filters.history.delete(d.name); this.requestUpdate() }
+        if( selected?.val == 'save' ){
+            this.pickHistory(d)
+            this.createPreset()
+        }
+    }
+
+    async clearHistory(e){
+        if( !await Dialog.confirm({title: 'Clear filter history?', body: 'Only for this list, in this browser', btns: ['cancel', {label: 'Clear', color: 'red'}]}).popOver(e.currentTarget) ) return
+        this.filters.history.clear()
+        this.requestUpdate()
     }
 
     /*
@@ -1545,6 +1704,34 @@ export default class FiltersPopover extends LitElement {
 }
 
 // the filters' history as menu items (newest first, by day)
+// history as entries (latest first): its filters, the label/value pairs, the day heading, and the time
+export function historyEntries(filters){
+    let entries = []
+    filters?.history.forEach((d, name)=>{
+        let pairs = name.split('|').map(s=>{
+            let vals = s.split(':')
+            let label = vals.shift().trim()
+            return {label, val: vals.join(':').trim()}
+        })
+
+        let date = new Date(d.ts)
+        let today = new Date().toDateString() == date.toDateString()
+        let thisYear = new Date().getFullYear() == date.getFullYear()
+
+        entries.unshift({
+            ...d,
+            name,
+            pairs,
+            day: dateRangeLabel(d.ts, d.ts, {monthDay: false}),
+            time: today || Date.now() - d.ts < 6*86400000
+                ? date.toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'})
+                : date.toLocaleDateString([], {month: 'short', day: 'numeric', year: thisYear ? undefined : 'numeric'}),
+            search: name.replace(/<[^>]+>/g, '').toLowerCase()
+        })
+    })
+    return entries
+}
+
 export function historyMenu(filters){
     let history = filters?.history.map((d, name)=>{
 
