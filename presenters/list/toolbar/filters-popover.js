@@ -765,27 +765,48 @@ export default class FiltersPopover extends LitElement {
         `
     }
 
-    // filters by name, and their values (ex: "ware" finds Type → Warehouse)
+    // saved filters by name, filters by name, and their values (ex: "ware" finds Type → Warehouse)
     searchResults(){
         let q = this.query.trim().toLowerCase()
-        return {q, byName: this.visibleFilters.filter(f=>f.label.toLowerCase().includes(q)), byValue: this.valueMatches(q)}
+        return {
+            q,
+            byPreset: this.presetMatches(q),
+            byName: this.visibleFilters.filter(f=>f.label.toLowerCase().includes(q)),
+            byValue: this.valueMatches(q)
+        }
     }
 
     renderSearch(){
-        let {q, byName, byValue} = this.searchResults()
+        let {q, byPreset, byName, byValue} = this.searchResults()
 
-        if( !byName.length && !byValue.length )
+        if( !byPreset.length && !byName.length && !byValue.length )
             return html`<div class="empty">No filters or values match “${this.query}”</div>`
 
+        let active = this.presetsEl?.model
+        let offset = byPreset.length + byName.length
+
         return html`
+            ${byPreset.length?html`
+                <div class="group">Saved Filters</div>
+                ${byPreset.map((m, i)=>html`
+                    <div class="item" ?highlight=${this.isHighlight(i)} @click=${e=>this.pickPreset(m, e)}>
+                        <b-icon class="icon" name="filter_presets"></b-icon>
+                        <span class="text">
+                            <span class="label">${highlight(m.get('name')||'', q)}</span>
+                            ${m.get('summary')?html`<span class="value">${highlight(m.get('summary'), q)}</span>`:''}
+                        </span>
+                        ${m == active?html`<b-icon name="check" class="chev" style="color: var(--theme); opacity: 1"></b-icon>`:''}
+                    </div>
+                `)}
+            `:''}
             ${byName.length?html`
                 <div class="group">Filters</div>
-                ${byName.map((f, i)=>this.renderItem(f, {label: highlight(f.label, q), index: i}))}
+                ${byName.map((f, i)=>this.renderItem(f, {label: highlight(f.label, q), index: byPreset.length+i}))}
             `:''}
             ${byValue.length?html`
                 <div class="group">Values</div>
                 ${byValue.map(({filter, value}, i)=>html`
-                    <div class="item" ?highlight=${this.isHighlight(byName.length+i)} @click=${()=>this.pickValue(filter, value)}>
+                    <div class="item" ?highlight=${this.isHighlight(offset+i)} @click=${()=>this.pickValue(filter, value)}>
                         <span class="text"><span class="label"><b-text muted>${filter.label} →</b-text> ${highlight(value.label, q)}</span></span>
                         ${isSelectedValue(filter, value)?html`<b-icon name="check" class="chev" style="color: var(--theme); opacity: 1"></b-icon>`:''}
                     </div>
@@ -799,8 +820,9 @@ export default class FiltersPopover extends LitElement {
         if( !this.query )
             return [...this.groups.values()].flat().map(filter=>({key: filter.key, filter}))
 
-        let {byName, byValue} = this.searchResults()
+        let {byPreset, byName, byValue} = this.searchResults()
         return [
+            ...byPreset.map(preset=>({preset})),
             ...byName.map(filter=>({key: filter.key, filter})),
             ...byValue.map(({filter, value})=>({filter, value}))
         ]
@@ -808,6 +830,12 @@ export default class FiltersPopover extends LitElement {
 
     isHighlight(index){
         return this.keyNav && index != null && index == this.highlight
+    }
+
+    presetMatches(q){
+        let coll = this.hasPresets && this.presetsEl?.coll
+        if( !coll ) return []
+        return coll.filter(m=>[m.get('name'), m.get('summary')].some(s=>s && String(s).toLowerCase().includes(q)))
     }
 
     valueMatches(q){
@@ -1005,6 +1033,15 @@ export default class FiltersPopover extends LitElement {
         this.select(filter.key)
     }
 
+    // from a search result: replaces the filters with it (shift: merges it in)
+    pickPreset(model, evt){
+        this.presetsEl?.applyPreset({model, evt})
+        this.menus = {}
+        this.query = ''
+        this.highlight = 0
+        if( !this.narrow ) this.select(PRESETS) // (shows it applied)
+    }
+
     /*
         Custom view filters (date, input, slider...)
     */
@@ -1132,7 +1169,8 @@ export default class FiltersPopover extends LitElement {
             if( !item ) return
             e.preventDefault()
             this.keyNav = true
-            if( item.value ) this.pickValue(item.filter, item.value)
+            if( item.preset ) this.pickPreset(item.preset, e)
+            else if( item.value ) this.pickValue(item.filter, item.value)
             else this.select(item.key)
         }
     }
