@@ -4,7 +4,6 @@ import docs from 'bui/server/README.md'
 customElements.define('demo-server-api', class extends LitElement{
 
     static get title(){ return 'App' }
-    static get icon(){ return 'terminal' }
 
     static get styles(){return css`
         :host {

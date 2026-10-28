@@ -14,13 +14,16 @@ import 'bui/elements/text'
 import AppInstaller from 'bui/app/installer'
 import Menu from 'bui/presenters/menu'
 import device, {colorScheme} from 'bui/util/device'
-import './overview'
+import './overview/about'
+import './overview/setup'
+import './overview/changelog'
 import './elements'
 import './presenters'
 import './server'
 import './components'
 import './tools/docs'
 
+const START = ['demo-about', 'demo-setup', 'demo-changelog'] // (the first is the base item)
 const SECTIONS = ['demo-elements', 'demo-presenters', 'demo-components', 'demo-all-docs', 'demo-server']
 const sectionPath = tag=>customElements.get(tag).path.split('(')[0]
 
@@ -122,7 +125,10 @@ customElements.define('demo-sidebar', class extends LitElement{
             </div>
 
             <b-app-sidebar-group>
-                <b-app-sidebar-item base path="overview" view="demo-overview" icon="info" label="Overview"></b-app-sidebar-item>
+                ${START.map((tag, i)=>{
+                    let View = customElements.get(tag)
+                    return html`<b-app-sidebar-item ?base=${i==0} icon=${View.icon} label=${View.title} path=${sectionPath(tag)}></b-app-sidebar-item>`
+                })}
             </b-app-sidebar-group>
 
             <b-app-sidebar-group label="Docs">
@@ -170,7 +176,7 @@ customElements.define('demo-sidebar', class extends LitElement{
     }
 })
 
-// the base view: every section, switched by the route (overview when there's none)
+// the base view: every section, switched by the route (about when there's none)
 customElements.define('demo-home', class extends AppShellView{
 
     static title = 'Blackstone UI'
@@ -184,11 +190,13 @@ customElements.define('demo-home', class extends AppShellView{
         }
     `
 
-    // (b-tabs reads its views from the text; keep in sync with SECTIONS)
+    // (b-tabs reads its views from the text; keep in sync with START and SECTIONS)
     render(){return html`
         <b-tabs tab-bar="none">
             <b-router-controller rootpath=""></b-router-controller>
-            demo-overview
+            demo-about
+            demo-setup
+            demo-changelog
             demo-elements
             demo-presenters
             demo-components
@@ -197,7 +205,7 @@ customElements.define('demo-home', class extends AppShellView{
         </b-tabs>
     `}
 
-    // no route (ex: back to the start): the overview (sections' routes switch the tabs themselves)
+    // no route (ex: back to the start): about (sections' routes switch the tabs themselves)
     onRouteChange(e){
         super.onRouteChange(e)
         if( !e.detail.path && this.tabs ) this.tabs.active = null

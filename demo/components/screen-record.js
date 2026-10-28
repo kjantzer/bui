@@ -5,7 +5,6 @@ import ScreenRecord from 'bui/components/screen-record'
 customElements.define('demo-components-screen-record', class extends View{
 
     static title = 'Screen Record'
-    static icon = 'screen_share'
     docs = docs
 
     renderDocsHeader(){ return html`

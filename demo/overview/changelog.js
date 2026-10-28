@@ -5,11 +5,15 @@ customElements.define('demo-changelog', class extends LitElement{
 
     static get title(){ return 'Changelog' }
     static get id(){ return 'changelog' }
+    static get path(){ return 'changelog' }
+    static get icon(){ return 'history' }
 
     static get styles(){return css`
         :host {
             display: block;
             position:relative;
+            height: 100%;
+            overflow: auto;
         }
 
         main {

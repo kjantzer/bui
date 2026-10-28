@@ -5,11 +5,15 @@ customElements.define('demo-setup', class extends LitElement{
 
     static get title(){ return 'Setup' }
     static get id(){ return 'setup' }
+    static get path(){ return 'setup' }
+    static get icon(){ return 'build' }
 
     static get styles(){return css`
         :host {
             display: block;
             position:relative;
+            height: 100%;
+            overflow: auto;
         }
 
         main {

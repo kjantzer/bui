@@ -5,7 +5,6 @@ import 'bui/components/tag-list'
 customElements.define('demo-components-tag-list', class extends View{
 
     static title = 'Tag List'
-    static icon = 'tag'
     docs = docs
 
     renderDocsHeader(){ return html`

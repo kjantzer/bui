@@ -4,7 +4,6 @@ import docs from 'bui/server/db/README.md'
 customElements.define('demo-server-db', class extends LitElement{
 
     static get title(){ return 'DB' }
-    static get icon(){ return 'database' }
 
     static get styles(){return css`
         :host {

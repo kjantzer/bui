@@ -4,7 +4,6 @@ import docs from 'bui/realtime/README.md'
 customElements.define('demo-server-realtime', class extends LitElement{
 
     static get title(){ return 'Realtime' }
-    static get icon(){ return 'clock' }
 
     static get styles(){return css`
         :host {
