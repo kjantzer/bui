@@ -197,7 +197,7 @@ customElements.define('b-list', class extends LitElement {
         }
 
         b-list-toolbar {
-            /* a 1px line below, like c-nav-view's header border (still drawn as a shadow so
+            /* a 1px line below, like b-nav-view's header border (still drawn as a shadow so
                --list-toolbar-shadow overrides keep working, ex: none) */
             box-shadow: var(--list-toolbar-shadow, 0 1px 0 var(--theme-bgd-accent));
             padding: .25em .5em;
