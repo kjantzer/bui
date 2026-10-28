@@ -26,6 +26,8 @@ import Dialog from '../../dialog'
 import device from '../../../util/device'
 import {label as dateRangeLabel} from '../../datepicker/daterange'
 import './filter-saved-presets'
+import {edit as editPreset} from './filter-saved-presets/models'
+import '../../../elements/sortable'
 
 const NARROW = 520
 const EDGE = 24 // px from the sheet's left edge where a swipe goes back
@@ -98,6 +100,7 @@ export default class FiltersPopover extends LitElement {
         }
 
         el.isOpen = true
+        el.target = target
         el.focusSearch()
         return el
     }
@@ -503,11 +506,171 @@ export default class FiltersPopover extends LitElement {
         }
 
         /* custom views fill the column (some set their own width for a popover) */
-        .detail-body > :not(b-menu) {
+        .detail-body:not(.presets) > :not(b-menu) {
             display: block;
             width: 100% !important;
             max-width: none !important;
             box-sizing: border-box;
+        }
+
+        /* desktop: the filters are a tinted sidebar (no chevrons) and the values are the page beside it */
+        :host(:not([narrow])) .list {
+            background: color-mix(in srgb, var(--theme-bgd-accent) 55%, var(--theme-bgd));
+        }
+
+        :host(:not([narrow])) .item .chev { display: none; }
+
+        /* filters with a value are tinted like the app sidebar's active items (bui/app/shell/item.js);
+           desktop: the one shown is a card the same color as its values beside it */
+        @media (hover) {
+            .item:not([selected]):not([active]):hover {
+                background: var(--theme-bgd-accent2);
+            }
+        }
+
+        .item[active] {
+            background: color-mix(in srgb, var(--theme) 16%, transparent);
+        }
+
+        .item[active] .label {
+            font-weight: 600;
+        }
+
+        :host(:not([narrow])) .item[selected] {
+            background: var(--theme-bgd);
+            box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 0 0 1px var(--theme-bgd-accent);
+        }
+
+        :host(:not([narrow])) .item[selected][active] {
+            box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 0 0 1.5px color-mix(in srgb, var(--theme) 45%, transparent);
+        }
+
+        :host(:not([narrow])) .detail-head .title {
+            font-size: 1.1em;
+        }
+
+        /* saved filters */
+        .presets {
+            padding: .5rem 0 1rem;
+        }
+
+        .preset-status {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: .4rem .6rem;
+            margin: 0 .4rem .5rem; /* (same as the presets under it) */
+            padding: .6rem .6rem .6rem .85rem;
+            min-height: 2.6rem;
+            box-sizing: border-box;
+            border-radius: .6rem;
+            background: var(--theme-bgd-accent);
+            font-size: .9em;
+        }
+
+        .preset-status .text { flex: 1; min-width: 10em; }
+        .preset-status .btns { display: flex; gap: .25rem; margin-left: auto; }
+        .preset-status[empty] { color: var(--theme-text-accent); background: none; border: dashed 1px var(--theme-bgd-accent); }
+
+        .preset-status[active] {
+            background: color-mix(in srgb, var(--theme) 16%, transparent);
+        }
+
+        .preset-status[active] b-icon { color: var(--theme); }
+
+        .preset-status[changed] {
+            background: color-mix(in srgb, var(--orange, #f59e0b) 14%, transparent);
+        }
+
+        .preset-group .group {
+            margin-top: .5rem;
+        }
+
+        .preset {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            margin: 2px .4rem;
+            padding: .35rem .35rem .35rem .15rem;
+            min-height: 2.6rem;
+            box-sizing: border-box;
+            border-radius: .6rem;
+            cursor: pointer;
+        }
+
+        @media (hover) {
+            .preset:not([active]):hover { background: var(--theme-bgd-accent2, var(--theme-bgd-accent)); }
+        }
+
+        .preset[active] {
+            background: color-mix(in srgb, var(--theme) 16%, transparent);
+        }
+
+        .preset[active] .label { font-weight: 600; }
+
+        .preset .text {
+            flex: 1;
+            min-width: 0;
+            display: grid;
+        }
+
+        .preset .label,
+        .preset .value {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .preset .value {
+            font-size: .8em;
+            line-height: 1.3;
+            color: var(--theme-text-accent);
+        }
+
+        .preset .handle {
+            flex-shrink: 0;
+            width: 1.1rem;
+            --size: 1.1rem;
+            color: var(--theme-text-accent);
+            opacity: 0;
+            cursor: grab;
+        }
+
+        .preset:hover .handle { opacity: .6; }
+        .preset .handle:hover { opacity: 1; }
+        .preset.sortable-ghost { opacity: .4; }
+
+        .preset .vis {
+            flex-shrink: 0;
+            --size: 1rem;
+            color: var(--theme-text-accent);
+            opacity: .7;
+        }
+
+        .preset .dot.changed {
+            background: var(--orange, #f59e0b);
+        }
+
+        .preset .check {
+            flex-shrink: 0;
+            color: var(--theme);
+        }
+
+        .preset .more {
+            flex-shrink: 0;
+            opacity: 0;
+        }
+
+        .preset:hover .more,
+        :host([sheet]) .preset .more { opacity: 1; }
+
+        :host([sheet]) .preset .handle { opacity: .5; }
+
+        .presets-tip {
+            margin: 1rem .75rem 0;
+            font-size: .75rem;
+            color: var(--theme-text-accent);
+            text-align: center;
         }
 
         b-list-filters-saved { display: none; }
@@ -623,7 +786,7 @@ export default class FiltersPopover extends LitElement {
         let el = this.presetsEl
         if( el && el != this.__presetsEl ){
             this.__presetsEl = el
-            el.coll.on('update reset sync change', this.onChange)
+            el.coll.on('update reset sync change sort', this.onChange)
         }
 
         if( this.keyNav && changed.has('highlight') )
@@ -739,7 +902,7 @@ export default class FiltersPopover extends LitElement {
     renderItem(filter, {label, index}={}){
         let active = filter.isActive
         return html`
-            <div class="item" ?selected=${filter.key==this.selectedKey} ?highlight=${this.isHighlight(index)}
+            <div class="item" ?selected=${filter.key==this.selectedKey} ?active=${active} ?highlight=${this.isHighlight(index)}
                 @click=${()=>this.clickSelect(filter.key)}>
                 ${filter.icon?html`<b-icon class="icon" name=${filter.icon}></b-icon>`:''}
                 <span class="text">
@@ -941,18 +1104,200 @@ export default class FiltersPopover extends LitElement {
     */
     renderPresets(){
         let el = this.presetsEl
-        let menu = el ? new Menu(el.buildMenu(), {
-            search: el.coll.length > 8 ? {placeholder: 'Find a saved filter'} : false,
-            handler: el, // save / update actions
-            onSelect: selected=>{ if( !selected.fn ) el.applyPreset(selected) }
-        }) : ''
+        let coll = el?.coll
 
         return html`
             <div class="detail">
-                ${this.renderDetailHead('Saved Filters', {hint: 'Shift+click to merge'})}
-                <div class="detail-body">${menu}</div>
+                ${this.renderDetailHead('Saved Filters')}
+                <div class="detail-body presets">
+                    ${el ? this.renderPresetStatus(el) : ''}
+
+                    ${coll?.length ? coll.groups.map(([group, models])=>html`
+                        <div class="preset-group">
+                            ${group ? html`<div class="group">${group}</div>` : ''}
+                            ${models.map(m=>this.renderPreset(m))}
+                            ${models.length > 1 ? html`<b-sortable item=".preset" handle=".handle"
+                                @sort-changed=${e=>this.onSortPresets(e, models)}></b-sortable>` : ''}
+                        </div>
+                    `) : html`<div class="empty">No saved filters yet</div>`}
+
+                    ${coll?.length ? html`
+                        <div class="presets-tip">${this.sheet ? 'Tap to apply · ••• to add to the current filters'
+                            : 'Click to apply · Shift+click to add to the current filters'}</div>
+                    ` : ''}
+                </div>
             </div>
         `
+    }
+
+    // the preset the current filters match exactly (else none)
+    get matchingPreset(){
+        let coll = this.presetsEl?.coll
+        return this.filters.length && coll?.length ? coll.findMatchesFilters(this.filters.value()) : null
+    }
+
+    // what the current filters are, and what can be done with them
+    renderPresetStatus(el){
+        let match = this.matchingPreset
+        let from = !match && this.filters.length ? el.model : null // applied, then changed
+        let count = this.filters.length
+        let canEdit = from && this.canEditPreset(from)
+
+        if( match ) return html`
+            <div class="preset-status" active>
+                <b-icon name="check_circle"></b-icon>
+                <span class="text">Using <b>${match.get('name')}</b></span>
+            </div>
+        `
+
+        if( from ) return html`
+            <div class="preset-status" changed>
+                <span class="text">Changed from <b>${from.get('name')}</b></span>
+                <span class="btns">
+                    <b-btn clear pill sm @click=${()=>this.revertPreset(from)}>Revert</b-btn>
+                    ${canEdit?html`<b-btn clear pill sm color="theme" @click=${()=>this.updatePreset(from)}>Update</b-btn>`:''}
+                    <b-btn pill sm color="theme" @click=${this.createPreset}>Save as New</b-btn>
+                </span>
+            </div>
+        `
+
+        if( count ) return html`
+            <div class="preset-status">
+                <span class="text">${count} ${count==1?'filter':'filters'} set, not saved</span>
+                <span class="btns">
+                    <b-btn pill sm color="theme" @click=${this.createPreset}>Save as Preset</b-btn>
+                </span>
+            </div>
+        `
+
+        return html`
+            <div class="preset-status" empty>
+                <span class="text">Set some filters, then save them here to use again</span>
+            </div>
+        `
+    }
+
+    renderPreset(m){
+        let active = m == this.matchingPreset
+        let changed = !active && !this.matchingPreset && this.filters.length && m == this.presetsEl?.model
+        let type = m.get('type')
+        let canEdit = this.canEditPreset(m)
+        return html`
+            <div class="preset" ?active=${active} @click=${e=>this.pickPreset(m, e)}
+                @contextmenu=${e=>this.presetMenu(e, m)}>
+                ${canEdit?html`<b-icon name="drag_indicator" class="handle" title="Drag to reorder"
+                    @click=${e=>e.stopPropagation()}></b-icon>`:html`<span class="handle"></span>`}
+                <span class="text">
+                    <span class="label">${m.get('name')}${changed?html`<span class="dot changed" title="Changed since applied"></span>`:''}</span>
+                    ${m.get('summary')?html`<span class="value">${m.get('summary')}</span>`:''}
+                </span>
+                ${type=='private'?html`<b-icon name="lock" class="vis" title="Private: only you see it"></b-icon>`
+                : type=='shared'?html`<b-icon name="people" class="vis" title="Shared: anyone can use and change it"></b-icon>`:''}
+                ${active?html`<b-icon name="check" class="check"></b-icon>`:''}
+                <b-btn clear pill icon="more_horiz" class="more" title="Options"
+                    @click=${e=>this.presetMenu(e, m)}></b-btn>
+            </div>
+        `
+    }
+
+    canEditPreset(model){
+        return this.willTakeAction('list:preset:edit', {model}).allowed
+    }
+
+    async presetMenu(e, model){
+        e.preventDefault()
+        e.stopPropagation()
+
+        let coll = this.presetsEl.coll
+        let canEdit = this.canEditPreset(model)
+        let canDelete = this.willTakeAction('list:preset:delete', {model}).allowed
+        let group = model.get('group_name') || ''
+
+        let moveTo = [
+            ...coll.groupNames.filter(name=>name!=group).map(name=>({label: name, val: name})),
+            group ? {label: 'No group', val: '', icon: 'backspace'} : null,
+            {label: 'New group...', val: '__new', icon: 'add'}
+        ].filter(d=>d)
+
+        let selected = await new Menu([
+            {label: 'Apply', icon: 'check', val: 'apply'},
+            {label: 'Add to current filters', icon: 'add', val: 'merge'},
+            canEdit ? '-' : null,
+            canEdit ? {label: 'Edit...', icon: 'pencil', val: 'edit'} : null,
+            canEdit ? {label: 'Move to Group', icon: 'folder', menu: moveTo, val: 'move'} : null,
+            canDelete ? '-' : null,
+            canDelete ? {label: 'Delete', icon: 'trash', val: 'delete'} : null,
+            {text: html`Created by <c-user-avatar nameonly uid=${model.get('uid')}></c-user-avatar>
+                <br><b-ts .date=${model.get('ts_created')}></b-ts>`}
+        ].filter(d=>d)).popOver(e.currentTarget.closest?.('.preset')?.querySelector('.more') || e.currentTarget, {align: 'bottom-end'})
+
+        if( !selected ) return
+
+        if( selected.val == 'apply' ) this.pickPreset(model)
+        if( selected.val == 'merge' ) this.pickPreset(model, {shiftKey: true})
+        if( selected.val == 'edit' ) await this.editPreset(model)
+        if( selected.val == 'delete' ) await this.deletePreset(model)
+
+        // (a submenu pick)
+        let move = selected.menuSelected
+        if( move ){
+            let name = move.val
+            if( name == '__new' )
+                return this.withDialog(async ()=>{
+                    let attrs = await Dialog.prompt({title: 'New Group', icon: 'add', prompts: [
+                        {label: 'Group name', key: 'name', required: true}
+                    ]}).modal()
+                    if( attrs?.name ) await coll.moveToGroup(model, attrs.name)
+                })
+
+            await coll.moveToGroup(model, name)
+        }
+    }
+
+    // a dialog would open under the popover, so close it (applying any changes) and come back to the saved filters after;
+    // (the sheet is a panel, so dialogs stack over it)
+    async withDialog(fn){
+        if( this.sheet ) return fn()
+
+        let {filters, target} = this
+        this.close()
+        try{ await fn() }
+        finally{ if( target?.isConnected ) FiltersPopover.open(filters, target, {filter: PRESETS}) }
+    }
+
+    editPreset(model){
+        return this.withDialog(()=>editPreset(model))
+    }
+
+    deletePreset(model){
+        return this.withDialog(async ()=>{
+            if( !await Dialog.confirmDelete({title: `Delete “${model.get('name')}”?`}).modal() ) return
+            if( this.presetsEl?.model == model ) this.presetsEl.model = null
+            await model.destroySync()
+        })
+    }
+
+    createPreset(){
+        let el = this.presetsEl
+        return this.withDialog(()=>el.saveFilters())
+    }
+
+    updatePreset(model){
+        this.presetsEl.model = model
+        this.presetsEl.updateModel()
+        this.requestUpdate()
+    }
+
+    revertPreset(model){
+        this.filters.reset(model.get('filters'), {stopQueuing: false})
+        this.menus = {}
+    }
+
+    onSortPresets(e, models){
+        let {oldIndex, newIndex} = e.detail
+        let sorted = [...models]
+        sorted.splice(newIndex, 0, sorted.splice(oldIndex, 1)[0])
+        this.presetsEl.coll.saveSort(sorted)
     }
 
     renderHistory(){

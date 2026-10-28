@@ -4,6 +4,8 @@ CREATE TABLE `bui_list_filters` (
   `filters` json DEFAULT NULL,
   `name` varchar(128) DEFAULT NULL COMMENT 'ones with names will be loaded by default',
   `summary` varchar(500) DEFAULT NULL,
+  `group_name` varchar(128) DEFAULT NULL COMMENT 'shown as a heading in the saved filters',
+  `sort` int(11) DEFAULT NULL COMMENT 'order within its group (nulls last, by name)',
   `type` enum('private','public','shared') NOT NULL DEFAULT 'private' COMMENT 'shared can be seen and edited by anyone',
   `uid` int(11) DEFAULT NULL,
   `use_count` int(11) NOT NULL DEFAULT '1' COMMENT 'how many times used',

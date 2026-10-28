@@ -18,6 +18,55 @@ export default class ListFilterSets extends Collection {
     }
 
     filtersMatchModel(filters, model){ return filtersMatch(filters, model) }
+
+    // ungrouped first, then by group; in a group by `sort` (unsorted last), then name (same as the server)
+    comparator(a, b){
+        let ga = a.get('group_name') || '', gb = b.get('group_name') || ''
+        if( ga != gb ) return !ga ? -1 : !gb ? 1 : ga.localeCompare(gb)
+
+        let sa = a.get('sort') ?? Infinity, sb = b.get('sort') ?? Infinity
+        if( sa != sb ) return sa < sb ? -1 : 1
+
+        return (a.get('name')||'').localeCompare(b.get('name')||'')
+    }
+
+    // [[groupName, [models]], ...] in display order ('' = ungrouped)
+    get groups(){
+        let groups = new Map()
+        this.forEach(m=>{
+            let name = m.get('group_name') || ''
+            if( !groups.has(name) ) groups.set(name, [])
+            groups.get(name).push(m)
+        })
+        return [...groups]
+    }
+
+    get groupNames(){
+        return this.groups.map(([name])=>name).filter(name=>name)
+    }
+
+    // saves the order of these presets (ex: one group's, after a drag)
+    async saveSort(models){
+        models.forEach((m, i)=>m.set('sort', i+1, {silent: true}))
+        this.sort()
+        this.trigger('update', this, {})
+        await fetch(this.url+'/sort', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ids: models.map(m=>m.id)})
+        })
+    }
+
+    async moveToGroup(model, group_name){
+        group_name = group_name || null
+        if( group_name == (model.get('group_name')||null) ) return
+
+        // goes to the end of its new group
+        let last = this.filter(m=>(m.get('group_name')||null) == group_name).length
+        await model.saveSync({group_name, sort: last+1}, {patch: true})
+        this.sort()
+        this.trigger('update', this, {})
+    }
 }
 
 // nothing custom about the model
@@ -60,6 +109,7 @@ export function filtersMatch(filters, model){
 export async function edit(model){
 
     let isModel = model?.toJSON
+    let groups = (model?.collection || this?.coll)?.groupNames || []
     let vals = isModel ? model.toJSON() : {
         name: this.filters?.toString(),
         type: 'private'
@@ -71,6 +121,8 @@ export async function edit(model){
         prompts: [
             {label: 'Name', key: 'name', required: true},
             {label: 'Summary', key: 'summary', placeholder: '(optional)'},
+            {label: 'Group', key: 'group_name', placeholder: '(optional)',
+                helpText: groups.length ? 'Groups: '+groups.join(', ') : 'Shown as a heading; presets with the same group are listed together'},
             {_label: 'Visibility', key: 'type', segment: {_stacked: false},
                 options: Types}
         ],
@@ -79,7 +131,10 @@ export async function edit(model){
     }).modal()
 
     if( attrs && attrs.name && model && model.toJSON ){
-        model.saveSync(attrs, {patch: true})
+        let regrouped = (attrs.group_name||null) != (model.get('group_name')||null)
+        if( regrouped ) attrs.sort = null // (goes to the end of its new group)
+        await model.saveSync(attrs, {patch: true})
+        model.collection?.sort()
     }
 
     return attrs
