@@ -17,6 +17,9 @@ const FT = MarcSchema.FT
 const RT = MarcSchema.RT
 const SF = MarcSchema.SF
 
+// MarcEdit .mrk escapes (see `toMrk()`)
+const MRK_ESCAPES = {'$': '{dollar}', '\\': '{bsol}', '{': '{lcub}', '}': '{rcub}'}
+
 class MarcRecord {
 
     constructor(data, {records}={}){
@@ -258,6 +261,36 @@ class MarcRecord {
         const leader = this.leader.toString()
 
 		return leader + directory + data + RT // byte string (1 char = 1 byte); see `encode()`
+    }
+
+    // MarcEdit "mnemonic" text (.mrk), one line per field (in record order):
+    // `=LDR  ...`, `=008  ...`, `=245  10$aTitle$cAuthor`
+    // blanks in the leader, control fields, and indicators are `\`; `$ { } \` in values are escaped (ex: `{dollar}`)
+    toMrk({all=true}={}){
+
+        if( all && this.records?.size > 1 )
+            return this.records.map(r=>r.toMrk({all: false})).join('\n\n')
+
+        const esc = val=>String(val??'').replace(/[$\\{}]/g, c=>MRK_ESCAPES[c])
+        const blanks = val=>esc(val).replace(/ /g, '\\')
+
+        let lines = []
+
+        if( this.leader )
+            lines.push('=LDR  '+blanks(this.leader.toString()))
+
+        for( const f of this.fields ){
+            if( f.tag == 'leader' ) continue
+
+            let {tag, i1, i2, sf, val} = f.toMarcData()
+
+            if( sf )
+                lines.push(`=${tag}  ${blanks(i1)}${blanks(i2)}`+sf.map(([code, v])=>'$'+code+esc(v)).join(''))
+            else
+                lines.push(`=${tag}  ${blanks(val)}`)
+        }
+
+        return lines.join('\n')
     }
 
     encode({all=true}={}){
