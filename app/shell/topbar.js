@@ -12,13 +12,17 @@
     </b-app-topbar>
     ```
 
-    On phones a ☰ btn is shown first to open the `<b-app-sidebar>` drawer;
+    On phones a sidebar btn (a window with a left column) is shown first to open the `<b-app-sidebar>` drawer;
     put something in `slot="menu"` to use it instead (ex: the app's logo)
 
     Styling vars: --b-app-topbar-height
 */
 import { LitElement, html, css } from 'lit'
 import '../../elements/btn'
+import Icon from '../../elements/icon'
+
+// the menu btn's icon: a window with a left column (opens the sidebar)
+Icon.register(['b-sidebar-open', /*html*/`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M5 4h14a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3zm0 2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3V6zm5 0v12h9a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1z"/></svg>`])
 
 customElements.define('b-app-topbar', class extends LitElement{
 
@@ -130,7 +134,7 @@ customElements.define('b-app-topbar', class extends LitElement{
 
     render(){return html`
         <div class="menu-btn" title="Menu" @click=${this.openSidebar}>
-            <slot name="menu"><b-btn clear pill icon="menu"></b-btn></slot>
+            <slot name="menu"><b-btn clear pill icon="b-sidebar-open"></b-btn></slot>
         </div>
         <slot name="start"></slot>
         <div class="center"><slot></slot></div>
