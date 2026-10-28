@@ -5,9 +5,13 @@
 
     ```html
     <b-app-sidebar-group label="Browse">
+        <b-btn slot="label-end" icon="add" clear pill sm></b-btn>
         <b-app-sidebar-item ...></b-app-sidebar-item>
     </b-app-sidebar-group>
     ```
+
+    - `slot="label-end"` - shown at the right of the label (ex: an add btn); hidden when a rail
+    - parts: `label` (the row), `label-text` (just the text; ex: to make only the text clickable)
 */
 import { LitElement, html, css } from 'lit'
 
@@ -34,7 +38,22 @@ customElements.define('b-app-sidebar-group', class extends LitElement{
             color: var(--theme-text-accent);
             padding: 1rem .65rem .35rem;
             white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: .25rem;
+        }
+
+        .label .text {
+            min-width: 0;
             overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* (doesn't make the label taller) */
+        ::slotted([slot="label-end"]) {
+            margin: -.5rem -.35rem -.5rem auto;
+            flex-shrink: 0;
+            transition: opacity 150ms;
         }
 
         :host(:first-child) .label {
@@ -68,10 +87,15 @@ customElements.define('b-app-sidebar-group', class extends LitElement{
             opacity: 1;
         }
 
+        :host([rail]) ::slotted([slot="label-end"]) {
+            opacity: 0;
+            pointer-events: none;
+        }
+
     `
 
     render(){return html`
-        ${this.label?html`<div class="label" part="label">${this.label}</div>`:''}
+        ${this.label?html`<div class="label" part="label"><span class="text" part="label-text">${this.label}</span><slot name="label-end"></slot></div>`:''}
         <slot></slot>
     `}
 
