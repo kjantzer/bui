@@ -947,6 +947,11 @@ export class Panel extends LitElement {
             --root-titlebar-padding-left: .5em; /* (title was beside the close btn) */
         }
 
+        /* custom props inherit, so panels opened inside a sheet (ex: an inset b-panels) get their close btns back */
+        :host(:not([swipe-close])) {
+            --b-panel-close-btn-display: initial;
+        }
+
         :host([swipe-close]) > main ::slotted(*) {
             box-sizing: border-box;
             padding-top: var(--b-panel-grabber-space, 10px);
