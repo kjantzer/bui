@@ -155,8 +155,9 @@ export default class Popover {
 		return this.opts.className.includes('tooltip') 
 	}
 
+	// (also calls onClose, so the view/opener know it closed)
 	closePopoverRequested(){
-		this.close()
+		this._close()
 	}
 
 	positionOver(target){
@@ -310,7 +311,7 @@ export default class Popover {
 		this.view.popOver = null
 		this.view.removeAttribute('in-popover', '')
 
-		this.view.removeEventListener('close-popover', this.close)
+		this.view.removeEventListener('close-popover', this.closePopoverRequested)
 
 		this.mutationObserver.disconnect()
 		this.popper.destroy()

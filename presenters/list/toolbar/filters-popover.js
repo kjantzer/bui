@@ -29,7 +29,7 @@ import './filter-saved-presets'
 
 const NARROW = 520
 const EDGE = 24 // px from the sheet's left edge where a swipe goes back
-const PRESETS = '__presets'
+export const PRESETS = '__presets'
 const HISTORY = '__history'
 
 export default class FiltersPopover extends LitElement {

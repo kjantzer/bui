@@ -4,7 +4,7 @@ import device from '../../../util/device'
 import './filter-btn'
 import './filter-saved-presets' // TODO: make this opt-in?
 import Menu from '../../../presenters/menu'
-import FiltersPopover, {historyMenu} from './filters-popover'
+import FiltersPopover, {historyMenu, PRESETS} from './filters-popover'
 import './filter-chip'
 import '../../../elements/sortable'
 
@@ -12,6 +12,7 @@ import '../../../elements/sortable'
     List filters in the toolbar
 
     - Filters btn (with how many are on): opens every filter in a popover (a sheet on phones; see ./filters-popover.js)
+    - Saved Filters btn (desktop, when the list has saved presets): opens the popover to them
     - pinned filters first, always shown (even when not applied); drag to reorder, right-click to unpin
       (pinned per browser, see Filters.pinned; pin from the filters popover or by right-clicking a chip)
     - a chip for each other active filter (click to change it, ✕ to clear it)
@@ -90,10 +91,19 @@ customElements.define('b-list-filters', class extends LitElement{
             opacity: .4;
         }
 
+        b-list-filters-saved {
+            display: none;
+        }
+
+        .presets-btn[active] {
+            color: var(--theme);
+        }
+
         /* small: just the filters btn (and its count); the sheet shows the active filters and quick ones */
         @container (max-width: 599px) {
             b-list-filter-chip,
-            b-list-filter-btn {
+            b-list-filter-btn,
+            .presets-btn {
                 display: none;
             }
         }
@@ -117,6 +127,8 @@ customElements.define('b-list-filters', class extends LitElement{
             ${this.filters.length?html`<span class="count">${this.filters.length}</span>`:''}
         </span>
 
+        ${this.renderPresetsBtn()}
+
         <span class="pins">
             ${repeat(this.pinnedFilters, filter=>filter.key, filter=>this.renderChip(filter, {pinned: true}))}
             ${this.pinnedFilters.length > 1 ? html`<b-sortable item="[pin]" @sort-changed=${this.onSortPins}></b-sortable>` : ''}
@@ -124,6 +136,39 @@ customElements.define('b-list-filters', class extends LitElement{
 
         ${repeat(this.activeFilters, filter=>filter.key, filter=>this.renderChip(filter))}
     `}
+
+    get hasPresets(){ return !device.isSmall && this.filters.size > 0 && this.filters.opts?.presets !== false }
+
+    // (rendered hidden: loads the saved presets so the btn only shows when there are some)
+    get presetsEl(){
+        return this.renderRoot?.querySelector('b-list-filters-saved')
+    }
+
+    renderPresetsBtn(){
+        if( !this.hasPresets ) return ''
+
+        let coll = this.presetsEl?.coll
+        let active = coll?.length && coll.findMatchesFilters(this.filters.value())
+        let title = active ? `Saved Filters: ${active.get('name')}` : `Saved Filters (${coll?.length})`
+
+        return html`
+            <b-list-filters-saved hidden .filters=${this.filters}></b-list-filters-saved>
+            ${coll?.length?html`
+                <b-btn icon="filter_presets" clear lg pill class="presets-btn" ?active=${!!active}
+                    tooltip=${title} @click=${()=>this.show({filter: PRESETS})}></b-btn>
+            `:''}
+        `
+    }
+
+    // re-render as the saved presets load / change
+    updated(){
+        let el = this.presetsEl
+        if( el && el != this.__presetsEl ){
+            this.__presetsEl?.coll.off('update reset sync change', this.onFilterChange)
+            this.__presetsEl = el
+            el.coll.on('update reset sync change', this.onFilterChange)
+        }
+    }
 
     renderChip(filter, {pinned}={}){return html`
         <b-list-filter-chip .filter=${filter} ?pin=${pinned} @open-filter=${()=>this.show({filter: filter.key})}
