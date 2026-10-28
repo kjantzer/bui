@@ -95,6 +95,12 @@ export default class DocsList extends LitElement {
             setTimeout(()=>this.goToRef(),100)
     }
 
+    // the docs path changed while shown (ex: back/forward; called by the router controller)
+    onRouteChange(){
+        if( this._firstUpdated )
+            setTimeout(()=>this.goToRef())
+    }
+
     goToRef(){
         let {ref} = this.tabView.route.state?.params
         let {slug} = this.tabView.route.state.props
@@ -249,11 +255,15 @@ customElements.define('demo-docs-list-toc-item', class extends LitElement{
         </b-details>
     `}
     
+    // (scrolls now too: the url may already be this doc's, ex: scrolled to it, so the route doesn't change)
     tocClick(e){
-        goTo('docs/'+this.model.id, {slug: e.currentTarget.slug})
+        let slug = e.currentTarget.slug
+        this.model.trigger('navTo', {slug})
+        goTo('docs/'+this.model.id, {slug})
     }
 
     navTo(e){
+        this.model.trigger('navTo')
         goTo('docs/'+this.model.id)
     }
 
