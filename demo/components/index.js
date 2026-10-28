@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit'
+import '../../presenters/nav-view'
 import './search'
 import './comments'
 import './filebrowser'
@@ -16,7 +17,7 @@ customElements.define('demo-components', class extends LitElement{
 
     static get title(){ return 'Components' }
     static get icon(){ return 'view_sidebar' }
-    static get path(){ return 'components(/:tab)' }
+    static get path(){ return 'components(/*)' }
 
     static get styles(){return css`
         :host {
@@ -26,10 +27,15 @@ customElements.define('demo-components', class extends LitElement{
             position:relative;
             overflow: hidden;
         }
+
+        /* (b-nav-view doesn't pad its sections; the doc pages are plain divs/sections) */
+        b-nav-view {
+            --contentPadding: var(--view-gutter, 2em);
+        }
     `}
 
     render(){return html`
-        <b-tabs key="components" layout="left" >
+        <b-nav-view key="components">
             <b-router-controller rootpath="components/"></b-router-controller>
             
             <div title="About">
@@ -74,7 +80,7 @@ customElements.define('demo-components', class extends LitElement{
                 <demo-markdown-docs .docs=${marcDocs}></demo-markdown-docs>
             </div>
 
-        </b-tabs>
+        </b-nav-view>
     `}
 
 })

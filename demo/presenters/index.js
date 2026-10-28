@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit'
+import '../../presenters/nav-view'
 import 'bui/helpers/colors-list'
 import 'bui/presenters/form'
 import 'bui/presenters/list'
@@ -22,7 +23,7 @@ customElements.define('demo-presenters', class extends LitElement{
 
     static get title(){ return 'Presenters' }
     static get icon(){ return 'call_to_action' }
-    static get path(){ return 'presenters(/:tab)' }
+    static get path(){ return 'presenters(/*)' }
 
     static get styles(){return css`
         :host {
@@ -33,6 +34,11 @@ customElements.define('demo-presenters', class extends LitElement{
             overflow: hidden;
         }
 
+        /* (b-nav-view doesn't pad its sections; the doc pages are plain divs/sections) */
+        b-nav-view {
+            --contentPadding: var(--view-gutter, 2em);
+        }
+
         b-cal,
         a-list-view {
             height: 100%;
@@ -40,7 +46,7 @@ customElements.define('demo-presenters', class extends LitElement{
     `}
 
     render(){return html`
-        <b-tabs key="presenters" layout="left" >
+        <b-nav-view key="presenters">
             <b-router-controller rootpath="presenters/"></b-router-controller>
 
             demo-presenter-form
@@ -59,7 +65,7 @@ customElements.define('demo-presenters', class extends LitElement{
             demo-presenter-selection
             demo-presenter-mentions
 
-        </b-tabs>
+        </b-nav-view>
     `}
 
 })

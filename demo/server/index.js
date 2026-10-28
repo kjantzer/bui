@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit'
+import '../../presenters/nav-view'
 import './db'
 import './api'
 import './realtime'
@@ -10,7 +11,7 @@ customElements.define('demo-server', class extends LitElement{
 
     static get title(){ return 'Server' }
     static get icon(){ return 'storage' }
-    static get path(){ return 'server(/:tab)' }
+    static get path(){ return 'server(/*)' }
 
     static get styles(){return css`
         :host {
@@ -20,10 +21,15 @@ customElements.define('demo-server', class extends LitElement{
             position:relative;
             overflow: hidden;
         }
+
+        /* (b-nav-view doesn't pad its sections; the doc pages are plain divs/sections) */
+        b-nav-view {
+            --contentPadding: var(--view-gutter, 2em);
+        }
     `}
 
     render(){return html`
-        <b-tabs key="server" layout="left" >
+        <b-nav-view key="server">
             <b-router-controller rootpath="server/"></b-router-controller>
 
             demo-server-api
@@ -32,7 +38,7 @@ customElements.define('demo-server', class extends LitElement{
             demo-server-search
             demo-server-filemanager
             demo-server-realtime
-        </b-tabs>
+        </b-nav-view>
     `}
 
 })

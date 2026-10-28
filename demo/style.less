@@ -8,7 +8,6 @@
 :root {
     // --theme: #1976D2;
     --theme-secondary: #3D5AFE;
-    --b-app-tab-bar-active-color: var(--theme-gradient);
 }
 
 :root[light] {
@@ -21,32 +20,13 @@ html, body {
     font-size: 17px;
 }
 
-body > main {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100%;
-}
-
-demo-main {
-    background: var(--theme-bgd-accent2);
-    --app-tab-bar-search-display: none;
-}
-
 b-panels[name="root"] {
     z-index: 200;
 }
 
-@media (max-width: 599px) {
-    :root {
-        --b-app-tab-bar-active-color: rgba(var(--dark-bgd-rgb), .3);
-        --b-app-tab-bar-active-color-text: var(--dark-text);
-        --b-app-tab-bar-bgd: var(--theme-gradient);
-        --b-app-tab-bar-text-color: var(--dark-text);
-        --b-app-tab-bar-bgd-stacked-icon-opacity: .75;
+/* the topbar only holds the menu btn (☰) that opens the sidebar on phones */
+@media (min-width: 700px) {
+    b-panels[name="root"] > b-app-topbar {
+        display: none;
     }
 }

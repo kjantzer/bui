@@ -15,6 +15,6 @@ import 'bui/app/error-handler'
 import '../elements/icon/legacy/_all'
 import './markdown-docs'
 
-import './header'
-import './main'
+import {mountShell} from './shell'
 import './sw/index.js'
+mountShell(document.querySelector('b-panels[name="root"]'))

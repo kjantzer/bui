@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit'
+import 'bui/presenters/nav-view'
 import 'bui/presenters/tabs'
 import 'bui/elements/icon'
 import 'bui/elements/text'
@@ -44,7 +45,7 @@ customElements.define('demo-elements', class extends LitElement{
 
     static get title(){ return 'Core' }
     static get icon(){ return 'code' }
-    static get path(){ return 'core(/:tab)' }
+    static get path(){ return 'elements(/*)' }
 
     static get styles(){return css`
         :host {
@@ -53,6 +54,11 @@ customElements.define('demo-elements', class extends LitElement{
             grid-template-rows: 1fr;
             position:relative;
             overflow: hidden;
+        }
+
+        /* (b-nav-view doesn't pad its sections; the doc pages are plain divs/sections) */
+        b-nav-view {
+            --contentPadding: var(--view-gutter, 2em);
         }
 
         [view-id="layout"] b-grid > div {
@@ -68,7 +74,7 @@ customElements.define('demo-elements', class extends LitElement{
             margin-bottom: 1em;
         }
 
-        b-tabs > section {
+        b-nav-view > section {
             position: relative;
             height: 100%;
             overflow: auto;
@@ -102,7 +108,7 @@ customElements.define('demo-elements', class extends LitElement{
     
 
     render(){return html`
-        <b-tabs key="elements" layout="left">
+        <b-nav-view key="elements">
             <b-router-controller rootpath="elements/"></b-router-controller>
 
              <section title="Icons">
@@ -453,7 +459,7 @@ customElements.define('demo-elements', class extends LitElement{
             </section>
             
 
-        </b-tabs>
+        </b-nav-view>
     `}
 
 })
