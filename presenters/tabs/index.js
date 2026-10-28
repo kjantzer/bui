@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit'
 // import Menu from '../menu'
 import './tab-bar'
 import TabViews from './tabs'
+import {cleansePath} from '../../app/router/config'
 // import TabView from './tab'
 
 customElements.define('b-tabs', class extends LitElement {
@@ -10,11 +11,13 @@ customElements.define('b-tabs', class extends LitElement {
         key: {type: String, reflect: true},
         layout: {type: String, reflect: true},
         layoutMobile: {type: String, reflect: true},
+        nav: {type: String, reflect: true}, // 'parent': see emitNavViews
     }}
 
     constructor(){
         super()
         this.key = ''
+        this.emitNavViews = this.emitNavViews.bind(this)
         // this.layout = 'top'
         // this.layoutMobile = 'top'
     }
@@ -161,6 +164,11 @@ customElements.define('b-tabs', class extends LitElement {
             }
         }
 
+        /* (views shown by a parent nav, see emitNavViews) */
+        :host([nav-claimed]) .tab-bar {
+            display: none !important;
+        }
+
         :host([layout="top"]) { --layout: top; }
         :host([layout="bottom"]) { --layout: bottom; }
         :host([layout="left"]) { --layout: left; }
@@ -272,6 +280,46 @@ customElements.define('b-tabs', class extends LitElement {
     // firstUpdated(){
     //     this._firstUpdated = true
     // }
+
+    connectedCallback(){
+        super.connectedCallback()
+        window.addEventListener('nav-views:refresh', this.emitNavViews)
+        if( this.__views ) this.emitNavViews() // (reconnected)
+    }
+
+    disconnectedCallback(){
+        super.disconnectedCallback()
+        window.removeEventListener('nav-views:refresh', this.emitNavViews)
+
+        // (no longer in the parent's nav)
+        if( this.nav == 'parent' )
+            window.dispatchEvent(new CustomEvent('nav-views', {detail: {tabs: this, views: null}}))
+    }
+
+    /*
+        `nav="parent"`: offer the views to the nearest parent nav instead of showing a tab bar (a <b-nav-view> section
+        it's in, or an app shell sidebar item whose path the views are under); the tab bar shows if none claims them
+        Emits `nav-views` {tabs, views, handled} (bubbles to window); a parent sets `handled`. Sent again when the
+        active view changes, and on `nav-views:refresh` (window; ex: a parent nav can show them now, or no longer can)
+    */
+    get navViews(){
+        return this.views.map(v=>({
+            id: v.id,
+            title: v.title,
+            icon: v.icon,
+            active: !!v.active,
+            // (needs a b-router-controller)
+            path: v.route ? cleansePath(v.route.makePath({})).replace(/^\/+|\/+$/g, '') : null
+        }))
+    }
+
+    emitNavViews(){
+        if( this.nav != 'parent' || !this.__views || !this.isConnected ) return
+
+        let detail = {tabs: this, views: this.navViews, handled: false}
+        this.dispatchEvent(new CustomEvent('nav-views', {bubbles: true, composed: true, detail}))
+        this.toggleAttribute('nav-claimed', detail.handled)
+    }
 
     renderTabBar(){  
 
@@ -412,6 +460,8 @@ customElements.define('b-tabs', class extends LitElement {
 
         if( view.parentElement != this && !view.slot )
             this.appendChild( view )
+
+        this.emitNavViews()
 
         
     }

@@ -4,9 +4,13 @@
     Desktop: vertical list in a sidebar (or a narrow icon rail when `compact`)
     Narrow (view under 700px wide): iOS 26 style tab bar (icon over label, active item in a theme colored pill)
     - shows at most 5 items; the rest go in a "More" menu (links with the `keep` attribute always stay in the bar)
+
+    Sections' child views are listed under them (sidebar list only; see b-nav-view "Child views")
 */
 import BaseTabBar, {html, css} from '../tabs/tab-bar/_base'
 import Menu from '../menu'
+import router from '../../app/router'
+import {cleansePath} from '../../app/router/config'
 import '../../elements/icon'
 import itemStyles from './item-styles'
 
@@ -90,6 +94,12 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
             --nav-item-active-color: #fff;
         }
 
+        /* none of the items have icons: bigger labels (the pill is just the label) */
+        :host([narrow][no-icons]) {
+            --nav-item-font-size: .9rem;
+            --nav-item-padding: .7em .9em;
+        }
+
         :host([narrow])::-webkit-scrollbar {
             display: none;
         }
@@ -103,6 +113,33 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
 
         :host([narrow]) ::slotted([slot="after"]) {
             margin-top: 0;
+        }
+
+        /* a section's child views: labels lined up with the section's */
+        .sub-items {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: -2px; /* (closer to their section than the next one) */
+        }
+
+        /* (sections without an icon: a small indent) */
+        .item.sub {
+            padding-left: 1.75em;
+            font-weight: 400;
+        }
+
+        .sub-items[icon] .item.sub {
+            padding-left: calc(1.5em + 1.4em);
+        }
+
+        /* the active child is highlighted instead */
+        .item[has-sub][active] {
+            background: none;
+        }
+
+        .item.sub:not([active]) {
+            color: var(--theme-text-accent);
         }
 
         /* single line labels in the tab bar (even when compact) */
@@ -186,6 +223,15 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
 
         entries.forEach(e=>e.link?.toggleAttribute('overflowed', overflow.includes(e)))
 
+        // (see the no-icons styles; the sidebar tab has an icon; "More" drops its icon to match)
+        let hasIcon = e=>e.sidebar || (e.view ? !!(e.view.icon || e.view._viewClass?.prototype.renderTabIcon) : !!e.link?.icon)
+        let noIcons = entries.length > 0 && !entries.some(hasIcon)
+        this.toggleAttribute('no-icons', noIcons)
+        if( noIcons != this._noIcons ){
+            this._noIcons = noIcons
+            this.requestUpdate()
+        }
+
         let key = overflow.map(e=>e.view?.id || e.link.label).join()
         if( key != this._overflowKey ){
             this._overflowKey = key
@@ -212,7 +258,7 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
 
         ${this._overflow?.length?html`
             <button class="item" ?active=${!this.host?.sidebarViewShown && this._overflow.some(e=>e.view?.active)} @click=${this.showMore}>
-                <b-icon name="more_horiz"></b-icon>
+                ${this._noIcons?'':html`<b-icon name="more_horiz"></b-icon>`}
                 <span>More</span>
             </button>
         `:''}
@@ -226,11 +272,60 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
         if( this._overflow?.some(e=>e.view == view) ) return ''
 
         return html`
-            <button class="item" ?active=${view.active && !this.host?.sidebarViewShown} .tabView=${view} @click=${this.onMenuClick}>
+            <button class="item" ?active=${view.active && !this.host?.sidebarViewShown} ?has-sub=${!!view.navViews && this.navItems(view).length > 0}
+                .tabView=${view} @click=${this.onMenuClick}>
                 ${view.view?.renderTabIcon?.() || (view.icon?html`<b-icon name=${view.icon}></b-icon>`:'')}
                 <span>${view.toolbarTitle||view.title}</span>
             </button>
+            ${this.renderNavViews(view)}
         `
+    }
+
+    // a section's child views: live from its tabs (claimed by b-nav-view), else its static navViews
+    navItems(view){
+        if( !this.host?.showsNavViews ) return []
+        return view.navViews?.views || view._viewClass?.navViews || []
+    }
+
+    renderNavViews(view){
+        let items = this.navItems(view)
+        if( !items.length ) return ''
+
+        let live = view.navViews
+        let shown = view.active && !this.host?.sidebarViewShown
+
+        return html`
+            <div class="sub-items" ?icon=${!!(view.icon || view._viewClass?.prototype.renderTabIcon)}>
+                ${items.map(item=>html`
+                    <button class="item sub" ?active=${shown && live && item.active} @click=${()=>this.selectNavView(view, item)}>
+                        <span>${item.title}</span>
+                    </button>
+                `)}
+            </div>
+        `
+    }
+
+    async selectNavView(view, item){
+        let live = view.navViews
+        let sectionPath = view.route ? cleansePath(view.route.makePath({})).replace(/^\/+|\/+$/g, '') : ''
+        let path = live ? item.path : (item.path && sectionPath ? sectionPath+'/'+item.path.replace(/^\/+/, '') : null)
+
+        if( path ){
+            // show the section without its own route (the child's path is the url), then go to the child's
+            if( !view.active ) this.host.active = view
+            await new Promise(r=>setTimeout(r)) // (a section opened for the first time adds its tabs' routes)
+            return (window.goTo || router.goTo.bind(router))(path)
+        }
+
+        if( !view.active ) this.onMenuClick({currentTarget: {tabView: view}})
+
+        // (static: once the section's tabs offer their views)
+        for( let tries = 0; !view.navViews && tries < 20; tries++ )
+            await new Promise(r=>setTimeout(r, 50))
+
+        let tabs = view.navViews?.tabs
+        let match = view.navViews?.views.find(v=>v.id == item.id || v.title == item.title)
+        if( tabs && match ) tabs.active = match.id
     }
 
     async showMore(e){

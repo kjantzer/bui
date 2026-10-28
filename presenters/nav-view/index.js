@@ -38,6 +38,11 @@
 
     Extra (non section) items: <b-nav-view-link> (see ./link.js)
 
+    Child views: a section's own tabs (`<b-tabs nav="parent">` in it) are listed under the section in the sidebar
+    (their tab bar hides); sections can list them up front (before they're opened): `static navViews = [{title, path,
+    icon}]` (paths under the section's; the section's path should allow them, ex: `setup(/:tab)`). Not when narrow
+    or compact (no room): the section's tabs show their own tab bar
+
     Sets --root-titlebar-padding-left so section list titles (b-root-titlebar) aren't against the sidebar
     Sets --nav-view-gutter (side padding) for sections that pad their own content: 1.5rem, .75rem when narrow
 
@@ -85,6 +90,18 @@ customElements.define('b-nav-view', class extends Tabs{
                 "nav content";
             height: 100%;
             min-height: 0;
+        }
+
+        /* its sections listed by a parent nav instead (nav="parent", see b-tabs): no sidebar */
+        :host([nav-claimed]) > main.nav {
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-areas:
+                "header"
+                "content";
+        }
+
+        :host([nav-claimed]) .sidebar {
+            display: none;
         }
 
         slot[name="before"]::slotted(*) {
@@ -325,6 +342,8 @@ customElements.define('b-nav-view', class extends Tabs{
     connectedCallback(){
         super.connectedCallback()
 
+        window.addEventListener('nav-views', this.onNavViewsRemoved)
+
         // narrow is measured (like the bar) so the sidebar view can move content between slots
         // (rotating a tablet resizes it too)
         this._narrowObserver ||= new ResizeObserver(()=>this.updateNarrow())
@@ -350,6 +369,7 @@ customElements.define('b-nav-view', class extends Tabs{
         super.disconnectedCallback()
         this._narrowObserver?.disconnect()
         this._childObserver?.disconnect()
+        window.removeEventListener('nav-views', this.onNavViewsRemoved)
     }
 
     // the sidebar content shown as its own tab (narrow)
@@ -422,6 +442,13 @@ customElements.define('b-nav-view', class extends Tabs{
     updated(changed){
         super.updated?.(changed)
 
+        // room for child views changed: the sections' tabs offer them again (claimed, or they show their own bar)
+        if( (changed.has('narrow') && !!changed.get('narrow') != !!this.narrow)
+        || (changed.has('compact') && !!changed.get('compact') != !!this.compact) ){
+            this.views?.map(tabView=>tabView.navViews = null)
+            window.dispatchEvent(new Event('nav-views:refresh'))
+        }
+
         // (the bar and links style themselves by it; links can be added later, see the child observer)
         this.shadowRoot.querySelector('b-nav-view-bar')?.toggleAttribute('narrow', this.narrow)
         for( let link of this.querySelectorAll(':scope > b-nav-view-link') )
@@ -458,6 +485,40 @@ customElements.define('b-nav-view', class extends Tabs{
     constructor(){
         super()
         this.setAttribute('tab-bar', 'b-nav-view-bar')
+        this.onNavViews = this.onNavViews.bind(this)
+        this.onNavViewsRemoved = this.onNavViewsRemoved.bind(this)
+        this.addEventListener('nav-views', this.onNavViews)
+    }
+
+    // (sidebar list; see "Child views" above)
+    get showsNavViews(){ return !this.narrow && !this.compact }
+
+    // a section's tabs offering their views (b-tabs nav="parent")
+    onNavViews(e){
+        let {tabs, views} = e.detail
+        if( tabs == this || !views ) return
+
+        let tabView = e.composedPath().map(el=>el.tabView).find(t=>t && this.views.get(t.id) == t)
+        if( !tabView ) return
+
+        e.stopPropagation() // (the nearest nav decides; when it has no room, the tabs show their own bar)
+        if( !this.showsNavViews ) return
+
+        e.detail.handled = true
+        tabView.navViews = {tabs, views}
+        this.__tabBar?.requestUpdate()
+    }
+
+    // (tabs removed; sent on window)
+    onNavViewsRemoved(e){
+        let {tabs, views} = e.detail
+        if( views ) return
+
+        this.views?.map(tabView=>{
+            if( tabView.navViews?.tabs != tabs ) return
+            tabView.navViews = null
+            this.__tabBar?.requestUpdate()
+        })
     }
 
     // the bar is created lazily by b-tabs; pass along `compact` whenever it renders

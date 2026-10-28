@@ -118,6 +118,32 @@ The tabbar/menu provides slots for rendering content before and after the menu i
 <div slot="menu:after">after menu items</div>
 ```
 
+## Show in a Parent Nav
+A view's own tabs can be listed in the nearest parent nav instead of a tab bar: under the section in a
+`<b-nav-view>` sidebar, or under the app shell sidebar item whose path they're under (`b-app-sidebar-item`).
+Their tab bar shows if no parent can (ex: a narrow nav view, or the app shell's phone drawer). Give the tabs a `b-router-controller` so the
+items have paths (urls); without one, clicking an item switches the tabs directly.
+
+```html
+<b-tabs nav="parent">
+    <b-router-controller rootpath="overview/"></b-router-controller>
+    my-about
+    my-setup
+</b-tabs>
+```
+
+To list them before the view is opened, the view can declare them (paths relative to its own):
+
+```js
+static navViews = [
+    {title: 'About', path: 'about'},
+    {title: 'Setup', path: 'setup'}
+]
+```
+
+In a `b-nav-view` the section's static `navViews` are used automatically; for the app shell, set `view` on the
+item: `<b-app-sidebar-item path="overview" view="my-overview">`
+
 ## No Tab Bar
 You can disable a tab bar menu from showing by adding`tab-bar="none"` attribute
 
