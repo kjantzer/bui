@@ -51,6 +51,12 @@ export function mountShell(root){
 
     let topbar = document.createElement('b-app-topbar')
     topbar.slot = 'main-top'
+    topbar.innerHTML = /*html*/`
+        <div class="brand">
+            <bui-logo></bui-logo>
+            <b-text md>Blackstone <b-text xbold>UI</b-text></b-text>
+        </div>
+    `
 
     let home = document.createElement('demo-home')
     home.slot = 'base'
@@ -85,9 +91,16 @@ customElements.define('demo-sidebar', class extends LitElement{
             min-width: 0;
         }
 
-        .brand bui-logo {
-            --size: 1.4em;
+        /* (the icons' box, so it stays centered in the rail; bigger than the icons, it overflows the box evenly) */
+        .brand .logo {
+            display: inline-flex;
+            justify-content: center;
+            width: 1.4em;
             flex-shrink: 0;
+        }
+
+        .brand bui-logo {
+            --size: 1.9em;
         }
 
         .brand b-text {
@@ -104,12 +117,12 @@ customElements.define('demo-sidebar', class extends LitElement{
     render(){return html`
         <b-app-sidebar>
             <div slot="brand" class="brand" title="Collapse / expand sidebar">
-                <bui-logo></bui-logo>
+                <span class="logo"><bui-logo></bui-logo></span>
                 <b-text md>Blackstone <b-text xbold>UI</b-text></b-text>
             </div>
 
             <b-app-sidebar-group>
-                <b-app-sidebar-item base path="overview" icon="info" label="Overview"></b-app-sidebar-item>
+                <b-app-sidebar-item base path="overview" view="demo-overview" icon="info" label="Overview"></b-app-sidebar-item>
             </b-app-sidebar-group>
 
             <b-app-sidebar-group label="Docs">

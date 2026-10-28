@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit'
 import 'bui/elements/headers'
 import 'bui/elements/hr'
+import 'bui/presenters/nav-view'
 import docs from 'bui/README.md'
 import './setup'
 import './changelog'
@@ -22,6 +23,13 @@ customElements.define('demo-overview', class extends LitElement{
     static get title(){ return 'Overview' }
     static get icon(){ return 'info' }
     static get path(){ return 'overview(/:view(/*))' }
+
+    // its tabs, shown under Overview in the sidebar (before it renders; then the tabs' own, see b-tabs nav="parent")
+    static navViews = [
+        {title: 'About', path: 'about'},
+        {title: 'Setup', path: 'setup'},
+        {title: 'Changelog', path: 'changelog'}
+    ]
 
     static get styles(){return css`
         :host {
@@ -107,15 +115,14 @@ customElements.define('demo-overview', class extends LitElement{
             text-decoration: none;
         }
 
-        b-tabs > * {
-            min-width: 0;
+        /* (the backgrounds show through; pages padded like b-tabs did) */
+        b-nav-view {
+            background: none;
+            --contentPadding: var(--view-gutter, 2em);
         }
 
-        b-tabs::part(tab-bar) {
-            background-color: var(--theme-bgd);
-            /* color: white; */
-            /* --inactiveColor: rgba(255,255,255,.4); */
-            /* --border-color: rgba(255,255,255,.1); */
+        b-nav-view > * {
+            min-width: 0;
         }
     `}
 
@@ -126,7 +133,7 @@ customElements.define('demo-overview', class extends LitElement{
         <div class="bgd"></div>
         
 
-        <b-tabs key="demo-overview">
+        <b-nav-view key="demo-overview" nav="parent">
             <b-router-controller rootpath="overview/"></b-router-controller>
 
             <div title="About" view-id="about">
@@ -157,7 +164,7 @@ customElements.define('demo-overview', class extends LitElement{
             demo-setup
             demo-changelog
 
-        </b-tabs>
+        </b-nav-view>
     `}
 
 })

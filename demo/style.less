@@ -24,7 +24,23 @@ b-panels[name="root"] {
     z-index: 200;
 }
 
-/* the topbar only holds the menu btn (☰) that opens the sidebar on phones */
+/* centered in the topbar (not just in the space after the menu btn) */
+b-app-topbar > .brand {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    white-space: nowrap;
+
+    bui-logo {
+        --size: 1.4em;
+    }
+}
+
+/* the topbar (menu btn and logo) is only for phones; the sidebar is always shown otherwise */
 @media (min-width: 700px) {
     b-panels[name="root"] > b-app-topbar {
         display: none;
