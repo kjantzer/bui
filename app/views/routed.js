@@ -70,6 +70,11 @@ export default class RoutedView extends LitElement {
             grid-template-rows: auto 1fr;
             --bgd-color: var(--theme-bgd, #fff);
         }
+
+        /* no toolbar (ex: a b-list with its own titlebar): fill the panel, not the "auto" toolbar row */
+        :host([in-panel]) > :only-child {
+            grid-row: 1 / -1;
+        }
         
         :host(:not([in-panel])) b-panel-toolbar {
             display: none;
