@@ -38,6 +38,7 @@
 */
 import { LitElement, html, css } from 'lit'
 import {localStore} from '../../util/store'
+import {hasOpenPopovers} from '../../presenters/popover'
 
 const NARROW = 700
 const WIDE = 1200
@@ -190,7 +191,7 @@ customElements.define('b-app-sidebar', class extends LitElement{
             min-height: 0;
             padding-top: 0;
             margin-top: -.5rem; /* (the panel's top padding) */
-            margin-bottom: 1.5rem; /* (nav items stay put) */
+            margin-bottom: .5rem;
         }
 
         .top ::slotted([slot="brand"]) {
@@ -254,7 +255,7 @@ customElements.define('b-app-sidebar', class extends LitElement{
         this.narrowQuery.addEventListener('change', this.updateMode)
         this.wideQuery.addEventListener('change', this.updateMode)
         window.addEventListener('b-app-sidebar:toggle', this.toggle)
-        window.addEventListener('keydown', this.onKeydown)
+        window.addEventListener('keydown', this.onKeydown, true) // (capture: before popovers close on escape)
         window.addEventListener('touchstart', this.onTouchStart, {passive: false}) // can cancel the browser's back swipe
         window.addEventListener('touchmove', this.onTouchMove, {passive: false})
         window.addEventListener('touchend', this.onTouchEnd)
@@ -270,7 +271,7 @@ customElements.define('b-app-sidebar', class extends LitElement{
         this.narrowQuery.removeEventListener('change', this.updateMode)
         this.wideQuery.removeEventListener('change', this.updateMode)
         window.removeEventListener('b-app-sidebar:toggle', this.toggle)
-        window.removeEventListener('keydown', this.onKeydown)
+        window.removeEventListener('keydown', this.onKeydown, true)
         window.removeEventListener('touchstart', this.onTouchStart)
         window.removeEventListener('touchmove', this.onTouchMove)
         window.removeEventListener('touchend', this.onTouchEnd)
@@ -319,10 +320,12 @@ customElements.define('b-app-sidebar', class extends LitElement{
     }
 
     // the mouse left: animate closed (it stays `hover-open` until the animation ends)
+    // (waits while a popover is open, ex: an item's menu; coming back cancels it)
     onPointerLeave(e){
         clearTimeout(this._hoverTimer)
         if( !this.hoverOpen || !this.open ) return
         this._hoverTimer = setTimeout(()=>{
+            if( hasOpenPopovers() ) return this.onPointerLeave(e)
             this._hoverClosing = true
             this.open = false
             this._hoverClosed = setTimeout(()=>{
@@ -333,7 +336,8 @@ customElements.define('b-app-sidebar', class extends LitElement{
     }
 
     onKeydown(e){
-        if( e.key == 'Escape' && this.open )
+        // (escape closes an open menu first)
+        if( e.key == 'Escape' && this.open && !hasOpenPopovers() )
             return this.close()
 
         if( e.key == '\\' && (e.metaKey || e.ctrlKey) ){

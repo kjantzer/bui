@@ -65,6 +65,11 @@ const WatchKeyboard = function(e){
 	popover._onKeydown(e)
 }
 
+// any open (not tooltips)? ex: the app sidebar stays hover expanded while a menu is open
+export function hasOpenPopovers(){
+	return OpenPopovers.some(dd=>!dd.isTooltip)
+}
+
 export function closeAllPopovers(){
 	OpenPopovers.forEach(dd=>{
 		dd.close()
