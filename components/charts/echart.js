@@ -51,7 +51,7 @@ customElements.define('b-echart', class extends LitElement{
         if( !this.dataZoom ) return
         // get value again cause use may have changed
         this.dataZoom = this.chart.getOption()?.dataZoom
-        this.dataZoom?.forEach(zoom=>zoom.zoomLock = !enable)
+        this.dataZoom?.filter(zoom=>zoom.type != 'slider').forEach(zoom=>zoom.zoomLock = !enable)
         this.chart?.setOption({dataZoom: this.dataZoom})
     }
 
@@ -100,8 +100,9 @@ customElements.define('b-echart', class extends LitElement{
     set(options={}){
 
         // will be applied a different way
+        // (only wheel/touch zooming waits for shift; a slider is always usable)
         this.dataZoom = options.dataZoom
-        options.dataZoom?.forEach(zoom=>zoom.zoomLock = true)
+        options.dataZoom?.filter(zoom=>zoom.type != 'slider').forEach(zoom=>zoom.zoomLock = true)
 
         options.darkMode = colorScheme.isWhatTheme() == 'dark'
 
