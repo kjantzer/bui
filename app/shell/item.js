@@ -2,6 +2,7 @@
     # App Sidebar Item
 
     A link in `<b-app-sidebar>`. Shows icon + label, or just the icon (with a tooltip) when the sidebar is a rail
+    (no tooltip when the sidebar has `hover-expand`: hovering shows the labels)
 
     ```html
     <b-app-sidebar-item icon="timeline" label="Timeline" path="timeline"></b-app-sidebar-item>
@@ -197,6 +198,17 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
 
     get panelController(){ return PanelController.for('root') }
 
+    // the sidebar opens on hover (so no tooltips); looks past shadow roots (ex: items in the open panels list)
+    get sidebarHoverExpands(){
+        let el = this
+        while( el ){
+            let sidebar = el.closest?.('b-app-sidebar')
+            if( sidebar ) return !!sidebar.hoverExpand
+            el = el.getRootNode?.().host
+        }
+        return false
+    }
+
     connectedCallback(){
         super.connectedCallback()
         let sidebar = this.closest('b-app-sidebar') // not found when rendered inside another element (it sets `rail`)
@@ -383,7 +395,7 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
             <slot name="end"></slot>
             ${this.menu?html`<b-icon class="chevron" name="chevron_right"></b-icon>`:''}
         </div>
-        ${this.rail&&this.label&&!this.menuOpen?html`<b-tooltip label align="right">${this.label}</b-tooltip>`:''}
+        ${this.rail&&this.label&&!this.menuOpen&&!this.sidebarHoverExpands?html`<b-tooltip label align="right">${this.label}</b-tooltip>`:''}
         ${this.renderNavItems()}
     `}
 

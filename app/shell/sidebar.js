@@ -30,10 +30,11 @@
     the layout is the same in both modes (labels are clipped by the width) so collapsing animates smoothly
 
     Toggle by clicking the brand (logo), `cmd/ctrl + \`, or `window.dispatchEvent(new Event('b-app-sidebar:toggle'))`
+    `hover-expand`: a rail opens over the content while the mouse is over it (and closes when it leaves)
     As a drawer, swipe in from the left edge of the screen to open it and swipe it to the left to close it
 
     Styling vars: --b-app-sidebar-width, --b-app-sidebar-rail-width, --b-app-sidebar-bgd,
-    --b-app-sidebar-overlay-bgd (drawer and overlay)
+    --b-app-sidebar-overlay-bgd (drawer and overlay), --b-app-sidebar-hover-bgd (opened by hovering)
 */
 import { LitElement, html, css } from 'lit'
 import {localStore} from '../../util/store'
@@ -41,13 +42,20 @@ import {localStore} from '../../util/store'
 const NARROW = 700
 const WIDE = 1200
 const EDGE = 24 // px from the left edge of the screen where a swipe opens the drawer
+const HOVER_OPEN_DELAY = 300 // ms (so passing over it on the way to the content doesn't open it)
+const HOVER_CLOSE_DELAY = 150
+const HOVER_OPEN_DURATION = 90 // ms (faster than toggling; see .panel transition)
+const HOVER_CLOSE_DURATION = 220 // (same as toggling)
 const collapsedPref = localStore.create('b-app-sidebar:collapsed')
 
 customElements.define('b-app-sidebar', class extends LitElement{
 
     static properties = {
         mode: {type: String, reflect: true},
-        open: {type: Boolean, reflect: true}
+        open: {type: Boolean, reflect: true},
+        hoverExpand: {type: Boolean, attribute: 'hover-expand'},
+        // opened by hovering (no scrim, so the content can still be used and leaving closes it)
+        hoverOpen: {type: Boolean, reflect: true, attribute: 'hover-open'}
     }
 
     static styles = css`
@@ -104,6 +112,25 @@ customElements.define('b-app-sidebar', class extends LitElement{
             box-shadow: 4px 0 24px rgba(0,0,0,.3);
         }
 
+        /* opened by hovering: looks like the expanded sidebar (its bgd is the page's);
+           kept while it animates closed after the mouse leaves (it's still [hover-open] then, not [open]) */
+        :host([hover-open]) { z-index: 3000; }
+
+        :host([mode="rail"][hover-open]) .panel {
+            background: var(--b-app-sidebar-hover-bgd, var(--theme-bgd));
+            box-shadow: 4px 0 24px rgba(0,0,0,.3);
+            transition-duration: ${HOVER_CLOSE_DURATION}ms;
+        }
+
+        :host([mode="rail"][hover-open][open]) .panel {
+            transition-duration: ${HOVER_OPEN_DURATION}ms;
+        }
+
+        /* closed by opening a view (ex: an item was clicked): no animation */
+        :host([instant]) .panel {
+            transition: none !important;
+        }
+
         :host([mode="drawer"]) .panel {
             position: fixed;
             width: min(calc(var(--width) + 40px), 85vw);
@@ -131,6 +158,7 @@ customElements.define('b-app-sidebar', class extends LitElement{
         }
 
         :host([open]) .scrim { display: block; }
+        :host([hover-open]) .scrim { display: none; }
         :host([mode="drawer"]) .scrim {
             background: rgba(0,0,0,.4);
             opacity: 0;
@@ -171,6 +199,11 @@ customElements.define('b-app-sidebar', class extends LitElement{
             gap: 1px;
         }
 
+        /* (older WebKit ignores scrollbar-width) */
+        nav::-webkit-scrollbar {
+            display: none;
+        }
+
         .footer {
             display: flex;
             flex-direction: column;
@@ -198,6 +231,8 @@ customElements.define('b-app-sidebar', class extends LitElement{
         this.onTouchStart = this.onTouchStart.bind(this)
         this.onTouchMove = this.onTouchMove.bind(this)
         this.onTouchEnd = this.onTouchEnd.bind(this)
+        this.onPointerEnter = this.onPointerEnter.bind(this)
+        this.onPointerLeave = this.onPointerLeave.bind(this)
 
         this.narrowQuery = window.matchMedia(`(max-width: ${NARROW-1}px)`)
         this.wideQuery = window.matchMedia(`(min-width: ${WIDE}px)`)
@@ -258,6 +293,33 @@ customElements.define('b-app-sidebar', class extends LitElement{
 
     close(){
         if( this.open ) this.open = false
+    }
+
+    // hover-expand: open a rail while the mouse is over it (not touch; not the drawer)
+    onPointerEnter(e){
+        if( !this.hoverExpand || e.pointerType != 'mouse' || this.mode != 'rail' ) return
+        clearTimeout(this._hoverTimer)
+        if( this.open ) return
+        this._hoverTimer = setTimeout(()=>{
+            clearTimeout(this._hoverClosed) // (back before it finished closing)
+            this._hoverClosing = false
+            this.open = true
+            this.hoverOpen = true
+        }, HOVER_OPEN_DELAY)
+    }
+
+    // the mouse left: animate closed (it stays `hover-open` until the animation ends)
+    onPointerLeave(e){
+        clearTimeout(this._hoverTimer)
+        if( !this.hoverOpen || !this.open ) return
+        this._hoverTimer = setTimeout(()=>{
+            this._hoverClosing = true
+            this.open = false
+            this._hoverClosed = setTimeout(()=>{
+                this._hoverClosing = false
+                this.hoverOpen = false
+            }, HOVER_CLOSE_DURATION)
+        }, HOVER_CLOSE_DELAY)
     }
 
     onKeydown(e){
@@ -351,11 +413,25 @@ customElements.define('b-app-sidebar', class extends LitElement{
     }
 
     updated(changed){
+        // closed some other way while open from hovering (ex: an item was clicked): close at once
+        if( changed.has('open') && !this.open && !this._hoverClosing ){
+            clearTimeout(this._hoverTimer)
+            if( this.hoverOpen ){
+                this.hoverOpen = false
+                this.setAttribute('instant', '')
+                requestAnimationFrame(()=>requestAnimationFrame(()=>this.removeAttribute('instant')))
+            }
+        }
+
         // no browser "back" swipe from the edge while it opens the drawer (Chrome/Android; iOS: see onTouchStart)
         if( changed.has('mode') ){
             document.documentElement.style.overscrollBehaviorX = this.mode == 'drawer' ? 'none' : ''
             document.body.style.overscrollBehaviorX = this.mode == 'drawer' ? 'none' : ''
         }
+
+        // (items show tooltips as a rail unless it expands on hover)
+        if( changed.has('hoverExpand') && changed.get('hoverExpand') !== undefined )
+            this.querySelectorAll('b-app-sidebar-item').forEach(el=>el.requestUpdate())
 
         if( changed.has('mode') || changed.has('open') ){
             this.applyRail()
@@ -374,7 +450,7 @@ customElements.define('b-app-sidebar', class extends LitElement{
 
     render(){return html`
         <div class="scrim" @click=${this.close}></div>
-        <div class="panel" part="panel">
+        <div class="panel" part="panel" @pointerenter=${this.onPointerEnter} @pointerleave=${this.onPointerLeave}>
             <div class="top" part="top">
                 <slot name="brand" @click=${this.toggle}></slot>
             </div>
