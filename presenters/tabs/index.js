@@ -169,6 +169,12 @@ customElements.define('b-tabs', class extends LitElement {
             display: none !important;
         }
 
+        /* (the content fills the view; it'd be in the layout's auto sized tab bar row/column otherwise) */
+        :host([nav-claimed]) main {
+            grid-template-rows: minmax(0, 1fr);
+            grid-template-columns: minmax(0, 1fr);
+        }
+
         :host([layout="top"]) { --layout: top; }
         :host([layout="bottom"]) { --layout: bottom; }
         :host([layout="left"]) { --layout: left; }
@@ -301,13 +307,18 @@ customElements.define('b-tabs', class extends LitElement {
         it's in, or an app shell sidebar item whose path the views are under); the tab bar shows if none claims them
         Emits `nav-views` {tabs, views, handled} (bubbles to window); a parent sets `handled`. Sent again when the
         active view changes, and on `nav-views:refresh` (window; ex: a parent nav can show them now, or no longer can)
+        `nav-first="section"`: the first view is the section itself (ex: a record's main info); the parent nav doesn't
+        list it, its section item stands for it (selecting the section item again goes back to it)
     */
     get navViews(){
+        let firstIsSection = this.getAttribute('nav-first') == 'section'
+        let first = this.views.first
         return this.views.map(v=>({
             id: v.id,
             title: v.title,
             icon: v.icon,
             active: !!v.active,
+            section: firstIsSection && v == first,
             // (needs a b-router-controller)
             path: v.route ? cleansePath(v.route.makePath({})).replace(/^\/+|\/+$/g, '') : null
         }))

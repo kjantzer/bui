@@ -183,6 +183,16 @@ customElements.define('b-app-sidebar', class extends LitElement{
             margin-bottom: 1rem;
         }
 
+        /* beside the topbar: same height and top so the brand centers with it */
+        :host(:not([mode="drawer"])) .top {
+            box-sizing: border-box;
+            height: var(--b-app-topbar-height, 48px);
+            min-height: 0;
+            padding-top: 0;
+            margin-top: -.5rem; /* (the panel's top padding) */
+            margin-bottom: 1.5rem; /* (nav items stay put) */
+        }
+
         .top ::slotted([slot="brand"]) {
             flex: 1;
             min-width: 0;

@@ -39,7 +39,8 @@
     Extra (non section) items: <b-nav-view-link> (see ./link.js)
 
     Child views: a section's own tabs (`<b-tabs nav="parent">` in it) are listed under the section in the sidebar
-    (their tab bar hides); sections can list them up front (before they're opened): `static navViews = [{title, path,
+    (their tab bar hides; `nav-first="section"`: the first isn't listed, the section item stands for it;
+    `static navViewsCollapsed = true` on the section: listed only while it's active, else a menu when hovering its item); sections can list them up front (before they're opened): `static navViews = [{title, path,
     icon}]` (paths under the section's; the section's path should allow them, ex: `setup(/:tab)`). Not when narrow
     or compact (no room): the section's tabs show their own tab bar
 
@@ -47,7 +48,8 @@
     Sets --nav-view-gutter (side padding) for sections that pad their own content: 1.5rem, .75rem when narrow
 
     Styling vars: --nav-view-sidebar-width, --nav-view-sidebar-bgd, --nav-view-sidebar-border, --nav-view-glass-bgd,
-    --nav-view-tab-bar-active-bgd (narrow tab bar), --nav-item-active-bgd/--nav-item-active-color (sidebar)
+    --nav-view-tab-bar-active-bgd (narrow tab bar), --nav-item-active-bgd/--nav-item-active-color (sidebar),
+    --nav-sub-items-line (child views' guide line)
 */
 import { html, css } from 'lit'
 import device from '../../util/device'
@@ -121,11 +123,17 @@ customElements.define('b-nav-view', class extends Tabs{
             border-right: var(--nav-view-sidebar-border, solid 1px var(--theme-bgd-accent));
         }
 
+        /* (scrolls without a scrollbar, like the app shell sidebar) */
         slot[name="tabbar"] {
             display: block;
             flex: 1;
             overflow-y: auto;
             min-height: 0;
+            scrollbar-width: none;
+        }
+
+        slot[name="tabbar"]::-webkit-scrollbar {
+            display: none;
         }
 
         .sidebar-top {
@@ -432,11 +440,45 @@ customElements.define('b-nav-view', class extends Tabs{
             // (b-tabs fires this for every click, even on the active one)
             this.dispatchEvent(new CustomEvent('menu-clicked', {detail: {tabView, oldTabView: tabView}, bubbles: false, composed: true}))
 
+            // back to the section itself from a child view (see showSectionFirst)
+            if( !wasShown && this.showSectionFirst(tabView, {onlyIfChild: true}) ) return
+
             // the section was already active under the sidebar view: show it; else back to its top (like iOS tab bars)
             return wasShown ? this.requestUpdate() : this.scrollToTop()
         }
 
+        // (its first view routes it; no need to route the section too)
+        if( this.showsNavViews && tabView?.navViews?.views.some(v=>v.section) ){
+            this.active = tabView
+            return this.showSectionFirst(tabView)
+        }
+
         super.menuClick(e)
+
+        // first time opened: its tabs offer their views once rendered
+        if( this.showsNavViews && !tabView?.navViews && tabView?._viewClass?.navViews )
+            this.showSectionFirst(tabView, {wait: true})
+    }
+
+    /*
+        A section whose tabs' first view is the section itself (b-tabs nav-first="section"): its item shows that view,
+        not the child view last shown (they have their own items); when its child views are listed (not narrow/compact)
+        Returns true if it selected it
+    */
+    showSectionFirst(tabView, {onlyIfChild=false, wait=false}={}){
+        if( wait ) return (async ()=>{
+            for( let tries = 0; !tabView.navViews && tries < 20; tries++ )
+                await new Promise(r=>setTimeout(r, 50))
+            if( tabView.active ) this.showSectionFirst(tabView, {onlyIfChild: true})
+        })()
+
+        let {tabs, views} = tabView.navViews || {}
+        let first = views?.find(v=>v.section)
+        if( !first || (onlyIfChild && tabs.active == first.id) ) return false
+
+        // (through its menu click so its own handlers route it, ex: with the model's id)
+        tabs.menuClick({currentTarget: {tabView: tabs.views.get(first.id)}})
+        return true
     }
 
     updated(changed){

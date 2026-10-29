@@ -6,6 +6,11 @@
     - shows at most 5 items; the rest go in a "More" menu (links with the `keep` attribute always stay in the bar)
 
     Sections' child views are listed under them (sidebar list only; see b-nav-view "Child views")
+    - `static navViewsCollapsed = true` (on the section): listed only while it's active; hovering its item otherwise
+      shows them in a menu to the right
+    - static navViews can be links instead of views: `{title, action: (model, navView)=>{}}` (ex: open another view;
+      a ↗ in the hover menu; none when listed, there's little room)
+    - `menuTitle` (static navViews): a longer title for the hover menu (ex: when the listed title is shortened to fit)
 */
 import BaseTabBar, {html, css} from '../tabs/tab-bar/_base'
 import Menu from '../menu'
@@ -115,31 +120,69 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
             margin-top: 0;
         }
 
-        /* a section's child views: labels lined up with the section's */
+        /* a section's child views: nested under it, a guide line below the section's icon
+           (labels line up with the section's) */
         .sub-items {
             display: flex;
             flex-direction: column;
-            gap: 2px;
-            margin-top: -2px; /* (closer to their section than the next one) */
+            gap: 1px;
+            margin: -2px 0 .25em .75em; /* (closer to their section than the next one) */
+            border-left: solid 1px var(--nav-sub-items-line, var(--theme-bgd-accent));
         }
 
-        /* (sections without an icon: a small indent) */
+        /* (the icon's center: item padding + half its 1.4em box) */
+        .sub-items[icon] {
+            margin-left: 1.45em;
+        }
+
         .item.sub {
-            padding-left: 1.75em;
+            position: relative;
+            padding-top: .45em;
+            padding-bottom: .45em;
+            padding-left: .75em;
+            padding-right: .25em; /* (text only, no bgd: room for longer labels) */
             font-weight: 400;
+            color: var(--theme-text-accent);
         }
 
         .sub-items[icon] .item.sub {
-            padding-left: calc(1.5em + 1.4em);
+            padding-left: 1.45em;
         }
 
-        /* the active child is highlighted instead */
-        .item[has-sub][active] {
+        /* the section keeps the active bgd; children are text only: hover/active darken the label,
+           the active one is marked on the guide line */
+        .item.sub:hover,
+        .item.sub[active] {
             background: none;
+            color: var(--theme-text);
         }
 
-        .item.sub:not([active]) {
+        .item.sub[active] {
+            font-weight: 600;
+        }
+
+
+        /* (its child views are in a hover menu, see navViewsCollapsed) */
+        .item b-icon.sub-menu {
+            margin-left: auto;
+            width: auto;
+            --size: 1em;
             color: var(--theme-text-accent);
+            opacity: .8;
+        }
+
+        .item[active] b-icon.sub-menu {
+            color: inherit;
+        }
+
+        .item.sub[active]::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--nav-item-active-bgd, var(--theme));
         }
 
         /* single line labels in the tab bar (even when compact) */
@@ -172,6 +215,7 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
         super.disconnectedCallback()
         this._hiddenObserver?.disconnect()
         this._hiddenObserver = null
+        this.closeNavViewsMenu()
     }
 
     get isNarrow(){ return this.narrow }
@@ -272,10 +316,13 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
         if( this._overflow?.some(e=>e.view == view) ) return ''
 
         return html`
-            <button class="item" ?active=${view.active && !this.host?.sidebarViewShown} ?has-sub=${!!view.navViews && this.navItems(view).length > 0}
-                .tabView=${view} @click=${this.onMenuClick}>
+            <button class="item" ?active=${view.active && !this.host?.sidebarViewShown}
+                ?has-sub=${!!view.navViews && this.navViewsListed(view) && this.navItems(view).length > 0}
+                .tabView=${view} @click=${this.onSectionClick}
+                @mouseenter=${e=>this.hoverNavViews(e, view)} @mouseleave=${this.leaveNavViews}>
                 ${view.view?.renderTabIcon?.() || (view.icon?html`<b-icon name=${view.icon}></b-icon>`:'')}
                 <span>${view.toolbarTitle||view.title}</span>
+                ${this.hasNavViewsMenu(view)?html`<b-icon name="chevron_right" class="sub-menu"></b-icon>`:''}
             </button>
             ${this.renderNavViews(view)}
         `
@@ -284,12 +331,18 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
     // a section's child views: live from its tabs (claimed by b-nav-view), else its static navViews
     navItems(view){
         if( !this.host?.showsNavViews ) return []
-        return view.navViews?.views || view._viewClass?.navViews || []
+        let items = view.navViews?.views || view._viewClass?.navViews || []
+        return items.filter(item=>!item.section) // (the section item stands for it, see b-tabs nav-first)
+    }
+
+    // (collapsed: only while the section is shown, see navViewsCollapsed above)
+    navViewsListed(view){
+        return !view._viewClass?.navViewsCollapsed || (view.active && !this.host?.sidebarViewShown)
     }
 
     renderNavViews(view){
         let items = this.navItems(view)
-        if( !items.length ) return ''
+        if( !items.length || !this.navViewsListed(view) ) return ''
 
         let live = view.navViews
         let shown = view.active && !this.host?.sidebarViewShown
@@ -305,8 +358,74 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
         `
     }
 
+    onSectionClick(e){
+        this.closeNavViewsMenu()
+        this.onMenuClick(e)
+    }
+
+    // collapsed child views (not listed): shown in a menu instead
+    hasNavViewsMenu(view){
+        return !this.navViewsListed(view) && this.navItems(view).length > 0
+    }
+
+    // collapsed child views: a menu to the right of the section's item while hovering it (or the menu)
+    hoverNavViews(e, view){
+        if( !this.hasNavViewsMenu(view) ) return
+        let btn = e.currentTarget
+        clearTimeout(this._navMenuTimeout)
+        this._navMenuTimeout = setTimeout(()=>this.showNavViewsMenu(btn, view), this._navMenu ? 0 : 150)
+    }
+
+    leaveNavViews(){
+        clearTimeout(this._navMenuTimeout)
+        this._navMenuTimeout = setTimeout(()=>this.closeNavViewsMenu(), 250)
+    }
+
+    async showNavViewsMenu(btn, view){
+        if( this._navMenu?.view == view ) return
+        this.closeNavViewsMenu()
+
+        let menu = new Menu(this.navItems(view).map(item=>({
+            label: item.menuTitle || item.title,
+            icon: item.icon,
+            extras: item.action ? [html`<b-icon name="call_made" muted></b-icon>`] : null,
+            val: item
+        })))
+        this._navMenu = {menu, view}
+
+        let selected = menu.popOver(btn, {align: 'right-start', overflowBoundry: 'window'})
+
+        // (stays open while hovering it)
+        let el = menu.presenter?.el
+        el?.addEventListener('mouseenter', ()=>clearTimeout(this._navMenuTimeout))
+        el?.addEventListener('mouseleave', ()=>this.leaveNavViews())
+
+        selected = await selected
+        if( this._navMenu?.menu == menu ) this._navMenu = null
+        if( selected ) this.selectNavView(view, selected.val)
+    }
+
+    closeNavViewsMenu(){
+        clearTimeout(this._navMenuTimeout)
+        this._navMenu?.menu.presenter?.close() // (resolves the menu)
+        this._navMenu = null
+    }
+
     async selectNavView(view, item){
+
+        // a link (see static navViews above)
+        if( item.action ) return item.action(this.host?.model, this.host)
+
         let live = view.navViews
+
+        // live: pick it like the tabs' own bar would (their menu-clicked handlers route it, ex: with the model's id
+        // when the path has params, ex: book/:id/record/)
+        let tabView = live?.tabs.views.get(item.id)
+        if( tabView ){
+            if( !view.active ) this.host.active = view // (without its own route; the child's route follows)
+            return live.tabs.menuClick({currentTarget: {tabView}})
+        }
+
         let sectionPath = view.route ? cleansePath(view.route.makePath({})).replace(/^\/+|\/+$/g, '') : ''
         let path = live ? item.path : (item.path && sectionPath ? sectionPath+'/'+item.path.replace(/^\/+/, '') : null)
 
@@ -317,7 +436,8 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
             return (window.goTo || router.goTo.bind(router))(path)
         }
 
-        if( !view.active ) this.onMenuClick({currentTarget: {tabView: view}})
+        // (without its own route, and not its first view (see b-nav-view showSectionFirst); the child's route follows)
+        if( !view.active ) this.host.active = view
 
         // (static: once the section's tabs offer their views)
         for( let tries = 0; !view.navViews && tries < 20; tries++ )
@@ -325,7 +445,7 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
 
         let tabs = view.navViews?.tabs
         let match = view.navViews?.views.find(v=>v.id == item.id || v.title == item.title)
-        if( tabs && match ) tabs.active = match.id
+        if( tabs && match ) tabs.menuClick({currentTarget: {tabView: tabs.views.get(match.id)}})
     }
 
     async showMore(e){
