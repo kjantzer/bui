@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 import {live} from 'lit/directives/live.js'
-import '@lit-labs/virtualizer'
+import '../../helpers/lit/virtualizer'
 import dayjs from 'dayjs'
 import styles from './styles'
 import './month'

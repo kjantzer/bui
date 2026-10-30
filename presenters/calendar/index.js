@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 import {until} from 'lit/directives/until.js'
-import '@lit-labs/virtualizer'
+import '../../helpers/lit/virtualizer'
 import {flow} from '@lit-labs/virtualizer/layouts/flow.js';
 import dayjs from 'dayjs'
 import styles from './styles'

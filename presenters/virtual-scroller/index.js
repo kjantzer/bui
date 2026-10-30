@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit'
-import '@lit-labs/virtualizer'
+import '../../helpers/lit/virtualizer'
 import './skipper'
 
 customElements.define('b-virtual-scroller', class extends LitElement{
