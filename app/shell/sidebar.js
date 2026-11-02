@@ -43,7 +43,7 @@ import {hasOpenPopovers} from '../../presenters/popover'
 const NARROW = 700
 const WIDE = 1200
 const EDGE = 24 // px from the left edge of the screen where a swipe opens the drawer
-const HOVER_OPEN_DELAY = 300 // ms (so passing over it on the way to the content doesn't open it)
+const HOVER_OPEN_DELAY = 150 // ms (so passing over it on the way to the content doesn't open it)
 const HOVER_CLOSE_DELAY = 150
 const HOVER_OPEN_DURATION = 90 // ms (faster than toggling; see .panel transition)
 const HOVER_CLOSE_DURATION = 220 // (same as toggling)
