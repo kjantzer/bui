@@ -54,7 +54,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
     // a relative value → [start, end] (anything else as is)
     static resolveValue(val){
         if( !isRel(val) ) return val
-        return relativeRange(val.rel).map(d=>d.format(DB_FORMAT))
+        return (relativeRange(val.rel) || []).map(d=>d.format(DB_FORMAT))
     }
 
     static get styles(){return css`
@@ -383,14 +383,14 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         let str = e.currentTarget.value.trim()
         if( !str ) return
 
-        let rel = str.toLowerCase().match(/^(next |\+)?(\d+)\s*(d|days?|w|wks?|weeks?|m|mos?|months?|y|yrs?|years?)$/)
+        let rel = str.toLowerCase().match(/^(next |\+)?([1-9]\d*)\s*(d|days?|w|wks?|weeks?|m|mos?|months?|y|yrs?|years?)$/)
         if( rel && this.opts.range ){
             let [, next, num, unit] = rel
             unit = UNITS.find(u=>u[0] == unit[0])
             num = parseInt(num)
             this.commit({rel: `${next?'next ':''}${num} ${unit}${num == 1 ? '' : 's'}`})
             this.syncDatepicker()
-            this.mode = 'presets' // (shows it's relative)
+            if( this.isRelativeOnly ) this.mode = 'presets' // (shows it's relative)
             return
         }
 
