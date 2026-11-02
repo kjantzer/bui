@@ -29,17 +29,25 @@ const DB_FORMAT = 'YYYY-MM-DD'
 const DEFAULT_LAST = ['this day', 'previous day', '7 days', '14 days', '30 days', '60 days', '90 days', '6 months', '12 months',
     'month to date', 'year to date']
 const DEFAULT_NEXT = ['next 7 days', 'next 14 days', 'next 30 days', 'next 60 days', 'next 90 days']
-const PERIOD_UNITS = ['week', 'month', 'quarter', 'year'] // (only week's say Last / This / Next; the others' names do, ex: Oct, Q4, 2026)
-const PERIOD_COLS = [
-    {dir: 'previous', label: 'Last'},
-    {dir: 'this', label: 'This'},
-    {dir: 'following', label: 'Next'}
-]
-const periodKey = (dir, unit)=>relativeKey({dir, unit})
+// calendar periods by offset from the current one (only week's say Last / This / Next; the others' names do, ex: Oct, Q4, 2026)
+const PERIOD_UNITS = ['week', 'month', 'quarter', 'year']
+const PERIOD_OFFSETS = {
+    week: [-1, 0, 1],
+    month: [-6, -5, -4, -3, -2, -1, 0, 1],
+    quarter: [-6, -5, -4, -3, -2, -1, 0, 1],
+    year: [-6, -5, -4, -3, -2, -1, 0, 1]
+}
+const OFFSET_LABELS = {'-1': 'Last', '0': 'This', '1': 'Next'}
+
+const periodKey = (offset, unit)=>relativeKey(
+    offset == 0 ? {dir: 'this', unit}
+    : offset == 1 ? {dir: 'following', unit}
+    : {dir: 'ago', num: -offset, unit}
+)
 
 const DEFAULT_RELATIVE = [
     ...DEFAULT_LAST, ...DEFAULT_NEXT,
-    ...PERIOD_UNITS.flatMap(unit=>PERIOD_COLS.map(c=>periodKey(c.dir, unit)))
+    ...PERIOD_UNITS.flatMap(unit=>PERIOD_OFFSETS[unit].map(offset=>periodKey(offset, unit)))
 ]
 
 const DIRS = [
@@ -48,6 +56,7 @@ const DIRS = [
     {val: 'this', label: 'This'},
     {val: 'todate', label: 'Since start of'},
     {val: 'previous', label: 'Previous'},
+    {val: 'ago', label: 'Ago'},
     {val: 'following', label: 'Following'}
 ]
 
@@ -294,6 +303,10 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             padding: 0 .5em .5em;
         }
 
+        .periods[cols="4"] {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
         /* sized like the chips: "Last  Oct 25 – 31" on one line */
         .period {
             display: flex;
@@ -523,7 +536,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
     // (options `selected` for the first render, before they exist for `.value`; `.value` after, once changed by hand)
     renderRelativeInput(){
         let p = (isRel(this.value) && parseRelative(this.value.rel)) || this.draft || {dir: 'last', num: null, unit: 'day'}
-        let hasNum = ['last', 'next'].includes(p.dir)
+        let hasNum = ['last', 'next', 'ago'].includes(p.dir)
         let plural = hasNum && p.num != 1
 
         return html`
@@ -613,15 +626,15 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
 
             ${PERIOD_UNITS.map(unit=>html`
                 <div class="group-label">${unit[0].toUpperCase()+unit.slice(1)}</div>
-                <div class="periods">
-                    ${PERIOD_COLS.map(c=>{
-                        let key = periodKey(c.dir, unit)
+                <div class="periods" cols=${PERIOD_OFFSETS[unit].length > 3 ? 4 : 3}>
+                    ${PERIOD_OFFSETS[unit].map(offset=>{
+                        let key = periodKey(offset, unit)
                         let range = this.presetDates(key)
                         return html`
                         <div class="period" ?selected=${rel == key} title="${relativeLabel(key)}: ${datesHint(...range)}"
                             @click=${()=>this.pickPreset(key)}>
                             ${unit == 'week' ? html`
-                                <span class="period-label">${c.label}</span>
+                                <span class="period-label">${OFFSET_LABELS[offset]}</span>
                                 <span class="period-dates">${compactHint(...range)}</span>
                             `:html`
                                 <span>${compactHint(...range)}</span>
@@ -670,9 +683,9 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             unit: el('.unit').value
         }
 
-        // switching to last/next keeps the number it had (or 1)
-        if( ['last', 'next'].includes(p.dir) && !el('.num') )
-            p.num = prev.num || 1
+        // switching to last/next/ago keeps the number it had (or 1; 2 for ago, since 1 ago is "Previous")
+        if( ['last', 'next', 'ago'].includes(p.dir) && !el('.num') )
+            p.num = prev.num || (p.dir == 'ago' ? 2 : 1)
 
         let key = relativeKey(p)
         this.draft = p
