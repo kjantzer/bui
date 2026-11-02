@@ -6,31 +6,34 @@ export default {
     alert: {
     },
     error: {
-        icon: 'attention-circle',
-        color: 'red',
-        animation: 'bounce'
-    },
-    wrong: {
-        icon: 'attention-circle',
+        icon: 'error',
         accent: 'red',
-        color: 'inverse',
-        animation: 'bounce'
+        animation: 'bounce',
+        assertive: true
+    },
+    // DEPRECATED: same as `error`
+    wrong: {
+        icon: 'error',
+        accent: 'red',
+        animation: 'bounce',
+        assertive: true
     },
     failed: {
-        icon: 'cancel-circled',
+        icon: 'cancel',
         accent: 'red',
-        color: 'inverse',
+        assertive: true
     },
     success: {
         icon: 'check_circle',
         accent: 'green'
     },
     info: {
-        icon: 'info-circled',
+        icon: 'info',
         accent: 'blue'
     },
     warning: {
-        icon: 'attention-1',
-        color: 'orange'
+        icon: 'warning',
+        accent: 'orange',
+        assertive: true
     }
 }

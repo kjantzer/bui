@@ -160,6 +160,66 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             }
         }
 
+        /* in a notif: match the notif style (tinted icon badge, accent bar, compact buttons) */
+        :host([in-notif]) {
+            --pad: 1em;
+        }
+
+        :host([in-notif]) aside {
+            background: none;
+        }
+
+        :host([in-notif]) aside [name="icon"] > * {
+            margin: var(--pad) 0 0 var(--pad);
+            padding: .425em;
+            --size: 1.15em;
+            border-radius: 50%;
+            color: var(--accent, currentColor);
+            background: color-mix(in srgb, var(--accent, currentColor) 15%, transparent);
+        }
+
+        :host([in-notif][toast]) aside [name="icon"] > * {
+            margin: .625em 0 .625em .875em;
+        }
+
+        :host([in-notif][edge]) {
+            box-shadow: none;
+        }
+
+        :host([in-notif][edge])::before {
+            content: '';
+            position: absolute;
+            left: .3em;
+            top: .6em;
+            bottom: .6em;
+            width: 3px;
+            border-radius: 3px;
+            background: var(--accent);
+        }
+
+        :host([in-notif]) .pretitle slot {
+            font-size: .75em;
+            font-weight: 600;
+            letter-spacing: .03em;
+            text-transform: uppercase;
+            color: var(--accent, inherit);
+        }
+
+        :host([in-notif]) .title slot {
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        :host([in-notif]) .body {
+            font-size: .9em;
+        }
+
+        :host([in-notif]:not([nocontent][notext])) footer b-dialog-btn {
+            flex-grow: 0;
+            font-size: .9em;
+            --radius: 2em;
+        }
+
         :host([_title="0"][pretitle="0"]) main header {
             display: none;
         }
