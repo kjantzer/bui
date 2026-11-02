@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit'
 import {live} from 'lit/directives/live.js'
 import '../../helpers/lit/virtualizer'
+import {virtualizerRef} from '@lit-labs/virtualizer/virtualize.js'
 import dayjs from 'dayjs'
 import styles from './styles'
 import './month'
@@ -131,6 +132,27 @@ customElements.define('b-datepicker', class extends LitElement{
         this.requestUpdate() // (a reconnect renders the layout pinned to the selected range; else it opened on 1975)
     }
 
+    // the pin is only close (months are measured as they render; ex: 3 months off with large days), so once
+    // laid out, scroll to the selected range's month (twice: the first scroll measures the months around it)
+    async updated(){
+        if( !this._pinned ) return
+        this._pinned = false
+
+        await this.monthsList?.updateComplete // (first render: the virtualizer isn't set up yet)
+        await this.monthsList?.layoutComplete
+        this.scrollToMonth(this.indexOfDate('start'), 'start')
+    }
+
+    // months not rendered yet are estimated, so a far scroll lands off (ex: today, from 2025);
+    // it scrolls again once the months around it are measured
+    async scrollToMonth(index, location='center'){
+        for( let i = 0; i < 2; i++ ){
+            if( !this.isConnected || index < 0 || !this.monthsList?.[virtualizerRef]?._layout ) return
+            this.monthsList.scrollToIndex(index, location)
+            await this.monthsList.layoutComplete
+        }
+    }
+
     scrollToDate(date='start', location='center'){
 
         if( !this.monthsList ) return
@@ -138,11 +160,9 @@ customElements.define('b-datepicker', class extends LitElement{
         // timeout in case datepicker is in a closing popoover
         setTimeout(()=>{
             if( this.checkVisibility && !this.checkVisibility() ) return
+            if( !this.monthsList[virtualizerRef]?._layout ) return // (not laid out yet; ex: just shown)
 
-            let index = this.indexOfDate(date)
-            
-            if( index > -1 )
-                this.monthsList.scrollToIndex(index, location)
+            this.scrollToMonth(this.indexOfDate(date), location)
         })
     }
 
@@ -165,15 +185,15 @@ customElements.define('b-datepicker', class extends LitElement{
 
         let layout = {}
 
-        // when reconnected to dom, pin to start of selected range
-        if( this._didConnect )
+        // when reconnected to dom, pin to start of selected range (then scrolled there exactly; see updated)
+        if( this._didConnect ){
+            this._pinned = true
             layout.pin = {
-                // NOTE: -6 added to properly render a correct position
-                // not sure if bug or how we've implemented - seems okay for now, may need to remove later
-                index: this.indexOfDate('start') - 6,
+                index: this.indexOfDate('start'),
                 block: 'start'
             }
-        
+        }
+
         delete this._didConnect
 
         return layout
