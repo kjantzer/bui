@@ -249,14 +249,19 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         }
 
         /* default presets */
+        /* each group starts with a line (except the first) */
         .group-label {
-            padding: .5em .65em .35em;
+            margin: .4em .5em 0;
+            padding: .65em .15em .4em;
+            border-top: solid 1px var(--theme-bgd-accent, #ddd);
             font-size: .75em;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: .03em;
             color: var(--theme-text-accent, #888);
         }
+
+        .group-label:first-child { border-top: none; margin-top: 0; }
 
         .chips {
             display: flex;
@@ -279,7 +284,6 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         .chip[selected] {
             color: var(--theme-bgd, #fff);
             background: var(--theme);
-            font-weight: 600;
         }
 
         /* a period's Last / This / Next */
@@ -290,24 +294,26 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             padding: 0 .5em .5em;
         }
 
+        /* sized like the chips: "Last  Oct 25 – 31" on one line */
         .period {
-            display: grid;
-            justify-items: center;
-            gap: .1em;
-            padding: .45em .25em;
-            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: .4em;
+            min-width: 0;
+            padding: .35em .5em;
+            border-radius: 2em;
+            font-size: .9em;
             cursor: pointer;
             white-space: nowrap;
             background: var(--theme-bgd-accent, #eee);
         }
 
-        .period-label { font-weight: 600; }
-
         .period-dates {
-            max-width: 100%;
+            min-width: 0;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-size: .75em;
+            font-size: .85em;
             color: var(--theme-text-accent, #888);
         }
 
