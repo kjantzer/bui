@@ -29,7 +29,7 @@ const DB_FORMAT = 'YYYY-MM-DD'
 const DEFAULT_LAST = ['this day', 'previous day', '7 days', '14 days', '30 days', '60 days', '90 days', '6 months', '12 months',
     'month to date', 'year to date']
 const DEFAULT_NEXT = ['next 7 days', 'next 14 days', 'next 30 days', 'next 60 days', 'next 90 days']
-const PERIOD_UNITS = ['week', 'month', 'quarter', 'year']
+const PERIOD_UNITS = ['week', 'month', 'quarter', 'year'] // (only week's say Last / This / Next; the others' names do, ex: Oct, Q4, 2026)
 const PERIOD_COLS = [
     {dir: 'previous', label: 'Last'},
     {dir: 'this', label: 'This'},
@@ -620,8 +620,12 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
                         return html`
                         <div class="period" ?selected=${rel == key} title="${relativeLabel(key)}: ${datesHint(...range)}"
                             @click=${()=>this.pickPreset(key)}>
-                            <span class="period-label">${c.label}</span>
-                            <span class="period-dates">${compactHint(...range)}</span>
+                            ${unit == 'week' ? html`
+                                <span class="period-label">${c.label}</span>
+                                <span class="period-dates">${compactHint(...range)}</span>
+                            `:html`
+                                <span>${compactHint(...range)}</span>
+                            `}
                         </div>
                     `})}
                 </div>
