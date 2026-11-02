@@ -61,10 +61,21 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         :host {
             position: relative;
             padding: 0;
+            height: 100%; /* (the calendar fills the space) */
+        }
+
+        .view {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .modes {
             padding: .75em 1em 0;
+        }
+
+        .modes radio-group {
+            display: flex;
         }
 
         /* relative / presets */
@@ -110,9 +121,12 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             color: var(--theme-text-accent, #888);
         }
 
-        /* "Last [45] [days]" */
+        /* "Last [45] [days]" (fills the row) */
         .custom {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: .5em;
+            padding: .35em;
             cursor: default;
         }
 
@@ -126,7 +140,10 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             outline: none;
         }
 
-        .custom input { width: 4em; }
+        .custom input, .custom select {
+            min-width: 0;
+            padding: .5em .75em;
+        }
 
         .custom input:focus, .custom select:focus, .typed:focus {
             border-color: var(--theme);
@@ -135,9 +152,13 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         /* range */
         .range {
             display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
             justify-items: center;
             gap: .5em;
             padding: .75em 1em 0;
+            flex: 1;
+            min-height: 0;
+            container-type: inline-size;
         }
 
         .typed {
@@ -149,9 +170,19 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
 
         .typed::placeholder { font-size: .9em; }
 
+        /* fills the width (7 days, its padding and gaps) and the height left */
         b-datepicker {
-            --date-picker-height: min(50vh, 340px);
-            --size: 2.25em;
+            --date-picker-height: 100%;
+            --size: min(4em, calc((100cqw - 2.5em) / 7));
+            --font-size: .9rem;
+            min-height: 300px;
+        }
+
+        /* (its presets aren't shown, but still had a min width) */
+        b-datepicker::part(presets) {
+            min-width: 0;
+            padding: 0;
+            border: none;
         }
     `}
 
@@ -277,6 +308,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         let mode = this.modeShown
 
         return html`
+        <div class="view">
         <div>${this.opts.header||''}</div>
 
         ${this.presets.length ? html`
@@ -291,6 +323,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         ${mode == 'presets' ? this.renderPresets() : this.renderRange()}
 
         <div>${this.opts.footer||''}</div>
+        </div>
     `}
 
     renderPresets(){
@@ -299,6 +332,8 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
 
         return html`
         <div class="presets">
+            ${this.isRelativeOnly && this.opts.range ? this.renderCustom(rel) : ''}
+
             ${this.presets.map(p=>{
 
                 if( p == '-' || p == 'divider' ) return html`<div class="divider"></div>`
@@ -313,8 +348,6 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
                     <span class="dates">${datesHint(...range)}</span>
                 </div>
             `})}
-
-            ${this.isRelativeOnly && this.opts.range ? this.renderCustom(rel) : ''}
         </div>
     `}
 
@@ -324,7 +357,6 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         let selected = !!unit
 
         return html`
-        <div class="divider"></div>
         <div class="preset custom" ?selected=${selected}>
             <select class="dir" .value=${live(next ? 'next' : 'last')} @change=${this.pickCustom}>
                 <option value="last">Last</option>
@@ -336,6 +368,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
                 ${UNITS.map(u=>html`<option value=${u}>${u}s</option>`)}
             </select>
         </div>
+        <div class="divider"></div>
     `}
 
     renderRange(){return html`
