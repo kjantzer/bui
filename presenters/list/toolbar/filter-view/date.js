@@ -545,7 +545,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
                 ${DIRS.map(d=>html`<option value=${d.val} ?selected=${d.val == p.dir}>${d.label}</option>`)}
             </select>
             ${hasNum ? html`
-            <input class="num" type="number" min="1" placeholder="N" .value=${live(p.num || '')}
+            <input class="num" type="number" inputmode="numeric" pattern="[0-9]*" min="1" placeholder="N" .value=${live(p.num || '')}
                 @focus=${e=>e.currentTarget.select()} @mouseup=${e=>e.preventDefault()}
                 @input=${this.onRelativeInput}>
             `:''}
