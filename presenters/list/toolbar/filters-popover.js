@@ -1082,7 +1082,20 @@ export default class FiltersPopover extends LitElement {
     valueMatches(q){
         let matches = []
         for( let filter of this.visibleFilters ){
-            if( filter.isCustomView || !filter.attrs.values ) continue
+
+            // custom views can offer values too (ex: a date filter's presets; `searchValues(q)` → [{label, val, selected}])
+            if( filter.isCustomView ){
+                let values
+                try{ values = filter.customView?.searchValues?.(q) || [] }catch(err){ continue }
+                for( let value of values ){
+                    if( String(value.label).toLowerCase().includes(q) || value.always )
+                        matches.push({filter, value: {...value, custom: true}})
+                    if( matches.length >= 40 ) return matches
+                }
+                continue
+            }
+
+            if( !filter.attrs.values ) continue
             let values
             try{ values = filter.values }catch(err){ continue }
             for( let value of values ){
@@ -1523,6 +1536,13 @@ export default class FiltersPopover extends LitElement {
 
     // from a search result: add it (multi) or set it
     pickValue(filter, value){
+        if( value.custom ){
+            filter.value = value.val
+            this.query = ''
+            this.highlight = Math.max(0, this.navItems.findIndex(item=>item.key == filter.key))
+            return this.select(filter.key)
+        }
+
         let entry = value.selections ? {val: value.val, selection: value.selections[0]?.val ?? value.selections[0]} : value.val
 
         if( filter.isMulti ){
@@ -1797,6 +1817,7 @@ function highlight(label, q){
 }
 
 function isSelectedValue(filter, value){
+    if( value.custom ) return !!value.selected
     return [].concat(filter.value ?? []).some(v=>(v?.val ?? v) == value.val)
 }
 

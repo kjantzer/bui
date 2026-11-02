@@ -417,6 +417,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             </select>
             ${hasNum ? html`
             <input class="num" type="number" min="1" placeholder="N" .value=${live(p.num || '')}
+                @focus=${e=>e.currentTarget.select()} @mouseup=${e=>e.preventDefault()}
                 @input=${this.onRelativeInput}>
             `:''}
             <select class="unit" .value=${live(p.unit)} @change=${this.onRelativeInput}>
@@ -424,6 +425,28 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             </select>
         </div>
     `}
+
+    // for the filters popover's search (ex: "30" finds Last 30 Days; "45 days" offers Last 45 Days)
+    searchValues(q=''){
+        let current = JSON.stringify(isRel(this.value) ? {rel: normalize(this.value.rel)} : this.value)
+        let values = this.presets.filter(p=>p != '-' && p != 'divider' && !p.divider).map(p=>{
+            let val = typeof p == 'string' ? {rel: p} : this.presetDates(p)
+            let label = typeof p == 'string' ? relativeLabel(p) : p.label
+            if( typeof label != 'string' ) return null // (ex: html labels)
+            return {val, label: `${label} (${datesHint(...this.presetDates(p))})`, selected: JSON.stringify(val) == current}
+        }).filter(Boolean)
+
+        // a typed relative range not in the presets
+        let typed = this.opts.range && q.match(/^(last |next )?([1-9]\d*)\s*(d|days?|w|wks?|weeks?|m|mos?|months?|q|qtrs?|quarters?|y|yrs?|years?)$/)
+        if( typed ){
+            let key = relativeKey({dir: typed[1]?.trim() == 'next' ? 'next' : 'last', num: parseInt(typed[2]), unit: UNITS.find(u=>u[0] == typed[3][0])})
+            if( key && !values.some(v=>v.val.rel == key) )
+                values.unshift({val: {rel: key}, label: `${relativeLabel(key)} (${datesHint(...this.presetDates(key))})`,
+                    always: true, selected: JSON.stringify({rel: key}) == current})
+        }
+
+        return values
+    }
 
     renderTyped(){return html`
         <div class="field">
