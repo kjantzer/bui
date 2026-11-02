@@ -1,7 +1,10 @@
 import { LitElement, html, css } from 'lit'
 import dayjs from 'dayjs'
+import quarterOfYear from 'dayjs/plugin/quarterOfYear'
 import '../../elements/btn'
 import '../../elements/hr'
+
+dayjs.extend(quarterOfYear) // (quarter units)
 
 const DIVIDERS = ['divider', '-']
 
@@ -200,37 +203,82 @@ export function getPresetRange(p){
 
 /*
     Relative ("rolling") ranges, saved by name so they stay current (ex: a saved filter for the last 30 days)
-    A preset name above (ex: `30 days`, `last month`) or `[next ]N day|week|month|year[s]` (ex: `45 days`, `next 2 weeks`)
+    - `N unit[s]`: the last N days/weeks... through today (ex: `30 days`)
+    - `next N unit[s]`: today through the next N
+    - `this unit`: the current day/week/month/quarter/year (ex: `this month`)
+    - `previous unit`: the one before it (ex: `previous month` is "Last Month")
+    Some preset names work too (ex: `today`, `last month`; see ALIASES)
 */
-const REL = /^(next )?(\d+) (day|week|month|year)s?$/
+export const UNITS = ['day', 'week', 'month', 'quarter', 'year']
+
+const REL = /^(?:(next|this|previous) )?(?:(\d+) )?(day|week|month|quarter|year)s?$/
+
+const ALIASES = {
+    'today': 'this day',
+    'yesterday': 'previous day',
+    'last week': 'previous week',
+    'last month': 'previous month',
+    'year': 'this year',
+    'last year': 'previous year'
+}
+
+// {dir: last|next|this|previous, num, unit}
+export function parseRelative(key){
+    if( typeof key != 'string' ) return null
+    key = ALIASES[key] || key
+
+    let [, dir='last', num, unit] = key.match(REL) || []
+    if( !unit ) return null
+
+    num = parseInt(num)
+    if( ['last', 'next'].includes(dir) ){
+        if( !(num >= 1) ) return null
+    }else if( num ) return null
+
+    return {dir, num: num || null, unit}
+}
+
+// the saved name for {dir, num, unit}
+export function relativeKey({dir='last', num, unit}={}){
+    if( ['this', 'previous'].includes(dir) ) return `${dir} ${unit}`
+    if( !(num >= 1) ) return null
+    return `${dir == 'next' ? 'next ' : ''}${num} ${unit}${num == 1 ? '' : 's'}`
+}
 
 export function isRelative(key){
-    return typeof key == 'string' && (!!Presets[key] || REL.test(key))
+    return !!parseRelative(key) || !!Presets[key]
 }
 
 // [start, end] dayjs dates (today's) for a relative name
 export function relativeRange(key){
-    if( Presets[key] ) return getPresetRange(Presets[key])
+    let p = parseRelative(key)
+    if( !p ) return Presets[key] ? getPresetRange(Presets[key]) : null
 
-    let [, next, num, unit] = key.match(REL) || []
-    if( !unit ) return null
-
-    num = parseInt(num)
+    let {dir, num, unit} = p
     let today = dayjs().startOf('day')
 
+    if( dir == 'this' ) return [today.startOf(unit), today.endOf(unit).startOf('day')]
+
+    if( dir == 'previous' ){
+        let start = today.add(-1, unit).startOf(unit)
+        return [start, start.endOf(unit).startOf('day')]
+    }
+
     // (includes today; ex: last 7 days = 6 days ago through today)
-    if( next )
+    if( dir == 'next' )
         return [today, unit == 'day' ? today.add(num-1, 'day') : today.add(num, unit).add(-1, 'day')]
 
     return [unit == 'day' ? today.add(-(num-1), 'day') : today.add(-num, unit).add(1, 'day'), today]
 }
 
 export function relativeLabel(key){
-    if( Presets[key] ) return Presets[key].label
+    let p = parseRelative(key)
+    if( !p ) return Presets[key]?.label || key
 
-    let [, next, num, unit] = key.match(REL) || []
-    if( !unit ) return key
+    let {dir, num, unit} = p
+    let Unit = unit[0].toUpperCase()+unit.slice(1)
 
-    unit = unit[0].toUpperCase()+unit.slice(1)
-    return `${next ? 'Next' : 'Last'} ${num} ${unit}${num == 1 ? '' : 's'}`
+    if( dir == 'this' ) return unit == 'day' ? 'Today' : `This ${Unit}`
+    if( dir == 'previous' ) return unit == 'day' ? 'Yesterday' : `Last ${Unit}`
+    return `${dir == 'next' ? 'Next' : 'Last'} ${num} ${Unit}${num == 1 ? '' : 's'}`
 }

@@ -1,7 +1,9 @@
 /*
     Date filter view: "Relative" (rolling ranges, ex: Last 30 Days; saved by name so they stay current)
-    or "Range" (one input to type dates/shorthand, and the scrolling calendar)
+    or "Range" (dates typed or picked on the scrolling calendar)
 
+    A bar that stays put: the mode (icons) beside one input. Relative's input is "[Last] [30] [days]"
+    and the presets below fill it in (then tweak it); Range's input shows/takes typed dates
     Picks take effect right away (the filters popover applies them when it closes); its own header clears it
 
     Value: `[start, end]` (YYYY-MM-DD) or `{rel: '30 days'}` (see datepicker/presets relativeRange);
@@ -9,7 +11,7 @@
 
     viewOpts:
     - range (true): false for a single date
-    - presets ([]): `[]` for the default relative ones, names of datepicker/presets (relative), and/or
+    - presets ([]): `[]` for the default relative ones, relative names (see datepicker/presets), and/or
       preset objects (ex: dateQuarterPresets; these set fixed dates), or `false` for none (just the calendar)
     - defaultLabel, header, footer
 */
@@ -18,20 +20,25 @@ import {live} from 'lit/directives/live.js'
 import dayjs from 'dayjs'
 import Datepicker, {stringToDateRange} from '../../../datepicker'
 import {label as rangeLabel} from '../../../datepicker/daterange'
-import {formatPreset, getPresetRange, isRelative, relativeRange, relativeLabel} from '../../../datepicker/presets'
-import '../../../form/controls/radio-group'
-import '../../../form/controls/radio-btn'
+import {formatPreset, getPresetRange, isRelative, parseRelative, relativeKey, relativeRange, relativeLabel,
+    UNITS} from '../../../datepicker/presets'
 
 const DB_FORMAT = 'YYYY-MM-DD'
 
 const DEFAULT_RELATIVE = [
-    'today', 'yesterday', '-',
-    'this week', 'last week', '7 days', '-',
-    'this month', 'last month', '30 days', '90 days', '-',
-    'year', 'last year'
+    'this day', 'previous day', '-',
+    'this week', 'previous week', '7 days', '-',
+    'this month', 'previous month', '30 days', '90 days', '-',
+    'this quarter', 'previous quarter', '-',
+    'this year', 'previous year'
 ]
 
-const UNITS = ['day', 'week', 'month', 'year']
+const DIRS = [
+    {val: 'last', label: 'Last'},
+    {val: 'next', label: 'Next'},
+    {val: 'this', label: 'This'},
+    {val: 'previous', label: 'Previous'}
+]
 
 // the dates a preset covers (ex: Oct 4 – Nov 2; with the year when not this year)
 const datesHint = (start, end)=>{
@@ -49,6 +56,12 @@ const parseDate = str=>{
 
 const isRel = val=>!!val && typeof val == 'object' && !Array.isArray(val) && isRelative(val.rel)
 
+// the saved name for a relative value (ex: `today` → `this day`), so presets and the inputs match
+const normalize = key=>{
+    let p = parseRelative(key)
+    return p ? relativeKey(p) : key
+}
+
 customElements.define('b-list-filter-view-date', class extends LitElement{
 
     // a relative value → [start, end] (anything else as is)
@@ -61,26 +74,115 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         :host {
             position: relative;
             padding: 0;
-            height: 100%; /* (the calendar fills the space) */
+            height: 100%; /* (the bar stays put; the presets or calendar fill and scroll) */
         }
 
         .view {
             display: flex;
             flex-direction: column;
             height: 100%;
+            overflow: clip; /* (only the presets and calendar scroll; ex: the calendar's scroll to today moved the bar) */
+        }
+
+        /* mode + input */
+        .bar {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: .5em;
+            padding: .75em 1em;
+            border-bottom: solid 1px var(--theme-bgd-accent, #ddd);
         }
 
         .modes {
-            padding: .75em 1em 0;
-        }
-
-        .modes radio-group {
+            flex-shrink: 0;
             display: flex;
+            padding: .2em;
+            border-radius: 8px;
+            background: var(--theme-bgd-accent, #eee);
         }
 
-        /* relative / presets */
-        .presets {
+        .modes button {
+            all: unset;
             display: grid;
+            place-items: center;
+            width: 2em;
+            height: 1.85em;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--theme-text-accent, #888);
+        }
+
+        .modes button:hover { color: var(--theme-text, #000); }
+
+        .modes button[selected] {
+            color: var(--theme-text, #000);
+            background: var(--theme-bgd, #fff);
+            box-shadow: 0 1px 2px rgba(0,0,0,.15);
+        }
+
+        .modes b-icon { font-size: 1.15em; }
+
+        /* one input look (for the relative selects + number too) */
+        .field {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            height: 2.25em;
+            box-sizing: border-box;
+            border: solid 1px transparent;
+            border-radius: 8px;
+            background: var(--theme-bgd-accent, #eee);
+            overflow: hidden;
+        }
+
+        .field:focus-within { border-color: var(--theme); }
+
+        .field input, .field select {
+            all: unset;
+            min-width: 0;
+            padding: 0 .65em;
+            font: inherit;
+            color: inherit;
+            box-sizing: border-box;
+        }
+
+        .field input.typed { flex: 1; text-align: center; }
+        .field input.typed::placeholder { font-size: .9em; color: var(--theme-text-accent, #888); }
+
+        .field > * { align-self: center; }
+
+        /* (a chevron; "all: unset" drops the native one) */
+        .field select {
+            cursor: pointer;
+            padding-top: .35em;
+            padding-bottom: .35em;
+            padding-right: 1.75em;
+            background: no-repeat right .6em center / .65em
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5'/%3E%3C/svg%3E");
+        }
+        .field select:hover { background-color: rgba(var(--theme-text-rgb, 0,0,0), .05); }
+
+        .field .dir { flex: 1; }
+        .field .num { width: 3.5em; text-align: center; }
+        .field .unit { flex: 1; }
+
+        .field > * + * { border-left: solid 1px rgba(var(--theme-text-rgb, 0,0,0), .1); }
+
+        .field .num::-webkit-inner-spin-button { display: none; }
+
+        .today {
+            flex-shrink: 0;
+        }
+
+        /* the list / calendar below */
+        .presets {
+            flex: 1;
+            min-height: 0;
+            overflow: auto;
+            display: grid;
+            align-content: start;
             padding: .5em;
         }
 
@@ -121,54 +223,14 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             color: var(--theme-text-accent, #888);
         }
 
-        /* "Last [45] [days]" (fills the row) */
-        .custom {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: .5em;
-            padding: .35em;
-            cursor: default;
-        }
-
-        .custom input, .custom select, .typed {
-            font: inherit;
-            color: inherit;
-            background: var(--theme-bgd-accent, #eee);
-            border: solid 1px transparent;
-            border-radius: 6px;
-            padding: .25em .5em;
-            outline: none;
-        }
-
-        .custom input, .custom select {
-            min-width: 0;
-            padding: .5em .75em;
-        }
-
-        .custom input:focus, .custom select:focus, .typed:focus {
-            border-color: var(--theme);
-        }
-
-        /* range */
         .range {
-            display: grid;
-            grid-template-rows: auto minmax(0, 1fr);
-            justify-items: center;
-            gap: .5em;
-            padding: .75em 1em 0;
             flex: 1;
             min-height: 0;
+            display: grid;
+            justify-items: center;
+            padding: .5em 1em 0;
             container-type: inline-size;
         }
-
-        .typed {
-            width: 100%;
-            box-sizing: border-box;
-            padding: .4em .75em;
-            text-align: center;
-        }
-
-        .typed::placeholder { font-size: .9em; }
 
         /* fills the width (7 days, its padding and gaps) and the height left */
         b-datepicker {
@@ -176,6 +238,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             --size: min(4em, calc((100cqw - 2.5em) / 7));
             --font-size: .9rem;
             min-height: 300px;
+            overflow: clip;
         }
 
         /* (its presets aren't shown, but still had a min width) */
@@ -196,23 +259,23 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         }, opts)
     }
 
-    // the presets shown (relative names stay as strings; others as preset objects)
+    // the presets shown (relative names as strings; others as preset objects)
     get presets(){
         let presets = this.opts.presets
         if( typeof presets == 'function' ) presets = presets()
         if( presets === false || presets == null ) return []
-        if( Array.isArray(presets) && presets.length == 0 ) presets = this.opts.range ? DEFAULT_RELATIVE : ['today', 'yesterday']
+        if( Array.isArray(presets) && presets.length == 0 ) presets = this.opts.range ? DEFAULT_RELATIVE : ['this day', 'previous day']
 
         return presets.map(p=>{
-            if( typeof p == 'string' && isRelative(p.toLowerCase()) ) return p.toLowerCase()
+            if( typeof p == 'string' && isRelative(p.toLowerCase()) ) return normalize(p.toLowerCase())
             return formatPreset(p)
         })
     }
 
-    // all relative (ex: the defaults): "Relative", and a custom "Last N days" row
+    // all relative (ex: the defaults): "Relative" with the "[Last] [30] [days]" input
     get isRelativeOnly(){
         let presets = this.presets
-        return presets.length > 0 && presets.every(p=>typeof p == 'string')
+        return this.opts.range && presets.length > 0 && presets.every(p=>typeof p == 'string')
     }
 
     get datepicker(){
@@ -274,6 +337,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
     commit(val){
         this.__value = val
         if( this.filter?.parent?.queuing ) this.filter.value = val
+        this.syncDatepicker()
         this.requestUpdate()
     }
 
@@ -309,31 +373,72 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
 
         return html`
         <div class="view">
-        <div>${this.opts.header||''}</div>
+            <div>${this.opts.header||''}</div>
 
-        ${this.presets.length ? html`
-        <div class="modes">
-            <radio-group segment .value=${mode} @change=${this.changeMode}>
-                <radio-btn value="presets">${this.isRelativeOnly ? 'Relative' : 'Presets'}</radio-btn>
-                <radio-btn value="range">${this.opts.range ? 'Range' : 'Date'}</radio-btn>
-            </radio-group>
+            <div class="bar">
+                ${this.presets.length ? html`
+                <div class="modes">
+                    <button ?selected=${mode == 'presets'} @click=${()=>this.changeMode('presets')}
+                        title=${this.isRelativeOnly ? 'Relative (stays current, ex: last 30 days)' : 'Presets'}>
+                        <b-icon name=${this.isRelativeOnly ? 'history' : 'view_list'}></b-icon>
+                    </button>
+                    <button ?selected=${mode == 'range'} @click=${()=>this.changeMode('range')}
+                        title=${this.opts.range ? 'Range (dates)' : 'Date'}>
+                        <b-icon name="date_range"></b-icon>
+                    </button>
+                </div>
+                `:''}
+
+                ${mode == 'presets' && this.isRelativeOnly ? this.renderRelativeInput() : this.renderTyped()}
+
+                ${mode == 'range' ? html`
+                    <b-btn clear pill sm class="today" title="Show today on the calendar"
+                        @click=${()=>this.__datepicker?.scrollToDate('today')}>Today</b-btn>
+                `:''}
+            </div>
+
+            ${mode == 'presets' ? this.renderPresets() : this.renderRange()}
+
+            <div>${this.opts.footer||''}</div>
         </div>
-        `:''}
+    `}
 
-        ${mode == 'presets' ? this.renderPresets() : this.renderRange()}
+    // "[Last] [30] [days]"; shows the relative value (ex: from a preset) to tweak
+    // (options `selected` for the first render, before they exist for `.value`; `.value` after, once changed by hand)
+    renderRelativeInput(){
+        let p = (isRel(this.value) && parseRelative(this.value.rel)) || this.draft || {dir: 'last', num: null, unit: 'day'}
+        let hasNum = ['last', 'next'].includes(p.dir)
+        let plural = hasNum && p.num != 1
 
-        <div>${this.opts.footer||''}</div>
+        return html`
+        <div class="field relative">
+            <select class="dir" .value=${live(p.dir)} @change=${this.onRelativeInput}>
+                ${DIRS.map(d=>html`<option value=${d.val} ?selected=${d.val == p.dir}>${d.label}</option>`)}
+            </select>
+            ${hasNum ? html`
+            <input class="num" type="number" min="1" placeholder="N" .value=${live(p.num || '')}
+                @input=${this.onRelativeInput}>
+            `:''}
+            <select class="unit" .value=${live(p.unit)} @change=${this.onRelativeInput}>
+                ${UNITS.map(u=>html`<option value=${u} ?selected=${u == p.unit}>${u}${plural?'s':''}</option>`)}
+            </select>
+        </div>
+    `}
+
+    renderTyped(){return html`
+        <div class="field">
+            <input class="typed" type="text" .value=${live(this.dates ? this.typedLabel : '')}
+                placeholder=${this.opts.range ? 'Type dates or “90 days”, “mar”, “2025”' : 'Type a date'}
+                @change=${this.onTyped} @keydown=${e=>e.key=='Enter'&&this.onTyped(e)}>
         </div>
     `}
 
     renderPresets(){
-        let rel = isRel(this.value) ? this.value.rel : null
+        let rel = isRel(this.value) ? normalize(this.value.rel) : null
         let dates = this.dates?.join()
 
         return html`
         <div class="presets">
-            ${this.isRelativeOnly && this.opts.range ? this.renderCustom(rel) : ''}
-
             ${this.presets.map(p=>{
 
                 if( p == '-' || p == 'divider' ) return html`<div class="divider"></div>`
@@ -351,31 +456,8 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         </div>
     `}
 
-    // "Last/Next [N] [days]"
-    renderCustom(rel){
-        let [, next, num, unit] = (!DEFAULT_RELATIVE.includes(rel) && rel?.match(/^(next )?(\d+) (day|week|month|year)s?$/)) || []
-        let selected = !!unit
-
-        return html`
-        <div class="preset custom" ?selected=${selected}>
-            <select class="dir" .value=${live(next ? 'next' : 'last')} @change=${this.pickCustom}>
-                <option value="last">Last</option>
-                <option value="next">Next</option>
-            </select>
-            <input class="num" type="number" min="1" placeholder="N" .value=${live(num || '')}
-                @change=${this.pickCustom} @keydown=${e=>e.key=='Enter'&&this.pickCustom()}>
-            <select class="unit" .value=${live(unit || 'day')} @change=${this.pickCustom}>
-                ${UNITS.map(u=>html`<option value=${u}>${u}s</option>`)}
-            </select>
-        </div>
-        <div class="divider"></div>
-    `}
-
     renderRange(){return html`
         <div class="range">
-            <input class="typed" type="text" .value=${live(this.dates ? this.typedLabel : '')}
-                placeholder=${this.opts.range ? 'Type dates or “90 days”, “mar”, “2025”' : 'Type a date'}
-                @change=${this.onTyped} @keydown=${e=>e.key=='Enter'&&this.onTyped(e)}>
             ${this.datepicker}
         </div>
     `}
@@ -386,29 +468,40 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         return !this.opts.range || start.isSame(end, 'day') ? start.format(f) : `${start.format(f)} – ${end.format(f)}`
     }
 
-    changeMode(e){
-        // (the calendar opens on the value when it's shown; see datepicker _layout)
-        this.mode = e.detail?.value ?? e.currentTarget.value
+    // (the calendar opens on the value when it's shown; see datepicker _layout)
+    changeMode(mode){
+        this.mode = mode
         this.requestUpdate()
     }
 
     pickPreset(p){
+        this.draft = null
         if( typeof p == 'string' )
             this.commit({rel: p})
         else
             this.commit(this.presetDates(p))
-
-        this.syncDatepicker()
     }
 
-    pickCustom(){
-        let num = parseInt(this.shadowRoot.querySelector('.custom .num').value)
-        if( !num || num < 1 ) return
+    // the relative inputs changed; saved once they make a range (ex: a number for "Last")
+    onRelativeInput(){
+        let el = sel=>this.shadowRoot.querySelector('.field.relative '+sel)
+        let prev = (isRel(this.value) && parseRelative(this.value.rel)) || this.draft || {}
 
-        let next = this.shadowRoot.querySelector('.custom .dir').value == 'next'
-        let unit = this.shadowRoot.querySelector('.custom .unit').value
-        this.commit({rel: `${next?'next ':''}${num} ${unit}${num == 1 ? '' : 's'}`})
-        this.syncDatepicker()
+        let p = {
+            dir: el('.dir').value,
+            num: parseInt(el('.num')?.value) || null,
+            unit: el('.unit').value
+        }
+
+        // switching to last/next keeps the number it had (or 1)
+        if( ['last', 'next'].includes(p.dir) && !el('.num') )
+            p.num = prev.num || 1
+
+        let key = relativeKey(p)
+        this.draft = p
+
+        if( key ) this.commit({rel: key})
+        else this.requestUpdate()
     }
 
     // typed: "Mar 1 – Apr 5", "3/1/26", or shorthand ("90 days", "mar", "2025"); "N days/weeks..." stay relative
@@ -416,13 +509,11 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         let str = e.currentTarget.value.trim()
         if( !str ) return
 
-        let rel = str.toLowerCase().match(/^(next |\+)?([1-9]\d*)\s*(d|days?|w|wks?|weeks?|m|mos?|months?|y|yrs?|years?)$/)
+        let rel = str.toLowerCase().match(/^(next |\+)?([1-9]\d*)\s*(d|days?|w|wks?|weeks?|m|mos?|months?|q|qtrs?|quarters?|y|yrs?|years?)$/)
         if( rel && this.opts.range ){
             let [, next, num, unit] = rel
-            unit = UNITS.find(u=>u[0] == unit[0])
-            num = parseInt(num)
-            this.commit({rel: `${next?'next ':''}${num} ${unit}${num == 1 ? '' : 's'}`})
-            this.syncDatepicker()
+            this.draft = null
+            this.commit({rel: relativeKey({dir: next ? 'next' : 'last', num: parseInt(num), unit: UNITS.find(u=>u[0] == unit[0])})})
             if( this.isRelativeOnly ) this.mode = 'presets' // (shows it's relative)
             return
         }
@@ -447,7 +538,6 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         if( start.isAfter(end) ) [start, end] = [end, start]
 
         this.commit([start.format(DB_FORMAT), end.format(DB_FORMAT)])
-        this.syncDatepicker()
     }
 
 })

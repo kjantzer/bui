@@ -128,6 +128,7 @@ customElements.define('b-datepicker', class extends LitElement{
     connectedCallback(){
         super.connectedCallback()
         this._didConnect = true
+        this.requestUpdate() // (a reconnect renders the layout pinned to the selected range; else it opened on 1975)
     }
 
     scrollToDate(date='start', location='center'){
