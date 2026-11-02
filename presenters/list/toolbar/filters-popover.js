@@ -91,7 +91,7 @@ export default class FiltersPopover extends LitElement {
             el.sheet = false
             new Popover(target, el, {
                 width: 'min(720px, 94vw)',
-                maxHeight: '78vh',
+                // (default 'auto' max height fits the space below the btn; a fixed 78vh flipped it up off screen on short windows)
                 align: 'bottom-start',
                 overflowBoundry: 'window',
                 // (clicking one of the list's filter chips shows that filter, see ./filters-view.js)
