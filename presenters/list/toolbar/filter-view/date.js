@@ -25,20 +25,52 @@ import {formatPreset, getPresetRange, isRelative, parseRelative, relativeKey, re
 
 const DB_FORMAT = 'YYYY-MM-DD'
 
+// default presets: rows of quick picks (through today, then upcoming), then a table of calendar periods
+const DEFAULT_LAST = ['this day', 'previous day', '7 days', '14 days', '30 days', '60 days', '90 days', '6 months', '12 months',
+    'month to date', 'year to date']
+const DEFAULT_NEXT = ['next 7 days', 'next 14 days', 'next 30 days', 'next 60 days', 'next 90 days']
+const PERIOD_UNITS = ['week', 'month', 'quarter', 'year']
+const PERIOD_COLS = [
+    {dir: 'previous', label: 'Last'},
+    {dir: 'this', label: 'This'},
+    {dir: 'following', label: 'Next'}
+]
+const periodKey = (dir, unit)=>relativeKey({dir, unit})
+
 const DEFAULT_RELATIVE = [
-    'this day', 'previous day', '-',
-    'this week', 'previous week', '7 days', '-',
-    'this month', 'previous month', '30 days', '90 days', '-',
-    'this quarter', 'previous quarter', '-',
-    'this year', 'previous year'
+    ...DEFAULT_LAST, ...DEFAULT_NEXT,
+    ...PERIOD_UNITS.flatMap(unit=>PERIOD_COLS.map(c=>periodKey(c.dir, unit)))
 ]
 
 const DIRS = [
     {val: 'last', label: 'Last'},
     {val: 'next', label: 'Next'},
     {val: 'this', label: 'This'},
-    {val: 'previous', label: 'Previous'}
+    {val: 'todate', label: 'Since start of'},
+    {val: 'previous', label: 'Previous'},
+    {val: 'following', label: 'Following'}
 ]
+
+// a quick pick's short label (ex: "30 days"; the row says Last or Next)
+const chipLabel = key=>{
+    let {dir, num, unit} = parseRelative(key)
+    if( !num ) return relativeLabel(key)
+    return `${num} ${unit}${num == 1 ? '' : 's'}`
+}
+
+// short dates for the periods (ex: "Nov 1 – 7", "Oct", "Q3", "2025")
+const compactHint = (start, end)=>{
+    start = dayjs(start); end = dayjs(end)
+    let thisYear = start.isSame(dayjs(), 'year') && end.isSame(dayjs(), 'year')
+    let yr = d=>thisYear ? '' : d.format(' YYYY')
+
+    if( start.isSame(start.startOf('year'), 'day') && end.isSame(start.endOf('year'), 'day') ) return start.format('YYYY')
+    if( start.isSame(start.startOf('quarter'), 'day') && end.isSame(start.endOf('quarter'), 'day') ) return `Q${start.quarter()}`+yr(start)
+    if( start.isSame(start.startOf('month'), 'day') && end.isSame(start.endOf('month'), 'day') ) return start.format('MMM')+yr(start)
+    if( start.isSame(end, 'day') ) return start.format('MMM D')+yr(start)
+    if( start.isSame(end, 'month') ) return `${start.format('MMM D')} – ${end.format('D')}${yr(end)}`
+    return `${start.format('MMM D')} – ${end.format('MMM D')}${yr(end)}`
+}
 
 // the dates a preset covers (ex: Oct 4 – Nov 2; with the year when not this year)
 const datesHint = (start, end)=>{
@@ -216,6 +248,78 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             margin: .35em .65em;
         }
 
+        /* default presets */
+        .group-label {
+            padding: .5em .65em .35em;
+            font-size: .75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+            color: var(--theme-text-accent, #888);
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .35em;
+            padding: 0 .5em .5em;
+        }
+
+        .chip {
+            padding: .35em .75em;
+            border-radius: 2em;
+            font-size: .9em;
+            cursor: pointer;
+            white-space: nowrap;
+            background: var(--theme-bgd-accent, #eee);
+        }
+
+        .chip:hover { background: color-mix(in srgb, var(--theme-text, #000) 10%, var(--theme-bgd-accent, #eee)); }
+
+        .chip[selected] {
+            color: var(--theme-bgd, #fff);
+            background: var(--theme);
+            font-weight: 600;
+        }
+
+        /* a period's Last / This / Next */
+        .periods {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: .35em;
+            padding: 0 .5em .5em;
+        }
+
+        .period {
+            display: grid;
+            justify-items: center;
+            gap: .1em;
+            padding: .45em .25em;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            background: var(--theme-bgd-accent, #eee);
+        }
+
+        .period-label { font-weight: 600; }
+
+        .period-dates {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: .75em;
+            color: var(--theme-text-accent, #888);
+        }
+
+        .period[selected] .period-dates { color: inherit; }
+
+        .period:hover { background: color-mix(in srgb, var(--theme-text, #000) 10%, var(--theme-bgd-accent, #eee)); }
+
+        .period[selected] {
+            color: var(--theme-bgd, #fff);
+            background: var(--theme);
+        }
+
         .divider-label {
             padding: .75em .65em .25em;
             font-size: .8em;
@@ -270,6 +374,12 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             if( typeof p == 'string' && isRelative(p.toLowerCase()) ) return normalize(p.toLowerCase())
             return formatPreset(p)
         })
+    }
+
+    // the default presets (laid out as quick picks and a periods table)
+    get isDefaultPresets(){
+        let presets = this.opts.presets
+        return this.opts.range && Array.isArray(presets) && presets.length == 0
     }
 
     // all relative (ex: the defaults): "Relative" with the "[Last] [30] [days]" input
@@ -460,6 +570,8 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         let rel = isRel(this.value) ? normalize(this.value.rel) : null
         let dates = this.dates?.join()
 
+        if( this.isDefaultPresets ) return this.renderDefaultPresets(rel)
+
         return html`
         <div class="presets">
             ${this.presets.map(p=>{
@@ -476,6 +588,38 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
                     <span class="dates">${datesHint(...range)}</span>
                 </div>
             `})}
+        </div>
+    `}
+
+    renderDefaultPresets(rel){
+        let chip = key=>html`
+            <span class="chip" ?selected=${rel == key} title="${relativeLabel(key)}: ${datesHint(...this.presetDates(key))}"
+                @click=${()=>this.pickPreset(key)}>${chipLabel(key)}</span>
+        `
+
+        return html`
+        <div class="presets">
+            <div class="group-label">Last</div>
+            <div class="chips">${DEFAULT_LAST.map(chip)}</div>
+
+            <div class="group-label">Next</div>
+            <div class="chips">${DEFAULT_NEXT.map(chip)}</div>
+
+            ${PERIOD_UNITS.map(unit=>html`
+                <div class="group-label">${unit[0].toUpperCase()+unit.slice(1)}</div>
+                <div class="periods">
+                    ${PERIOD_COLS.map(c=>{
+                        let key = periodKey(c.dir, unit)
+                        let range = this.presetDates(key)
+                        return html`
+                        <div class="period" ?selected=${rel == key} title="${relativeLabel(key)}: ${datesHint(...range)}"
+                            @click=${()=>this.pickPreset(key)}>
+                            <span class="period-label">${c.label}</span>
+                            <span class="period-dates">${compactHint(...range)}</span>
+                        </div>
+                    `})}
+                </div>
+            `)}
         </div>
     `}
 

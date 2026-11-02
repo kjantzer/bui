@@ -207,11 +207,14 @@ export function getPresetRange(p){
     - `next N unit[s]`: today through the next N
     - `this unit`: the current day/week/month/quarter/year (ex: `this month`)
     - `previous unit`: the one before it (ex: `previous month` is "Last Month")
+    - `next unit`: the one after it (ex: `next quarter`)
+    - `unit to date`: the start of the current one through today (ex: `year to date`)
     Some preset names work too (ex: `today`, `last month`; see ALIASES)
 */
 export const UNITS = ['day', 'week', 'month', 'quarter', 'year']
 
 const REL = /^(?:(next|this|previous) )?(?:(\d+) )?(day|week|month|quarter|year)s?$/
+const TO_DATE = /^(week|month|quarter|year) to date$/
 
 const ALIASES = {
     'today': 'this day',
@@ -227,10 +230,14 @@ export function parseRelative(key){
     if( typeof key != 'string' ) return null
     key = ALIASES[key] || key
 
+    let toDate = key.match(TO_DATE)
+    if( toDate ) return {dir: 'todate', num: null, unit: toDate[1]}
+
     let [, dir='last', num, unit] = key.match(REL) || []
     if( !unit ) return null
 
     num = parseInt(num)
+    if( dir == 'next' && !num ) return {dir: 'following', num: null, unit} // (the next calendar period)
     if( ['last', 'next'].includes(dir) ){
         if( !(num >= 1) ) return null
     }else if( num ) return null
@@ -240,6 +247,8 @@ export function parseRelative(key){
 
 // the saved name for {dir, num, unit}
 export function relativeKey({dir='last', num, unit}={}){
+    if( dir == 'todate' ) return unit == 'day' ? 'this day' : `${unit} to date`
+    if( dir == 'following' ) return `next ${unit}`
     if( ['this', 'previous'].includes(dir) ) return `${dir} ${unit}`
     if( !(num >= 1) ) return null
     return `${dir == 'next' ? 'next ' : ''}${num} ${unit}${num == 1 ? '' : 's'}`
@@ -258,6 +267,12 @@ export function relativeRange(key){
     let today = dayjs().startOf('day')
 
     if( dir == 'this' ) return [today.startOf(unit), today.endOf(unit).startOf('day')]
+    if( dir == 'todate' ) return [today.startOf(unit), today]
+
+    if( dir == 'following' ){
+        let start = today.add(1, unit).startOf(unit)
+        return [start, start.endOf(unit).startOf('day')]
+    }
 
     if( dir == 'previous' ){
         let start = today.add(-1, unit).startOf(unit)
@@ -279,6 +294,8 @@ export function relativeLabel(key){
     let Unit = unit[0].toUpperCase()+unit.slice(1)
 
     if( dir == 'this' ) return unit == 'day' ? 'Today' : `This ${Unit}`
+    if( dir == 'todate' ) return `${Unit} to Date`
+    if( dir == 'following' ) return unit == 'day' ? 'Tomorrow' : `Next ${Unit}`
     if( dir == 'previous' ) return unit == 'day' ? 'Yesterday' : `Last ${Unit}`
     return `${dir == 'next' ? 'Next' : 'Last'} ${num} ${Unit}${num == 1 ? '' : 's'}`
 }
