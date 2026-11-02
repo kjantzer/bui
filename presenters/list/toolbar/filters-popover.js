@@ -1561,7 +1561,7 @@ export default class FiltersPopover extends LitElement {
     applyCustomView(filter=this.selectedFilter){
         if( !filter?.isCustomView || !filter.customView ) return
         let view = filter.customView
-        if( JSON.stringify(view.value ?? null) != JSON.stringify(filter.value ?? null) )
+        if( JSON.stringify(view.value ?? null) != JSON.stringify(filter.rawValue ?? null) )
             filter.value = view.value
         view.didClose?.()
     }

@@ -9,6 +9,7 @@ export const Presets = {
     'today': { label: 'Today', value:d=>d },
     'yesterday': { label: 'Yesterday', value:d=>d.add(-1, 'day') },
     '7 days': { label: 'Last 7 Days', start:d=>d.add(-6, 'day') },
+    'this week': { label: 'This Week', start:d=>d.startOf('week'), end:d=>d.endOf('week') },
     'last week': {
         label: 'Last Week',
         start: d=>d.startOf('week').add(-7, 'day'),
@@ -19,10 +20,16 @@ export const Presets = {
     '90 days': { label: 'Last 90 Days', start:d=>d.add(-89, 'day') },
     '120 days': { label: 'Last 120 Days', start:d=>d.add(-119, 'day') },
 
+    'this month': { label: 'This Month', start:d=>d.startOf('month'), end:d=>d.endOf('month') },
+    'last month': { label: 'Last Month',
+        start:d=>d.startOf('month').add(-1, 'month'),
+        end:(d,start)=>start.endOf('month')
+    },
+
     'this year': { label: 'This year (Jan–Now)', start:d=>d.startOf('year') },
-    'year': { label: 'This year', start:d=>d.startOf('year'), end:d=>d.endOf('year') },
+    'year': { label: 'This Year', start:d=>d.startOf('year'), end:d=>d.endOf('year') },
     
-    'last year': { label: 'Last year', 
+    'last year': { label: 'Last Year', 
         start:d=>d.startOf('year').add(-1, 'year'), 
         end:(d,start)=>start.endOf('year')
     }
@@ -131,13 +138,13 @@ customElements.define('b-datepicker-presets', class extends LitElement{
 
 export default customElements.get('b-datepicker-presets')
 
-function formatPresets(presets){
+export function formatPresets(presets){
     return presets.map(p=>{
         return formatPreset(p)
     })
 }
 
-function formatPreset(p){
+export function formatPreset(p){
 
     // support presets
     if( typeof p == 'string' ){
@@ -164,7 +171,7 @@ function formatPreset(p){
     return p
 }
 
-function getPresetRange(p){
+export function getPresetRange(p){
 
     let start = dayjs().startOf('day')
     let end = dayjs().endOf('day')
@@ -189,4 +196,41 @@ function getPresetRange(p){
 
     // return [start.format('l'), end.format('l')]
     return [start, end]
+}
+
+/*
+    Relative ("rolling") ranges, saved by name so they stay current (ex: a saved filter for the last 30 days)
+    A preset name above (ex: `30 days`, `last month`) or `[next ]N day|week|month|year[s]` (ex: `45 days`, `next 2 weeks`)
+*/
+const REL = /^(next )?(\d+) (day|week|month|year)s?$/
+
+export function isRelative(key){
+    return typeof key == 'string' && (!!Presets[key] || REL.test(key))
+}
+
+// [start, end] dayjs dates (today's) for a relative name
+export function relativeRange(key){
+    if( Presets[key] ) return getPresetRange(Presets[key])
+
+    let [, next, num, unit] = key.match(REL) || []
+    if( !unit ) return null
+
+    num = parseInt(num)
+    let today = dayjs().startOf('day')
+
+    // (includes today; ex: last 7 days = 6 days ago through today)
+    if( next )
+        return [today, unit == 'day' ? today.add(num-1, 'day') : today.add(num, unit).add(-1, 'day')]
+
+    return [unit == 'day' ? today.add(-(num-1), 'day') : today.add(-num, unit).add(1, 'day'), today]
+}
+
+export function relativeLabel(key){
+    if( Presets[key] ) return Presets[key].label
+
+    let [, next, num, unit] = key.match(REL) || []
+    if( !unit ) return key
+
+    unit = unit[0].toUpperCase()+unit.slice(1)
+    return `${next ? 'Next' : 'Last'} ${num} ${unit}${num == 1 ? '' : 's'}`
 }

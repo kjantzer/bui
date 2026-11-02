@@ -349,7 +349,7 @@ function daysForDate(date){
 
 // TODO: move to util or helpers?
 // inspired by: https://twitter.com/syntaxfm/status/1775907339792490785
-function stringToDateRange(value, {start, end}={}){
+export function stringToDateRange(value, {start, end}={}){
 
     let _start, _end // new values
 

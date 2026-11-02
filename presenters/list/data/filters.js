@@ -152,7 +152,7 @@ export default class Filters extends Map {
                 didChange.forEach(k=>{
                     let filter = this.get(k)    
                     if( filter.isCustomView )
-                        filter.customView.value = this.value(k)
+                        filter.customView.value = this.__value[k]
                     filter.emit('change', this.value(k))
                 })
 
@@ -168,9 +168,11 @@ export default class Filters extends Map {
                 }
             }
 
-        // GETTING
+        // GETTING (a key's value resolved, ex: a relative date range as its dates; all as saved, ex: for presets)
         }else{
-            return key ? this.__value[key] : Object.assign({}, this.__value)
+            if( !key ) return Object.assign({}, this.__value)
+            let filter = this.get(key)
+            return filter ? filter.resolveValue(this.__value[key]) : this.__value[key]
         }
     }
 
@@ -179,7 +181,7 @@ export default class Filters extends Map {
         let data = {}
 
         for( let key in value ){
-            let d = value[key]
+            let d = this.value(key)
             // only send "values" from the `search` filter view
             if( Array.isArray(d) )
                 data[key] = d.map(item=>{
@@ -656,6 +658,25 @@ export class Filter {
         return this.parent.value(this.key)
     }
 
+    // as saved (ex: a relative date range's name; `value` is its dates)
+    get rawValue(){
+        return this.parent.value()[this.key]
+    }
+
+    resolveValue(val){
+        let View = this.customViewClass
+        return View?.resolveValue ? View.resolveValue(val) : val
+    }
+
+    get customViewClass(){
+        let viewName = this.attrs.view
+        if( !viewName ) return null
+        if( CustomViews[viewName] ) return CustomViews[viewName]
+        if( typeof viewName == 'string' ) return customElements.get(viewName)
+        if( viewName.prototype instanceof HTMLElement ) return viewName
+        return null
+    }
+
     set value(val){
         this.parent.value(this.key, val)
     }
@@ -796,18 +817,9 @@ export class Filter {
     }
 
     get customView(){
-        let viewName = this.attrs.view
-        let View = null
-
         if( !this._customView ){
 
-            if( CustomViews[viewName] ){
-                View = CustomViews[viewName]
-            }else if( typeof viewName == 'string' ) {
-                View = customElements.get(viewName)
-            }else if( typeof viewName == HTMLElement ){
-                View = viewName
-            }
+            let View = this.customViewClass
 
             if( View ){
                 View.prototype.close = function(){
