@@ -47,6 +47,7 @@ const HOVER_OPEN_DELAY = 150 // ms (so passing over it on the way to the content
 const HOVER_CLOSE_DELAY = 150
 const HOVER_OPEN_DURATION = 90 // ms (faster than toggling; see .panel transition)
 const HOVER_CLOSE_DURATION = 220 // (same as toggling)
+const DRAG_SETTLE = 100 // ms after a drag ends before hovering counts again
 const collapsedPref = localStore.create('b-app-sidebar:collapsed')
 
 customElements.define('b-app-sidebar', class extends LitElement{
@@ -311,6 +312,7 @@ customElements.define('b-app-sidebar', class extends LitElement{
     // hover-expand: open a rail while the mouse is over it (not touch; not the drawer)
     onPointerEnter(e){
         if( !this.hoverExpand || e.pointerType != 'mouse' || this.mode != 'rail' ) return
+        if( this._dragSettling ) return
         clearTimeout(this._hoverTimer)
         if( this.open ) return
         this._hoverTimer = setTimeout(()=>{
@@ -324,10 +326,10 @@ customElements.define('b-app-sidebar', class extends LitElement{
     // the mouse left: animate closed (it stays `hover-open` until the animation ends)
     // (waits while a popover is open, ex: an item's menu; coming back cancels it)
     onPointerLeave(e){
+        if( this._dragging || this._dragSettling ) return
         clearTimeout(this._hoverTimer)
         if( !this.hoverOpen || !this.open ) return
         this._hoverTimer = setTimeout(()=>{
-            if( this._dragging ) return // (onDragEnd decides)
             if( hasOpenPopovers() ) return this.onPointerLeave(e)
             this._hoverClosing = true
             this.open = false
@@ -340,17 +342,40 @@ customElements.define('b-app-sidebar', class extends LitElement{
 
     // dragging something inside it (ex: reordering items) fires pointerleave as the drag starts;
     // stay open while dragging, then close if it was dropped outside
+    // (ends are heard on the window: the dragged element may be re-rendered away on drop, so its dragend never reaches us;
+    // pointer events don't fire during a native drag, so the next pointermove means it's over too)
     onDragStart(e){
+        if( this._dragging ) return
         this._dragging = true
         clearTimeout(this._hoverTimer)
+        window.addEventListener('drop', this.onDragEnd, true)
+        window.addEventListener('dragend', this.onDragEnd, true)
+        window.addEventListener('pointermove', this.onDragEnd, true)
     }
 
+    // the browser fires stray pointerleave/enter just after a drag ends (wherever it was dropped),
+    // so ignore them for a moment, then decide from where the mouse is
     onDragEnd(e){
+        if( !this._dragging ) return
         this._dragging = false
-        if( !this.hoverOpen || !this.open ) return
-        let r = this.shadowRoot.querySelector('.panel').getBoundingClientRect()
-        let inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom
-        if( !inside ) this.onPointerLeave(e)
+        window.removeEventListener('drop', this.onDragEnd, true)
+        window.removeEventListener('dragend', this.onDragEnd, true)
+        window.removeEventListener('pointermove', this.onDragEnd, true)
+
+        clearTimeout(this._hoverTimer)
+        let pos = {x: e.clientX, y: e.clientY}
+        let track = e=>{ pos = {x: e.clientX, y: e.clientY} }
+        window.addEventListener('pointermove', track, true)
+        this._dragSettling = true
+
+        setTimeout(()=>{
+            window.removeEventListener('pointermove', track, true)
+            this._dragSettling = false
+            if( !this.hoverOpen || !this.open ) return
+            let r = this.shadowRoot.querySelector('.panel').getBoundingClientRect()
+            let inside = pos.x >= r.left && pos.x <= r.right && pos.y >= r.top && pos.y <= r.bottom
+            if( !inside ) this.onPointerLeave()
+        }, DRAG_SETTLE)
     }
 
     onKeydown(e){
