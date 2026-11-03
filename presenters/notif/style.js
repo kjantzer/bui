@@ -240,6 +240,21 @@ main:has(b-dialog[nocontent][notext]) {
     gap: .25em;
 }
 
+/* btns on their own row, lined up under the text (after the icon) */
+:host([btns-below]) .content {
+    flex-wrap: wrap;
+}
+
+:host([btns-below]) .btns {
+    flex-basis: 100%;
+    margin-top: -.25em;
+    padding-left: calc(2em + .75em); /* icon + gap */
+}
+
+:host([btns-below]) .content:not(:has(.icon)) .btns {
+    padding-left: 0;
+}
+
 .btns b-dialog-btn {
     font-size: .9em;
     --radius: 2em;

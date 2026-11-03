@@ -127,6 +127,10 @@ customElements.define('b-dialog-btn', class extends Btn{
         if( this.opts.order )
             this.style.order = this.opts.order
 
+        // tooltip (ex: an icon-only btn)
+        if( this.opts.title )
+            this.title = this.opts.title
+
         this.innerHTML = this.opts.label
     }
 })

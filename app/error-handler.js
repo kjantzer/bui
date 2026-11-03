@@ -24,6 +24,14 @@
     if( !label )
         throw new UIDeniedError('A label is required', {target: inputEl})
     ```
+
+    ## Reporting
+    An app can let people send an error to a developer: bug notifs get a "Send to Developer" btn (under the message)
+
+    ```js
+    import {setErrorReporter} from 'bui/app/error-handler'
+    setErrorReporter(({name, msg, stack, url})=>fetch('/api/errors', {method: 'POST', ...}))
+    ```
 */
 import Notif from '../presenters/notif'
 import * as CustomErrors from './errors'
@@ -34,6 +42,24 @@ for( let CustomErrorName in CustomErrors ){
         console.warn(`CustomError: global ${CustomErrorName} already exists`)
     else
         window[CustomErrorName] = CustomErrors[CustomErrorName]
+}
+
+// (see "Reporting" above)
+let reporter = null
+export function setErrorReporter(fn){ reporter = fn }
+
+async function report(notif, error, stack){
+    try{
+        await reporter({
+            name: error.name,
+            msg: error.message || String(error),
+            stack: (stack || error.stack?.split('\n') || []).join('\n'),
+            url: location.href
+        })
+        new Notif({msg: 'Sent to the developer. Thanks!', icon: 'check', type: 'success', autoClose: 2500})
+    }catch(err){
+        new Notif({msg: 'Could not send the error: '+err.message, type: 'error', icon: 'error'})
+    }
 }
 
 const GlobalErrorHandler = (evt)=>{
@@ -131,25 +157,51 @@ const GlobalErrorHandler = (evt)=>{
         }
     }
     
+    // (mapped stack, once ready; see below)
+    let fullStack = null
+
+    // bugs (not alerts/server errors) can be sent to a developer
+    if( reporter && notif.trace && notif.type == 'error' ){
+        notif.btns = [{label: 'Send to Developer', icon: 'send', color: 'theme', title: 'Send this error to the developer'}]
+        notif.btnsBelow = true
+        notif.autoClose = 12000 // (time to read it and click)
+        notif.onClick = (n, btn)=>{ if( btn ) report(n, error, fullStack) }
+    }
+
     let n = new Notif(notif)
     
     // optional feature
     // provides a readable stack trace
     if( window.mapStackTrace && error.stack && notif.trace )
-        window.mapStackTrace(error.stack, stack=>{
+        // anonymous fn frames (`at url:line:col`, ex: an arrow fn callback) aren't parsed by mapStackTrace (it needs
+        // `at name (url:line:col)`), so they'd stay unmapped; name them so they map like the rest
+        window.mapStackTrace(error.stack.replace(/^(\s+at (?:async )?)([^\s()]+:\d+:\d+)\s*$/gm, '$1anonymous ($2)'), stack=>{
 
-            stack = stack
-            .filter(s=>!s.match(/node_modules/))
-            .filter(s=>!s.match(/bui/))
-            .filter(s=>!s.includes(location.host))
-            .map(s=>{
-                return s
+            let clean = s=>s
                 .replace(/^\s+ at /, '')
                 .replace(/__WEBPACK_DEFAULT_EXPORT__/, '')
                 .replace(/webpack:\/\/catalog-v6\//, '')
-            })
-            
-            n.msg += `<b-text block xs><b-code block style="margin-top: 0.5em; line-height: 1.2em;">${stack.join("\n")}</b-code></b-text>`
+
+            fullStack = stack.map(clean)
+
+            // the app's own frames
+            let appStack = stack
+            .filter(s=>!s.match(/node_modules/))
+            .filter(s=>!s.match(/bui/))
+            .filter(s=>!s.includes(location.host))
+            .map(clean)
+
+            // (none, ex: thrown in a library called from a library event): the top of the source mapped stack
+            // (unmapped frames are bundle urls/lines, not worth showing)
+            if( !appStack.length )
+                appStack = stack
+                .filter(s=>!s.includes(location.host))
+                .map(clean)
+                .map(s=>s.replace(/node_modules\//, ''))
+                .slice(0, 6)
+
+            if( appStack.length )
+                n.msg += `<b-text block xs><b-code block style="margin-top: 0.5em; line-height: 1.2em;">${appStack.join("\n")}</b-code></b-text>`
 
         })
 }

@@ -37,6 +37,7 @@ customElements.define('b-notif', class extends LitElement{
         compact: {type: Boolean, reflect: true},
         closeBtn: {type: Boolean},
         progress: {type: Boolean, reflect: true},
+        btnsBelow: {type: Boolean, reflect: true, attribute: 'btns-below'},
     }}
 
     constructor(opts={}){
@@ -53,6 +54,7 @@ customElements.define('b-notif', class extends LitElement{
             edge: false,
             compact: false, // one line pill (icon, message, buttons)
             progress: false, // show a bar counting down `autoClose`
+            btnsBelow: false, // btns on their own row under the message (instead of to the right)
             closeBtn: undefined, // default: shown when `closeOnClick` is off and there's no cancel btn
             assertive: false, // screen readers interrupt to announce (errors/warnings)
 
