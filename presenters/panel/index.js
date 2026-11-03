@@ -1,5 +1,6 @@
 import {LitElement, html, css, unsafeCSS} from 'lit'
 import Controller from './controller'
+import ViewSwitcher from './switcher'
 import router from '../../app/router'
 import Route from '../../app/router/route'
 import device from '../../util/device'
@@ -341,6 +342,9 @@ export class Panel extends LitElement {
     }
 
     onKeydown(e){
+
+        // the view switcher handles keys while it's open (ex: alt+w closes the view selected there)
+        if( ViewSwitcher.shared?.isConnected ) return
 
         let _lastKeyDown = new Date().getTime()
 

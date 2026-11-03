@@ -20,7 +20,7 @@ panel.open()
 - `type` ('', modal, actionsheet)
 - `closeBtn` (bool) - will show a close button in the top right
 - `animation` ('scale' [only works on anchor=center], 'drop', 'rise')
-- `quickJump` (bool) - show quick jump menu when right click on close btn
+- `quickJump` (bool) - shift+tab shows the view switcher (see `./switcher.js`; alt+` (mac: option+`) also opens it)
 - `disableBackdropClick` - by default clicking backdrop will close panel
 - `disableOverscrollClose` - by default pulling down in overscroll (iOS) and letting go will hide the top panel
 - `closeOnEsc` - default is false

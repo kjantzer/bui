@@ -86,7 +86,7 @@ export function forceStorageEventsLocally(){
 	let removeItem = window.localStorage.removeItem
 
 	window.Storage.prototype.setItem = function(key, val){
-		setItem.call(window.localStorage, key, val)
+		setItem.call(this, key, val) // (this storage; sessionStorage too)
 		window.dispatchEvent(new CustomEvent('storage', {
 			bubbles: true,
 			composed: true,
@@ -99,7 +99,7 @@ export function forceStorageEventsLocally(){
 	}
 
 	window.Storage.prototype.removeItem = function(key){
-		removeItem.call(window.localStorage, key)
+		removeItem.call(this, key)
 		window.dispatchEvent(new CustomEvent('storage', {
 			bubbles: true,
 			composed: true,

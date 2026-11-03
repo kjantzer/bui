@@ -1,5 +1,5 @@
 import {LitElement, html, css} from 'lit'
-import Menu from '../menu'
+import ViewSwitcher from './switcher'
 import router from '../../app/router'
 import device from '../../util/device'
 import overscroll from '../../util/overscroll'
@@ -150,7 +150,9 @@ class PanelController extends LitElement {
     constructor(){
         super()
         this.panels = new CollMap()
+        this.baseOnTopSince = Date.now() // (see ViewSwitcher)
         this.addEventListener('panel-title-updated', (e)=>{
+            if( this.name == 'root' ) ViewSwitcher.panelUpdated(e.detail.panel)
             this.emitEvent('change', {action: 'title-updated', panel: e.detail.panel}, {bubbles: false})
         })
     }
@@ -167,6 +169,10 @@ class PanelController extends LitElement {
             else
                 PanelControllers[this.name] = this
         }
+
+        // alt+` (mac: option+`) switches between open views
+        if( this.name == 'root' )
+            ViewSwitcher.listen(this)
 
         // TODO: support this in Android?
         if( this.name == 'root' && device.isiOS && this.hasAttribute('overscroll') ){
@@ -262,6 +268,9 @@ class PanelController extends LitElement {
         if( updateRoute )
             this._updateRoute()
 
+        if( !silent && this.name == 'root' )
+            ViewSwitcher.panelClosed(panel)
+
         this.emitEvent('change', {action: 'remove', panel}, {bubbles: false})
 
         if( this.length == 0 )
@@ -297,6 +306,9 @@ class PanelController extends LitElement {
 
         this._updatePanels()
 
+        if( this.name == 'root' )
+            ViewSwitcher.panelOpened(panel)
+
         this.emitEvent('change', {action: 'add', panel}, {bubbles: false})
     }
 
@@ -318,6 +330,8 @@ class PanelController extends LitElement {
 
         this.panels.forEach(panel=>panel.setAttribute('under-base', ''))
         this.setAttribute('base-on-top', '')
+        this._baseWasOnTop = true
+        this.baseOnTopSince = Date.now()
         router.push('')
         this.emitEvent('change', {action: 'base-on-top'}, {bubbles: false})
     }
@@ -402,6 +416,11 @@ class PanelController extends LitElement {
             }
         })
 
+        // when the base view was last on top (ex: all panels closed); see ViewSwitcher
+        if( !top && !this._baseWasOnTop )
+            this.baseOnTopSince = Date.now()
+        this._baseWasOnTop = !top
+
         if( this.length > 0 )
             this.setAttribute('num', this.length)
         else
@@ -474,45 +493,10 @@ class PanelController extends LitElement {
         return resp.reverse() // most recent first
     }
 
-    // FIXME: not that great of an implementation
-    async quickJump(el){
-
-        if( this.name != 'root'  ) return 
-        
-        let menu = this.map(panel=>{
-            return {
-                label: panel.title,
-                icon: panel.icon||'window',
-                description: panel.path,
-                panel: panel
-            }
-        })
-
-        let ts = new Date().getTime()
-
-        // quick jump is already open
-        if( this.quickJumpOpened )
-            return
-
-        if( menu.length == 0 )
-            return this.quickJumpOpened = null
-            // menu.push({text: 'No other views open'})
-
-        menu[0].selected = true // the open panel
-
-        menu.unshift({divider: 'Open Views'}, 'divider')
-
-        this.quickJumpOpened = ts
-
-        // let selected = await new Menu(menu).popOver(el, {align: 'bottom-start'})
-        let selected = await new Menu(menu, {autoSelectFirst: true}).modal({
-            onClose:()=>{
-                this.quickJumpOpened = null
-            }
-        })
-
-        if( selected )
-            selected.panel.open()
+    // shift+tab (see Panel.onKeydown): the open views, filterable
+    quickJump(){
+        if( this.name != 'root'  ) return
+        ViewSwitcher.open(this, {sticky: true})
     }
 }
 
