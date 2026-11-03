@@ -244,6 +244,8 @@ customElements.define('b-app-sidebar', class extends LitElement{
         this.onTouchEnd = this.onTouchEnd.bind(this)
         this.onPointerEnter = this.onPointerEnter.bind(this)
         this.onPointerLeave = this.onPointerLeave.bind(this)
+        this.onDragStart = this.onDragStart.bind(this)
+        this.onDragEnd = this.onDragEnd.bind(this)
 
         this.narrowQuery = window.matchMedia(`(max-width: ${NARROW-1}px)`)
         this.wideQuery = window.matchMedia(`(min-width: ${WIDE}px)`)
@@ -325,6 +327,7 @@ customElements.define('b-app-sidebar', class extends LitElement{
         clearTimeout(this._hoverTimer)
         if( !this.hoverOpen || !this.open ) return
         this._hoverTimer = setTimeout(()=>{
+            if( this._dragging ) return // (onDragEnd decides)
             if( hasOpenPopovers() ) return this.onPointerLeave(e)
             this._hoverClosing = true
             this.open = false
@@ -333,6 +336,21 @@ customElements.define('b-app-sidebar', class extends LitElement{
                 this.hoverOpen = false
             }, HOVER_CLOSE_DURATION)
         }, HOVER_CLOSE_DELAY)
+    }
+
+    // dragging something inside it (ex: reordering items) fires pointerleave as the drag starts;
+    // stay open while dragging, then close if it was dropped outside
+    onDragStart(e){
+        this._dragging = true
+        clearTimeout(this._hoverTimer)
+    }
+
+    onDragEnd(e){
+        this._dragging = false
+        if( !this.hoverOpen || !this.open ) return
+        let r = this.shadowRoot.querySelector('.panel').getBoundingClientRect()
+        let inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom
+        if( !inside ) this.onPointerLeave(e)
     }
 
     onKeydown(e){
@@ -464,7 +482,8 @@ customElements.define('b-app-sidebar', class extends LitElement{
 
     render(){return html`
         <div class="scrim" @click=${this.close}></div>
-        <div class="panel" part="panel" @pointerenter=${this.onPointerEnter} @pointerleave=${this.onPointerLeave}>
+        <div class="panel" part="panel" @pointerenter=${this.onPointerEnter} @pointerleave=${this.onPointerLeave}
+            @dragstart=${this.onDragStart} @dragend=${this.onDragEnd}>
             <div class="top" part="top">
                 <slot name="brand" @click=${this.toggle}></slot>
             </div>
