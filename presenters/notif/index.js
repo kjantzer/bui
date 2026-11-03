@@ -164,10 +164,12 @@ customElements.define('b-notif', class extends LitElement{
         delete this._replaced
 
         if( replaced && this.opts.animationForReplace == 'morph' ){
-            let {host, content} = anim.morph(replaced.height, this.offsetHeight)
+            let {host, content} = anim.morph(replaced, {height: this.offsetHeight, width: this.offsetWidth})
+            // fade the content in, not main (it has the background: the whole box would blink)
+            let contentEl = this.opts.view || this.shadowRoot.querySelector('.content') || this.$main
             this._enterAnims = [
                 ...(host ? anim.play(this, [host]) : []),
-                ...anim.play(this.$main, [content])
+                ...anim.play(contentEl, [content])
             ]
         }else{
             let name = replaced ? this.opts.animationForReplace : this.animation
@@ -260,7 +262,7 @@ customElements.define('b-notif', class extends LitElement{
 
     // a new notif with the same `nid` takes this one's place
     replaceWith(el){
-        el._replaced = {height: this.offsetHeight}
+        el._replaced = {height: this.offsetHeight, width: this.offsetWidth}
 
         this._stopTimer()
         super.replaceWith(el)

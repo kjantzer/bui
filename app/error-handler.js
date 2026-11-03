@@ -48,7 +48,13 @@ for( let CustomErrorName in CustomErrors ){
 let reporter = null
 export function setErrorReporter(fn){ reporter = fn }
 
-async function report(notif, error, stack){
+// the error notif stays while sending, then becomes the result (same nid: it morphs in place)
+async function report(notif, btn, error, stack){
+
+    if( btn.spin ) return // (already sending)
+    btn.spin = true
+    notif.hold('sending')
+
     try{
         await reporter({
             name: error.name,
@@ -56,9 +62,9 @@ async function report(notif, error, stack){
             stack: (stack || error.stack?.split('\n') || []).join('\n'),
             url: location.href
         })
-        new Notif({msg: 'Sent to the developer. Thanks!', icon: 'check', type: 'success', autoClose: 2500})
+        new Notif({nid: notif.nid, msg: 'Sent to the developer. Thanks!', icon: 'check', type: 'success', autoClose: 2500})
     }catch(err){
-        new Notif({msg: 'Could not send the error: '+err.message, type: 'error', icon: 'error'})
+        new Notif({nid: notif.nid, msg: 'Could not send the error: '+err.message, type: 'error', icon: 'error'})
     }
 }
 
@@ -165,7 +171,11 @@ const GlobalErrorHandler = (evt)=>{
         notif.btns = [{label: 'Send to Developer', icon: 'send', color: 'theme', title: 'Send this error to the developer'}]
         notif.btnsBelow = true
         notif.autoClose = 12000 // (time to read it and click)
-        notif.onClick = (n, btn)=>{ if( btn ) report(n, error, fullStack) }
+        notif.onClick = (n, btn)=>{
+            if( !btn ) return
+            report(n, btn, error, fullStack)
+            return false // (stays open; see report)
+        }
     }
 
     let n = new Notif(notif)

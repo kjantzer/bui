@@ -108,13 +108,18 @@ export function collapse(el){
     }
 }
 
-// replacing a notif with the same `nid`: morph the height and crossfade the content
-export function morph(fromHeight, toHeight){
+// replacing a notif with the same `nid`: morph the size (height, and width when it differs) and fade in the new content
+// (the box itself stays solid; see Notif.enter)
+export function morph(from, to){
     if( prefersReducedMotion() )
         return {host: null, content: FADE_IN}
 
+    let keyframes = {height: [from.height+'px', to.height+'px']}
+    if( from.width && from.width != to.width )
+        keyframes.width = [from.width+'px', to.width+'px']
+
     return {
-        host: {keyframes: {height: [fromHeight+'px', toHeight+'px']}, timing: {duration: 260, easing: EASE}},
+        host: {keyframes, timing: {duration: 260, easing: EASE}},
         content: {keyframes: {opacity: [0, 1], transform: ['scale(.98)', 'none']}, timing: {duration: 220, easing: EASE}}
     }
 }
