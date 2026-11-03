@@ -84,6 +84,8 @@ export default class SortsPopover extends LitElement {
     connectedCallback(){
         super.connectedCallback()
         this.sorts?.on('change', this.onChange)
+        // (reused between opens; the sort may have changed while closed, ex: a list header click)
+        this.requestUpdate()
     }
 
     disconnectedCallback(){
