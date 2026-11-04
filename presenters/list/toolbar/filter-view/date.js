@@ -6,7 +6,8 @@
     and the presets below fill it in (then tweak it); Range's input shows/takes typed dates
     Picks take effect right away (the filters popover applies them when it closes); its own header clears it
 
-    Value: `[start, end]` (YYYY-MM-DD) or `{rel: '30 days'}` (see datepicker/presets relativeRange);
+    Value: `[start, end]` (YYYY-MM-DD) or `{rel: '30 days'}` (see datepicker/presets relativeRange; open ended ones,
+    ex: `before 5 years ago`, resolve to OPEN_START / OPEN_END so servers' BETWEEN still works);
     `Filters` resolves a relative value to `[start, end]` when it's read (see resolveValue)
 
     viewOpts:
@@ -21,7 +22,7 @@ import dayjs from 'dayjs'
 import Datepicker, {stringToDateRange} from '../../../datepicker'
 import {label as rangeLabel} from '../../../datepicker/daterange'
 import {formatPreset, getPresetRange, isRelative, parseRelative, relativeKey, relativeRange, relativeLabel,
-    UNITS} from '../../../datepicker/presets'
+    UNITS, OPEN_START, OPEN_END} from '../../../datepicker/presets'
 
 const DB_FORMAT = 'YYYY-MM-DD'
 
@@ -57,8 +58,28 @@ const DIRS = [
     {val: 'todate', label: 'Since start of'},
     {val: 'previous', label: 'Previous'},
     {val: 'ago', label: 'Ago'},
-    {val: 'following', label: 'Following'}
+    {val: 'following', label: 'Following'},
+    {val: 'before', label: 'Before'},
+    {val: 'after', label: 'After'}
 ]
+
+// dirs with a number ("[Before] [5] [years] ago")
+const NUM_DIRS = ['last', 'next', 'ago', 'before', 'after']
+
+const NUM_WORDS = {a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
+    eleven: 11, twelve: 12, fifteen: 15, twenty: 20, thirty: 30, sixty: 60, ninety: 90}
+const UNIT_RE = '(d|days?|w|wks?|weeks?|m|mos?|months?|q|qtrs?|quarters?|y|yrs?|years?)'
+const TYPED_REL = new RegExp(`^(last |next |\\+|before |after |older than |newer than )?([1-9]\\d*|${Object.keys(NUM_WORDS).join('|')})\\s*${UNIT_RE}( ago| old)?$`)
+
+// typed shorthand → a relative name, or null (ex: "90 days", "next 2 weeks", "before five years ago", "older than 5 years")
+const typedRelative = str=>{
+    let m = str.trim().toLowerCase().replace(/\s+/g, ' ').match(TYPED_REL)
+    if( !m ) return null
+    let [, dir, num, unit, ago] = m
+    dir = (dir||'').trim()
+    dir = {'+': 'next', 'older than': 'before', 'newer than': 'after'}[dir] || dir || (ago == ' ago' ? 'ago' : 'last')
+    return relativeKey({dir, num: NUM_WORDS[num] || parseInt(num), unit: UNITS.find(u=>u[0] == unit[0])})
+}
 
 // a quick pick's short label (ex: "30 days"; the row says Last or Next)
 const chipLabel = key=>{
@@ -85,6 +106,8 @@ const compactHint = (start, end)=>{
 const datesHint = (start, end)=>{
     start = dayjs(start); end = dayjs(end)
     let f = d=>d.format(d.isSame(dayjs(), 'year') ? 'MMM D' : 'MMM D, YYYY')
+    if( start.isSame(OPEN_START, 'day') ) return `Before ${f(end.add(1, 'day'))}`
+    if( end.isSame(OPEN_END, 'day') ) return `After ${f(start.add(-1, 'day'))}`
     return start.isSame(end, 'day') ? f(start) : `${f(start)} – ${f(end)}`
 }
 
@@ -208,6 +231,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         .field .dir { flex: 1; }
         .field .num { width: 3.5em; text-align: center; }
         .field .unit { flex: 1; }
+        .field .suffix { padding: 0 .65em; color: var(--theme-text-accent, #888); }
 
         .field > * + * { border-left: solid 1px rgba(var(--theme-text-rgb, 0,0,0), .1); }
 
@@ -411,7 +435,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
 
         if( !this.__datepicker ){
             this.__datepicker = new Datepicker({
-                value: this.dates || new Date(),
+                value: this.calendarDates || new Date(),
                 range: this.opts.range,
                 presets: false,
                 inputs: false,
@@ -454,6 +478,13 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         return [val[0], val[1] || val[0]]
     }
 
+    // the dates shown on the calendar (an open range shows its one date, not year 1000 / 9999)
+    get calendarDates(){
+        let dates = this.dates?.filter(d=>![OPEN_START, OPEN_END].includes(d))
+        if( dates?.length == 1 ) dates = [dates[0], dates[0]]
+        return dates
+    }
+
     get label(){
         let val = this.value
         if( isRel(val) ) return relativeLabel(val.rel)
@@ -474,7 +505,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         if( !this.__datepicker ) return
         this._syncing = true
         try{
-            this.__datepicker.value = this.dates || [new Date(), new Date()]
+            this.__datepicker.value = this.calendarDates || [new Date(), new Date()]
         }finally{
             this._syncing = false
         }
@@ -536,7 +567,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
     // (options `selected` for the first render, before they exist for `.value`; `.value` after, once changed by hand)
     renderRelativeInput(){
         let p = (isRel(this.value) && parseRelative(this.value.rel)) || this.draft || {dir: 'last', num: null, unit: 'day'}
-        let hasNum = ['last', 'next', 'ago'].includes(p.dir)
+        let hasNum = NUM_DIRS.includes(p.dir)
         let plural = hasNum && p.num != 1
 
         return html`
@@ -552,6 +583,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             <select class="unit" .value=${live(p.unit)} @change=${this.onRelativeInput}>
                 ${UNITS.map(u=>html`<option value=${u} ?selected=${u == p.unit}>${u}${plural?'s':''}</option>`)}
             </select>
+            ${['before', 'after'].includes(p.dir) ? html`<span class="suffix">ago</span>`:''}
         </div>
     `}
 
@@ -566,9 +598,8 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         }).filter(Boolean)
 
         // a typed relative range not in the presets
-        let typed = this.opts.range && q.match(/^(last |next )?([1-9]\d*)\s*(d|days?|w|wks?|weeks?|m|mos?|months?|q|qtrs?|quarters?|y|yrs?|years?)$/)
-        if( typed ){
-            let key = relativeKey({dir: typed[1]?.trim() == 'next' ? 'next' : 'last', num: parseInt(typed[2]), unit: UNITS.find(u=>u[0] == typed[3][0])})
+        let key = this.opts.range && typedRelative(q)
+        if( key ){
             if( key && !values.some(v=>v.val.rel == key) )
                 values.unshift({val: {rel: key}, label: `${relativeLabel(key)} (${datesHint(...this.presetDates(key))})`,
                     always: true, selected: JSON.stringify({rel: key}) == current})
@@ -580,7 +611,7 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
     renderTyped(){return html`
         <div class="field">
             <input class="typed" type="text" .value=${live(this.dates ? this.typedLabel : '')}
-                placeholder=${this.opts.range ? 'Type dates or “90 days”, “mar”, “2025”' : 'Type a date'}
+                placeholder=${this.opts.range ? 'Type dates or “90 days”, “before 5 years ago”, “mar”' : 'Type a date'}
                 @change=${this.onTyped} @keydown=${e=>e.key=='Enter'&&this.onTyped(e)}>
         </div>
     `}
@@ -655,6 +686,8 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
     get typedLabel(){
         let [start, end] = this.dates.map(d=>dayjs(d))
         let f = 'MMM D, YYYY'
+        if( start.isSame(OPEN_START, 'day') ) return `Before ${end.add(1, 'day').format(f)}`
+        if( end.isSame(OPEN_END, 'day') ) return `After ${start.add(-1, 'day').format(f)}`
         return !this.opts.range || start.isSame(end, 'day') ? start.format(f) : `${start.format(f)} – ${end.format(f)}`
     }
 
@@ -683,8 +716,8 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             unit: el('.unit').value
         }
 
-        // switching to last/next/ago keeps the number it had (or 1; 2 for ago, since 1 ago is "Previous")
-        if( ['last', 'next', 'ago'].includes(p.dir) && !el('.num') )
+        // switching to last/next/ago/before/after keeps the number it had (or 1; 2 for ago, since 1 ago is "Previous")
+        if( NUM_DIRS.includes(p.dir) && !el('.num') )
             p.num = prev.num || (p.dir == 'ago' ? 2 : 1)
 
         let key = relativeKey(p)
@@ -694,16 +727,16 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         else this.requestUpdate()
     }
 
-    // typed: "Mar 1 – Apr 5", "3/1/26", or shorthand ("90 days", "mar", "2025"); "N days/weeks..." stay relative
+    // typed: "Mar 1 – Apr 5", "3/1/26", or shorthand ("90 days", "mar", "2025"); "N days/weeks...",
+    // "before/after N years ago" (or "older/newer than N years") stay relative
     onTyped(e){
         let str = e.currentTarget.value.trim()
         if( !str ) return
 
-        let rel = str.toLowerCase().match(/^(next |\+)?([1-9]\d*)\s*(d|days?|w|wks?|weeks?|m|mos?|months?|q|qtrs?|quarters?|y|yrs?|years?)$/)
-        if( rel && this.opts.range ){
-            let [, next, num, unit] = rel
+        let rel = this.opts.range && typedRelative(str)
+        if( rel ){
             this.draft = null
-            this.commit({rel: relativeKey({dir: next ? 'next' : 'last', num: parseInt(num), unit: UNITS.find(u=>u[0] == unit[0])})})
+            this.commit({rel})
             if( this.isRelativeOnly ) this.mode = 'presets' // (shows it's relative)
             return
         }

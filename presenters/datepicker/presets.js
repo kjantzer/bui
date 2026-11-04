@@ -210,6 +210,9 @@ export function getPresetRange(p){
     - `next unit`: the one after it (ex: `next quarter`)
     - `unit to date`: the start of the current one through today (ex: `year to date`)
     - `N units ago`: the period N before the current one (ex: `3 months ago` is August when it's November)
+    - `before N units ago`, `after N units ago`: open ended, from the date N units back (not its period; ex: in
+      Nov 2026, `before 5 years ago` is through Nov 2, 2021 and `after 30 days ago` is Oct 5 on);
+      their range goes to OPEN_START / OPEN_END so it still works as `BETWEEN start AND end`
     Some preset names work too (ex: `today`, `last month`; see ALIASES)
 */
 export const UNITS = ['day', 'week', 'month', 'quarter', 'year']
@@ -217,6 +220,11 @@ export const UNITS = ['day', 'week', 'month', 'quarter', 'year']
 const REL = /^(?:(next|this|previous) )?(?:(\d+) )?(day|week|month|quarter|year)s?$/
 const TO_DATE = /^(week|month|quarter|year) to date$/
 const AGO = /^(\d+) (day|week|month|quarter|year)s? ago$/
+const BEFORE_AFTER = /^(before|after) (\d+) (day|week|month|quarter|year)s? ago$/
+
+// the ends of an open range (before/after); the earliest and latest MySQL dates
+export const OPEN_START = '1000-01-01'
+export const OPEN_END = '9999-12-31'
 
 const ALIASES = {
     'today': 'this day',
@@ -234,6 +242,9 @@ export function parseRelative(key){
 
     let toDate = key.match(TO_DATE)
     if( toDate ) return {dir: 'todate', num: null, unit: toDate[1]}
+
+    let beforeAfter = key.match(BEFORE_AFTER)
+    if( beforeAfter ) return parseInt(beforeAfter[2]) >= 1 ? {dir: beforeAfter[1], num: parseInt(beforeAfter[2]), unit: beforeAfter[3]} : null
 
     let ago = key.match(AGO)
     if( ago ) return parseInt(ago[1]) >= 1 ? {dir: 'ago', num: parseInt(ago[1]), unit: ago[2]} : null
@@ -254,6 +265,7 @@ export function parseRelative(key){
 export function relativeKey({dir='last', num, unit}={}){
     if( dir == 'todate' ) return unit == 'day' ? 'this day' : `${unit} to date`
     if( dir == 'following' ) return `next ${unit}`
+    if( ['before', 'after'].includes(dir) ) return num >= 1 ? `${dir} ${num} ${unit}${num == 1 ? '' : 's'} ago` : null
     if( dir == 'ago' ) return num == 1 ? `previous ${unit}` : num > 1 ? `${num} ${unit}s ago` : null
     if( ['this', 'previous'].includes(dir) ) return `${dir} ${unit}`
     if( !(num >= 1) ) return null
@@ -274,6 +286,9 @@ export function relativeRange(key){
 
     if( dir == 'this' ) return [today.startOf(unit), today.endOf(unit).startOf('day')]
     if( dir == 'todate' ) return [today.startOf(unit), today]
+
+    if( dir == 'before' ) return [dayjs(OPEN_START), today.add(-num, unit).add(-1, 'day')]
+    if( dir == 'after' ) return [today.add(-num, unit).add(1, 'day'), dayjs(OPEN_END)]
 
     if( dir == 'ago' ){
         let start = today.add(-num, unit).startOf(unit)
@@ -308,6 +323,7 @@ export function relativeLabel(key){
     if( dir == 'todate' ) return `${Unit} to Date`
     if( dir == 'following' ) return unit == 'day' ? 'Tomorrow' : `Next ${Unit}`
     if( dir == 'ago' ) return `${num} ${Unit}s Ago`
+    if( ['before', 'after'].includes(dir) ) return `${dir == 'before' ? 'Before' : 'After'} ${num} ${Unit}${num == 1 ? '' : 's'} Ago`
     if( dir == 'previous' ) return unit == 'day' ? 'Yesterday' : `Last ${Unit}`
     return `${dir == 'next' ? 'Next' : 'Last'} ${num} ${Unit}${num == 1 ? '' : 's'}`
 }
