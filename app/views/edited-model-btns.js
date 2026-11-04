@@ -6,7 +6,9 @@ customElements.define('b-edited-model-btns', class extends LitElement{
         changed: {type: Number, reflect: true},
         shownum: { type: Boolean },
         sm: {type: Boolean},
-        xs: {type: Boolean}
+        xs: {type: Boolean},
+        lg: {type: Boolean},
+        pill: {type: Boolean}
     }}
 
     static get styles(){ return css`
@@ -52,11 +54,11 @@ customElements.define('b-edited-model-btns', class extends LitElement{
 
     render(){return html`
         <slot name="before"></slot>
-        <b-btn color="theme-gradient" @click=${this.save} ?sm=${this.sm} ?xs=${this.xs}>
+        <b-btn color="theme-gradient" @click=${this.save} ?sm=${this.sm} ?xs=${this.xs} ?lg=${this.lg} ?pill=${this.pill}>
             Save
             ${this.shownum&&this.changed>0?html` <b-text nobold>(${this.changed})</b-text>`:''}
         </b-btn>
-        <b-btn clear @click=${this.cancel} ?sm=${this.sm} ?xs=${this.xs}>Cancel</b-btn>
+        <b-btn clear @click=${this.cancel} ?sm=${this.sm} ?xs=${this.xs} ?lg=${this.lg} ?pill=${this.pill}>Cancel</b-btn>
         <slot></slot>
     `}
 
