@@ -32,8 +32,8 @@
       `menu:end`, and `sidebar-top` in its header, ex: a 3 dot menu) is its own tab in the tab bar (first, and the
       one shown when a model is set) instead of being hidden; the same elements move there (their slot changes),
       so nothing renders twice
-    - `sidebar-in-first` - when narrow, the sidebar's content (`menu:before`, `menu:end`) is at the top of the first
-      section instead (it scrolls with it; ex: a record's avatar and name above its details). The first section
+    - `sidebar-in-first` - when narrow, the sidebar's content is in the first section instead: `menu:before` above it,
+      `menu:end` below it (they scroll with it; ex: a record's avatar and name above its details). The first section
       should flow normally (not a full height list); other sections don't show it
 
     Extra (non section) items: <b-nav-view-link> (see ./link.js)
@@ -237,9 +237,19 @@ customElements.define('b-nav-view', class extends Tabs{
             min-height: 0;
         }
 
+        .first-bottom {
+            display: none;
+        }
+
         :host([sidebar-in-first-shown]) .first-top {
             display: block;
             padding: 1.25rem .5rem 0;
+        }
+
+        :host([sidebar-in-first-shown]) .first-bottom {
+            display: block;
+            order: 3; /* (after the content; b-tabs orders it 2) */
+            padding: 0 .5rem calc(1.25rem + var(--nav-view-bottom-space, 0px));
         }
 
         :host([sidebar-in-first-shown]) slot.content {
@@ -594,9 +604,11 @@ customElements.define('b-nav-view', class extends Tabs{
             <div class="content-wrap" part="content-wrap">
                 <div class="first-top" part="first-top">
                     <slot name="first:before"></slot>
-                    <slot name="first:end"></slot>
                 </div>
                 <slot class="content" part="content"></slot>
+                <div class="first-bottom" part="first-bottom">
+                    <slot name="first:end"></slot>
+                </div>
             </div>
             <div class="sidebar-view" part="sidebar-view" ?hidden=${!this.sidebarViewShown}>
                 <div class="sidebar-view-header" part="sidebar-view-header">

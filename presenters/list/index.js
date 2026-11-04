@@ -11,6 +11,8 @@ import '../../helpers/lit/selectors'
 import Selection from '../selection'
 import Scrollbars from '../../helpers/scrollbars'
 import '../../helpers/lit/willTakeAction'
+import {isTyping} from '../../util/focus'
+import {hasOpenPopovers} from '../popover'
 
 customElements.define('b-list', class extends LitElement {
 
@@ -551,7 +553,8 @@ customElements.define('b-list', class extends LitElement {
             return
 
         if( this.offsetParent // is this list visible?
-        && document.activeElement.tagName == 'BODY' // NOT inside an input
+        && !isTyping() // NOT inside an input (focus left on a link/btn, ex: the app sidebar, is fine)
+        && !hasOpenPopovers() // (ex: a menu or dialog over the list)
         ){
 
             // TODO: only when mouse is over?
