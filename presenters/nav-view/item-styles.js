@@ -14,7 +14,9 @@ export default css`
         gap: var(--nav-item-gap, .65em);
         flex: var(--nav-item-flex, none);
         min-width: var(--nav-item-min-width, 0);
-        width: var(--nav-item-width, 100%);
+        /* (--nav-item-margin-x: in from the bar's sides, ex: lined up with content below the items) */
+        margin-inline: var(--nav-item-margin-x, 0px);
+        width: var(--nav-item-width, calc(100% - 2 * var(--nav-item-margin-x, 0px)));
         box-sizing: border-box;
         padding: var(--nav-item-padding, .5em .75em);
         border: none;
