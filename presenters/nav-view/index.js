@@ -32,6 +32,8 @@
       `menu:end`, and `sidebar-top` in its header, ex: a 3 dot menu) is its own tab in the tab bar (first, and the
       one shown when a model is set) instead of being hidden; the same elements move there (their slot changes),
       so nothing renders twice
+    - `shared-header` - when narrow, the `before` header shows on the sidebar view too (in place of its title header),
+      so every tab has the same header (ex: a record's name and actions)
     - `sidebar-in-first` - when narrow, the sidebar's content is in the first section instead: `menu:before` above it,
       `menu:end` below it (they scroll with it; ex: a record's avatar and name above its details). The first section
       should flow normally (not a full height list); other sections don't show it
@@ -263,6 +265,15 @@ customElements.define('b-nav-view', class extends Tabs{
         .sidebar-view[hidden],
         :host([sidebar-view-shown]) slot.content,
         :host([sidebar-view-shown]) slot[name="before"] {
+            display: none;
+        }
+
+        /* shared-header: the sections' header on the sidebar view too, instead of its own */
+        :host([shared-header][sidebar-view-shown]) slot[name="before"] {
+            display: contents;
+        }
+
+        :host([shared-header]) .sidebar-view-header {
             display: none;
         }
 
