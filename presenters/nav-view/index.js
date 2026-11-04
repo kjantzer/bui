@@ -544,7 +544,7 @@ customElements.define('b-nav-view', class extends Tabs{
     }
 
     renderCloseBtn(){
-        return html`<b-btn clear lg pill icon="close" class="close-btn" title="Close" @click=${this.close}></b-btn>`
+        return html`<b-btn clear lg pill icon="close" class="close-btn" part="close-btn" title="Close" @click=${this.close}></b-btn>`
     }
 
     constructor(){
