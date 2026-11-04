@@ -315,6 +315,8 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
         // in the "More" menu
         if( this._overflow?.some(e=>e.view == view) ) return ''
 
+        if( this.navViewsFlat(view) ) return this.renderFlatNavViews(view)
+
         return html`
             <button class="item" ?active=${view.active && !this.host?.sidebarViewShown}
                 ?has-sub=${!!view.navViews && this.navViewsListed(view) && this.navItems(view).length > 0}
@@ -338,6 +340,22 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
     // (collapsed: only while the section is shown, see navViewsCollapsed above)
     navViewsListed(view){
         return !view._viewClass?.navViewsCollapsed || (view.active && !this.host?.sidebarViewShown)
+    }
+
+    // `static navViewsFlat = true` on a section: its child views are listed as top level items, in place of its own
+    // (ex: a record whose "Details" is only its tabs); when they aren't listed (narrow, compact) its item shows as usual
+    navViewsFlat(view){
+        return !!view._viewClass?.navViewsFlat && !!view.navViews && this.navItems(view).length > 0
+    }
+
+    renderFlatNavViews(view){
+        let shown = view.active && !this.host?.sidebarViewShown
+        return this.navItems(view).map(item=>html`
+            <button class="item" ?active=${shown && item.active} @click=${()=>this.selectNavView(view, item)}>
+                ${item.icon ? html`<b-icon name=${item.icon}></b-icon>` : ''}
+                <span>${item.title}</span>
+            </button>
+        `)
     }
 
     renderNavViews(view){
