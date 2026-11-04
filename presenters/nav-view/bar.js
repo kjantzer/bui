@@ -236,8 +236,13 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
         this.views?.forEach(view=>{
             entries.push(...links('before:'+view.id))
 
-            if( view.canDisplay && view.view?.shouldShowTabBtn?.() !== false )
-                entries.push({view})
+            if( view.canDisplay && view.view?.shouldShowTabBtn?.() !== false ){
+                // (flat: an entry for each of its child views, so they count toward the narrow tab bar's room)
+                if( this.navViewsFlat(view) )
+                    entries.push(...this.navItems(view).map(item=>({view, item})))
+                else
+                    entries.push({view})
+            }
 
             entries.push(...links('after:'+view.id))
         })
@@ -268,7 +273,7 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
         entries.forEach(e=>e.link?.toggleAttribute('overflowed', overflow.includes(e)))
 
         // (see the no-icons styles; the sidebar tab has an icon; "More" drops its icon to match)
-        let hasIcon = e=>e.sidebar || (e.view ? !!(e.view.icon || e.view._viewClass?.prototype.renderTabIcon) : !!e.link?.icon)
+        let hasIcon = e=>e.sidebar || (e.view ? !!(e.item?.icon || e.view.icon || e.view._viewClass?.prototype.renderTabIcon) : !!e.link?.icon)
         let noIcons = entries.length > 0 && !entries.some(hasIcon)
         this.toggleAttribute('no-icons', noIcons)
         if( noIcons != this._noIcons ){
@@ -276,7 +281,7 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
             this.requestUpdate()
         }
 
-        let key = overflow.map(e=>e.view?.id || e.link.label).join()
+        let key = overflow.map(e=>e.item ? e.view.id+':'+e.item.id : e.view?.id || e.link.label).join()
         if( key != this._overflowKey ){
             this._overflowKey = key
             this._overflow = overflow
@@ -301,7 +306,7 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
         <slot name="end"></slot>
 
         ${this._overflow?.length?html`
-            <button class="item" ?active=${!this.host?.sidebarViewShown && this._overflow.some(e=>e.view?.active)} @click=${this.showMore}>
+            <button class="item" ?active=${!this.host?.sidebarViewShown && this._overflow.some(e=>e.view?.active && (!e.item || e.item.active))} @click=${this.showMore}>
                 ${this._noIcons?'':html`<b-icon name="more_horiz"></b-icon>`}
                 <span>More</span>
             </button>
@@ -312,10 +317,10 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
         // views can hide their button (ex: section that doesn't apply to the current model)
         if( view.view?.shouldShowTabBtn?.() === false ) return ''
 
+        if( this.navViewsFlat(view) ) return this.renderFlatNavViews(view)
+
         // in the "More" menu
         if( this._overflow?.some(e=>e.view == view) ) return ''
-
-        if( this.navViewsFlat(view) ) return this.renderFlatNavViews(view)
 
         return html`
             <button class="item" ?active=${view.active && !this.host?.sidebarViewShown}
@@ -332,7 +337,7 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
 
     // a section's child views: live from its tabs (claimed by b-nav-view), else its static navViews
     navItems(view){
-        if( !this.host?.showsNavViews ) return []
+        if( !this.host?.showsNavViews && !view._viewClass?.navViewsFlat ) return []
         let items = view.navViews?.views || view._viewClass?.navViews || []
         return items.filter(item=>!item.section) // (the section item stands for it, see b-tabs nav-first)
     }
@@ -348,11 +353,14 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
         return !!view._viewClass?.navViewsFlat && !!view.navViews && this.navItems(view).length > 0
     }
 
+    // (each with its own icon, else the section's; not the ones in the "More" menu)
     renderFlatNavViews(view){
         let shown = view.active && !this.host?.sidebarViewShown
-        return this.navItems(view).map(item=>html`
+        return this.navItems(view)
+            .filter(item=>!this._overflow?.some(e=>e.item?.id == item.id && e.view == view))
+            .map(item=>html`
             <button class="item" ?active=${shown && item.active} @click=${()=>this.selectNavView(view, item)}>
-                ${item.icon ? html`<b-icon name=${item.icon}></b-icon>` : ''}
+                ${this._noIcons ? '' : html`<b-icon name=${item.icon || view.icon || 'circle'}></b-icon>`}
                 <span>${item.title}</span>
             </button>
         `)
@@ -431,6 +439,9 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
 
     async selectNavView(view, item){
 
+        // (leaves the sidebar view, when narrow, even if the section was already the active one under it)
+        if( this.host?.sidebarViewActive ) this.host.sidebarViewActive = false
+
         // a link (see static navViews above)
         if( item.action ) return item.action(this.host?.model, this.host)
 
@@ -470,8 +481,8 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
         let overflow = this._overflow || []
 
         let selected = await new Menu(overflow.map((entry, i)=>({
-            label: entry.view ? entry.view.title : entry.link.label,
-            icon: entry.view ? entry.view.icon : entry.link.icon,
+            label: entry.item ? entry.item.title : entry.view ? entry.view.title : entry.link.label,
+            icon: entry.item ? entry.item.icon || entry.view.icon : entry.view ? entry.view.icon : entry.link.icon,
             extras: entry.link?.external ? [html`<b-icon name="call_made" muted></b-icon>`] : null,
             val: i
         }))).popOver(e.currentTarget, {align: 'top-end'})
@@ -480,7 +491,9 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
 
         let entry = overflow[selected.val]
 
-        if( entry.view )
+        if( entry.item )
+            this.selectNavView(entry.view, entry.item)
+        else if( entry.view )
             this.onMenuClick({currentTarget: {tabView: entry.view}})
         else
             entry.link.click()

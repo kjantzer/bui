@@ -39,7 +39,8 @@
     Extra (non section) items: <b-nav-view-link> (see ./link.js)
 
     Child views: a section's own tabs (`<b-tabs nav="parent">` in it) are listed under the section in the sidebar
-    (`static navViewsFlat = true` on the section: listed as top level items in place of the section's own)
+    (`static navViewsFlat = true` on the section: listed as top level items in place of the section's own, in the
+    narrow tab bar too)
     (their tab bar hides; `nav-first="section"`: the first isn't listed, the section item stands for it;
     `static navViewsCollapsed = true` on the section: listed only while it's active, else a menu when hovering its item); sections can list them up front (before they're opened): `static navViews = [{title, path,
     icon}]` (paths under the section's; the section's path should allow them, ex: `setup(/:tab)`). Not when narrow
@@ -555,7 +556,7 @@ customElements.define('b-nav-view', class extends Tabs{
         if( !tabView ) return
 
         e.stopPropagation() // (the nearest nav decides; when it has no room, the tabs show their own bar)
-        if( !this.showsNavViews ) return
+        if( !this.showsNavViews && !tabView._viewClass?.navViewsFlat ) return // (flat: their own items when narrow too)
 
         e.detail.handled = true
         tabView.navViews = {tabs, views}
