@@ -112,7 +112,9 @@ Comments can support attaching files with the `.uploads` option. When writing a 
 
 ### Parts
 - `write-comment`
+- `write-btn` - the "Comment" button that opens the editor (ex: style it like a field to type in)
 - `comment`
+- `view-all`
 
 Example:
 

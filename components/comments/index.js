@@ -305,6 +305,7 @@ customElements.define('b-comments', class extends LitElement{
         <b-comment-row 
             ?hidden=${this.disabled}
             part="write-comment" 
+            exportparts="write-btn"
             .coll=${this.coll} 
             .meta=${this.meta}
             .uploads=${this.uploads}
