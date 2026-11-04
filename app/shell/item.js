@@ -363,11 +363,15 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
 
             this.dispatchEvent(new CustomEvent('menu-select', {bubbles: true, composed: true, detail: {selected}}))
 
+            this.blurIfClicked(e)
+
             if( selected.url )
                 (window.goTo || router.goTo.bind(router))(selected.url)
 
             return
         }
+
+        this.blurIfClicked(e)
 
         if( this.base ){
             this.panelController?.showBase()
@@ -377,6 +381,13 @@ customElements.define('b-app-sidebar-item', class extends LitElement{
 
         if( this.path )
             (window.goTo || router.goTo.bind(router))(this.path)
+    }
+
+    // clicked with the mouse: let go of focus so the opened view gets the keys (ex: a list's shortcuts),
+    // and the browser doesn't show the focus ring here once a key is pressed (kept when used from the keyboard)
+    blurIfClicked(e){
+        if( e?.type == 'click' && e.detail > 0 )
+            this.shadowRoot.querySelector('.item')?.blur()
     }
 
     onKeydown(e){
