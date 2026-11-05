@@ -89,7 +89,7 @@ customElements.define('b-write-comment', class extends LitElement{
             --color: var(--theme);
             width: 1.9em;
             height: 1.9em;
-            margin: -.35em 0;
+            margin: calc((1.4em / .9 - 1.9em) / 2) 0; /* (centered on a 1.4 line, at its .9em font size) */
             font-size: .9em;
         }
     `}
