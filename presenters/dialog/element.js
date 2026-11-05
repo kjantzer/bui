@@ -178,6 +178,11 @@ customElements.define('b-dialog', class DialogElement extends LitElement{
             background: color-mix(in srgb, var(--accent, currentColor) 15%, transparent);
         }
 
+        /* message only: center the icon (2em) on the first line (1.4em) */
+        :host([in-notif][_title="0"][pretitle="0"]:not([toast])) aside [name="icon"] > * {
+            margin-top: calc(var(--pad) - .3em);
+        }
+
         :host([in-notif][toast]) aside [name="icon"] > * {
             margin: .625em 0 .625em .875em;
         }
