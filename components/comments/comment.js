@@ -119,6 +119,11 @@ customElements.define('b-comment-row', class extends LitElement {
             margin-top: -.5em;
         }
 
+        b-write-comment[compose] {
+            margin-top: 0;
+            align-self: center;
+        }
+
         b-btn.write {
             grid-column: span 2;
             --color: var(--btn-bgd-color, var(--theme-bgd-accent2, #ddd));
@@ -417,7 +422,7 @@ customElements.define('b-comment-row', class extends LitElement {
 
             ${this.renderAvatar()}
 
-            <b-write-comment .coll=${this.coll} .meta=${this.meta} .uploads=${this.uploads} auto-focus part="write-comment"
+            <b-write-comment .coll=${this.coll} .meta=${this.meta} .uploads=${this.uploads} auto-focus part="write-comment" ?compose=${this.compose}
                 placeholder=${this.placeholder}
                 @saved=${this.doneEditing}
                 @canceled=${this.doneEditing}>

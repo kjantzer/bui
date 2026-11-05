@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit'
+import {ifDefined} from 'lit/directives/if-defined.js'
 import '../../presenters/form/handler'
 import '../../presenters/form/control'
 import '../../presenters/form/controls/text-editor'
@@ -28,7 +29,8 @@ customElements.define('b-write-comment', class extends LitElement{
 
     static get properties(){return {
         placeholder: {type: String},
-        uploads: {type: Object}
+        uploads: {type: Object},
+        compose: {type: Boolean, reflect: true} // (looks like the comment row's compose field: a rounded box)
     }}
 
     constructor(){
@@ -71,14 +73,30 @@ customElements.define('b-write-comment', class extends LitElement{
         b-uploader-preview {
             margin-top: .25em;
         }
+
+        /* compose: the field you clicked, now typing in it */
+        :host([compose]) form-control {
+            padding: .6em .5em .6em 1em;
+            border-radius: 1.3em;
+            border: solid 1px var(--theme-bgd-accent);
+            line-height: normal;
+        }
+
+        :host([compose]) form-control:focus-within {
+            border-color: var(--theme);
+        }
+
+        :host([compose]) form-control b-btn {
+            margin: -.25em 0;
+        }
     `}
 
     render(){return html`
         <form-handler .model=${this.model} store="${(this.model||this.coll).url()}" @save-comment=${this.saveCommentRequested}>
 
-            <form-control material="" key="comment">
+            <form-control material=${ifDefined(this.compose ? undefined : '')} key="comment">
                 
-                <text-editor placeholder="${this.placeholder}"
+                <text-editor placeholder="${this.placeholder}${this.compose ? '…' : ''}"
                     .extensions=${extensions}
                     @submit=${this.save}
                     @esckey=${this.onEscape}
