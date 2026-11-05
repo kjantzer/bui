@@ -4,6 +4,15 @@
 import Popper from 'popper.js'
 import device from '../../util/device'
 
+// is the element inside a popover (through shadow roots)?
+function inPopover(el){
+	while( el ){
+		if( el.classList?.contains('popover') ) return true
+		el = el.parentElement || el.getRootNode?.().host
+	}
+	return false
+}
+
 // the page never scrolls sideways (html/body overflow: hidden), but focusing something in a popover before it's
 // placed (ex: off the right edge) can scroll it there, jumping the whole app: put it back
 document.addEventListener('scroll', e=>{
@@ -24,7 +33,7 @@ export const DefaultOpts = {
 	maxWidth: '',
 	width: '',
 	flip: true,
-	overflowBoundry: 'scrollParent',
+	overflowBoundry: null, // (none: its scroll parent, or the window when opened inside another popover)
 	onClose: ()=>{},
 	onKeydown: e=>{}
 }
@@ -223,7 +232,9 @@ export default class Popover {
 					},
 					preventOverflow: {
 						enabled: opts.preventDefault !== undefined ? opts.preventDefault : true, // FIXME: confusing naming and not sure it works
-						boundariesElement: opts.overflowBoundry || 'scrollParent',
+						// (opened from inside another popover: the window, else it's kept inside that one, often narrower;
+						// a click point's placeholder: what was clicked)
+						boundariesElement: opts.overflowBoundry || (inPopover(target._popoverTarget || target) ? 'window' : 'scrollParent'),
 						// priority: []
 						// (by side: `bottom-start`/`bottom-end` shift sideways too, so they stay on screen)
 						priority: ['top', 'bottom'].includes(opts.align.split('-')[0]) ? ['left', 'right'] : ['top', 'bottom']
