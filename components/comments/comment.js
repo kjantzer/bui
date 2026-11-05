@@ -440,11 +440,16 @@ customElements.define('b-comment-row', class extends LitElement {
         return this.renderMeta ? this.renderMeta(this.model, opts) : (renderMeta ? renderMeta(this.model, opts) : '')
     }
 
-    // (feed) the meta can render an update in place of its comment (ex: a status change as before → after)
+    // (feed) the comment and its meta; the meta can set `opts.replace` to show in place of the comment
+    // (ex: a status change as before → after)
     _renderFeedUpdate(){
-        let meta = this._renderMeta({feed: true})
-        if( meta ) return meta
-        return html`<span class="comment system" ?hidden=${!this.model.get('comment')}>${unsafeHTML(this.model.get('comment'))}</span>`
+        let opts = {feed: true}
+        let meta = this._renderMeta(opts)
+        if( meta && opts.replace ) return meta
+        return html`
+            <span class="comment system" ?hidden=${!this.model.get('comment')}>${unsafeHTML(this.model.get('comment'))}</span>
+            ${meta}
+        `
     }
 
     updated(){
