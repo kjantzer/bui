@@ -87,6 +87,10 @@ route `state` object
     - `async willOpen(state)`
         - Called right before opening. If the function returns `false`, the panel
 will not open
+    - `static keyShortcuts = {c: 'showComments', Escape: 'hideComments'}`
+        - Keys (`e.key`) that call the view's methods while its panel is on top; before the panel's own
+(Escape closing it). Not while typing in a field or with a modifier key. Return `false` from the method
+when it doesn't apply (ex: nothing to hide) so the key does what it would otherwise
 - Controller Event Listeners
     - `panel-added`
     - `pannel-removed`

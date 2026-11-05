@@ -10,6 +10,7 @@ import '../../elements/btn'
 import CollMap from '../../util/collmap'
 import isLitHTML from '../../helpers/lit/isLitHTML'
 import bindSwipeClose, {updateSwipeClose} from './swipe-close'
+import {isTyping} from '../../util/focus'
 
 export const PanelDefaults = {
     type: '',
@@ -358,6 +359,9 @@ export class Panel extends LitElement {
 
         if( !this.onTop ) return
 
+        // the view's key shortcuts first (ex: Escape closes something in it before the panel does)
+        if( this.viewKeyShortcut(e) ) return
+
         if( this.opts.closeOnEsc && e.key == 'Escape' )
             this.close()
 
@@ -375,6 +379,24 @@ export class Panel extends LitElement {
 
         this.opts.onKeydown&&this.opts.onKeydown(e)
         this.view?.onKeydown&&this.view.onKeydown(e)
+    }
+
+    /*
+        The view's `static keyShortcuts = {c: 'showActivity', Escape: 'hideActivity'}` (key: method name);
+        not while typing, or with a modifier key. A method returning `false` didn't apply (ex: nothing to
+        close): the key goes on as usual (Escape closes the panel)
+    */
+    viewKeyShortcut(e){
+        let view = this.view
+        let fn = view?.constructor?.keyShortcuts?.[e.key]
+        if( !fn || typeof view[fn] != 'function' ) return false
+        if( e.metaKey || e.ctrlKey || e.altKey || isTyping() ) return false
+
+        if( view[fn](e) === false ) return false
+
+        e.preventDefault()
+        e.stopPropagation()
+        return true
     }
 
     // DEPRECATED: hash changed to path
