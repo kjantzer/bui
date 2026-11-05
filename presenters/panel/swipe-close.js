@@ -172,11 +172,14 @@ export default function bindSwipeClose(panel){
             main.style.translate = right ? `${size}px 0` : `0 ${size}px`
             drag = null
             setTimeout(async ()=>{
-                // view/panel may refuse to close (ex: unsaved changes) - put the sheet back
-                await panel.close()
-                if( panel.isOpen )
-                    main.style.translate = '0 0'
-                setTimeout(reset, SNAP_MS + 100)
+                // view/panel may refuse to close (ex: unsaved changes; returns false or throws its message) - put the sheet back
+                try{
+                    await panel.close()
+                }finally{
+                    if( panel.isOpen )
+                        main.style.translate = '0 0'
+                    setTimeout(reset, SNAP_MS + 100)
+                }
             }, SNAP_MS)
         }else{
             main.style.translate = '0 0'

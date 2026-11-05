@@ -28,6 +28,9 @@
     - `close-btn` - close btn (emits `close-panel`): top of the sidebar on desktop; a toolbar row when narrow
       on non-phone devices (phones close sheets by swiping)
       - `slot="sidebar-top"` - shown to the right of the sidebar close btn (ex: history btn); hidden when narrow
+    - `edit-btns` - the model's save/cancel btns (b-edited-model-btns, pill) take the close btn's place while it has
+      unsaved edits (save or cancel first); the narrow toolbar shows them too (on phones, only while edited).
+      `edit-btns="shownum"`: with the number of edits on Save
     - `sidebar-view="Summary"` (+ `sidebar-view-icon`) - when narrow, the sidebar's content (`menu:before`,
       `menu:end`, and `sidebar-top` in its header, ex: a 3 dot menu) is its own tab in the tab bar (first, and the
       one shown when a model is set) instead of being hidden; the same elements move there (their slot changes),
@@ -57,6 +60,7 @@
 */
 import { html, css } from 'lit'
 import device from '../../util/device'
+import '../../app/views/edited-model-btns'
 import '../tabs'
 import './bar'
 import './link'
@@ -159,6 +163,25 @@ customElements.define('b-nav-view', class extends Tabs{
 
         .narrow-toolbar {
             display: none;
+        }
+
+        /* (unsaved edits: the save/cancel btns take the close btn's place; it still holds the row's height) */
+        .close-wrap {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            min-width: 0;
+        }
+
+        .edit-btns {
+            margin: -.5em 0;
+        }
+
+        .close-wrap:has(.edit-btns[changed]:not([changed="0"])) .close-btn {
+            visibility: hidden;
+            width: 0;
+            overflow: hidden;
+            margin-right: -.5rem; /* (the row's gap) */
         }
 
         :host([compact]) > main.nav {
@@ -310,6 +333,16 @@ customElements.define('b-nav-view', class extends Tabs{
             border-bottom: solid 1px var(--theme-bgd-accent);
         }
 
+        /* (phones: no close btn, so only while there are edits) */
+        :host([narrow]) .narrow-toolbar.edits-only:not(:has(.edit-btns[changed]:not([changed="0"]))) {
+            display: none;
+        }
+
+        /* (phones: just the save/cancel btns above the header, no divider) */
+        :host([narrow]) .narrow-toolbar.edits-only {
+            border-bottom: none;
+        }
+
         :host([narrow]) slot[name="before"]::slotted(*) {
             padding: .75rem 1rem;
         }
@@ -363,6 +396,7 @@ customElements.define('b-nav-view', class extends Tabs{
         ...super.properties,
         compact: {type: Boolean, reflect: true},
         closeBtn: {type: Boolean, attribute: 'close-btn'},
+        editBtns: {type: String, attribute: 'edit-btns'},
         sidebarView: {type: String, attribute: 'sidebar-view'},
         sidebarViewIcon: {type: String, attribute: 'sidebar-view-icon'},
         sidebarViewActive: {state: true},
@@ -544,7 +578,17 @@ customElements.define('b-nav-view', class extends Tabs{
     }
 
     renderCloseBtn(){
-        return html`<b-btn clear lg pill icon="close" class="close-btn" part="close-btn" title="Close" @click=${this.close}></b-btn>`
+        return html`<span class="close-wrap">
+            <b-btn clear lg pill icon="close" class="close-btn" part="close-btn" title="Close" @click=${this.close}></b-btn>
+            ${this.renderEditBtns()}
+        </span>`
+    }
+
+    // (see `edit-btns`; they hide themselves while there are no edits)
+    renderEditBtns(){
+        if( this.editBtns == null ) return ''
+        return html`<b-edited-model-btns lg pill class="edit-btns" part="edit-btns" ?shownum=${this.editBtns == 'shownum'}
+            .model=${this.model}></b-edited-model-btns>`
     }
 
     constructor(){
@@ -604,8 +648,10 @@ customElements.define('b-nav-view', class extends Tabs{
 
     render(){return html`
         <main part="main" class="nav">
-            ${this.closeBtn&&!device.isSmall?html`
-                <div class="narrow-toolbar" part="narrow-toolbar">${this.renderCloseBtn()}</div>
+            ${this.closeBtn&&(!device.isSmall||this.editBtns!=null)?html`
+                <div class="narrow-toolbar ${device.isSmall?'edits-only':''}" part="narrow-toolbar">
+                    ${device.isSmall?this.renderEditBtns():this.renderCloseBtn()}
+                </div>
             `:''}
             <slot name="before"></slot>
             <div class="sidebar" part="sidebar">
