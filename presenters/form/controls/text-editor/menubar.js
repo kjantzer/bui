@@ -51,6 +51,7 @@ customElements.define('b-text-editor-menubar', class extends LitElement{
             color: var(--theme); */
             background: var(--theme);
             color: white;
+            color: contrast-color(var(--theme));
         }
 
         /* pill */
@@ -77,6 +78,10 @@ customElements.define('b-text-editor-menubar', class extends LitElement{
             width: 2em;
             height: 2em;
             color: var(--theme-text);
+        }
+
+        :host([look="pill"]) b-btn[active] {
+            color: contrast-color(var(--theme));
         }
 
         :host([look="pill"]) b-btn::part(icon) {
