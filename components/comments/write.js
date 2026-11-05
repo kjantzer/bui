@@ -86,8 +86,15 @@ customElements.define('b-write-comment', class extends LitElement{
             border-color: var(--theme);
         }
 
+        /* a round send btn at the end of the field (keeps its height) */
         :host([compose]) form-control b-btn {
-            margin: -.25em 0;
+            --radius: 50%;
+            --padding: 0;
+            --color: var(--theme);
+            width: 1.9em;
+            height: 1.9em;
+            margin: -.35em 0;
+            font-size: .9em;
         }
     `}
 
@@ -102,7 +109,7 @@ customElements.define('b-write-comment', class extends LitElement{
                     @esckey=${this.onEscape}
                     @blur=${this.onBlur}></text-editor>
 
-                <b-btn sm color="theme-gradient" @click=${this.save} icon="${this.model?'pencil':'send'}" slot="suffix" class="save-btn"></b-btn>
+                <b-btn sm color=${this.compose ? 'theme' : 'theme-gradient'} @click=${this.save} icon="${this.model?'pencil':'send'}" slot="suffix" class="save-btn"></b-btn>
 
             </form-control>
 
