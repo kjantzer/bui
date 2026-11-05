@@ -768,6 +768,11 @@ export class Panel extends LitElement {
             --panel-animation-shift: 45px;
         }
 
+        /* hidden under the main view (see controller showBase): content-visibility hides its content, not its own overlay */
+        :host([under-base]) {
+            background: none;
+        }
+
         :host([type="modal"]) {
             z-index: 1000; /* always on top */
         }
