@@ -34,6 +34,15 @@
 	
 	model.isEdited() // true
 	```
+
+	## Linked Changes
+	A model that isn't one of its children (ex: a text shown with it, saved on its own) can be linked: its edits count as this
+	model's, saving or resetting this model does it too, and its changes trigger `edited-child` here
+
+	```js
+	let unlink = model.linkEdited(otherModel)
+	unlink() // when it's no longer shown with it
+	```
 	
 */
 import {Model} from 'backbone'
@@ -69,7 +78,30 @@ Model.prototype.numberEditedAttrs = function(){
 		}
 	}
 
+	// linked models (see linkEdited)
+	this._editedLinks?.forEach(m=>{ num += m.numberEditedAttrs() || 0 })
+
 	return num
+}
+
+// another model's edits count as this one's, and save/reset with it (see "Linked Changes"); returns an unlink fn
+Model.prototype.linkEdited = function(model){
+	if( !model || model == this ) return ()=>{}
+
+	this._editedLinks ||= new Set()
+	this._editedLinks.add(model)
+
+	let onEdited = (isEdited, edited)=>this.trigger('edited-child', this.isEdited(), edited, {path: [this, model]})
+	model.on('edited', onEdited)
+
+	// (it may have edits already)
+	if( model.isEdited?.() ) onEdited(true, model.editedAttrs())
+
+	return ()=>{
+		model.off('edited', onEdited)
+		if( this._editedLinks?.delete(model) )
+			this.trigger('edited-child', this.isEdited(), false, {path: [this, model]})
+	}
 }
 
 Model.prototype.saveEdited = function(opts={}){
@@ -92,6 +124,10 @@ Model.prototype.saveEdited = function(opts={}){
 						await child.saveEdited(opts)
 				}
 			}
+
+			// linked models with edits (see linkEdited)
+			for( let m of this._editedLinks || [] )
+				if( m.isEdited() ) await m.saveEdited(opts)
 
 			let dataToSave = Object.keys(attrs).length > 0
 			
@@ -149,6 +185,9 @@ Model.prototype.resetEdited = function(opts={}){
 				child.resetEdited({...opts, _silent: true})
 		}
 	}
+
+	// linked models (see linkEdited; not silent: what shows them puts their value back)
+	this._editedLinks?.forEach(m=>{ if( m.isEdited() ) m.resetEdited(opts) })
 
 	let orig = this._origAttrs
 	this._editedAttrs = {}
