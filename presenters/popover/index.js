@@ -159,6 +159,10 @@ export default class Popover {
 		// watch for the view to add elements so we can adjust position
 		this.mutationObserver = new MutationObserver(this.viewMutated.bind(this));
 		this.mutationObserver.observe(this.view, { attributes: true, childList: true, subtree: false });
+
+		// placed again as its size changes (ex: a menu's results render after it opens; or it hangs off the edge)
+		this.resizeObserver = new ResizeObserver(()=>this.popper?.update())
+		this.resizeObserver.observe(this.el)
 		
 		// keep track of open popovers so we can remove them later
 		OpenPopovers.push(this)
@@ -327,6 +331,7 @@ export default class Popover {
 		this.view.removeEventListener('close-popover', this.closePopoverRequested)
 
 		this.mutationObserver.disconnect()
+		this.resizeObserver?.disconnect()
 		this.popper.destroy()
 
 		this.target.emitEvent?.('popover:closed')
