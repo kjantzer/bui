@@ -76,14 +76,10 @@ customElements.define('b-write-comment', class extends LitElement{
 
         /* compose: the field you clicked, now typing in it */
         :host([compose]) form-control {
-            padding: .6em .5em .6em 1em;
+            padding: .45em .5em .45em 1em; /* (with the editor's 1.4 line height: as tall as the field's) */
             border-radius: 1.3em;
-            border: solid 1px var(--theme-bgd-accent);
-            line-height: normal;
-        }
-
-        :host([compose]) form-control:focus-within {
-            border-color: var(--theme);
+            border: solid 1px transparent; /* (the same size as the field's, so nothing shifts) */
+            background: var(--theme-bgd-accent);
         }
 
         /* a round send btn at the end of the field (keeps its height) */

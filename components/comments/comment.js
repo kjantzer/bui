@@ -205,7 +205,8 @@ customElements.define('b-comment-row', class extends LitElement {
             box-sizing: border-box;
             align-self: center;
             min-width: 0;
-            padding: .6em 1em;
+            padding: .45em 1em;
+            line-height: 1.4; /* (the editor's, so it opens the same size, see write.js) */
             border-radius: 99px;
             border: solid 1px var(--theme-bgd-accent);
             color: var(--theme-text-accent);
