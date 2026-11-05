@@ -11,6 +11,7 @@
     - static navViews can be links instead of views: `{title, action: (model, navView)=>{}}` (ex: open another view;
       a ↗ in the hover menu; none when listed, there's little room)
     - `menuTitle` (static navViews): a longer title for the hover menu (ex: when the listed title is shortened to fit)
+    - a flat section's (navViewsFlat) lone child view, with nothing else listed, isn't listed in the sidebar
 */
 import BaseTabBar, {html, css} from '../tabs/tab-bar/_base'
 import Menu from '../menu'
@@ -354,7 +355,10 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
     }
 
     // (each with its own icon, else the section's; not the ones in the "More" menu)
+    // (in the sidebar, a lone child view with nothing else listed isn't listed: there's nothing to switch to)
     renderFlatNavViews(view){
+        if( !this.isNarrow && this.navItems(view).length < 2 && this.entries.length < 2 ) return ''
+
         let shown = view.active && !this.host?.sidebarViewShown
         return this.navItems(view)
             .filter(item=>!this._overflow?.some(e=>e.item?.id == item.id && e.view == view))
