@@ -53,10 +53,10 @@ Here's an example for adding comments to a book record:
 #### Looks
 - `newest` - newest first, with the comment box at the top
 - `bubbles` / `github` - each comment in a bordered box
-- `feed` - newest first, avatars on a rail and comments in soft bubbles, updates (system comments) as a dot with who and the time, and your avatar with a field to start a comment. Set `--comment-feed-bgd` if the background isn't `--theme-bgd` (it rings the avatars); `--comment-ins-color` colors an update's `<ins>` pill (green)
+- `feed` - avatars on a rail and comments in soft bubbles, updates (system comments) as a dot with who and the time, and your avatar with a field to start a comment. Set `--comment-feed-bgd` if the background isn't `--theme-bgd` (it rings the avatars); `--comment-ins-color` colors an update's `<ins>` pill (green)
 
 ```html
-<b-comments feed group="book" gid="4805"></b-comments>
+<b-comments feed newest group="book" gid="4805"></b-comments>
 ```
 
 #### Group

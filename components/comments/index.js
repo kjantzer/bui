@@ -172,7 +172,6 @@ customElements.define('b-comments', class extends LitElement{
 
         /* feed: avatars on a rail, comments in soft bubbles; updates (system) sit on the rail too */
         :host([feed]) {
-            flex-direction: column;
             gap: .85rem;
             --comment-feed-bgd: var(--theme-bgd);
         }
@@ -188,8 +187,9 @@ customElements.define('b-comments', class extends LitElement{
             background: var(--theme-bgd-accent);
         }
 
-        /* (the oldest ends it) */
-        :host([feed]) b-comment-row:last-of-type[part^="comment"]::before {
+        /* (the last one ends it: the oldest when newest first, else the newest, above the comment box) */
+        :host([feed][newest]) b-comment-row:last-of-type[part^="comment"]::before,
+        :host([feed]:not([newest])) b-comment-row[part="write-comment"] + b-comment-row::before {
             content: none;
         }
 
