@@ -149,7 +149,11 @@ customElements.define('b-realtime-users', class extends LitElement{
         return i < this.max
     }
 
-    render(){return html`
+    render(){
+        // no one else viewing: `empty` (ex: hide it so it takes no space); here since onChange calls update() directly
+        this.toggleAttribute('empty', !this.users.length)
+
+        return html`
         <main part="main">
             
             ${this.users.map((m,i)=>!this.showUser(i)?'':this.renderUser(m))}
