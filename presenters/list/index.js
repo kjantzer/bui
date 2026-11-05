@@ -210,12 +210,14 @@ customElements.define('b-list', class extends LitElement {
             color: var(--toolbarTextColor);
         }
 
+        /* (in a narrow nav view: the end scrolls above its floating tab bar) */
         b-infinite-list {
             display: block;
             flex: 1;
             overflow: auto;
             position: relative;
             -webkit-overflow-scrolling: touch;
+            padding-bottom: var(--nav-view-bottom-space, 0px);
         }
 
         ${Scrollbars.styleWindows('b-infinite-list')}
