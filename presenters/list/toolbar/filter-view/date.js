@@ -18,6 +18,7 @@
 */
 import { LitElement, html, css } from 'lit'
 import {live} from 'lit/directives/live.js'
+import Menu from '../../../menu'
 import dayjs from 'dayjs'
 import Datepicker, {stringToDateRange} from '../../../datepicker'
 import {label as rangeLabel} from '../../../datepicker/daterange'
@@ -51,20 +52,32 @@ const DEFAULT_RELATIVE = [
     ...PERIOD_UNITS.flatMap(unit=>PERIOD_OFFSETS[unit].map(offset=>periodKey(offset, unit)))
 ]
 
+// the relative input's dirs; "Period" is a whole calendar period, N from the current one (0 this, -1 last, 1 next)
+// so this/previous/ago/following/ahead are all one dir in the input (see toInput / fromInput)
 const DIRS = [
-    {val: 'last', label: 'Last'},
-    {val: 'next', label: 'Next'},
-    {val: 'this', label: 'This'},
-    {val: 'todate', label: 'Since start of'},
-    {val: 'previous', label: 'Previous'},
-    {val: 'ago', label: 'Ago'},
-    {val: 'following', label: 'Following'},
-    {val: 'before', label: 'Before'},
-    {val: 'after', label: 'After'}
+    {val: 'last', label: 'Last', description: 'The last N days, weeks... through today'},
+    {val: 'next', label: 'Next', description: 'Today through the next N'},
+    {val: 'calendar', label: 'Period', description: 'A whole week, month... (0 this one, -1 the last, 1 the next)'},
+    {val: 'todate', label: 'Since start of', description: 'The start of this week, month... through today'},
+    {val: 'before', label: 'Before', description: 'Everything up to N days, years... ago'},
+    {val: 'after', label: 'After', description: 'Everything since N days, years... ago'}
 ]
 
 // dirs with a number ("[Before] [5] [years] ago")
-const NUM_DIRS = ['last', 'next', 'ago', 'before', 'after']
+const NUM_DIRS = ['last', 'next', 'calendar', 'before', 'after']
+
+// a relative value ({dir, num, unit}) → the input's
+const toInput = p=>{
+    let offset = {this: 0, previous: -1, ago: -p.num, following: 1, ahead: p.num}[p.dir]
+    return offset === undefined ? p : {dir: 'calendar', num: offset, unit: p.unit}
+}
+
+// the input's → a relative value
+const fromInput = p=>{
+    if( p.dir != 'calendar' ) return p
+    let n = p.num || 0
+    return {dir: n == 0 ? 'this' : n < 0 ? 'ago' : 'ahead', num: Math.abs(n) || null, unit: p.unit}
+}
 
 const NUM_WORDS = {a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
     eleven: 11, twelve: 12, fifteen: 15, twenty: 20, thirty: 30, sixty: 60, ninety: 90}
@@ -100,6 +113,14 @@ const compactHint = (start, end)=>{
     if( start.isSame(end, 'day') ) return start.format('MMM D')+yr(start)
     if( start.isSame(end, 'month') ) return `${start.format('MMM D')} – ${end.format('D')}${yr(end)}`
     return `${start.format('MMM D')} – ${end.format('MMM D')}${yr(end)}`
+}
+
+// the relative input's dates (short; ex: "Oct", "Oct 6 – Nov 4"; before/after: the date it's before/after)
+const inputHint = (start, end)=>{
+    let f = d=>d.format(d.isSame(dayjs(), 'year') ? 'MMM D' : 'MMM D, YYYY')
+    if( dayjs(start).isSame(OPEN_START, 'day') ) return f(dayjs(end).add(1, 'day'))
+    if( dayjs(end).isSame(OPEN_END, 'day') ) return f(dayjs(start).add(-1, 'day'))
+    return compactHint(start, end)
 }
 
 // the dates a preset covers (ex: Oct 4 – Nov 2; with the year when not this year)
@@ -228,10 +249,39 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
         }
         .field select:hover { background-color: rgba(var(--theme-text-rgb, 0,0,0), .05); }
 
-        .field .dir { flex: 1; }
-        .field .num { width: 3.5em; text-align: center; }
-        .field .unit { flex: 1; }
-        .field .suffix { padding: 0 .65em; color: var(--theme-text-accent, #888); }
+        .field .num { flex-shrink: 0; width: 2.75em; padding: 0 .25em; text-align: center; }
+
+        /* the relative input's dir and unit: as wide as their word, a menu to change */
+        .field .pick {
+            flex-shrink: 0;
+            align-self: stretch;
+            display: flex;
+            align-items: center;
+            gap: .25em;
+            padding: 0 1.6em 0 .65em;
+            white-space: nowrap;
+            cursor: pointer;
+            background: no-repeat right .55em center / .6em
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5'/%3E%3C/svg%3E");
+        }
+        .field .pick:hover { background-color: rgba(var(--theme-text-rgb, 0,0,0), .05); }
+
+        /* the relative input is as wide as its words; the dates it is today fill the rest beside it */
+        .field.relative { flex: 0 1 auto; }
+
+        .dates-hint {
+            flex: 1;
+            min-width: 0;
+            text-align: right;
+            text-wrap: balance; /* (two short lines when there's little room, ex: "Oct 1 – / Nov 4") */
+            line-height: 1.15;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            font-size: .85em;
+            color: var(--theme-text-accent, #888);
+        }
 
         .field > * + * { border-left: solid 1px rgba(var(--theme-text-rgb, 0,0,0), .1); }
 
@@ -566,26 +616,45 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
     // "[Last] [30] [days]"; shows the relative value (ex: from a preset) to tweak
     // (options `selected` for the first render, before they exist for `.value`; `.value` after, once changed by hand)
     renderRelativeInput(){
-        let p = (isRel(this.value) && parseRelative(this.value.rel)) || this.draft || {dir: 'last', num: null, unit: 'day'}
+        let rel = isRel(this.value) ? normalize(this.value.rel) : null
+        let p = this.relativeInput
         let hasNum = NUM_DIRS.includes(p.dir)
-        let plural = hasNum && p.num != 1
+        let plural = hasNum && p.dir != 'calendar' && p.num != 1
 
         return html`
         <div class="field relative">
-            <select class="dir" .value=${live(p.dir)} @change=${this.onRelativeInput}>
-                ${DIRS.map(d=>html`<option value=${d.val} ?selected=${d.val == p.dir}>${d.label}</option>`)}
-            </select>
+            <span class="pick dir" @click=${this.pickDir}>
+                ${DIRS.find(d=>d.val == p.dir)?.label}
+            </span>
             ${hasNum ? html`
-            <input class="num" type="number" inputmode="numeric" pattern="[0-9]*" min="1" placeholder="N" .value=${live(p.num || '')}
+            <input class="num" type="number" inputmode=${p.dir == 'calendar' ? 'text' : 'numeric'} min=${p.dir == 'calendar' ? '' : '1'}
+                placeholder=${p.dir == 'calendar' ? '0' : 'N'} .value=${live(p.num == null ? '' : String(p.num))}
                 @focus=${e=>e.currentTarget.select()} @mouseup=${e=>e.preventDefault()}
-                @input=${this.onRelativeInput}>
+                @input=${e=>this.onRelativeInput({num: e.currentTarget.value})}>
             `:''}
-            <select class="unit" .value=${live(p.unit)} @change=${this.onRelativeInput}>
-                ${UNITS.map(u=>html`<option value=${u} ?selected=${u == p.unit}>${u}${plural?'s':''}</option>`)}
-            </select>
-            ${['before', 'after'].includes(p.dir) ? html`<span class="suffix">ago</span>`:''}
+            <span class="pick unit" @click=${this.pickUnit}>
+                ${p.unit}${plural?'s':''}${['before', 'after'].includes(p.dir) ? ' ago' : ''}
+            </span>
         </div>
+        <span class="dates-hint" title=${rel ? `${relativeLabel(rel)}: ${datesHint(...this.presetDates(rel))}` : ''}>${rel ? inputHint(...this.presetDates(rel)) : ''}</span>
     `}
+
+    get relativeInput(){
+        return (isRel(this.value) && toInput(parseRelative(normalize(this.value.rel)))) || this.draft || {dir: 'last', num: null, unit: 'day'}
+    }
+
+    async pickDir(e){
+        let dir = this.relativeInput.dir
+        let picked = await new Menu(DIRS, {selected: dir}).popOver(e.currentTarget)
+        if( picked && picked.val != dir ) this.onRelativeInput({dir: picked.val})
+    }
+
+    async pickUnit(e){
+        let unit = this.relativeInput.unit
+        let picked = await new Menu(UNITS.map(u=>({label: u[0].toUpperCase()+u.slice(1), val: u})), {selected: unit})
+            .popOver(e.currentTarget)
+        if( picked && picked.val != unit ) this.onRelativeInput({unit: picked.val})
+    }
 
     // for the filters popover's search (ex: "30" finds Last 30 Days; "45 days" offers Last 45 Days)
     searchValues(q=''){
@@ -705,22 +774,26 @@ customElements.define('b-list-filter-view-date', class extends LitElement{
             this.commit(this.presetDates(p))
     }
 
-    // the relative inputs changed; saved once they make a range (ex: a number for "Last")
-    onRelativeInput(){
-        let el = sel=>this.shadowRoot.querySelector('.field.relative '+sel)
-        let prev = (isRel(this.value) && parseRelative(this.value.rel)) || this.draft || {}
+    // the relative inputs changed (`{dir}`, `{num}`, or `{unit}`); saved once they make a range (ex: a number for "Last")
+    onRelativeInput(changes){
+        let prev = this.relativeInput
+        let dir = changes.dir ?? prev.dir
+        let num = parseInt(changes.num ?? prev.num)
 
         let p = {
-            dir: el('.dir').value,
-            num: parseInt(el('.num')?.value) || null,
-            unit: el('.unit').value
+            dir,
+            num: dir == 'calendar' ? (num || 0) : (num || null),
+            unit: changes.unit ?? prev.unit
         }
 
-        // switching to last/next/ago/before/after keeps the number it had (or 1; 2 for ago, since 1 ago is "Previous")
-        if( NUM_DIRS.includes(p.dir) && !el('.num') )
-            p.num = prev.num || (p.dir == 'ago' ? 2 : 1)
+        // switching between dirs with a number keeps it when it makes sense (calendar starts at 0, this period;
+        // the others at 1, since they need one)
+        if( dir != prev.dir && NUM_DIRS.includes(dir) ){
+            if( dir == 'calendar' ) p.num = 0
+            else if( !(p.num >= 1) ) p.num = prev.num >= 1 ? prev.num : 1
+        }
 
-        let key = relativeKey(p)
+        let key = relativeKey(fromInput(p))
         this.draft = p
 
         if( key ) this.commit({rel: key})
