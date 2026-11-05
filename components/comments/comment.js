@@ -31,6 +31,7 @@ customElements.define('b-comment-row', class extends LitElement {
         replies: {type: Boolean},
         disabled: {type: Boolean, reflect: true},
         compose: {type: Boolean, reflect: true}, // (new comment: your avatar and a field to type in, instead of the button)
+        feed: {type: Boolean, reflect: true}, // (updates as a dot, who, what, and the time; see b-comments `feed`)
     }}
 
     constructor(){
@@ -126,6 +127,64 @@ customElements.define('b-comment-row', class extends LitElement {
 
         b-btn.write:hover {
             --color: var(--btn-bgd-color-hover, var(--theme-bgd-accent2, #ddd));
+        }
+
+        /* feed: an update is a dot (on the rail), then who, what, and the time */
+        :host([feed][type="system"]) {
+            grid-template-columns: 2em minmax(0, 1fr);
+        }
+
+        .dot {
+            justify-self: center;
+            position: relative;
+            z-index: 1;
+            width: 10px;
+            height: 10px;
+            margin-top: .4em;
+            border-radius: 50%;
+            background: color-mix(in srgb, var(--theme-text) 22%, var(--theme-bgd));
+            box-shadow: 0 0 0 3px var(--comment-feed-bgd, var(--theme-bgd));
+        }
+
+        .line {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .3em .4em;
+            min-width: 0;
+            min-height: 1.5em;
+            font-size: .9rem;
+            color: var(--theme-text-accent);
+        }
+
+        .line .name {
+            color: var(--theme-text);
+            font-weight: 600;
+        }
+
+        .line .when {
+            font-size: .8rem;
+        }
+
+        .line .comment {
+            display: contents;
+        }
+
+        .line .arrow {
+            color: var(--theme-text-accent);
+        }
+
+        .line ins {
+            display: inline-flex;
+            align-items: center;
+            min-height: 1.45em;
+            padding: .05em .6em;
+            line-height: 1.25;
+            border-radius: 99px;
+            font-size: .8rem;
+            font-weight: 600;
+            color: var(--comment-ins-color, var(--green-700));
+            background: color-mix(in srgb, var(--comment-ins-color, var(--green-700)) 12%, var(--theme-bgd));
         }
 
         :host([compose]:not([editing])) [part="avatar-wrapper"] {
@@ -253,7 +312,7 @@ customElements.define('b-comment-row', class extends LitElement {
         return div
     }
 
-    renderName(){
+    renderName({short=false}={}){
 
         let tagName = nameTag || avatarTag 
 
@@ -263,7 +322,7 @@ customElements.define('b-comment-row', class extends LitElement {
         }
 
         let avatar = document.createElement(tagName)
-        avatar.setAttribute('nameOnly', '')
+        avatar.setAttribute('nameOnly', short ? 'short' : '')
         avatar.uid = this.model ? this.model.get('uid') : 'me'
         return avatar
     }
@@ -330,6 +389,16 @@ customElements.define('b-comment-row', class extends LitElement {
 
             </main>
 
+        `:this.model&&this.model.get('type')=='system'&&this.feed?html`
+
+            <span class="dot" part="dot"></span>
+
+            <main class="line">
+                <span class="name">${this.renderName({short: true})}</span>
+                ${this._renderFeedUpdate()}
+                <b-ts class="when" .date=${this.model.get('ts_created')}></b-ts>
+            </main>
+
         `:this.model&&this.model.get('type')=='system'?html`
 
             ${this.renderAvatar()}
@@ -367,8 +436,15 @@ customElements.define('b-comment-row', class extends LitElement {
         `}
     `}
 
-    _renderMeta(){
-        return this.renderMeta ? this.renderMeta(this.model) : (renderMeta ? renderMeta(this.model) : '')
+    _renderMeta(opts){
+        return this.renderMeta ? this.renderMeta(this.model, opts) : (renderMeta ? renderMeta(this.model, opts) : '')
+    }
+
+    // (feed) the meta can render an update in place of its comment (ex: a status change as before → after)
+    _renderFeedUpdate(){
+        let meta = this._renderMeta({feed: true})
+        if( meta ) return meta
+        return html`<span class="comment system" ?hidden=${!this.model.get('comment')}>${unsafeHTML(this.model.get('comment'))}</span>`
     }
 
     updated(){
