@@ -4,6 +4,14 @@
 import Popper from 'popper.js'
 import device from '../../util/device'
 
+// the page never scrolls sideways (html/body overflow: hidden), but focusing something in a popover before it's
+// placed (ex: off the right edge) can scroll it there, jumping the whole app: put it back
+document.addEventListener('scroll', e=>{
+	let el = e.target == document ? document.scrollingElement : e.target
+	if( (el == document.documentElement || el == document.body) && el.scrollLeft )
+		el.scrollLeft = 0
+}, true)
+
 const styles = require('./style.less')
 
 export const DefaultOpts = {

@@ -520,7 +520,8 @@ customElements.define('b-menu', class extends LitElement{
 				if( value !== undefined )
 					input.value = value
 
-				input.focus()
+				// (not scrolling: the popover may not be placed yet, ex: off the edge, and the page would jump to it)
+				input.focus({preventScroll: true})
 				if( selectAll ) input.select()
 			}
 		}, delay)
