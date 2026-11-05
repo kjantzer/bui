@@ -30,6 +30,7 @@ customElements.define('b-comment-row', class extends LitElement {
         placeholder: {type: String},
         replies: {type: Boolean},
         disabled: {type: Boolean, reflect: true},
+        compose: {type: Boolean, reflect: true}, // (new comment: your avatar and a field to type in, instead of the button)
     }}
 
     constructor(){
@@ -125,6 +126,35 @@ customElements.define('b-comment-row', class extends LitElement {
 
         b-btn.write:hover {
             --color: var(--btn-bgd-color-hover, var(--theme-bgd-accent2, #ddd));
+        }
+
+        :host([compose]:not([editing])) [part="avatar-wrapper"] {
+            align-self: center;
+        }
+
+        :host([compose]:not([editing])) .avatar {
+            margin-top: 0;
+        }
+
+        .compose {
+            all: unset;
+            box-sizing: border-box;
+            align-self: center;
+            min-width: 0;
+            padding: .6em 1em;
+            border-radius: 99px;
+            border: solid 1px var(--theme-bgd-accent);
+            color: var(--theme-text-accent);
+            cursor: text;
+        }
+
+        .compose:hover {
+            background: var(--theme-bgd-accent);
+        }
+
+        .compose:focus-visible {
+            outline: 2px solid var(--theme);
+            outline-offset: 1px;
         }
 
         b-btn.reply {
@@ -327,6 +357,9 @@ customElements.define('b-comment-row', class extends LitElement {
 
             `:this.coll?.isThread?html`
                 <b-btn xs clear @click=${this.beginEditing} class="reply">Reply</b-btn>
+            `:this.compose?html`
+                ${this.renderAvatar()}
+                <button class="compose" part="compose" @click=${this.beginEditing}>${this.placeholder}…</button>
             `:html`
                 <b-btn class="write" part="write-btn" block color="white" sm @click=${this.beginEditing}>${this.placeholderBtn}</b-btn>
             `}

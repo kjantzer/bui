@@ -31,7 +31,8 @@ customElements.define('b-comments', class extends LitElement{
         uploads: {type: Object},
         replies: {type: Boolean}, // not supported yet
         nosummary: {type: Boolean},
-        disabled: {type: Boolean}
+        disabled: {type: Boolean},
+        feed: {type: Boolean, reflect: true} // (looks like a feed: avatars on a rail, comments in bubbles, see README)
     }}
 
     static get styles(){return css`
@@ -167,6 +168,62 @@ customElements.define('b-comments', class extends LitElement{
 
         :host([github][newest]) b-comment-row:last-of-type[part^="comment"]::before {
             content: none;
+        }
+
+        /* feed: avatars on a rail, comments in soft bubbles; updates (system) sit on the rail too */
+        :host([feed]) {
+            gap: .85rem;
+            --comment-feed-bgd: var(--theme-bgd);
+        }
+
+        :host([feed]) b-comment-row[part^="comment"]::before {
+            content: "";
+            position: absolute;
+            left: calc(1em - 1px);
+            top: 1em;
+            height: calc(100% + .85rem);
+            width: 2px;
+            border-radius: 2px;
+            background: var(--theme-bgd-accent);
+        }
+
+        /* (the oldest ends it; oldest first, the newest's runs on to the composer) */
+        :host([feed][newest]) b-comment-row:last-of-type[part^="comment"]::before {
+            content: none;
+        }
+
+        :host([feed]) b-comment-row::part(avatar-wrapper) {
+            position: relative;
+            z-index: 1;
+            width: 2em;
+            display: flex;
+            justify-content: center;
+        }
+
+        :host([feed]) b-comment-row::part(avatar) {
+            box-shadow: 0 0 0 3px var(--comment-feed-bgd);
+            border-radius: 50%;
+        }
+
+        :host([feed]) b-comment-row[type="system"]::part(avatar-wrapper) {
+            margin-left: 0;
+            left: 0;
+        }
+
+        :host([feed]) b-comment-row::part(main) {
+            min-width: 0;
+        }
+
+        :host([feed]) b-comment-row::part(comment) {
+            background: var(--theme-bgd-accent);
+            border-radius: 4px 14px 14px 14px;
+            padding: .55em .8em;
+            margin-top: .3em;
+        }
+
+        :host([feed]) .view-all {
+            --color: transparent;
+            --textColor: var(--theme-text-accent);
         }
     `}
 
@@ -309,6 +366,7 @@ customElements.define('b-comments', class extends LitElement{
             .coll=${this.coll} 
             .meta=${this.meta}
             .uploads=${this.uploads}
+            ?compose=${this.feed}
             placeholderBtn=${this.placeholderBtn}
             placeholder=${this.placeholder}
         >

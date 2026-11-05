@@ -50,6 +50,15 @@ Here's an example for adding comments to a book record:
 <b-comments group="book" gid="4805"></b-comments>
 ```
 
+#### Looks
+- `newest` - newest first, with the comment box at the top
+- `bubbles` / `github` - each comment in a bordered box
+- `feed` - avatars on a rail and comments in soft bubbles, with your avatar and a field to start a comment. Set `--comment-feed-bgd` if the background isn't `--theme-bgd` (it rings the avatars)
+
+```html
+<b-comments feed newest group="book" gid="4805"></b-comments>
+```
+
 #### Group
 `group` should be the name of the table for which this comment parent model is in.
 
