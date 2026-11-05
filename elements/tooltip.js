@@ -9,6 +9,8 @@
         <b-tooltip>Hello!</b-tooltip>
     </b-text>
     ```
+
+    `shortcut="C"`: the key that does the same, shown after the text (ex: a btn's, see b-btn `shortcut`)
 */
 import { LitElement, html, css } from 'lit'
 import Popover from '../presenters/popover'
@@ -75,12 +77,21 @@ function showTooltip(){
     if( activeTooltip.target != 'mouse' )
         target = activeTooltip.triggerElement
 
-    shownTooltip = new Popover(target, activeTooltip.innerHTML, {
+    let content = activeTooltip.innerHTML
+    if( activeTooltip.shortcut )
+        content += `<kbd style="margin-left: .6em; padding: 0 .4em; border-radius: 4px; font: inherit; font-size: .85em;
+            border: 1px solid currentColor; opacity: .75">${escapeHTML(activeTooltip.shortcut)}</kbd>`
+
+    shownTooltip = new Popover(target, content, {
         className: 'inverse no-arrow tooltip',
         markTarget: false, // (hovering a btn with a tooltip shouldn't make it look open)
         align: activeTooltip.align,
         maxWidth: '50vw' // TODO: support `maxW` ?
     })
+}
+
+function escapeHTML(str){
+    return String(str).replace(/[&<>"']/g, c=>({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'})[c])
 }
 
 function hideTooltip(e){
@@ -100,7 +111,8 @@ customElements.define('b-tooltip', class extends LitElement{
         delay: {type: Number},
         align: {type: String},
         target: {type: String}, // target to align tooltip to
-        trigger: {type: String} // what should trigger the tooltip? (parent, offset)
+        trigger: {type: String}, // what should trigger the tooltip? (parent, offset)
+        shortcut: {type: String} // a key that does the same, shown after the text
     }}
 
     static styles = css`

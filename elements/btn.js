@@ -43,6 +43,7 @@ export default class BtnElement extends LitElement {
         value: {type: String, reflect: true},
         icon: { type: String },
         tooltip: {type: String},
+        shortcut: {type: String}, // (with `tooltip`: the key that does the same, shown in it)
         spin: {type: Boolean, reflect: true, attribute: 'spin'},
         spinicon: {type: Boolean, reflect: true},
         squareicon: {type: Boolean},
@@ -535,7 +536,7 @@ export default class BtnElement extends LitElement {
             ${this.renderLabel()}
         </main>
         ${this.tooltip?html`
-            <b-tooltip label>${this.tooltip}</b-tooltip>
+            <b-tooltip label shortcut=${this.shortcut||''}>${this.tooltip}</b-tooltip>
         `:''}
         <slot name="outer">${this.renderOuter()}</slot>
     `}
