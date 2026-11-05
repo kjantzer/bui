@@ -32,7 +32,7 @@ customElements.define('b-comments', class extends LitElement{
         replies: {type: Boolean}, // not supported yet
         nosummary: {type: Boolean},
         disabled: {type: Boolean},
-        feed: {type: Boolean, reflect: true} // (looks like a feed: avatars on a rail, comments in bubbles, see README)
+        feed: {type: Boolean, reflect: true} // (the default look: avatars on a rail, comments in bubbles, see README)
     }}
 
     static get styles(){return css`
@@ -341,6 +341,11 @@ customElements.define('b-comments', class extends LitElement{
 
     connectedCallback(){
         super.connectedCallback()
+
+        // the feed look unless another was picked (or `classic`)
+        if( this.feed === undefined )
+            this.feed = !['classic', 'bubbles', 'github', 'inline', 'overlay'].some(attr=>this.hasAttribute(attr))
+                && this.getAttribute('group') != 'thread'
         
         this.coll.realtimeSync.open()
 
@@ -385,7 +390,7 @@ customElements.define('b-comments', class extends LitElement{
 
         ${repeat(this.coll.models.toReversed(), m=>m.id, (m,i)=>html`
 
-            ${this.limit&&i==this.coll.length-this.limit?html`
+            ${this.limit&&i==this.limit&&this.coll.length>this.limit?html`
                 <b-btn sm color="white" block @click=${this.viewAllComments} class="view-all" part="view-all">View all ${this.plural}</b-btn>
             `:''}
             
