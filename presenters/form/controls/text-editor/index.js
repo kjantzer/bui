@@ -16,6 +16,7 @@ customElements.define('text-editor', class extends LitElement{
 
     static get properties(){return {
         menubar: {type: Boolean},
+        menubarLook: {type: String, attribute: 'menubar-look'}, // (see menubar.js `look`)
         links: {type: Boolean},
         disabled: {type: Boolean, reflect: true},
         placeholder: {type: String},
@@ -111,7 +112,7 @@ customElements.define('text-editor', class extends LitElement{
     render(){return html`
         <main></main>
         ${this.menubar?html`
-            <b-text-editor-menubar part="menubar" .editor=${this.editor} 
+            <b-text-editor-menubar part="menubar" .editor=${this.editor} look=${this.menubarLook||''}
             ?disabled=${this.disabled} maxchar=${this.maxchar}>
                 <slot name="menubar:left" slot="left"></slot>
                 <slot name="menubar:right" slot="right"></slot>

@@ -5,7 +5,8 @@ customElements.define('b-text-editor-menubar', class extends LitElement{
 
     static get properties(){return {
         focused: {type: Boolean, reflect: true},
-        maxchar: {type: Number}
+        maxchar: {type: Number},
+        look: {type: String, reflect: true} // "pill": round btns in a floating pill, no character count (the view shows it)
     }}
 
     static get styles(){return css`
@@ -50,6 +51,40 @@ customElements.define('b-text-editor-menubar', class extends LitElement{
             color: var(--theme); */
             background: var(--theme);
             color: white;
+        }
+
+        /* pill */
+        :host([look="pill"]) {
+            width: fit-content;
+            margin: 0 auto;
+            padding: .25rem;
+            border-top: none;
+            border-radius: 99px;
+            background: var(--theme-bgd);
+            box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 4px 14px rgba(0,0,0,.07);
+            font-size: 1rem;
+        }
+
+        :host([look="pill"]) .btns {
+            display: flex;
+            gap: 2px;
+            margin-right: 0;
+        }
+
+        :host([look="pill"]) b-btn {
+            --radius: 50%;
+            --padding: 0;
+            width: 2em;
+            height: 2em;
+            color: var(--theme-text);
+        }
+
+        :host([look="pill"]) b-btn::part(icon) {
+            --size: 1.1em;
+        }
+
+        :host([look="pill"]) .count {
+            display: none;
         }
     `}
 
@@ -106,7 +141,7 @@ customElements.define('b-text-editor-menubar', class extends LitElement{
 
         <div>
             <slot name="right"></slot>
-            <span title="Number of characters">
+            <span class="count" title="Number of characters">
                 ${this.characterCount}
                 <b-text muted ?hidden=${!this.maxchar}> / ${this.maxchar}</b-text>
             </span>
