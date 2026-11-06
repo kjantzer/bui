@@ -133,11 +133,18 @@ module.exports = class Comments extends Model {
         
     }
 
+    // unread queries filter on `type` and a date range; MySQL may pick a `type` only index and read every user comment
+    // (the app can set an index hint for its own indexes, ex: `Comments.UnreadIndexHint = 'FORCE INDEX(type_by_created)'`)
+    get findIndexHint(){
+        let unread = this.onlyUnread || (this.gid == 'history' && this.filters.read == 'unread')
+        return unread && this.constructor.UnreadIndexHint || ''
+    }
+
     findSql(where){
         let uid = this.req.user.id
         return /*sql*/`SELECT c.*, 
                         IF(c.uid = ${uid}, c.ts_created, cr.ts_created) ts_read
-                        FROM ${this.config.table} ${this.config.tableAlias}
+                        FROM ${this.config.table} ${this.config.tableAlias} ${this.findIndexHint}
                         LEFT JOIN comment_reads cr ON cr.cid = c.id AND cr.uid = ${uid}
                         ${where}
                         ${this.findOrderBy()}
