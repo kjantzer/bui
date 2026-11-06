@@ -192,12 +192,13 @@ customElements.define('b-comment-row', class extends LitElement {
             background: color-mix(in srgb, var(--comment-ins-color, var(--green-700)) 12%, var(--theme-bgd));
         }
 
-        :host([compose]:not([editing])) [part="avatar-wrapper"] {
-            align-self: center;
+        /* compose (feed): just the field, no avatar */
+        :host([compose]) {
+            grid-template-columns: minmax(0, 1fr);
         }
 
-        :host([compose]:not([editing])) .avatar {
-            margin-top: 0;
+        :host([compose]) [part="avatar-wrapper"] {
+            display: none;
         }
 
         .compose {

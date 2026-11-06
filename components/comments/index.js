@@ -201,6 +201,11 @@ customElements.define('b-comments', class extends LitElement{
             justify-content: center;
         }
 
+        /* (writing a comment: just the field, see comment.js compose) */
+        :host([feed]) b-comment-row[compose]::part(avatar-wrapper) {
+            display: none;
+        }
+
         :host([feed]) b-comment-row::part(avatar) {
             box-shadow: 0 0 0 3px var(--comment-feed-bgd);
             border-radius: 50%;
