@@ -242,6 +242,7 @@ const xhrError = function(xhr, resp){
 
     err.name = xhr.statusText
     err.details = xhr.responseJSON
+    err.type = xhr.responseJSON?.type
     err.response = resp
 
     if( xhr.responseJSON && xhr.responseJSON.error )
