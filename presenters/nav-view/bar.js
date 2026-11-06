@@ -9,7 +9,7 @@
     - `static navViewsCollapsed = true` (on the section): listed only while it's active; hovering its item otherwise
       shows them in a menu to the right
     - static navViews can be links instead of views: `{title, action: (model, navView)=>{}}` (ex: open another view;
-      a ↗ in the hover menu; none when listed, there's little room)
+      a ↗ in the hover menu; none when listed, there's little room); listed after the section's live views too
     - `menuTitle` (static navViews): a longer title for the hover menu (ex: when the listed title is shortened to fit)
     - a flat section's (navViewsFlat) lone child view, with nothing else listed, isn't listed in the sidebar
 */
@@ -337,9 +337,11 @@ customElements.define('b-nav-view-bar', class extends BaseTabBar{
     }
 
     // a section's child views: live from its tabs (claimed by b-nav-view), else its static navViews
+    // (its static links, `action`, stay after its live views)
     navItems(view){
         if( !this.host?.showsNavViews && !view._viewClass?.navViewsFlat ) return []
-        let items = view.navViews?.views || view._viewClass?.navViews || []
+        let links = (view._viewClass?.navViews || []).filter(item=>item.action)
+        let items = view.navViews?.views ? [...view.navViews.views, ...links] : (view._viewClass?.navViews || [])
         return items.filter(item=>!item.section) // (the section item stands for it, see b-tabs nav-first)
     }
 
