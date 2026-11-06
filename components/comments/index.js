@@ -147,8 +147,9 @@ customElements.define('b-comments', class extends LitElement{
             z-index: -1;
         }
 
+        /* (a margin, not left: the row narrows instead of sticking out past the list) */
         :host([github]) b-comment-row[part^="comment"][type="system"] {
-            left: 3em;
+            margin-left: 3em;
         }
 
         :host([github]) b-comment-row[part^="comment"][type="system"]::before {
