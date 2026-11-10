@@ -35,8 +35,9 @@ customElements.define('b-previewer-iframe', class extends LitElement{
         // setTimeout(() => {
             // console.log(this.$$('iframe'));
             
-            let doc = this.$$('iframe').contentDocument
-            let body = doc.body
+            // (null when the file is served from another origin)
+            let body = this.$$('iframe')?.contentDocument?.body
+            if( !body ) return
 
             // doesn't work (sort of works?)
             body.style.background = 'transparent'    

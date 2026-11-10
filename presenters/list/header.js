@@ -482,7 +482,7 @@ customElements.define('b-list-header', class extends LitElement{
 
         this.cols.map(col=>{
 
-            if( col.sort == sort.key ){
+            if( sort && col.sort == sort.key ){
                 col.el.setAttribute('sorted', sort.isDesc ? 'desc' : 'asc')
             }else
                 col.el.removeAttribute('sorted')

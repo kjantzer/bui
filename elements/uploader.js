@@ -226,8 +226,10 @@ export class UploaderElement extends LitElement {
         this.addEventListener('dragover', this.dragover, true)
         this.addEventListener('drop', this.drop, true)
 
-        if( !Object.getPrototypeOf(this.parent).hasOwnProperty('uploader') && !this.parent.uploader )
+        if( !Object.getPrototypeOf(this.parent).hasOwnProperty('uploader') && !this.parent.uploader ){
             this.parent.uploader = this
+            this._setParentUploader = true
+        }
     }
 
     disconnectedCallback(){
@@ -237,8 +239,11 @@ export class UploaderElement extends LitElement {
         this.removeEventListener('dragover', this.dragover)
         this.removeEventListener('drop', this.drop)
 
-        if( this.parent.uploader === this)
+        // (only if we set it; the parent may have its own `uploader` getter)
+        if( this._setParentUploader && this.parent.uploader === this ){
             this.parent.uploader = null
+            this._setParentUploader = false
+        }
 
         this.parent = null;
     }
