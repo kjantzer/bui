@@ -1529,8 +1529,9 @@ export default class FiltersPopover extends LitElement {
         else
             filter.value = selected.selection ? {val: selected.val, selection: selected.selection} : selected.val
 
-        // the menu already shows this (don't re-create it)
-        if( this.menus[filter.key] )
+        // multi: the menu already shows this, its checkboxes toggled in place (don't re-create it)
+        // single: picks don't move the menu's check, so it's re-created for the new value
+        if( this.menus[filter.key] && filter.isMulti )
             this.menus[filter.key].valueKey = JSON.stringify(filter.value ?? null)
     }
 

@@ -123,6 +123,11 @@ customElements.define('b-nav-view', class extends Tabs{
                 "content nav";
         }
 
+        /* no sidebar on the left to clear: list titles (and a panel's close btn) line up with other sheets */
+        :host([sidebar-end]) slot.content {
+            --root-titlebar-padding-left: .5em;
+        }
+
         :host([sidebar-end]) .sidebar {
             border-right: none;
             border-left: var(--nav-view-sidebar-border, solid 1px var(--theme-bgd-accent));
