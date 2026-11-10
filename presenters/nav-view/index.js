@@ -25,6 +25,7 @@
 
     Attributes
     - `compact` - desktop sidebar is a narrow rail (icon over label) instead of a list
+    - `sidebar-end` - desktop sidebar is on the right (ex: details about the selected row beside a list)
     - `close-btn` - close btn (emits `close-panel`): top of the sidebar on desktop; a toolbar row when narrow
       on non-phone devices (phones close sheets by swiping)
       - `slot="sidebar-top"` - shown to the right of the sidebar close btn (ex: history btn); hidden when narrow
@@ -112,6 +113,19 @@ customElements.define('b-nav-view', class extends Tabs{
 
         :host([nav-claimed]) .sidebar {
             display: none;
+        }
+
+        /* sidebar on the right (ex: details about the selected row beside a list); (narrow rules below win) */
+        :host([sidebar-end]) > main.nav {
+            grid-template-columns: minmax(0, 1fr) var(--nav-view-sidebar-width, 250px);
+            grid-template-areas:
+                "header nav"
+                "content nav";
+        }
+
+        :host([sidebar-end]) .sidebar {
+            border-right: none;
+            border-left: var(--nav-view-sidebar-border, solid 1px var(--theme-bgd-accent));
         }
 
         slot[name="before"]::slotted(*) {
