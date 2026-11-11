@@ -339,8 +339,11 @@ export default class RoutedView extends LitElement {
             }, this.list?0:100)
         }
 
-        if( newState && newState.props.searchTerm && this.list )
-            this.list.term = newState.props.searchTerm
+        // (delayed like filters, for a view opened for the first time)
+        if( newState && newState.props.searchTerm )
+            setTimeout(()=>{
+                if( this.list ) this.list.term = newState.props.searchTerm
+            }, this.list?0:100)
 
         if( !newState )
             return
