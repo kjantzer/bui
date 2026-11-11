@@ -69,6 +69,11 @@ module.exports = class SPA {
         let opts = arguments[1]
 
         app.get(path, async (req, res) => {
+
+            // a missing file (ex: a lazy chunk from an older build) 404s instead of getting the index html,
+            // which the browser would run as a broken script ("Unexpected token '<'") instead of failing to load
+            if( /\.(js|css|map)$/.test(req.path) )
+                return req.next()
             
             if( requireAuthentication && !req.isAuthenticated() )
                 return res.redirect(`${loginPath}?redirect=${req.url}`)

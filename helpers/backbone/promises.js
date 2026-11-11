@@ -233,6 +233,14 @@ const xhrError = function(xhr, resp){
 
     if( !xhr ){
         let [model, _xhr, opts] = resp
+
+        // the request itself failed (ex: network error, or a response that isn't json); keep its message (not "[object Object]")
+        if( opts.errorThrown instanceof Error ){
+            err.name = opts.errorThrown.name
+            err.message = opts.errorThrown.message
+            return err
+        }
+
         err.name = opts.errorThrown && opts.errorThrown.error ? opts.errorThrown.error : opts.errorThrown
         err.message = opts.errorThrown && opts.errorThrown.error ? opts.errorThrown.error : opts.errorThrown
         err.type = opts.errorThrown?.type
