@@ -181,8 +181,11 @@ class SelectFieldElement extends HTMLElement {
 
 	static get observedAttributes() { return ['disabled', 'placeholder']; }
 	attributeChangedCallback(name, oldValue, newValue){
-		if( name === 'disabled' )
+		if( name === 'disabled' ){
 			this._input.disabled = this.disabled
+			if( this.disabled )
+				this.openMenu?.resolve(false)
+		}
 		if( name === 'placeholder' )
 			this._value.dataset.placeholder = newValue
 	}
@@ -433,7 +436,7 @@ class SelectFieldElement extends HTMLElement {
 			onSelect: selected=>{
 				// called even if not multiple, but this can conflict with the search features
 				// so only do this in multiple mode
-				if( this.multiple )
+				if( this.multiple && !this.disabled )
 					this.selected = Array.isArray(selected) ? selected.map(m=>m.val) : selected.val
 			}
 		}
@@ -515,7 +518,7 @@ class SelectFieldElement extends HTMLElement {
 		if( !device.is_mobile )
 			this._input.focus() // retain focus
 		
-		if( val === false ) return
+		if( val === false || this.disabled ) return
 		
 		val = this.multiple ? val : [val]
 
