@@ -283,6 +283,9 @@ class TextFieldElement extends HTMLElement {
 		if( name === 'disabled' ){
 			this._editor.contentEditable = !this.disabled
 			this._input.disabled = this.disabled
+
+			if( this.disabled )
+				this._datePickerOpen?._close()
 		}
 
 		if( name === 'placeholder' ){
@@ -450,6 +453,8 @@ class TextFieldElement extends HTMLElement {
 	}
 
 	async pickDate(){
+
+		if( this.disabled ) return
 
 		// make sure date picker has latest value
 		this._datePicker.value = this.value
